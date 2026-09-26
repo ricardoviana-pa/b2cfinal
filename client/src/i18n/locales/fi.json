@@ -418,10 +418,7 @@
   "footer": {
     "allRightsReserved": "Kaikki oikeudet pidätetään",
     "tagline": "Yksityishotelleja Portugalissa.",
-    "newsletterHint": "Pysy inspiroituneena. Uusia koteja, matkaideoita ja eksklusiivisia tarjouksia.",
-    "emailPlaceholder": "Sähköpostisi",
     "subscribe": "TILAA",
-    "welcomeInbox": "Tervetuloa. Tarkista postilaatikkosi.",
     "destinationsTitle": "KOHTEET",
     "servicesTitle": "PALVELUT",
     "companyTitle": "YRITYS",
@@ -458,8 +455,7 @@
     "paymentBankTransfer": "Tilisiirto",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
     "nlHeadline": "Inspiroidu.",
-    "nlSub": "Valikoituja majoituksia, kausitarjouksia ja matkakertomuksia Portugalista — toimitetaan kuukausittain.",
-    "nlError": "Jokin meni pieleen. Yritä uudelleen.",
+    "nlSub": "Subscriber-only offers and the news about our homes. Few emails.",
     "conciergeServices": "Concierge-palvelut",
     "realEstate": "Osta tai myy asunto",
     "offices": "Toimistot"
@@ -651,11 +647,6 @@
     "ownersBody": "Toimimme yhteistyössä kiinteistönomistajien kanssa, jotka jakavat vieraanvaraisuusnäkemyksemme. Hallinnointimallimme tuottaa poikkeuksellista tuottoa ilman operatiivista osallistumistasi. Omat tiimit, hotellitasoiset standardit ja brändi, joka houkuttelee premium-vieraita ympäri vuoden.",
     "ownersCta": "TUTUSTU MALLIIMME",
     "ownersNote": "Luottamuksellinen arvio. Vastaus 2 tunnin kuluessa.",
-    "newsletterOverline": "PYSY INSPIROITUNEENA",
-    "newsletterTitle": "Koteja, tarinoita ja kausitarjouksia.",
-    "newsletterSuccess": "Tervetuloa perheeseen. Tarkista postilaatikkosi vahvistusta varten.",
-    "newsletterPlaceholder": "Sähköpostiosoitteesi",
-    "newsletterCta": "TILAA",
     "searchCheckin": "Saapuminen",
     "searchCheckout": "Lähtö",
     "decreaseGuests": "Vähemmän vieraita",
@@ -2136,5 +2127,32 @@
     "faq1A": "Vaatimukset vaihtelevat aktiviteetin mukaan. Katso elämyksen sivulta vaikeustaso, ikärajat ja tarvittavat varusteet. Tiimimme auttaa valinnassa.",
     "faq2Q": "Voinko yhdistää aktiviteetteja majoitukseen?",
     "faq2A": "Kyllä. Valitse kotisi ja tutustu saman alueen aktiviteetteihin. Concierge voi auttaa ohjelman suunnittelussa. Aktiviteetit ja mahdolliset kuljetukset laskutetaan erikseen."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Subscribers only",
+      "title": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email and you will receive the subscriber-only offers and the news about our homes: dates that open, new homes. Few emails, only when there is something worth it.",
+      "interest": "Interest noted: {{house}}."
+    },
+    "block": {
+      "overline": "Subscribers only",
+      "titleHouse": "Want to know when {{house}} opens dates or goes on offer?",
+      "titleArticle": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email. We let subscribers know when dates open, when a new home arrives and when there is an offer. Few emails, no noise.",
+      "note": "You can unsubscribe in any email."
+    },
+    "form": {
+      "email": "Your email",
+      "consent": "I agree to receive emails from Portugal Active with offers and news. I can unsubscribe in any email. I have read the",
+      "consentPrivacy": "privacy policy",
+      "cta": "Sign me up",
+      "sending": "Sending...",
+      "close": "Not now",
+      "success": "One more step: we have sent you an email to confirm the subscription. Open it and press the button.",
+      "errorInvalid": "This email is not valid.",
+      "errorProxy": "Please use your personal email.",
+      "errorGeneric": "Something went wrong. Please try again in a moment."
+    }
   }
 }

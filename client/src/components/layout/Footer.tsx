@@ -3,43 +3,36 @@
    Elevated design with better hierarchy, breathing room, and visual polish.
    ========================================================================== */
 
-import { useState } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { openCookiePreferences } from '@/lib/measurementConsent';
 import { IMAGES } from '@/lib/images';
-import { Instagram, Youtube, Linkedin, Facebook, Check, Phone, Mail, MessageCircle, ArrowUpRight } from 'lucide-react';
+import { Instagram, Youtube, Linkedin, Facebook, Phone, Mail, MessageCircle, ArrowUpRight } from 'lucide-react';
 import FooterPaymentLogos from './FooterPaymentLogos';
+// Same form as the pop-up and the inline block: consent checkbox, honeypot,
+// double opt-in in Brevo (newsletter.subscribe). The old path (leads.create
+// + ActiveCampaign) promised a welcome email that was never sent.
+import NewsletterForm from '@/components/marketing/NewsletterForm';
+import { useEffect, useState } from 'react';
 import { trpc } from '@/lib/trpc';
-import { pushDL } from '@/lib/datalayer';
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
   const language = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0];
   const realEstateLanguage = ["pt", "fr", "es"].includes(language) ? language + "/" : "";
   const managementLanguage = language === "pt" ? "" : (["en", "fr", "es", "de", "it", "nl"].includes(language) ? language : "en") + "/";
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-  const [subscribing, setSubscribing] = useState(false);
-  const [nlError, setNlError] = useState('');
-
-  const createLead = trpc.leads.create.useMutation();
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setSubscribing(true);
-    setNlError('');
-    try {
-      await createLead.mutateAsync({ email, source: 'newsletter-footer' });
-      setSubscribed(true);
-      setEmail('');
-      pushDL({ event: 'generate_lead', lead_source: 'newsletter-footer', lead_type: 'newsletter' });
-    } catch {
-      setNlError(t('footer.nlError'));
-    } finally {
-      setSubscribing(false);
-    }
-  };
+  // The newsletter banner only shows in the languages whose texts were
+  // reviewed (newsletter.config.locales, Portuguese first). Client-only query:
+  // the server render has no config, so the banner mounts after hydration.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  const newsletterConfig = trpc.newsletter.config.useQuery(undefined, {
+    enabled: mounted,
+    staleTime: 60 * 60 * 1000,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+  const showNewsletter = !!newsletterConfig.data?.locales.includes(language);
 
   const footerLinks = (label: string, href: string, external?: boolean) => (
     <li>
@@ -59,6 +52,7 @@ export default function Footer() {
     <footer className="bg-[#1A1A18] text-white" role="contentinfo">
 
       {/* Newsletter banner */}
+      {showNewsletter && (
       <details className="border-b border-white/[0.1]">
         <summary className="container py-5 flex items-center justify-between gap-4 cursor-pointer list-none">
           <span className="text-[14px] text-white/80">{t('footer.nlHeadline')}</span>
@@ -75,42 +69,13 @@ export default function Footer() {
                 {t('footer.nlSub')}
               </p>
             </div>
-            <div className="w-full lg:w-auto lg:min-w-[380px]">
-              {subscribed ? (
-                <p className="text-[13px] flex items-center gap-2 text-[#C4A87C]" role="status" aria-live="polite">
-                  <Check className="w-3.5 h-3.5" /> {t('footer.welcomeInbox')}
-                </p>
-              ) : (
-                <form onSubmit={handleSubscribe} className="flex flex-col gap-1.5">
-                  <div className="flex">
-                    <input
-                      type="email"
-                      aria-label={t('footer.emailPlaceholder')}
-                      value={email}
-                      onChange={e => { setEmail(e.target.value); setNlError(''); }}
-                      placeholder={t('footer.emailPlaceholder')}
-                      required
-                      autoComplete="email"
-                      inputMode="email"
-                      className="flex-1 h-[48px] px-4 text-[13px] bg-white/[0.04] border border-white/10 text-white placeholder:text-white/65 focus:outline-none focus:border-white/30 transition-colors min-w-0"
-                      style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-                    />
-                    <button
-                      type="submit"
-                      disabled={subscribing}
-                      className="pa-action h-[48px] px-6 bg-[#C4A87C] text-[#1A1A18] text-[11px] font-semibold hover:bg-[#D4B88C] transition-colors flex-shrink-0 disabled:opacity-50"
-                      style={{ letterSpacing: '1.5px' }}
-                    >
-                      {subscribing ? '...' : t('footer.subscribe')}
-                    </button>
-                  </div>
-                  {nlError && <p className="text-[11px] text-red-400" role="alert" aria-live="assertive">{nlError}</p>}
-                </form>
-              )}
+            <div className="w-full lg:w-auto lg:min-w-[380px] lg:max-w-[460px]">
+              <NewsletterForm origin="footer" variant="dark" />
             </div>
           </div>
         </div>
       </details>
+      )}
 
       {/* Main link grid */}
       <div className="container py-10 lg:py-12">

@@ -26,6 +26,7 @@ import PropertyCard from '@/components/property/PropertyCard';
 import PropertyUnitsSection from '@/components/property/PropertyUnitsSection';
 import SecurityDepositNotice from '@/components/property/SecurityDepositNotice';
 import ReviewsSection from '@/components/property/ReviewsSection';
+import NewsletterBlock from '@/components/marketing/NewsletterBlock';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@/components/ui/drawer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
@@ -1722,6 +1723,12 @@ export default function PropertyDetail() {
             </DrawerContent>
           </Drawer>
         )}
+
+        {/* Newsletter capture: "avise-me quando esta casa abrir datas ou entrar
+            em promoção". Full-width band after the reviews and the booking
+            column, before the related homes. The fixed mobile price bar above
+            is untouched (auditoria CRO, 24 set 2026). */}
+        <NewsletterBlock origin="house" propertySlug={property.slug} propertyName={displayName} />
 
         {/* Related properties from same region */}
         {relatedProperties.length > 0 && (

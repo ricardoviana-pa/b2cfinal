@@ -418,10 +418,7 @@
   "footer": {
     "allRightsReserved": "All rights reserved",
     "tagline": "Private Hotels in Portugal.",
-    "newsletterHint": "Stay inspired. New homes, travel ideas, and exclusive offers.",
-    "emailPlaceholder": "Your email",
     "subscribe": "SUBSCRIBE",
-    "welcomeInbox": "Welcome. Check your inbox.",
     "destinationsTitle": "DESTINATIONS",
     "servicesTitle": "SERVICES",
     "companyTitle": "COMPANY",
@@ -458,8 +455,7 @@
     "paymentBankTransfer": "Bank transfer",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
     "nlHeadline": "Stay inspired.",
-    "nlSub": "Curated stays, seasonal offers, and Portugal travel stories — delivered monthly.",
-    "nlError": "Something went wrong. Please try again.",
+    "nlSub": "Subscriber-only offers and the news about our homes. Few emails.",
     "conciergeServices": "Concierge services",
     "realEstate": "Buy or sell a home",
     "offices": "Offices"
@@ -651,11 +647,6 @@
     "ownersBody": "We partner with homeowners who share our vision of hospitality. Our management model delivers exceptional returns with zero operational involvement from you. In-house teams, hotel grade standards, and a brand that attracts premium guests year round.",
     "ownersCta": "LEARN ABOUT OUR MODEL",
     "ownersNote": "Confidential assessment. Response within 2 hours.",
-    "newsletterOverline": "STAY INSPIRED",
-    "newsletterTitle": "Homes, stories and seasonal offers.",
-    "newsletterSuccess": "Welcome to the family. Check your inbox for a confirmation.",
-    "newsletterPlaceholder": "Your email address",
-    "newsletterCta": "SUBSCRIBE",
     "searchCheckin": "Check-in",
     "searchCheckout": "Check-out",
     "decreaseGuests": "Decrease guests",
@@ -2136,5 +2127,32 @@
     "faq1A": "Requirements vary by activity. Check the experience page for difficulty, age limits and what to bring. Our team can help you choose.",
     "faq2Q": "Can I combine activities with a villa stay?",
     "faq2A": "Yes. Choose your home and explore activities in the same region. Our concierge can help coordinate the programme. Activities and any transfers are charged separately."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Subscribers only",
+      "title": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email and you will receive the subscriber-only offers and the news about our homes: dates that open, new homes. Few emails, only when there is something worth it.",
+      "interest": "Interest noted: {{house}}."
+    },
+    "block": {
+      "overline": "Subscribers only",
+      "titleHouse": "Want to know when {{house}} opens dates or goes on offer?",
+      "titleArticle": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email. We let subscribers know when dates open, when a new home arrives and when there is an offer. Few emails, no noise.",
+      "note": "You can unsubscribe in any email."
+    },
+    "form": {
+      "email": "Your email",
+      "consent": "I agree to receive emails from Portugal Active with offers and news. I can unsubscribe in any email. I have read the",
+      "consentPrivacy": "privacy policy",
+      "cta": "Sign me up",
+      "sending": "Sending...",
+      "close": "Not now",
+      "success": "One more step: we have sent you an email to confirm the subscription. Open it and press the button.",
+      "errorInvalid": "This email is not valid.",
+      "errorProxy": "Please use your personal email.",
+      "errorGeneric": "Something went wrong. Please try again in a moment."
+    }
   }
 }

@@ -418,10 +418,7 @@
   "footer": {
     "allRightsReserved": "Alla rättigheter förbehållna",
     "tagline": "Privata hotell i Portugal.",
-    "newsletterHint": "Håll dig inspirerad. Nya hem, reseidéer och exklusiva erbjudanden.",
-    "emailPlaceholder": "Din e-post",
     "subscribe": "PRENUMERERA",
-    "welcomeInbox": "Välkommen. Kontrollera din inkorg.",
     "destinationsTitle": "DESTINATIONER",
     "servicesTitle": "TJÄNSTER",
     "companyTitle": "FÖRETAG",
@@ -458,8 +455,7 @@
     "paymentBankTransfer": "Banköverföring",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
     "nlHeadline": "Låt dig inspireras.",
-    "nlSub": "Utvalda vistelser, säsongserbjudanden och reseberättelser från Portugal — levereras månadsvis.",
-    "nlError": "Något gick fel. Försök igen.",
+    "nlSub": "Subscriber-only offers and the news about our homes. Few emails.",
     "conciergeServices": "Conciergetjänster",
     "realEstate": "Köpa eller sälja bostad",
     "offices": "Kontor"
@@ -651,11 +647,6 @@
     "ownersBody": "Vi samarbetar med fastighetsägare som delar vår vision om gästfrihet. Vår förvaltningsmodell levererar exceptionell avkastning utan operativt engagemang från dig. Egna team, hotellstandarder och ett varumärke som attraherar premiumgäster året runt.",
     "ownersCta": "LÄR DIG OM VÅR MODELL",
     "ownersNote": "Konfidentiell bedömning. Svar inom 2 timmar.",
-    "newsletterOverline": "HÅLL DIG INSPIRERAD",
-    "newsletterTitle": "Hem, berättelser och säsongserbjudanden.",
-    "newsletterSuccess": "Välkommen till familjen. Kontrollera din inkorg för en bekräftelse.",
-    "newsletterPlaceholder": "Din e-postadress",
-    "newsletterCta": "PRENUMERERA",
     "searchCheckin": "Incheckning",
     "searchCheckout": "Utcheckning",
     "decreaseGuests": "Färre gäster",
@@ -2136,5 +2127,32 @@
     "faq1A": "Kraven varierar mellan aktiviteterna. Läs upplevelsens sida för svårighetsgrad, åldersgränser och vad du ska ta med. Vårt team hjälper dig att välja.",
     "faq2Q": "Kan jag kombinera aktiviteter med en vistelse?",
     "faq2A": "Ja. Välj ditt hus och upptäck aktiviteter i samma region. Vår concierge kan hjälpa till att planera programmet. Aktiviteter och eventuell transfer debiteras separat."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Subscribers only",
+      "title": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email and you will receive the subscriber-only offers and the news about our homes: dates that open, new homes. Few emails, only when there is something worth it.",
+      "interest": "Interest noted: {{house}}."
+    },
+    "block": {
+      "overline": "Subscribers only",
+      "titleHouse": "Want to know when {{house}} opens dates or goes on offer?",
+      "titleArticle": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email. We let subscribers know when dates open, when a new home arrives and when there is an offer. Few emails, no noise.",
+      "note": "You can unsubscribe in any email."
+    },
+    "form": {
+      "email": "Your email",
+      "consent": "I agree to receive emails from Portugal Active with offers and news. I can unsubscribe in any email. I have read the",
+      "consentPrivacy": "privacy policy",
+      "cta": "Sign me up",
+      "sending": "Sending...",
+      "close": "Not now",
+      "success": "One more step: we have sent you an email to confirm the subscription. Open it and press the button.",
+      "errorInvalid": "This email is not valid.",
+      "errorProxy": "Please use your personal email.",
+      "errorGeneric": "Something went wrong. Please try again in a moment."
+    }
   }
 }
