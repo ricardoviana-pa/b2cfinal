@@ -31,6 +31,57 @@ de todos os fornecedores/cookies do site.
 - `purchase` continua deduplicado por transação. Uma compra sem autorização não
   recebe um marcador de envio. Não se reproduzem compras passadas ao aceitar.
 
+## Origem da visita na reserva (27 setembro 2026)
+
+O checkout 2.0 escreve na nota da reserva do Guesty uma linha `Origem:` ao lado
+da linha `Cupao:`, na mesma escrita. Serve a atribuição do marketing
+(pa-marketing, `b-crm/jobs/campaign_bookings.py`) e o email interno `[Venda direta]`.
+
+- **Interruptor da nota:** a linha só vai para a nota com `VISIT_ORIGIN_NOTE=1`
+  no Render. Desligada por defeito, porque o `campaign_bookings.py` procura os
+  códigos das campanhas em toda a nota e os links das campanhas 1 e 4b levam
+  `utm_content=codigo_pa2027` e `utm_content=codigo_voltar27`. Liga-se só
+  depois de o pa-marketing retirar as linhas `Origem:` antes de procurar
+  códigos. A captura, a tabela e o email `[Venda direta]` funcionam sempre.
+- **Cobertura:** só as reservas de quem escolheu "Aceitar tudo" levam canal. As
+  outras levam `Origem: sem consentimento` e aparecem assim no cockpit; a
+  cobertura acompanha a taxa de aceitação do banner.
+
+- **O que se capta** na página de entrada de cada carregamento completo
+  (`shared/visit-origin.ts`, `client/src/lib/visitOrigin.ts`): `utm_source`,
+  `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, o tipo de
+  identificador de clique (`gclid`, `gbraid`, `wbraid`, `msclkid`, `fbclid`,
+  nunca o valor), o domínio de origem e o caminho de entrada sem query, com os
+  ids trocados por `:id`. Primeira e última visita, com hora. Uma entrada direta
+  não apaga a última visita de campanha; recarregar, voltar atrás e os regressos
+  da Stripe, Klarna e PayPal não contam.
+- **Consentimento:** só com `all` se escreve `localStorage["pa-origin"]`, com
+  30 dias por toque (a janela mais longa do marketing). Sem `all` nada é escrito
+  e a reserva leva só `Origem: sem consentimento`. Retirar a autorização apaga a
+  chave, também noutros separadores. A leitura da página de entrada fica em
+  memória até haver escolha, como a origem AI acima.
+- **Duração no aparelho:** o `localStorage` não expira sozinho. Cada toque vale
+  30 dias e o que passou desse prazo é apagado na primeira visita seguinte
+  (qualquer página). Se o visitante não voltar, o registo fica no navegador dele
+  sem ser lido nem enviado, até limpar os dados do site. É isto que a política
+  de cookies deve dizer ("apagado na primeira visita depois de 30 dias"). No
+  Safari, o ITP apaga-o antes, ao fim de 7 dias sem visita.
+- **Servidor:** `checkout.createIntent` recebe a origem e `checkout.setOrigin`
+  atualiza-a a partir do checkout, só com uma escolha explícita no banner: ao
+  abrir a página e a cada escolha, "Aceitar tudo" junta a origem deste aparelho
+  (por exemplo um link de recuperação aberto no telemóvel) e "Apenas
+  essenciais" apaga a origem do intent, também quando a retirada foi feita
+  noutra página. Sem escolha não se manda nada: uma origem recolhida com
+  consentimento noutro aparelho não é apagada. Lista fechada de chaves, até 100
+  caracteres, só `[A-Za-z0-9._~-]`, valores com `@` ou com muitos algarismos
+  seguidos passam a `removido`. Guarda em `booking_intent_origins` (tabela à
+  parte); cada registo sai 31 dias depois da última atualização, numa limpeza
+  a cada 6 horas.
+- **Nunca sai para terceiros:** nem Stripe, nem CAPI da Meta, nem dataLayer.
+- **Formato da linha e testes:** `server/services/visit-origin.ts`,
+  `server/visit-origin.test.ts`, `server/visit-origin-consent.test.ts`,
+  `server/checkout-sandbox/checkout-flow.test.ts`.
+
 ## Impacto na análise
 
 GA4/Meta passam a refletir visitantes que autorizaram medição. Uma descida nos

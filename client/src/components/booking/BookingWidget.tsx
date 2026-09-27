@@ -5,6 +5,7 @@ import { useMeasurementConsent } from "@/hooks/useMeasurementConsent";
 import { useLocation } from "wouter";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
+import { visitOriginPayload } from "@/lib/visitOrigin";
 import { cn } from "@/lib/utils";
 import { pushDL, pushEcommerce, pushPurchaseOnce, buildPropertyItem, ADDON_PREFIX } from "@/lib/datalayer";
 import { cancellationPolicyText } from "@/lib/cancellation";
@@ -1441,6 +1442,9 @@ export default function BookingWidget({
                       guests,
                       ratePlanId: selectedRatePlanId ?? base.ratePlanId,
                       locale: lang,
+                      // Origem da visita para a nota da reserva (sem
+                      // consentimento segue só { consent: false })
+                      origin: visitOriginPayload(),
                       quote: {
                         nightlyRate: base.nightlyRate,
                         totalNights: base.totalNights,

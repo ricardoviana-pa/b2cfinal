@@ -1,4 +1,5 @@
 import { isLiveSiteHostname } from "@shared/deployment";
+import { VISIT_ORIGIN_STORAGE_KEY } from "@shared/visit-origin";
 /** Basic consent mode: optional measurement only loads after an explicit grant. */
 export type CookieChoice = 'all' | 'essential';
 export const COOKIE_CHOICE_KEY = 'pa-cookies-consent';
@@ -70,6 +71,12 @@ function clearMeasurementCookies() {
   }
 }
 
+/** Armazenamento de primeira parte que só existe com "Aceitar tudo" (origem
+ *  da visita, lib/visitOrigin.ts). Sai em qualquer domínio, não só no live. */
+function clearMeasurementStorage() {
+  try { window.localStorage.removeItem(VISIT_ORIGIN_STORAGE_KEY); } catch { /* unavailable */ }
+}
+
 function loadMeasurement() {
   if (choice !== 'all' || gtmLoaded || !isLiveSiteHostname(window.location.hostname)) return;
   gtmLoaded = true;
@@ -113,7 +120,7 @@ function applyChoice(value: CookieChoice | null) {
   const wasLoaded = gtmLoaded;
   choice = value;
   updateConsent(value === 'all');
-  if (value !== 'all') clearMeasurementCookies();
+  if (value !== 'all') { clearMeasurementCookies(); clearMeasurementStorage(); }
   window.dispatchEvent(new Event(COOKIE_CHOICE_EVENT));
   if (value === 'all') startWhenReady();
   // A loaded recording library cannot be unloaded reliably in an SPA. Revocation
@@ -144,7 +151,7 @@ export function bootstrapMeasurement(): void {
   window.gtag('consent', 'default', googleConsent('denied'));
   window.gtag('set', 'ads_data_redaction', true);
   if (choice === 'all') updateConsent(true);
-  else clearMeasurementCookies();
+  else { clearMeasurementCookies(); clearMeasurementStorage(); }
   if (document.readyState === 'complete') startWhenReady();
   else window.addEventListener('load', () => window.setTimeout(loadMeasurement, 100), { once: true });
   window.addEventListener('storage', event => {

@@ -33,6 +33,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useVisitOriginSync } from "@/hooks/useVisitOriginSync";
 import { formatQuotedEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
 import { cancellationPolicyText, freeCancellationDeadline } from "@/lib/cancellation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
@@ -225,6 +226,8 @@ export default function CheckoutPage() {
   const captureLead = trpc.checkout.captureLead.useMutation();
 
   const intent = isDemo ? demoIntent : (intentQuery.data?.intent ?? null);
+  // Origem da visita: link de recuperação com UTM, ou consentimento mudado aqui
+  useVisitOriginSync(isDemo ? undefined : intentId, !!intent, intent?.status === "paid");
 
   /** Patch the server intent AND the React Query cache in lockstep — otherwise a
    *  remount within staleTime re-seeds the page from pre-edit data (stale quote). */

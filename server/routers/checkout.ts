@@ -43,6 +43,8 @@ import {
 } from "../services/transactional-email";
 import { appendReservationNote } from "../services/guesty-openapi-paypal";
 import { couponNoteLine } from "../services/coupon-note";
+import { mergeVisitOrigins, originNoteEnabled, originNoteLine, parseVisitOriginPayload } from "../services/visit-origin";
+import { getIntentOrigin, saveIntentOrigin } from "../services/visit-origin-store";
 
 const quoteSnapshotSchema = z.object({
   nightlyRate: z.number(),
@@ -189,9 +191,14 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
         .catch(() => {/* marketing nunca parte o funil */});
     }
     const photoPromise = resolveIntentPhoto(m).catch(() => undefined);
-    void photoPromise.then((imageUrl) => sendCheckoutOpsManifest({
+    // Origem da visita (UTM, clique, referrer): nota da reserva e email
+    // [Venda direta]. Nunca vai para a CAPI, a Stripe nem o dataLayer.
+    const originPromise = getIntentOrigin(intentId).catch(() => null);
+    void Promise.all([photoPromise, originPromise]).then(([imageUrl, origin]) => sendCheckoutOpsManifest({
       canonical,
       imageUrl,
+      origin,
+      couponCode: (m.quote as any)?.couponCode ?? null,
       confirmationCode: m.confirmationCode, reservationId: m.reservationId,
       propertyName: m.propertyName, checkIn: m.checkIn, checkOut: m.checkOut,
       guests: m.guests, email: m.email,
@@ -243,16 +250,20 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
         );
     }
     const hasPayload = m.reception || (Array.isArray(m.extras) && m.extras.length) || m.flex;
-    // O código promocional vai na MESMA nota (duas escritas em paralelo à nota
-    // da reserva perdem uma: o append é ler, juntar, gravar).
+    // O código promocional e a origem da visita vão na MESMA nota (duas
+    // escritas em paralelo à nota da reserva perdem uma: o append é ler,
+    // juntar, gravar). A linha "Origem:" só com VISIT_ORIGIN_NOTE=1, depois de
+    // o pa-marketing a separar da procura dos códigos (originNoteEnabled).
     const couponLine = couponNoteLine(m.quote);
-    if (m.reservationId && !hasPayload && couponLine) {
-      void appendReservationNote(String(m.reservationId), couponLine);
+    const originLine = originNoteEnabled() ? originNoteLine(await originPromise) : "";
+    const headLines = [couponLine, originLine].filter(Boolean).join("\n");
+    if (m.reservationId && !hasPayload && headLines) {
+      void appendReservationNote(String(m.reservationId), headLines);
     }
     if (m.reservationId && hasPayload) {
       const lines = (Array.isArray(m.extras) ? m.extras : []).map((e: any) =>
         "- " + e.sku + (e.qty ? " x" + e.qty : "") + (e.days ? " " + e.days + " dias" : "") + (e.people ? " " + e.people + "p" : "") + " " + (e.amount != null ? e.amount + " EUR" : "(sob orcamento)") + (e.fulfillment === "needs_confirmation" ? " [CONFIRMAR 24H]" : ""));
-      const note = (couponLine ? couponLine + "\n" : "") + "SERVICOS DO CHECKOUT:\nRececao: " + (m.reception?.type === "hosted" ? "presencial" + (m.reception.late ? " apos 21h" : "") : "self check-in") + "\nFlex: " + (m.flex ? "SIM" : "nao") + "\n" + lines.join("\n");
+      const note = (headLines ? headLines + "\n" : "") + "SERVICOS DO CHECKOUT:\nRececao: " + (m.reception?.type === "hosted" ? "presencial" + (m.reception.late ? " apos 21h" : "") : "self check-in") + "\nFlex: " + (m.flex ? "SIM" : "nao") + "\n" + lines.join("\n");
       void appendReservationNote(String(m.reservationId), note);
     }
   } catch (err: any) {
@@ -289,6 +300,9 @@ export const checkoutRouter = router({
         ratePlanId: z.string().max(64).optional(),
         quote: quoteSnapshotSchema,
         locale: z.string().max(5).optional(),
+        /** Origem da visita (shared/visit-origin.ts). Validada à parte: um
+         *  valor inválido nunca impede o checkout, só fica sem origem. */
+        origin: z.unknown().optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -311,8 +325,36 @@ export const checkoutRouter = router({
         locale: input.locale,
         expiresAt: trusted.expiresAt,
       });
+      if (created && input.origin !== undefined) {
+        const origin = parseVisitOriginPayload(input.origin);
+        if (origin) await saveIntentOrigin(created, origin).catch(() => false);
+        else console.warn(`[VisitOrigin] origem recusada (intent ${created}): formato inválido`);
+      }
       // null → DB unavailable; the client falls back to the legacy flow
       return { intentId: created };
+    }),
+
+  /**
+   * Atualiza a origem da visita de um intent já criado, a partir da página de
+   * checkout, sempre que lá houver uma escolha explícita no banner
+   * (client/src/lib/visitOrigin.ts, watchCheckoutOrigin): "Aceitar tudo" junta
+   * a origem deste aparelho (por exemplo um link de recuperação com UTM);
+   * "Apenas essenciais" apaga a origem do intent, também quando foi retirada
+   * noutra página. Sem escolha o navegador não manda nada. Só mexe na tabela
+   * das origens; nunca depois de pago.
+   */
+  setOrigin: publicProcedure
+    .input(z.object({ intentId: z.string().uuid(), origin: z.unknown() }))
+    .mutation(async ({ input }) => {
+      const incoming = parseVisitOriginPayload(input.origin);
+      if (!incoming) return { ok: false };
+      const current = await getBookingIntent(input.intentId);
+      if (!current || current.status === "paid") return { ok: false };
+      const existing = await getIntentOrigin(input.intentId).catch(() => null);
+      // Retirada repetida (cada abertura do checkout com "Apenas essenciais"): nada a gravar.
+      if (!incoming.consent && existing && !existing.consent) return { ok: true };
+      const ok = await saveIntentOrigin(input.intentId, mergeVisitOrigins(existing, incoming)).catch(() => false);
+      return { ok };
     }),
 
   getIntent: publicProcedure
