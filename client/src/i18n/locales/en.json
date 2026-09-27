@@ -1277,7 +1277,9 @@
     "ourGuests": "OUR GUESTS",
     "whatTheyRemember": "What they remember most.",
     "proofStrip": "4.8/5 across 2,000+ guest reviews",
-    "verifiedNote": "All reviews are from completed stays, collected through our booking channels."
+    "verifiedNote": "All reviews are from completed stays, collected through our booking channels.",
+    "previous": "Previous reviews",
+    "next": "Next reviews"
   },
   "experience": {
     "from": "From",

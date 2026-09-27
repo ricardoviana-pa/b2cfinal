@@ -1321,7 +1321,9 @@
     "whatTheyRemember": "Mitä he muistavat eniten.",
     "proofStrip": "4.8/5 yli 2 000 vierasarvostelua",
     "verifiedGuest": "Vahvistettu vieras",
-    "verifiedNote": "Kaikki arvostelut ovat toteutuneista oleskeluista, kerätty varauskanaviemme kautta."
+    "verifiedNote": "Kaikki arvostelut ovat toteutuneista oleskeluista, kerätty varauskanaviemme kautta.",
+    "previous": "Edelliset arvostelut",
+    "next": "Seuraavat arvostelut"
   },
   "amenity": {
     "outdoorPool": "Ulkotilat ja uima-allas",

@@ -1321,7 +1321,9 @@
     "whatTheyRemember": "Vad de minns mest.",
     "proofStrip": "4.8/5 bland över 2 000 gästomdömen",
     "verifiedGuest": "Verifierad gäst",
-    "verifiedNote": "Alla omdömen kommer från genomförda vistelser, insamlade via våra bokningskanaler."
+    "verifiedNote": "Alla omdömen kommer från genomförda vistelser, insamlade via våra bokningskanaler.",
+    "previous": "Föregående omdömen",
+    "next": "Nästa omdömen"
   },
   "amenity": {
     "outdoorPool": "Utomhus & Pool",
