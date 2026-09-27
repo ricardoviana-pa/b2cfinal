@@ -31,6 +31,35 @@ de todos os fornecedores/cookies do site.
 - `purchase` continua deduplicado por transação. Uma compra sem autorização não
   recebe um marcador de envio. Não se reproduzem compras passadas ao aceitar.
 
+## Origem da visita na reserva (27 setembro 2026)
+
+O checkout 2.0 escreve na nota da reserva do Guesty uma linha `Origem:` ao lado
+da linha `Cupao:`, na mesma escrita. Serve a atribuição do marketing
+(pa-marketing, `b-crm/jobs/campaign_bookings.py`) e o email interno `[Venda direta]`.
+
+- **O que se capta** na página de entrada de cada carregamento completo
+  (`shared/visit-origin.ts`, `client/src/lib/visitOrigin.ts`): `utm_source`,
+  `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, o tipo de
+  identificador de clique (`gclid`, `gbraid`, `wbraid`, `msclkid`, `fbclid`,
+  nunca o valor), o domínio de origem e o caminho de entrada sem query, com os
+  ids trocados por `:id`. Primeira e última visita, com hora. Uma entrada direta
+  não apaga a última visita de campanha; recarregar, voltar atrás e os regressos
+  da Stripe, Klarna e PayPal não contam.
+- **Consentimento:** só com `all` se escreve `localStorage["pa-origin"]`, com
+  30 dias por toque (a janela mais longa do marketing). Sem `all` nada é escrito
+  e a reserva leva só `Origem: sem consentimento`. Retirar a autorização apaga a
+  chave, também noutros separadores. A leitura da página de entrada fica em
+  memória até haver escolha, como a origem AI acima.
+- **Servidor:** `checkout.createIntent` recebe a origem e `checkout.setOrigin`
+  atualiza-a (link de recuperação aberto no checkout, consentimento mudado no
+  checkout). Lista fechada de chaves, até 100 caracteres, só `[A-Za-z0-9._~-]`,
+  valores com `@` ou com muitos algarismos seguidos passam a `removido`. Guarda
+  em `booking_intent_origins` (tabela à parte, apagada aos 31 dias).
+- **Nunca sai para terceiros:** nem Stripe, nem CAPI da Meta, nem dataLayer.
+- **Formato da linha e testes:** `server/services/visit-origin.ts`,
+  `server/visit-origin.test.ts`, `server/visit-origin-consent.test.ts`,
+  `server/checkout-sandbox/checkout-flow.test.ts`.
+
 ## Impacto na análise
 
 GA4/Meta passam a refletir visitantes que autorizaram medição. Uma descida nos

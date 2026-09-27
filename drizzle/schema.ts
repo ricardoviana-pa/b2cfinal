@@ -498,6 +498,19 @@ export type BookingIntent = typeof bookingIntents.$inferSelect;
 export type InsertBookingIntent = typeof bookingIntents.$inferInsert;
 
 /* ================================================================
+   BOOKING INTENT ORIGINS — origem da visita de cada intent (UTM, tipo de
+   clique, domínio de origem, página de entrada). Tabela à parte de propósito:
+   se faltar (arranque sem migração), só a origem falha; as leituras de
+   booking_intents não mudam (docs/go-live-runbook.md). Criada no arranque e
+   limpa passados 31 dias (server/_core/index.ts).
+   ================================================================ */
+export const bookingIntentOrigins = mysqlTable("booking_intent_origins", {
+  intentId: varchar("intent_id", { length: 36 }).primaryKey(),
+  origin: json("origin").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+/* ================================================================
    WEB VITALS — anonymous field Core Web Vitals (client/src/lib/vitals.ts,
    server/routes/vitals.ts). No ids, no cookies; pruned after 90 days.
    ================================================================ */

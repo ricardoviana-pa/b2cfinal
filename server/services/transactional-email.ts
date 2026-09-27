@@ -9,6 +9,7 @@ import { getEmailSigner } from "@shared/concierges";
 import { FUNNEL_I18N } from "./recovery-copy";
 import { sanitizePropertyName } from "@shared/displayName";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
+import { originEmailSummary, type ServerVisitOrigin } from "./visit-origin";
 import {
   emailLang,
   skuNameFor,
@@ -1147,6 +1148,9 @@ export async function sendCheckoutOpsManifest(d: {
   extras?: Array<Record<string, unknown>> | null; flex?: boolean | null; intentId: string;
   canonical?: CanonicalCharge | null;
   imageUrl?: string | null;
+  /** Só na cópia [Venda direta]: a equipa de CS não precisa da origem. */
+  origin?: ServerVisitOrigin | null;
+  couponCode?: string | null;
 }): Promise<void> {
   try {
     const extras = Array.isArray(d.extras) ? d.extras : [];
@@ -1222,6 +1226,13 @@ export async function sendCheckoutOpsManifest(d: {
       const estadia = tot - servicos;
       row("Total pago", `<strong>${tot.toFixed(2)} EUR</strong>${servicos > 0 ? ` (estadia ${estadia.toFixed(2)} + servicos ${servicos.toFixed(2)})` : ""}`);
     }
+    // Cópia de vendas: de onde veio a venda (cupão e origem da visita). Os
+    // valores já vêm limpos (shared/visit-origin.ts); escapam-se na mesma.
+    const salesRows = [...rows];
+    const esc = (v: string) => v.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+    const coupon = String(d.couponCode ?? "").replace(/[^\p{L}\p{N} %._-]/gu, "").trim().slice(0, 60).toUpperCase();
+    salesRows.push(`<tr><td style="padding:4px 12px 4px 0;color:#6B6860;font:13px Arial;">Cupao</td><td style="padding:4px 0;color:#1A1A18;font:13px Arial;">${esc(coupon || "sem codigo")}</td></tr>`);
+    salesRows.push(`<tr><td style="padding:4px 12px 4px 0;color:#6B6860;font:13px Arial;">Origem da visita</td><td style="padding:4px 0;color:#1A1A18;font:13px Arial;">${esc(originEmailSummary(d.origin))}</td></tr>`);
     const fmtLine = (e: Record<string, unknown>) =>
       `<p style="font:13px Arial;color:#1A1A18;margin:2px 0;">• ${nice(e.sku)} ${qty(e)} · ${e.amount != null ? amountOf(e) + " EUR" : "sob orcamento"}</p>`;
     // Sempre com a marca: moldura com logo (wrapTemplate) + foto da casa —
@@ -1229,12 +1240,12 @@ export async function sendCheckoutOpsManifest(d: {
     const photoHtml = d.imageUrl
       ? `<img src="${d.imageUrl}" alt="${d.propertyName || ""}" width="600" style="display:block;width:100%;height:auto;border-radius:8px;margin:0 0 16px;" />`
       : "";
-    const html = wrapTemplate(
+    const render = (tableRows: string[]) => wrapTemplate(
       `<p style="font:700 10.5px Arial;color:#8B7355;letter-spacing:.16em;margin:0 0 6px;">NOVA RESERVA DIRETA · CHECKOUT 2.0</p>` +
       `<h2 style="font:400 24px Georgia;color:#1A1A18;margin:0 0 16px;">${d.propertyName || ""}</h2>` +
       actionHtml +
       photoHtml +
-      `<table>${rows.join("")}</table>` +
+      `<table>${tableRows.join("")}</table>` +
       (extras.length
         ? `<p style="font:600 13px Arial;margin:14px 0 4px;color:#1A1A18;">Detalhe dos servicos</p>` + extras.map(fmtLine).join("")
         : `<p style="font:13px Arial;color:#6B6860;margin:14px 0 4px;">Sem servicos extra — so a estadia${d.reception?.type === "hosted" ? " e rececao presencial" : ", self check-in"}.</p>`) +
@@ -1245,13 +1256,14 @@ export async function sendCheckoutOpsManifest(d: {
       undefined,
       true,
     );
+    const html = render(rows);
     const urgentFlag = needs.length || requests.length ? "ACAO ATE 24H — " : "";
     await sendEmail(BOOKING_ALERT_EMAIL, `[CS] ${urgentFlag}Reserva ${d.confirmationCode || d.intentId.slice(0, 8)} · ${d.propertyName || ""}`, html);
     console.info(`[OpsManifest] enviado (intent ${d.intentId}, ${actions.length} acoes)`);
     // Cópia de vendas para a gestão: cada reserva direta com casa, valor e
     // extras — pedido do Ricardo (16 ago) para acompanhar o que o site vende.
     if (SALES_COPY_EMAIL && SALES_COPY_EMAIL !== BOOKING_ALERT_EMAIL) {
-      await sendEmail(SALES_COPY_EMAIL, `[Venda direta] ${d.propertyName || ""} · ${d.confirmationCode || d.intentId.slice(0, 8)}`, html).catch((err: any) =>
+      await sendEmail(SALES_COPY_EMAIL, `[Venda direta] ${d.propertyName || ""} · ${d.confirmationCode || d.intentId.slice(0, 8)}`, render(salesRows)).catch((err: any) =>
         console.error(`[OpsManifest] copia de vendas falhou (intent ${d.intentId}):`, err?.message),
       );
     }

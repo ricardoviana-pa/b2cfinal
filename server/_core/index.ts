@@ -638,6 +638,31 @@ ${allUrls.join("\n")}
     console.warn("[Migration] booking_intents:", migErr.message);
   }
 
+  // Origem da visita (UTM, tipo de clique, domínio de origem, página de
+  // entrada) de cada intent. Tabela à parte e bloco à parte: se falhar, só a
+  // linha "Origem:" da nota fica em falta; os intents não mudam. Os toques
+  // valem 30 dias; passados 31 a linha já está na nota do Guesty e o registo
+  // sai daqui (minimização).
+  try {
+    const { getDb } = await import("../db");
+    const db = await getDb();
+    if (db) {
+      await (db as any).execute(`
+        CREATE TABLE IF NOT EXISTS \`booking_intent_origins\` (
+          \`intent_id\` varchar(36) NOT NULL,
+          \`origin\` json NOT NULL,
+          \`updated_at\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          PRIMARY KEY(\`intent_id\`),
+          INDEX \`idx_booking_intent_origins_updated\` (\`updated_at\`)
+        )
+      `);
+      await (db as any).execute("DELETE FROM `booking_intent_origins` WHERE `updated_at` < NOW() - INTERVAL 31 DAY");
+      console.info("[Migration] booking_intent_origins table OK");
+    }
+  } catch (migErr: any) {
+    console.warn("[Migration] booking_intent_origins:", migErr.message);
+  }
+
   server.listen(port, () => {
     console.info(`Server running on http://localhost:${port}/`);
 

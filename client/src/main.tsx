@@ -11,6 +11,7 @@ import { getLoginUrl } from "./const";
 import "./index.css";
 import { installContactClickTracking } from "@/lib/datalayer";
 import { startVitals } from "@/lib/vitals";
+import { startVisitOrigin } from "@/lib/visitOrigin";
 
 // We deploy many times a day and the edge caches HTML for only ~60s, but a tab
 // left open keeps running its old bundle indefinitely — and its next lazy-route
@@ -19,6 +20,10 @@ import { startVitals } from "@/lib/vitals";
 // The sessionStorage flag stops a reload loop if the failure is anything else
 // (e.g. offline): one automatic attempt per session, then let it fail visibly.
 installContactClickTracking();
+// Origem da visita (UTM, tipo de clique, domínio de origem) lida na página de
+// entrada, antes de qualquer navegação interna. Só se guarda no aparelho com
+// "Aceitar tudo"; ver lib/visitOrigin.ts.
+startVisitOrigin();
 // Field LCP/INP with attribution → /api/vitals (anonymous; see lib/vitals.ts).
 // web-vitals reads buffered entries, so its chunk can load lazily.
 startVitals();

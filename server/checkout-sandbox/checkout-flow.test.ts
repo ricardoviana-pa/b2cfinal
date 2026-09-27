@@ -8,6 +8,7 @@ const fake = vi.hoisted(() => ({
   createPayment: vi.fn(), getPayment: vi.fn(), cancelPayment: vi.fn(), metadata: vi.fn(),
   reserve: vi.fn(), recordPayment: vi.fn(), note: vi.fn(),
   opsEmail: vi.fn(), guestEmail: vi.fn(), lead: vi.fn(),
+  origins: new Map<string, any>(), saveOrigin: vi.fn(), getOrigin: vi.fn(),
 }));
 
 vi.mock('../lib/guesty', () => ({ guestyBEClient: { request: fake.supplierQuote } }));
@@ -17,6 +18,9 @@ vi.mock('../db', () => ({
   createBookingIntent: fake.createIntent, getBookingIntent: fake.getIntent,
   updateBookingIntent: fake.updateIntent, createLead: fake.lead,
   promoteCheckoutLeadToNewsletter: vi.fn(), demoteCheckoutLeadFromNewsletter: vi.fn(),
+}));
+vi.mock('../services/visit-origin-store', () => ({
+  saveIntentOrigin: fake.saveOrigin, getIntentOrigin: fake.getOrigin,
 }));
 vi.mock('../services/properties-store', () => ({ getPropertiesForSite: vi.fn(async () => [
   { guestyId: 'synthetic-listing', slug: 'synthetic-home', bedrooms: 3, amenities: [] },
@@ -43,11 +47,12 @@ const caller = () => checkoutRouter.createCaller({
 } as any);
 const quote = { nightlyRate: 500.5, totalNights: 2002, cleaningFee: 120,
   taxesAndFees: 25, total: 2147, nights: 4, currency: 'EUR', quoteCreatedAt: Date.now() };
-async function draft() {
+async function draft(origin?: unknown) {
   const result = await caller().createIntent({ listingId: 'synthetic-listing',
     propertyName: 'Synthetic test home', propertySlug: 'synthetic-home',
     guestyQuoteId: 'aaaaaaaaaaaaaaaaaaaaaaaa', ratePlanId: 'synthetic-flex',
-    checkIn: '2099-11-10', checkOut: '2099-11-14', guests: 4, locale: 'pt', quote });
+    checkIn: '2099-11-10', checkOut: '2099-11-14', guests: 4, locale: 'pt', quote,
+    ...(origin === undefined ? {} : { origin }) });
   return result.intentId!;
 }
 function savedPayment(intentId: string, overrides: Record<string, unknown> = {}) {
@@ -64,7 +69,9 @@ beforeEach(() => {
     checkInDateLocalized: '2099-11-10', checkOutDateLocalized: '2099-11-14', guestsCount: 4,
     createdAt: new Date().toISOString(), expiresAt: new Date(Date.now() + 3600000).toISOString(),
     rates: { ratePlans: [{ ratePlan: { _id: 'synthetic-flex', name: 'Flexible', money: { subTotalPrice: 2147, fareCleaning: 120, currency: 'EUR' } } }] } }));
-  fake.intents.clear(); fake.payments.clear(); fake.keys.clear();
+  fake.intents.clear(); fake.payments.clear(); fake.keys.clear(); fake.origins.clear();
+  fake.saveOrigin.mockImplementation(async (id, origin) => { fake.origins.set(id, structuredClone(origin)); return true; });
+  fake.getOrigin.mockImplementation(async id => structuredClone(fake.origins.get(id) ?? null));
   fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, structuredClone(data)); return data.id; });
   fake.markPaid.mockImplementation(async (id, reservationId, confirmationCode) => {
     const m = fake.intents.get(id); if (!m || m.status === 'paid') return false;
@@ -300,4 +307,90 @@ describe('supplier rate plan selection',()=>{
   expect(fake.intents.get(id).quote).toMatchObject({total:1900,couponCode:'SYNTHETIC10'});
   expect((await caller().createCardCharge({intentId:id})).totalCents).toBe(190000);
  });
+});
+
+
+describe('visit origin on the reservation note (UTM, click type, referrer)', () => {
+  const campaignOrigin = {
+    v: 1, consent: true, stored: true,
+    first: { ageSec: 3 * 86400, utm_source: 'google', utm_medium: 'cpc', utm_campaign: '2026-10_o1_es_puentes', clickId: 'gclid' },
+    last: { ageSec: 3600, utm_source: 'email', utm_medium: 'email', utm_campaign: '2026-09_o1_base_prevenda2027',
+      utm_content: 'botao_casa', landing: '/pt/homes/synthetic-home' },
+  };
+  async function payCard(id: string) {
+    await caller().captureLead({ intentId: id, email: 'guest@checkout.invalid', consent: false, locale: 'pt' });
+    await caller().updateIntent({ intentId: id, patch: { guestFirstName: 'Synthetic', guestLastName: 'Guest', reception: { type: 'self' } } });
+    const payment = await caller().createCardCharge({ intentId: id });
+    fake.payments.get(payment.paymentIntentId).status = 'succeeded';
+    await caller().finalizeCardCharge({ intentId: id, paymentIntentId: payment.paymentIntentId });
+    await vi.waitFor(() => expect(fake.note.mock.calls.some(([, note]) => String(note).includes('SERVICOS DO CHECKOUT'))).toBe(true));
+    await vi.waitFor(() => expect(fake.opsEmail).toHaveBeenCalledOnce());
+    const withOrigin = fake.note.mock.calls.filter(([, note]) => String(note).includes('Origem:'));
+    return { withOrigin, notes: fake.note.mock.calls.map(([, note]) => String(note)) };
+  }
+
+  it('writes one "Origem:" line next to the coupon, in the same note write, and sends it to the sales copy', async () => {
+    const id = await draft(campaignOrigin);
+    fake.intents.get(id).quote.couponCode = 'REPETIR27';
+    const { withOrigin } = await payCard(id);
+    expect(withOrigin).toHaveLength(1);
+    const [reservationId, note] = withOrigin[0];
+    expect(reservationId).toBe('synthetic-reservation');
+    const lines = String(note).split('\n');
+    expect(lines[0]).toBe('Cupao: REPETIR27 (codigo promocional usado no site)');
+    expect(lines[1]).toMatch(/^Origem: utm_source=email; utm_medium=email; utm_campaign=2026-09_o1_base_prevenda2027; utm_content=botao_casa; utm_term=-; clid=-; ref=-; entrada=\/pt\/homes\/synthetic-home; toque=\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z; primeiro=\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z,google,cpc,2026-10_o1_es_puentes; guardado=sim \(origem da visita no site, v1\)$/);
+    expect(lines[2]).toBe('SERVICOS DO CHECKOUT:');
+    expect(fake.opsEmail).toHaveBeenCalledWith(expect.objectContaining({
+      couponCode: 'REPETIR27',
+      origin: expect.objectContaining({ consent: true, last: expect.objectContaining({ utm_content: 'botao_casa' }) }),
+    }));
+    // A origem fica na reserva: nunca na Stripe.
+    expect(JSON.stringify(fake.createPayment.mock.calls)).not.toContain('botao_casa');
+    expect(JSON.stringify(fake.metadata.mock.calls)).not.toContain('botao_casa');
+  });
+
+  it('without analytics consent the reservation carries only "Origem: sem consentimento"', async () => {
+    const id = await draft({ v: 1, consent: false });
+    const { withOrigin } = await payCard(id);
+    expect(withOrigin).toHaveLength(1);
+    const originLines = String(withOrigin[0][1]).split('\n').filter(line => line.startsWith('Origem'));
+    expect(originLines).toEqual(['Origem: sem consentimento']);
+    expect(String(withOrigin[0][1])).not.toContain('utm_');
+  });
+
+  it('refuses personal data and unknown keys without blocking the checkout', async () => {
+    const personal = await draft({ ...campaignOrigin, last: { ...campaignOrigin.last, utm_content: 'ana@example.com', utm_term: '+351 912 345 678' } });
+    expect(fake.origins.get(personal).last).toMatchObject({ utm_content: 'removido', utm_term: 'removido' });
+    const forged = await draft({ ...campaignOrigin, email: 'ana@example.com' });
+    expect(forged).toBeTruthy();
+    expect(fake.origins.has(forged)).toBe(false);
+    const { withOrigin } = await payCard(forged);
+    expect(withOrigin).toHaveLength(0);
+  });
+
+  it('an unavailable origin store never blocks intent creation or the paid emails', async () => {
+    fake.saveOrigin.mockRejectedValue(new Error('table missing'));
+    fake.getOrigin.mockRejectedValue(new Error('table missing'));
+    const id = await draft(campaignOrigin);
+    expect(id).toBeTruthy();
+    const { withOrigin } = await payCard(id);
+    expect(withOrigin).toHaveLength(0);
+    await vi.waitFor(() => expect(fake.guestEmail).toHaveBeenCalledOnce());
+  });
+
+  it('setOrigin merges a recovery-link visit, follows a withdrawal and never touches a paid intent', async () => {
+    const id = await draft(campaignOrigin);
+    const recovery = { v: 1, consent: true, stored: true, first: null,
+      last: { ageSec: 5, utm_source: 'email', utm_medium: 'recovery', utm_campaign: 'checkout_recovery_20h', landing: '/pt/checkout/:id' } };
+    expect(await caller().setOrigin({ intentId: id, origin: recovery })).toEqual({ ok: true });
+    expect(fake.origins.get(id)).toMatchObject({ first: { utm_source: 'google' }, last: { utm_medium: 'recovery' } });
+    expect(await caller().setOrigin({ intentId: id, origin: { v: 1, consent: true, extra: 1 } })).toEqual({ ok: false });
+    expect(await caller().setOrigin({ intentId: id, origin: { v: 1, consent: false } })).toEqual({ ok: true });
+    expect(fake.origins.get(id)).toEqual({ v: 1, consent: false });
+    await caller().setOrigin({ intentId: id, origin: recovery });
+    await payCard(id);
+    const before = structuredClone(fake.origins.get(id));
+    expect(await caller().setOrigin({ intentId: id, origin: campaignOrigin })).toEqual({ ok: false });
+    expect(fake.origins.get(id)).toEqual(before);
+  });
 });
