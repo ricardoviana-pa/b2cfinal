@@ -8,7 +8,7 @@ import Footer from '@/components/layout/Footer';
 import { openCookiePreferences } from '@/lib/measurementConsent';
 
 export default function Cookies() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Cookie Policy', description: 'Learn how Portugal Active uses cookies to improve your browsing experience. Manage your cookie preferences here.', url: '/legal/cookies' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -36,6 +36,11 @@ export default function Cookies() {
             <p>
               {t('cookiesPage.analyticsBody')}
             </p>
+            {/* pa-origin (visit origin, shared/visit-origin.ts). Only PT has this
+                text until the other eight translations land after the PT is
+                approved; without the key the paragraph is left out instead of
+                showing the raw key. */}
+            {i18n.exists('cookiesPage.originBody') && <p>{t('cookiesPage.originBody')}</p>}
 
             <h3 className="text-[17px] font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.functionalTitle')}</h3>
             <p>
