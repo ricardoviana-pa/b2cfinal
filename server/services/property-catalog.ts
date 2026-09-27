@@ -55,5 +55,5 @@ export function recentGuestFeedback(properties: Record<string, any>[]) {
     if (seen.has(r.property.slug)) return false;
     seen.add(r.property.slug);
     return true;
-  }).slice(0, 4);
+  }).slice(0, 20);
 }

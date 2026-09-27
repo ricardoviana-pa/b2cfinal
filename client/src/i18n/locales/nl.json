@@ -1321,7 +1321,9 @@
     "whatTheyRemember": "Wat ze zich het meest herinneren.",
     "proofStrip": "4.8/5 bij meer dan 2.000 gastbeoordelingen",
     "verifiedGuest": "Geverifieerde gast",
-    "verifiedNote": "Alle reviews komen van voltooide verblijven, verzameld via onze boekingskanalen."
+    "verifiedNote": "Alle reviews komen van voltooide verblijven, verzameld via onze boekingskanalen.",
+    "previous": "Vorige beoordelingen",
+    "next": "Volgende beoordelingen"
   },
   "amenity": {
     "outdoorPool": "Buiten & Zwembad",

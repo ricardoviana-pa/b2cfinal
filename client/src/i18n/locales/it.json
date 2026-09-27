@@ -1321,7 +1321,9 @@
     "whatTheyRemember": "Ciò che ricordano di più.",
     "proofStrip": "4.8/5 su oltre 2.000 recensioni degli ospiti",
     "verifiedGuest": "Ospite verificato",
-    "verifiedNote": "Tutte le recensioni provengono da soggiorni conclusi, raccolte tramite i nostri canali di prenotazione."
+    "verifiedNote": "Tutte le recensioni provengono da soggiorni conclusi, raccolte tramite i nostri canali di prenotazione.",
+    "previous": "Recensioni precedenti",
+    "next": "Recensioni successive"
   },
   "amenity": {
     "outdoorPool": "Esterno e Piscina",
