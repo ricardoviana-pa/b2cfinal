@@ -43,7 +43,7 @@ import {
 } from "../services/transactional-email";
 import { appendReservationNote } from "../services/guesty-openapi-paypal";
 import { couponNoteLine } from "../services/coupon-note";
-import { mergeVisitOrigins, originNoteLine, parseVisitOriginPayload } from "../services/visit-origin";
+import { mergeVisitOrigins, originNoteEnabled, originNoteLine, parseVisitOriginPayload } from "../services/visit-origin";
 import { getIntentOrigin, saveIntentOrigin } from "../services/visit-origin-store";
 
 const quoteSnapshotSchema = z.object({
@@ -252,9 +252,11 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
     const hasPayload = m.reception || (Array.isArray(m.extras) && m.extras.length) || m.flex;
     // O código promocional e a origem da visita vão na MESMA nota (duas
     // escritas em paralelo à nota da reserva perdem uma: o append é ler,
-    // juntar, gravar).
+    // juntar, gravar). A linha "Origem:" só com VISIT_ORIGIN_NOTE=1, depois de
+    // o pa-marketing a separar da procura dos códigos (originNoteEnabled).
     const couponLine = couponNoteLine(m.quote);
-    const headLines = [couponLine, originNoteLine(await originPromise)].filter(Boolean).join("\n");
+    const originLine = originNoteEnabled() ? originNoteLine(await originPromise) : "";
+    const headLines = [couponLine, originLine].filter(Boolean).join("\n");
     if (m.reservationId && !hasPayload && headLines) {
       void appendReservationNote(String(m.reservationId), headLines);
     }
@@ -333,10 +335,13 @@ export const checkoutRouter = router({
     }),
 
   /**
-   * Atualiza a origem da visita de um intent já criado: um link com UTM
-   * (recuperação do carrinho) aberto diretamente no checkout, ou o
-   * consentimento dado ou retirado já na página de checkout. Só mexe na
-   * tabela das origens; nunca depois de pago.
+   * Atualiza a origem da visita de um intent já criado, a partir da página de
+   * checkout, sempre que lá houver uma escolha explícita no banner
+   * (client/src/lib/visitOrigin.ts, watchCheckoutOrigin): "Aceitar tudo" junta
+   * a origem deste aparelho (por exemplo um link de recuperação com UTM);
+   * "Apenas essenciais" apaga a origem do intent, também quando foi retirada
+   * noutra página. Sem escolha o navegador não manda nada. Só mexe na tabela
+   * das origens; nunca depois de pago.
    */
   setOrigin: publicProcedure
     .input(z.object({ intentId: z.string().uuid(), origin: z.unknown() }))
@@ -346,6 +351,8 @@ export const checkoutRouter = router({
       const current = await getBookingIntent(input.intentId);
       if (!current || current.status === "paid") return { ok: false };
       const existing = await getIntentOrigin(input.intentId).catch(() => null);
+      // Retirada repetida (cada abertura do checkout com "Apenas essenciais"): nada a gravar.
+      if (!incoming.consent && existing && !existing.consent) return { ok: true };
       const ok = await saveIntentOrigin(input.intentId, mergeVisitOrigins(existing, incoming)).catch(() => false);
       return { ok };
     }),

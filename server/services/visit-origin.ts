@@ -21,6 +21,7 @@
  *   - primeiro = hora,fonte,meio,campanha da primeira visita dos últimos 30 dias;
  *   - guardado = sim quando o navegador guardou a origem entre visitas.
  * Sem consentimento de análise a linha é só "Origem: sem consentimento".
+ * A linha só é escrita na nota com VISIT_ORIGIN_NOTE=1 (ver originNoteEnabled).
  */
 import { z } from "zod";
 import {
@@ -42,6 +43,21 @@ export type ServerVisitOrigin =
 
 export const ORIGIN_NO_CONSENT_LINE = "Origem: sem consentimento";
 const ORIGIN_LINE_SUFFIX = " (origem da visita no site, v1)";
+
+/**
+ * A linha "Origem:" só vai para a nota da reserva com VISIT_ORIGIN_NOTE=1 (ou
+ * "true"). Desligada por defeito: o b-crm/jobs/campaign_bookings.py do
+ * pa-marketing procura os códigos das campanhas em toda a nota, e os links das
+ * campanhas levam utm_content=codigo_pa2027 e codigo_voltar27. Enquanto esse
+ * job não retirar as linhas "Origem:" antes de procurar códigos, uma reserva
+ * sem cupão contaria como venda por código. Liga-se no Render só depois disso.
+ * A captura, a tabela booking_intent_origins e o email [Venda direta]
+ * funcionam sempre, com a variável ligada ou desligada.
+ */
+export function originNoteEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  const value = env.VISIT_ORIGIN_NOTE?.trim().toLowerCase();
+  return value === "1" || value === "true";
+}
 
 // Listas fechadas: uma chave a mais invalida o toque ou o pedido inteiro.
 const rawValue = z.string().max(500).optional();

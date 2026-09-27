@@ -26,7 +26,6 @@ import { COOKIE_CHOICE_EVENT, getCookieChoice } from "./measurementConsent";
 
 let started = false;
 let landing: LandingResult | null = null;
-let landingPathname = "";
 let landingApplied = false;
 /** Estado desta página quando o armazenamento não está disponível. */
 let memory: StoredOriginState | null = null;
@@ -102,7 +101,6 @@ function onCookieChoice(): void {
 export function startVisitOrigin(): void {
   if (typeof window === "undefined" || started) return;
   started = true;
-  landingPathname = window.location.pathname;
   landing = readLanding({
     search: window.location.search,
     pathname: window.location.pathname,
@@ -123,8 +121,40 @@ export function visitOriginPayload(): VisitOriginPayload {
   return toPayload(state, storageOk, now);
 }
 
-/** Esta página abriu diretamente em /checkout/<intentId> com UTM, clique ou
- *  site de origem (por exemplo um email de recuperação do carrinho). */
-export function landedOnCheckoutWithNewTouch(intentId: string): boolean {
-  return !!landing && landing.kind === "campaign" && landingPathname.includes(`/checkout/${intentId}`);
+/**
+ * O que a página de checkout manda ao setOrigin, ou null quando não há nada a
+ * mandar. Segue só uma escolha explícita no banner:
+ *   - "Aceitar tudo": a origem deste aparelho, que o servidor junta à do intent
+ *     (por exemplo um link de recuperação com UTM aberto no checkout);
+ *   - "Apenas essenciais": { consent: false }, que apaga a origem do intent;
+ *   - sem escolha: null. Nunca se apaga uma origem que outro aparelho (ou
+ *     esta sessão, antes) recolheu com consentimento só porque aqui o banner
+ *     ainda não teve resposta.
+ */
+export function checkoutOriginUpdate(): VisitOriginPayload | null {
+  if (typeof window === "undefined") return null;
+  const choice = getCookieChoice();
+  if (choice === "all") return visitOriginPayload();
+  if (choice === "essential") return { v: 1, consent: false };
+  return null;
+}
+
+/**
+ * Mantém a origem do intent em dia enquanto a página de checkout está aberta:
+ * manda já o estado da escolha atual e volta a mandar a cada escolha no banner
+ * (também feita noutro separador). Mandar já ao abrir cobre a retirada feita
+ * noutra página (rodapé, página da casa) e a que se perde no recarregamento
+ * que measurementConsent.ts faz quando o GTM estava carregado: a página volta
+ * a abrir com "Apenas essenciais" e manda { consent: false }, idempotente.
+ * Devolve a função que deixa de ouvir.
+ */
+export function watchCheckoutOrigin(send: (origin: VisitOriginPayload) => void): () => void {
+  if (typeof window === "undefined") return () => {};
+  const push = () => {
+    const origin = checkoutOriginUpdate();
+    if (origin) send(origin);
+  };
+  push();
+  window.addEventListener(COOKIE_CHOICE_EVENT, push);
+  return () => window.removeEventListener(COOKIE_CHOICE_EVENT, push);
 }

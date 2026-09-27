@@ -24,6 +24,7 @@ import {
   ORIGIN_NO_CONSENT_LINE,
   mergeVisitOrigins,
   originEmailSummary,
+  originNoteEnabled,
   originNoteLine,
   parseStoredVisitOrigin,
   parseVisitOriginPayload,
@@ -272,6 +273,12 @@ describe("linha da nota da reserva", () => {
     const line = originNoteLine({ v: 1, consent: true, stored: true, first: null, last: { utm_source: "a; b=c\nd", at: "2026-09-27T16:00:00Z" } as any });
     expect(line.split("\n")).toHaveLength(1);
     expect(line).toContain("utm_source=a__b_c_d;");
+  });
+
+  it("só vai para a nota com VISIT_ORIGIN_NOTE=1 ou true; desligada por defeito", () => {
+    expect(originNoteEnabled({})).toBe(false);
+    for (const value of ["", "0", "false", "no", "yes", "on"]) expect(originNoteEnabled({ VISIT_ORIGIN_NOTE: value })).toBe(false);
+    for (const value of ["1", "true", "TRUE", " 1 "]) expect(originNoteEnabled({ VISIT_ORIGIN_NOTE: value })).toBe(true);
   });
 });
 

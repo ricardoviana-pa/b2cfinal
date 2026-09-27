@@ -641,8 +641,8 @@ ${allUrls.join("\n")}
   // Origem da visita (UTM, tipo de clique, domínio de origem, página de
   // entrada) de cada intent. Tabela à parte e bloco à parte: se falhar, só a
   // linha "Origem:" da nota fica em falta; os intents não mudam. Os toques
-  // valem 30 dias; passados 31 a linha já está na nota do Guesty e o registo
-  // sai daqui (minimização).
+  // valem 30 dias; passados 31 o registo sai daqui (minimização), na limpeza
+  // periódica arrancada depois do listen (startIntentOriginPurge).
   try {
     const { getDb } = await import("../db");
     const db = await getDb();
@@ -656,7 +656,6 @@ ${allUrls.join("\n")}
           INDEX \`idx_booking_intent_origins_updated\` (\`updated_at\`)
         )
       `);
-      await (db as any).execute("DELETE FROM `booking_intent_origins` WHERE `updated_at` < NOW() - INTERVAL 31 DAY");
       console.info("[Migration] booking_intent_origins table OK");
     }
   } catch (migErr: any) {
@@ -693,6 +692,12 @@ ${allUrls.join("\n")}
     } catch (e: any) {
       console.warn("[Recovery] Scheduler not started:", e?.message ?? e);
     }
+
+    // Origem da visita: apaga os registos com mais de 31 dias, 1 min depois
+    // do arranque e a cada 6 h (services/visit-origin-store.ts).
+    import("../services/visit-origin-store")
+      .then(({ startIntentOriginPurge }) => startIntentOriginPurge())
+      .catch((e) => console.warn("[VisitOrigin] limpeza não arrancou:", e?.message ?? e));
 
     // Spec §14: retry persistente de pagamentos capturados sem reserva criada
     // (o setTimeout do webhook morre num restart; este sweep vive da BD).

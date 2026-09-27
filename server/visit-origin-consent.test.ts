@@ -144,9 +144,10 @@ describe('origem da visita: regras de toque', () => {
     const id = '3f1c2a9e-8b7d-4c6e-9f00-1234567890ab';
     const b = setup({ consent: 'all', pathname: `/pt/checkout/${id}`, search: '?utm_source=email&utm_medium=recovery&utm_campaign=checkout_recovery_20h' });
     const { origin } = await load();
-    expect(origin.landedOnCheckoutWithNewTouch(id)).toBe(true);
-    expect(origin.landedOnCheckoutWithNewTouch('another')).toBe(false);
     expect(stored(b).last).toMatchObject({ utm_medium: 'recovery', landing: '/pt/checkout/:id' });
+    const sent: unknown[] = [];
+    origin.watchCheckoutOrigin(payload => sent.push(payload));
+    expect(sent).toEqual([expect.objectContaining({ consent: true, last: expect.objectContaining({ utm_medium: 'recovery', landing: '/pt/checkout/:id' }) })]);
   });
 
   it('com o armazenamento bloqueado não parte: sem escolha legível segue sem consentimento; aceitando, fica só nesta sessão', async () => {
@@ -163,5 +164,94 @@ describe('origem da visita: regras de toque', () => {
     const { origin } = await load();
     expect(origin.visitOriginPayload()).toMatchObject({ consent: true, stored: false, last: { utm_source: 'google', utm_medium: 'cpc' } });
     expect(origin.visitOriginPayload()).toMatchObject({ consent: true, stored: false, last: { utm_source: 'google' } });
+  });
+});
+
+describe('origem da visita: página de checkout (setOrigin)', () => {
+  const id = '3f1c2a9e-8b7d-4c6e-9f00-1234567890ab';
+  const recovery = { pathname: `/pt/checkout/${id}`, search: '?utm_source=email&utm_medium=recovery&utm_campaign=checkout_recovery_20h' };
+
+  /** O servidor a sério (validação e junção do setOrigin), com a origem que o
+   *  intent recebeu no computador, com consentimento. */
+  async function serverWithConsentedOrigin() {
+    const { mergeVisitOrigins, parseVisitOriginPayload } = await import('./services/visit-origin');
+    const created = parseVisitOriginPayload({
+      v: 1, consent: true, stored: true,
+      first: { ageSec: 3 * 86_400, utm_source: 'google', utm_medium: 'cpc', clickId: 'gclid' },
+      last: { ageSec: 3_600, utm_source: 'email', utm_medium: 'email', utm_campaign: '2026-09_o1_agosto_preferencia' },
+    })!;
+    const server = { origin: created, sent: [] as unknown[] };
+    const send = (payload: unknown) => {
+      server.sent.push(payload);
+      const incoming = parseVisitOriginPayload(payload);
+      if (incoming) server.origin = mergeVisitOrigins(server.origin, incoming);
+    };
+    return { server, send, created: structuredClone(created) };
+  }
+
+  it('link de recuperação aberto noutro aparelho sem resposta ao banner: não manda nada e a origem fica intacta; "Apenas essenciais" apaga-a', async () => {
+    setup(recovery);
+    const { consent, origin } = await load();
+    const { server, send, created } = await serverWithConsentedOrigin();
+    origin.watchCheckoutOrigin(send);
+    expect(server.sent).toEqual([]);
+    expect(server.origin).toEqual(created);
+    consent.saveCookieChoice('essential');
+    expect(server.sent).toEqual([{ v: 1, consent: false }]);
+    expect(server.origin).toEqual({ v: 1, consent: false });
+  });
+
+  it('aceitando no checkout do outro aparelho, a visita da recuperação junta-se sem perder a primeira', async () => {
+    setup(recovery);
+    const { consent, origin } = await load();
+    const { server, send } = await serverWithConsentedOrigin();
+    origin.watchCheckoutOrigin(send);
+    consent.saveCookieChoice('all');
+    expect(server.sent).toHaveLength(1);
+    expect(server.origin).toMatchObject({
+      consent: true,
+      first: { utm_source: 'google', utm_medium: 'cpc' },
+      last: { utm_medium: 'recovery', landing: '/pt/checkout/:id' },
+    });
+  });
+
+  it('retirada feita noutra página: ao abrir o checkout com "Apenas essenciais" a origem do intent sai logo', async () => {
+    setup({ consent: 'essential', pathname: `/pt/checkout/${id}` });
+    const { origin } = await load();
+    const { server, send } = await serverWithConsentedOrigin();
+    origin.watchCheckoutOrigin(send);
+    expect(server.sent).toEqual([{ v: 1, consent: false }]);
+    expect(server.origin).toEqual({ v: 1, consent: false });
+  });
+
+  it('retirada no checkout com o GTM carregado: o pedido pode perder-se no recarregamento, e a página nova manda-o outra vez', async () => {
+    const b = setup({ consent: 'all', pathname: `/pt/checkout/${id}` });
+    const { consent, origin } = await load();
+    vi.advanceTimersByTime(200); // GTM carregado (live, "Aceitar tudo")
+    const { server, send } = await serverWithConsentedOrigin();
+    const lost: unknown[] = [];
+    origin.watchCheckoutOrigin(payload => lost.push(payload));
+    consent.saveCookieChoice('essential');
+    expect(b.win.location.reload).toHaveBeenCalledOnce();
+    expect(lost.at(-1)).toEqual({ v: 1, consent: false });
+    // Página nova depois do recarregamento: a escolha guardada é "Apenas essenciais".
+    vi.resetModules();
+    setup({ consent: 'essential', pathname: `/pt/checkout/${id}` });
+    const reloaded = await load();
+    reloaded.origin.watchCheckoutOrigin(send);
+    expect(server.origin).toEqual({ v: 1, consent: false });
+  });
+
+  it('sem escolha legível (outro separador apagou-a) não manda nada; deixar de ouvir tira o ouvinte', async () => {
+    const b = setup({ consent: 'all', pathname: `/pt/checkout/${id}` });
+    const { origin } = await load();
+    const sent: unknown[] = [];
+    const stop = origin.watchCheckoutOrigin(payload => sent.push(payload));
+    expect(sent).toHaveLength(1);
+    b.local.values.delete('pa-cookies-consent');
+    b.listeners.get('storage')?.[0]({ key: 'pa-cookies-consent' });
+    expect(sent).toHaveLength(1);
+    stop();
+    expect(b.win.removeEventListener).toHaveBeenCalledWith('pa:cookie-choice', expect.any(Function));
   });
 });

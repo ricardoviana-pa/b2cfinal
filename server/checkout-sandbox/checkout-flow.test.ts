@@ -1,5 +1,5 @@
 import './setup';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const fake = vi.hoisted(() => ({
   supplierQuote: vi.fn(), markPaid: vi.fn(),
@@ -329,7 +329,25 @@ describe('visit origin on the reservation note (UTM, click type, referrer)', () 
     return { withOrigin, notes: fake.note.mock.calls.map(([, note]) => String(note)) };
   }
 
+  afterEach(() => { vi.unstubAllEnvs(); });
+
+  it('with VISIT_ORIGIN_NOTE off (default) the note carries only the coupon and the services; the sales copy keeps the origin', async () => {
+    vi.stubEnv('VISIT_ORIGIN_NOTE', '');
+    const id = await draft({ ...campaignOrigin, last: { ...campaignOrigin.last, utm_content: 'codigo_pa2027' } });
+    fake.intents.get(id).quote.couponCode = 'REPETIR27';
+    const { withOrigin, notes } = await payCard(id);
+    expect(withOrigin).toHaveLength(0);
+    const note = notes.find(text => text.includes('SERVICOS DO CHECKOUT'))!;
+    expect(note.split('\n').slice(0, 2)).toEqual(['Cupao: REPETIR27 (codigo promocional usado no site)', 'SERVICOS DO CHECKOUT:']);
+    // Nada da origem na nota: o campaign_bookings.py do pa-marketing não pode apanhar PA2027 aqui.
+    expect(notes.join('\n')).not.toMatch(/pa2027|utm_/i);
+    expect(fake.opsEmail).toHaveBeenCalledWith(expect.objectContaining({
+      origin: expect.objectContaining({ consent: true, last: expect.objectContaining({ utm_content: 'codigo_pa2027' }) }),
+    }));
+  });
+
   it('writes one "Origem:" line next to the coupon, in the same note write, and sends it to the sales copy', async () => {
+    vi.stubEnv('VISIT_ORIGIN_NOTE', '1');
     const id = await draft(campaignOrigin);
     fake.intents.get(id).quote.couponCode = 'REPETIR27';
     const { withOrigin } = await payCard(id);
@@ -350,6 +368,7 @@ describe('visit origin on the reservation note (UTM, click type, referrer)', () 
   });
 
   it('without analytics consent the reservation carries only "Origem: sem consentimento"', async () => {
+    vi.stubEnv('VISIT_ORIGIN_NOTE', 'true');
     const id = await draft({ v: 1, consent: false });
     const { withOrigin } = await payCard(id);
     expect(withOrigin).toHaveLength(1);
@@ -359,6 +378,7 @@ describe('visit origin on the reservation note (UTM, click type, referrer)', () 
   });
 
   it('refuses personal data and unknown keys without blocking the checkout', async () => {
+    vi.stubEnv('VISIT_ORIGIN_NOTE', '1');
     const personal = await draft({ ...campaignOrigin, last: { ...campaignOrigin.last, utm_content: 'ana@example.com', utm_term: '+351 912 345 678' } });
     expect(fake.origins.get(personal).last).toMatchObject({ utm_content: 'removido', utm_term: 'removido' });
     const forged = await draft({ ...campaignOrigin, email: 'ana@example.com' });
@@ -369,6 +389,7 @@ describe('visit origin on the reservation note (UTM, click type, referrer)', () 
   });
 
   it('an unavailable origin store never blocks intent creation or the paid emails', async () => {
+    vi.stubEnv('VISIT_ORIGIN_NOTE', '1');
     fake.saveOrigin.mockRejectedValue(new Error('table missing'));
     fake.getOrigin.mockRejectedValue(new Error('table missing'));
     const id = await draft(campaignOrigin);
@@ -387,6 +408,10 @@ describe('visit origin on the reservation note (UTM, click type, referrer)', () 
     expect(await caller().setOrigin({ intentId: id, origin: { v: 1, consent: true, extra: 1 } })).toEqual({ ok: false });
     expect(await caller().setOrigin({ intentId: id, origin: { v: 1, consent: false } })).toEqual({ ok: true });
     expect(fake.origins.get(id)).toEqual({ v: 1, consent: false });
+    // Cada abertura do checkout com "Apenas essenciais" repete a retirada: sem nova escrita.
+    const writes = fake.saveOrigin.mock.calls.length;
+    expect(await caller().setOrigin({ intentId: id, origin: { v: 1, consent: false } })).toEqual({ ok: true });
+    expect(fake.saveOrigin.mock.calls.length).toBe(writes);
     await caller().setOrigin({ intentId: id, origin: recovery });
     await payCard(id);
     const before = structuredClone(fake.origins.get(id));
