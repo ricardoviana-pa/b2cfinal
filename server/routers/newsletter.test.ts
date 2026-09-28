@@ -194,6 +194,23 @@ describe("newsletter.subscribe", () => {
     expect(logs.join("\n")).not.toContain("example.test");
   });
 
+  it("parallel sign-ups of the same address send one email (the limit cannot be raced)", async () => {
+    let release!: () => void;
+    mock.recentSends.mockImplementation(() => new Promise((resolve) => { release = () => resolve([]); }));
+    const caller = newsletterRouter.createCaller(ctx());
+    const first = caller.subscribe(input());
+    const second = await caller.subscribe(input({ email: EMAIL.toLowerCase() }));
+    expect(second.ok).toBe(true);
+    release();
+    expect((await first).ok).toBe(true);
+    expect(mock.createLead).toHaveBeenCalledTimes(1);
+    expect(mock.sendConfirmation).toHaveBeenCalledTimes(1);
+    // Once the first finished, the address is free again (the per-address limit then decides).
+    mock.recentSends.mockResolvedValue([]);
+    await caller.subscribe(input());
+    expect(mock.createLead).toHaveBeenCalledTimes(2);
+  });
+
   it("a bot (honeypot) gets the same answer and nothing is stored or sent", async () => {
     const result = await newsletterRouter.createCaller(ctx()).subscribe(input({ hp: "http://spam" }));
     expect(result.ok).toBe(true);

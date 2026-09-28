@@ -31,6 +31,13 @@ export interface BrandPageForm {
   /** Hidden fields posted with the button (never personal data). */
   fields: Record<string, string>;
   button: string;
+  /**
+   * Submit the form as soon as the page loads (the button stays as the
+   * fallback without JavaScript). A person's click on an email link goes
+   * straight through; a mail scanner that only fetches the link changes
+   * nothing, because the action is the POST, not the GET.
+   */
+  autoSubmit?: boolean;
 }
 
 export interface BrandPageOptions {
@@ -64,9 +71,11 @@ export function brandPage(lang: string, title: string, message: string, options:
     ? `<p style="margin:28px 0 0;"><a href="${escapeHtml(options.cta.href)}" style="${button}">${escapeHtml(options.cta.label)}</a></p>`
     : "";
   const form = options.form
-    ? `<form method="post" action="${escapeHtml(options.form.action)}" style="margin:28px 0 0;">${Object.entries(options.form.fields)
+    ? `<form id="pa-form" method="post" action="${escapeHtml(options.form.action)}" style="margin:28px 0 0;">${Object.entries(options.form.fields)
         .map(([name, value]) => `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`)
-        .join("")}<button type="submit" style="${button}">${escapeHtml(options.form.button)}</button></form>`
+        .join("")}<button type="submit" style="${button}">${escapeHtml(options.form.button)}</button></form>${
+        options.form.autoSubmit ? `<script>document.getElementById("pa-form").submit();</script>` : ""
+      }`
     : "";
   const note = options.note
     ? `<p style="margin:28px 0 0;font-size:13px;line-height:1.6;color:${PA.earth};">${escapeHtml(options.note.text)}${

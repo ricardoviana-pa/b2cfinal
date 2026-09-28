@@ -8,8 +8,10 @@
  *      origin, page, the exact sentence shown and its version) and sends the
  *      double opt-in email with the transactional email the site already uses
  *      (Resend, the same sender as the booking emails).
- *   2. The click (GET /api/newsletter/confirm, HMAC token that expires after
- *      7 days) promotes the lead to "newsletter-<origin>" with confirmedAt.
+ *   2. The click (link to GET /api/newsletter/confirm, HMAC token that
+ *      expires after 7 days; the page posts the confirmation at once, so a
+ *      mail scanner that only fetches the link confirms nothing) promotes the
+ *      lead to "newsletter-<origin>" with confirmedAt.
  *      Only from here on does it count: the PA Mailing List collector reads
  *      the leads table every 6 hours and treats "newsletter*" as opt-in, and
  *      db.hasNewsletterConsent (LIKE 'newsletter%') gates the marketing

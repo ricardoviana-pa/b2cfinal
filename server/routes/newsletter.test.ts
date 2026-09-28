@@ -70,10 +70,43 @@ const confirmLink = (leadId = 77, exp = confirmExpiry(NOW.getTime()), lang = "es
   `/api/newsletter/confirm?lead=${leadId}&e=${exp}&t=${signToken("confirm", leadId, exp, env)}&lang=${lang}`;
 const exitQuery = (leadId = 77) => `lead=${leadId}&t=${signToken("exit", leadId, 0, env)}&lang=pt`;
 const get = (url: string, init: RequestInit = {}) => fetch(`${origin}${url}`, { redirect: "manual", ...init });
+/** What the page behind the email link posts (its form carries the link's fields). */
+const confirm = (link: string) =>
+  get("/api/newsletter/confirm", {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: link.split("?")[1],
+  });
 
-describe("GET /api/newsletter/confirm", () => {
-  it("confirms the pending lead and shows the confirmation page in the subscriber's language, with the exit link", async () => {
+describe("GET /api/newsletter/confirm (the link in the email)", () => {
+  it("changes nothing: it shows a page that posts the confirmation at once, with the button as fallback", async () => {
     const res = await get(confirmLink());
+    expect(res.status).toBe(200);
+    expect(res.headers.get("cache-control")).toBe("no-store");
+    const html = await res.text();
+    expect(html).toContain('<form id="pa-form" method="post" action="/api/newsletter/confirm"');
+    expect(html).toContain('<input type="hidden" name="lead" value="77">');
+    expect(html).toMatch(/<input type="hidden" name="t" value="[0-9a-f]{32}">/);
+    expect(html).toContain("Confirmar suscripción");
+    expect(html).toContain('<script>document.getElementById("pa-form").submit();</script>');
+    // A mail scanner fetching the link confirms nothing.
+    expect(deps.getLeadById).not.toHaveBeenCalled();
+    expect(deps.confirmNewsletterLead).not.toHaveBeenCalled();
+    expect(html).not.toContain("example.test");
+  });
+
+  it("an expired or tampered link is refused already on the GET", async () => {
+    const expired = await get(confirmLink(77, Math.floor(NOW.getTime() / 1000) - 60, "pt"));
+    expect(expired.status).toBe(410);
+    const tampered = await get(confirmLink().replace("lead=77", "lead=78"));
+    expect(tampered.status).toBe(400);
+    expect(deps.confirmNewsletterLead).not.toHaveBeenCalled();
+  });
+});
+
+describe("POST /api/newsletter/confirm", () => {
+  it("confirms the pending lead and shows the confirmation page in the subscriber's language, with the exit link", async () => {
+    const res = await confirm(confirmLink());
     expect(res.status).toBe(200);
     expect(res.headers.get("cache-control")).toBe("no-store");
     expect(res.headers.get("x-robots-tag")).toBe("noindex, nofollow");
@@ -101,14 +134,14 @@ describe("GET /api/newsletter/confirm", () => {
   it("a second click shows the same page and changes nothing", async () => {
     deps.getLeadById.mockResolvedValue(pendingLead({ source: "newsletter-house" }));
     deps.confirmNewsletterLead.mockResolvedValue("already");
-    const res = await get(confirmLink());
+    const res = await confirm(confirmLink());
     expect(res.status).toBe(200);
     expect(await res.text()).toContain("Suscripción confirmada");
   });
 
   it("after 7 days the link expires (410) and invites a new sign-up", async () => {
     const exp = Math.floor(NOW.getTime() / 1000) - 60;
-    const res = await get(confirmLink(77, exp, "pt"));
+    const res = await confirm(confirmLink(77, exp, "pt"));
     expect(res.status).toBe(410);
     expect(await res.text()).toContain("O link expirou");
     expect(deps.confirmNewsletterLead).not.toHaveBeenCalled();
@@ -116,21 +149,21 @@ describe("GET /api/newsletter/confirm", () => {
 
   it("a tampered token or lead id is refused and reveals nothing", async () => {
     const link = confirmLink().replace("lead=77", "lead=78");
-    const res = await get(link);
+    const res = await confirm(link);
     expect(res.status).toBe(400);
     expect(deps.getLeadById).not.toHaveBeenCalled();
   });
 
   it("an old link after leaving does not subscribe again", async () => {
     deps.getLeadById.mockResolvedValue(pendingLead({ source: "nl-unsubscribed-house" }));
-    const res = await get(confirmLink());
+    const res = await confirm(confirmLink());
     expect(res.status).toBe(400);
     expect(deps.confirmNewsletterLead).not.toHaveBeenCalled();
   });
 
   it("a database failure shows the error page and logs the class only", async () => {
     deps.confirmNewsletterLead.mockRejectedValue(Object.assign(new Error(`params: ${EMAIL}`), { code: "ECONNRESET" }));
-    const res = await get(confirmLink());
+    const res = await confirm(confirmLink());
     expect(res.status).toBe(500);
     expect(logs.join("\n")).toContain("ECONNRESET");
     expect(logs.join("\n")).not.toContain("example.test");
@@ -138,7 +171,7 @@ describe("GET /api/newsletter/confirm", () => {
 
   it("with the optional Brevo key, the confirmed contact goes to the list", async () => {
     Object.assign(routeEnv, { BREVO_API_KEY: "xkeysib-synthetic", BREVO_NEWSLETTER_LIST_ID: "42" });
-    const res = await get(confirmLink());
+    const res = await confirm(confirmLink());
     expect(res.status).toBe(200);
     expect(deps.fetchImpl).toHaveBeenCalledTimes(1);
     const [url, init] = deps.fetchImpl.mock.calls[0] as [string, RequestInit];

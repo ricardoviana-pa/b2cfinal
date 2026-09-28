@@ -14,7 +14,7 @@ opcional.
 | Passo | O que acontece | `leads.source` |
 | --- | --- | --- |
 | 1. Formulário | `newsletter.subscribe` guarda o lead pendente com a prova do consentimento e envia o email de confirmação | `nl-pending-<origem>` |
-| 2. Clique no email | `GET /api/newsletter/confirm` verifica o token (HMAC, 7 dias) e promove o lead, com `confirmedAt` | `newsletter-<origem>` |
+| 2. Clique no email | `GET /api/newsletter/confirm` verifica o token (HMAC, 7 dias) e mostra uma página que envia logo um `POST` (botão de recurso sem JavaScript); o `POST` promove o lead, com `confirmedAt`. Um scanner de email que só abre o link não confirma nada | `newsletter-<origem>` |
 | 3. Saída, sempre | `GET /api/newsletter/unsubscribe` mostra um botão; o `POST` tira o consentimento a todos os leads do endereço | `nl-unsubscribed-<origem>` (o do checkout volta a `checkout`) |
 
 Origens: `popup`, `house`, `article`, `footer`.

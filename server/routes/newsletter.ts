@@ -3,10 +3,14 @@
  * (server/lib/brand-page.ts), uncached, noindex, no personal data.
  *
  * GET  /api/newsletter/confirm?lead=<id>&e=<exp>&t=<hmac>&lang=<xx>
- *   The double opt-in click. Verifies the signature and the expiry (7 days),
- *   promotes "nl-pending-<origin>" to "newsletter-<origin>" with confirmedAt
- *   and shows "Subscrição confirmada" with the exit link. Idempotent. A HEAD
- *   request (link checkers) changes nothing.
+ *   The link in the double opt-in email. Verifies the signature and the
+ *   expiry (7 days) and shows a page whose form POSTs the same fields at once
+ *   (button as the fallback without JavaScript). The GET changes nothing:
+ *   mail scanners (Safe Links and the like) fetch links, and a subscription
+ *   must come from the person.
+ * POST /api/newsletter/confirm
+ *   Promotes "nl-pending-<origin>" to "newsletter-<origin>" with confirmedAt
+ *   and shows "Subscrição confirmada" with the exit link. Idempotent.
  *
  * GET  /api/newsletter/unsubscribe?lead=<id>&t=<hmac>&lang=<xx>
  *   Shows one button. A GET never unsubscribes: mail scanners open links.
@@ -19,7 +23,7 @@ import type { Express, Request, Response } from "express";
 import * as dbModule from "../db";
 import { brandPage } from "../lib/brand-page";
 import { NEWSLETTER_LANGS, NL_SUBSCRIBED_KEY, newsletterLang } from "@shared/newsletter";
-import { NEWSLETTER_PAGE_COPY } from "../services/newsletter-copy";
+import { CONFIRM_EMAIL_COPY, NEWSLETTER_PAGE_COPY } from "../services/newsletter-copy";
 import {
   brevoAddConfirmed,
   brevoRemove,
@@ -75,25 +79,51 @@ export function exitPath(leadId: number, lang: string, env: NodeJS.ProcessEnv = 
 export function registerNewsletterRoutes(app: Express, overrides: Partial<NewsletterRouteDeps> = {}): void {
   const deps = { ...defaultDeps(), ...overrides };
 
-  app.get("/api/newsletter/confirm", async (req: Request, res: Response) => {
-    noStore(res);
-    // Link checkers and previews: never confirm on HEAD.
-    if (req.method === "HEAD") return res.status(200).end();
-
-    let lang = langFromRequest(req);
+  /** Signature and expiry of a confirmation link; answers the invalid or expired page itself. */
+  const checkConfirmLink = (req: Request, res: Response, lang: string): { leadId: number; exp: number } | null => {
     const leadId = Number(pick(req, "lead"));
     const exp = Number(pick(req, "e"));
     const check = verifyToken("confirm", leadId, exp, pick(req, "t"), deps.env, deps.now().getTime());
+    const c = NEWSLETTER_PAGE_COPY[newsletterLang(lang)];
+    if (check === "invalid") {
+      res.status(400).type("html").send(brandPage(lang, c.invalidTitle, c.invalidBody));
+      return null;
+    }
+    if (check === "expired") {
+      res.status(410).type("html").send(brandPage(lang, c.expiredTitle, c.expiredBody, { cta: { href: `/${lang}/homes`, label: c.ctaHomes } }));
+      return null;
+    }
+    return { leadId, exp };
+  };
+
+  app.get("/api/newsletter/confirm", (req: Request, res: Response) => {
+    noStore(res);
+    if (req.method === "HEAD") return res.status(200).end();
+    const lang = newsletterLang(langFromRequest(req));
+    const link = checkConfirmLink(req, res, lang);
+    if (!link) return;
+    const E = CONFIRM_EMAIL_COPY[lang];
+    return res.type("html").send(
+      brandPage(lang, E.heading, E.intro, {
+        form: {
+          action: "/api/newsletter/confirm",
+          fields: { lead: String(link.leadId), e: String(link.exp), t: pick(req, "t"), lang },
+          button: E.button,
+          autoSubmit: true,
+        },
+      }),
+    );
+  });
+
+  app.post("/api/newsletter/confirm", async (req: Request, res: Response) => {
+    noStore(res);
+    let lang = langFromRequest(req);
+    const link = checkConfirmLink(req, res, lang);
+    if (!link) return;
+    const { leadId } = link;
     const copy = () => NEWSLETTER_PAGE_COPY[newsletterLang(lang)];
     const invalid = () => res.status(400).type("html").send(brandPage(lang, copy().invalidTitle, copy().invalidBody));
     const failed = () => res.status(500).type("html").send(brandPage(lang, copy().errorTitle, copy().errorBody));
-
-    if (check === "invalid") return invalid();
-    if (check === "expired") {
-      return res.status(410).type("html").send(
-        brandPage(lang, copy().expiredTitle, copy().expiredBody, { cta: { href: `/${lang}/homes`, label: copy().ctaHomes } }),
-      );
-    }
 
     let lead: Awaited<ReturnType<typeof dbModule.getLeadById>>;
     try {

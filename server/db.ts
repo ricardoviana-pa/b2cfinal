@@ -1138,7 +1138,8 @@ export async function hasNewsletterConsent(email: string): Promise<boolean> {
     const rows = await db
       .select({ id: leads.id })
       .from(leads)
-      .where(and(eq(leads.email, email), like(leads.source, "newsletter%")))
+      // Same address match as the newsletter flow (stored lowercased) and its exit.
+      .where(and(sameEmail(email.trim().toLowerCase()), like(leads.source, "newsletter%")))
       .limit(1);
     return rows.length > 0;
   } catch (error) {

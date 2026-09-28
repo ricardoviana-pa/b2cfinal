@@ -136,12 +136,15 @@ export default function NewsletterPopupGate() {
     if (armedAtRef.current === null) armedAtRef.current = Date.now();
 
     let armed = true;
+    let retrying = false;
     const timers: number[] = [];
     const show = (why: NewsletterTrigger) => {
-      if (!armed || shownRef.current) return;
+      if (!armed || shownRef.current || retrying) return;
       if (!evaluate().eligible) return;
       if (busy()) {
-        timers.push(window.setTimeout(() => show(why), RETRY_MS));
+        // One pending retry at a time (scroll events keep firing meanwhile).
+        retrying = true;
+        timers.push(window.setTimeout(() => { retrying = false; show(why); }, RETRY_MS));
         return;
       }
       armed = false;

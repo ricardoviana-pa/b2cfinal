@@ -84,10 +84,104 @@ async function resolveHouse(slug: string | undefined): Promise<{ name: string; l
   }
 }
 
+/**
+ * Addresses with a sign-up being processed right now. The per-address limit
+ * reads the leads table and then writes to it; without this, parallel
+ * requests for the same address would all pass the check and each send an
+ * email. One server process (Render), so memory is enough.
+ */
+const inFlight = new Set<string>();
+
 function withoutEmpty(values: Record<string, string | undefined>): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [key, value] of Object.entries(values)) if (value) out[key] = value;
   return out;
+}
+
+type SubscribeInput = z.infer<typeof subscribeInput>;
+
+/** One sign-up, the address already normalised and reserved (see inFlight). */
+async function subscribeOne(input: SubscribeInput, email: string, ctx: { req?: { headers?: Record<string, unknown> } }) {
+  const locale = newsletterLang(input.locale);
+  const now = new Date();
+  const nowIso = now.toISOString();
+
+  let sends: number[];
+  try {
+    sends = await db.recentNewsletterSends(email, DAY_MS);
+  } catch (err: unknown) {
+    console.error("[Newsletter] could not read previous sign-ups:", safeErrorLabel(err));
+    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "NEWSLETTER_STORE_FAILED" });
+  }
+  if (!doiAllowed(sends, now.getTime())) {
+    // Same answer as a success, nothing sent: nobody can use the form to
+    // flood an address with confirmation emails, nor learn its state.
+    console.info(`[Newsletter] confirmation throttled origin=${input.origin}`);
+    return { ok: true as const, ref: decoyRef() };
+  }
+
+  const page = cleanLandingPath(input.page) || "/";
+  const house = await resolveHouse(input.propertySlug);
+  const consent = consentRecord(locale);
+  const country = String(ctx.req?.headers?.["cf-ipcountry"] ?? "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 2);
+  const visit = input.visitOrigin === undefined ? null : parseVisitOriginPayload(input.visitOrigin, now);
+
+  let leadId: number;
+  try {
+    const created = await db.createLead({
+      email,
+      source: pendingSource(input.origin),
+      metadata: {
+        ...withoutEmpty({
+          flow: FLOW_VERSION,
+          origin: input.origin,
+          locale,
+          page,
+          pageKind: pageKind(page),
+          trigger: input.origin === "popup" ? input.trigger : undefined,
+          device: input.device,
+          propertySlug: house?.slug,
+          propertyName: house?.name,
+          listingId: house?.listingId,
+          // The form promised an alert for this house (house page with the
+          // alert version on): the CRM owes this subscriber that email.
+          alertListingId: house && isHouseAlertsEnabled() ? house.listingId : undefined,
+          country,
+          consent: "true",
+          consentAt: nowIso,
+          consentVersion: consent.version,
+          consentText: consent.text,
+        }),
+        ...visitOriginMetadata(visit),
+      },
+    });
+    leadId = created.id;
+  } catch (err: unknown) {
+    // createLead throws "Database not available" without DATABASE_URL (dev).
+    console.error("[Newsletter] could not store the pending lead:", safeErrorLabel(err));
+    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "NEWSLETTER_STORE_FAILED" });
+  }
+
+  try {
+    await sendNewsletterConfirmation({
+      email,
+      locale,
+      leadId,
+      confirmUrl: confirmUrl(leadId, locale, confirmExpiry(now.getTime())),
+      houseName: house?.name,
+    });
+  } catch (err: unknown) {
+    console.error(`[Newsletter] confirmation email failed for lead #${leadId}:`, safeErrorLabel(err));
+    try {
+      await db.markNewsletterSendFailed(leadId);
+    } catch {
+      /* best effort */
+    }
+    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "NEWSLETTER_SEND_FAILED" });
+  }
+
+  console.info(`[Newsletter] confirmation sent for lead #${leadId} origin=${input.origin} lang=${locale}`);
+  return { ok: true as const, ref: interestRef(leadId) };
 }
 
 export const newsletterRouter = router({
@@ -118,88 +212,17 @@ export const newsletterRouter = router({
     const email = normaliseEmail(input.email);
     if (isProxyEmail(email)) throw new TRPCError({ code: "BAD_REQUEST", message: "PROXY_EMAIL" });
 
-    const locale = newsletterLang(input.locale);
-    const now = new Date();
-    const nowIso = now.toISOString();
-
-    let sends: number[];
-    try {
-      sends = await db.recentNewsletterSends(email, DAY_MS);
-    } catch (err: unknown) {
-      console.error("[Newsletter] could not read previous sign-ups:", safeErrorLabel(err));
-      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "NEWSLETTER_STORE_FAILED" });
-    }
-    if (!doiAllowed(sends, now.getTime())) {
-      // Same answer as a success, nothing sent: nobody can use the form to
-      // flood an address with confirmation emails, nor learn its state.
-      console.info(`[Newsletter] confirmation throttled origin=${input.origin}`);
+    if (inFlight.has(email)) {
+      console.info(`[Newsletter] parallel sign-up for the same address ignored origin=${input.origin}`);
       return { ok: true as const, ref: decoyRef() };
     }
-
-    const page = cleanLandingPath(input.page) || "/";
-    const house = await resolveHouse(input.propertySlug);
-    const consent = consentRecord(locale);
-    const country = String(ctx.req?.headers?.["cf-ipcountry"] ?? "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 2);
-    const visit = input.visitOrigin === undefined ? null : parseVisitOriginPayload(input.visitOrigin, now);
-
-    let leadId: number;
+    inFlight.add(email);
     try {
-      const created = await db.createLead({
-        email,
-        source: pendingSource(input.origin),
-        metadata: {
-          ...withoutEmpty({
-            flow: FLOW_VERSION,
-            origin: input.origin,
-            locale,
-            page,
-            pageKind: pageKind(page),
-            trigger: input.origin === "popup" ? input.trigger : undefined,
-            device: input.device,
-            propertySlug: house?.slug,
-            propertyName: house?.name,
-            listingId: house?.listingId,
-            // The form promised an alert for this house (house page with the
-            // alert version on): the CRM owes this subscriber that email.
-            alertListingId: house && isHouseAlertsEnabled() ? house.listingId : undefined,
-            country,
-            consent: "true",
-            consentAt: nowIso,
-            consentVersion: consent.version,
-            consentText: consent.text,
-          }),
-          ...visitOriginMetadata(visit),
-        },
-      });
-      leadId = created.id;
-    } catch (err: unknown) {
-      // createLead throws "Database not available" without DATABASE_URL (dev).
-      console.error("[Newsletter] could not store the pending lead:", safeErrorLabel(err));
-      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "NEWSLETTER_STORE_FAILED" });
+      return await subscribeOne(input, email, ctx);
+    } finally {
+      inFlight.delete(email);
     }
-
-    try {
-      await sendNewsletterConfirmation({
-        email,
-        locale,
-        leadId,
-        confirmUrl: confirmUrl(leadId, locale, confirmExpiry(now.getTime())),
-        houseName: house?.name,
-      });
-    } catch (err: unknown) {
-      console.error(`[Newsletter] confirmation email failed for lead #${leadId}:`, safeErrorLabel(err));
-      try {
-        await db.markNewsletterSendFailed(leadId);
-      } catch {
-        /* best effort */
-      }
-      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "NEWSLETTER_SEND_FAILED" });
-    }
-
-    console.info(`[Newsletter] confirmation sent for lead #${leadId} origin=${input.origin} lang=${locale}`);
-    return { ok: true as const, ref: interestRef(leadId) };
   }),
-
   /** The optional question after subscribing. Always answers ok: a wrong reference learns nothing. */
   interest: publicProcedure
     .input(z.object({ ref: z.string().max(80), interest: z.enum(NEWSLETTER_INTERESTS) }))
