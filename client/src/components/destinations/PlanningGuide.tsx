@@ -5,6 +5,7 @@ import type { Destination } from "@/lib/types";
 import type { PlanningGuide } from "@/data/destination-planning";
 import { cdnResize, cdnSrcSet } from "@/lib/images";
 import { pushDL } from "@/lib/datalayer";
+import { DestinationAccess } from "./DestinationAccess";
 import { destinationAccommodationCaption } from "@/lib/destinationPhotography";
 
 export const planningLabels = (lang: string) =>
@@ -215,13 +216,21 @@ export function PracticalPlanning({
   return (
     <section className="bg-pa-cream py-12 md:py-16">
       <div className="container">
+        <div id="destination-arrival" className="scroll-mt-24 mb-12">
+          <h2 className="headline-lg mb-7">{l.arrive}</h2>
+          <DestinationAccess slug={slug} language={language} compact />
+        </div>
         <div className="grid lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-20">
-          <div id="destination-arrival" className="scroll-mt-24">
+          <div>
             <TrainFront
               aria-hidden="true"
               className="w-6 h-6 text-pa-gold-aa mb-4"
             />
-            <h2 className="headline-lg mb-7">{l.arrive}</h2>
+            <h2 className="headline-lg mb-7">
+              {language.startsWith("pt")
+                ? "Transportes na região"
+                : "Travel within the region"}
+            </h2>
             <div className="space-y-7">
               {guide.arrival.map(item => (
                 <article key={item.title}>

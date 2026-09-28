@@ -12,6 +12,7 @@
 
 import { useTranslation } from "react-i18next";
 import { getDestinationPlanning } from "@/data/destination-planning";
+import { MinhoVisualGuide } from "./MinhoVisualGuide";
 import {
   AreaComparison,
   PlanningHero,
@@ -66,6 +67,19 @@ export function DestinationPage({
   const { t, i18n } = useTranslation();
   const planning = getDestinationPlanning(destination.slug, i18n.language);
   const labels = planningLabels(i18n.language);
+  if (planning && destination.slug === "minho")
+    return (
+      <MinhoVisualGuide
+        destination={destination}
+        properties={properties}
+        articles={articles}
+        adventures={adventures}
+        related={related}
+        onAddToItinerary={onAddToItinerary}
+        guide={planning}
+        language={i18n.language}
+      />
+    );
   if (planning)
     return (
       <>

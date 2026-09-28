@@ -341,9 +341,33 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
       ],
       rain: [
         note(
-          "Cultura em Viana",
-          "O Museu do Traje, no centro de Viana, permite manter um plano cultural. Se estiver noutra zona do Minho, conte a deslocação de ida e volta antes de o escolher.",
+          "Museu do Traje · Viana",
+          "Trajes e ouro no coração da cidade. Na Praça da República, descubra a identidade minhota através do vestuário tradicional e da ourivesaria.",
           S.viana
+        ),
+        note(
+          "Aquamuseu · Vila Nova de Cerveira",
+          "Siga o Minho da nascente ao estuário através dos aquários e da pesca tradicional. O percurso interior é a opção de chuva; o lontrário fica no exterior.",
+          source(
+            "Município de Cerveira · Aquamuseu",
+            "https://www.cm-vncerveira.pt/pages/1092?poi_id=237"
+          )
+        ),
+        note(
+          "Vinho Verde · Ponte de Lima",
+          "Conheça a história do vinho na Casa Torreada dos Barbosa Aranha. O centro tem exposições e sala de provas; confirme a modalidade e marque a prova à parte.",
+          source(
+            "Ponte de Lima · Centro do Vinho Verde",
+            "https://www.visitepontedelima.pt/pt/turismo/centro-de-interpretacao-e-promocao-do-vinho-verde/"
+          )
+        ),
+        note(
+          "Museu dos Biscainhos · Braga",
+          "Um palácio para uma tarde de chuva. As salas e coleções revelam a vida de uma casa nobre; deixe os jardins para uma pausa de bom tempo.",
+          source(
+            "Braga · Museu dos Biscainhos",
+            "https://www.cm-braga.pt/pt/1201/conhecer/historia-e-patrimonio/patrimonio-cultural/patrimonio-edificado/item/item-1-627"
+          )
         ),
       ],
       season:
@@ -392,9 +416,33 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
       ],
       rain: [
         note(
-          "Culture in Viana",
-          "The Costume Museum in central Viana offers a cultural alternative. From another Minho base, include the outward and return journey before choosing it.",
+          "Costume Museum · Viana",
+          "Costume and gold in the heart of town. On Praça da República, discover the Minho’s identity through traditional dress and goldwork.",
           S.viana
+        ),
+        note(
+          "Aquamuseum · Vila Nova de Cerveira",
+          "Follow the Minho from source to estuary through aquariums and displays about traditional fishing. The indoor circuit suits rainy days; the otter enclosure is outside.",
+          source(
+            "Cerveira Municipality · Aquamuseum",
+            "https://www.cm-vncerveira.pt/pages/1092?poi_id=237"
+          )
+        ),
+        note(
+          "Vinho Verde · Ponte de Lima",
+          "Discover the story of the wine in the historic Barbosa Aranha house. The centre has exhibitions and a tasting room; check the format and book a tasting separately.",
+          source(
+            "Ponte de Lima · Vinho Verde Centre",
+            "https://www.visitepontedelima.pt/pt/turismo/centro-de-interpretacao-e-promocao-do-vinho-verde/"
+          )
+        ),
+        note(
+          "Biscainhos Museum · Braga",
+          "A palace for a rainy afternoon. Its rooms and collections reveal life in a noble household; save the gardens for a break in the weather.",
+          source(
+            "Braga · Biscainhos Museum",
+            "https://www.cm-braga.pt/pt/1201/conhecer/historia-e-patrimonio/patrimonio-cultural/patrimonio-edificado/item/item-1-627"
+          )
         ),
       ],
       season:

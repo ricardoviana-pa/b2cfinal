@@ -39,3 +39,14 @@ New external selections above are offered under the source's Unsplash or Pexels 
 - Caminha and Douro retain existing catalogue photographs of Historic Riverfront Watermill and Quinta da Lameirinha respectively. New captions explicitly identify accommodation photographs. Catalogue provenance does not establish an open licence; existing supplier rights remain applicable, with no invented photographer credit.
 
 No generated images represent places or services in this update. Responsive source widths and existing image components are reused.
+
+
+## Visual review — 28 September 2026
+
+- Douro now uses a landscape of the river and terraced vineyards by [Thimo van Leeuwen](https://unsplash.com/photos/a-large-body-of-water-surrounded-by-mountains-DSB4TyuHLr0), under the [Unsplash License](https://unsplash.com/license). The landscape replaces the Quinta da Lameirinha regional fallback and its accommodation caption. CDN `photo-1693318827518-0c8ccbc59593`, bottom crop at 3:2.
+- Esposende now uses [Parque Natural do Litoral Norte (6)](https://commons.wikimedia.org/wiki/File:Parque_Natural_do_Litoral_Norte_(6).jpg), Joseolgon, 22 July 2024, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Ocean, dunes and Cávado estuary in clear weather. The 1280px Commons derivative is stored locally, with variable CSS display crops; it also illustrates the Minho coast. It supersedes the Tiago Oliveira boardwalk selection above.
+- The Minho river section uses [Ponte de Lima](https://unsplash.com/photos/white-wooden-row-boat-on-clear-water-near-bridge-under-blue-sky-and-white-clouds-during-day-time-Vj0Nj86xtg4) by Jesus David Gomez, Unsplash License, CDN `photo-1575460384680-d3040b05870f`.
+- Existing Minho hero, PA chef and actual activity photographs are retained. Pedro Cunha’s verified Peneda-Gerês landscape is reused for the mountain section.
+- Human-readable attribution, source, licence and crop disclosure are available at `/destinations/photography.html`, linked from the shared footer so credits remain available on the home, hub, detail and related-destination views.
+
+Every new selection was visually inspected. No generated landscape, synthetic weather alteration or unverified location is used.

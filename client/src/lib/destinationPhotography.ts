@@ -4,11 +4,7 @@ export function destinationAccommodationCaption(
   language: string
 ): string | undefined {
   const name =
-    slug === "caminha"
-      ? "Historic Riverfront Watermill, Caminha"
-      : slug === "douro"
-        ? "Quinta da Lameirinha, Douro"
-        : undefined;
+    slug === "caminha" ? "Historic Riverfront Watermill, Caminha" : undefined;
   if (!name) return undefined;
   const labels: Record<string, string> = {
     en: "An accommodation photograph.",
