@@ -1,0 +1,2874 @@
+{
+  "viana-do-castelo": {
+    "name": ["Viana do Castelo", "Viana do Castelo"],
+    "line": ["Entre o Lima e o mar.", "Where the Lima meets the sea."],
+    "intro": [
+      "Uma manhã sobre a cidade, uma tarde na praia e uma mesa que convida a ficar.",
+      "A morning above the city, an afternoon on the beach and a table worth lingering over."
+    ],
+    "orientation": [
+      "No litoral do Minho, a norte do Porto, Viana reúne centro histórico, rio e Atlântico. Santa Luzia mostra essa relação de uma só vez; depois, vale a pena descer e descobrir cada lugar com tempo.",
+      "On the Minho coast, north of Porto, Viana brings together a historic centre, river and Atlantic shore. Santa Luzia reveals the whole setting; come back down and give each place time."
+    ],
+    "fit": [
+      "Para casais e famílias que gostam de alternar cidade, praia e pequenas descobertas.",
+      "For couples and families who enjoy a mix of town life, beach time and small discoveries."
+    ],
+    "airport": [
+      "Porto (OPO); compare também Vigo (VGO).",
+      "Porto (OPO); also compare Vigo (VGO)."
+    ],
+    "mobility": [
+      "Centro a pé; transporte para combinar as duas margens e a costa.",
+      "Walk around the centre; use transport to explore both riverbanks and the coast."
+    ],
+    "point": [94, 64],
+    "photo": {
+      "src": "https://images.unsplash.com/photo-1645203886493-7d05711e6d16?auto=format&w=1200&q=85",
+      "caption": [
+        "Santa Luzia · Viana do Castelo",
+        "Santa Luzia · Viana do Castelo"
+      ]
+    },
+    "moments": [
+      {
+        "place": ["Santa Luzia", "Santa Luzia"],
+        "title": ["A primeira vista fica consigo.", "A view to remember."],
+        "text": [
+          "Suba para perceber como a cidade se abre entre o Lima e o oceano. Depois, desça às ruas e praças do centro.",
+          "Head uphill to see how the city opens between the Lima and the ocean. Then explore the streets and squares below."
+        ],
+        "plan": [
+          "Uma parte da manhã; consulte o funcionamento do elevador.",
+          "Allow part of a morning; check the funicular service."
+        ],
+        "source": "V01"
+      },
+      {
+        "place": ["Cabedelo", "Cabedelo"],
+        "title": [
+          "Uma tarde com areia nos pés.",
+          "An afternoon with sand between your toes."
+        ],
+        "text": [
+          "Na margem sul do Lima, a praia dá outro ritmo ao dia. Escolha um passeio junto ao mar ou uma aula adequada ao seu nível.",
+          "On the southern bank of the Lima, the beach changes the pace. Choose a seaside walk or a lesson suited to your level."
+        ],
+        "plan": [
+          "Combine a ida e o regresso desde a casa; Cabedelo e centro ficam em margens diferentes.",
+          "Arrange the journey from your home; Cabedelo and the centre are on different banks."
+        ],
+        "source": "V01"
+      },
+      {
+        "place": ["Parque Ecológico Urbano", "Parque Ecológico Urbano"],
+        "title": ["Natureza ao lado da cidade.", "Nature beside the city."],
+        "text": [
+          "Descubra a paisagem estuarina num passeio com espaço para observar. Uma boa pausa entre visitas, sobretudo com crianças.",
+          "Discover the estuary landscape on a walk with time to look around. A welcome pause between visits, especially with children."
+        ],
+        "plan": [
+          "Escolha o percurso e os acessos antes de sair.",
+          "Choose your route and access points before setting off."
+        ],
+        "source": "V02"
+      }
+    ],
+    "bases": [
+      {
+        "name": "Centro / Lima",
+        "tag": ["CIDADE E MESA", "CITY & FOOD"],
+        "text": [
+          "Para sair a pé, descobrir o património e escolher restaurantes no centro.",
+          "For walks, heritage and restaurants in the centre."
+        ],
+        "transport": [
+          "Confirme o percurso desde a casa, as escadas e o estacionamento.",
+          "Check the route from your home, steps and parking."
+        ]
+      },
+      {
+        "name": "Cabedelo / margem sul",
+        "tag": ["TEMPO DE PRAIA", "BEACH TIME"],
+        "text": [
+          "Para dar mais espaço à costa e às atividades junto à água.",
+          "For more time on the coast and activities by the water."
+        ],
+        "transport": [
+          "Planeie a ligação ao centro; a margem da casa muda os percursos.",
+          "Plan the trip into town; your riverbank makes a difference."
+        ]
+      },
+      {
+        "name": "Carreço / costa norte",
+        "tag": ["AREAL E PAISAGEM", "SAND & SCENERY"],
+        "text": [
+          "Para explorar a costa norte e regressar a uma estadia mais tranquila.",
+          "For exploring the northern coast and returning to a quieter base."
+        ],
+        "transport": [
+          "Carro ou transporte reservado ajudam nas saídas e jantares.",
+          "A car or booked transport helps with outings and dinners."
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "id": "viana",
+        "label": ["Base em Viana", "Based in Viana"],
+        "intro": [
+          "Dias com uma experiência principal, adaptados à margem e à localização da casa.",
+          "Days built around one main experience, adjusted to your home’s location and riverbank."
+        ],
+        "days": [
+          {
+            "place": ["Santa Luzia · Centro", "Santa Luzia · City centre"],
+            "title": [
+              "Ver do alto, descobrir a pé",
+              "Start above, explore on foot"
+            ],
+            "text": [
+              "Combine Santa Luzia, Praça da República e Museu do Traje, com uma pausa no Zé Natário.",
+              "Pair Santa Luzia, Praça da República and the Costume Museum with a stop at Zé Natário."
+            ]
+          },
+          {
+            "place": ["Cabedelo · Gil Eannes", "Cabedelo · Gil Eannes"],
+            "title": [
+              "Praia e história marítima",
+              "Beach and maritime history"
+            ],
+            "text": [
+              "Reserve tempo na praia e uma visita ao navio Gil Eannes. Organize a ordem conforme a margem da casa.",
+              "Leave time for the beach and the Gil Eannes ship. Choose the order around your home’s riverbank."
+            ]
+          },
+          {
+            "place": ["Costa norte", "Northern coast"],
+            "title": ["Escolher um areal e ficar", "Pick a beach and stay"],
+            "text": [
+              "Explore a costa de Carreço, almoce sem pressa e regresse à casa com a tarde ainda pela frente.",
+              "Explore the Carreço coast, linger over lunch and return home with afternoon to spare."
+            ]
+          },
+          {
+            "place": ["Ponte de Lima", "Ponte de Lima"],
+            "title": ["Mudar do mar para o rio", "Swap the sea for the river"],
+            "text": [
+              "Passeie pelo centro de Ponte de Lima e escolha um percurso nas Lagoas de Bertiandos.",
+              "Walk through Ponte de Lima and choose a trail around the Bertiandos lagoons."
+            ]
+          },
+          {
+            "place": ["Caminha · Camarido", "Caminha · Camarido"],
+            "title": ["Um dia no estuário", "A day by the estuary"],
+            "text": [
+              "Descubra a vila de Caminha e o pinhal do Camarido numa saída regional com transporte planeado.",
+              "Discover Caminha and the Camarido pinewood on a regional outing with transport planned."
+            ]
+          },
+          {
+            "place": ["Viana", "Viana"],
+            "title": [
+              "Voltar ao seu lugar preferido",
+              "Return to your favourite place"
+            ],
+            "text": [
+              "Repita a praia, reserve uma experiência ou aproveite o jardim e o tempo em casa.",
+              "Return to the beach, book an experience or enjoy the garden and time at home."
+            ]
+          }
+        ]
+      }
+    ],
+    "taste": [
+      "Peixe junto ao porto, cozinha minhota fora do centro e uma pausa doce entre passeios. Três momentos diferentes para encontrar o seu ritmo à mesa.",
+      "Fish by the harbour, Minho cooking outside the centre and a sweet stop between walks. Three different ways to find your rhythm at the table."
+    ],
+    "tables": [
+      {
+        "name": "Tasquinha da Linda",
+        "place": ["Frente portuária · Viana", "Viana harbourfront"],
+        "text": [
+          "Peixe e marisco para um almoço demorado junto à frente portuária. Reserve a mesa e combine com o passeio pelo Lima.",
+          "Fish and seafood for a leisurely lunch by the harbour. Book a table and pair it with a riverside walk."
+        ],
+        "source": "V05"
+      },
+      {
+        "name": "Camelo",
+        "place": ["Santa Marta · Viana", "Santa Marta · Viana"],
+        "text": [
+          "Cabrito, vitela e bacalhau num programa de cozinha minhota. Fica fora do centro; consulte os dias de abertura e organize o transporte.",
+          "Kid, veal and cod for a taste of Minho cooking. Outside the centre: check opening days and arrange transport."
+        ],
+        "source": "V06"
+      },
+      {
+        "name": "Zé Natário",
+        "place": ["Centro histórico · Viana", "Viana old town"],
+        "text": [
+          "Uma pausa de pastelaria entre a Praça da República e as ruas do centro. Deixe espaço para um doce.",
+          "A pastry stop between Praça da República and the historic streets. Leave room for something sweet."
+        ],
+        "source": "V07"
+      }
+    ],
+    "culture": [
+      {
+        "title": ["A bordo do Gil Eannes", "Aboard Gil Eannes"],
+        "place": ["Frente ribeirinha", "Waterfront"],
+        "text": [
+          "Entre no antigo navio-hospital e conheça a ligação de Viana ao mar. Consulte o percurso de visita se houver necessidades de mobilidade.",
+          "Step inside the former hospital ship and discover Viana’s maritime history. Check the visitor route for mobility needs."
+        ],
+        "source": "V03"
+      },
+      {
+        "title": ["Traje, ouro e identidade", "Costume, gold and identity"],
+        "place": ["Praça da República", "Praça da República"],
+        "text": [
+          "O Museu do Traje dá contexto aos bordados, à ourivesaria e às tradições que marcam a cidade.",
+          "The Costume Museum brings context to the embroidery, goldwork and traditions that shape the city."
+        ],
+        "source": "V04"
+      }
+    ],
+    "seasons": [
+      [
+        "Cidade, jardins e passeios junto ao estuário.",
+        "Town walks, gardens and time beside the estuary."
+      ],
+      [
+        "Praia e atividades na costa, com tempo para a casa.",
+        "Beach days and coastal activities, with time at home."
+      ],
+      [
+        "Costa norte, museus e refeições demoradas.",
+        "Northern beaches, museums and leisurely meals."
+      ],
+      [
+        "Uma escapada feita de património, pastelaria e cozinha minhota.",
+        "A short break for heritage, pastries and Minho cooking."
+      ]
+    ],
+    "homes": [
+      "Escolha pela localização e pelo que valoriza nos seus dias. Uma casa identificada como Viana pode ficar no centro, junto à costa ou no interior do concelho; consulte a localização de cada opção.",
+      "Choose by location and what matters to your days. A home labelled Viana may be in town, near the coast or inland within the municipality; check each listing’s location."
+    ],
+    "faqs": [
+      {
+        "question": [
+          "A praia fica no centro?",
+          "Is the beach in the city centre?"
+        ],
+        "answer": [
+          "Há várias praias no concelho. Cabedelo fica na margem sul do Lima; escolha a casa e os transportes de acordo com a praia que prefere.",
+          "The municipality has several beaches. Cabedelo is on the southern bank of the Lima; choose your home and transport around your preferred beach."
+        ]
+      },
+      {
+        "question": ["Posso ficar sem carro?", "Can I stay without a car?"],
+        "answer": [
+          "Um programa centrado na cidade pode funcionar a pé e com transportes. Para combinar praias, campo e várias localidades, organize as deslocações.",
+          "A city-focused stay can work on foot and by public transport. Arrange journeys if combining beaches, countryside and several towns."
+        ]
+      },
+      {
+        "question": [
+          "Qual aeroporto escolher?",
+          "Which airport should I choose?"
+        ],
+        "answer": [
+          "Porto (OPO) é a referência; compare também Vigo (VGO), incluindo a viagem até à casa.",
+          "Porto (OPO) is the main option; also compare Vigo (VGO), including the journey to your home."
+        ]
+      },
+      {
+        "question": ["Quantas noites ficar?", "How many nights should I stay?"],
+        "answer": [
+          "Três noites dão dois dias completos para cidade e costa. Cinco ou sete deixam espaço para o vale do Lima e outras saídas.",
+          "Three nights give you two full days for town and coast. Five or seven add room for the Lima valley and other outings."
+        ]
+      },
+      {
+        "question": [
+          "O que há além da praia?",
+          "What is there beyond the beach?"
+        ],
+        "answer": [
+          "Santa Luzia, Gil Eannes, Museu do Traje e Parque Ecológico Urbano permitem construir dias muito diferentes.",
+          "Santa Luzia, Gil Eannes, the Costume Museum and Urban Ecological Park make for very different days."
+        ]
+      },
+      {
+        "question": [
+          "Há atividades para principiantes?",
+          "Are there activities for beginners?"
+        ],
+        "answer": [
+          "Escolha a modalidade e confirme idade, nível, equipamento e condições com o operador antes de reservar.",
+          "Choose an activity and confirm age, level, equipment and conditions with the operator before booking."
+        ]
+      },
+      {
+        "question": [
+          "Como escolher uma casa com crianças?",
+          "How should I choose a home with children?"
+        ],
+        "answer": [
+          "Veja os acessos reais à praia, os serviços próximos e as características da casa, incluindo escadas e proteção da piscina quando exista.",
+          "Check actual beach access, nearby services and the home’s features, including steps and pool protection where relevant."
+        ]
+      },
+      {
+        "question": ["Organizam a chegada?", "Can you arrange our arrival?"],
+        "answer": [
+          "Sim. A Portugal Active organiza shuttles mediante proposta e confirmação prévias, com voo, passageiros, bagagem e morada.",
+          "Yes. Portugal Active arranges shuttles through an agreed proposal, using your flight, passengers, luggage and address."
+        ]
+      }
+    ],
+    "seo": [
+      "Viana do Castelo: praias, natureza e onde ficar | Portugal Active",
+      "Viana do Castelo: coastal stays and city days | Portugal Active"
+    ]
+  },
+  "caminha": {
+    "name": ["Caminha", "Caminha"],
+    "line": [
+      "Onde o rio encontra o Atlântico.",
+      "Where the river meets the Atlantic."
+    ],
+    "intro": [
+      "A vila de manhã, o pinhal pelo caminho e uma tarde de mar em Moledo.",
+      "A morning in town, pinewoods along the way and an afternoon by the sea at Moledo."
+    ],
+    "orientation": [
+      "No extremo norte da costa portuguesa, Caminha olha para a Galiza do outro lado do Minho. A vila, Moledo, Vila Praia de Âncora e o vale do Coura pertencem ao mesmo concelho, mas oferecem dias e bases diferentes.",
+      "On Portugal’s northern coast, Caminha looks across the Minho to Galicia. The town, Moledo, Vila Praia de Âncora and the Coura valley share a municipality, but offer different days and places to stay."
+    ],
+    "fit": [
+      "Para quem prefere uma vila, praia com paisagem e tempo para caminhar e simplesmente ficar.",
+      "For those who prefer a small town, beaches with a view and time to walk or simply stay put."
+    ],
+    "airport": [
+      "Compare Porto (OPO) e Vigo (VGO).",
+      "Compare Porto (OPO) and Vigo (VGO)."
+    ],
+    "mobility": [
+      "Comboio na faixa costeira; carro ou transfer para o interior.",
+      "Rail along the coast; a car or transfer for inland stays."
+    ],
+    "point": [96, 46],
+    "photo": {
+      "src": "/destinations/caminha-moledo.jpg",
+      "caption": ["Praia de Moledo · Caminha", "Moledo beach · Caminha"]
+    },
+    "moments": [
+      {
+        "place": ["Moledo", "Moledo"],
+        "title": ["A praia como destino.", "Make the beach the destination."],
+        "text": [
+          "Um areal voltado para a Ínsua, com o oceano a ocupar o horizonte. Leve tempo para passear e repetir o seu lugar preferido.",
+          "A beach facing Ínsua, with ocean filling the horizon. Leave time to walk and return to your favourite spot."
+        ],
+        "plan": [
+          "Reserve meio dia ou um dia de praia; a ilha não faz parte do acesso ao areal.",
+          "Set aside half a day or a beach day; island access is separate."
+        ],
+        "source": "C02"
+      },
+      {
+        "place": ["Mata do Camarido", "Camarido woods"],
+        "title": [
+          "Entre pinheiros e estuário.",
+          "Between pinewood and estuary."
+        ],
+        "text": [
+          "Troque a toalha por um passeio no pinhal que enquadra a costa e a foz do Minho.",
+          "Swap the beach towel for a walk through the pinewood beside the coast and Minho estuary."
+        ],
+        "plan": [
+          "Escolha um percurso que se adapte ao grupo e ao ponto de partida.",
+          "Choose a route suited to your group and starting point."
+        ],
+        "source": "C01"
+      },
+      {
+        "place": ["Vilar de Mouros", "Vilar de Mouros"],
+        "title": [
+          "Outro ritmo no vale do Coura.",
+          "Another pace in the Coura valley."
+        ],
+        "text": [
+          "Descubra a aldeia e a ponte gótica, com um almoço que prolonga a visita.",
+          "Discover the village and Gothic bridge, with a lunch worth lingering over."
+        ],
+        "plan": [
+          "Combine a visita e a refeição no mesmo meio dia.",
+          "Pair the visit and lunch in the same half-day outing."
+        ],
+        "source": "C03"
+      }
+    ],
+    "bases": [
+      {
+        "name": "Caminha / estuário",
+        "tag": ["VILA E RIO", "TOWN & RIVER"],
+        "text": [
+          "Para passeios pelo centro, refeições e o encontro dos rios com o mar.",
+          "For town walks, meals and the meeting of river and sea."
+        ],
+        "transport": [
+          "Confirme a distância da casa à vila e à estação.",
+          "Check your home’s distance from town and the station."
+        ]
+      },
+      {
+        "name": "Moledo / Âncora",
+        "tag": ["DIAS DE COSTA", "COASTAL DAYS"],
+        "text": [
+          "Para escolher uma praia, uma esplanada e ficar mais tempo junto ao Atlântico.",
+          "For choosing a beach, a terrace and more time by the Atlantic."
+        ],
+        "transport": [
+          "Moledo e Âncora são localidades diferentes: veja o acesso real ao areal.",
+          "Moledo and Âncora are different places: check actual beach access."
+        ]
+      },
+      {
+        "name": "Vilar de Mouros / interior",
+        "tag": ["VALE E ALDEIA", "VALLEY & VILLAGE"],
+        "text": [
+          "Para paisagem do Coura, privacidade e dias de campo.",
+          "For Coura valley scenery, privacy and countryside days."
+        ],
+        "transport": [
+          "Preveja carro ou transporte reservado para praia e restaurantes.",
+          "Plan a car or booked transport for beaches and restaurants."
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "id": "caminha",
+        "label": ["Uma base no concelho", "One base in the municipality"],
+        "intro": [
+          "Comece pela vila e costa; acrescente saídas regionais apenas nos dias mais longos da estadia.",
+          "Start with town and coast; add regional outings when you have longer to stay."
+        ],
+        "days": [
+          {
+            "place": ["Caminha · Camarido", "Caminha · Camarido"],
+            "title": ["Vila e pinhal", "Town and pinewood"],
+            "text": [
+              "Passeie pelo centro de Caminha e escolha um percurso no Camarido. Termine à mesa perto da base.",
+              "Explore Caminha’s centre and choose a Camarido walk. Finish with dinner near your base."
+            ]
+          },
+          {
+            "place": ["Moledo / Âncora", "Moledo / Âncora"],
+            "title": ["Um dia de mar", "A day by the sea"],
+            "text": [
+              "Escolha Moledo ou Vila Praia de Âncora e reserve uma aula de surf se fizer sentido para o grupo.",
+              "Choose Moledo or Vila Praia de Âncora and book a surf lesson if it suits your group."
+            ]
+          },
+          {
+            "place": ["Vilar de Mouros", "Vilar de Mouros"],
+            "title": [
+              "Coura e cozinha portuguesa",
+              "Coura scenery and Portuguese cooking"
+            ],
+            "text": [
+              "Descubra a ponte e a aldeia; marque almoço no Retiro da Ponte.",
+              "Discover the bridge and village; book lunch at Retiro da Ponte."
+            ]
+          },
+          {
+            "place": ["Vila Nova de Cerveira", "Vila Nova de Cerveira"],
+            "title": [
+              "Conhecer o rio por dentro",
+              "Discover the river’s story"
+            ],
+            "text": [
+              "Combine a vila com o Aquamuseu, numa saída que funciona bem com crianças.",
+              "Pair the town with the Aquamuseum, an outing well suited to children."
+            ]
+          },
+          {
+            "place": ["Viana do Castelo", "Viana do Castelo"],
+            "title": ["Cidade e panorama", "Town and panorama"],
+            "text": [
+              "Dedique um dia a Viana, escolhendo Santa Luzia e uma visita no centro.",
+              "Give a day to Viana, choosing Santa Luzia and a visit in the centre."
+            ]
+          },
+          {
+            "place": ["A sua base", "Your base"],
+            "title": ["Ficar um pouco mais", "Stay a little longer"],
+            "text": [
+              "Repita a praia, passeie perto da casa ou desfrute de um dia sem agenda.",
+              "Return to the beach, walk near your home or enjoy a day with no agenda."
+            ]
+          }
+        ]
+      }
+    ],
+    "taste": [
+      "A costa convida ao peixe e o vale do Coura a uma refeição de cozinha portuguesa. Escolha a mesa perto do passeio e deixe o dia correr sem pressa.",
+      "The coast invites you to eat fish, the Coura valley to enjoy Portuguese cooking. Pick a table near your outing and let the day unfold slowly."
+    ],
+    "tables": [
+      {
+        "name": "Retiro da Ponte",
+        "place": ["Vilar de Mouros", "Vilar de Mouros"],
+        "text": [
+          "Cozinha portuguesa e propostas sazonais junto ao vale do Coura. Combine com a descoberta da aldeia e reserve diretamente.",
+          "Portuguese cooking and seasonal dishes in the Coura valley. Pair lunch with the village and book directly."
+        ],
+        "source": "C05"
+      },
+      {
+        "name": "Sabores da costa",
+        "place": ["Caminha · Moledo · Âncora", "Caminha · Moledo · Âncora"],
+        "text": [
+          "Dê prioridade ao peixe e aos produtos do dia. Antes de escolher a casa, pense também no percurso de regresso do jantar.",
+          "Look for fish and the day’s produce. When choosing your home, consider the journey back from dinner too."
+        ],
+        "source": "C03"
+      }
+    ],
+    "culture": [
+      {
+        "title": ["Uma primeira onda", "Your first wave"],
+        "place": [
+          "Moledo / Vila Praia de Âncora",
+          "Moledo / Vila Praia de Âncora"
+        ],
+        "text": [
+          "A Anchor Point publica aulas de surf nesta costa. Consulte praia, idade, nível e equipamento para a sua data.",
+          "Anchor Point offers surf lessons along this coast. Check the beach, age requirements, level and equipment for your date."
+        ],
+        "source": "C07"
+      },
+      {
+        "title": ["O rio no Aquamuseu", "The river at the Aquamuseum"],
+        "place": ["Vila Nova de Cerveira", "Vila Nova de Cerveira"],
+        "text": [
+          "Aquários e história da pesca dão outra dimensão ao Minho. É uma saída a Cerveira, com transporte próprio.",
+          "Aquariums and fishing history reveal another side of the Minho. This is a trip to Cerveira, with its own transport arrangements."
+        ],
+        "source": "C04"
+      },
+      {
+        "title": ["A vila e o seu património", "The town and its heritage"],
+        "place": ["Caminha", "Caminha"],
+        "text": [
+          "Dê tempo às ruas, praças e património da vila, antes de seguir para o estuário.",
+          "Give time to the streets, squares and heritage before heading towards the estuary."
+        ],
+        "source": "C03"
+      }
+    ],
+    "seasons": [
+      [
+        "Vila, pinhal e passeios no estuário.",
+        "Town, pinewoods and estuary walks."
+      ],
+      [
+        "Mais tempo em Moledo e na costa de Âncora.",
+        "More time at Moledo and on the Âncora coast."
+      ],
+      [
+        "Vale do Coura, cozinha portuguesa e dias tranquilos.",
+        "Coura valley scenery, Portuguese cooking and quieter days."
+      ],
+      [
+        "Uma escapada de vila, património e mesa.",
+        "A town break for heritage and food."
+      ]
+    ],
+    "homes": [
+      "Escolha a casa pela sua localização no concelho: vila, costa e interior têm ritmos diferentes. Veja a morada e os acessos antes de decidir pelos dias de praia.",
+      "Choose your home by its location within the municipality: town, coast and inland stays have different rhythms. Check the address and access before planning beach days."
+    ],
+    "faqs": [
+      {
+        "question": ["Caminha tem praia?", "Does Caminha have beaches?"],
+        "answer": [
+          "Sim, o concelho inclui Moledo e Vila Praia de Âncora. A vila de Caminha e estas praias são bases diferentes.",
+          "Yes, the municipality includes Moledo and Vila Praia de Âncora. Caminha town and these beaches are different bases."
+        ]
+      },
+      {
+        "question": ["Moledo ou Âncora?", "Moledo or Âncora?"],
+        "answer": [
+          "Compare a casa, os serviços próximos e o acesso à praia. Moledo tem a paisagem da Ínsua; Âncora combina areal e vida de vila costeira.",
+          "Compare the home, nearby services and beach access. Moledo faces Ínsua; Âncora combines sand with coastal town life."
+        ]
+      },
+      {
+        "question": ["Preciso de carro?", "Do I need a car?"],
+        "answer": [
+          "Uma base próxima da estação e dos serviços pode funcionar sem carro. Para o Coura, o interior e várias saídas, organize transporte.",
+          "A base near a station and services can work without a car. Arrange transport for the Coura valley, inland stays and multiple outings."
+        ]
+      },
+      {
+        "question": ["Quantas noites ficar?", "How many nights should I stay?"],
+        "answer": [
+          "Três para vila e costa; cinco para acrescentar Coura e Cerveira; sete para ter também dias livres.",
+          "Three for town and coast; five to add Coura and Cerveira; seven to keep some days free too."
+        ]
+      },
+      {
+        "question": [
+          "Posso passar a Espanha de barco?",
+          "Can I cross to Spain by boat?"
+        ],
+        "answer": [
+          "Confirme o operador e o serviço para a data pretendida antes de contar com essa travessia no roteiro.",
+          "Confirm the operator and service for your date before building the crossing into your itinerary."
+        ]
+      },
+      {
+        "question": [
+          "O que fazer com crianças?",
+          "What can we do with children?"
+        ],
+        "answer": [
+          "Alterne uma praia ou passeio curto com o Aquamuseu em Cerveira. Confirme requisitos de idade e acessos de cada atividade.",
+          "Alternate beach time or a short walk with Cerveira’s Aquamuseum. Check age requirements and access for each activity."
+        ]
+      },
+      {
+        "question": [
+          "O que há além da praia?",
+          "What is there beyond the beach?"
+        ],
+        "answer": [
+          "Camarido, património de Caminha e Vilar de Mouros dão conteúdo aos dias, sem ter de mudar de alojamento.",
+          "Camarido, Caminha’s heritage and Vilar de Mouros fill your days without changing accommodation."
+        ]
+      },
+      {
+        "question": [
+          "Como organizar o aeroporto?",
+          "How do we arrange airport transport?"
+        ],
+        "answer": [
+          "Peça à Portugal Active uma proposta de shuttle com aeroporto, voo, passageiros, bagagem e morada. Serviço sujeito a confirmação.",
+          "Ask Portugal Active for a shuttle proposal with your airport, flight, passengers, luggage and address. Service is subject to confirmation."
+        ]
+      }
+    ],
+    "seo": [
+      "Caminha: Moledo, natureza e onde ficar | Portugal Active",
+      "Caminha holidays: Moledo beach and the Minho estuary | Portugal Active"
+    ]
+  },
+  "esposende": {
+    "name": ["Esposende", "Esposende"],
+    "line": ["Entre dunas e rio.", "Between dunes and river."],
+    "intro": [
+      "Passadiços até ao mar, moinhos sobre a areia e tempo à mesa depois de uma manhã na costa.",
+      "Boardwalks to the sea, windmills above the sand and a long lunch after a coastal morning."
+    ],
+    "orientation": [
+      "Entre a foz do Neiva e Apúlia, o Parque Natural do Litoral Norte reúne praias, dunas e estuário. Esposende pode ser um dia especial numa estadia no Minho: escolha um setor da costa e dê-lhe tempo.",
+      "Between the Neiva estuary and Apúlia, the Northern Coast Natural Park brings together beaches, dunes and estuary scenery. Make Esposende a special day during a Minho stay: choose one coastal area and give it time."
+    ],
+    "fit": [
+      "Para quem gosta de passeios costeiros, praias e histórias ligadas ao mar.",
+      "For coastal walks, beaches and stories shaped by the sea."
+    ],
+    "airport": [
+      "Porto (OPO) é a entrada de referência.",
+      "Porto (OPO) is the main gateway."
+    ],
+    "mobility": [
+      "Uma zona a pé; transporte para combinar Apúlia, Ofir e o interior.",
+      "Walk within one area; use transport between Apúlia, Ofir and inland sights."
+    ],
+    "point": [96, 79],
+    "photo": {
+      "src": "/destinations/esposende-litoral-norte.jpg",
+      "caption": [
+        "Parque Natural do Litoral Norte · Esposende",
+        "Northern Coast Natural Park · Esposende"
+      ]
+    },
+    "moments": [
+      {
+        "place": ["Apúlia", "Apúlia"],
+        "title": ["Moinhos de frente para o mar.", "Windmills facing the sea."],
+        "text": [
+          "Comece pelo areal e pelos moinhos, deixando a história do sargaço para a segunda parte do passeio.",
+          "Start with the beach and windmills, then discover the story of seaweed gathering."
+        ],
+        "plan": [
+          "Meio dia com praia, museu e almoço na mesma zona.",
+          "Half a day for beach, museum and lunch in the same area."
+        ],
+        "source": "E02"
+      },
+      {
+        "place": ["Cávado · Ofir", "Cávado · Ofir"],
+        "title": ["Seguir a linha da costa.", "Follow the coastline."],
+        "text": [
+          "O estuário, as dunas e o pinhal dão cenários diferentes a um dia ao ar livre. Escolha um passeio junto ao rio ou ao mar.",
+          "The estuary, dunes and pinewoods offer different settings for a day outdoors. Choose a riverside or coastal walk."
+        ],
+        "plan": [
+          "Selecione um percurso e ponto de regresso; nem todos os acessos à areia são iguais.",
+          "Choose your route and return point; access to the sand varies."
+        ],
+        "source": "E01"
+      },
+      {
+        "place": ["Monte de São Lourenço", "Monte de São Lourenço"],
+        "title": ["A costa vista do interior.", "The coast from inland."],
+        "text": [
+          "Suba à zona do castro para juntar paisagem e história num programa diferente da praia.",
+          "Head towards the hillfort for scenery and history away from the beach."
+        ],
+        "plan": [
+          "Reserve um meio dia e organize a deslocação a Vila Chã.",
+          "Allow half a day and arrange transport to Vila Chã."
+        ],
+        "source": "E04"
+      }
+    ],
+    "bases": [
+      {
+        "name": "Centro / Cávado",
+        "tag": ["RIO E PASSEIO", "RIVER & WALKS"],
+        "text": [
+          "Um primeiro contacto com a cidade e a frente ribeirinha.",
+          "A first introduction to the town and riverfront."
+        ],
+        "transport": [
+          "Escolha o ponto de chegada e passeie dentro desta zona.",
+          "Choose an arrival point and explore this area on foot."
+        ]
+      },
+      {
+        "name": "Fão / Ofir",
+        "tag": ["PRAIA E PINHAL", "BEACH & PINES"],
+        "text": [
+          "Outro dia de costa, com uma pausa para as Clarinhas de Fão.",
+          "Another coastal day, with a stop for Fão’s Clarinhas pastries."
+        ],
+        "transport": [
+          "Combine Fão e Ofir com transporte adequado ao percurso.",
+          "Plan transport around your route through Fão and Ofir."
+        ]
+      },
+      {
+        "name": "Apúlia",
+        "tag": ["MOINHOS E SARGAÇO", "WINDMILLS & SEAWEED"],
+        "text": [
+          "Praia, memória local e almoço num mesmo setor.",
+          "Beach, local history and lunch in one area."
+        ],
+        "transport": [
+          "Confirme a abertura do Museu do Sargaço antes de organizar o dia.",
+          "Check the Seaweed Museum’s opening before planning your day."
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "id": "minho",
+        "label": ["Estadia no Minho", "Staying in the Minho"],
+        "intro": [
+          "Ideias para incluir Esposende numa base regional. A localidade da casa determina a ordem das saídas.",
+          "Ideas for including Esposende in a regional stay. Your home’s location determines the order of outings."
+        ],
+        "days": [
+          {
+            "place": ["Apúlia", "Apúlia"],
+            "title": [
+              "Moinhos, sargaço e almoço",
+              "Windmills, seaweed and lunch"
+            ],
+            "text": [
+              "Combine praia, Museu do Sargaço e uma refeição em Apúlia.",
+              "Pair the beach, Seaweed Museum and a meal in Apúlia."
+            ]
+          },
+          {
+            "place": ["A sua base no Minho", "Your base in the Minho"],
+            "title": ["Conhecer onde fica", "Discover your home base"],
+            "text": [
+              "Dedique o segundo dia à localidade da casa, com passeio e tempo para descansar.",
+              "Give the second day to your home’s town, with a walk and time to rest."
+            ]
+          },
+          {
+            "place": ["Cávado · Fão · Ofir", "Cávado · Fão · Ofir"],
+            "title": ["Outro dia na costa", "Another day on the coast"],
+            "text": [
+              "Escolha um passeio no estuário e tempo em Ofir; faça uma pausa doce em Fão.",
+              "Choose an estuary walk and time at Ofir; stop for a pastry in Fão."
+            ]
+          },
+          {
+            "place": ["A sua base no Minho", "Your base in the Minho"],
+            "title": ["Um dia ao seu ritmo", "A day at your pace"],
+            "text": [
+              "Aproveite a casa e os serviços próximos, sem acrescentar uma nova excursão.",
+              "Enjoy your home and nearby places without adding another excursion."
+            ]
+          },
+          {
+            "place": ["Viana do Castelo", "Viana do Castelo"],
+            "title": ["Cidade e mar", "Town and sea"],
+            "text": [
+              "Escolha Santa Luzia e o centro de Viana para um dia regional.",
+              "Choose Santa Luzia and central Viana for a regional day trip."
+            ]
+          },
+          {
+            "place": ["Vale do Lima", "Lima valley"],
+            "title": ["Terminar junto ao rio", "Finish beside the river"],
+            "text": [
+              "Passeie em Ponte de Lima ou fique pela casa: a última tarde merece tempo livre.",
+              "Walk in Ponte de Lima or stay at home: leave the final afternoon free."
+            ]
+          }
+        ]
+      }
+    ],
+    "taste": [
+      "Peixe, cozinha regional e um doce com nome próprio. A refeição faz parte do dia de costa, sem ter de atravessar o concelho entre cada paragem.",
+      "Fish, regional cooking and a pastry with its own local identity. Make lunch part of your coastal day without crossing the municipality between stops."
+    ],
+    "tables": [
+      {
+        "name": "Moinho de Vento",
+        "place": ["Apúlia", "Apúlia"],
+        "text": [
+          "Uma mesa de cozinha regional e peixe, para juntar ao passeio pela praia e pelos moinhos.",
+          "Regional cooking and fish, paired with a walk by the beach and windmills."
+        ],
+        "source": "E05"
+      },
+      {
+        "name": "Clarinhas de Fão",
+        "place": ["Fão", "Fão"],
+        "text": [
+          "Uma pausa de doçaria local antes ou depois do passeio por Fão e Ofir. Consulte os estabelecimentos indicados pelo turismo municipal.",
+          "A local pastry stop before or after exploring Fão and Ofir. See the businesses listed by the local tourism office."
+        ],
+        "source": "E06"
+      }
+    ],
+    "culture": [
+      {
+        "title": ["A vida do sargaço", "The story of seaweed"],
+        "place": ["Apúlia", "Apúlia"],
+        "text": [
+          "O Museu do Sargaço liga mar, agricultura e comunidade. Uma visita com identidade própria, junto ao programa de praia.",
+          "The Seaweed Museum connects sea, agriculture and community. A distinctive visit to pair with beach time."
+        ],
+        "source": "E03"
+      },
+      {
+        "title": ["Histórias de São Lourenço", "Stories from São Lourenço"],
+        "place": ["Vila Chã", "Vila Chã"],
+        "text": [
+          "O castro e a paisagem do monte acrescentam outra perspetiva à costa de Esposende.",
+          "The hillfort and hilltop scenery bring another perspective to Esposende’s coast."
+        ],
+        "source": "E04"
+      }
+    ],
+    "seasons": [
+      [
+        "Passeios entre dunas, rio e moinhos.",
+        "Walks among dunes, river scenery and windmills."
+      ],
+      [
+        "Praia, almoço de peixe e dias ao ar livre.",
+        "Beaches, fish lunches and days outdoors."
+      ],
+      [
+        "Sargaço, património e cozinha regional.",
+        "Seaweed heritage, history and regional food."
+      ],
+      [
+        "Escapadas de mesa e descoberta das comunidades costeiras.",
+        "Short breaks for food and coastal community stories."
+      ]
+    ],
+    "homes": [
+      "Explore alternativas noutras localidades do Minho e inclua Esposende no roteiro. Consulte a localidade de cada casa e planeie a deslocação à costa.",
+      "Explore alternatives elsewhere in the Minho and include Esposende in your itinerary. Check each home’s locality and plan the trip to the coast."
+    ],
+    "faqs": [
+      {
+        "question": [
+          "Vale a visita sem ficar em Esposende?",
+          "Is it worth visiting without staying in Esposende?"
+        ],
+        "answer": [
+          "Sim. Apúlia e Ofir permitem dias de costa a partir de uma base no Minho, com o percurso planeado desde a casa.",
+          "Yes. Apúlia and Ofir make coastal day trips from a Minho base, with the journey planned from your home."
+        ]
+      },
+      {
+        "question": [
+          "Onde posso procurar alojamento?",
+          "Where can I look for accommodation?"
+        ],
+        "answer": [
+          "A seleção nesta página apresenta alternativas no Minho, com a localidade de cada casa. Confirme a localização antes de escolher.",
+          "This page presents alternatives in the Minho, with each home’s locality. Check the location before choosing."
+        ]
+      },
+      {
+        "question": ["Apúlia ou Ofir?", "Apúlia or Ofir?"],
+        "answer": [
+          "Apúlia combina moinhos, praia e sargaço. Ofir dá outro dia de costa e pinhal, ligado a Fão.",
+          "Apúlia combines windmills, beach and seaweed heritage. Ofir offers another coastal day with pinewoods, near Fão."
+        ]
+      },
+      {
+        "question": [
+          "O que fazer além da praia?",
+          "What is there beyond the beach?"
+        ],
+        "answer": [
+          "Visite o Museu do Sargaço em Apúlia ou escolha a paisagem e o castro de São Lourenço.",
+          "Visit the Seaweed Museum in Apúlia or choose São Lourenço’s scenery and hillfort."
+        ]
+      },
+      {
+        "question": [
+          "Consigo fazer tudo a pé?",
+          "Can I do everything on foot?"
+        ],
+        "answer": [
+          "Pode explorar uma zona a pé. Para juntar Apúlia, Ofir, centro e São Lourenço, planeie transporte entre setores.",
+          "You can explore one area on foot. Plan transport between Apúlia, Ofir, the centre and São Lourenço."
+        ]
+      },
+      {
+        "question": [
+          "Como planear com crianças?",
+          "How should we plan with children?"
+        ],
+        "answer": [
+          "Combine um passeio curto, uma refeição e uma visita. Escolha acessos e serviços balneares adequados à data e ao grupo.",
+          "Combine a short walk, a meal and one visit. Choose beach access and services suited to your dates and group."
+        ]
+      },
+      {
+        "question": ["O que provar?", "What should I try?"],
+        "answer": [
+          "Peixe e cozinha regional em Apúlia, com uma pausa para as Clarinhas em Fão.",
+          "Fish and regional cooking in Apúlia, with a stop for Clarinhas in Fão."
+        ]
+      },
+      {
+        "question": [
+          "Como chegar do aeroporto?",
+          "How do I get here from the airport?"
+        ],
+        "answer": [
+          "Considere Porto (OPO). Compare a ligação pública com táxi ou shuttle Portugal Active, reservado e confirmado para a morada.",
+          "Consider Porto (OPO). Compare public transport with a taxi or Portugal Active shuttle, booked and confirmed for your address."
+        ]
+      }
+    ],
+    "seo": [
+      "Esposende: praias, Apúlia e natureza | Portugal Active",
+      "Esposende: coastal walks, beaches and local flavours | Portugal Active"
+    ]
+  },
+  "porto": {
+    "name": ["Porto", "Porto"],
+    "line": ["Do rio ao Atlântico.", "From the river to the Atlantic."],
+    "intro": [
+      "Ruas para descobrir, jardins onde parar e uma mesa diferente a cada dia.",
+      "Streets to discover, gardens to pause in and a different table each day."
+    ],
+    "orientation": [
+      "O Porto fica no norte de Portugal, onde o Douro chega ao Atlântico. A cidade e Gaia ocupam margens diferentes; Foz abre a viagem ao mar. O Douro vinhateiro é outra etapa, com a sua própria base e ritmo.",
+      "Porto sits in northern Portugal, where the Douro reaches the Atlantic. Porto and Gaia occupy opposite banks; Foz opens your trip to the sea. The wine-growing Douro is a separate stage, with its own base and pace."
+    ],
+    "fit": [
+      "Para uma primeira viagem com cultura, gastronomia e tempo ao ar livre.",
+      "For a first visit combining culture, food and time outdoors."
+    ],
+    "airport": [
+      "Porto (OPO), com metro para a cidade.",
+      "Porto (OPO), with metro access to the city."
+    ],
+    "mobility": [
+      "A pé e de transportes na cidade; planeie as saídas regionais à parte.",
+      "Walk and use public transport in town; plan regional outings separately."
+    ],
+    "point": [104.7, 100.9],
+    "photo": {
+      "src": "/destinations/porto-serralves.jpg",
+      "caption": [
+        "Lago e jardins do Parque de Serralves, Porto",
+        "Lake and gardens at Serralves Park, Porto"
+      ]
+    },
+    "moments": [
+      {
+        "place": ["Serralves", "Serralves"],
+        "title": [
+          "Arte com espaço para respirar.",
+          "Art with room to breathe."
+        ],
+        "text": [
+          "Jardins, bosque e arte fazem de Serralves um programa próprio. Escolha o que quer visitar e dê ao parque uma parte do dia.",
+          "Gardens, woodland and art make Serralves an outing in its own right. Choose what to visit and give the park part of your day."
+        ],
+        "plan": [
+          "Reserve meio dia; compare os bilhetes e os acessos.",
+          "Allow half a day; compare tickets and transport."
+        ],
+        "source": "P01"
+      },
+      {
+        "place": ["Foz · Atlântico", "Foz · Atlantic"],
+        "title": [
+          "Deixar a cidade chegar ao mar.",
+          "Follow the city to the sea."
+        ],
+        "text": [
+          "Passeie na Foz ou escolha um troço do Parque da Cidade e da frente marítima. Termine com tempo numa esplanada.",
+          "Walk in Foz or choose a stretch of the City Park and seafront. Finish with time at a terrace."
+        ],
+        "plan": [
+          "Escolha uma área para passear, com ida e regresso planeados.",
+          "Pick an area to explore and plan the outward and return journeys."
+        ],
+        "source": "P02"
+      },
+      {
+        "place": ["Gaia", "Gaia"],
+        "title": ["O vinho na outra margem.", "Wine on the opposite bank."],
+        "text": [
+          "Atravesse o rio para conhecer as caves Graham’s. Uma visita guiada dá contexto ao vinho e à paisagem do Porto.",
+          "Cross the river to visit Graham’s cellars. A guided visit brings context to the wine and Porto’s landscape."
+        ],
+        "plan": [
+          "Visita e prova por reserva; confirme a modalidade para o grupo.",
+          "Book the visit and tasting; check the format for your group."
+        ],
+        "source": "P03"
+      }
+    ],
+    "bases": [
+      {
+        "name": "Centro / Baixa / Ribeira",
+        "tag": ["PRIMEIRA VISITA", "FIRST VISIT"],
+        "text": [
+          "Para mercados, ruas históricas e vida junto ao rio.",
+          "For markets, historic streets and riverside life."
+        ],
+        "transport": [
+          "Conte com desníveis; confirme acesso e estacionamento da casa.",
+          "Expect slopes; check your home’s access and parking."
+        ]
+      },
+      {
+        "name": "Boavista / Foz",
+        "tag": ["ARTE E ATLÂNTICO", "ART & ATLANTIC"],
+        "text": [
+          "Para dar mais espaço a Serralves, arquitetura e frente marítima.",
+          "For more time at Serralves, architecture and the seafront."
+        ],
+        "transport": [
+          "Planeie as ligações ao centro e entre os diferentes equipamentos.",
+          "Plan connections to the centre and between attractions."
+        ]
+      },
+      {
+        "name": "Arredores / Douro",
+        "tag": ["OUTRO TIPO DE ESTADIA", "A DIFFERENT STAY"],
+        "text": [
+          "Trofa e Amarante são bases fora da cidade. O Douro convida a prolongar a viagem.",
+          "Trofa and Amarante are bases outside the city. The Douro invites a longer journey."
+        ],
+        "transport": [
+          "Escolha pelo endereço: estas zonas não são bairros do Porto.",
+          "Choose by address: these places are not Porto neighbourhoods."
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "id": "porto",
+        "label": ["Dias de cidade", "City days"],
+        "intro": [
+          "Uma base no Porto, com saídas por áreas e sem encher cada hora. Para uma semana entre cidade e vinhas, considere 4 noites no Porto e 3 no Douro, mudando de base.",
+          "One base in Porto, with outings grouped by area and room between plans. For a week of city and vineyards, consider 4 nights in Porto and 3 in the Douro, changing base."
+        ],
+        "days": [
+          {
+            "place": [
+              "Centro · Bolhão · Ribeira",
+              "City centre · Bolhão · Ribeira"
+            ],
+            "title": ["Entrar no ritmo da cidade", "Find the city’s rhythm"],
+            "text": [
+              "Comece no Bolhão, percorra o centro e termine junto ao rio. Deixe espaço para um almoço de mercado.",
+              "Start at Bolhão, explore the centre and finish by the river. Leave room for a market lunch."
+            ]
+          },
+          {
+            "place": ["Gaia", "Gaia"],
+            "title": ["A outra margem", "The opposite bank"],
+            "text": [
+              "Reserve uma visita às caves ou escolha um passeio ribeirinho; mantenha a tarde flexível.",
+              "Book a cellar visit or choose a riverside walk; keep the afternoon flexible."
+            ]
+          },
+          {
+            "place": ["Serralves · Foz", "Serralves · Foz"],
+            "title": ["Jardins e oceano", "Gardens and ocean"],
+            "text": [
+              "Dedique parte do dia a Serralves e siga para um passeio na Foz.",
+              "Give part of the day to Serralves, then head to Foz for a walk."
+            ]
+          },
+          {
+            "place": ["Boavista · Casa da Música", "Boavista · Casa da Música"],
+            "title": ["Arquitetura e música", "Architecture and music"],
+            "text": [
+              "Escolha uma visita à Casa da Música ou um concerto da programação e organize o resto do dia em redor.",
+              "Choose a Casa da Música tour or a scheduled concert and build the day around it."
+            ]
+          },
+          {
+            "place": ["Parque da Cidade · costa", "City Park · coast"],
+            "title": [
+              "Abrir espaço ao Atlântico",
+              "Make room for the Atlantic"
+            ],
+            "text": [
+              "Um dia de parque, frente marítima e uma refeição perto do mar.",
+              "A day of park walks, seafront scenery and a meal near the sea."
+            ]
+          },
+          {
+            "place": ["Porto", "Porto"],
+            "title": [
+              "Voltar às ruas preferidas",
+              "Return to favourite streets"
+            ],
+            "text": [
+              "Repita um bairro, escolha uma loja ou fique mais tempo à mesa. Reserve a última tarde para si.",
+              "Return to a neighbourhood, browse a shop or linger at the table. Keep the final afternoon for yourself."
+            ]
+          }
+        ]
+      }
+    ],
+    "taste": [
+      "Do almoço no mercado a uma francesinha e a uma refeição com vista em Gaia. Escolha pelo momento do dia e pela margem onde está.",
+      "From a market lunch to a francesinha and a meal with a view in Gaia. Choose around your day and the riverbank you are on."
+    ],
+    "tables": [
+      {
+        "name": "Mercado do Bolhão",
+        "place": ["Baixa · Porto", "Baixa · Porto"],
+        "text": [
+          "Explore os produtos e escolha entre os espaços de restauração do mercado. Consulte o diretório atual para encontrar a sua mesa.",
+          "Explore the produce and choose among the market’s food venues. Browse the current directory to find your table."
+        ],
+        "source": "P05"
+      },
+      {
+        "name": "Café Santiago",
+        "place": ["Passos Manuel · Porto", "Passos Manuel · Porto"],
+        "text": [
+          "Uma francesinha no centro, integrada num dia de ruas, lojas e passeios urbanos.",
+          "A francesinha in the centre, as part of a day of streets, shops and city walks."
+        ],
+        "source": "P08"
+      },
+      {
+        "name": "Vinum",
+        "place": ["Caves Graham’s · Gaia", "Graham’s cellars · Gaia"],
+        "text": [
+          "Uma refeição planeada junto às caves, na margem de Gaia. Pode acompanhar a visita, com reserva própria.",
+          "A planned meal beside the cellars on the Gaia bank. Pair it with a visit, with a separate table booking."
+        ],
+        "source": "P03"
+      }
+    ],
+    "culture": [
+      {
+        "title": ["Entrar na Casa da Música", "Inside Casa da Música"],
+        "place": ["Boavista", "Boavista"],
+        "text": [
+          "Escolha entre uma visita à arquitetura e um concerto. São experiências diferentes, com bilhetes e programação próprios.",
+          "Choose an architectural tour or a concert. These are different experiences, with separate tickets and schedules."
+        ],
+        "source": "P04"
+      },
+      {
+        "title": ["Serralves por dentro", "Inside Serralves"],
+        "place": ["Porto", "Porto"],
+        "text": [
+          "Combine o parque com exposições e arquitetura, escolhendo o bilhete que corresponde aos espaços que quer visitar.",
+          "Pair the park with exhibitions and architecture, choosing a ticket for the spaces you want to visit."
+        ],
+        "source": "P07"
+      },
+      {
+        "title": ["As histórias das caves", "Stories from the cellars"],
+        "place": ["Gaia", "Gaia"],
+        "text": [
+          "Reserve uma visita Graham’s e escolha a prova pelo seu interesse. Consulte as condições se viajar com crianças.",
+          "Book a Graham’s visit and choose a tasting around your interests. Check arrangements if visiting with children."
+        ],
+        "source": "P03"
+      }
+    ],
+    "seasons": [
+      [
+        "Jardins, bairros e caminhadas junto ao rio.",
+        "Gardens, neighbourhoods and riverside walks."
+      ],
+      [
+        "Tardes no Atlântico e vida ao ar livre.",
+        "Atlantic afternoons and outdoor city life."
+      ],
+      [
+        "Mercados, arte e escapadas gastronómicas.",
+        "Markets, art and food-focused breaks."
+      ],
+      [
+        "Música, museus e mesas onde ficar mais tempo.",
+        "Music, museums and tables to linger at."
+      ]
+    ],
+    "homes": [
+      "As casas da cidade aparecem primeiro. Trofa e Amarante são alternativas fora do Porto; para uma estadia entre vinhas, explore a seleção própria do Douro.",
+      "City homes appear first. Trofa and Amarante are alternatives outside Porto; for a vineyard stay, explore the dedicated Douro selection."
+    ],
+    "faqs": [
+      {
+        "question": [
+          "Quantas noites na primeira viagem?",
+          "How many nights for a first visit?"
+        ],
+        "answer": [
+          "Três noites permitem dois dias completos. Cinco abrem espaço a Serralves e à Foz; sete permitem mais tempo livre ou uma segunda base no Douro.",
+          "Three nights give two full days. Five add room for Serralves and Foz; seven allow more free time or a second base in the Douro."
+        ]
+      },
+      {
+        "question": ["Preciso de carro?", "Do I need a car?"],
+        "answer": [
+          "Um programa urbano pode funcionar bem a pé e de transportes. A localização da casa e os desníveis do percurso fazem diferença.",
+          "A city itinerary can work well on foot and by public transport. Your home’s location and the slopes along your route matter."
+        ]
+      },
+      {
+        "question": ["Porto ou Gaia?", "Porto or Gaia?"],
+        "answer": [
+          "São margens diferentes e complementares. Confirme onde fica a casa e planeie as travessias conforme as visitas.",
+          "They are different, complementary riverbanks. Check your home’s location and plan crossings around your visits."
+        ]
+      },
+      {
+        "question": ["Onde encontro natureza?", "Where can I find nature?"],
+        "answer": [
+          "No Parque de Serralves, no Parque da Cidade e na frente atlântica da Foz.",
+          "At Serralves Park, the City Park and the Atlantic seafront in Foz."
+        ]
+      },
+      {
+        "question": [
+          "Douro num dia ou com estadia?",
+          "Douro day trip or overnight stay?"
+        ],
+        "answer": [
+          "Um dia dá uma primeira aproximação. Ficar permite outro ritmo, mas implica escolher uma base e organizar o transporte até à casa.",
+          "A day gives a first taste. Staying offers another pace, but means choosing a base and arranging transport to your home."
+        ]
+      },
+      {
+        "question": [
+          "Posso visitar caves com crianças?",
+          "Can I visit cellars with children?"
+        ],
+        "answer": [
+          "Confirme a modalidade e as condições do operador. Uma visita cultural e uma prova têm requisitos diferentes.",
+          "Check the operator’s format and conditions. A cultural visit and a tasting have different requirements."
+        ]
+      },
+      {
+        "question": [
+          "Como chego do aeroporto?",
+          "How do I arrive from the airport?"
+        ],
+        "answer": [
+          "OPO tem metro para a cidade. Táxi, Uber e shuttle Portugal Active reservado são outras opções conforme o endereço.",
+          "OPO has metro links to the city. Taxi, Uber and a booked Portugal Active shuttle are other options depending on your address."
+        ]
+      },
+      {
+        "question": [
+          "Todas as casas ficam na cidade?",
+          "Are all homes in the city?"
+        ],
+        "answer": [
+          "A seleção distingue Porto de alternativas em Trofa e Amarante. As casas do Douro estão numa seleção regional própria.",
+          "The selection separates Porto from alternatives in Trofa and Amarante. Douro homes have their own regional selection."
+        ]
+      }
+    ],
+    "seo": [
+      "Porto: o que fazer, zonas e onde ficar | Portugal Active",
+      "Porto city stays: food, culture and the Atlantic | Portugal Active"
+    ]
+  },
+  "douro": {
+    "name": ["Douro", "Douro"],
+    "line": ["Entre o rio e as vinhas.", "Between river and vines."],
+    "intro": [
+      "Acorde com tempo para o vale. Escolha uma quinta, uma mesa e uma paisagem onde apeteça demorar.",
+      "Wake with time for the valley. Choose an estate, a table and a landscape worth lingering over."
+    ],
+    "orientation": [
+      "A leste do Porto, o Douro atravessa encostas de vinha e pequenas povoações. Régua e Pinhão são referências para planear a chegada; uma casa na encosta pede outra logística. O Alto Douro Vinhateiro é uma paisagem cultural classificada pela UNESCO.",
+      "East of Porto, the Douro runs between vineyard slopes and small settlements. Régua and Pinhão help anchor your arrival plans; a hillside home needs different logistics. The Alto Douro Wine Region is a UNESCO-listed cultural landscape."
+    ],
+    "fit": [
+      "Para quem procura paisagem, gastronomia e tempo juntos, com ou sem provas de vinho.",
+      "For scenery, food and time together, with or without wine tastings."
+    ],
+    "airport": [
+      "Porto (OPO), seguido de viagem até ao vale.",
+      "Porto (OPO), followed by an onward journey to the valley."
+    ],
+    "mobility": [
+      "Comboio até Régua/Pinhão; combine o último percurso até à casa.",
+      "Rail to Régua/Pinhão; arrange the final journey to your home."
+    ],
+    "point": [159, 113],
+    "photo": {
+      "src": "https://images.unsplash.com/photo-1693318827518-0c8ccbc59593?auto=format&w=1200&q=85",
+      "caption": [
+        "Rio e vinhas · Vale do Douro",
+        "River and vineyards · Douro Valley"
+      ]
+    },
+    "moments": [
+      {
+        "place": ["Linha do Douro", "Douro railway"],
+        "title": [
+          "A paisagem pela janela.",
+          "The landscape through the window."
+        ],
+        "text": [
+          "Escolha um troço de comboio junto ao rio e deixe a viagem fazer parte do programa. Régua e Pinhão permitem combinar estação, visita e mesa.",
+          "Choose a riverside rail journey and make travel part of the experience. Régua and Pinhão let you combine a station, a visit and a meal."
+        ],
+        "plan": [
+          "Consulte horários e combine estação–casa e regresso.",
+          "Check timetables and arrange station-to-home transport and your return."
+        ],
+        "source": "D02"
+      },
+      {
+        "place": ["Quinta do Bomfim · Pinhão", "Quinta do Bomfim · Pinhão"],
+        "title": [
+          "Entrar na história das vinhas.",
+          "Step into the story of the vines."
+        ],
+        "text": [
+          "Reserve uma visita à Quinta do Bomfim e escolha a modalidade que mais lhe interessa, com tempo para conhecer o lugar.",
+          "Book a visit to Quinta do Bomfim and choose the experience that interests you, leaving time to enjoy the setting."
+        ],
+        "plan": [
+          "Uma experiência por meio dia deixa espaço para o almoço.",
+          "One experience per half day leaves room for lunch."
+        ],
+        "source": "D03"
+      },
+      {
+        "place": ["Galafura / Casal de Loivos", "Galafura / Casal de Loivos"],
+        "title": ["O vale visto do alto.", "The valley from above."],
+        "text": [
+          "Escolha um miradouro próximo da sua base. A vista ganha mais quando há tempo para parar e observar.",
+          "Choose a viewpoint near your base. The view is better with time to stop and take it in."
+        ],
+        "plan": [
+          "Planeie ida e regresso por estrada; a proximidade ao rio não significa acesso a pé.",
+          "Plan road transport both ways; proximity to the river does not mean walking access."
+        ],
+        "source": "D05"
+      }
+    ],
+    "bases": [
+      {
+        "name": "Peso da Régua",
+        "tag": ["CHEGADA E CULTURA", "ARRIVAL & CULTURE"],
+        "text": [
+          "Estação, serviços e Museu do Douro como referências para organizar os dias.",
+          "A station, services and the Douro Museum as anchors for your days."
+        ],
+        "transport": [
+          "Uma casa com esta referência pode ficar fora do centro; confirme o percurso final.",
+          "A home in this area may be outside the centre; check the final journey."
+        ]
+      },
+      {
+        "name": "Pinhão",
+        "tag": ["RIO E QUINTAS", "RIVER & ESTATES"],
+        "text": [
+          "Para construir um programa no eixo da estação, rio e quintas locais.",
+          "For days around the station, river and local estates."
+        ],
+        "transport": [
+          "Verifique cada ligação a pé: as encostas mudam a distância útil.",
+          "Check each walk: slopes change practical distances."
+        ]
+      },
+      {
+        "name": "Quinta / encosta",
+        "tag": ["TEMPO E PRIVACIDADE", "TIME & PRIVACY"],
+        "text": [
+          "Para desfrutar da paisagem e passar mais tempo na propriedade.",
+          "For enjoying the scenery and spending more time at the property."
+        ],
+        "transport": [
+          "Combine refeições, transfer e saídas antes de chegar.",
+          "Arrange meals, transfers and outings before arrival."
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "id": "douro",
+        "label": ["Uma base no vale", "One valley base"],
+        "intro": [
+          "Organize cada dia pelo mesmo eixo do vale. Numa viagem de uma semana, 4 noites no Douro e 3 no Porto são outra opção, com mudança de alojamento.",
+          "Keep each day within one part of the valley. For a week-long trip, 4 nights in the Douro and 3 in Porto are another option, with a change of accommodation."
+        ],
+        "days": [
+          {
+            "place": ["Pinhão · Bomfim", "Pinhão · Bomfim"],
+            "title": ["Uma quinta e um almoço", "An estate and a long lunch"],
+            "text": [
+              "Reserve a visita à Quinta do Bomfim e mantenha a refeição no mesmo setor.",
+              "Book Quinta do Bomfim and keep your meal in the same area."
+            ]
+          },
+          {
+            "place": ["Régua · Linha do Douro", "Régua · Douro railway"],
+            "title": [
+              "Entender o rio e a paisagem",
+              "Understand the river and landscape"
+            ],
+            "text": [
+              "Combine Museu do Douro e um troço ferroviário escolhido pelos horários e pela localização da casa.",
+              "Pair the Douro Museum with a rail journey chosen around timetables and your home’s location."
+            ]
+          },
+          {
+            "place": ["Pinhão", "Pinhão"],
+            "title": [
+              "Ver o vale a partir da água",
+              "See the valley from the water"
+            ],
+            "text": [
+              "Escolha um passeio de rabelo com partida no Pinhão e reserve transporte até ao cais.",
+              "Choose a rabelo boat trip from Pinhão and arrange transport to the pier."
+            ]
+          },
+          {
+            "place": ["Um miradouro do vale", "A viewpoint over the valley"],
+            "title": ["Subir, parar, olhar", "Head up, pause, look"],
+            "text": [
+              "Escolha Galafura ou Casal de Loivos conforme a base e deixe a tarde para a casa.",
+              "Choose Galafura or Casal de Loivos around your base and keep the afternoon for home."
+            ]
+          },
+          {
+            "place": ["A sua quinta", "Your wine estate"],
+            "title": ["Um dia sem pressa", "A day without hurry"],
+            "text": [
+              "Aproveite a propriedade e uma refeição preparada ou reservada com antecedência.",
+              "Enjoy the property and a meal prepared or booked in advance."
+            ]
+          },
+          {
+            "place": ["O seu lugar preferido", "Your favourite place"],
+            "title": ["Guardar tempo para voltar", "Leave time to return"],
+            "text": [
+              "Repita um passeio ou uma mesa que gostou, sem acrescentar outra travessia do vale.",
+              "Return to a walk or table you enjoyed without adding another journey across the valley."
+            ]
+          }
+        ]
+      }
+    ],
+    "taste": [
+      "Dê à refeição o mesmo tempo que dá à paisagem. Reserve uma mesa no setor que vai visitar e combine o regresso antes de uma prova de vinho.",
+      "Give the meal as much time as the view. Book a table in the area you are visiting and arrange your return before a wine tasting."
+    ],
+    "tables": [
+      {
+        "name": "Bomfim 1896",
+        "place": ["Pinhão", "Pinhão"],
+        "text": [
+          "Uma refeição na Quinta do Bomfim, que pode completar o dia de visita à propriedade. Reserve a mesa separadamente.",
+          "A meal at Quinta do Bomfim to round off an estate visit. Book your table separately."
+        ],
+        "source": "D03"
+      },
+      {
+        "name": "DOC",
+        "place": ["Folgosa · Armamar", "Folgosa · Armamar"],
+        "text": [
+          "Uma mesa na estrada ribeirinha entre Régua e Pinhão. Planeie a deslocação como parte da refeição.",
+          "A table on the riverside road between Régua and Pinhão. Plan the journey as part of the meal."
+        ],
+        "source": "D06"
+      }
+    ],
+    "culture": [
+      {
+        "title": ["O Douro por dentro", "Understanding the Douro"],
+        "place": ["Peso da Régua", "Peso da Régua"],
+        "text": [
+          "O Museu do Douro dá contexto à paisagem e à história da região. Uma visita com interesse mesmo sem provas de vinho.",
+          "The Douro Museum brings context to the landscape and regional history. A worthwhile visit even without wine tasting."
+        ],
+        "source": "D04"
+      },
+      {
+        "title": ["Um rabelo no rio", "A rabelo on the river"],
+        "place": ["Pinhão", "Pinhão"],
+        "text": [
+          "O Magnífico Douro publica passeios com partida no Pinhão. Compare duração, cais e modalidade antes de reservar.",
+          "Magnífico Douro offers departures from Pinhão. Compare duration, pier and trip format before booking."
+        ],
+        "source": "D07"
+      },
+      {
+        "title": ["Vinha e vindima", "Vines and harvest"],
+        "place": ["Quinta do Bomfim", "Quinta do Bomfim"],
+        "text": [
+          "Descubra o trabalho de uma quinta. A participação em vindimas depende do produtor, do ano e do programa confirmado.",
+          "Discover the work of a wine estate. Harvest participation depends on the producer, year and confirmed programme."
+        ],
+        "source": "D03"
+      }
+    ],
+    "seasons": [
+      [
+        "Paisagem verde e passeios entre povoações.",
+        "Green scenery and walks between settlements."
+      ],
+      [
+        "Manhãs de visita e almoços demorados, com tempo na casa.",
+        "Morning visits and long lunches, with time at home."
+      ],
+      [
+        "Cor das vinhas e vindimas conforme o calendário do produtor.",
+        "Vineyard colour and harvest experiences on the producer’s calendar."
+      ],
+      [
+        "Museu, gastronomia e estadias com vista.",
+        "Museum visits, food and stays with a view."
+      ]
+    ],
+    "homes": [
+      "Escolha pela paisagem, pelo espaço e pela localização exata no vale. Nas casas apresentadas sob pedido, a disponibilidade e as condições são confirmadas antes de concluir a reserva.",
+      "Choose by scenery, space and exact valley location. For homes offered on request, availability and conditions are confirmed before completing the booking."
+    ],
+    "faqs": [
+      {
+        "question": [
+          "Régua, Pinhão ou uma quinta?",
+          "Régua, Pinhão or a rural estate?"
+        ],
+        "answer": [
+          "Régua ajuda na chegada e nos serviços; Pinhão aproxima rio e quintas; uma encosta privilegia privacidade e exige transporte combinado.",
+          "Régua helps with arrival and services; Pinhão brings river and estates together; hillside stays favour privacy and need arranged transport."
+        ]
+      },
+      {
+        "question": ["Posso ir sem carro?", "Can I visit without a car?"],
+        "answer": [
+          "Sim, escolhendo base e transporte em conjunto. Combine aeroporto–estação, comboio e o último percurso até à casa, além das saídas e regressos.",
+          "Yes, by choosing your base and transport together. Arrange airport-to-station travel, rail and the final journey home, plus outings and returns."
+        ]
+      },
+      {
+        "question": ["Uma excursão chega?", "Is a day trip enough?"],
+        "answer": [
+          "Dá uma primeira aproximação. Três noites permitem dois dias completos com mais tempo para o rio, uma quinta e a mesa.",
+          "It offers a first taste. Three nights give two full days with more time for the river, an estate and meals."
+        ]
+      },
+      {
+        "question": ["Preciso de gostar de vinho?", "Do I need to enjoy wine?"],
+        "answer": [
+          "Não. Paisagem, comboio, Museu do Douro, passeios no rio e gastronomia também justificam a viagem.",
+          "No. Scenery, rail journeys, the Douro Museum, river trips and food also make the journey worthwhile."
+        ]
+      },
+      {
+        "question": [
+          "Posso visitar quintas sem reserva?",
+          "Can I visit estates without booking?"
+        ],
+        "answer": [
+          "Consulte cada operador e reserve a modalidade pretendida. Horários e línguas de visita variam.",
+          "Check with each operator and book your preferred experience. Times and tour languages vary."
+        ]
+      },
+      {
+        "question": [
+          "Há vindimas em qualquer data de setembro?",
+          "Can I join a harvest on any September date?"
+        ],
+        "answer": [
+          "As datas e a participação dependem do ciclo da vinha e do programa de cada produtor. Confirme antes de viajar.",
+          "Dates and participation depend on the vineyard cycle and each producer’s programme. Confirm before travelling."
+        ]
+      },
+      {
+        "question": [
+          "A reserva da casa é imediata?",
+          "Is my home booking confirmed instantly?"
+        ],
+        "answer": [
+          "Quando o cartão indica pedido, aguarde a confirmação da disponibilidade e condições. O envio do pedido não confirma a estadia.",
+          "When a listing says on request, wait for availability and conditions to be confirmed. Sending a request does not confirm the stay."
+        ]
+      },
+      {
+        "question": [
+          "O shuttle inclui passeios?",
+          "Does the shuttle include outings?"
+        ],
+        "answer": [
+          "Inclui apenas os percursos acordados na proposta. Peça também as deslocações locais de que precisa durante a estadia.",
+          "It covers only the journeys agreed in the proposal. Also request any local journeys you need during your stay."
+        ]
+      }
+    ],
+    "seo": [
+      "Douro: onde ficar, quintas e viagem sem carro | Portugal Active",
+      "Douro Valley stays: wine, scenery and getting around | Portugal Active"
+    ]
+  },
+  "lisbon": {
+    "name": ["Lisboa", "Lisbon"],
+    "line": ["Cidade, serra e mar.", "City, hills and sea."],
+    "intro": [
+      "Ruas com vida, jardins de palácio e uma costa que convida a prolongar a viagem.",
+      "Lively streets, palace gardens and a coast that invites you to stay longer."
+    ],
+    "orientation": [
+      "Lisboa é a porta de entrada para viagens muito diferentes. A cidade vive junto ao Tejo; Cascais e Estoril abrem-se à costa; Sintra e Colares acrescentam serra e Atlântico. Escolha primeiro a base: estes lugares não são bairros contíguos.",
+      "Lisbon is the gateway to very different trips. The city sits by the Tagus; Cascais and Estoril open onto the coast; Sintra and Colares add wooded hills and Atlantic scenery. Choose your base first: these places are not adjoining neighbourhoods."
+    ],
+    "fit": [
+      "Para combinar cultura e gastronomia com dias de costa, jardins e paisagem.",
+      "For combining culture and food with coastal days, gardens and scenery."
+    ],
+    "airport": [
+      "Lisboa (LIS), com ligação escolhida pela morada.",
+      "Lisbon (LIS), with onward transport chosen around your address."
+    ],
+    "mobility": [
+      "Transportes na cidade e nas linhas de Cascais/Sintra; ligação final para cada casa.",
+      "Public transport in the city and on the Cascais/Sintra lines; a final connection for each home."
+    ],
+    "point": [78.1, 259.5],
+    "photo": {
+      "src": "/destinations/lisbon-cabo-roca.jpg",
+      "caption": ["Cabo da Roca · Sintra", "Cabo da Roca · Sintra"]
+    },
+    "moments": [
+      {
+        "place": ["Sintra · Pena", "Sintra · Pena"],
+        "title": [
+          "Um dia entre jardins e palácio.",
+          "A day of gardens and palace rooms."
+        ],
+        "text": [
+          "Escolha Pena como visita principal e guarde tempo para o parque. Uma visita bem preparada vale mais do que tentar ver todos os palácios.",
+          "Make Pena your main visit and leave time for the park. One well-planned visit is better than rushing every palace."
+        ],
+        "plan": [
+          "O interior tem entrada com data e hora. Organize o transporte até ao monumento.",
+          "Palace interiors require a dated, timed ticket. Arrange transport to the monument."
+        ],
+        "source": "L04"
+      },
+      {
+        "place": ["Cascais · Estoril", "Cascais · Estoril"],
+        "title": ["Dar espaço à costa.", "Make room for the coast."],
+        "text": [
+          "Escolha um passeio junto ao mar e uma refeição em Cascais. É um dia com ritmo próprio, sem o acumular com toda a serra.",
+          "Choose a seaside walk and a meal in Cascais. Give this day its own rhythm rather than combining it with all of Sintra."
+        ],
+        "plan": [
+          "Consulte a linha ferroviária de Cascais e o percurso final.",
+          "Check the Cascais rail line and your final connection."
+        ],
+        "source": "L02"
+      },
+      {
+        "place": ["Colares · Cabo da Roca", "Colares · Cabo da Roca"],
+        "title": ["Encontrar o Atlântico.", "Meet the Atlantic."],
+        "text": [
+          "Descubra a relação entre serra e costa, com uma paragem no Cabo da Roca e um percurso escolhido na zona de Colares.",
+          "Discover how the hills meet the coast, with a stop at Cabo da Roca and a chosen route around Colares."
+        ],
+        "plan": [
+          "Reserve um bloco próprio e confirme os acessos do passeio.",
+          "Give it its own part of the day and check access for your walk."
+        ],
+        "source": "L05"
+      }
+    ],
+    "bases": [
+      {
+        "name": "Lisboa",
+        "tag": ["CIDADE E TEJO", "CITY & TAGUS"],
+        "text": [
+          "Para bairros, museus e gastronomia com transporte urbano.",
+          "For neighbourhoods, museums and food with city transport."
+        ],
+        "transport": [
+          "Confirme colinas, escadas e ligação da estação à casa.",
+          "Check hills, steps and the station-to-home route."
+        ]
+      },
+      {
+        "name": "Cascais / Estoril",
+        "tag": ["MAIS TEMPO NA COSTA", "MORE COASTAL TIME"],
+        "text": [
+          "Para passeios junto ao mar e saídas de comboio para Lisboa.",
+          "For seaside walks and rail outings into Lisbon."
+        ],
+        "transport": [
+          "A proximidade à estação depende de cada casa.",
+          "Proximity to the station depends on each home."
+        ]
+      },
+      {
+        "name": "Sintra / Colares / Guincho",
+        "tag": ["SERRA E ATLÂNTICO", "HILLS & ATLANTIC"],
+        "text": [
+          "Para dar protagonismo à paisagem, aos jardins e ao oceano.",
+          "For a stay centred on scenery, gardens and the ocean."
+        ],
+        "transport": [
+          "Guincho e Colares pedem ligações próprias; não ficam na linha de Cascais.",
+          "Guincho and Colares need their own connections; they are not on the Cascais rail line."
+        ]
+      },
+      {
+        "name": "Barreiro",
+        "tag": ["A OUTRA MARGEM", "THE OTHER BANK"],
+        "text": [
+          "Uma base distinta, do outro lado do Tejo, com ligação fluvial à cidade.",
+          "A separate base across the Tagus, with a river connection into the city."
+        ],
+        "transport": [
+          "Conte com a travessia e o percurso entre terminal e casa.",
+          "Allow for the crossing and travel between terminal and home."
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "id": "lisboa",
+        "label": ["Cidade como base", "City as your base"],
+        "intro": [
+          "Um ponto de partida em Lisboa. Se ficar na costa ou na serra, inverta a ordem e mantenha cada dia na mesma zona.",
+          "A starting point based in Lisbon. If staying by the coast or in the hills, reverse the order and keep each day within one area."
+        ],
+        "days": [
+          {
+            "place": ["Lisboa · Tejo", "Lisbon · Tagus"],
+            "title": ["Bairros e rio", "Neighbourhoods and river"],
+            "text": [
+              "Escolha um percurso pelo centro e uma visita ao Museu do Fado, com almoço no mesmo setor.",
+              "Choose a walk through the centre and a visit to the Fado Museum, with lunch nearby."
+            ]
+          },
+          {
+            "place": ["Belém / Parque das Nações", "Belém / Parque das Nações"],
+            "title": ["Escolher o seu dia de cidade", "Choose your city day"],
+            "text": [
+              "Escolha Belém e a pausa de pastelaria, ou Parque das Nações e Oceanário. São dois programas alternativos.",
+              "Choose Belém and a pastry stop, or Parque das Nações and the Oceanarium. These are two alternative days."
+            ]
+          },
+          {
+            "place": ["Sintra", "Sintra"],
+            "title": ["Um palácio com tempo", "Give a palace time"],
+            "text": [
+              "Reserve Pena, organize a subida e deixe espaço para o parque e a vila.",
+              "Book Pena, arrange the journey uphill and leave time for the park and town."
+            ]
+          },
+          {
+            "place": ["Cascais · Estoril", "Cascais · Estoril"],
+            "title": [
+              "Uma tarde que chega ao mar",
+              "An afternoon beside the sea"
+            ],
+            "text": [
+              "Faça um dia de costa, passeio e refeição, com o regresso organizado.",
+              "Make a day of the coast, a walk and a meal, with the return arranged."
+            ]
+          },
+          {
+            "place": ["Colares · Cabo da Roca", "Colares · Cabo da Roca"],
+            "title": ["Serra e costa", "Hills and coast"],
+            "text": [
+              "Escolha uma saída com transporte reservado ou carro, respeitando os acessos locais.",
+              "Choose an outing with booked transport or a car, following local access arrangements."
+            ]
+          },
+          {
+            "place": ["A sua base", "Your base"],
+            "title": ["O dia fica por sua conta", "Keep a day for yourself"],
+            "text": [
+              "Repita o bairro ou a praia que mais gostou, ou reserve tempo para a casa.",
+              "Return to the neighbourhood or beach you enjoyed most, or leave time for home."
+            ]
+          }
+        ]
+      }
+    ],
+    "taste": [
+      "Uma mesa de produto no centro, uma pausa em Belém e peixe junto ao Guincho. Cada sugestão pertence a um dia e a uma zona diferentes.",
+      "A produce-led table in the centre, a pastry stop in Belém and fish beside Guincho. Each suggestion belongs to a different day and area."
+    ],
+    "tables": [
+      {
+        "name": "Prado",
+        "place": ["Lisboa", "Lisbon"],
+        "text": [
+          "Cozinha sazonal para uma refeição planeada no centro. Consulte a ementa e reserve para o grupo.",
+          "Seasonal cooking for a planned meal in the centre. Check the menu and book for your group."
+        ],
+        "source": "L08"
+      },
+      {
+        "name": "Pastéis de Belém",
+        "place": ["Belém · Lisboa", "Belém · Lisbon"],
+        "text": [
+          "Uma pausa doce integrada no passeio por Belém. Dê tempo ao bairro em vez de ir apenas pela fotografia.",
+          "A sweet stop as part of a Belém walk. Give the neighbourhood time beyond the photograph."
+        ],
+        "source": "L09"
+      },
+      {
+        "name": "Furnas do Guincho",
+        "place": ["Guincho · Cascais", "Guincho · Cascais"],
+        "text": [
+          "Uma refeição de peixe junto à costa, com deslocação e regresso planeados desde a casa.",
+          "A coastal fish meal, with travel and return planned from your home."
+        ],
+        "source": "L10"
+      }
+    ],
+    "culture": [
+      {
+        "title": ["Um oceano para descobrir", "An ocean to discover"],
+        "place": ["Parque das Nações", "Parque das Nações"],
+        "text": [
+          "O Oceanário dá um programa próprio a famílias e curiosos. Consulte bilhete, horários e acessibilidade.",
+          "The Oceanarium makes a dedicated outing for families and curious visitors. Check tickets, times and accessibility."
+        ],
+        "source": "L06"
+      },
+      {
+        "title": ["A cidade na voz do fado", "The city through fado"],
+        "place": ["Alfama", "Alfama"],
+        "text": [
+          "O Museu do Fado ajuda a conhecer uma expressão da cultura de Lisboa, sem depender de um espetáculo noturno.",
+          "The Fado Museum reveals a part of Lisbon’s culture without relying on an evening performance."
+        ],
+        "source": "L07"
+      },
+      {
+        "title": ["Pena e o parque", "Pena and its park"],
+        "place": ["Sintra", "Sintra"],
+        "text": [
+          "Escolha os espaços que quer conhecer e prepare o acesso com as orientações de Parques de Sintra.",
+          "Choose the spaces you want to see and prepare access using Parques de Sintra’s guidance."
+        ],
+        "source": "L04"
+      }
+    ],
+    "seasons": [
+      [
+        "Jardins, bairros e passeios na serra.",
+        "Gardens, neighbourhoods and hill walks."
+      ],
+      [
+        "Cidade e costa em dias separados, com visitas reservadas.",
+        "City and coast on separate days, with visits booked."
+      ],
+      [
+        "Gastronomia, museus e descoberta de Cascais.",
+        "Food, museums and time to discover Cascais."
+      ],
+      [
+        "Escapadas culturais entre Lisboa e os palácios de Sintra.",
+        "Cultural breaks between Lisbon and Sintra’s palaces."
+      ]
+    ],
+    "homes": [
+      "Compare a localidade antes da casa: Lisboa, Cascais, Estoril, Sintra, Colares, Guincho e Barreiro implicam chegadas e programas diferentes. Os cartões mostram a localização de cada opção.",
+      "Compare locality before choosing the home: Lisbon, Cascais, Estoril, Sintra, Colares, Guincho and Barreiro mean different journeys and plans. Each listing shows its location."
+    ],
+    "faqs": [
+      {
+        "question": ["Lisboa ou Cascais?", "Lisbon or Cascais?"],
+        "answer": [
+          "Lisboa privilegia bairros e programa urbano; Cascais dá mais tempo à costa. Escolha pelo tipo de dias que quer repetir.",
+          "Lisbon favours neighbourhoods and city activities; Cascais gives more time to the coast. Choose around the days you want to repeat."
+        ]
+      },
+      {
+        "question": [
+          "Sintra é um bairro de Lisboa?",
+          "Is Sintra a Lisbon neighbourhood?"
+        ],
+        "answer": [
+          "Não. É outra base, com serra, palácios e deslocações próprias.",
+          "No. It is a separate base, with hills, palaces and its own journeys."
+        ]
+      },
+      {
+        "question": ["Preciso de carro?", "Do I need a car?"],
+        "answer": [
+          "Menos numa base urbana próxima de transportes; mais útil para casas e passeios dispersos. Nos monumentos, siga as regras locais de acesso.",
+          "Less so near city transport; more useful for dispersed homes and outings. Follow local access rules at monuments."
+        ]
+      },
+      {
+        "question": ["Quantas noites ficar?", "How many nights should I stay?"],
+        "answer": [
+          "Três numa zona; cinco ou sete para acrescentar costa e serra sem concentrar tudo nos mesmos dias.",
+          "Three in one area; five or seven to add coast and hills without crowding everything into the same days."
+        ]
+      },
+      {
+        "question": ["Tenho de reservar Pena?", "Do I need to book Pena?"],
+        "answer": [
+          "O interior do palácio tem bilhete com data e hora. Consulte as regras e prepare também a viagem até à entrada.",
+          "Palace interiors require a dated, timed ticket. Check the rules and plan the journey to the entrance too."
+        ]
+      },
+      {
+        "question": [
+          "Barreiro fica no centro?",
+          "Is Barreiro in central Lisbon?"
+        ],
+        "answer": [
+          "Não. Fica na outra margem do Tejo. A ligação fluvial e o percurso até à casa fazem parte da deslocação.",
+          "No. It is across the Tagus. The river crossing and journey to your home are part of the trip."
+        ]
+      },
+      {
+        "question": [
+          "O que fazer com crianças?",
+          "What can we do with children?"
+        ],
+        "answer": [
+          "Oceanário, jardins e costa permitem alternar visitas e tempo livre. Escolha uma experiência principal por dia.",
+          "The Oceanarium, gardens and coast let you alternate visits and free time. Choose one main experience each day."
+        ]
+      },
+      {
+        "question": ["Organizam transfer?", "Can you arrange a transfer?"],
+        "answer": [
+          "Sim. A Portugal Active prepara propostas de shuttle conforme aeroporto, voo, grupo e endereço, sujeitas a confirmação.",
+          "Yes. Portugal Active prepares shuttle proposals around your airport, flight, group and address, subject to confirmation."
+        ]
+      }
+    ],
+    "seo": [
+      "Lisboa, Sintra ou Cascais: escolha onde ficar | Portugal Active",
+      "Lisbon, Sintra or Cascais: find your holiday base | Portugal Active"
+    ]
+  },
+  "alentejo": {
+    "name": ["Alentejo", "Alentejo"],
+    "line": ["Tempo para ficar.", "Time to stay."],
+    "intro": [
+      "Dunas e pinhais na costa. Paisagens abertas no interior. Escolha o seu ritmo e dê-lhe tempo.",
+      "Dunes and pinewoods on the coast. Open landscapes inland. Choose your pace and give it time."
+    ],
+    "orientation": [
+      "O Alentejo pede uma primeira escolha: costa ou campo. Comporta e Carvalhal convidam a dias de praia; Ferreira do Alentejo abre a porta à paisagem agrícola, ao azeite e ao cante. Évora e Alqueva merecem uma etapa própria.",
+      "The Alentejo starts with a choice: coast or countryside. Comporta and Carvalhal invite beach days; Ferreira do Alentejo opens onto farming landscapes, olive oil and traditional singing. Évora and Alqueva deserve a separate stage."
+    ],
+    "fit": [
+      "Para férias em casa, refeições demoradas e descobertas perto da base, a dois ou em grupo.",
+      "For holidays at home, leisurely meals and discoveries near your base, as a couple or a group."
+    ],
+    "airport": [
+      "Lisboa (LIS) para Comporta; compare Faro (FAO) para o interior e sul.",
+      "Lisbon (LIS) for Comporta; compare Faro (FAO) for inland and southern stays."
+    ],
+    "mobility": [
+      "Carro ou transporte reservado para casas e visitas dispersas.",
+      "A car or booked transport for dispersed homes and visits."
+    ],
+    "point": [140.3, 286.8],
+    "photo": {
+      "src": "/destinations/alentejo-comporta.jpg",
+      "caption": [
+        "Litoral entre Comporta e Torre",
+        "Coast between Comporta and Torre"
+      ]
+    },
+    "moments": [
+      {
+        "place": ["Comporta · Carvalhal", "Comporta · Carvalhal"],
+        "title": [
+          "Uma praia para o dia inteiro.",
+          "A beach for the whole day."
+        ],
+        "text": [
+          "Escolha o areal perto da casa, combine o almoço no mesmo setor e guarde tempo para regressar ao seu ritmo.",
+          "Choose a beach near your home, have lunch in the same area and return at your own pace."
+        ],
+        "plan": [
+          "Confirme o percurso até à entrada da praia, além da distância no mapa.",
+          "Check the route to the beach entrance, not only the distance on a map."
+        ],
+        "source": "T02"
+      },
+      {
+        "place": ["Carrasqueira", "Carrasqueira"],
+        "title": [
+          "A paisagem tem vida própria.",
+          "A landscape with its own life."
+        ],
+        "text": [
+          "Descubra a memória das comunidades costeiras e a paisagem junto à Comporta. A atividade local faz parte do lugar.",
+          "Discover coastal community stories and scenery near Comporta. Local working life is part of the setting."
+        ],
+        "plan": [
+          "Combine com um passeio no eixo de Comporta e respeite os acessos em uso.",
+          "Pair it with an outing around Comporta and respect working access routes."
+        ],
+        "source": "T02"
+      },
+      {
+        "place": ["Ferreira do Alentejo", "Ferreira do Alentejo"],
+        "title": [
+          "Conhecer o campo por dentro.",
+          "Discover the countryside from within."
+        ],
+        "text": [
+          "Olival, agricultura e sabores dão conteúdo a uma estadia no interior. Uma visita marcada aproxima-o de quem trabalha a terra.",
+          "Olive groves, farming and local flavours bring meaning to an inland stay. A booked visit brings you closer to those working the land."
+        ],
+        "plan": [
+          "Escolha uma visita organizada a produtor; as propriedades têm acesso próprio.",
+          "Choose an organised producer visit; estates have their own access arrangements."
+        ],
+        "source": "T03"
+      }
+    ],
+    "bases": [
+      {
+        "name": "Comporta / Carvalhal",
+        "tag": ["COSTA E PINHAL", "COAST & PINES"],
+        "text": [
+          "Praia, paisagem agrícola e dias vividos em casa.",
+          "Beaches, farming landscapes and days enjoyed at home."
+        ],
+        "transport": [
+          "O nome Comporta não garante praia a pé; confirme aldeia e acesso.",
+          "A Comporta label does not guarantee a walk to the beach; check village and access."
+        ]
+      },
+      {
+        "name": "Ferreira do Alentejo",
+        "tag": ["CAMPO E SABORES", "COUNTRYSIDE & FLAVOURS"],
+        "text": [
+          "Azeite, gastronomia e cultura num programa de interior.",
+          "Olive oil, food and culture for an inland stay."
+        ],
+        "transport": [
+          "Organize visitas, refeições e deslocações na mesma zona.",
+          "Arrange visits, meals and transport within the same area."
+        ]
+      },
+      {
+        "name": "Évora / Alqueva",
+        "tag": ["PROLONGAR A VIAGEM", "EXTEND THE JOURNEY"],
+        "text": [
+          "Património e céu noturno como motivos para outra etapa.",
+          "Heritage and night skies as reasons for another stage."
+        ],
+        "transport": [
+          "Planeie outra base ou o percurso completo; não são passeios locais de Comporta.",
+          "Plan another base or the full journey; these are not local Comporta outings."
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "id": "coast",
+        "label": ["Costa de Comporta", "Comporta coast"],
+        "intro": [
+          "Uma base costeira, com praias e visitas no mesmo setor.",
+          "A coastal base, with beaches and visits in the same area."
+        ],
+        "days": [
+          {
+            "place": ["Comporta / Carvalhal", "Comporta / Carvalhal"],
+            "title": ["Escolher a sua praia", "Find your beach"],
+            "text": [
+              "Dedique o primeiro dia ao areal mais conveniente para a casa e a um almoço próximo.",
+              "Give the first day to the beach most convenient for your home and lunch nearby."
+            ]
+          },
+          {
+            "place": ["Comporta", "Comporta"],
+            "title": ["Vila e adega", "Village and winery"],
+            "text": [
+              "Reserve a visita à adega da Herdade da Comporta e deixe tempo para a vila e a mesa.",
+              "Book the Herdade da Comporta winery and leave time for the village and a meal."
+            ]
+          },
+          {
+            "place": ["Carrasqueira", "Carrasqueira"],
+            "title": ["Uma paisagem com histórias", "A landscape with stories"],
+            "text": [
+              "Conheça a paisagem costeira e as comunidades locais numa saída com tempo livre.",
+              "Discover coastal scenery and local communities on an outing with free time."
+            ]
+          },
+          {
+            "place": ["Carvalhal", "Carvalhal"],
+            "title": ["Outro dia de areia", "Another day on the sand"],
+            "text": [
+              "Escolha uma segunda praia ou repita a favorita, sem obrigação de mudar de cenário.",
+              "Choose a second beach or return to your favourite without having to change scenery."
+            ]
+          },
+          {
+            "place": ["Comporta", "Comporta"],
+            "title": ["Uma experiência escolhida", "One chosen experience"],
+            "text": [
+              "Consulte um passeio a cavalo adequado ao grupo ou escolha uma caminhada próxima.",
+              "Explore a horse ride suited to your group or choose a nearby walk."
+            ]
+          },
+          {
+            "place": ["A sua casa", "Your home"],
+            "title": [
+              "Ficar também é viajar",
+              "Staying put is part of travelling"
+            ],
+            "text": [
+              "Deixe o dia para a casa, o jardim e uma refeição com tempo.",
+              "Leave the day for your home, the garden and a leisurely meal."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "inland",
+        "label": ["Interior de Ferreira", "Ferreira countryside"],
+        "intro": [
+          "Um programa próprio de interior, sem deslocações diárias à costa.",
+          "A dedicated inland itinerary without daily journeys to the coast."
+        ],
+        "days": [
+          {
+            "place": ["Ferreira do Alentejo", "Ferreira do Alentejo"],
+            "title": ["A vila e os sabores", "Town and flavours"],
+            "text": [
+              "Descubra Ferreira e escolha uma refeição de cozinha alentejana.",
+              "Discover Ferreira and choose a meal of Alentejo cooking."
+            ]
+          },
+          {
+            "place": ["Herdade do Marmelo", "Herdade do Marmelo"],
+            "title": ["O mundo do azeite", "The world of olive oil"],
+            "text": [
+              "Marque uma visita ligada à produção de azeite e deixe a tarde para descansar.",
+              "Book an olive-oil visit and leave the afternoon to rest."
+            ]
+          },
+          {
+            "place": ["Casa do Vinho e do Cante", "Casa do Vinho e do Cante"],
+            "title": ["Cultura por marcação", "A booked cultural visit"],
+            "text": [
+              "Combine uma visita para conhecer o vinho de talha e a cultura do cante; confirme o programa disponível.",
+              "Arrange a visit to learn about clay-pot wine and cante singing; confirm the available programme."
+            ]
+          },
+          {
+            "place": ["Vale da Rosa", "Vale da Rosa"],
+            "title": ["Da terra à mesa", "From land to table"],
+            "text": [
+              "Consulte uma visita à produção de uva de mesa, com programa confirmado para a data.",
+              "Enquire about a table-grape production visit, with the programme confirmed for your date."
+            ]
+          },
+          {
+            "place": ["Ferreira", "Ferreira"],
+            "title": ["Um passeio na região", "A local outing"],
+            "text": [
+              "Escolha uma rota local adequada ao grupo, com almoço no mesmo setor.",
+              "Choose a local route suited to your group, with lunch in the same area."
+            ]
+          },
+          {
+            "place": ["A sua casa", "Your home"],
+            "title": ["Um dia inteiro para si", "A whole day for yourself"],
+            "text": [
+              "Descanse e aproveite a casa; uma extensão a Évora ou Alqueva pede planeamento próprio.",
+              "Rest and enjoy your home; an extension to Évora or Alqueva needs its own planning."
+            ]
+          }
+        ]
+      }
+    ],
+    "taste": [
+      "Na costa, uma mesa de produto e uma visita à adega. No interior, azeite, cozinha alentejana e a cultura do vinho de talha. São programas para bases diferentes.",
+      "On the coast, produce-led cooking and a winery visit. Inland, olive oil, Alentejo food and clay-pot wine culture. These are programmes for different bases."
+    ],
+    "tables": [
+      {
+        "name": "Cavalariça",
+        "place": ["Comporta", "Comporta"],
+        "text": [
+          "Cozinha ligada ao produto regional para uma refeição planeada na vila. Consulte a ementa e reserve.",
+          "Cooking rooted in regional produce for a planned meal in the village. Check the menu and book."
+        ],
+        "source": "T06"
+      },
+      {
+        "name": "Adega da Herdade da Comporta",
+        "place": ["Comporta", "Comporta"],
+        "text": [
+          "Uma visita e prova junto ao núcleo costeiro. Os vinhos pertencem à região vitivinícola da Península de Setúbal.",
+          "A winery visit and tasting near the coast. The wines belong to the Península de Setúbal wine region."
+        ],
+        "source": "T01"
+      },
+      {
+        "name": "Sabores com Memória",
+        "place": ["Ferreira do Alentejo", "Ferreira do Alentejo"],
+        "text": [
+          "Cozinha portuguesa e alentejana para o ramo interior da viagem. Confirme abertura e mesa para a sua data.",
+          "Portuguese and Alentejo cooking for the inland part of your trip. Confirm opening and a table for your date."
+        ],
+        "source": "T09"
+      }
+    ],
+    "culture": [
+      {
+        "title": ["A cavalo na Comporta", "Horse riding in Comporta"],
+        "place": ["Comporta", "Comporta"],
+        "text": [
+          "Cavalos na Areia publica programas na região. Escolha nível, percurso e requisitos com o operador.",
+          "Cavalos na Areia offers regional programmes. Choose level, route and requirements with the operator."
+        ],
+        "source": "T13"
+      },
+      {
+        "title": ["O azeite do Marmelo", "Marmelo olive oil"],
+        "place": ["Ferreira do Alentejo", "Ferreira do Alentejo"],
+        "text": [
+          "Conheça a produção de azeite numa visita previamente marcada.",
+          "Discover olive-oil production on a visit arranged in advance."
+        ],
+        "source": "T07"
+      },
+      {
+        "title": ["Vinho de talha e cante", "Clay-pot wine and cante"],
+        "place": ["Ferreira do Alentejo", "Ferreira do Alentejo"],
+        "text": [
+          "A Casa do Vinho e do Cante aproxima-o destas tradições. Consulte o programa; uma atuação depende de marcação específica.",
+          "Casa do Vinho e do Cante introduces these traditions. Check the programme; a performance requires specific arrangements."
+        ],
+        "source": "T08"
+      },
+      {
+        "title": ["A uva de mesa", "Table grapes"],
+        "place": ["Vale da Rosa · Ferreira", "Vale da Rosa · Ferreira"],
+        "text": [
+          "Descubra uma produção agrícola distinta do vinho, com visita e programa confirmados.",
+          "Discover a farming tradition distinct from wine, with a confirmed visit and programme."
+        ],
+        "source": "T10"
+      }
+    ],
+    "seasons": [
+      [
+        "Paisagem e percursos escolhidos na região da casa.",
+        "Scenery and chosen walks near your home."
+      ],
+      [
+        "Costa, descanso e atividades ao início ou final do dia.",
+        "Coast, rest and activities early or late in the day."
+      ],
+      [
+        "Sabores, produção agrícola e caminhadas.",
+        "Local flavours, farming and walks."
+      ],
+      [
+        "Escapadas de gastronomia e cultura no interior.",
+        "Short food and culture breaks inland."
+      ]
+    ],
+    "homes": [
+      "A seleção concentra-se na zona de Comporta e em Ferreira do Alentejo. Escolha primeiro costa ou interior e confirme a localização de cada casa; Évora e Alqueva são outras etapas.",
+      "The selection focuses on the Comporta area and Ferreira do Alentejo. Choose coast or inland first and check each home’s location; Évora and Alqueva are separate stages."
+    ],
+    "faqs": [
+      {
+        "question": ["Costa ou interior?", "Coast or countryside?"],
+        "answer": [
+          "Comporta e Carvalhal dão prioridade à praia e ao pinhal. Ferreira combina paisagem agrícola, azeite e cultura local.",
+          "Comporta and Carvalhal favour beaches and pinewoods. Ferreira combines farming landscapes, olive oil and local culture."
+        ]
+      },
+      {
+        "question": [
+          "As casas ficam perto de Évora ou Alqueva?",
+          "Are the homes near Évora or Alqueva?"
+        ],
+        "answer": [
+          "Consulte a localização concreta. A seleção desta página centra-se em Comporta e Ferreira; planeie Évora e Alqueva como outra etapa.",
+          "Check the exact location. This page focuses on Comporta and Ferreira; plan Évora and Alqueva as another stage."
+        ]
+      },
+      {
+        "question": ["Preciso de carro?", "Do I need a car?"],
+        "answer": [
+          "Ajuda a combinar saídas. Pode também organizar transportes e refeições previamente para uma estadia mais centrada na casa.",
+          "It helps combine outings. You can also arrange transport and meals in advance for a stay more centred on your home."
+        ]
+      },
+      {
+        "question": ["Quantas noites ficar?", "How many nights should I stay?"],
+        "answer": [
+          "Três para conhecer uma base; cinco ou sete para aproveitar mais a casa e a região próxima.",
+          "Three to discover one base; five or seven to enjoy more time at home and nearby."
+        ]
+      },
+      {
+        "question": [
+          "Comporta significa praia a pé?",
+          "Does Comporta mean walking to the beach?"
+        ],
+        "answer": [
+          "Não necessariamente. Confirme a aldeia, a estrada e o percurso até à entrada da praia de cada casa.",
+          "Not necessarily. Check each home’s village, road and route to the beach entrance."
+        ]
+      },
+      {
+        "question": [
+          "Posso incluir a Rota Vicentina?",
+          "Can I include the Rota Vicentina?"
+        ],
+        "answer": [
+          "Sim, como extensão planeada. Escolha etapa e dificuldade: o Trilho dos Pescadores é linear e exigente; há também percursos circulares com condições próprias.",
+          "Yes, as a planned extension. Choose the stage and difficulty: the Fishermen’s Trail is linear and demanding; circular routes have their own conditions."
+        ]
+      },
+      {
+        "question": [
+          "Há experiências além do vinho?",
+          "Are there experiences beyond wine?"
+        ],
+        "answer": [
+          "Sim: azeite no Marmelo, uva de mesa no Vale da Rosa e programas culturais em Ferreira, mediante marcação.",
+          "Yes: olive oil at Marmelo, table grapes at Vale da Rosa and cultural programmes in Ferreira, by arrangement."
+        ]
+      },
+      {
+        "question": ["Organizam a chegada?", "Can you arrange our arrival?"],
+        "answer": [
+          "A Portugal Active organiza shuttles mediante proposta, conforme o aeroporto e a morada. Confirme também as saídas de que precisa.",
+          "Portugal Active arranges shuttles by proposal, according to airport and address. Also confirm any outings you need."
+        ]
+      }
+    ],
+    "seo": [
+      "Alentejo: costa, campo e onde ficar | Portugal Active",
+      "Alentejo stays: Comporta coast or countryside | Portugal Active"
+    ]
+  },
+  "algarve": {
+    "name": ["Algarve", "Algarve"],
+    "line": ["Encontre a sua costa.", "Find your coast."],
+    "intro": [
+      "Falésias e enseadas, ilhas de areia ou dias junto à ria. As férias começam por escolher a sua paisagem.",
+      "Cliffs and coves, sandy islands or days beside the lagoon. Your holiday begins with choosing your landscape."
+    ],
+    "orientation": [
+      "No sul de Portugal, o Algarve muda ao longo da costa. Lagos e o oeste revelam falésias; o centro reúne ambientes distintos; Faro, Olhão e Tavira abrem a viagem à Ria Formosa. Uma boa base vale mais do que atravessar a região todos os dias.",
+      "In southern Portugal, the Algarve changes along the coast. Lagos and the west reveal cliffs; the centre brings together different settings; Faro, Olhão and Tavira open onto the Ria Formosa. A well-chosen base beats crossing the region every day."
+    ],
+    "fit": [
+      "Para famílias, casais e amigos que querem combinar praia, natureza e tempo na casa.",
+      "For families, couples and friends combining beaches, nature and time at home."
+    ],
+    "airport": [
+      "Faro (FAO); Lisboa faz sentido numa viagem por várias regiões.",
+      "Faro (FAO); Lisbon suits a trip through several regions."
+    ],
+    "mobility": [
+      "Escolha casa, praia e cais na mesma zona; combine o último percurso.",
+      "Choose home, beach and pier within the same area; arrange the final connection."
+    ],
+    "point": [132.7, 364.7],
+    "photo": {
+      "src": "/destinations/algarve-ria-formosa.jpg",
+      "caption": ["Ria Formosa vista de Faro", "Ria Formosa seen from Faro"]
+    },
+    "moments": [
+      {
+        "place": ["Lagos · Ponta da Piedade", "Lagos · Ponta da Piedade"],
+        "title": ["A costa vista de cima.", "The coast from above."],
+        "text": [
+          "Escolha um troço dos passadiços e dê tempo à paisagem de falésias e enseadas.",
+          "Choose a stretch of boardwalk and leave time for the cliffs and coves."
+        ],
+        "plan": [
+          "Uma manhã ou final de tarde, com o regresso planeado.",
+          "A morning or late afternoon, with your return planned."
+        ],
+        "source": "G01"
+      },
+      {
+        "place": ["Faro · Ria Formosa", "Faro · Ria Formosa"],
+        "title": [
+          "Um dia entre ria e ilhas.",
+          "A day among lagoon and islands."
+        ],
+        "text": [
+          "Escolha um programa de barco da Formosamar com partida em Faro. Compare paragens e duração para encontrar o seu ritmo.",
+          "Choose a Formosamar boat trip from Faro. Compare stops and duration to find your pace."
+        ],
+        "plan": [
+          "Confirme cais, embarque e regresso. A observação de animais depende do dia.",
+          "Confirm pier, boarding and return. Wildlife sightings depend on the day."
+        ],
+        "source": "G02"
+      },
+      {
+        "place": ["Marinha · Vale Centeanes", "Marinha · Vale Centeanes"],
+        "title": [
+          "Caminhar pelos Sete Vales.",
+          "Walk the Seven Hanging Valleys."
+        ],
+        "text": [
+          "Um percurso de paisagem costeira para quem quer caminhar. Escolha o total ou um segmento adequado ao grupo.",
+          "A coastal landscape trail for those who enjoy walking. Choose the full route or a section suited to your group."
+        ],
+        "plan": [
+          "Percurso linear, moderado: 11,2 km ida e volta. Planeie água, pausas e regresso.",
+          "A moderate linear route: 11.2 km out and back. Plan water, breaks and your return."
+        ],
+        "source": "G04"
+      }
+    ],
+    "bases": [
+      {
+        "name": "Oeste / Lagos",
+        "tag": ["FALÉSIAS E ENSEADAS", "CLIFFS & COVES"],
+        "text": [
+          "Para paisagem costeira, praias e vida de cidade junto ao mar.",
+          "For coastal scenery, beaches and seaside town life."
+        ],
+        "transport": [
+          "Veja escadas, acessos e o trajeto da casa às praias.",
+          "Check steps, access and the journey from home to beaches."
+        ]
+      },
+      {
+        "name": "Centro / Albufeira / Loulé",
+        "tag": ["ESCOLHER O AMBIENTE", "CHOOSE YOUR SETTING"],
+        "text": [
+          "Casas e atividades em ambientes diferentes, incluindo a Quinta do Lago.",
+          "Homes and activities in different settings, including Quinta do Lago."
+        ],
+        "transport": [
+          "Confirme a subzona: o rótulo centro não define a distância ao mar.",
+          "Check the specific area: a central label does not define distance to the sea."
+        ]
+      },
+      {
+        "name": "Leste / Faro / Olhão / Tavira",
+        "tag": ["RIA E ILHAS", "LAGOON & ISLANDS"],
+        "text": [
+          "Para combinar cidades, laguna e areais alcançados de barco.",
+          "For towns, lagoon scenery and beaches reached by boat."
+        ],
+        "transport": [
+          "Escolha cais e horários conforme a ilha e a localização da casa.",
+          "Choose piers and times around your island and home location."
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "id": "west",
+        "label": ["Oeste", "West"],
+        "intro": [
+          "Uma base no oeste; dê prioridade a Lagos e à costa envolvente.",
+          "A western base; prioritise Lagos and the surrounding coast."
+        ],
+        "days": [
+          {
+            "place": ["Lagos", "Lagos"],
+            "title": ["Cidade e Ponta da Piedade", "Town and Ponta da Piedade"],
+            "text": [
+              "Combine um passeio na cidade com um troço dos passadiços.",
+              "Pair a town walk with a stretch of boardwalk."
+            ]
+          },
+          {
+            "place": ["A praia da sua zona", "Your local beach"],
+            "title": ["Um areal, um dia", "One beach, one day"],
+            "text": [
+              "Escolha a praia pelos acessos e serviços que procura; fique para o almoço.",
+              "Choose a beach for the access and services you need; stay for lunch."
+            ]
+          },
+          {
+            "place": ["Silves", "Silves"],
+            "title": ["História no interior", "History inland"],
+            "text": [
+              "Faça uma saída ao castelo e à cidade, com transporte organizado.",
+              "Visit the castle and town, with transport arranged."
+            ]
+          },
+          {
+            "place": ["Marinha / Vale Centeanes", "Marinha / Vale Centeanes"],
+            "title": ["Um percurso costeiro", "A coastal walk"],
+            "text": [
+              "Escolha um segmento dos Sete Vales conforme o grupo e o trajeto desde a casa.",
+              "Choose a section of the Seven Hanging Valleys around your group and journey from home."
+            ]
+          },
+          {
+            "place": ["A sua casa", "Your home"],
+            "title": ["Dias de férias", "Holiday time"],
+            "text": [
+              "Reserve um dia para a casa e para repetir um lugar próximo.",
+              "Leave a day for home and a favourite nearby place."
+            ]
+          },
+          {
+            "place": ["Costa oeste", "Western coast"],
+            "title": ["Uma experiência no mar", "An experience at sea"],
+            "text": [
+              "Consulte uma atividade com operador e escolha a duração e as condições para o grupo.",
+              "Explore an operator-led activity and choose the duration and conditions for your group."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "centre",
+        "label": ["Centro", "Centre"],
+        "intro": [
+          "Parta da subzona da casa: Albufeira, Loulé e Quinta do Lago pedem programas diferentes.",
+          "Start with your home’s specific area: Albufeira, Loulé and Quinta do Lago call for different plans."
+        ],
+        "days": [
+          {
+            "place": ["Perto da sua casa", "Near your home"],
+            "title": ["Encontrar a sua praia", "Find your beach"],
+            "text": [
+              "Escolha um areal com acessos adequados e uma refeição por perto.",
+              "Choose a beach with suitable access and a meal nearby."
+            ]
+          },
+          {
+            "place": [
+              "Quinta do Lago / zona da casa",
+              "Quinta do Lago / your local area"
+            ],
+            "title": ["Natureza ao seu ritmo", "Nature at your pace"],
+            "text": [
+              "Escolha um percurso de natureza na Quinta do Lago se ficar nesse eixo, ou um passeio junto à sua base.",
+              "Choose a Quinta do Lago nature trail if based nearby, or a walk around your own base."
+            ]
+          },
+          {
+            "place": ["Silves / Loulé", "Silves / Loulé"],
+            "title": ["Um dia de cultura", "A cultural day"],
+            "text": [
+              "Escolha uma cidade próxima para passear e almoçar, sem acumular duas saídas.",
+              "Choose a nearby town for a walk and lunch without combining two outings."
+            ]
+          },
+          {
+            "place": ["Costa central", "Central coast"],
+            "title": ["Passeio e descanso", "Walk and rest"],
+            "text": [
+              "Reserve uma manhã de costa e deixe a tarde para a casa.",
+              "Set aside a coastal morning and keep the afternoon for home."
+            ]
+          },
+          {
+            "place": ["Um cais escolhido", "Your chosen quay"],
+            "title": ["Ver a costa da água", "See the coast from the water"],
+            "text": [
+              "Reserve uma atividade com operador, confirmando cais, duração e condições.",
+              "Book an operator-led activity, confirming pier, duration and conditions."
+            ]
+          },
+          {
+            "place": ["A sua base", "Your base"],
+            "title": ["Repetir o que gostou", "Repeat what you enjoyed"],
+            "text": [
+              "Volte à praia ou à mesa preferida e mantenha o último dia livre.",
+              "Return to a favourite beach or table and keep the final day free."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "east",
+        "label": ["Leste e ria", "East and lagoon"],
+        "intro": [
+          "Uma base no eixo da ria, com cidades e saídas de barco no mesmo programa.",
+          "A base around the lagoon, with towns and boat outings in one programme."
+        ],
+        "days": [
+          {
+            "place": ["Faro · Ria Formosa", "Faro · Ria Formosa"],
+            "title": ["Conhecer a ria", "Discover the lagoon"],
+            "text": [
+              "Escolha um passeio com partida em Faro, ajustado à duração e paragens que procura.",
+              "Choose a trip from Faro around your preferred duration and stops."
+            ]
+          },
+          {
+            "place": ["Olhão", "Olhão"],
+            "title": ["Mercados e cidade", "Markets and town"],
+            "text": [
+              "Passeie pelos mercados e ruas, com uma refeição de produtos locais.",
+              "Explore the markets and streets, with a meal of local produce."
+            ]
+          },
+          {
+            "place": ["Tavira", "Tavira"],
+            "title": ["Uma cidade para demorar", "A town to linger in"],
+            "text": [
+              "Dedique o dia ao centro de Tavira e a uma mesa reservada.",
+              "Give a day to central Tavira and a booked table."
+            ]
+          },
+          {
+            "place": ["Uma ilha da ria", "A lagoon island"],
+            "title": ["O dia começa no cais", "The day begins at the pier"],
+            "text": [
+              "Escolha uma praia insular e organize ida, regresso e transporte até ao cais.",
+              "Choose an island beach and arrange both boat journeys and transport to the pier."
+            ]
+          },
+          {
+            "place": ["Perto da casa", "Near your home"],
+            "title": ["Um passeio de natureza", "A nature walk"],
+            "text": [
+              "Selecione um percurso próximo e deixe tempo para observar a paisagem.",
+              "Choose a nearby route and leave time to take in the scenery."
+            ]
+          },
+          {
+            "place": ["A sua base", "Your base"],
+            "title": ["Tempo de férias", "Time for a holiday"],
+            "text": [
+              "Repita uma praia, descanse na casa e termine a semana sem uma travessia de toda a região.",
+              "Return to a beach, rest at home and finish the week without crossing the entire region."
+            ]
+          }
+        ]
+      }
+    ],
+    "taste": [
+      "Peixe junto à praia, produtos de mercado e uma refeição especial na cidade. Escolha a mesa na zona onde está a passar o dia.",
+      "Fish by the beach, market produce and a special meal in town. Pick your table in the area where you are spending the day."
+    ],
+    "tables": [
+      {
+        "name": "Rei das Praias",
+        "place": ["Caneiros · Ferragudo", "Caneiros · Ferragudo"],
+        "text": [
+          "Uma refeição costeira para um dia no oeste ou centro. Consulte a ementa e reserve a mesa.",
+          "A coastal meal for a day in the west or centre. Check the menu and book a table."
+        ],
+        "source": "G07"
+      },
+      {
+        "name": "A Ver Tavira",
+        "place": ["Centro histórico · Tavira", "Tavira old town"],
+        "text": [
+          "Uma refeição planeada para o seu dia em Tavira, com cozinha de produto e sazonalidade.",
+          "A planned meal for your Tavira day, with produce-led, seasonal cooking."
+        ],
+        "source": "G08"
+      },
+      {
+        "name": "Mercados de Olhão",
+        "place": ["Olhão", "Olhão"],
+        "text": [
+          "Produtos e vida local junto à ria. Consulte o funcionamento para escolher a manhã da visita.",
+          "Produce and local life beside the lagoon. Check opening arrangements when choosing your morning."
+        ],
+        "source": "G09"
+      }
+    ],
+    "culture": [
+      {
+        "title": ["Um castelo em Silves", "A castle in Silves"],
+        "place": ["Silves", "Silves"],
+        "text": [
+          "Troque uma manhã de praia pela história da cidade e do castelo, com a deslocação planeada.",
+          "Swap a beach morning for the town and castle’s history, with the journey planned."
+        ],
+        "source": "G05"
+      },
+      {
+        "title": ["Natureza na Quinta do Lago", "Nature at Quinta do Lago"],
+        "place": ["Quinta do Lago", "Quinta do Lago"],
+        "text": [
+          "Escolha um dos percursos descritos pelo resort. Os serviços e atividades têm condições próprias.",
+          "Choose one of the routes described by the resort. Services and activities have their own conditions."
+        ],
+        "source": "G03"
+      },
+      {
+        "title": ["Explorar a Ria Formosa", "Explore the Ria Formosa"],
+        "place": ["Faro", "Faro"],
+        "text": [
+          "Compare os programas da Formosamar e escolha um passeio pelo seu ritmo, interesses e cais de partida.",
+          "Compare Formosamar programmes and choose a trip around your pace, interests and departure pier."
+        ],
+        "source": "G02"
+      }
+    ],
+    "seasons": [
+      [
+        "Caminhadas, vilas e paisagem costeira.",
+        "Walks, towns and coastal scenery."
+      ],
+      [
+        "Praia e atividades reservadas, com tempo para descansar.",
+        "Beaches and booked activities, with time to rest."
+      ],
+      [
+        "Percursos de natureza e refeições ao ar livre.",
+        "Nature trails and outdoor meals."
+      ],
+      [
+        "Gastronomia, cultura e descoberta das cidades da costa.",
+        "Food, culture and coastal towns to discover."
+      ]
+    ],
+    "homes": [
+      "Escolha oeste, centro ou leste e depois consulte a localização concreta. Albufeira e Quinta do Lago são referências distintas; nas casas sob pedido, a estadia depende de confirmação.",
+      "Choose west, centre or east, then check the exact location. Albufeira and Quinta do Lago are distinct settings; stays offered on request require confirmation."
+    ],
+    "faqs": [
+      {
+        "question": ["Qual zona escolher?", "Which area should I choose?"],
+        "answer": [
+          "Oeste para falésias e Lagos; centro conforme a casa e as atividades; leste para ria, ilhas e cidades como Olhão e Tavira.",
+          "West for cliffs and Lagos; centre around your home and activities; east for lagoon, islands and towns such as Olhão and Tavira."
+        ]
+      },
+      {
+        "question": [
+          "Todas as praias têm acesso direto?",
+          "Do all beaches have direct access?"
+        ],
+        "answer": [
+          "Não. Há acessos por escadas, passadiços e barco. Escolha a praia pelas necessidades do grupo.",
+          "No. Access can involve steps, boardwalks or boats. Choose a beach around your group’s needs."
+        ]
+      },
+      {
+        "question": ["Preciso de carro?", "Do I need a car?"],
+        "answer": [
+          "Depende da base e das saídas. O comboio liga cidades, mas não substitui todas as ligações a casas, praias e cais.",
+          "It depends on your base and outings. Rail connects towns but does not replace every link to homes, beaches and piers."
+        ]
+      },
+      {
+        "question": ["Quantas noites ficar?", "How many nights should I stay?"],
+        "answer": [
+          "Três numa zona; cinco ou sete para acrescentar cultura e natureza sem perder o tempo de férias.",
+          "Three within one area; five or seven to add culture and nature while keeping holiday time."
+        ]
+      },
+      {
+        "question": ["Como visitar Benagil?", "How should I visit Benagil?"],
+        "answer": [
+          "Escolha uma visita com operador e consulte as condições para a data. As atividades de kayak na área regulada exigem guia.",
+          "Choose an operator-led visit and check conditions for your date. Kayak activities in the regulated area require a guide."
+        ]
+      },
+      {
+        "question": [
+          "Os Sete Vales são um passeio curto?",
+          "Is Seven Hanging Valleys a short walk?"
+        ],
+        "answer": [
+          "O percurso completo é linear e moderado, com 11,2 km ida e volta. Escolha um segmento se for mais adequado e planeie o regresso.",
+          "The full route is linear and moderate, 11.2 km out and back. Choose a section if more suitable and plan your return."
+        ]
+      },
+      {
+        "question": [
+          "Quinta do Lago inclui todos os serviços?",
+          "Does Quinta do Lago include all resort services?"
+        ],
+        "answer": [
+          "Não automaticamente. Consulte o que está incluído na casa e as condições de cada serviço ou atividade.",
+          "Not automatically. Check what your home includes and the conditions of each service or activity."
+        ]
+      },
+      {
+        "question": [
+          "A casa fica confirmada ao enviar o pedido?",
+          "Is the home confirmed when I send a request?"
+        ],
+        "answer": [
+          "Não. Nos alojamentos sob pedido, disponibilidade e condições são confirmadas antes de concluir a reserva.",
+          "No. For homes on request, availability and conditions are confirmed before completing the booking."
+        ]
+      }
+    ],
+    "seo": [
+      "Algarve: escolha a zona, praias e onde ficar | Portugal Active",
+      "Algarve holidays: choose your coast and your base | Portugal Active"
+    ]
+  }
+}

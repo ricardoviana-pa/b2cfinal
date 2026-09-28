@@ -24,6 +24,7 @@ import { localizeDestination, useDestinationOverrides, useContentOverrides, loca
 import journalIndex from '@/data/journal-index/en.json';
 import destinationJournal from '@/data/destination-journal.json';
 import destinationJournalImages from '@/data/destination-journal-images.json';
+import { getDestinationEditorial } from '@/data/destination-editorial';
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
 import { StructuredData } from '@/components/seo/StructuredData';
@@ -116,7 +117,7 @@ export default function DestinationDetail() {
         return curatedImage ? { ...article, coverImage: curatedImage } : article;
       })
       .filter((article): article is NonNullable<typeof article> => !!article),
-    [dest.regionImage, dest.coverImage,
+    [dest.regionImage, dest.coverImage, getDestinationEditorial(dest.slug, i18n.language)?.photo.src,
       ...destProperties.slice(0, 6).map(p => p.images?.[0]),
       ...adventures.map(p => p.image)],
     3,

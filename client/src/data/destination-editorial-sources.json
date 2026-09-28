@@ -1,0 +1,330 @@
+{
+  "M01": {
+    "label": "Turismo de Portugal",
+    "url": "https://www.visitportugal.com/pt-pt/destinos/porto-e-norte/73747"
+  },
+  "M02": {
+    "label": "Município de Ponte de Lima",
+    "url": "https://lagoas.cm-pontedelima.pt/pages/967?poi_id=202"
+  },
+  "M03": {
+    "label": "CIM Alto Minho",
+    "url": "https://www.altominho.pt/pt/visitar/o-que-ver/mata-nacional-do-camarido/"
+  },
+  "M04": {
+    "label": "Tasquinha da Linda",
+    "url": "https://www.tasquinhadalinda.com/"
+  },
+  "M05": {
+    "label": "Retiro da Ponte",
+    "url": "https://retirodaponte.pt/"
+  },
+  "M06": {
+    "label": "CIPVV",
+    "url": "https://www.cipvv.pt/pt/"
+  },
+  "M07": {
+    "label": "Fundação Gil Eannes",
+    "url": "https://fundacaogileannes.pt/engine.php?cat=1"
+  },
+  "M08": {
+    "label": "Município de Cerveira",
+    "url": "https://www.cm-vncerveira.pt/pages/1092?poi_id=237"
+  },
+  "T01": {
+    "label": "Herdade da Comporta",
+    "url": "https://www.adega.herdadedacomporta.pt/en/winery/"
+  },
+  "T02": {
+    "label": "Turismo do Alentejo",
+    "url": "https://www.visitalentejo.pt/fotos/editor2/pdfs/Rotas_Culturais_Alentejo_Ribatejo_Folheto_3_dias_PT.pdf"
+  },
+  "T03": {
+    "label": "Município de Ferreira do Alentejo",
+    "url": "https://ferreiradoalentejo.pt/visitar/o-que-fazer/rotas/"
+  },
+  "T04": {
+    "label": "Rota Vicentina",
+    "url": "https://rotavicentina.com/trilho-dos-pescadores/"
+  },
+  "T05": {
+    "label": "Rota Vicentina",
+    "url": "https://rotavicentina.com/percursos-circulares/"
+  },
+  "T06": {
+    "label": "Cavalariça Comporta",
+    "url": "https://www.cavalarica.com/menu"
+  },
+  "T07": {
+    "label": "Município de Ferreira",
+    "url": "https://ferreiradoalentejo.pt/locais/sovena/"
+  },
+  "T08": {
+    "label": "Município de Ferreira",
+    "url": "https://ferreiradoalentejo.pt/en/locais/adega-do-ze-lelito/"
+  },
+  "T09": {
+    "label": "Turismo de Portugal",
+    "url": "https://www.visitportugal.com/pt-pt/content/sabores-com-mem%C3%B3ria"
+  },
+  "T10": {
+    "label": "Município de Ferreira",
+    "url": "https://ferreiradoalentejo.pt/locais/vale-da-rosa/"
+  },
+  "T11": {
+    "label": "Município de Grândola",
+    "url": "https://www.cm-grandola.pt/onde-comer/restaurantes/comporta/poi/museu-do-arroz-restaurante"
+  },
+  "T12": {
+    "label": "Herdade da Comporta",
+    "url": "https://www.adega.herdadedacomporta.pt/en/"
+  },
+  "T13": {
+    "label": "Cavalos na Areia",
+    "url": "https://www.cavalosnaareia.com/pt_pt/"
+  },
+  "T14": {
+    "label": "UNESCO",
+    "url": "https://whc.unesco.org/en/list/361"
+  },
+  "T15": {
+    "label": "Dark Sky Alqueva",
+    "url": "https://darkskyalqueva.com/tourcat/homepage/"
+  },
+  "C01": {
+    "label": "CIM Alto Minho",
+    "url": "https://www.altominho.pt/pt/visitar/o-que-ver/mata-nacional-do-camarido/"
+  },
+  "C02": {
+    "label": "CIM Alto Minho",
+    "url": "https://www.altominho.pt/pt/visitar/o-que-ver/praia-de-moledo/"
+  },
+  "C03": {
+    "label": "CIM Alto Minho",
+    "url": "https://altominho.pt/pt/visitar/patrimonio/patrimonio-de-caminha/"
+  },
+  "C04": {
+    "label": "Município de Cerveira",
+    "url": "https://www.cm-vncerveira.pt/pages/1092?poi_id=237"
+  },
+  "C05": {
+    "label": "Retiro da Ponte",
+    "url": "https://retirodaponte.pt/"
+  },
+  "C06": {
+    "label": "Hotel Meira",
+    "url": "https://www.hotelmeira.com/menus-restaurante-meira"
+  },
+  "C07": {
+    "label": "Anchor Point",
+    "url": "https://anchorpointsurfschool.com/"
+  },
+  "L01": {
+    "label": "Turismo de Lisboa",
+    "url": "https://www.visitlisboa.com/en/places/sintra-cascais-nature-park"
+  },
+  "L02": {
+    "label": "CP",
+    "url": "https://cp.pt/info/w/discover-cascais"
+  },
+  "L03": {
+    "label": "TTSL",
+    "url": "https://ttsl.pt/wp-content/uploads/2026/06/Horarios-TTSL_Todas-as-ligacoes-fluviais-_-2026_8-junho-2026_VF.pdf"
+  },
+  "L04": {
+    "label": "Parques de Sintra",
+    "url": "https://www.parquesdesintra.pt/pt/planear-a-visita/bilhetes-palacio-da-pena/"
+  },
+  "L05": {
+    "label": "Parques de Sintra",
+    "url": "https://www.parquesdesintra.pt/pt/planear-a-visita/roteiros/descobrir-a-costa-e-a-serra/"
+  },
+  "L06": {
+    "label": "Oceanário de Lisboa",
+    "url": "https://oceanario.pt/planear-visita/"
+  },
+  "L07": {
+    "label": "Museu do Fado",
+    "url": "https://www.museudofado.pt/visitar?name=2026"
+  },
+  "L08": {
+    "label": "Prado",
+    "url": "https://pradorestaurante.com/index2.php"
+  },
+  "L09": {
+    "label": "Pastéis de Belém",
+    "url": "https://pasteisdebelem.pt/en/"
+  },
+  "L10": {
+    "label": "Furnas do Guincho",
+    "url": "https://www.furnasdoguincho.pt/as-furnas/"
+  },
+  "L11": {
+    "label": "Gulbenkian",
+    "url": "https://gulbenkian.pt/museu/um-museu-para-o-futuro/"
+  },
+  "L12": {
+    "label": "CP",
+    "url": "https://www.cp.pt/info/w/discover-sintra"
+  },
+  "P01": {
+    "label": "Fundação de Serralves",
+    "url": "https://www.serralves.pt/institucional-serralves/parque_apresentacao/"
+  },
+  "P02": {
+    "label": "Turismo municipal do Porto",
+    "url": "https://visitporto.travel/en-GB/districts/atlantic"
+  },
+  "P03": {
+    "label": "Graham’s",
+    "url": "https://pt.grahams-port.com/visit-us"
+  },
+  "P04": {
+    "label": "Casa da Música",
+    "url": "https://casadamusica.com/a-casa/visitas-a-casa-da-musica/"
+  },
+  "P05": {
+    "label": "Mercado do Bolhão",
+    "url": "https://mercadobolhao.pt/restaurantes/"
+  },
+  "P06": {
+    "label": "Turismo municipal do Porto",
+    "url": "https://visitporto.travel/pt-PT/poi/5cd04b4bf979e0000193909d"
+  },
+  "P07": {
+    "label": "Fundação de Serralves",
+    "url": "https://www.serralves.pt/visitar-serralves/"
+  },
+  "P08": {
+    "label": "Café Santiago",
+    "url": "https://cafesantiago.pt/"
+  },
+  "D01": {
+    "label": "UNESCO",
+    "url": "https://whc.unesco.org/en/list/1046"
+  },
+  "D02": {
+    "label": "CP",
+    "url": "https://www.cp.pt/info/pt/w/institucional/a-linha-do-douro"
+  },
+  "D03": {
+    "label": "Symington",
+    "url": "https://pt.symington.com/visitar/quinta-do-bomfim/"
+  },
+  "D04": {
+    "label": "Museu do Douro",
+    "url": "https://www.museudodouro.pt/visite-o-museu-do-douro"
+  },
+  "D05": {
+    "label": "Turismo de Portugal",
+    "url": "https://www.visitportugal.com/en/destinos/porto-e-norte/73746"
+  },
+  "D06": {
+    "label": "DOC",
+    "url": "https://www.docrestaurante.pt/en/"
+  },
+  "D07": {
+    "label": "Magnífico Douro",
+    "url": "https://magnificodouro.pt/en/lp/passeios-regulares"
+  },
+  "G01": {
+    "label": "Município de Lagos",
+    "url": "https://www.cm-lagos.pt/images/site/cliente/AF_LAGOS_ROTAS_E_PERCURSOS.pdf"
+  },
+  "G02": {
+    "label": "Formosamar",
+    "url": "https://formosamar.com/about-us/"
+  },
+  "G03": {
+    "label": "Quinta do Lago",
+    "url": "https://www.quintadolago.com/en/resort/sustainability/"
+  },
+  "G04": {
+    "label": "Junta de Porches",
+    "url": "https://www.jf-porches.pt/freguesia/trilhos/1-percurso_dos_7_vales_suspensos"
+  },
+  "G05": {
+    "label": "Câmara de Silves / bilheteira",
+    "url": "https://cmsilves.bol.pt/Comprar/Bilhetes/167687-castelo_de_silves-castelo_de_silves/"
+  },
+  "G06": {
+    "label": "Autoridade Marítima Nacional",
+    "url": "https://www.amn.pt/DGAM/Capitanias/Portimao/Lists/Documentos_AMN/20250702%20Eidtal%20009-2025,%20alt1%20ao%20Edital%20019-2024_signed.pdf"
+  },
+  "G07": {
+    "label": "Rei das Praias",
+    "url": "https://restaurantereidaspraias.com/en/about/"
+  },
+  "G08": {
+    "label": "A Ver Tavira",
+    "url": "https://avertavira.com/en/"
+  },
+  "G09": {
+    "label": "Município de Olhão",
+    "url": "https://cm-olhao.pt/pt/municipio/espacos-municipais/mercados-municipais"
+  },
+  "G10": {
+    "label": "CP",
+    "url": "https://www.cp.pt/info/w/linha-algarve-eletrificacao"
+  },
+  "V01": {
+    "label": "Turismo de Portugal",
+    "url": "https://cdn.visitportugal.com/pt-pt/content/viana-do-castelo"
+  },
+  "V02": {
+    "label": "Município de Viana",
+    "url": "https://ambiente.cm-viana-castelo.pt/instalacoes/parque-ecologico-urbano"
+  },
+  "V03": {
+    "label": "Fundação Gil Eannes",
+    "url": "https://fundacaogileannes.pt/engine.php?cat=1"
+  },
+  "V04": {
+    "label": "Município de Viana",
+    "url": "https://www.cm-viana-castelo.pt/cmvianadocastelo/uploads/document/file/4355/viana_do_castelo___fica_no_coracao___pt_en.pdf"
+  },
+  "V05": {
+    "label": "Tasquinha da Linda",
+    "url": "https://www.tasquinhadalinda.com/"
+  },
+  "V06": {
+    "label": "Restaurante Camelo",
+    "url": "https://restaurantecamelo.eatbu.com/?lang=pt"
+  },
+  "V07": {
+    "label": "Pastelaria Zé Natário",
+    "url": "https://zenatario.com/"
+  },
+  "E01": {
+    "label": "Turismo municipal de Esposende",
+    "url": "https://www.visitesposende.com/pt/fazer/natureza/parque-natural-litoral-norte"
+  },
+  "E02": {
+    "label": "Turismo municipal",
+    "url": "https://www.visitesposende.com/pt/fazer/praias/praia-da-apulia"
+  },
+  "E03": {
+    "label": "Turismo municipal",
+    "url": "https://www.visitesposende.com/pt/fazer/monumentos/museu-do-sargaco"
+  },
+  "E04": {
+    "label": "Turismo municipal",
+    "url": "https://www.visitesposende.com/pt/fazer/parques-merendas/parque-de-merendas-do-monte-de-s-lourenco"
+  },
+  "E05": {
+    "label": "Turismo municipal",
+    "url": "https://www.visitesposende.com/pt/moinho-de-vento"
+  },
+  "E06": {
+    "label": "Turismo municipal",
+    "url": "https://lp.visitesposende.com/produtos-endogenos/clarinhas/"
+  },
+  "E07": {
+    "label": "Turismo municipal",
+    "url": "https://www.visitesposende.com/pt/provar/artigo/fins-de-semana-gastronomicos"
+  },
+  "E08": {
+    "label": "Turismo municipal",
+    "url": "https://www.visitesposende.com/pt/fazer/monumentos/museu-municipal-de-esposende"
+  }
+}

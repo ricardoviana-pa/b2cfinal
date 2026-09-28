@@ -1,0 +1,97 @@
+.destination-editorial .minho-hero h1 {
+  font-size: clamp(3.4rem, 7.5vw, 7.5rem);
+  max-width: 13ch;
+}
+.destination-editorial section[id] {
+  scroll-margin-top: calc(9rem + var(--pa-promobar-h, 0px));
+}
+.destination-landscape-feature {
+  position: relative;
+  margin-bottom: 1.5rem;
+  height: clamp(320px, 43vw, 580px);
+  overflow: hidden;
+}
+.destination-landscape-feature img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.destination-landscape-feature figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 4rem 1.6rem 1.2rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+  color: white;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.8rem;
+}
+.destination-moments article {
+  display: flex;
+  flex-direction: column;
+}
+.destination-moments .minho-text-link {
+  margin-top: auto;
+  padding-top: 0.7rem;
+}
+.destination-bases {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+.destination-tables {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.destination-tables h3 {
+  min-height: 2.2em;
+}
+.destination-tables .minho-text-link {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+.destination-culture-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+.destination-route-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-bottom: 1.3rem;
+}
+.destination-route-controls button {
+  min-height: 46px;
+  border-bottom: 2px solid #c4cebf;
+  padding: 0.6rem 1rem;
+  color: #33472f;
+}
+.destination-route-controls button[aria-pressed="true"] {
+  border-color: #294c3a;
+  font-weight: 600;
+}
+.destination-arrival-note {
+  font-size: 0.875rem;
+  color: #4c5b45;
+  max-width: 75ch;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 767px) {
+  .destination-editorial .minho-hero h1 {
+    font-size: clamp(3.2rem, 13vw, 5rem);
+  }
+  .destination-editorial .minho-hero {
+    min-height: 630px;
+  }
+  .destination-bases,
+  .destination-tables,
+  .destination-culture-grid {
+    grid-template-columns: 1fr;
+  }
+  .destination-tables h3 {
+    min-height: 0;
+  }
+  .destination-landscape-feature {
+    height: 320px;
+  }
+  .destination-culture-grid article {
+    display: block;
+  }
+}

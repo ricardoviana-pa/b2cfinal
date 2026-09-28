@@ -100,9 +100,11 @@ interface WhereToStayProps {
   properties: Property[];
   heading?: string;
   intro?: string;
+  sectionId?: string;
+  viewAllHref?: string;
 }
 
-export function WhereToStay({ destination: d, properties, heading, intro }: WhereToStayProps) {
+export function WhereToStay({ destination: d, properties, heading, intro, sectionId = 'destination-homes', viewAllHref }: WhereToStayProps) {
   const { t, i18n } = useTranslation();
   const search = useSearch();
   const trip = editorialTripContext(search);
@@ -118,7 +120,7 @@ export function WhereToStay({ destination: d, properties, heading, intro }: Wher
   if (properties.length === 0) {
     if (d.comingSoon) return null;
     return (
-      <section id="destination-homes" className="section-padding bg-white scroll-mt-24">
+      <section id={sectionId} className="section-padding bg-white scroll-mt-24">
         <div className="container max-w-xl text-center">
           <h2 className="headline-lg text-[#1A1A18] mb-4">
             {t('destinationDetail.newHomesComingSoon', { name: d.name })}
@@ -131,7 +133,7 @@ export function WhereToStay({ destination: d, properties, heading, intro }: Wher
     );
   }
   return (
-    <section id="destination-homes" className="section-padding bg-white scroll-mt-24">
+    <section id={sectionId} className="section-padding bg-white scroll-mt-24">
       <div className="container">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div className="max-w-2xl">
@@ -142,7 +144,7 @@ export function WhereToStay({ destination: d, properties, heading, intro }: Wher
             {trip.checkin && trip.checkout && <p className="text-sm leading-relaxed mt-3 text-pa-stone-aa">{t('planning.datesKept')} <time dateTime={trip.checkin}>{new Date(trip.checkin+'T12:00:00Z').toLocaleDateString(i18n.language,{timeZone:'UTC'})}</time> – <time dateTime={trip.checkout}>{new Date(trip.checkout+'T12:00:00Z').toLocaleDateString(i18n.language,{timeZone:'UTC'})}</time>. {t('planning.checkPrice')}</p>}
           </div>
           <Link
-            href={withEditorialTrip(destinationHomesHref(d), search)}
+            href={withEditorialTrip(viewAllHref || destinationHomesHref(d), search)}
             onClick={() => pushDL({event:'destination_planning',destination:d.slug,language:i18n.language.split('-')[0],section:'homes',action:'homes'})}
             className="btn-ghost shrink-0 self-start"
           >
