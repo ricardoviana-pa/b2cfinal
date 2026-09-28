@@ -98,9 +98,11 @@ export function WhyThisPlace({ destination: d }: { destination: Destination }) {
 interface WhereToStayProps {
   destination: Destination;
   properties: Property[];
+  heading?: string;
+  intro?: string;
 }
 
-export function WhereToStay({ destination: d, properties }: WhereToStayProps) {
+export function WhereToStay({ destination: d, properties, heading, intro }: WhereToStayProps) {
   const { t, i18n } = useTranslation();
   const search = useSearch();
   const trip = editorialTripContext(search);
@@ -134,9 +136,9 @@ export function WhereToStay({ destination: d, properties }: WhereToStayProps) {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div className="max-w-2xl">
             <h2 className="headline-lg text-[#1A1A18]">
-              {t(regionalAlternatives ? 'planning.alternativeHomes' : 'destinationDetail.homesIn', { name: d.name })}
+              {heading || t(regionalAlternatives ? 'planning.alternativeHomes' : 'destinationDetail.homesIn', { name: d.name })}
             </h2>
-            <p className="body-md mt-3">{t(regionalAlternatives ? 'planning.noLocalHomes' : 'conversion.homesIntro')}</p>
+            <p className="body-md mt-3">{intro || t(regionalAlternatives ? 'planning.noLocalHomes' : 'conversion.homesIntro')}</p>
             {trip.checkin && trip.checkout && <p className="text-sm leading-relaxed mt-3 text-pa-stone-aa">{t('planning.datesKept')} <time dateTime={trip.checkin}>{new Date(trip.checkin+'T12:00:00Z').toLocaleDateString(i18n.language,{timeZone:'UTC'})}</time> – <time dateTime={trip.checkout}>{new Date(trip.checkout+'T12:00:00Z').toLocaleDateString(i18n.language,{timeZone:'UTC'})}</time>. {t('planning.checkPrice')}</p>}
           </div>
           <Link
