@@ -10,7 +10,11 @@
  *   must come from the person.
  * POST /api/newsletter/confirm
  *   Promotes "nl-pending-<origin>" to "newsletter-<origin>" with confirmedAt
- *   and shows "Subscrição confirmada" with the exit link. Idempotent.
+ *   and the signals of who confirmed (confirmationSignals: seconds since the
+ *   form, user agent, "auto" or "click"), and shows "Subscrição confirmada"
+ *   with the exit link. Idempotent. Scanners that run the page in a sandbox
+ *   do post it: those confirmations get confirmSuspect and count only as a
+ *   single opt-in downstream, until a later click that looks human.
  *
  * GET  /api/newsletter/unsubscribe?lead=<id>&t=<hmac>&lang=<xx>
  *   Shows one button. A GET never unsubscribes: mail scanners open links.
@@ -27,6 +31,7 @@ import { CONFIRM_EMAIL_COPY, NEWSLETTER_PAGE_COPY } from "../services/newsletter
 import {
   brevoAddConfirmed,
   brevoRemove,
+  confirmationSignals,
   normaliseEmail,
   originFromSource,
   safeErrorLabel,
@@ -107,7 +112,8 @@ export function registerNewsletterRoutes(app: Express, overrides: Partial<Newsle
       brandPage(lang, E.heading, E.intro, {
         form: {
           action: "/api/newsletter/confirm",
-          fields: { lead: String(link.leadId), e: String(link.exp), t: pick(req, "t"), lang },
+          // "via" says whether the page posted by itself (the script sets "auto") or by the button.
+          fields: { lead: String(link.leadId), e: String(link.exp), t: pick(req, "t"), lang, via: "click" },
           button: E.button,
           autoSubmit: true,
         },
@@ -138,21 +144,27 @@ export function registerNewsletterRoutes(app: Express, overrides: Partial<Newsle
     const meta: Record<string, string> = lead.metadata || {};
     lang = newsletterLang(meta.locale || lang);
 
-    const confirmedAt = deps.now().toISOString();
+    const now = deps.now();
+    const confirmedAt = now.toISOString();
+    const signals = confirmationSignals({ consentAt: meta.consentAt, confirmedAt: now, userAgent: req.headers["user-agent"], via: pick(req, "via") });
+    const suspect = signals.confirmSuspect === "1";
     let result: Awaited<ReturnType<typeof dbModule.confirmNewsletterLead>>;
     try {
-      result = await deps.confirmNewsletterLead(leadId, origin, { confirmedAt });
+      result = await deps.confirmNewsletterLead(leadId, origin, { confirmedAt, ...signals });
     } catch (err: unknown) {
       console.error(`[Newsletter] confirm: lead #${leadId} update failed:`, safeErrorLabel(err));
       return failed();
     }
     if (result === "gone") return invalid();
 
-    if (result === "confirmed") {
-      console.info(`[Newsletter] confirmed lead #${leadId} origin=${origin} lang=${lang}`);
-      // Optional: only with BREVO_API_KEY and BREVO_NEWSLETTER_LIST_ID. The site stays the record.
-      const brevo = await brevoAddConfirmed(normaliseEmail(lead.email), { ...meta, confirmedAt }, deps.env, deps.fetchImpl);
-      if (brevo && !brevo.ok) console.warn(`[Newsletter] Brevo add failed for lead #${leadId}: status=${brevo.status} code=${brevo.code ?? ""}`);
+    if (result === "confirmed" || result === "upgraded") {
+      // Never the user agent in the log: only whether the click looked automated.
+      console.info(`[Newsletter] ${result} lead #${leadId} origin=${origin} lang=${lang} via=${signals.confirmVia}${suspect ? " suspect=1" : ""}`);
+      // Optional: only with BREVO_API_KEY and BREVO_NEWSLETTER_LIST_ID, and only for a click that looks human.
+      if (!suspect) {
+        const brevo = await brevoAddConfirmed(normaliseEmail(lead.email), { ...meta, confirmedAt }, deps.env, deps.fetchImpl);
+        if (brevo && !brevo.ok) console.warn(`[Newsletter] Brevo add failed for lead #${leadId}: status=${brevo.status} code=${brevo.code ?? ""}`);
+      }
     } else {
       console.info(`[Newsletter] lead #${leadId} confirmed again (already confirmed)`);
     }

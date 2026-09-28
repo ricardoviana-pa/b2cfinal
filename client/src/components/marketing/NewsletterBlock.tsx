@@ -6,8 +6,8 @@
        (newsletter.config.houseAlerts), "Gostou desta casa?" otherwise.
        Partner homes (Tripwix) get the general text.
      origin "article": end of a Journal article, general text.
-   Only in the languages of newsletter.config.locales. Client only (see
-   useNewsletterConfig): it appears after hydration, below the fold.
+   Only in the languages of newsletter.config.locales. In the server render
+   too (see useNewsletterConfig), so it does not push anything after hydration.
    ========================================================================== */
 
 import { useTranslation } from 'react-i18next';

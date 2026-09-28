@@ -4,8 +4,12 @@ import {
   brevoAddConfirmed,
   brevoAttributes,
   brevoRemove,
+  CONFIRM_MIN_HUMAN_SECONDS,
+  PENDING_RETENTION_DAYS,
   confirmExpiry,
   confirmUrl,
+  confirmationSignals,
+  expiredMetadata,
   decoyRef,
   doiAllowed,
   interestRef,
@@ -13,6 +17,8 @@ import {
   isPopupEnabled,
   isProxyEmail,
   isUiPreview,
+  newsletterConfigPayload,
+  newsletterFooterLocales,
   newsletterLocales,
   normaliseEmail,
   originFromSource,
@@ -220,5 +226,69 @@ describe("log hygiene", () => {
     const err = Object.assign(new Error("Failed query: insert ... params: guest@example.test"), { code: "ER_DUP_ENTRY" });
     expect(safeErrorLabel(err)).toBe("Error ER_DUP_ENTRY");
     expect(safeErrorLabel("x")).toBe("string");
+  });
+});
+
+describe("footer languages follow the native review", () => {
+  it("by default the footer shows where the pop-up shows (PT), never in the 9 languages by itself", () => {
+    expect(newsletterFooterLocales({ ...LIVE } as NodeJS.ProcessEnv)).toEqual(["pt"]);
+    expect(newsletterFooterLocales({ ...LIVE, NEWSLETTER_LOCALES: "pt,es" } as NodeJS.ProcessEnv)).toEqual(["pt", "es"]);
+  });
+
+  it("more languages only by an explicit NEWSLETTER_FOOTER_LOCALES (Ricardo's decision)", () => {
+    expect(newsletterFooterLocales({ ...LIVE, NEWSLETTER_FOOTER_LOCALES: "pt, ES, en, x1" } as NodeJS.ProcessEnv)).toEqual(["pt", "es", "en"]);
+  });
+
+  it("the config the server render seeds is the same the client asks for", () => {
+    const env = { ...LIVE, DATABASE_URL: "mysql://synthetic", RESEND_API_KEY: "re_synthetic_not_real" } as NodeJS.ProcessEnv;
+    expect(newsletterConfigPayload(env)).toMatchObject({ available: true, locales: ["pt"], footerLocales: ["pt"], houseAlerts: false });
+  });
+});
+
+describe("who confirmed: a person or a mail scanner", () => {
+  const form = "2026-10-05T09:00:00.000Z";
+  const browser = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
+
+  it("a click from a browser minutes after the form is a double opt-in", () => {
+    const out = confirmationSignals({ consentAt: form, confirmedAt: new Date("2026-10-05T09:03:00Z"), userAgent: browser, via: "auto" });
+    expect(out).toEqual({ confirmVia: "auto", confirmDelaySec: "180", confirmUa: browser.slice(0, 160) });
+  });
+
+  it("too soon after the form, an empty agent or a robot's agent is marked, not refused", () => {
+    const soon = new Date(Date.parse(form) + (CONFIRM_MIN_HUMAN_SECONDS - 4) * 1000);
+    expect(confirmationSignals({ consentAt: form, confirmedAt: soon, userAgent: browser }).confirmSuspect).toBe("1");
+    const later = new Date("2026-10-05T10:00:00Z");
+    expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: "" }).confirmSuspect).toBe("1");
+    for (const agent of [
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/129.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      "python-requests/2.32",
+      "node",
+    ]) {
+      expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: agent }).confirmSuspect).toBe("1");
+    }
+    // A phone brand with "bot" inside its name is still a person.
+    expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: "Mozilla/5.0 (Linux; Android 10; CUBOT X30) Chrome/120 Mobile" }).confirmSuspect).toBeUndefined();
+  });
+
+  it("the button without JavaScript is a click; the agent is cut and cleaned", () => {
+    const out = confirmationSignals({ confirmedAt: new Date(), userAgent: `${"x".repeat(200)}\n`, via: "anything" });
+    expect(out.confirmVia).toBe("click");
+    expect(out.confirmUa).toHaveLength(160);
+    expect(out.confirmDelaySec).toBeUndefined();
+  });
+});
+
+describe("pending sign-ups nobody confirmed", () => {
+  it("keep the address one day longer than the link, then only the counting fields", () => {
+    expect(PENDING_RETENTION_DAYS).toBe(8);
+    const out = expiredMetadata(
+      { flow: "site-doi-v1", origin: "popup", locale: "pt", page: "/homes/casa-x", pageKind: "house", trigger: "timer", device: "mobile",
+        propertySlug: "casa-x", propertyName: "Casa X", listingId: "g1", country: "PT", consentText: "Ao subscrever...", consentVersion: "2026-09-28",
+        consentAt: "2026-10-01T10:00:00.000Z", utmSource: "meta", utmCampaign: "2026-10_o1_pt_x", clickId: "fbclid", referrer: "instagram.com" },
+      "2026-10-09T12:00:00.000Z",
+    );
+    expect(out).toEqual({ flow: "site-doi-v1", origin: "popup", locale: "pt", pageKind: "house", trigger: "timer", device: "mobile",
+      utmSource: "meta", consentVersion: "2026-09-28", consentAt: "2026-10-01T10:00:00.000Z", expiredAt: "2026-10-09T12:00:00.000Z" });
   });
 });

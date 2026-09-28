@@ -97,16 +97,25 @@ describe("newsletter texts in the nine site languages", () => {
     expect(fs.readFileSync("client/src/components/layout/Footer.tsx", "utf8")).toContain('<NewsletterForm origin="footer"');
   });
 
-  it("the sign-up is a generate_lead in the dataLayer, like every other form, with the origin and no address", () => {
+  it("the sign-up has its own dataLayer event (never generate_lead, which the lead conversions listen to), with the origin and no address", () => {
     const form = fs.readFileSync("client/src/components/marketing/NewsletterForm.tsx", "utf8");
     const push = form.slice(form.indexOf("pushDL({"), form.indexOf("});", form.indexOf("pushDL({")));
-    expect(push).toContain("event: 'generate_lead'");
-    expect(push).toContain("lead_type: 'newsletter'");
+    expect(push).toContain("event: 'newsletter_signup'");
     expect(push).toContain("newsletter_origin: origin");
+    expect(push).not.toMatch(/generate_lead|lead_type/);
     expect(push).not.toMatch(/email|value|hash/i);
     // pushDL is the consent-gated helper (only with "Aceitar tudo").
     expect(form).toContain("import { pushDL } from '@/lib/datalayer'");
     expect(form).not.toMatch(/dataLayer\.push/);
+  });
+
+  it("the server render seeds newsletter.config, so the footer band and the blocks are in the HTML (no shift on short pages)", () => {
+    const entry = fs.readFileSync("client/src/entry-server.tsx", "utf8");
+    expect(entry).toContain("getQueryKey(trpc.newsletter.config, undefined, 'query'), pf.newsletterConfig");
+    const vite = fs.readFileSync("server/_core/vite.ts", "utf8");
+    expect(vite).toContain("newsletterConfig: newsletterConfigPayload()");
+    const router = fs.readFileSync("server/routers/newsletter.ts", "utf8");
+    expect(router).toContain("config: publicProcedure.query(() => newsletterConfigPayload())");
   });
 
   it("phones and touch tablets get the small bottom sheet, never the centred dialog", () => {
@@ -145,5 +154,18 @@ describe("confirmation email", () => {
     expect(out).toContain(url.replace(/&/g, "&amp;"));
     expect(out).toContain("(newsletter confirmation, lead #91)");
     expect(out).not.toContain("guest@example.test");
+    expect(out).toContain('<html lang="pt">');
+    expect(out).toContain("Hotéis privados em Portugal. A privacidade de uma casa, o serviço de um hotel.");
+  });
+
+  it("goes out in the subscriber's language all the way: <html lang> and the footer tagline", async () => {
+    vi.resetModules();
+    const { sendNewsletterConfirmation } = await import("./services/transactional-email");
+    const url = "https://www.portugalactive.com/api/newsletter/confirm?lead=92&e=1790000000&t=0123456789abcdef0123456789abcdef&lang=es";
+    await sendNewsletterConfirmation({ email: "guest@example.test", locale: "es", confirmUrl: url, leadId: 92 });
+    const out = logs.join("\n");
+    expect(out).toContain('<html lang="es">');
+    expect(out).toContain("Hoteles privados en Portugal. La privacidad de una casa, el servicio de un hotel.");
+    expect(out).not.toContain("The privacy of a home. The service of a hotel.");
   });
 });

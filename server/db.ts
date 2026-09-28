@@ -1,6 +1,6 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
-import { safeErrorLabel, unsubscribeTarget } from "./services/newsletter";
-import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
+import { EXPIRED_PREFIX, PENDING_RETENTION_DAYS, expiredMetadata, safeErrorLabel, unsubscribeTarget } from "./services/newsletter";
+import { ne, eq, desc, asc, and, or, like, notLike, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -375,6 +375,8 @@ export async function listLeads(opts?: { source?: string; status?: string }) {
   if (!db) return [];
   const conditions: any[] = [];
   if (opts?.source) conditions.push(like(leads.source, `${opts.source}%`));
+  // Pending newsletter sign-ups nobody confirmed, already without an address: only counted (newsletter.stats).
+  else conditions.push(notLike(leads.source, `${EXPIRED_PREFIX}%`));
   if (opts?.status) conditions.push(eq(leads.status, opts.status as any));
   const where = conditions.length > 0 ? and(...conditions) : undefined;
   return db.select().from(leads).where(where).orderBy(desc(leads.createdAt));
@@ -464,20 +466,35 @@ export async function recentNewsletterSends(email: string, sinceMs: number): Pro
  * O clique no email: "nl-pending-<origem>" passa a "newsletter-<origem>".
  * Só a partir daqui conta como consentimento (coletor da Mailing List e
  * hasNewsletterConsent). Idempotente e sem corrida: o UPDATE só apanha a
- * linha ainda pendente.
+ * linha ainda pendente. `patch` traz confirmedAt e os sinais de quem
+ * confirmou (services/newsletter.ts, confirmationSignals).
+ *
+ * Um lead já confirmado com confirmSuspect (um scanner que correu a página)
+ * sobe a "upgraded" quando chega um clique que não parece automático: fica
+ * com a data e os sinais desse clique (firstConfirmedAt guarda a primeira) e
+ * perde a marca, e o coletor passa a contá-lo como dupla confirmação.
  */
 export async function confirmNewsletterLead(
   id: number,
   origin: string,
   patch: Record<string, string>,
-): Promise<"confirmed" | "already" | "gone"> {
+): Promise<"confirmed" | "upgraded" | "already" | "gone"> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const current = await getLeadById(id);
   if (!current) return "gone";
   const pending = `nl-pending-${origin}`;
   const confirmed = `newsletter-${origin}`;
-  if (current.source === confirmed) return "already";
+  if (current.source === confirmed) {
+    const meta = current.metadata || {};
+    if (meta.confirmSuspect !== "1" || patch.confirmSuspect === "1") return "already";
+    const { confirmSuspect: _suspect, ...rest } = meta;
+    const res = await db
+      .update(leads)
+      .set({ metadata: { ...rest, ...patch, firstConfirmedAt: meta.confirmedAt || "" } })
+      .where(and(eq(leads.id, id), eq(leads.source, confirmed)));
+    return affectedRows(res) > 0 ? "upgraded" : "already";
+  }
   if (current.source !== pending) return "gone";
   const res = await db
     .update(leads)
@@ -486,6 +503,51 @@ export async function confirmNewsletterLead(
   if (affectedRows(res) > 0) return "confirmed";
   const again = await getLeadById(id);
   return again?.source === confirmed ? "already" : "gone";
+}
+
+/**
+ * Pendentes que ninguém confirmou em PENDING_RETENTION_DAYS (os 7 dias do
+ * link e mais um): ficam sem endereço, sem nome e sem telefone, com a fonte
+ * "nl-expired-<origem>" e só os campos que o funil conta. Um endereço que
+ * alguém escreveu e nunca confirmou (talvez nem seja o seu) não fica
+ * guardado. Por lotes de 500; devolve quantos mudaram. Nunca lança.
+ */
+export async function expireNewsletterPending(nowMs: number = Date.now()): Promise<number> {
+  try {
+    const db = await getDb();
+    if (!db) return 0;
+    const before = new Date(nowMs - PENDING_RETENTION_DAYS * 86_400_000);
+    const rows = await db
+      .select({ id: leads.id, source: leads.source, metadata: leads.metadata })
+      .from(leads)
+      .where(and(like(leads.source, "nl-pending-%"), lt(leads.createdAt, before)))
+      .limit(500);
+    const at = new Date(nowMs).toISOString();
+    let changed = 0;
+    for (const row of rows) {
+      const origin = row.source.slice("nl-pending-".length) || "unknown";
+      const res = await db
+        .update(leads)
+        .set({ source: `${EXPIRED_PREFIX}${origin}`.slice(0, 100), email: "", name: null, phone: null, metadata: expiredMetadata(row.metadata, at) })
+        .where(and(eq(leads.id, row.id), eq(leads.source, row.source)));
+      changed += affectedRows(res) > 0 ? 1 : 0;
+    }
+    if (changed) console.info(`[Newsletter] ${changed} pending sign-up(s) older than ${PENDING_RETENTION_DAYS} days anonymised`);
+    return changed;
+  } catch (error) {
+    console.warn("[Newsletter] pending clean-up failed:", safeErrorLabel(error));
+    return 0;
+  }
+}
+
+let newsletterPurgeStarted = false;
+
+/** Limpeza dos pendentes: 2 minutos depois do arranque e a cada 6 horas (como a origem da visita). */
+export function startNewsletterPendingPurge(): void {
+  if (newsletterPurgeStarted || isPreviewDeployment()) return;
+  newsletterPurgeStarted = true;
+  setTimeout(() => void expireNewsletterPending(), 2 * 60 * 1000).unref?.();
+  setInterval(() => void expireNewsletterPending(), 6 * 60 * 60 * 1000).unref?.();
 }
 
 /** Marca o envio falhado: não conta para o limite por endereço e fica visível na base. */
@@ -540,12 +602,14 @@ export async function unsubscribeNewsletterEmail(email: string, at: string): Pro
 }
 
 /**
- * Para aprender (admin): inscrições desde `sinceDays` por fonte (pendente,
- * confirmada, saída), gatilho do pop-up, dispositivo, tipo de página, origem
- * da visita (utm_source, só com consentimento) e interesse. Pendentes e
- * confirmadas lado a lado dão a taxa de confirmação de cada combinação.
- * Só contagens: nenhum email sai daqui. Conta em código (poucos milhares de
- * linhas no máximo) para não depender do modo GROUP BY da base.
+ * Para aprender (admin, /admin/leads): inscrições desde `sinceDays` por
+ * origem e estado (pendente, confirmada, saída, expirada), se chegou a ser
+ * confirmada e se a confirmação parece automática, gatilho do pop-up,
+ * dispositivo, tipo de página, origem da visita (utm_source, só com
+ * consentimento) e interesse. Inscritas contra confirmadas dão a taxa de
+ * confirmação de cada combinação. Só contagens: nenhum email sai daqui. Conta
+ * em código (poucos milhares de linhas no máximo) para não depender do modo
+ * GROUP BY da base.
  */
 export async function newsletterFunnel(sinceDays: number) {
   const db = await getDb();
@@ -555,15 +619,27 @@ export async function newsletterFunnel(sinceDays: number) {
     .select({ source: leads.source, metadata: leads.metadata })
     .from(leads)
     .where(and(
-      or(like(leads.source, "nl-pending-%"), like(leads.source, "newsletter-%"), like(leads.source, "nl-unsubscribed-%")),
+      or(
+        like(leads.source, "nl-pending-%"),
+        like(leads.source, "newsletter-%"),
+        like(leads.source, "nl-unsubscribed-%"),
+        like(leads.source, `${EXPIRED_PREFIX}%`),
+      ),
       gt(leads.createdAt, since),
     ))
     .limit(20_000);
   return countNewsletterFunnel(rows);
 }
 
+export type NewsletterFunnelState = "pending" | "confirmed" | "left" | "expired";
+
 export interface NewsletterFunnelRow {
-  source: string;
+  origin: string;
+  state: NewsletterFunnelState;
+  /** Clicked the confirmation link at some point (confirmed, or confirmed and left later). */
+  wasConfirmed: boolean;
+  /** The confirmation looks automated (a mail scanner): counted as a single opt-in downstream. */
+  suspect: boolean;
   trigger: string | null;
   device: string | null;
   pageKind: string | null;
@@ -572,14 +648,27 @@ export interface NewsletterFunnelRow {
   count: number;
 }
 
+const FUNNEL_STATES: Array<[string, NewsletterFunnelState]> = [
+  ["nl-pending-", "pending"],
+  ["newsletter-", "confirmed"],
+  ["nl-unsubscribed-", "left"],
+  [EXPIRED_PREFIX, "expired"],
+];
+
 /** Leads of this flow only (legacy "newsletter-footer" rows have no double opt-in), grouped. */
 export function countNewsletterFunnel(rows: Array<{ source: string; metadata: Record<string, string> | null }>): NewsletterFunnelRow[] {
   const groups = new Map<string, NewsletterFunnelRow>();
   for (const row of rows) {
     const m = row.metadata || {};
     if (m.flow !== NL_FLOW) continue;
+    const hit = FUNNEL_STATES.find(([prefix]) => row.source.startsWith(prefix));
+    if (!hit) continue;
+    const [prefix, state] = hit;
     const key = {
-      source: row.source,
+      origin: m.origin || row.source.slice(prefix.length) || "unknown",
+      state,
+      wasConfirmed: !!m.confirmedAt,
+      suspect: !!m.confirmedAt && m.confirmSuspect === "1",
       trigger: m.trigger || null,
       device: m.device || null,
       pageKind: m.pageKind || null,
@@ -587,8 +676,8 @@ export function countNewsletterFunnel(rows: Array<{ source: string; metadata: Re
       interest: m.interest || null,
     };
     const id = JSON.stringify(key);
-    const hit = groups.get(id);
-    if (hit) hit.count += 1;
+    const found = groups.get(id);
+    if (found) found.count += 1;
     else groups.set(id, { ...key, count: 1 });
   }
   return Array.from(groups.values()).sort((a, b) => b.count - a.count);

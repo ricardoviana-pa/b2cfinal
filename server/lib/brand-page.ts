@@ -35,7 +35,10 @@ export interface BrandPageForm {
    * Submit the form as soon as the page loads (the button stays as the
    * fallback without JavaScript). A person's click on an email link goes
    * straight through; a mail scanner that only fetches the link changes
-   * nothing, because the action is the POST, not the GET.
+   * nothing, because the action is the POST, not the GET. A hidden field
+   * named "via" is set to "auto" before the page posts itself, so the server
+   * can tell it from the button. Scanners that run the page in a sandbox do
+   * post it: the server marks those by their signals (confirmationSignals).
    */
   autoSubmit?: boolean;
 }
@@ -74,7 +77,7 @@ export function brandPage(lang: string, title: string, message: string, options:
     ? `<form id="pa-form" method="post" action="${escapeHtml(options.form.action)}" style="margin:28px 0 0;">${Object.entries(options.form.fields)
         .map(([name, value]) => `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`)
         .join("")}<button type="submit" style="${button}">${escapeHtml(options.form.button)}</button></form>${
-        options.form.autoSubmit ? `<script>document.getElementById("pa-form").submit();</script>` : ""
+        options.form.autoSubmit ? `<script>var f=document.getElementById("pa-form");if(f.via)f.via.value="auto";f.submit();</script>` : ""
       }`
     : "";
   const note = options.note

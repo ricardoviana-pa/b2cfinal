@@ -707,6 +707,12 @@ ${allUrls.join("\n")}
       .then(({ startIntentOriginPurge }) => startIntentOriginPurge())
       .catch((e) => console.warn("[VisitOrigin] limpeza não arrancou:", e?.message ?? e));
 
+    // Newsletter: pendentes que ninguém confirmou ficam sem endereço depois de
+    // 8 dias (o link vale 7), 2 min depois do arranque e a cada 6 h.
+    import("../db")
+      .then(({ startNewsletterPendingPurge }) => startNewsletterPendingPurge())
+      .catch((e) => console.warn("[Newsletter] limpeza não arrancou:", e?.message ?? e));
+
     // Spec §14: retry persistente de pagamentos capturados sem reserva criada
     // (o setTimeout do webhook morre num restart; este sweep vive da BD).
     try {

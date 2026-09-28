@@ -38,15 +38,11 @@ import {
   interestRef,
   isHouseAlertsEnabled,
   isNewsletterAvailable,
-  isPopupEnabled,
   isProxyEmail,
-  isUiPreview,
-  newsletterFooterLocales,
-  newsletterLocales,
+  newsletterConfigPayload,
   normaliseEmail,
   parseInterestRef,
   pendingSource,
-  popupTimings,
   safeErrorLabel,
   visitOriginMetadata,
 } from "../services/newsletter";
@@ -185,19 +181,8 @@ async function subscribeOne(input: SubscribeInput, email: string, ctx: { req?: {
 }
 
 export const newsletterRouter = router({
-  config: publicProcedure.query(() => ({
-    /** The forms may show (live site with database and transactional email; or a local UI preview). */
-    available: isNewsletterAvailable() || isUiPreview(),
-    /** The pop-up may show (available and NEWSLETTER_POPUP is not "false"). */
-    popup: isPopupEnabled(),
-    /** Languages of the pop-up and the inline blocks. */
-    locales: newsletterLocales(),
-    /** Languages of the footer form (every site language unless NEWSLETTER_FOOTER_LOCALES says otherwise). */
-    footerLocales: newsletterFooterLocales(),
-    /** House pages promise an alert ("avisamos") only when the CRM rule is approved (NEWSLETTER_HOUSE_ALERTS). */
-    houseAlerts: isHouseAlertsEnabled(),
-    timings: popupTimings(),
-  })),
+  /** What the forms may do here (services/newsletter.ts); the server render seeds the same answer. */
+  config: publicProcedure.query(() => newsletterConfigPayload()),
 
   subscribe: publicProcedure.input(subscribeInput).mutation(async ({ input, ctx }) => {
     // Honeypot filled: a bot. Same answer as a success, nothing stored or sent.
@@ -241,7 +226,11 @@ export const newsletterRouter = router({
       return { ok: true as const };
     }),
 
-  /** Learning: sign-ups by source (pending, confirmed, left) and interest. Admin only. */
+  /**
+   * Learning: sign-ups of the last `days` by origin and state (pending,
+   * confirmed, left, expired), trigger, device, page, campaign source and
+   * interest. Admin only; shown on /admin/leads. Counts only.
+   */
   stats: adminProcedure
     .input(z.object({ days: z.number().int().min(1).max(365).default(30) }).optional())
     .query(({ input }) => db.newsletterFunnel(input?.days ?? 30)),

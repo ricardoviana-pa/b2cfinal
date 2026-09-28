@@ -70,12 +70,13 @@ const confirmLink = (leadId = 77, exp = confirmExpiry(NOW.getTime()), lang = "es
   `/api/newsletter/confirm?lead=${leadId}&e=${exp}&t=${signToken("confirm", leadId, exp, env)}&lang=${lang}`;
 const exitQuery = (leadId = 77) => `lead=${leadId}&t=${signToken("exit", leadId, 0, env)}&lang=pt`;
 const get = (url: string, init: RequestInit = {}) => fetch(`${origin}${url}`, { redirect: "manual", ...init });
-/** What the page behind the email link posts (its form carries the link's fields). */
-const confirm = (link: string) =>
+const BROWSER = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15";
+/** What the page behind the email link posts (its form carries the link's fields; the script sets via=auto). */
+const confirm = (link: string, agent = BROWSER, via = "auto") =>
   get("/api/newsletter/confirm", {
     method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: link.split("?")[1],
+    headers: { "content-type": "application/x-www-form-urlencoded", "user-agent": agent },
+    body: `${link.split("?")[1]}&via=${via}`,
   });
 
 describe("GET /api/newsletter/confirm (the link in the email)", () => {
@@ -88,7 +89,8 @@ describe("GET /api/newsletter/confirm (the link in the email)", () => {
     expect(html).toContain('<input type="hidden" name="lead" value="77">');
     expect(html).toMatch(/<input type="hidden" name="t" value="[0-9a-f]{32}">/);
     expect(html).toContain("Confirmar suscripción");
-    expect(html).toContain('<script>document.getElementById("pa-form").submit();</script>');
+    expect(html).toContain('<input type="hidden" name="via" value="click">');
+    expect(html).toContain('<script>var f=document.getElementById("pa-form");if(f.via)f.via.value="auto";f.submit();</script>');
     // A mail scanner fetching the link confirms nothing.
     expect(deps.getLeadById).not.toHaveBeenCalled();
     expect(deps.confirmNewsletterLead).not.toHaveBeenCalled();
@@ -117,11 +119,46 @@ describe("POST /api/newsletter/confirm", () => {
     expect(html).not.toContain("example.test");
     // That browser never gets the pop-up again (the flag the pop-up gate reads).
     expect(html).toContain('<script>try{localStorage.setItem("pa_nl_subscribed","1");}catch(e){}</script>');
-    expect(deps.confirmNewsletterLead).toHaveBeenCalledWith(77, "house", { confirmedAt: NOW.toISOString() });
+    expect(deps.confirmNewsletterLead).toHaveBeenCalledWith(77, "house", {
+      confirmedAt: NOW.toISOString(),
+      confirmVia: "auto",
+      confirmDelaySec: "3600",
+      confirmUa: BROWSER,
+    });
     // No Brevo key: no call.
     expect(deps.fetchImpl).not.toHaveBeenCalled();
     expect(logs.join("\n")).toContain("confirmed lead #77 origin=house lang=es");
     expect(logs.join("\n")).not.toContain("example.test");
+  });
+
+  it("a scanner that runs the page is confirmed but marked: no Brevo, and the user agent never reaches the log", async () => {
+    routeEnv.BREVO_API_KEY = "xkeysib-synthetic-not-real";
+    routeEnv.BREVO_NEWSLETTER_LIST_ID = "12";
+    const headless = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/129.0.0.0 Safari/537.36";
+    const res = await confirm(confirmLink(), headless);
+    expect(res.status).toBe(200);
+    expect(deps.confirmNewsletterLead).toHaveBeenCalledWith(77, "house", expect.objectContaining({ confirmSuspect: "1", confirmUa: headless }));
+    expect(deps.fetchImpl).not.toHaveBeenCalled();
+    expect(logs.join("\n")).toContain("confirmed lead #77 origin=house lang=es via=auto suspect=1");
+    expect(logs.join("\n")).not.toContain("HeadlessChrome");
+  });
+
+  it("seconds after the sign-up is a scanner at delivery, whatever the agent says", async () => {
+    deps.getLeadById.mockResolvedValue(pendingLead({ metadata: { flow: "site-doi-v1", locale: "es", origin: "house", consentAt: new Date(NOW.getTime() - 4000).toISOString() } }));
+    await confirm(confirmLink());
+    expect(deps.confirmNewsletterLead).toHaveBeenCalledWith(77, "house", expect.objectContaining({ confirmSuspect: "1", confirmDelaySec: "4" }));
+  });
+
+  it("a later human click upgrades a marked confirmation and only then goes to Brevo", async () => {
+    routeEnv.BREVO_API_KEY = "xkeysib-synthetic-not-real";
+    routeEnv.BREVO_NEWSLETTER_LIST_ID = "12";
+    deps.getLeadById.mockResolvedValue(pendingLead({ source: "newsletter-house" }));
+    deps.confirmNewsletterLead.mockResolvedValue("upgraded");
+    const res = await confirm(confirmLink(), BROWSER, "click");
+    expect(await res.text()).toContain("Suscripción confirmada");
+    expect(deps.confirmNewsletterLead.mock.calls[0][2]).not.toHaveProperty("confirmSuspect");
+    expect(deps.fetchImpl).toHaveBeenCalledTimes(1);
+    expect(logs.join("\n")).toContain("upgraded lead #77 origin=house lang=es via=click");
   });
 
   it("a HEAD request (link checkers) confirms nothing", async () => {

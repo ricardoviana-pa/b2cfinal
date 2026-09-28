@@ -10,10 +10,12 @@
 
    After the sign-up: "one more step" message and an optional question (what
    kind of stay), one tap, no free text. It feeds the segmentation.
-   Measurement: generate_lead (lead_type "newsletter", newsletter_origin
-   popup | house | article | footer) and newsletter_interest in the
-   dataLayer, only with the "Aceitar tudo" choice (pushDL). Never the
-   address, never a hash of it.
+   Measurement: newsletter_signup (newsletter_origin popup | house |
+   article | footer) and newsletter_interest in the dataLayer, only with the
+   "Aceitar tudo" choice (pushDL). Never the address, never a hash of it.
+   Not generate_lead on purpose: the tags that already listen to
+   generate_lead (lead forms, possibly primary conversions in Google Ads and
+   the Meta Lead) would count every pop-up sign-up as a sales lead.
    ========================================================================== */
 
 import { useId, useState, type FormEvent } from 'react';
@@ -102,14 +104,14 @@ export default function NewsletterForm({
         hp,
       });
       try { window.localStorage.setItem(NL_SUBSCRIBED_KEY, '1'); } catch { /* storage unavailable */ }
-      // generate_lead, like every other form of the site (contact, "no
-      // availability", partner homes): the GTM tags that already listen to it
-      // keep working. lead_type/newsletter_origin tell the sign-up apart, so
-      // GA4, Google Ads and the Meta Pixel can count it as its own conversion.
+      // Its own event, never generate_lead: a GTM tag that fires on
+      // generate_lead without a filter (the sales-lead conversion, the 300 €
+      // stop rule of the Google campaigns, the Meta Lead) would count every
+      // pop-up sign-up as a lead and bidding would drift away from bookings.
+      // GA4, Google Ads (secondary) and the Pixel map newsletter_signup apart.
       pushDL({
-        event: 'generate_lead',
+        event: 'newsletter_signup',
         lead_source: `newsletter-${origin}`,
-        lead_type: 'newsletter',
         newsletter_origin: origin,
         ...(origin === 'popup' && trigger ? { newsletter_trigger: trigger } : {}),
         ...(device ? { newsletter_device: device } : {}),

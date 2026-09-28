@@ -16,6 +16,7 @@ import { pathToFileURL } from "node:url";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 import { isNonIndexableHost } from "../lib/hosts.js";
+import { newsletterConfigPayload } from "../services/newsletter";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
  *  tested, hydration verified clean); set the Render env var SSR_ENABLED=false to
@@ -1802,8 +1803,11 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
         try {
           let entry = _ssrRenderCache.get(reqPath);
           if (!entry || Date.now() - entry.at >= SSR_RENDER_TTL_MS) {
-            const prefetch = await buildPrefetch(strippedPath);
-            const out = await render(reqPath, prefetch ? { prefetch } : undefined);
+            // newsletter.config depends only on the env and is tiny: every page
+            // gets it, so the footer band and the blocks are in the HTML and
+            // nothing moves after hydration (CLS on short pages).
+            const prefetch = { ...(await buildPrefetch(strippedPath)), newsletterConfig: newsletterConfigPayload() };
+            const out = await render(reqPath, { prefetch });
             entry = { appHtml: out.appHtml, dehydratedState: out.dehydratedState, at: Date.now() };
             // Simple FIFO cap — evict the oldest entry when full.
             if (_ssrRenderCache.size >= SSR_RENDER_CACHE_MAX) {

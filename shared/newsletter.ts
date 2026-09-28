@@ -247,3 +247,55 @@ export function isNewsletterHouse(property: unknown): boolean {
   if (p.source === "tripwix") return false;
   return typeof p.guestyId === "string" ? p.guestyId.trim().length > 0 : !!p.guestyId;
 }
+
+/* ── Learning: the funnel of the admin report (/admin/leads) ─────────────── */
+
+/** One group of db.newsletterFunnel (counts only, never an address). */
+export interface NewsletterFunnelGroup {
+  origin: string;
+  state: "pending" | "confirmed" | "left" | "expired";
+  wasConfirmed: boolean;
+  suspect: boolean;
+  trigger: string | null;
+  device: string | null;
+  pageKind: string | null;
+  utmSource: string | null;
+  interest: string | null;
+  count: number;
+}
+
+export const NEWSLETTER_FUNNEL_DIMENSIONS = ["origin", "trigger", "device", "pageKind", "utmSource", "interest"] as const;
+export type NewsletterFunnelDimension = (typeof NEWSLETTER_FUNNEL_DIMENSIONS)[number];
+
+export interface NewsletterFunnelSummary {
+  key: string;
+  /** Every sign-up of the flow in the window (pending, confirmed, left, expired). */
+  signups: number;
+  /** Clicked the confirmation link (even if they left later). */
+  confirmed: number;
+  /** Confirmed by a click that looks human: the double opt-ins downstream. */
+  doubleOptIn: number;
+  /** Still waiting for the click (the link lasts 7 days). */
+  pending: number;
+  left: number;
+  /** confirmed / signups, or null without sign-ups. */
+  rate: number | null;
+}
+
+/** Sign-ups and confirmations by one dimension (origin, trigger, device, page, campaign source, interest). */
+export function summariseNewsletterFunnel(groups: NewsletterFunnelGroup[], by: NewsletterFunnelDimension): NewsletterFunnelSummary[] {
+  const out = new Map<string, NewsletterFunnelSummary>();
+  for (const g of groups) {
+    const key = String(g[by] ?? "(none)");
+    const row = out.get(key) ?? { key, signups: 0, confirmed: 0, doubleOptIn: 0, pending: 0, left: 0, rate: null };
+    row.signups += g.count;
+    if (g.wasConfirmed) row.confirmed += g.count;
+    if (g.wasConfirmed && !g.suspect) row.doubleOptIn += g.count;
+    if (g.state === "pending") row.pending += g.count;
+    if (g.state === "left") row.left += g.count;
+    out.set(key, row);
+  }
+  return Array.from(out.values())
+    .map((r) => ({ ...r, rate: r.signups ? r.confirmed / r.signups : null }))
+    .sort((a, b) => b.signups - a.signups || a.key.localeCompare(b.key));
+}

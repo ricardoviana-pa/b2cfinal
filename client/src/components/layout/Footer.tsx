@@ -17,9 +17,10 @@ export default function Footer() {
   const language = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0];
   const realEstateLanguage = ["pt", "fr", "es"].includes(language) ? language + "/" : "";
   const managementLanguage = language === "pt" ? "" : (["en", "fr", "es", "de", "it", "nl"].includes(language) ? language : "en") + "/";
-  // Newsletter band: every language by default (as before; the server's
-  // footerLocales can narrow it), shown once the server says the sign-up
-  // works here (live site with database and email).
+  // Newsletter band: in the languages of the server's footerLocales (PT until
+  // the native review of the others; NEWSLETTER_FOOTER_LOCALES opens more),
+  // when the sign-up works here (live site with database and email). The
+  // config comes with the server render, so the band is in the HTML.
   const newsletter = useNewsletterConfig();
   const showNewsletter = !!newsletter.data?.available && (newsletter.data.footerLocales ?? []).includes(language);
 

@@ -17,6 +17,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useState, useMemo } from "react";
+import {
+  NEWSLETTER_FUNNEL_DIMENSIONS,
+  summariseNewsletterFunnel,
+  type NewsletterFunnelDimension,
+  type NewsletterFunnelGroup,
+} from "@shared/newsletter";
 import { Download, MoreHorizontal, Mail, Phone, MessageSquare, Archive } from "lucide-react";
 
 type Lead = {
@@ -48,6 +54,13 @@ export default function AdminLeads() {
     status: statusFilter === "all" ? undefined : statusFilter,
   });
   const statsQ = trpc.leads.stats.useQuery();
+  // Newsletter funnel of the last 30 days (double opt-in flow): what to learn from the pop-up and the blocks.
+  const [nlBy, setNlBy] = useState<NewsletterFunnelDimension>("origin");
+  const nlStatsQ = trpc.newsletter.stats.useQuery({ days: 30 });
+  const nlSummary = useMemo(
+    () => summariseNewsletterFunnel((nlStatsQ.data as NewsletterFunnelGroup[] | undefined) ?? [], nlBy),
+    [nlStatsQ.data, nlBy],
+  );
   const updateM = trpc.leads.update.useMutation({
     onSuccess: () => {
       utils.leads.list.invalidate();
@@ -191,6 +204,61 @@ export default function AdminLeads() {
           <p className="text-xs text-muted-foreground">Availability requests</p>
           <p className="text-2xl font-semibold">{(statsQ.data as any)?.availability ?? 0}</p>
         </div>
+      </div>
+
+      {/* Newsletter funnel (double opt-in), last 30 days */}
+      <div className="rounded-lg border p-4 space-y-3" data-admin-newsletter-funnel>
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-center justify-between">
+          <div>
+            <p className="text-sm font-medium">Newsletter, last 30 days</p>
+            <p className="text-xs text-muted-foreground">
+              Sign-ups of the pop-up, house, article and footer forms, and how many clicked the confirmation email.
+              "Double opt-in" leaves out confirmations that look like a mail scanner.
+            </p>
+          </div>
+          <Select value={nlBy} onValueChange={(v) => setNlBy(v as NewsletterFunnelDimension)}>
+            <SelectTrigger className="w-[160px] h-9">
+              <SelectValue placeholder="By" />
+            </SelectTrigger>
+            <SelectContent>
+              {NEWSLETTER_FUNNEL_DIMENSIONS.map((d) => (
+                <SelectItem key={d} value={d}>By {d}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        {nlSummary.length === 0 ? (
+          <p className="text-xs text-muted-foreground">{nlStatsQ.isLoading ? "Loading…" : "No sign-ups in the last 30 days."}</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs text-muted-foreground">
+                  <th className="py-1 pr-4 font-normal">{nlBy}</th>
+                  <th className="py-1 pr-4 font-normal text-right">Sign-ups</th>
+                  <th className="py-1 pr-4 font-normal text-right">Confirmed</th>
+                  <th className="py-1 pr-4 font-normal text-right">Rate</th>
+                  <th className="py-1 pr-4 font-normal text-right">Double opt-in</th>
+                  <th className="py-1 pr-4 font-normal text-right">Waiting</th>
+                  <th className="py-1 font-normal text-right">Left</th>
+                </tr>
+              </thead>
+              <tbody>
+                {nlSummary.map((r) => (
+                  <tr key={r.key} className="border-t">
+                    <td className="py-1 pr-4">{r.key}</td>
+                    <td className="py-1 pr-4 text-right">{r.signups}</td>
+                    <td className="py-1 pr-4 text-right">{r.confirmed}</td>
+                    <td className="py-1 pr-4 text-right">{r.rate === null ? "—" : `${Math.round(r.rate * 100)}%`}</td>
+                    <td className="py-1 pr-4 text-right">{r.doubleOptIn}</td>
+                    <td className="py-1 pr-4 text-right">{r.pending}</td>
+                    <td className="py-1 text-right">{r.left}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Filters + export */}

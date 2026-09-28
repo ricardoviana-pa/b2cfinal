@@ -74,15 +74,17 @@ describe("newsletter.config", () => {
       available: true,
       popup: true,
       locales: ["pt", "es"],
-      footerLocales: ["pt", "es", "en", "fr", "de", "it", "nl", "fi", "sv"],
+      footerLocales: ["pt", "es"],
       houseAlerts: false,
       timings: { desktopDelayMs: 8000, mobileDelayMs: 15000, mobileScrollPct: 40, cooldownDays: 30 },
     });
   });
 
-  it("the footer shows in every site language unless NEWSLETTER_FOOTER_LOCALES narrows it (native review)", async () => {
-    vi.stubEnv("NEWSLETTER_FOOTER_LOCALES", "pt, ES,xx1");
-    expect(await newsletterRouter.createCaller(ctx()).config()).toMatchObject({ footerLocales: ["pt", "es"] });
+  it("the footer follows the languages with native review; more only by NEWSLETTER_FOOTER_LOCALES (Ricardo's decision)", async () => {
+    vi.stubEnv("NEWSLETTER_LOCALES", "pt");
+    expect(await newsletterRouter.createCaller(ctx()).config()).toMatchObject({ footerLocales: ["pt"] });
+    vi.stubEnv("NEWSLETTER_FOOTER_LOCALES", "pt, ES,en,xx1");
+    expect(await newsletterRouter.createCaller(ctx()).config()).toMatchObject({ footerLocales: ["pt", "es", "en"] });
   });
 
   it("house pages promise an alert only with NEWSLETTER_HOUSE_ALERTS=true (the CRM rule approved)", async () => {

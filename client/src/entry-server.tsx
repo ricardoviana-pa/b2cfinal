@@ -55,6 +55,9 @@ export interface RenderPrefetch {
   relatedHomes?: { input: { destinationTag: string | null; limit: number }; data: unknown };
   /** Result of trpc.properties.forDestination for a destination page. */
   destinationHomes?: { input: { slug: string }; data: unknown };
+  /** Result of trpc.newsletter.config (every page): the footer band and the
+   *  newsletter blocks render in the HTML instead of appearing after hydration. */
+  newsletterConfig?: unknown;
 }
 
 export interface RenderOptions {
@@ -141,6 +144,9 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
       getQueryKey(trpc.properties.relatedHomes, pf.relatedHomes.input, 'query'),
       pf.relatedHomes.data,
     );
+  }
+  if (pf?.newsletterConfig !== undefined) {
+    queryClient.setQueryData(getQueryKey(trpc.newsletter.config, undefined, 'query'), pf.newsletterConfig);
   }
   if (pf?.destinationHomes) {
     queryClient.setQueryData(

@@ -55,9 +55,11 @@ async function sendEmail(to: string, subject: string, html: string, replyTo?: st
 /* ================================================================
    TEMPLATE BASE
    ================================================================ */
-function wrapTemplate(content: string, _preheader?: string, pt = false): string {
+/** opts.lang: the email's language for <html lang> (English when absent, as before);
+ *  opts.tagline: the footer tagline in that language (the PT or EN legacy one when absent). */
+function wrapTemplate(content: string, _preheader?: string, pt = false, opts: { lang?: string; tagline?: string } = {}): string {
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${/^[a-z]{2}$/.test(opts.lang ?? "") ? opts.lang : "en"}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="margin:0;padding:0;background:#FDFBF7;font-family:Arial,sans-serif;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FDFBF7;">
@@ -82,7 +84,7 @@ ${content}
 <tr><td style="padding:30px 0 0 0;"><div style="height:1px;background:#8B7355;"></div></td></tr>
 
 <!-- Footer -->
-${brandFooter(legacyTagline(pt))}
+${brandFooter(opts.tagline ?? legacyTagline(pt))}
 
 </table>
 </td></tr>
@@ -1465,6 +1467,10 @@ export async function sendNewsletterConfirmation(data: {
     P(escapeHtml(T.ignore), small),
     P(escapeHtml(SENDER_ADDRESS), small),
   ].join("\n");
-  const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, lang === "pt");
+  // Language of the subscriber all the way: <html lang> and the footer tagline of the recovery emails (9 languages).
+  const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, lang === "pt", {
+    lang,
+    tagline: RECOVERY_I18N[emailLang(lang)].footerTagline,
+  });
   await sendEmail(data.email, T.subject, html, undefined, { logLabel: `newsletter confirmation, lead #${data.leadId}` });
 }

@@ -11,11 +11,13 @@
  *   2. The click (link to GET /api/newsletter/confirm, HMAC token that
  *      expires after 7 days; the page posts the confirmation at once, so a
  *      mail scanner that only fetches the link confirms nothing) promotes the
- *      lead to "newsletter-<origin>" with confirmedAt.
- *      Only from here on does it count: the PA Mailing List collector reads
- *      the leads table every 6 hours and treats "newsletter*" as opt-in, and
- *      db.hasNewsletterConsent (LIKE 'newsletter%') gates the marketing
- *      contacts of the checkout recovery. Pending leads unlock nothing.
+ *      lead to "newsletter-<origin>" with confirmedAt. The POST also keeps the
+ *      signals of who confirmed (seconds since the form, user agent, whether
+ *      the page posted by itself): a confirmation that looks automated (a
+ *      sandbox that runs the page) gets confirmSuspect "1" and counts only as
+ *      a single opt-in until the person clicks again (confirmationSignals).
+ *      A pending lead nobody confirms is anonymised after 8 days
+ *      ("nl-expired-<origin>", no address; expireNewsletterPending).
  *   3. Exit, always: the unsubscribe link (no expiry) turns every consent
  *      lead of the address into "nl-unsubscribed-<origin>" (and a checkout
  *      consent back into "checkout"). The collector reads it as an
@@ -24,6 +26,18 @@
  *      Brevo is optional: when BREVO_API_KEY
  *      and BREVO_NEWSLETTER_LIST_ID exist, confirmed contacts are added to
  *      the list and removed on exit; without them nothing is called.
+ *
+ * What counts as consent, and at which level. The PA Mailing List collector
+ * reads the leads table every 6 hours. Only a lead of this flow confirmed by
+ * the click (flow site-doi-v1, confirmedAt, no confirmSuspect) is a double
+ * opt-in there (preference scope "newsletter-doi", level dupla_confirmacao in
+ * pa-marketing). Every other "newsletter*" lead is a single opt-in
+ * (opt_in_registado): the footer and home sign-ups from before this flow and
+ * the checkout box ("newsletter-checkout", the box only). The checkout
+ * recovery (db.hasNewsletterConsent, LIKE 'newsletter%') still treats all of
+ * them as consent, as before this change: whether legacy and checkout
+ * sign-ups need a confirmation too is Ricardo's decision (docs/newsletter.md).
+ * Pending leads unlock nothing anywhere.
  *
  * Privacy: the email address never goes into a URL, a log line or an error
  * message. Only lead ids, origins and counts are logged.
@@ -48,6 +62,8 @@ import type { ServerVisitOrigin } from "./visit-origin";
 export const PENDING_PREFIX = "nl-pending-";
 export const CONFIRMED_PREFIX = "newsletter-";
 export const UNSUBSCRIBED_PREFIX = "nl-unsubscribed-";
+/** A pending lead nobody confirmed, anonymised (no address) after PENDING_RETENTION_DAYS. */
+export const EXPIRED_PREFIX = "nl-expired-";
 /** Marks the leads written by this flow (legacy "newsletter-footer" rows have no double opt-in). */
 export const FLOW_VERSION = "site-doi-v1";
 
@@ -112,14 +128,18 @@ export function newsletterLocales(env: NodeJS.ProcessEnv = process.env): string[
 }
 
 /**
- * Languages where the footer form shows. Every site language by default: the
- * footer took sign-ups in all of them before this change. The texts of the
- * eight languages other than PT wait for native review; to follow that rule
- * strictly before it, NEWSLETTER_FOOTER_LOCALES=pt (or pt,es,en).
+ * Languages where the footer form shows. The same as the pop-up and the
+ * blocks (NEWSLETTER_LOCALES, PT by default) until the texts of each language
+ * have native review: the consent sentence, the confirmation email and the
+ * pages of its links are new in every language (regra do pa-marketing).
+ * NEWSLETTER_FOOTER_LOCALES=pt,es,en,... in Render opens the footer in more
+ * languages before that review: Ricardo's explicit decision, and each
+ * language needs the visit-origin line in its privacy policy first
+ * (privacy.s2OriginBody, PT only today).
  */
 export function newsletterFooterLocales(env: NodeJS.ProcessEnv = process.env): string[] {
   const raw = env.NEWSLETTER_FOOTER_LOCALES;
-  if (!raw || !raw.trim()) return [...NEWSLETTER_LANGS];
+  if (!raw || !raw.trim()) return newsletterLocales(env);
   return raw
     .split(",")
     .map((s) => s.trim().toLowerCase())
@@ -178,6 +198,28 @@ export function popupTimings(env: NodeJS.ProcessEnv = process.env) {
   };
 }
 
+/**
+ * What newsletter.config answers. Depends only on the environment, so the
+ * server render seeds it too (server/_core/vite.ts, entry-server.tsx): the
+ * footer band and the blocks come in the HTML and nothing moves after
+ * hydration.
+ */
+export function newsletterConfigPayload(env: NodeJS.ProcessEnv = process.env) {
+  return {
+    /** The forms may show (live site with database and transactional email; or a local UI preview). */
+    available: isNewsletterAvailable(env) || isUiPreview(env),
+    /** The pop-up may show (available and NEWSLETTER_POPUP is not "false"). */
+    popup: isPopupEnabled(env),
+    /** Languages of the pop-up and the inline blocks. */
+    locales: newsletterLocales(env),
+    /** Languages of the footer form (the same as the blocks unless NEWSLETTER_FOOTER_LOCALES says otherwise). */
+    footerLocales: newsletterFooterLocales(env),
+    /** House pages promise an alert ("avisamos") only when the CRM rule is approved (NEWSLETTER_HOUSE_ALERTS). */
+    houseAlerts: isHouseAlertsEnabled(env),
+    timings: popupTimings(env),
+  };
+}
+
 /* ── Log hygiene ──────────────────────────────────────────────────────── */
 
 /**
@@ -212,6 +254,68 @@ export function doiAllowed(times: number[], now: number = Date.now()): boolean {
   if (recent.length >= DOI_MAX_PER_DAY) return false;
   const last = recent.length ? Math.max(...recent) : -Infinity;
   return now - last >= DOI_MIN_INTERVAL_MS;
+}
+
+/* ── Who confirmed: a person, or a mail scanner that runs the page ────── */
+
+/**
+ * A confirmation this soon after the form is almost always a mail security
+ * scanner opening the link at delivery (Defender Safe Links detonation,
+ * Mimecast, Proofpoint run the page in a sandbox and the page posts itself).
+ */
+export const CONFIRM_MIN_HUMAN_SECONDS = 10;
+const AUTOMATED_AGENT =
+  /bot[\/;-]|\bbot\b|crawl|spider|slurp|headless|phantom|puppeteer|playwright|selenium|python|curl|wget|java\/|go-http|okhttp|axios|node-fetch|undici|^node$|libwww|scanner|preview|barracuda|mimecast|proofpoint|urldefense|safelinks|symantec|forcepoint|trend ?micro|ironport|fortinet|sophos|zscaler/i;
+
+/**
+ * What the confirmation POST keeps about who confirmed: seconds since the
+ * form (consentAt), the user agent (cut to 160 characters, never logged) and
+ * whether the page posted by itself ("auto") or by the button ("click").
+ * confirmSuspect "1" when the agent looks automated or empty, or the click
+ * came under CONFIRM_MIN_HUMAN_SECONDS after the form: the lead is still
+ * confirmed (the person did fill the form), but the collector counts it as a
+ * single opt-in, never as a double one, until a later click that looks human
+ * clears the mark (db.confirmNewsletterLead).
+ */
+export function confirmationSignals(input: {
+  consentAt?: string;
+  confirmedAt: Date;
+  userAgent?: unknown;
+  via?: unknown;
+}): Record<string, string> {
+  const agent = String(input.userAgent ?? "").replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, 160);
+  const started = Date.parse(String(input.consentAt ?? ""));
+  const delay = Number.isFinite(started) ? Math.max(0, Math.round((input.confirmedAt.getTime() - started) / 1000)) : null;
+  const suspect = !agent || AUTOMATED_AGENT.test(agent) || (delay !== null && delay < CONFIRM_MIN_HUMAN_SECONDS);
+  return {
+    confirmVia: input.via === "auto" ? "auto" : "click",
+    ...(delay !== null ? { confirmDelaySec: String(delay) } : {}),
+    ...(agent ? { confirmUa: agent } : {}),
+    ...(suspect ? { confirmSuspect: "1" } : {}),
+  };
+}
+
+/* ── Pending sign-ups nobody confirmed ────────────────────────────────── */
+
+/**
+ * Days a pending lead keeps the address: the 7 days of the link plus one.
+ * After that expireNewsletterPending anonymises it ("nl-expired-<origin>",
+ * no address, only the counting fields), so an address someone typed and
+ * never confirmed (maybe not their own) is not kept. The counts of the
+ * funnel stay.
+ */
+export const PENDING_RETENTION_DAYS = CONFIRM_LINK_DAYS + 1;
+/** Metadata an expired lead keeps: what the funnel counts, nothing that identifies a person. */
+export const EXPIRED_KEEP = ["flow", "origin", "locale", "pageKind", "trigger", "device", "utmSource", "interest", "consentVersion", "consentAt"] as const;
+
+export function expiredMetadata(meta: Record<string, string> | null | undefined, at: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const key of EXPIRED_KEEP) {
+    const value = meta?.[key];
+    if (typeof value === "string" && value) out[key] = value;
+  }
+  out.expiredAt = at;
+  return out;
 }
 
 /* ── Sources the public leads.create may write ────────────────────────── */
