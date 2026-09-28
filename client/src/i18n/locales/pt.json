@@ -2163,5 +2163,14 @@
     "faq1A": "Os requisitos variam por atividade. Consulte a página da experiência para conhecer a dificuldade, os limites de idade e o que levar. A nossa equipa pode ajudar a escolher.",
     "faq2Q": "Posso combinar atividades com uma estadia?",
     "faq2A": "Sim. Escolha a casa e explore atividades na mesma região. O concierge pode ajudar a coordenar o programa. As atividades e eventuais transfers são cobrados à parte."
+  },
+  "planning": {
+    "alternativeHomes": "Casas noutras localidades do Minho",
+    "noLocalHomes": "Neste momento não temos casas em catálogo em Esposende. Estas alternativas ficam noutras localidades do Minho; confirme a localização e planeie a deslocação antes de escolher.",
+    "datesKept": "As suas datas são preservadas:",
+    "checkPrice": "Abra uma casa ou a pesquisa para consultar disponibilidade e preço para estas datas.",
+    "towns": "Localidades da costa do Minho",
+    "updated": "Atualizado em",
+    "inThisGuide": "Neste guia"
   }
 }

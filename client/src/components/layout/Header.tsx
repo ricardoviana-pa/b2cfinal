@@ -5,7 +5,7 @@
    ========================================================================== */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { Link, useLocation } from 'wouter';
+import { Link, useLocation, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
   Menu, X, Phone, Mail, MessageCircle, Instagram, Facebook, Youtube, Linkedin,
@@ -14,6 +14,7 @@ import {
 import { IMAGES } from '@/lib/images';
 import LanguageSwitcher from './LanguageSwitcher';
 import PromoBar from './PromoBar';
+import { withEditorialTrip } from '@shared/editorialTripContext';
 
 interface HeaderProps {
   variant?: 'transparent' | 'solid';
@@ -21,12 +22,14 @@ interface HeaderProps {
 
 export default function Header({ variant = 'solid' }: HeaderProps) {
   const { t } = useTranslation();
+  const search = useSearch();
   // Auth temporarily disabled
   // const meQuery = trpc.auth.me.useQuery(undefined, { retry: false, refetchOnWindowFocus: false });
   // const authUser = meQuery.data;
   const navItems = useMemo(
     () => [
       { label: t('nav.properties'), href: '/homes', hasDropdown: true },
+      { label: t('nav.destinations'), href: '/destinations' },
       { label: t('nav.experiences'), href: '/experiences' },
       { label: t('nav.events'), href: '/events' },
       { label: t('nav.journal'), href: '/blog' },
@@ -172,7 +175,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
             </div>
 
             {/* CENTRE: Desktop nav with Properties dropdown */}
-            <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
+            <nav className="hidden lg:flex items-center gap-4 xl:gap-6" aria-label="Main navigation">
               {navItems.map(item => (
                 item.hasDropdown ? (
                   <div
@@ -188,7 +191,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                       const isActiveDropdown = location.startsWith('/homes') || location.startsWith('/concierge') || location.startsWith('/services');
                       return (
                         <Link
-                          href={item.href}
+                          href={withEditorialTrip(item.href,search)}
                           className={`relative inline-flex items-center gap-1 text-[13px] font-medium leading-none pb-1 transition-colors ${
                             isActiveDropdown
                               ? (isTransparent ? 'text-white' : 'text-[#1A1A18]')
@@ -228,7 +231,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                     >
                       <div className={`${dropdownBg} w-[220px] py-2`}>
                         <Link
-                          href="/homes"
+                          href={withEditorialTrip("/homes",search)}
                           className="block px-5 py-2.5 text-[13px] text-[#6B6860] hover:bg-[#FAFAF7] hover:text-[#1A1A18] transition-colors"
                         >
                           {t('header.allProperties', 'All properties')}
@@ -247,7 +250,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                 ) : (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    href={withEditorialTrip(item.href,search)}
                     className={`relative inline-flex items-center text-[13px] font-medium leading-none pb-1 transition-colors ${
                       location === item.href
                         ? (isTransparent ? 'text-white' : 'text-[#1A1A18]')
@@ -341,7 +344,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
               {/* Desktop: Reserve button */}
               <Link
-                href="/homes"
+                href={withEditorialTrip("/homes",search)}
                 className={`pa-action hidden md:inline-flex items-center px-6 py-2.5 text-[11px] font-medium uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/50 text-white hover:bg-white hover:text-[#1A1A18]'
@@ -354,7 +357,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
               {/* Mobile: Reserve button */}
               <Link
-                href="/homes"
+                href={withEditorialTrip("/homes",search)}
                 className={`pa-action md:hidden inline-flex items-center px-4 py-2 min-h-[44px] text-[11px] font-medium uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/50 text-white hover:bg-white hover:text-[#1A1A18]'
@@ -414,7 +417,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
             {mobileNav.map((item, i) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={withEditorialTrip(item.href,search)}
                 onClick={() => setMenuOpen(false)}
                 className={`block py-3.5 border-b border-[#E8E4DC]/30 transition-all duration-500 ${menuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
                 style={{ transitionDelay: menuOpen ? `${80 + i * 50}ms` : '0ms' }}

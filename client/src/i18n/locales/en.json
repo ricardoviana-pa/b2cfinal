@@ -2161,5 +2161,14 @@
     "faq1A": "Requirements vary by activity. Check the experience page for difficulty, age limits and what to bring. Our team can help you choose.",
     "faq2Q": "Can I combine activities with a villa stay?",
     "faq2A": "Yes. Choose your home and explore activities in the same region. Our concierge can help coordinate the programme. Activities and any transfers are charged separately."
+  },
+  "planning": {
+    "alternativeHomes": "Homes elsewhere in the Minho",
+    "noLocalHomes": "We currently have no listed homes in Esposende. These alternatives are in other towns in the Minho; check the location and plan your journey before choosing.",
+    "datesKept": "Your dates are kept:",
+    "checkPrice": "Open a home or the search to check availability and the price for these dates.",
+    "towns": "Coastal towns in the Minho",
+    "updated": "Updated",
+    "inThisGuide": "In this guide"
   }
 }

@@ -21,7 +21,9 @@ import { useMemo } from 'react';
 import { trpc } from '@/lib/trpc';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import BookingCTA from '@/components/property/BookingCTA';
-import { Link } from 'wouter';
+import { Link, useSearch } from 'wouter';
+import { editorialTripContext, withEditorialTrip } from '@shared/editorialTripContext';
+import { pushDL } from '@/lib/datalayer';
 import { useTranslation, Trans } from 'react-i18next';
 import { localizeDuration } from '@/lib/duration';
 import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Bike } from 'lucide-react';
@@ -29,6 +31,7 @@ import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import PropertyCard from '@/components/property/PropertyCard';
+import { PROPERTY_GROUPS } from '@/config/propertyGroups';
 
 /* ── 1. HERO EDITORIAL ────────────────────────────────────────────────── */
 
@@ -46,7 +49,7 @@ export function HeroEditorial({ destination: d }: HeroEditorialProps) {
       <Link href="/destinations" className="inline-flex min-h-11 items-center text-sm text-white/80 mb-2">← {t('destinationsPage.backToDestinations')}</Link>
       <h1 className="headline-xl text-white mb-4">{d.name}</h1>
       {(d.heroSubtitle || d.tagline) && <p className="body-lg max-w-xl !text-white/90">{d.heroSubtitle || d.tagline}</p>}
-      <a href="#destination-homes" className="btn-white mt-6">{t('destinationDetail.homesIn', { name: d.name })} <ArrowRight className="w-4 h-4" /></a>
+      <a href="#destination-homes" className="btn-white mt-6">{t(d.slug === 'esposende' ? 'planning.alternativeHomes' : 'destinationDetail.homesIn', { name: d.name })} <ArrowRight className="w-4 h-4" /></a>
       {d.primaryAccolade && <p className="text-xs text-white/80 mt-5 max-w-xl">{d.primaryAccolade.text} · {d.primaryAccolade.source}</p>}
     </div>
   </section>;
@@ -98,8 +101,15 @@ interface WhereToStayProps {
 }
 
 export function WhereToStay({ destination: d, properties }: WhereToStayProps) {
-  const { t } = useTranslation();
-  const visibleHomes = useMemo(() => properties.slice(0, 6), [properties]);
+  const { t, i18n } = useTranslation();
+  const search = useSearch();
+  const trip = editorialTripContext(search);
+  const regionalAlternatives = d.slug === 'esposende' && !properties.some(p => p.locality?.toLowerCase() === 'esposende');
+  const visibleHomes = useMemo(() => {
+    const present = new Set(properties.map(p=>p.guestyId));
+    const groupedChildren = new Set(PROPERTY_GROUPS.filter(g=>present.has(g.parentGuestyId)).flatMap(g=>g.unitGuestyIds.filter(id=>id!==g.parentGuestyId)));
+    return properties.filter(p=>!p.guestyId || !groupedChildren.has(p.guestyId)).slice(0,6);
+  }, [properties]);
   const listingIds = useMemo(() => visibleHomes.filter(p => p.guestyId).map(p => p.guestyId!), [visibleHomes]);
   const { data: fromPrices } = trpc.booking.lowestNightlyBatch.useQuery({ listingIds }, { enabled: listingIds.length > 0, staleTime: 5 * 60_000 });
   const partner = usePartnerPrices(visibleHomes);
@@ -124,19 +134,21 @@ export function WhereToStay({ destination: d, properties }: WhereToStayProps) {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div className="max-w-2xl">
             <h2 className="headline-lg text-[#1A1A18]">
-              {t('destinationDetail.homesIn', { name: d.name })}
+              {t(regionalAlternatives ? 'planning.alternativeHomes' : 'destinationDetail.homesIn', { name: d.name })}
             </h2>
-            <p className="body-md mt-3">{t('conversion.homesIntro')}</p>
+            <p className="body-md mt-3">{t(regionalAlternatives ? 'planning.noLocalHomes' : 'conversion.homesIntro')}</p>
+            {trip.checkin && trip.checkout && <p className="text-sm leading-relaxed mt-3 text-pa-stone-aa">{t('planning.datesKept')} <time dateTime={trip.checkin}>{new Date(trip.checkin+'T12:00:00Z').toLocaleDateString(i18n.language,{timeZone:'UTC'})}</time> – <time dateTime={trip.checkout}>{new Date(trip.checkout+'T12:00:00Z').toLocaleDateString(i18n.language,{timeZone:'UTC'})}</time>. {t('planning.checkPrice')}</p>}
           </div>
           <Link
-            href={destinationHomesHref(d)}
+            href={withEditorialTrip(destinationHomesHref(d), search)}
+            onClick={() => pushDL({event:'destination_planning',destination:d.slug,language:i18n.language.split('-')[0],section:'homes',action:'homes'})}
             className="btn-ghost shrink-0 self-start"
           >
             {t('destinationDetail.viewAllHomes')} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {visibleHomes.map(p => <PropertyCard key={p.id} property={p} fromPrice={p.supplierUid ? partner.prices[p.supplierUid] : fromPrices?.[p.guestyId ?? '']} />)}
+          {visibleHomes.map((p,index) => <PropertyCard key={p.id} property={p} checkin={trip.checkin} checkout={trip.checkout} guests={trip.guests} hidePrice={!!trip.checkin} listId={`destination_${d.slug}`} listName={d.name} itemIndex={index} fromPrice={p.supplierUid ? partner.prices[p.supplierUid] : fromPrices?.[p.guestyId ?? '']} />)}
         </div>
       </div>
     </section>
@@ -160,6 +172,7 @@ interface TheJournalProps {
 
 export function TheJournal({ destination: d, articles }: TheJournalProps) {
   const { t } = useTranslation();
+  const search = useSearch();
   if (articles.length === 0) return null;
   const heading = t('destinationGrowth.journalTitle', { name: d.name });
   return (
@@ -171,7 +184,7 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {articles.slice(0, 3).map((a, index) => (
-            <Link key={a.slug} href={`/blog/${a.slug}`} className="group flex items-start gap-4 border-t border-pa-sand pt-5 pb-3">
+            <Link key={a.slug} href={withEditorialTrip(`/blog/${a.slug}`, search)} className="group flex items-start gap-4 border-t border-pa-sand pt-5 pb-3">
               <div
                 className="relative shrink-0 overflow-hidden bg-pa-sand/40 w-24 h-28 flex items-center justify-center"
               >
@@ -544,9 +557,6 @@ export function EatDrinkExperience({
                       {e.season && <span>· {e.season}</span>}
                     </div>
                   )}
-                  <p className="mt-3 text-[12px] text-[#8B7355] italic" style={{ fontWeight: 300 }}>
-                    {t('destinationDetail.guide.conciergeArrange')}
-                  </p>
                 </div>
               ))}
             </div>
@@ -759,6 +769,7 @@ export function RelatedDestinationsAndOwnersCTA({
   related,
 }: RelatedDestinationsAndOwnersCTAProps) {
   const { t } = useTranslation();
+  const search = useSearch();
   return (
     <>
       {related.length > 0 && (
@@ -769,7 +780,7 @@ export function RelatedDestinationsAndOwnersCTA({
               {related.slice(0, 3).map(r => (
                 <Link
                   key={r.slug}
-                  href={`/destinations/${r.slug}`}
+                  href={withEditorialTrip(`/destinations/${r.slug}`, search)}
                   className="group block relative overflow-hidden rounded-xl"
                   style={{ aspectRatio: '4/3' }}
                 >
@@ -803,7 +814,7 @@ export function RelatedDestinationsAndOwnersCTA({
         </section>
       )}
 
-      <BookingCTA href={destinationHomesHref(d)} />
+      <BookingCTA href={withEditorialTrip(destinationHomesHref(d), search)} />
     </>
   );
 }
