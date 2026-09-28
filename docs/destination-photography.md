@@ -50,3 +50,17 @@ No generated images represent places or services in this update. Responsive sour
 - Human-readable attribution, source, licence and crop disclosure are available at `/destinations/photography.html`, linked from the shared footer so credits remain available on the home, hub, detail and related-destination views.
 
 Every new selection was visually inspected. No generated landscape, synthetic weather alteration or unverified location is used.
+
+## Destination guide rollout — 28 September 2026
+
+Caminha now uses the Moledo landscape below as its regional hero, replacing the accommodation image. Five additional photographs were visually checked against their Commons descriptions and licences. No weather alteration or generated landscape was used. Other approved hero selections remain.
+
+| Place | Local asset | Author and source | Licence |
+| --- | --- | --- | --- |
+| Caminha · Moledo | `/destinations/caminha-moledo.jpg` | [Joseolgon](https://commons.wikimedia.org/wiki/File:Praia_de_Moledo_%281%29.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| Porto · Serralves | `/destinations/porto-serralves.jpg` | [Joseolgon](https://commons.wikimedia.org/wiki/File:Aerial_photograph_of_Parque_de_Serralves_%284%29.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| Lisboa · Cabo da Roca | `/destinations/lisbon-cabo-roca.jpg` | [Alexkom000](https://commons.wikimedia.org/wiki/File:2025-08-17_Cabo_da_Roca_2.jpg) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| Alentejo · Comporta | `/destinations/alentejo-comporta.jpg` | [Vitor Oliveira](https://commons.wikimedia.org/wiki/File:Litoral_entre_a_Praia_da_Comporta_e_a_Praia_da_Torre_-_Portugal_%2848251603587%29.jpg) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) |
+| Algarve · Ria Formosa | `/destinations/algarve-ria-formosa.jpg` | [Kolforn (Wikimedia)](https://commons.wikimedia.org/wiki/File:12-09-2017_Ria_Formosa%2C_Faro_%281%29.JPG) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+
+The source-provided 1280px derivatives are used with responsive display crops. Each photograph and its crops retain its stated licence; this does not relicense unrelated site content. Attribution, source, licence and modification notice are included on the shared public credits page.

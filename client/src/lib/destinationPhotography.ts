@@ -1,21 +1,5 @@
-/** Named accommodation photographs are examples, not panoramic destination views. */
-export function destinationAccommodationCaption(
-  slug: string,
-  language: string
-): string | undefined {
-  const name =
-    slug === "caminha" ? "Historic Riverfront Watermill, Caminha" : undefined;
-  if (!name) return undefined;
-  const labels: Record<string, string> = {
-    en: "An accommodation photograph.",
-    pt: "Fotografia de um alojamento.",
-    de: "Foto einer Unterkunft.",
-    es: "Fotografía de un alojamiento.",
-    fi: "Majoituskohteen valokuva.",
-    fr: "Photographie d’un hébergement.",
-    it: "Fotografia di un alloggio.",
-    nl: "Foto van een accommodatie.",
-    sv: "Foto av ett boende.",
-  };
-  return `${name}. ${labels[language.split("-")[0]] || labels.en}`;
+/** Destination heroes now use identified landscapes; no accommodation caption
+ * is needed. Keep this helper for the legacy translated template. */
+export function destinationAccommodationCaption(_slug: string, _language: string): string | undefined {
+  return undefined;
 }

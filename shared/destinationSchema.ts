@@ -10,12 +10,17 @@ export function buildDestinationGraph(d: Destination, properties: Property[], ba
   const imageSource = d.regionImage || d.coverImage;
   const image = imageSource?.startsWith('/') ? `${baseUrl}${imageSource}` : imageSource;
   const placeId = `${url}#destination`;
+  // Regional alternatives are useful on the page, but are not contained in
+  // the municipality represented by its TouristDestination entity.
+  const localProperties = ['porto', 'esposende'].includes(d.slug)
+    ? properties.filter(p => p.locality?.toLowerCase() === d.slug)
+    : properties;
   return [
     {
       '@type': 'TouristDestination', '@id': placeId, name: d.name,
       description: d.heroSubtitle || d.description || d.tagline, url, image,
       ...(d.geo && { geo: { '@type': 'GeoCoordinates', latitude: d.geo.latitude, longitude: d.geo.longitude } }),
-      ...(properties.length > 0 && { containsPlace: properties.slice(0, 6).map(p => ({
+      ...(localProperties.length > 0 && { containsPlace: localProperties.slice(0, 6).map(p => ({
         '@type': 'Place', name: getDisplayName(p), url: `${baseUrl}/${lang}/homes/${p.slug}`,
       })) }),
     },

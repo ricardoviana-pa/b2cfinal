@@ -312,9 +312,9 @@
       "latitude": 41.6918,
       "longitude": -8.8344
     },
-    "tagline": "Northern Portugal's Atlantic capital, where the Lima meets the ocean.",
-    "description": "Plan Viana do Castelo around its historic centre, Santa Luzia and the coast, with transport and rainy-day alternatives.",
-    "heroSubtitle": "Northern Portugal's Atlantic capital, where the Lima meets the ocean",
+    "tagline": "Where the Lima meets the sea.",
+    "description": "On the Minho coast, north of Porto, Viana brings together a historic centre, river and Atlantic shore. Santa Luzia reveals the whole setting; come back down and give each place time.",
+    "heroSubtitle": "A morning above the city, an afternoon on the beach and a table worth lingering over.",
     "coverImage": "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965330b6d209c001510dd49/43c0ede3-0bca-48-6y2Ze",
     "regionImage": "https://images.pexels.com/photos/33812433/pexels-photo-33812433.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "gallery": [],
@@ -334,8 +334,8 @@
       "Gateway to the Vinho Verde appellation and the Loureiro grape's place of origin"
     ],
     "comingSoon": false,
-    "seoTitle": "Viana do Castelo: Beaches, Food and Where to Stay | Portugal Active",
-    "seoDescription": "Plan two days in Viana do Castelo: compare the centre and coast, arrival without a car, museums for rain and homes by locality.",
+    "seoTitle": "Viana do Castelo: coastal stays and city days | Portugal Active",
+    "seoDescription": "A morning above the city, an afternoon on the beach and a table worth lingering over. Choose your base and plan your days.",
     "howToGetHere": "Porto airport (OPO) 45–50 min by A28 (toll-free through Viana since Jan 2025). CP intercity from Porto Campanhã 1h15–1h25. Vigo airport 1h from the Spanish side. Lisbon is 4h by motorway.",
     "bestTimeToVisit": "Late May to June and September. Warm, drier weather (20–25°C), vineyards either at their greenest or at full vindima, and crowds that are manageable rather than absent.",
     "whatToExpect": "A working Atlantic city, more Atlantic than Mediterranean — fishing boats at dawn, basilica at sunset, Vinho Verde at every table.",
@@ -595,36 +595,36 @@
     ],
     "faqs": [
       {
-        "question": "How many days do I need in Viana do Castelo?",
-        "answer": "Two days can combine the centre and Santa Luzia with a separate coastal outing. Add another day for the Lima valley or a more distant visit. Allow room for opening hours, transport and a rainy-day change of plan."
+        "question": "Is the beach in the city centre?",
+        "answer": "The municipality has several beaches. Cabedelo is on the southern bank of the Lima; choose your home and transport around your preferred beach."
       },
       {
-        "question": "When is the best time to visit?",
-        "answer": "Choose by the trip you want: summer for more beach-oriented plans, spring or autumn for town visits and walks, and winter for a slower stay with indoor alternatives. Weather and sea conditions vary. For August events, check the organiser’s dated programme."
+        "question": "Can I stay without a car?",
+        "answer": "A city-focused stay can work on foot and by public transport. Arrange journeys if combining beaches, countryside and several towns."
       },
       {
-        "question": "Can I visit from Porto without a car?",
-        "answer": "CP serves Viana do Castelo on the Linha do Minho. Compare the current service, departure station, duration and fare for your date, and check the return before leaving. The historic centre is close to the station; beaches and mountain outings need additional planning."
+        "question": "Which airport should I choose?",
+        "answer": "Porto (OPO) is the main option; also compare Vigo (VGO), including the journey to your home."
       },
       {
-        "question": "How do I arrive from Porto airport?",
-        "answer": "GET BUS publishes a direct service between Porto airport and Viana’s transport interface. Check its timetable for your flight, allow for airport formalities and plan the final journey to the home. Private transfers, if requested, need separate confirmation and a price."
+        "question": "How many nights should I stay?",
+        "answer": "Three nights give you two full days for town and coast. Five or seven add room for the Lima valley and other outings."
       },
       {
-        "question": "How do I reach Cabedelo?",
-        "answer": "Cabedelo is across the Lima in Darque. The municipality lists TuViana line 10; check the stop, day-specific timetable and return. Do not assume a river crossing runs throughout the day. A road journey is a separate part of the visit."
+        "question": "What is there beyond the beach?",
+        "answer": "Santa Luzia, Gil Eannes, the Costume Museum and Urban Ecological Park make for very different days."
       },
       {
-        "question": "Which beach should I choose?",
-        "answer": "Praia Norte is on the city side, Cabedelo is south of the Lima and Carreço and Afife are further north. Choose by access and the day’s conditions. Check bathing supervision and signs locally; none should be described as permanently calm or safe for children."
+        "question": "Are there activities for beginners?",
+        "answer": "Choose an activity and confirm age, level, equipment and conditions with the operator before booking."
       },
       {
-        "question": "What can I do if it rains?",
-        "answer": "The Museu do Traje offers an indoor visit in the centre. The Gil Eannes museum ship is another option, but it includes deck access, narrow passages and stairs. Check opening and accessibility before visiting; the ship is not a step-free alternative."
+        "question": "How should I choose a home with children?",
+        "answer": "Check actual beach access, nearby services and the home’s features, including steps and pool protection where relevant."
       },
       {
-        "question": "How should I choose a home?",
-        "answer": "Compare the actual locality, layout, capacity and confirmed facilities. A city-centre stay and a coastal or valley home have different transport needs. Check the property page and your proposal for cleaning, pool heating, optional services and additional charges."
+        "question": "Can you arrange our arrival?",
+        "answer": "Yes. Portugal Active arranges shuttles through an agreed proposal, using your flight, passengers, luggage and address."
       }
     ],
     "relatedDestinations": [
@@ -653,9 +653,9 @@
     "comingSoon": false,
     "status": "active",
     "name": "Caminha",
-    "tagline": "A walled border town at the mouth of the Minho, facing Galicia across the estuary.",
-    "description": "A guide to Caminha: the walled town at the mouth of the Minho, Moledo beach, the Camarido pines and the Coura valley.",
-    "heroSubtitle": "Where the Minho meets the Atlantic, with Galicia on the far bank",
+    "tagline": "Where the river meets the Atlantic.",
+    "description": "On Portugal’s northern coast, Caminha looks across the Minho to Galicia. The town, Moledo, Vila Praia de Âncora and the Coura valley share a municipality, but offer different days and places to stay.",
+    "heroSubtitle": "A morning in town, pinewoods along the way and an afternoon by the sea at Moledo.",
     "whyOverline": "WHY CAMINHA",
     "whyDescription": "Caminha sits on the Portuguese bank of the Minho estuary, facing Galicia and Monte de Santa Tecla. The river, the old town and the nearby Atlantic beaches give it a different rhythm from a larger city. The Spanish shore is visible across the water, but any crossing requires its own transport plan.\n\nThe old town is small and still defined by its walls. The oldest sections date from the thirteenth century, and the Torre do Relógio, the clock tower on the main square, was the principal gate through them. In front of it, on the square locals call the Terreiro, stands a granite fountain built between 1551 and 1553 by the master mason João Lopes o Velho, who also made the fountain in Viana do Castelo's Praça da República. The Solar dos Pitas, a Gothic townhouse, and the old town hall share the square. A short walk along the Rua Direita leads to the Igreja Matriz, a granite parish church begun around 1488 and built over some sixty years, with Manueline carving at the chancel and a carved wooden Mudéjar ceiling inside.\n\nThe coast begins just beyond the town. The Mata Nacional do Camarido, a pine forest planted on the sands at the river mouth, runs down to the estuary beach of Camarido, where the Galician shore feels close enough to touch. South of it is Praia de Moledo, a long open beach of fine sand facing the island of Ínsua, where a seventeenth-century fort encloses the remains of a Franciscan convent. Moledo has been the summer beach of northern Portuguese families for generations. It is broad, clean and often windy, which keeps it cool in August and makes it a good beach for kitesurfing and long walks.\n\nInland, the town opens onto two valleys. Upstream along the Minho, the road passes Seixas and Lanhelas on the way to Vila Nova de Cerveira and the fortress town of Valença. To the south and east, the River Coura runs down from the hills through a green valley of maize fields, granite villages and old watermills. At Vilar de Mouros an old stone bridge crosses the river beside a village whose name has been attached, since 1971, to one of the most celebrated editions of any Portuguese music festival. Behind it all rises the Serra d'Arga, a granite massif where Garrano horses graze freely.\n\nFor an outing to Galicia, check the available crossing and return before departure. Do not build the day around an assumed ferry or water-taxi service: operation can depend on the operator, tides and weather. Road access uses the international bridges upstream, including Vila Nova de Cerveira and Valença.\n\nThe rhythm changes with the season. Summer brings beach visits and festival programmes; cooler months invite walks in the town and around the estuary when the weather allows. River and ocean beaches both require attention to the day’s conditions, signs and supervision.",
     "highlights": [
@@ -665,8 +665,8 @@
       "The Coura valley, Vilar de Mouros and the Serra d'Arga",
       "Lamprey and shad from the Minho in late winter and spring"
     ],
-    "seoTitle": "Caminha: Moledo Beach, Old Town and Where to Stay | Portugal Active",
-    "seoDescription": "Plan Caminha, Moledo and the Coura valley: compare bases, rail access, coastal outings and the details of each accommodation unit.",
+    "seoTitle": "Caminha holidays: Moledo beach and the Minho estuary | Portugal Active",
+    "seoDescription": "A morning in town, pinewoods along the way and an afternoon by the sea at Moledo. Choose your base and plan your days.",
     "howToGetHere": "Porto airport (OPO) about 1h by the A28. Vigo airport (Spain) about 50 min. Viana do Castelo 25 min south. Regional trains on the Linha do Minho stop at Caminha and Moledo.",
     "bestTimeToVisit": "June and September. Long days, a warm Coura for river swimming and Moledo without the August crowds. Late winter and spring for the lamprey season.",
     "whatToExpect": "A small walled town on a wide estuary, with pine forest, an Atlantic beach and Galicia on the other bank. Quiet most of the year, lively in August.",
@@ -844,28 +844,36 @@
     ],
     "faqs": [
       {
-        "question": "Which part of Caminha should I choose?",
-        "answer": "The town suits walks around the historic centre and estuary. Moledo suits a coastal base near its station. Vilar de Mouros places you inland by the Coura, where the final road journey matters. Check the exact address before choosing."
+        "question": "Does Caminha have beaches?",
+        "answer": "Yes, the municipality includes Moledo and Vila Praia de Âncora. Caminha town and these beaches are different bases."
       },
       {
-        "question": "Can I arrive without a car?",
-        "answer": "The Linha do Minho serves Caminha and Moledo. Check the service for your date and the route from the station to the home. An inland stay or late arrival may require a prearranged road transfer."
+        "question": "Moledo or Âncora?",
+        "answer": "Compare the home, nearby services and beach access. Moledo faces Ínsua; Âncora combines sand with coastal town life."
       },
       {
-        "question": "Can I cross the estuary to A Guarda?",
-        "answer": "Confirm the available service, crossing conditions and return directly before travelling. Do not assume a ferry or water taxi operates on your date. Road routes use bridges upstream; compare that journey if a crossing is unavailable."
+        "question": "Do I need a car?",
+        "answer": "A base near a station and services can work without a car. Arrange transport for the Coura valley, inland stays and multiple outings."
       },
       {
-        "question": "Are the river beaches safer for children?",
-        "answer": "A river or estuary setting does not guarantee calm or safe water. Currents, tides and supervision vary. Check the beach’s signs and designated bathing arrangements on the day, and choose activities appropriate to the group."
+        "question": "How many nights should I stay?",
+        "answer": "Three for town and coast; five to add Coura and Cerveira; seven to keep some days free too."
       },
       {
-        "question": "What should I check when booking accommodation?",
-        "answer": "Check whether the booking is for a whole property or an individual unit, the confirmed capacity and any shared areas. Separate units should not be treated as one private home unless that arrangement is explicitly confirmed."
+        "question": "Can I cross to Spain by boat?",
+        "answer": "Confirm the operator and service for your date before building the crossing into your itinerary."
       },
       {
-        "question": "When should I visit?",
-        "answer": "Summer suits a beach-oriented plan, while spring and autumn can suit town and estuary walks. Check the forecast and the current festival calendar. Rain alternatives may involve another town, so include their transport in the plan."
+        "question": "What can we do with children?",
+        "answer": "Alternate beach time or a short walk with Cerveira’s Aquamuseum. Check age requirements and access for each activity."
+      },
+      {
+        "question": "What is there beyond the beach?",
+        "answer": "Camarido, Caminha’s heritage and Vilar de Mouros fill your days without changing accommodation."
+      },
+      {
+        "question": "How do we arrange airport transport?",
+        "answer": "Ask Portugal Active for a shuttle proposal with your airport, flight, passengers, luggage and address. Service is subject to confirmation."
       }
     ],
     "relatedDestinations": [
@@ -878,7 +886,8 @@
       "body": "Portugal Active manages premium properties across the Alto Minho, from Caminha and the Coura valley to Viana do Castelo: full-service management, marketing, concierge and maintenance, operated to hotel standards by a team based in the region.",
       "cta": "Speak to our team",
       "url": "https://www.portugalactive.com/management/en/?utm_source=destinations&utm_medium=cta&utm_campaign=caminha"
-    }
+    },
+    "regionImage": "/destinations/caminha-moledo.jpg"
   },
   {
     "id": "d-esposende",
@@ -893,9 +902,9 @@
     "comingSoon": false,
     "status": "active",
     "name": "Esposende",
-    "tagline": "Where the Cávado meets the Atlantic, between protected dunes and pine forest.",
-    "description": "A guide to Esposende, the Cávado estuary, Fão and Ofir, and Apúlia, with regional accommodation alternatives clearly identified.",
-    "heroSubtitle": "Protected dunes, pine forest and the Cávado estuary",
+    "tagline": "Between dunes and river.",
+    "description": "Between the Neiva estuary and Apúlia, the Northern Coast Natural Park brings together beaches, dunes and estuary scenery. Make Esposende a special day during a Minho stay: choose one coastal area and give it time.",
+    "heroSubtitle": "Boardwalks to the sea, windmills above the sand and a long lunch after a coastal morning.",
     "whyOverline": "WHY ESPOSENDE",
     "whyDescription": "Esposende is the stretch of the northern coast that most people drive past. The A28 runs a few kilometres inland, and from the motorway there is little to suggest what lies between the road and the sea: sixteen kilometres of beach, dune and pine forest, protected as a natural park, with a small town at the mouth of the Cávado river in the middle of it.\n\nThe Parque Natural do Litoral Norte covers the whole coastline of the municipality, from the mouth of the Neiva in the north to the southern edge of Apúlia. It was first protected in 1987 and became a natural park in 2005, and most of its area lies at sea, over reefs and rocky seabed. On land it protects a fragile system of dunes, pine woods and salt marsh of a kind that has largely disappeared elsewhere on this coast. Wooden walkways cross the dunes, and a coastal cycle path links the beaches.\n\nThe town sits on the north bank of the Cávado, where the river widens into an estuary sheltered by a long sand spit. The Forte de São João Baptista, built between 1699 and 1704 to guard the river mouth, still stands on the waterfront, with a red iron lighthouse on its southwest corner. An iron bridge from 1892 crosses the river to Fão, a riverside village known across the north for its clarinhas, a small fried pastry filled with squash jam and egg. Beyond Fão lies Ofir, a pine forest on the dunes with a long beach at the end of it and, offshore, the dark rocks known as the Cavalos de Fão.\n\nFurther south is Apúlia, the village that gave this coast its best-known trade. For generations the people of Apúlia gathered sargaço, the seaweed brought in by the Atlantic, dried it on the sand and sold it as fertiliser to the farms inland. The sargaceiros worked in the surf in a white woollen tunic called the branqueta, and the stone windmills on the dunes above the beach, built to grind grain, are still the landmark of the village. The harvest is no longer an economy, but it lives on through the village's folk group and in local memory.\n\nBehind the coast, the land rises towards Barcelos and Braga. Above Vila Chã, the Castro de São Lourenço preserves the foundations of an Iron Age settlement with views towards the shoreline. Viana do Castelo, Barcelos and Braga can be separate excursions: check the route and return rather than treating the wider region as one walkable destination.\n\nSummer gives Esposende a beach-town rhythm, while other seasons leave more room for the town, estuary and designated coastal paths. Atlantic wind and sea conditions can change the day’s plan. The town, Fão and Ofir, and Apúlia are distinct bases; check where you will stay and how you will move between them.",
     "highlights": [
@@ -905,8 +914,8 @@
       "The Cávado estuary, for paddleboard, kayak and birdwatching",
       "Thirty-five minutes from Porto airport, thirty from Braga"
     ],
-    "seoTitle": "Esposende: Dunes, Beaches and Where to Stay | Portugal Active",
-    "seoDescription": "Protected dunes, Ofir and Apúlia beaches and the Cávado estuary, north of Porto. What to see in Esposende, when to go, and where to stay.",
+    "seoTitle": "Esposende: coastal walks, beaches and local flavours | Portugal Active",
+    "seoDescription": "Boardwalks to the sea, windmills above the sand and a long lunch after a coastal morning. Choose your base and plan your days.",
     "howToGetHere": "Porto airport (OPO) about 35 min by the A28. Braga 30 min east. Viana do Castelo 25 min north. No railway: the nearest stations are Barcelos and Viana do Castelo.",
     "bestTimeToVisit": "June and September. Warm days, long beaches with space to spare, and the afternoon wind that suits windsurf and kitesurf. July and August for full summer.",
     "whatToExpect": "A low-key beach town on a river mouth, inside a coastal natural park. Dunes, pines and wide beaches rather than cliffs and nightlife.",
@@ -1056,28 +1065,36 @@
     ],
     "faqs": [
       {
-        "question": "Does this guide include homes in Esposende?",
-        "answer": "The current accommodation suggestions are regional alternatives elsewhere in the Minho. Check each home’s locality and journey to Esposende before booking; a regional suggestion is not a home in Esposende."
+        "question": "Is it worth visiting without staying in Esposende?",
+        "answer": "Yes. Apúlia and Ofir make coastal day trips from a Minho base, with the journey planned from your home."
       },
       {
-        "question": "How do I arrive without a car?",
-        "answer": "Use the municipality’s transport information to identify a suitable coach or bus service and check it with the operator for your date. Plan the final journey between the stop, the centre and your actual accommodation."
+        "question": "Where can I look for accommodation?",
+        "answer": "This page presents alternatives in the Minho, with each home’s locality. Check the location before choosing."
       },
       {
-        "question": "Which areas should I compare?",
-        "answer": "The town centre suits the riverfront; Fão and Ofir are across the Cávado; Apúlia lies further south. They are separate locations, so compare daily services and transport instead of assuming every beach is a short walk away."
+        "question": "Apúlia or Ofir?",
+        "answer": "Apúlia combines windmills, beach and seaweed heritage. Ofir offers another coastal day with pinewoods, near Fão."
       },
       {
-        "question": "What can I do on a rainy day?",
-        "answer": "Consider the Museu Marítimo de Esposende and confirm its opening before visiting. It is a different venue from the Municipal Museum, which the official tourism website currently lists as closed for works."
+        "question": "What is there beyond the beach?",
+        "answer": "Visit the Seaweed Museum in Apúlia or choose São Lourenço’s scenery and hillfort."
       },
       {
-        "question": "Are the estuary and beaches suitable for families?",
-        "answer": "Choose by the conditions at the specific location. An estuary is not a guarantee of calm or safe water; follow local signs, designated bathing areas and supervision. Check the access route and any steps or exposed sections with your group in mind."
+        "question": "Can I do everything on foot?",
+        "answer": "You can explore one area on foot. Plan transport between Apúlia, Ofir, the centre and São Lourenço."
       },
       {
-        "question": "Can I combine Esposende with nearby towns?",
-        "answer": "Yes, by planning a separate excursion to Viana do Castelo, Barcelos or Braga. Compare the actual departure point, travel options and return rather than relying on one regional driving estimate."
+        "question": "How should we plan with children?",
+        "answer": "Combine a short walk, a meal and one visit. Choose beach access and services suited to your dates and group."
+      },
+      {
+        "question": "What should I try?",
+        "answer": "Fish and regional cooking in Apúlia, with a stop for Clarinhas in Fão."
+      },
+      {
+        "question": "How do I get here from the airport?",
+        "answer": "Consider Porto (OPO). Compare public transport with a taxi or Portugal Active shuttle, booked and confirmed for your address."
       }
     ],
     "relatedDestinations": [
@@ -1103,9 +1120,9 @@
       "latitude": 41.1579,
       "longitude": -8.6291
     },
-    "tagline": "The city, the river, the wine.",
-    "description": "The city, the river, the wine.",
-    "heroSubtitle": "The city that gave Portugal its name, and the river that built it.",
+    "tagline": "From the river to the Atlantic.",
+    "description": "Porto sits in northern Portugal, where the Douro reaches the Atlantic. Porto and Gaia occupy opposite banks; Foz opens your trip to the sea. The wine-growing Douro is a separate stage, with its own base and pace.",
+    "heroSubtitle": "Streets to discover, gardens to pause in and a different table each day.",
     "coverImage": "https://assets.guesty.com/image/upload/v1778167853/production/6957de4388cba42d9e7a905e/issgcrisqtcjdmxy28no.jpg",
     "regionImage": "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1600&q=85",
     "gallery": [],
@@ -1118,8 +1135,8 @@
       "Gateway to the Douro wine region"
     ],
     "comingSoon": false,
-    "seoTitle": "Porto: City Guide, Transport and Where to Stay",
-    "seoDescription": "Plan a Porto stay: compare the historic centre, Gaia and the Atlantic waterfront, airport transport, indoor visits and accommodation locations.",
+    "seoTitle": "Porto city stays: food, culture and the Atlantic | Portugal Active",
+    "seoDescription": "Plan city days, gardens, food and the Atlantic in Porto. Compare areas, transport and ways to extend your stay into the Douro.",
     "howToGetHere": "Fly into Porto Airport (OPO), 20 minutes from city centre by metro or taxi. High speed train from Lisbon takes 2h45.",
     "bestTimeToVisit": "May to October for warm weather. September for wine harvest in the Douro. Year round for the city.",
     "whatToExpect": "A city with steep streets, riverfront areas and distinct neighbourhoods. Gaia is across the river; the Douro Valley is a separate inland journey.",
@@ -1151,7 +1168,41 @@
       "viana-do-castelo"
     ],
     "status": "active",
-    "whyOverline": "WHY PORTO and DOURO"
+    "whyOverline": "WHY PORTO and DOURO",
+    "faqs": [
+      {
+        "question": "How many nights for a first visit?",
+        "answer": "Three nights give two full days. Five add room for Serralves and Foz; seven allow more free time or a second base in the Douro."
+      },
+      {
+        "question": "Do I need a car?",
+        "answer": "A city itinerary can work well on foot and by public transport. Your home’s location and the slopes along your route matter."
+      },
+      {
+        "question": "Porto or Gaia?",
+        "answer": "They are different, complementary riverbanks. Check your home’s location and plan crossings around your visits."
+      },
+      {
+        "question": "Where can I find nature?",
+        "answer": "At Serralves Park, the City Park and the Atlantic seafront in Foz."
+      },
+      {
+        "question": "Douro day trip or overnight stay?",
+        "answer": "A day gives a first taste. Staying offers another pace, but means choosing a base and arranging transport to your home."
+      },
+      {
+        "question": "Can I visit cellars with children?",
+        "answer": "Check the operator’s format and conditions. A cultural visit and a tasting have different requirements."
+      },
+      {
+        "question": "How do I arrive from the airport?",
+        "answer": "OPO has metro links to the city. Taxi, Uber and a booked Portugal Active shuttle are other options depending on your address."
+      },
+      {
+        "question": "Are all homes in the city?",
+        "answer": "The selection separates Porto from alternatives in Trofa and Amarante. Douro homes have their own regional selection."
+      }
+    ]
   },
   {
     "id": "d-douro",
@@ -1166,10 +1217,10 @@
     "gallery": [],
     "comingSoon": false,
     "status": "active",
-    "name": "Douro Valley",
-    "tagline": "Terraced vineyards above the river, in one of the oldest regulated wine regions in the world.",
-    "description": "A guide to the Douro Valley: the UNESCO Alto Douro wine landscape, the quintas, Pinhão, Régua and Lamego, the railway and the harvest.",
-    "heroSubtitle": "Terraced vineyards, schist and a river that shaped a wine region",
+    "name": "Douro",
+    "tagline": "Between river and vines.",
+    "description": "East of Porto, the Douro runs between vineyard slopes and small settlements. Régua and Pinhão help anchor your arrival plans; a hillside home needs different logistics. The Alto Douro Wine Region is a UNESCO-listed cultural landscape.",
+    "heroSubtitle": "Wake with time for the valley. Choose an estate, a table and a landscape worth lingering over.",
     "pullQuote": {
       "text": "Wine has been produced by traditional landholders in the Alto Douro region for some 2,000 years.",
       "source": "UNESCO World Heritage Centre",
@@ -1189,8 +1240,8 @@
       "The Linha do Douro railway and the historic train from Régua to Tua",
       "Harvest season, from late August into October"
     ],
-    "seoTitle": "Douro Valley: Quintas, Wine and Where to Stay | Portugal Active",
-    "seoDescription": "Terraced vineyards, port quintas and river towns in the UNESCO Alto Douro. What to see in the Douro Valley, when to go, and where to stay.",
+    "seoTitle": "Douro Valley stays: wine, scenery and getting around | Portugal Active",
+    "seoDescription": "Wake with time for the valley. Choose an estate, a table and a landscape worth lingering over. Choose your base and plan your days.",
     "howToGetHere": "Porto airport (OPO) about 1h20 to Régua and 1h45 to Pinhão by the A4 and A24. Linha do Douro train from Porto São Bento: around 2h to Régua, 2h30 to Pinhão.",
     "bestTimeToVisit": "Late April to June for green vineyards and mild heat. Late August into October for the harvest. July and August are very hot in the valley.",
     "whatToExpect": "A working wine landscape of terraces, quintas and small river towns. Slow roads, wide views and long lunches. Hot summers, cold winters.",
@@ -1390,28 +1441,36 @@
     ],
     "faqs": [
       {
-        "question": "Can I visit the Douro without a car?",
-        "answer": "Yes, with a plan built around the railway. Régua and Pinhão can be rail bases, but a station does not provide access to every quinta or viewpoint. Confirm the final transfer, the tasting appointment and the last return connection before leaving."
+        "question": "Régua, Pinhão or a rural estate?",
+        "answer": "Régua helps with arrival and services; Pinhão brings river and estates together; hillside stays favour privacy and need arranged transport."
       },
       {
-        "question": "How do I travel from Porto?",
-        "answer": "Check CP’s Linha do Douro service for the station, train and date you need. Journey times and connections vary. If travelling to a rural home, arrange the onward road journey separately and leave a margin between the train and a fixed appointment."
+        "question": "Can I visit without a car?",
+        "answer": "Yes, by choosing your base and transport together. Arrange airport-to-station travel, rail and the final journey home, plus outings and returns."
       },
       {
-        "question": "Where should I stay?",
-        "answer": "Compare Régua for rail access and the museum, Pinhão for a smaller river base, and the more distant Douro Superior for a different part of the valley. Check the home’s exact position: a regional label does not imply walking access to the station or river."
+        "question": "Is a day trip enough?",
+        "answer": "It offers a first taste. Three nights give two full days with more time for the river, an estate and meals."
       },
       {
-        "question": "Can I visit a quinta without a booking?",
-        "answer": "Confirm directly with the chosen estate. Opening, tasting formats, languages and meals vary, and harvest participation needs explicit agreement. Arrange transport that avoids driving after drinking; a visit is not included with accommodation unless your proposal says so."
+        "question": "Do I need to enjoy wine?",
+        "answer": "No. Scenery, rail journeys, the Douro Museum, river trips and food also make the journey worthwhile."
       },
       {
-        "question": "When should I visit?",
-        "answer": "Spring and autumn can suit outdoor visits; summer can be hot and winter may bring rain, cold or fog. Harvest timing changes with the year and estate. Use the forecast for your specific area and check the activities actually available for your dates."
+        "question": "Can I visit estates without booking?",
+        "answer": "Check with each operator and book your preferred experience. Times and tour languages vary."
       },
       {
-        "question": "What can I do if it rains?",
-        "answer": "The Museu do Douro in Peso da Régua is an indoor option; confirm opening and access before travelling. A booked indoor tasting can also work if the estate confirms it, but the road journey and any outdoor sections still need consideration."
+        "question": "Can I join a harvest on any September date?",
+        "answer": "Dates and participation depend on the vineyard cycle and each producer’s programme. Confirm before travelling."
+      },
+      {
+        "question": "Is my home booking confirmed instantly?",
+        "answer": "When a listing says on request, wait for availability and conditions to be confirmed. Sending a request does not confirm the stay."
+      },
+      {
+        "question": "Does the shuttle include outings?",
+        "answer": "It covers only the journeys agreed in the proposal. Also request any local journeys you need during your stay."
       }
     ],
     "relatedDestinations": [
@@ -1435,8 +1494,8 @@
       "latitude": 38.7223,
       "longitude": -9.1393
     },
-    "tagline": "Golden light, coastal charm, and timeless elegance.",
-    "description": "Golden light, coastal charm, and timeless elegance.",
+    "tagline": "City, hills and sea.",
+    "description": "Lisbon is the gateway to very different trips. The city sits by the Tagus; Cascais and Estoril open onto the coast; Sintra and Colares add wooded hills and Atlantic scenery. Choose your base first: these places are not adjoining neighbourhoods.",
     "coverImage": "https://assets.guesty.com/image/upload/v1784644170/production/6957de4388cba42d9e7a905e/hhlkmogpcjnicvh6gu4m.jpg",
     "regionImage": "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=1600&q=85",
     "gallery": [],
@@ -1449,8 +1508,8 @@
       "Surf, sailing, and beach culture year-round"
     ],
     "comingSoon": false,
-    "seoTitle": "Lisbon — Private Homes in Lisbon and Coast",
-    "seoDescription": "Explore Lisbon, Sintra and Cascais, compare places to stay and check the location, services and booking conditions of each home.",
+    "seoTitle": "Lisbon, Sintra or Cascais: find your holiday base | Portugal Active",
+    "seoDescription": "Lively streets, palace gardens and a coast that invites you to stay longer. Choose your base and plan your days.",
     "howToGetHere": "Fly into Lisbon Airport (LIS), 30 minutes from the city centre. Cascais and Sintra are 30-40 minutes west by car or train.",
     "bestTimeToVisit": "April to June and September to October for perfect weather. July-August is peak season with higher prices.",
     "whatToExpect": "Golden light, pastel-coloured buildings, world-class pastéis de nata, and a coastline that stretches from surf breaks to glamorous beach clubs.",
@@ -1480,7 +1539,42 @@
       "alentejo",
       "porto"
     ],
-    "status": "active"
+    "status": "active",
+    "heroSubtitle": "Lively streets, palace gardens and a coast that invites you to stay longer.",
+    "faqs": [
+      {
+        "question": "Lisbon or Cascais?",
+        "answer": "Lisbon favours neighbourhoods and city activities; Cascais gives more time to the coast. Choose around the days you want to repeat."
+      },
+      {
+        "question": "Is Sintra a Lisbon neighbourhood?",
+        "answer": "No. It is a separate base, with hills, palaces and its own journeys."
+      },
+      {
+        "question": "Do I need a car?",
+        "answer": "Less so near city transport; more useful for dispersed homes and outings. Follow local access rules at monuments."
+      },
+      {
+        "question": "How many nights should I stay?",
+        "answer": "Three in one area; five or seven to add coast and hills without crowding everything into the same days."
+      },
+      {
+        "question": "Do I need to book Pena?",
+        "answer": "Palace interiors require a dated, timed ticket. Check the rules and plan the journey to the entrance too."
+      },
+      {
+        "question": "Is Barreiro in central Lisbon?",
+        "answer": "No. It is across the Tagus. The river crossing and journey to your home are part of the trip."
+      },
+      {
+        "question": "What can we do with children?",
+        "answer": "The Oceanarium, gardens and coast let you alternate visits and free time. Choose one main experience each day."
+      },
+      {
+        "question": "Can you arrange a transfer?",
+        "answer": "Yes. Portugal Active prepares shuttle proposals around your airport, flight, group and address, subject to confirmation."
+      }
+    ]
   },
   {
     "id": "d4",
@@ -1491,8 +1585,8 @@
       "latitude": 38.5,
       "longitude": -7.9
     },
-    "tagline": "Plains, cork oaks, inland towns and a varied coast.",
-    "description": "Choose a base in the Alentejo by area: the Sado and coast, Ferreira do Alentejo or Évora involve different journeys.",
+    "tagline": "Time to stay.",
+    "description": "The Alentejo starts with a choice: coast or countryside. Comporta and Carvalhal invite beach days; Ferreira do Alentejo opens onto farming landscapes, olive oil and traditional singing. Évora and Alqueva deserve a separate stage.",
     "coverImage": "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/fnbhffhcpcuafkfkotb9.jpg",
     "regionImage": "https://images.unsplash.com/photo-1725144690049-dd91e25622f2?auto=format&w=1600&q=80",
     "gallery": [],
@@ -1505,8 +1599,8 @@
       "Emerging wine region rivalling the Douro"
     ],
     "comingSoon": false,
-    "seoTitle": "Alentejo — Private Homes in Alentejo",
-    "seoDescription": "Explore the Alentejo coast and countryside. Compare homes in Comporta and Ferreira do Alentejo, with location and booking conditions for each stay.",
+    "seoTitle": "Alentejo stays: Comporta coast or countryside | Portugal Active",
+    "seoDescription": "Dunes and pinewoods on the coast. Open landscapes inland. Choose your pace and give it time. Choose your base and plan your days.",
     "howToGetHere": "Fly into Lisbon (LIS), then 1.5 hours south by car. Alternatively, Beja Airport for the interior. The Rota Vicentina coast is 2-2.5 hours from Lisbon.",
     "bestTimeToVisit": "April to June for wildflowers and mild weather. September-October for wine harvest. The coast is beautiful year-round.",
     "whatToExpect": "Vast open landscapes, profound silence, dark skies full of stars, and a culinary tradition rooted in simplicity and quality ingredients.",
@@ -1536,7 +1630,42 @@
       "lisbon",
       "algarve"
     ],
-    "status": "active"
+    "status": "active",
+    "heroSubtitle": "Dunes and pinewoods on the coast. Open landscapes inland. Choose your pace and give it time.",
+    "faqs": [
+      {
+        "question": "Coast or countryside?",
+        "answer": "Comporta and Carvalhal favour beaches and pinewoods. Ferreira combines farming landscapes, olive oil and local culture."
+      },
+      {
+        "question": "Are the homes near Évora or Alqueva?",
+        "answer": "Check the exact location. This page focuses on Comporta and Ferreira; plan Évora and Alqueva as another stage."
+      },
+      {
+        "question": "Do I need a car?",
+        "answer": "It helps combine outings. You can also arrange transport and meals in advance for a stay more centred on your home."
+      },
+      {
+        "question": "How many nights should I stay?",
+        "answer": "Three to discover one base; five or seven to enjoy more time at home and nearby."
+      },
+      {
+        "question": "Does Comporta mean walking to the beach?",
+        "answer": "Not necessarily. Check each home’s village, road and route to the beach entrance."
+      },
+      {
+        "question": "Can I include the Rota Vicentina?",
+        "answer": "Yes, as a planned extension. Choose the stage and difficulty: the Fishermen’s Trail is linear and demanding; circular routes have their own conditions."
+      },
+      {
+        "question": "Are there experiences beyond wine?",
+        "answer": "Yes: olive oil at Marmelo, table grapes at Vale da Rosa and cultural programmes in Ferreira, by arrangement."
+      },
+      {
+        "question": "Can you arrange our arrival?",
+        "answer": "Portugal Active arranges shuttles by proposal, according to airport and address. Also confirm any outings you need."
+      }
+    ]
   },
   {
     "id": "d5",
@@ -1556,9 +1685,9 @@
       "lisbon"
     ],
     "name": "Algarve",
-    "tagline": "Atlantic cliffs, southern towns and the islands of the Ria Formosa.",
-    "description": "A complete guide to the Algarve — its coasts, its seasons and where to stay beyond the resorts.",
-    "heroSubtitle": "Portugal's southern coast, from the wild west to the lagoons of the east",
+    "tagline": "Find your coast.",
+    "description": "In southern Portugal, the Algarve changes along the coast. Lagos and the west reveal cliffs; the centre brings together different settings; Faro, Olhão and Tavira open onto the Ria Formosa. A well-chosen base beats crossing the region every day.",
+    "heroSubtitle": "Cliffs and coves, sandy islands or days beside the lagoon. Your holiday begins with choosing your landscape.",
     "pullQuote": {
       "text": "Praia da Falésia — the best beach in the world.",
       "source": "Tripadvisor Travellers' Choice",
@@ -1578,8 +1707,8 @@
       "The Ria Formosa natural park — islands, lagoons and the fishing towns of Olhão and Tavira",
       "Golf at Quinta do Lago, Vale do Lobo and Vilamoura, minutes from several of our homes"
     ],
-    "seoTitle": "Algarve: Beaches, Villas, Golf and When to Go | Portugal Active",
-    "seoDescription": "Plan the Algarve by area: Lagos, Faro and Tavira, rail and final connections, indoor alternatives and homes by their actual location.",
+    "seoTitle": "Algarve holidays: choose your coast and your base | Portugal Active",
+    "seoDescription": "Cliffs and coves, sandy islands or days beside the lagoon. Your holiday begins with choosing your landscape. Choose your base and plan your days.",
     "howToGetHere": "Faro airport (FAO) is 20 to 60 minutes by motorway from our homes — 20 to Quinta do Lago, 40 to Albufeira, 60 to Lagos and the west. Lisbon is two and a half hours by the A2. We arrange airport transfers for every stay.",
     "bestTimeToVisit": "May to June and September to October: twenty-two to twenty-eight degrees, a warm sea, and beaches and restaurants without the August crowds. July and August for guaranteed heat. Winter is the mildest in mainland Europe — fifteen to eighteen degrees, golf, hiking and almond blossom in February.",
     "whatToExpect": "Different coastlines and inland landscapes require different plans. Choose a base around the journeys you want to make, and check weather, sea conditions and seasonal opening for the actual dates.",
@@ -1837,32 +1966,36 @@
     ],
     "faqs": [
       {
-        "question": "Which part of the Algarve should I choose?",
-        "answer": "Choose a smaller base: Lagos for the western south coast, Faro for city and Ria Formosa plans, or Tavira for the eastern Algarve. Sagres, inland villages and individual beach accesses require separate journeys. Check the locality of each home before comparing it with a town-centre stay."
+        "question": "Which area should I choose?",
+        "answer": "West for cliffs and Lagos; centre around your home and activities; east for lagoon, islands and towns such as Olhão and Tavira."
       },
       {
-        "question": "Can I stay without a car?",
-        "answer": "Yes, in a base matched to the itinerary. The Algarve railway links Lagos, Faro, Tavira and other towns, while the airport, beaches and rural homes require additional connections. Check station access and return services rather than treating the train as door-to-door transport."
+        "question": "Do all beaches have direct access?",
+        "answer": "No. Access can involve steps, boardwalks or boats. Choose a beach around your group’s needs."
       },
       {
-        "question": "How far is Faro airport from my home?",
-        "answer": "The journey depends on the exact address and service. Compare the onward route before booking, including any connection into Faro and the final transfer from a station or stop. A private transfer requires its own availability and price confirmation."
+        "question": "Do I need a car?",
+        "answer": "It depends on your base and outings. Rail connects towns but does not replace every link to homes, beaches and piers."
       },
       {
-        "question": "When is the sea warm enough for swimming?",
-        "answer": "Comfort is personal, and water temperature and sea conditions vary by day and coast. Check current local information and bathing supervision. For a heated pool, verify that the selected home offers heating for your dates and whether an additional charge applies."
+        "question": "How many nights should I stay?",
+        "answer": "Three within one area; five or seven to add culture and nature while keeping holiday time."
       },
       {
-        "question": "How should I plan a visit to Benagil?",
-        "answer": "Check the current rules from the Portimão maritime authority and confirm an authorised operator’s itinerary. Access depends on sea conditions and the permitted activity; do not assume a kayak, paddleboard or boat can enter on your date. No season guarantees calm water."
+        "question": "How should I visit Benagil?",
+        "answer": "Choose an operator-led visit and check conditions for your date. Kayak activities in the regulated area require a guide."
       },
       {
-        "question": "Is a winter stay worthwhile?",
-        "answer": "Town visits, museums and walks can make a winter itinerary, with shorter opening hours or seasonal closures checked in advance. Rain and wind can change outdoor plans. Check heating and other home facilities individually."
+        "question": "Is Seven Hanging Valleys a short walk?",
+        "answer": "The full route is linear and moderate, 11.2 km out and back. Choose a section if more suitable and plan your return."
       },
       {
-        "question": "What should families check?",
-        "answer": "Check the home’s layout, pool arrangements and daily transport needs. At beaches and lagoons, follow signs and supervision rather than assuming shallow water is safe. Cots, childcare and organised activities must be confirmed separately if needed."
+        "question": "Does Quinta do Lago include all resort services?",
+        "answer": "Not automatically. Check what your home includes and the conditions of each service or activity."
+      },
+      {
+        "question": "Is the home confirmed when I send a request?",
+        "answer": "No. For homes on request, availability and conditions are confirmed before completing the booking."
       }
     ],
     "relatedDestinations": [
