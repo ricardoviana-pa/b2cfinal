@@ -1321,7 +1321,9 @@
     "whatTheyRemember": "Mitä he muistavat eniten.",
     "proofStrip": "4.8/5 yli 2 000 vierasarvostelua",
     "verifiedGuest": "Vahvistettu vieras",
-    "verifiedNote": "Kaikki arvostelut ovat toteutuneista oleskeluista, kerätty varauskanaviemme kautta."
+    "verifiedNote": "Kaikki arvostelut ovat toteutuneista oleskeluista, kerätty varauskanaviemme kautta.",
+    "previous": "Edelliset arvostelut",
+    "next": "Seuraavat arvostelut"
   },
   "amenity": {
     "outdoorPool": "Ulkotilat ja uima-allas",
@@ -2159,5 +2161,14 @@
     "faq1A": "Vaatimukset vaihtelevat aktiviteetin mukaan. Katso elämyksen sivulta vaikeustaso, ikärajat ja tarvittavat varusteet. Tiimimme auttaa valinnassa.",
     "faq2Q": "Voinko yhdistää aktiviteetteja majoitukseen?",
     "faq2A": "Kyllä. Valitse kotisi ja tutustu saman alueen aktiviteetteihin. Concierge voi auttaa ohjelman suunnittelussa. Aktiviteetit ja mahdolliset kuljetukset laskutetaan erikseen."
+  },
+  "planning": {
+    "alternativeHomes": "Taloja muualla Minhossa",
+    "noLocalHomes": "Valikoimassamme ei tällä hetkellä ole taloja Esposendessä. Nämä vaihtoehdot sijaitsevat muualla Minhossa. Tarkista sijainti ja suunnittele matka ennen valintaa.",
+    "datesKept": "Päivämääräsi säilyvät:",
+    "checkPrice": "Avaa talon tiedot tai haku tarkistaaksesi saatavuuden ja hinnan näille päiville.",
+    "towns": "Minhon rannikkokaupungit",
+    "updated": "Päivitetty",
+    "inThisGuide": "Tässä oppaassa"
   }
 }

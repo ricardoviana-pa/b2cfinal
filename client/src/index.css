@@ -630,6 +630,9 @@
   /* Hide scrollbar but keep scrollable */
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .reviews-track { scroll-padding-inline: 1.25rem; }
+  @media (min-width: 768px) { .reviews-track { scroll-padding-inline: 2rem; } }
+  @media (min-width: 1200px) { .reviews-track { scroll-padding-inline: 2.5rem; } }
 
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

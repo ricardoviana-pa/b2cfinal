@@ -52,8 +52,10 @@ describe('recent public feedback', () => {
       { slug: 'four', reviews: [review(4, '2026-09-11')] },
       { slug: 'five', reviews: [review(5, '2026-09-10')] },
       { slug: 'invalid', reviews: [review(9, '2026-09-15'), review(5, '2026-09-15', 'OK')] },
+      ...Array.from({ length: 30 }, (_, i) => ({ slug: `bulk-${i}`, reviews: [review(5, '2026-08-01')] })),
     ]);
-    expect(result.map(r => r.property.slug)).toEqual(['one', 'two', 'three', 'four']);
+    expect(result.map(r => r.property.slug).slice(0, 5)).toEqual(['one', 'two', 'three', 'four', 'five']);
+    expect(result).toHaveLength(20);
     expect(result[0]).toMatchObject({ rating: 2, guestName: 'Ana' });
   });
 });

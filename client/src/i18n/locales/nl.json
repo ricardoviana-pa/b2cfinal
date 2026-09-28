@@ -1321,7 +1321,9 @@
     "whatTheyRemember": "Wat ze zich het meest herinneren.",
     "proofStrip": "4.8/5 bij meer dan 2.000 gastbeoordelingen",
     "verifiedGuest": "Geverifieerde gast",
-    "verifiedNote": "Alle reviews komen van voltooide verblijven, verzameld via onze boekingskanalen."
+    "verifiedNote": "Alle reviews komen van voltooide verblijven, verzameld via onze boekingskanalen.",
+    "previous": "Vorige beoordelingen",
+    "next": "Volgende beoordelingen"
   },
   "amenity": {
     "outdoorPool": "Buiten & Zwembad",
@@ -2159,5 +2161,14 @@
     "faq1A": "De eisen verschillen per activiteit. Bekijk de ervaringspagina voor de moeilijkheidsgraad, leeftijdsgrenzen en wat je moet meenemen. Ons team helpt je kiezen.",
     "faq2Q": "Kan ik activiteiten combineren met een verblijf?",
     "faq2A": "Ja. Kies je huis en ontdek activiteiten in dezelfde regio. Onze conciërge kan het programma helpen samenstellen. Activiteiten en eventuele transfers worden apart berekend."
+  },
+  "planning": {
+    "alternativeHomes": "Huizen in andere plaatsen in de Minho",
+    "noLocalHomes": "We hebben momenteel geen huizen in Esposende in ons aanbod. Deze alternatieven liggen in andere plaatsen in de Minho. Controleer de locatie en plan de reis voordat u kiest.",
+    "datesKept": "Uw reisdata blijven bewaard:",
+    "checkPrice": "Open een huis of de zoekpagina om de beschikbaarheid en prijs voor deze data te bekijken.",
+    "towns": "Kustplaatsen in de Minho",
+    "updated": "Bijgewerkt op",
+    "inThisGuide": "In deze gids"
   }
 }

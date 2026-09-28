@@ -1321,7 +1321,9 @@
     "whatTheyRemember": "Woran sie sich am meisten erinnern.",
     "proofStrip": "4.8/5 bei über 2.000 Gästebewertungen",
     "verifiedGuest": "Verifizierter Gast",
-    "verifiedNote": "Alle Bewertungen stammen aus abgeschlossenen Aufenthalten, gesammelt über unsere Buchungskanäle."
+    "verifiedNote": "Alle Bewertungen stammen aus abgeschlossenen Aufenthalten, gesammelt über unsere Buchungskanäle.",
+    "previous": "Vorherige Bewertungen",
+    "next": "Nächste Bewertungen"
   },
   "amenity": {
     "outdoorPool": "Außenbereich & Pool",
@@ -2159,5 +2161,14 @@
     "faq1A": "Die Voraussetzungen hängen von der Aktivität ab. Auf der Erlebnis-Seite finden Sie Schwierigkeitsgrad, Altersgrenzen und die Packliste. Unser Team hilft Ihnen bei der Auswahl.",
     "faq2Q": "Kann ich Aktivitäten mit einem Aufenthalt verbinden?",
     "faq2A": "Ja. Wählen Sie Ihr Haus und entdecken Sie Aktivitäten in derselben Region. Unser Concierge hilft bei der Planung. Aktivitäten und mögliche Transfers werden separat berechnet."
+  },
+  "planning": {
+    "alternativeHomes": "Häuser in anderen Orten im Minho",
+    "noLocalHomes": "Derzeit führen wir keine Häuser in Esposende. Diese Alternativen liegen in anderen Orten im Minho. Prüfen Sie die Lage und planen Sie den Weg, bevor Sie sich entscheiden.",
+    "datesKept": "Ihre Reisedaten bleiben erhalten:",
+    "checkPrice": "Öffnen Sie ein Haus oder die Suche, um Verfügbarkeit und Preis für diese Daten zu prüfen.",
+    "towns": "Küstenorte im Minho",
+    "updated": "Aktualisiert am",
+    "inThisGuide": "In diesem Reiseführer"
   }
 }

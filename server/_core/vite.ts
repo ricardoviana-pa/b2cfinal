@@ -1,6 +1,7 @@
 import { buildDestinationGraph } from '../../shared/destinationSchema';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
 import { articlePhotos, stripPhotoLines } from '../../shared/articlePhotos';
+import { reviewedArticleDate } from '../../shared/articleNavigation';
 import { corporateSchema } from '../../shared/corporateSchema';
 import { deepMerge } from '../../client/src/lib/deepMerge';
 import { vacationRentalSchema } from '../../shared/vacationRentalSchema';
@@ -994,7 +995,7 @@ function buildExperienceGraph(exp: any, lang: string, pagePath: string): Record<
 function buildBlogGraph(post: any, lang: string): Record<string, unknown> {
   const url = `${BOT_BASE_URL}/${lang}/blog/${post.slug}`;
   const published = safeDateISO(post.publishedAt || post.publishDate || post.createdAt || post.date);
-  const modified = safeDateISO(post.updatedAt) || published;
+  const modified = safeDateISO(reviewedArticleDate(post,lang) || post.updatedAt) || published;
   const authorName = (typeof post.author === "object" ? post.author?.name : post.author) || "Portugal Active";
 
   const article: Record<string, unknown> = {

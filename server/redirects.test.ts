@@ -309,10 +309,38 @@ describe("GSC 404 report gaps (May 2026 audit)", () => {
       .toBe("/en/blog/porto-douro-valley-guide");
   });
 
-  it("unknown /journal/<slug> falls back to /blog", () => {
-    expect(__testing.resolvePath("/journal/minho-vs-algarve")).toBe("/en/blog");
-    expect(__testing.resolvePath("/journal/viana-do-castelo-guide")).toBe("/en/blog");
-    expect(__testing.resolvePath("/journal/algarve-beyond-resorts")).toBe("/en/blog");
+  it.each([
+    "viana-do-castelo-guide", "when-to-visit-north-portugal",
+    "minho-vs-algarve", "algarve-beyond-resorts",
+  ])("keeps the published article for /journal/%s", (slug) => {
+    expect(redirectTarget(`/journal/${slug}`)).toBe(`/en/blog/${slug}`);
+  });
+
+  it.each(["en", "pt", "fr", "es", "it", "fi", "de", "nl", "sv"])("preserves the %s edition of a published guide", (language) => {
+    expect(redirectTarget(`/${language}/journal/viana-do-castelo-guide/`))
+      .toBe(`/${language}/blog/viana-do-castelo-guide`);
+  });
+
+  it("unknown articles keep the existing locale-specific blog fallback", () => {
+    expect(redirectTarget("/journal/not-a-published-article")).toBe("/en/blog");
+    expect(redirectTarget("/pt/journal/not-a-published-article")).toBe("/pt/blog");
+  });
+
+  it("does not redirect to an unpublished language edition", () => {
+    expect(redirectTarget("/pt/journal/two-day-company-retreat-northern-portugal"))
+      .toBe("/pt/blog/two-day-company-retreat-northern-portugal");
+    expect(redirectTarget("/fr/journal/two-day-company-retreat-northern-portugal"))
+      .toBe("/fr/blog");
+  });
+
+  it.each(["GET", "HEAD"])("preserves encoded query data on a local %s redirect", (method) => {
+    const route = "/pt/journal/viana-do-castelo-guide";
+    const query = "?utm_source=old%20journal&next=https%3A%2F%2Fexample.com%2Felsewhere&label=a%26b";
+    const redirect = vi.fn();
+    const next = vi.fn();
+    legacyRedirects({ method, path: route, url: `${route}${query}` } as any, { redirect } as any, next);
+    expect(redirect).toHaveBeenCalledWith(301, `/pt/blog/viana-do-castelo-guide${query}`);
+    expect(next).not.toHaveBeenCalled();
   });
 
   it("WP feed/author paths under /new/ go home or about", () => {

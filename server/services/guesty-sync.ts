@@ -9,6 +9,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { guestyClient, isGuestyConfigured } from "../lib/guesty";
+import { isPataias } from "./property-geography";
 
 // GitHub persistence config (set via env vars on Render)
 const GITHUB_PAT = process.env.GITHUB_PAT || "";
@@ -802,6 +803,8 @@ function mapGuestyAmenities(listing: any) {
 }
 
 function inferDestination(addr: any): string {
+  // Pataias is in Alcobaça, outside the Lisbon destination selection.
+  if (isPataias(addr.city)) return 'silver-coast';
   const city = (addr.city || '').toLowerCase();
   const region = (addr.region || '').toLowerCase();
   const state = (addr.state || '').toLowerCase();
@@ -835,7 +838,7 @@ function inferDestination(addr: any): string {
 
   // Lisbon + Silver Coast / Centro-Oeste. The site has no dedicated "Centro"
   // or "Silver Coast" destination, so the Leiria/Oeste coastal belt (Nazaré,
-  // Alcobaça, Pataias, Óbidos, Caldas, Peniche, …) maps to Lisbon — it's the
+  // Alcobaça, Óbidos, Caldas, Peniche, …) maps to Lisbon — it's the
   // closest marketed region (≈1h, Silver Coast day-trips from Lisbon) and was
   // previously falling through to Minho (≈2h north — geographically wrong).
   if (state.includes('lisboa') || state.includes('setúbal') || state.includes('setubal') ||
@@ -846,7 +849,7 @@ function inferDestination(addr: any): string {
       // Leiria district / Oeste / Silver Coast
       state.includes('leiria') || state.includes('santarém') || state.includes('santarem') ||
       city.includes('nazaré') || city.includes('nazare') ||
-      city.includes('alcobaça') || city.includes('alcobaca') || city.includes('pataias') ||
+      city.includes('alcobaça') || city.includes('alcobaca') ||
       city.includes('óbidos') || city.includes('obidos') ||
       city.includes('caldas da rainha') || city.includes('peniche') ||
       city.includes('marinha grande') || city.includes('bombarral') ||

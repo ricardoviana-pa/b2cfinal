@@ -1163,6 +1163,7 @@
     "s1Body": "Recolhemos informação que nos fornece diretamente, como quando faz um pedido de reserva, subscreve a nossa newsletter ou nos contacta. Isto pode incluir o seu nome, endereço de email, número de telefone e preferências de viagem.",
     "s2Title": "2. Como Utilizamos a Sua Informação",
     "s2Body": "Utilizamos a informação que recolhemos para processar as suas reservas, comunicar consigo sobre a sua estadia, enviar comunicações de marketing (com o seu consentimento) e melhorar os nossos serviços.",
+    "s2OriginBody": "Se autorizar os cookies de análise, escolhendo Aceitar tudo no aviso de cookies, guardamos também, junto do seu pedido de reserva, de onde veio a visita ao nosso site: a campanha, o anúncio ou o site de onde chegou. Usamos esta informação apenas internamente, para saber que ações de marketing funcionam, e não a partilhamos com terceiros. Sem essa autorização, não guardamos a origem da visita.",
     "s3Title": "3. Partilha de Dados",
     "s3Body": "Não vendemos a sua informação pessoal. Podemos partilhar os seus dados com proprietários e prestadores de serviços para cumprir a sua reserva e prestar os serviços que pediu. Se já ficou connosco ou nos deu o seu email, podemos também enviá-lo, sempre codificado (hash) e por isso ilegível, a plataformas de anúncios como a Meta (Facebook e Instagram) e a Google, para lhe mostrarmos as nossas ofertas nessas plataformas. Pode pedir para sair destas listas a qualquer momento em info@portugalactive.com.",
     "s4Title": "4. Os Seus Direitos",
@@ -1172,7 +1173,7 @@
   },
   "cookiesPage": {
     "title": "Política de Cookies",
-    "lastUpdated": "Última atualização: março de 2026",
+    "lastUpdated": "Última atualização: setembro de 2026",
     "whatTitle": "O que são cookies?",
     "whatBody": "Os cookies são pequenos ficheiros de texto colocados no seu dispositivo quando visita o nosso website. Ajudam-nos a proporcionar-lhe uma melhor experiência ao lembrar as suas preferências, compreender como utiliza o nosso site e melhorar os nossos serviços.",
     "howTitle": "Como utilizamos cookies",
@@ -1181,6 +1182,7 @@
     "essentialBody": "Estes cookies são necessários para o funcionamento correto do website. Permitem funcionalidades básicas como a navegação entre páginas, acesso a áreas seguras e funcionalidade de itinerário. O website não pode funcionar corretamente sem estes cookies.",
     "analyticsTitle": "Cookies de análise",
     "analyticsBody": "Com a sua autorização, o Google Analytics e o Microsoft Clarity ajudam-nos a compreender a utilização do site. Estas ferramentas podem tratar identificadores online e interações; os dados não são necessariamente anónimos.",
+    "originBody": "pa-origin. É um pequeno registo guardado no seu navegador com a origem da visita: a campanha, o anúncio ou o site de onde chegou, a página por onde entrou e a data e a hora da primeira e da última visita. Não é feito para guardar o seu nome, o seu email ou o seu telefone. Serve para sabermos que ações de marketing funcionam; se fizer uma reserva, guardamos essa origem junto do seu pedido de reserva, só para uso interno. Só é criado se escolher Aceitar tudo e é apagado assim que retirar a autorização em Gerir cookies. Cada visita registada conta durante 30 dias e é apagada na primeira vez que voltar ao site depois desse prazo. Pode também apagá-lo a qualquer momento, limpando os dados deste site no seu navegador.",
     "functionalTitle": "Cookies funcionais",
     "functionalBody": "Estes cookies permitem que o website lembre as escolhas que faz (como o seu idioma ou região preferidos) e forneça funcionalidades melhoradas e personalizadas. Podem também ser utilizados para lembrar alterações que fez ao tamanho do texto, tipos de letra e outros elementos personalizáveis.",
     "marketingTitle": "Cookies de marketing",
@@ -1321,7 +1323,9 @@
     "ourGuests": "OS NOSSOS HÓSPEDES",
     "whatTheyRemember": "O que mais recordam.",
     "proofStrip": "4.8/5 em mais de 2.000 avaliações de hóspedes",
-    "verifiedNote": "Todas as reviews são de estadias concluídas, recolhidas pelos nossos canais de reserva."
+    "verifiedNote": "Todas as reviews são de estadias concluídas, recolhidas pelos nossos canais de reserva.",
+    "previous": "Avaliações anteriores",
+    "next": "Avaliações seguintes"
   },
   "amenity": {
     "outdoorPool": "Exterior e Piscina",
@@ -2159,5 +2163,14 @@
     "faq1A": "Os requisitos variam por atividade. Consulte a página da experiência para conhecer a dificuldade, os limites de idade e o que levar. A nossa equipa pode ajudar a escolher.",
     "faq2Q": "Posso combinar atividades com uma estadia?",
     "faq2A": "Sim. Escolha a casa e explore atividades na mesma região. O concierge pode ajudar a coordenar o programa. As atividades e eventuais transfers são cobrados à parte."
+  },
+  "planning": {
+    "alternativeHomes": "Casas noutras localidades do Minho",
+    "noLocalHomes": "Neste momento não temos casas em catálogo em Esposende. Estas alternativas ficam noutras localidades do Minho; confirme a localização e planeie a deslocação antes de escolher.",
+    "datesKept": "As suas datas são preservadas:",
+    "checkPrice": "Abra uma casa ou a pesquisa para consultar disponibilidade e preço para estas datas.",
+    "towns": "Localidades da costa do Minho",
+    "updated": "Atualizado em",
+    "inThisGuide": "Neste guia"
   }
 }

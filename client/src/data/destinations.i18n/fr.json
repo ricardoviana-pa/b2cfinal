@@ -329,7 +329,7 @@
       "note": "Première ville portugaise à entrer dans le top trois mondial"
     },
     "journalSectionTitle": "Du journal — histoires de Viana do Castelo",
-    "whereToStayIntro": "Portugal Active gère un portefeuille rigoureusement sélectionné de maisons à Viana do Castelo et ses environs, des demeures de marchands restaurées dans le centre historique aux quintas privées de la vallée du Lima et aux propriétés tournées vers l'Atlantique le long de la côte. Chaque maison est exploitée selon des standards hôteliers : un chef est en réserve, le concierge réserve des tables que les clients sans réservation ne peuvent obtenir, et la propriété est vérifiée selon une liste de 147 critères avant chaque arrivée. La sélection ci-dessous n'est qu'un point de départ. La collection complète peut être recherchée par capacité, par dates et par proximité du centre historique, du fleuve ou de l'océan.",
+    "whereToStayIntro": "Portugal Active gère un portefeuille rigoureusement sélectionné de maisons à Viana do Castelo et ses environs, des demeures de marchands restaurées dans le centre historique aux quintas privées de la vallée du Lima et aux propriétés tournées vers l'Atlantique le long de la côte. Les services varient selon la maison. Avant de réserver, consultez sa fiche et votre proposition pour vérifier le ménage inclus, les services en option et les éventuels suppléments. La sélection ci-dessous n'est qu'un point de départ. La collection complète peut être recherchée par capacité, par dates et par proximité du centre historique, du fleuve ou de l'océan.",
     "thingsToDoIntro": "Voici ce que les habitants recommanderaient à un visiteur de première fois disposant de trois jours. Le centre historique est assez petit pour se parcourir à pied en une après-midi. La colline mérite sa propre matinée. Le front de fleuve est un monde à part, entre le fleuve et l'océan. Et ce qui se trouve hors de la ville — la vallée du Lima, Ponte de Lima, Caminha près de la frontière espagnole, le Peneda-Gerês — est la raison pour laquelle la plupart des visiteurs reviennent pour un second séjour.",
     "thingsToDo": [
       {
@@ -497,7 +497,7 @@
         "description": "La vallée du Lima est le berceau du cépage Loureiro. Frais, peu alcoolisé et citronné — à boire jeune et glacé."
       }
     ],
-    "experiencesIntro": "Voici une sélection d'expériences que le concierge organise, isolément ou combinées, pour les hôtes séjournant dans les maisons de Portugal Active. Chacune peut être réservée vingt-quatre heures à l'avance, la plupart avec moins. Aucune n'exige de voiture : le concierge s'occupe des transferts, des réservations et (le cas échéant) des présentations à des producteurs, œnologues et instructeurs qui, en général, n'acceptent pas de clients sans rendez-vous.",
+    "experiencesIntro": "Pour les expériences présentées ici, confirmez le point de rendez-vous, le transport, les disponibilités et le prix avant de réserver.",
     "experiences": [
       {
         "name": "Dégustation de Vinho Verde dans la vallée du Lima",
@@ -630,7 +630,7 @@
       },
       {
         "question": "Viana do Castelo est-elle sûre pour les familles ?",
-        "answer": "Oui — elle figure parmi les petites villes les plus sûres d'Europe. La Praia Norte est surveillée en été. Le centre historique est praticable à pied, bien éclairé et piétonnier. Les soins de santé sont excellents (l'hôpital de Santa Luzia est à cinq minutes de chacune de nos propriétés)."
+        "answer": "Le centre historique est compact et se découvre à pied. Pour un séjour en famille, vérifiez l’agencement de la maison, l’accès à la plage et les conditions d’utilisation de la piscine. Le trajet jusqu’à l’Hospital de Santa Luzia dépend de la situation de la propriété."
       },
       {
         "question": "Quelle est la cuisine typique de Viana do Castelo ?",
@@ -642,7 +642,7 @@
       },
       {
         "question": "Quelles sont les meilleures villas à louer à Viana do Castelo ?",
-        "answer": "Nous exploitons douze propriétés à Viana et ses environs — des maisons de campagne en pierre restaurées dans la vallée du Lima aux villas contemporaines surplombant les dunes du Cabedelo. Toutes incluent un ménage quotidien, un concierge local et un chef privé en réserve. Découvrez notre collection de Viana ci-dessus."
+        "answer": "Comparez les maisons de la sélection ci-dessus selon leur situation, leurs chambres, leur capacité et leurs équipements confirmés. Les services varient selon la maison. Avant de réserver, consultez sa fiche et votre proposition pour vérifier le ménage inclus, les services en option et les éventuels suppléments."
       }
     ],
     "ownersCTA": {
@@ -915,7 +915,7 @@
     "howToGetHere": "Aéroport de Porto (OPO) à environ 35 min par l'A28. Braga à 30 min à l'est. Viana do Castelo à 25 min au nord. Pas de train : les gares les plus proches sont Barcelos et Viana do Castelo.",
     "bestTimeToVisit": "Juin et septembre. Des journées chaudes, de longues plages où la place ne manque pas et le vent d'après-midi idéal pour le windsurf et le kitesurf. Juillet et août pour le plein été.",
     "whatToExpect": "Une ville balnéaire discrète à l'embouchure d'un fleuve, au sein d'un parc naturel côtier. Des dunes, des pins et de larges plages plutôt que des falaises et une vie nocturne.",
-    "whereToStayIntro": "Nos maisons à Esposende sont deux appartements près de la mer, tous deux adaptés aux familles et aux petits groupes. Le premier est un appartement de trois chambres à Marinhas, avec balcon, à cinq cents mètres de la plage et du parc naturel. Le second est un duplex avec vue sur la mer sur l'Avenida dos Banhos, l'avenue du front de mer, avec trois chambres sur deux niveaux. Tous deux sont à quelques minutes à pied de la plage et de la ville, et tous deux sont entretenus par notre équipe du Minho. Les hôtes qui souhaitent une maison avec piscine associent souvent cette côte à nos maisons autour de Viana do Castelo, à vingt-cinq minutes au nord.",
+    "whereToStayIntro": "Notre catalogue actuel ne propose pas de maisons à Esposende. La sélection ci-dessous présente des alternatives dans d’autres localités du Minho, indiquées pour chaque maison. Utilisez ce guide pour préparer une visite à Esposende et vérifiez le trajet depuis votre lieu de séjour.",
     "journalSectionTitle": "Du journal : histoires d'Esposende",
     "thingsToDoIntro": "Esposende se prête aux longues promenades et aux journées lentes plutôt qu'aux listes de visites. La côte est la raison de venir, et elle change du nord au sud : l'embouchure et la ville, la forêt de pins et les dunes, puis Apúlia, l'ancien village des ramasseurs d'algues. Voici comment nous la découperions.",
     "thingsToDo": [
@@ -1032,7 +1032,7 @@
         "description": "L'une des sous-régions de l'appellation Vinho Verde, connue pour ses blancs frais aux notes d'agrumes. À boire jeune et bien frais, avec du poisson."
       }
     ],
-    "experiencesIntro": "Voici les expériences que notre concierge organise pour les hôtes de nos maisons à Esposende. La plupart demandent un jour de préavis, et le concierge prévoit des transferts partout où une voiture serait autrement nécessaire.",
+    "experiencesIntro": "Pour les expériences présentées ici, confirmez le point de rendez-vous, le transport, les disponibilités et le prix avant de réserver.",
     "experiences": [
       {
         "name": "Paddle ou kayak sur l'estuaire du Cávado",
@@ -1086,7 +1086,7 @@
       },
       {
         "question": "Esposende convient-elle aux familles ?",
-        "answer": "Oui. Les plages sont longues et peu fréquentées, l'estuaire offre une eau plus calme et la ville est petite et facile à parcourir. Les principales plages sont surveillées pendant la saison balnéaire. Nos deux appartements près de la mer conviennent aux familles."
+        "answer": "Oui. Les plages sont longues et peu fréquentées, l'estuaire offre une eau plus calme et la ville est petite et facile à parcourir. Les principales plages sont surveillées pendant la saison balnéaire. Les hébergements actuellement suggérés se trouvent dans d’autres localités du Minho ; vérifiez la situation de chaque maison avant de réserver."
       },
       {
         "question": "Qui étaient les sargaceiros d'Apúlia ?",
@@ -1109,7 +1109,7 @@
     }
   },
   "porto": {
-    "name": "Porto et Douro",
+    "name": "Porto",
     "tagline": "La ville, le fleuve, le vin.",
     "description": "La ville, le fleuve, le vin.",
     "heroSubtitle": "La ville qui a donné son nom au Portugal, et le fleuve qui l'a bâtie.",
@@ -1117,8 +1117,8 @@
     "whyDescription": "La ville qui a donné son nom au Portugal. Des caves de vin de Porto alignées le long de la rive du fleuve. Des restaurants étoilés Michelin dans des entrepôts réhabilités. Une énergie créative qui fait paraître Lisbonne conventionnelle. Porto est compacte, praticable à pied et infiniment gratifiante pour qui prend le temps d'explorer au-delà des vues de carte postale.\n\nAu-delà de la ville, la vallée du Douro se déploie en vignobles en terrasses classés au patrimoine mondial de l'UNESCO. C'est d'ici que vient le vin de Porto, mais c'est aussi ici que se font les vins de table les plus enthousiasmants du Portugal. Visitez une quinta, dégustez avec l'œnologue et comprenez pourquoi cette région est considérée comme l'une des plus belles d'Europe.",
     "howToGetHere": "Aéroport de Porto (OPO) à 1h30 de Pinhão. Train de la Linha do Douro au départ de Porto São Bento, 2h15.",
     "bestTimeToVisit": "Septembre pour les vendanges ; avril à juin pour les vignobles verdoyants.",
-    "seoTitle": "Vallée du Douro, Portugal : Région viticole au patrimoine UNESCO | Portugal Active",
-    "seoDescription": "Un guide complet de la vallée du Douro — vignobles en terrasses, quintas de Porto, croisières fluviales et nos séjours sélectionnés.",
+    "seoTitle": "Porto : Guide, Transports et Où Séjourner",
+    "seoDescription": "Préparez votre séjour à Porto : comparez le centre historique, Gaia et le front atlantique, les transports depuis l’aéroport et la localisation des hébergements.",
     "highlights": [
       "Paysage culturel inscrit au patrimoine mondial de l'UNESCO",
       "Quintas de vin de Porto centenaires",
@@ -1411,7 +1411,7 @@
     "bestTimeToVisit": "D'avril à juin et de septembre à octobre pour un temps parfait. Juillet et août sont la haute saison, avec des prix plus élevés.",
     "whatToExpect": "Lumière dorée, immeubles aux tons pastel, pastéis de nata de classe mondiale et une côte qui va des vagues de surf aux beach clubs glamour.",
     "seoTitle": "Lisbonne — Maisons privées à Lisbonne et sur la côte",
-    "seoDescription": "Découvrez Lisbonne : lumière dorée, charme côtier, élégance intemporelle. Maisons privées bientôt disponibles.",
+    "seoDescription": "Explorez Lisbonne, Sintra et Cascais, comparez les lieux de séjour et vérifiez la situation, les services et les conditions de réservation de chaque maison.",
     "highlights": [
       "La capitale la plus ensoleillée d'Europe, avec 300 jours de soleil",
       "Cascais et Sintra — le glamour côtier rencontre les palais de conte de fées",
@@ -1451,7 +1451,7 @@
     "bestTimeToVisit": "D'avril à juin pour les fleurs sauvages et un temps doux. Septembre-octobre pour les vendanges. La côte est belle toute l'année.",
     "whatToExpect": "Des paysages vastes et ouverts, un silence profond, des ciels sombres constellés d'étoiles et une tradition culinaire ancrée dans la simplicité et les ingrédients de qualité.",
     "seoTitle": "Alentejo — Maisons privées en Alentejo",
-    "seoDescription": "Découvrez l'Alentejo : plaines vallonnées, chênes-lièges, côte sauvage. Maisons privées bientôt disponibles.",
+    "seoDescription": "Explorez la côte et l’intérieur de l’Alentejo. Comparez les maisons à Comporta et Ferreira do Alentejo, avec leur situation et leurs conditions de réservation.",
     "highlights": [
       "Rota Vicentina — la côte la plus sauvage d'Europe",
       "Forêts de chênes-lièges et plaines de blé doré",
@@ -1498,7 +1498,7 @@
       "note": "Décerné à plusieurs reprises à l'Algarve au cours de la dernière décennie"
     },
     "whyOverline": "POURQUOI L'ALGARVE",
-    "whyDescription": "Tout le monde connaît l'Algarve pour ses stations, son golf et ses plages d'été, à juste titre : c'est la côte la plus ensoleillée d'Europe, avec une mer chaude de juin à octobre et un hiver qui ressemble à un printemps anglais. Ce que la plupart des visiteurs ne voient jamais, c'est le reste. La côte ouest autour de Sagres et d'Aljezur, où les falaises font face à l'Atlantique et où les surfeurs ont des plages vides pour eux seuls. La Ria Formosa, à l'est, une lagune d'îles, de marais salants et de villages de pêcheurs qui compte parmi les plus beaux parcs naturels du Portugal. Les collines de la Serra de Monchique et du Barrocal, avec leurs chênes-lièges, leurs orangeraies, leurs villages blanchis à la chaux et leurs restaurants qui n'ont jamais vu de menu touristique. Et les villas : derrière les murs de Quinta do Lago et de Vale do Lobo, sur les falaises de la côte centrale et dans la campagne de l'ouest, il existe des maisons privées qui font de l'Algarve tout autre chose que des vacances en station : une maison avec piscine chauffée, un chef en cuisine et un concierge qui sait quelle crique est vide à quatre heures de l'après-midi. Nos maisons de l'Algarve sont exactement ces maisons-là.",
+    "whyDescription": "Tout le monde connaît l'Algarve pour ses stations, son golf et ses plages d'été, à juste titre : c'est la côte la plus ensoleillée d'Europe, avec une mer chaude de juin à octobre et un hiver qui ressemble à un printemps anglais. Ce que la plupart des visiteurs ne voient jamais, c'est le reste. La côte ouest autour de Sagres et d'Aljezur, où les falaises font face à l'Atlantique et où les surfeurs ont des plages vides pour eux seuls. La Ria Formosa, à l'est, une lagune d'îles, de marais salants et de villages de pêcheurs qui compte parmi les plus beaux parcs naturels du Portugal. Les collines de la Serra de Monchique et du Barrocal, avec leurs chênes-lièges, leurs orangeraies, leurs villages blanchis à la chaux et leurs restaurants qui n'ont jamais vu de menu touristique. Pour choisir une maison, comparez sa situation, les équipements de la piscine et les services. Le chauffage de la piscine et un chef privé dépendent de la propriété et des conditions convenues lors de la réservation.",
     "highlights": [
       "Trois cents jours de soleil par an et la mer la plus chaude du Portugal de juin à octobre",
       "Falaises calcaires, grottes marines et criques de Lagos à Albufeira : Benagil, Marinha, Falésia",
@@ -1511,7 +1511,7 @@
     "howToGetHere": "L'aéroport de Faro (FAO) est à 20–60 minutes d'autoroute de nos maisons : 20 jusqu'à Quinta do Lago, 40 jusqu'à Albufeira, 60 jusqu'à Lagos et l'ouest. Lisbonne est à deux heures et demie par l'A2. Nous organisons les transferts depuis l'aéroport pour chaque séjour.",
     "bestTimeToVisit": "De mai à juin et de septembre à octobre : vingt-deux à vingt-huit degrés, une mer chaude, des plages et des restaurants sans la foule d'août. Juillet et août pour une chaleur garantie. L'hiver est le plus doux d'Europe continentale : quinze à dix-huit degrés, golf, randonnée et amandiers en fleurs en février.",
     "whatToExpect": "Du soleil, d'abord : le coin le plus sec et le plus ensoleillé du Portugal. Une côte qui change tous les cinquante kilomètres : falaises dorées et grottes au centre, Atlantique ouvert et surf à l'ouest, lagunes et îles-barrières à l'est. Des stations là où on les attend et, à quelques minutes vers l'intérieur ou le long de la côte, un Algarve plus calme de villages, de vergers et de ports de pêche.",
-    "whereToStayIntro": "Portugal Active exploite une petite collection de maisons à travers l'Algarve : des villas au sein de Quinta do Lago et sur la côte centrale entre Albufeira et Vilamoura, des maisons à l'est autour de Tavira et des domaines à l'ouest près de Lagos. Chacune est exploitée au même standard que nos maisons du nord : piscine chauffée, cuisine approvisionnée, chef privé sur demande et un concierge qui vit dans la région.",
+    "whereToStayIntro": "Choisissez entre l’ouest, le centre et l’est de l’Algarve, puis comparez la situation exacte et les équipements de chaque maison. Le chauffage de la piscine, les repas, un chef privé et les transferts ne sont pas inclus dans tous les séjours ; vérifiez les disponibilités et les suppléments dans la fiche et la proposition.",
     "journalSectionTitle": "Du journal : histoires de l'Algarve",
     "thingsToDoIntro": "L'Algarve s'étend sur cent cinquante kilomètres et compte trois côtes distinctes ; la première décision est donc où poser ses valises. Voici la liste de notre concierge pour une première visite, organisée d'ouest en est, avec les temps de route depuis la côte centrale.",
     "thingsToDo": [
@@ -1680,7 +1680,7 @@
         "description": "Confiseries d'amande et de figue aux formes mauresques, vendues dans chaque pastelaria ; le dom rodrigo est celle à goûter."
       }
     ],
-    "experiencesIntro": "En Algarve, nos expériences sont organisées par le concierge avec des partenaires locaux avec qui nous travaillons chaque semaine — bateaux, guides, chefs et golfs — et livrées au même standard que celles de notre propre équipe dans le nord.",
+    "experiencesIntro": "Pour les expériences présentées ici, confirmez le point de rendez-vous, le transport, les disponibilités et le prix avant de réserver.",
     "experiences": [
       {
         "name": "Benagil et les grottes en bateau ou en kayak",
@@ -1782,7 +1782,7 @@
       },
       {
         "question": "Quand la mer est-elle assez chaude pour se baigner ?",
-        "answer": "De juin à octobre. La mer atteint vingt-deux à vingt-trois degrés en août et septembre sur la côte sud ; la côte ouest est plus froide de deux ou trois degrés et plus agitée. La plupart de nos maisons ont une piscine chauffée pour les intersaisons."
+        "answer": "De juin à octobre. La mer atteint vingt-deux à vingt-trois degrés en août et septembre sur la côte sud ; la côte ouest est plus froide de deux ou trois degrés et plus agitée. Pour une piscine chauffée, vérifiez les équipements de la maison choisie, la disponibilité du chauffage et les éventuels suppléments."
       },
       {
         "question": "À quelle distance de l'aéroport de Faro sont les villas ?",
@@ -1790,7 +1790,7 @@
       },
       {
         "question": "L'Algarve vaut-il le détour en hiver ?",
-        "answer": "Oui, si la plage n'est pas le but. Quinze à dix-huit degrés, plus de soleil que l'Europe du Nord en juin, des sentiers vides, des amandiers en fleurs en février, du golf et de longs déjeuners. Les tarifs sont au plus bas et les maisons ont piscine chauffée et cheminée."
+        "answer": "L’hiver peut convenir aux promenades, au golf et aux visites de villes, certaines attractions et certains restaurants ouvrant selon la saison. Pour un séjour avec piscine chauffée ou cheminée, vérifiez ces équipements et leurs conditions sur la fiche de chaque maison."
       },
       {
         "question": "Faut-il une voiture ?",

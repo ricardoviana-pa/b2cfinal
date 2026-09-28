@@ -1321,7 +1321,9 @@
     "whatTheyRemember": "Lo que más recuerdan.",
     "proofStrip": "4.8/5 en más de 2.000 opiniones de huéspedes",
     "verifiedGuest": "Huésped verificado",
-    "verifiedNote": "Todas las reseñas proceden de estancias completadas, recogidas por nuestros canales de reserva."
+    "verifiedNote": "Todas las reseñas proceden de estancias completadas, recogidas por nuestros canales de reserva.",
+    "previous": "Reseñas anteriores",
+    "next": "Reseñas siguientes"
   },
   "amenity": {
     "outdoorPool": "Exterior y Piscina",
@@ -2159,5 +2161,14 @@
     "faq1A": "Los requisitos varían según la actividad. Consulta su página para conocer la dificultad, los límites de edad y qué llevar. Nuestro equipo puede ayudarte a elegir.",
     "faq2Q": "¿Puedo combinar actividades con una estancia?",
     "faq2A": "Sí. Elige tu casa y explora actividades en la misma región. Nuestro concierge puede ayudarte a coordinar el programa. Las actividades y los traslados se cobran por separado."
+  },
+  "planning": {
+    "alternativeHomes": "Casas en otras localidades del Minho",
+    "noLocalHomes": "Actualmente no tenemos casas en catálogo en Esposende. Estas alternativas están en otras localidades del Minho; compruebe la ubicación y planifique el trayecto antes de elegir.",
+    "datesKept": "Se conservan sus fechas:",
+    "checkPrice": "Abra una casa o la búsqueda para consultar disponibilidad y precio para estas fechas.",
+    "towns": "Localidades de la costa del Minho",
+    "updated": "Actualizado el",
+    "inThisGuide": "En esta guía"
   }
 }

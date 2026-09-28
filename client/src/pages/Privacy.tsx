@@ -8,7 +8,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
 export default function Privacy() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Privacy Policy', description: 'How Portugal Active collects, uses, and protects your personal data. GDPR-compliant privacy practices for all guests and visitors.', url: '/legal/privacy' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -24,6 +24,11 @@ export default function Privacy() {
             <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('privacy.s1Body')}</p>
             <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('privacy.s2Title')}</h2>
             <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('privacy.s2Body')}</p>
+            {/* Visit origin on the reservation. Only PT has this text until the
+                other eight translations land; without the key it is left out. */}
+            {i18n.exists('privacy.s2OriginBody') && (
+              <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('privacy.s2OriginBody')}</p>
+            )}
             <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('privacy.s3Title')}</h2>
             <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('privacy.s3Body')}</p>
             <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('privacy.s4Title')}</h2>
