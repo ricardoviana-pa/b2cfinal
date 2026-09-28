@@ -1,6 +1,215 @@
 .minho-editorial {
   color: var(--color-pa-dark, #1a1a18);
 }
+.minho-orientation {
+  background: #fff;
+}
+.minho-orientation-grid {
+  display: grid;
+  grid-template-columns: 0.65fr 2fr;
+  gap: 4rem;
+  align-items: center;
+}
+.minho-locator {
+  margin: 0;
+  text-align: center;
+}
+.minho-locator svg {
+  width: 100%;
+  max-height: 290px;
+}
+.minho-locator figcaption {
+  font-size: 0.72rem;
+  color: #52644e;
+  margin-top: 0.5rem;
+}
+.minho-orientation-intro {
+  color: #6b6860;
+  margin-top: 1.4rem;
+  max-width: 70ch;
+}
+.minho-first-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #deded5;
+}
+.minho-first-facts a {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: #65685d;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+.minho-first-facts svg {
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+  color: #52644e;
+}
+.minho-first-facts strong {
+  display: block;
+  color: #263a2b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+.minho-first-facts a:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.minho-fit {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: #6b6860;
+  margin-top: 1.5rem;
+}
+.minho-fit svg {
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+.minho-itinerary {
+  background: #edf0e8;
+}
+.minho-duration-controls {
+  display: inline-flex;
+  padding: 0.3rem;
+  gap: 0.3rem;
+  border: 1px solid #c4cebf;
+  border-radius: 999px;
+}
+.minho-duration-controls button {
+  min-height: 46px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: #33472f;
+}
+.minho-duration-controls button[aria-pressed="true"] {
+  background: #294c3a;
+  color: white;
+}
+.minho-duration-summary {
+  margin: 1.2rem 0 1.8rem;
+  color: #4c5b45;
+}
+.minho-day-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.minho-day-grid li {
+  background: #fffdf8;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.minho-day-number {
+  display: block;
+  font-size: 0.67rem;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  color: #7e7057;
+  margin-bottom: 1.2rem;
+}
+.minho-day-grid .minho-place {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.7rem;
+  color: #52644e;
+}
+.minho-day-grid h3 {
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+}
+.minho-day-grid p {
+  color: #6b6860;
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+}
+.minho-day-grid .minho-text-link {
+  margin-top: auto;
+  font-size: 0.8rem;
+}
+.minho-itinerary-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.minho-itinerary-footer p {
+  font-size: 0.8rem;
+  color: #5c6856;
+  max-width: 62ch;
+}
+.minho-itinerary-footer a {
+  flex-shrink: 0;
+}
+.minho-culture {
+  position: relative;
+}
+.minho-legacy-anchor {
+  position: absolute;
+  top: 0;
+  scroll-margin-top: 6rem;
+}
+@media (max-width: 1023px) {
+  .minho-orientation-grid {
+    grid-template-columns: 160px 1fr;
+    gap: 2rem;
+  }
+  .minho-first-facts {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .minho-day-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .minho-itinerary-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+@media (max-width: 767px) {
+  .minho-orientation-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .minho-locator {
+    order: 1;
+  }
+  .minho-locator svg {
+    max-height: 200px;
+  }
+  .minho-orientation-intro {
+    font-size: 0.95rem;
+  }
+  .minho-first-facts {
+    gap: 1.1rem;
+  }
+  .minho-day-grid {
+    grid-template-columns: 1fr;
+  }
+  .minho-duration-controls button {
+    padding-inline: 1.25rem;
+  }
+  .minho-day-grid li {
+    padding: 1.3rem;
+  }
+  .minho-itinerary-footer a {
+    width: 100%;
+  }
+}
 .minho-editorial h2 {
   font-family: var(--font-display);
   font-size: clamp(2.1rem, 3.8vw, 3.4rem);
@@ -50,7 +259,7 @@
   min-height: 580px;
   position: relative;
   background: #273d33;
-  margin-top: 4rem;
+  margin-top: calc(4rem + var(--pa-promobar-h, 0px));
   color: white;
 }
 .minho-hero > img {
@@ -124,6 +333,28 @@
 .minho-chapters {
   background: white;
   border-bottom: 1px solid #e8e4dc;
+  position: sticky;
+  top: calc(5rem + var(--pa-promobar-h, 0px));
+  z-index: 30;
+}
+.minho-chapters > div {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+.minho-chapters a {
+  flex-shrink: 0;
+}
+.minho-editorial section[id],
+.minho-legacy-anchor {
+  scroll-margin-top: calc(3.75rem + var(--pa-promobar-h, 0px));
+}
+@media (max-width: 767px) {
+  .minho-chapters {
+    top: calc(4rem + var(--pa-promobar-h, 0px));
+  }
+  .minho-chapters a {
+    min-height: 48px;
+  }
 }
 .minho-chapters a {
   display: inline-flex;
@@ -369,23 +600,23 @@
   color: #6b6860;
   margin-bottom: 0.8rem;
 }
-.minho-rain {
+.minho-culture {
   background: #e8ede7;
 }
-.minho-rain p {
+.minho-culture p {
   color: #4f5b51;
 }
-.minho-rain .minho-kicker {
+.minho-culture .minho-kicker {
   color: #4f6255;
 }
-.minho-rain-icon {
+.minho-culture-icon {
   display: inline-flex;
   padding: 1rem;
   border: 1px solid #b6c4b8;
   border-radius: 50%;
   margin-bottom: 1.5rem;
 }
-.minho-rain-tip {
+.minho-culture-tip {
   border-left: 2px solid #849987;
   padding-left: 1rem;
   margin-top: 2rem;
@@ -393,26 +624,26 @@
   line-height: 1.7;
   color: #4f5b51;
 }
-.minho-rain-options {
+.minho-culture-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-.minho-rain-options article {
+.minho-culture-options article {
   background: #fafbf8;
   padding: 1.5rem;
 }
-.minho-rain-options h3 {
+.minho-culture-options h3 {
   font-size: 1.6rem;
   margin-bottom: 0.8rem;
 }
-.minho-rain-options p {
+.minho-culture-options p {
   font-size: 0.9rem;
 }
-.minho-rain-options .minho-number {
+.minho-culture-options .minho-number {
   color: #4f6255;
 }
-.minho-rain-options .minho-text-link {
+.minho-culture-options .minho-text-link {
   margin-top: 0.4rem;
 }
 .minho-seasons {
@@ -500,7 +731,7 @@
 .minho-hero :is(a, button):focus-visible {
   outline-color: white;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .minho-hero {
     margin-top: 5rem;
   }
@@ -604,14 +835,14 @@
   .minho-experiences {
     gap: 1rem;
   }
-  .minho-rain-options {
+  .minho-culture-options {
     grid-template-columns: 1fr;
   }
-  .minho-rain-options article {
+  .minho-culture-options article {
     display: flex;
     gap: 1rem;
   }
-  .minho-rain-options .minho-number {
+  .minho-culture-options .minho-number {
     margin-top: 0.35rem;
   }
   .minho-seasons {

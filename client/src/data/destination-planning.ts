@@ -347,7 +347,7 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
         ),
         note(
           "Aquamuseu · Vila Nova de Cerveira",
-          "Siga o Minho da nascente ao estuário através dos aquários e da pesca tradicional. O percurso interior é a opção de chuva; o lontrário fica no exterior.",
+          "Siga o Minho da nascente ao estuário através dos aquários e da pesca tradicional. Uma visita para conhecer as espécies e a vida do rio; o lontrário fica no exterior.",
           source(
             "Município de Cerveira · Aquamuseu",
             "https://www.cm-vncerveira.pt/pages/1092?poi_id=237"
@@ -363,7 +363,7 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
         ),
         note(
           "Museu dos Biscainhos · Braga",
-          "Um palácio para uma tarde de chuva. As salas e coleções revelam a vida de uma casa nobre; deixe os jardins para uma pausa de bom tempo.",
+          "Um palácio para descobrir outra época. As salas, coleções e jardins revelam a vida de uma casa nobre no coração de Braga.",
           source(
             "Braga · Museu dos Biscainhos",
             "https://www.cm-braga.pt/pt/1201/conhecer/historia-e-patrimonio/patrimonio-cultural/patrimonio-edificado/item/item-1-627"
@@ -422,7 +422,7 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
         ),
         note(
           "Aquamuseum · Vila Nova de Cerveira",
-          "Follow the Minho from source to estuary through aquariums and displays about traditional fishing. The indoor circuit suits rainy days; the otter enclosure is outside.",
+          "Follow the Minho from source to estuary through aquariums and displays about traditional fishing. Discover the river’s species and way of life; the otter enclosure is outside.",
           source(
             "Cerveira Municipality · Aquamuseum",
             "https://www.cm-vncerveira.pt/pages/1092?poi_id=237"
@@ -438,7 +438,7 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
         ),
         note(
           "Biscainhos Museum · Braga",
-          "A palace for a rainy afternoon. Its rooms and collections reveal life in a noble household; save the gardens for a break in the weather.",
+          "A palace that opens a window onto another age. Its rooms, collections and gardens reveal life in a noble household in central Braga.",
           source(
             "Braga · Biscainhos Museum",
             "https://www.cm-braga.pt/pt/1201/conhecer/historia-e-patrimonio/patrimonio-cultural/patrimonio-edificado/item/item-1-627"

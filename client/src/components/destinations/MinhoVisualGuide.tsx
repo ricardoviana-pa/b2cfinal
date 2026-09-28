@@ -6,7 +6,8 @@ import {
   Mountain,
   Wine,
   Utensils,
-  CloudRain,
+  Landmark,
+  Coffee,
   Sun,
   Leaf,
   TrainFront,
@@ -26,6 +27,7 @@ import {
 } from "./sections";
 import { trackPlanning } from "./PlanningGuide";
 import { DestinationAccess } from "./DestinationAccess";
+import { MinhoOrientation, MinhoStayLength } from "./MinhoFirstVisit";
 import "./MinhoVisualGuide.css";
 
 const landscapes = [
@@ -38,8 +40,8 @@ const landscapes = [
       "Sandy shores, dunes and days shaped by the sea. Follow the coast, take a surf lesson or simply make time for the beach.",
     ],
     plan: [
-      "Escolha uma praia por dia; confirme as condições do mar.",
-      "Choose one beach for the day; check the sea conditions.",
+      "Cabedelo para uma aula de surf; Moledo para um passeio de frente para Santa Tecla.",
+      "Cabedelo for a surf lesson; Moledo for a walk facing Mount Santa Tecla.",
     ],
     Icon: Waves,
   },
@@ -68,8 +70,8 @@ const landscapes = [
       "Granite, woodland and villages worth slowing down for. Give the mountains a day of their own, with time to enjoy the journey.",
     ],
     plan: [
-      "Escolha o trilho e a entrada do parque antes de sair; acesso e tempo variam.",
-      "Choose your trail and park entrance first; access and weather vary.",
+      "Soajo e Lindoso para aldeias de montanha; um trilho para quem quer ir mais longe.",
+      "Soajo and Lindoso for mountain villages; a trail for those keen to go farther.",
     ],
     Icon: Mountain,
   },
@@ -125,16 +127,33 @@ export function MinhoVisualGuide({
     action: "chapter" | "source" | "guide" | "homes" = "chapter"
   ) => trackPlanning(d.slug, language, section, action);
   const chapters = [
+    ["destination-first-visit", pt ? "Visão geral" : "Overview"],
     ["destination-nature", pt ? "Natureza" : "Nature"],
     ["destination-areas", pt ? "Onde ficar" : "Your base"],
+    ["destination-stay-length", pt ? "Os seus dias" : "Your days"],
     ["destination-taste", pt ? "À mesa" : "Food & wine"],
     ["destination-experiences", pt ? "Experiências" : "Experiences"],
-    ["destination-rain", pt ? "Dias de chuva" : "Rainy days"],
+    ["destination-culture", pt ? "Cultura e sabores" : "Culture & flavours"],
     ["destination-arrival", pt ? "Como chegar" : "Getting here"],
     ["destination-homes", pt ? "Casas" : "Homes"],
   ];
   const featured = adventures.filter(a => ["a2", "a3", "a8"].includes(a.id));
   const restaurants = d.restaurants || [];
+  const referenceSources = [
+    ...guide.sources,
+    {
+      label: "VisitPortugal · Peneda-Gerês",
+      url: "https://www.visitportugal.com/pt-pt/destinos/porto-e-norte/73747",
+    },
+    {
+      label: "UNESCO · Guimarães & Couros",
+      url: "https://whc.unesco.org/en/list/1031/",
+    },
+    {
+      label: "Alto Minho · Moledo",
+      url: "https://www.altominho.pt/pt/visitar/o-que-ver/praia-de-moledo/",
+    },
+  ];
   const restaurantPlaces = [
     "Viana do Castelo",
     "Santa Marta de Portuzelo",
@@ -159,12 +178,12 @@ export function MinhoVisualGuide({
         [
           "Primavera",
           "Verde por todo o lado",
-          "Caminhadas, jardins e aldeias. Guarde uma alternativa interior para os dias de chuva.",
+          "Jardins, caminhos junto ao rio e aldeias. Combine os passeios com uma visita ao centro de uma vila.",
         ],
         [
           "Verão",
           "Dias virados ao mar",
-          "Praia e atividades na costa. Escolha o programa pelo vento e pelo estado do mar.",
+          "Dias de praia, surf e refeições ao ar livre. Época para dar mais tempo à costa.",
         ],
         [
           "Outono",
@@ -174,19 +193,19 @@ export function MinhoVisualGuide({
         [
           "Inverno",
           "Tempo para abrandar",
-          "Museus, cidades e conforto em casa. Na serra, confirme acessos e previsão antes de sair.",
+          "Cidades históricas, provas de vinho e conforto em casa. Uma estadia para abrandar e saborear.",
         ],
       ]
     : [
         [
           "Spring",
           "Green in every direction",
-          "Walks, gardens and villages. Keep an indoor alternative for wet days.",
+          "Gardens, riverside paths and villages. Pair your walks with time in a historic town.",
         ],
         [
           "Summer",
           "Days by the ocean",
-          "Beach time and coastal activities. Let the wind and sea conditions guide the day.",
+          "Beach days, surfing and outdoor meals. A season to give the coast more time.",
         ],
         [
           "Autumn",
@@ -196,7 +215,7 @@ export function MinhoVisualGuide({
         [
           "Winter",
           "A slower kind of stay",
-          "Museums, towns and comfort at home. Check mountain access and forecasts before setting off.",
+          "Historic towns, wine tastings and comfort at home. A stay for slowing down and savouring.",
         ],
       ];
   return (
@@ -235,8 +254,8 @@ export function MinhoVisualGuide({
             </p>
             <div className="flex flex-wrap items-center gap-5 mt-6">
               <a
-                href="#destination-nature"
-                onClick={() => track("nature")}
+                href="#destination-first-visit"
+                onClick={() => track("overview")}
                 className="btn-white"
               >
                 {pt ? "Descobrir o Minho" : "Discover the Minho"}
@@ -258,7 +277,7 @@ export function MinhoVisualGuide({
         aria-label={pt ? "Explorar o Minho" : "Explore the Minho"}
         className="minho-chapters"
       >
-        <div className="container flex flex-wrap gap-x-6 gap-y-0">
+        <div className="container flex flex-wrap gap-x-6 gap-y-0 no-scrollbar">
           {chapters.map(([id, label]) => (
             <a key={id} href={`#${id}`} onClick={() => track(id)}>
               {label}
@@ -266,6 +285,7 @@ export function MinhoVisualGuide({
           ))}
         </div>
       </nav>
+      <MinhoOrientation language={language} />
       <section id="destination-nature" className="minho-section bg-pa-cream">
         <div className="container">
           <div className="minho-section-heading">
@@ -398,6 +418,7 @@ export function MinhoVisualGuide({
           </div>
         </div>
       </section>
+      <MinhoStayLength language={language} />
       <section id="destination-taste" className="minho-section minho-taste">
         <div className="container">
           <div className="minho-section-heading">
@@ -615,34 +636,39 @@ export function MinhoVisualGuide({
           </details>
         </div>
       </section>
-      <section id="destination-rain" className="minho-section minho-rain">
+      <section id="destination-culture" className="minho-section minho-culture">
+        <span
+          id="destination-rain"
+          className="minho-legacy-anchor"
+          aria-hidden="true"
+        />
         <div className="container grid lg:grid-cols-[.8fr_1.3fr] gap-10 lg:gap-16">
           <div>
-            <span className="minho-rain-icon">
-              <CloudRain size={28} />
+            <span className="minho-culture-icon">
+              <Landmark size={28} aria-hidden="true" />
             </span>
             <p className="minho-kicker">
               {pt
-                ? "OUTRO RITMO, O MESMO MINHO"
-                : "A DIFFERENT PACE, THE SAME MINHO"}
+                ? "HISTÓRIAS QUE FAZEM PARTE DA VIAGEM"
+                : "STORIES TO TAKE HOME"}
             </p>
             <h2>
               {pt
-                ? "Se chover, há mais para descobrir."
-                : "Rain brings another side to discover."}
+                ? "Entre palácios, tradições e um copo de vinho."
+                : "Palaces, local traditions and a glass of wine."}
             </h2>
             <p className="mt-5">
               {pt
-                ? "Troque o trilho por um museu, conheça um vinho pelo sítio onde nasce ou prolongue o almoço. Escolha um plano perto da sua base."
-                : "Swap a trail for a museum, discover a wine where it comes from or let lunch linger. Choose a plan close to your base."}
+                ? "A filigrana de Viana, os vinhos do Lima e o património de Braga dão outra profundidade à viagem. Guimarães acrescenta um centro histórico classificado pela UNESCO: escolha uma cidade e dê-lhe tempo."
+                : "Viana’s goldwork, Lima valley wines and Braga’s heritage bring another dimension to your stay. Guimarães adds a UNESCO-listed historic centre: choose a city and give it time."}
             </p>
-            <div className="minho-rain-tip">
+            <div className="minho-culture-tip">
               {pt
-                ? "Consulte os horários antes de sair e reserve as provas de vinho. São quatro alternativas para dias diferentes, conforme a sua base."
-                : "Check opening times before setting off and book wine tastings ahead. These are four alternatives for different days, depending on your base."}
+                ? "Com crianças, o Aquamuseu de Cerveira dá vida à história do rio. Para uma tarde a dois, combine uma prova de vinho com um passeio em Ponte de Lima."
+                : "With children, Cerveira’s Aquamuseum brings the river’s story to life. For an afternoon together, pair a wine tasting with a walk in Ponte de Lima."}
             </div>
           </div>
-          <div className="minho-rain-options">
+          <div className="minho-culture-options">
             {guide.rain.map((item, i) => (
               <article key={item.title}>
                 <span className="minho-number">0{i + 1}</span>
@@ -651,7 +677,7 @@ export function MinhoVisualGuide({
                   <p>{item.text}</p>
                   <a
                     href={item.sourceUrl}
-                    onClick={() => track("rain", "source")}
+                    onClick={() => track("culture", "source")}
                     className="minho-text-link"
                   >
                     {pt ? "Planear a visita" : "Plan your visit"}
@@ -687,7 +713,7 @@ export function MinhoVisualGuide({
           </div>
           <div className="minho-seasons">
             {seasons.map(([season, title, text], i) => {
-              const Icon = [Leaf, Sun, Wine, CloudRain][i];
+              const Icon = [Leaf, Sun, Wine, Coffee][i];
               return (
                 <article key={season}>
                   <Icon size={24} aria-hidden="true" />
@@ -741,7 +767,18 @@ export function MinhoVisualGuide({
           </div>
         </div>
       </section>
-      <WhereToStay destination={d} properties={properties} />
+      <WhereToStay
+        destination={d}
+        properties={properties}
+        heading={
+          pt ? "Casas para viver o Minho" : "Find your home in the Minho"
+        }
+        intro={
+          pt
+            ? "Um jardim para almoços demorados, uma piscina para tardes em família ou uma localização para sair a pé. Escolha o que faz diferença nos seus dias e consulte o total para as suas datas. A Portugal Active ajuda a preparar a chegada e os extras que quiser reservar."
+            : "A garden for long lunches, a pool for family afternoons or a location for exploring on foot. Choose what matters to your days and check the total for your dates. Portugal Active can help arrange your arrival and any extras you would like to book."
+        }
+      />
       <TheJournal destination={d} articles={articles} />
       <section className="minho-section bg-pa-cream">
         <div className="container max-w-4xl">
@@ -788,7 +825,7 @@ export function MinhoVisualGuide({
                   : "Practical information reviewed on 28 September 2026. Check current opening and conditions at the sources. Photography: Portugal Active; Joseolgon / Wikimedia Commons (CC BY 4.0); Jesus David Gomez and Pedro Cunha / Unsplash."}
               </p>
               <ul className="grid sm:grid-cols-2 gap-x-7">
-                {guide.sources.map(s => (
+                {referenceSources.map(s => (
                   <li key={s.url}>
                     <a
                       href={s.url}
