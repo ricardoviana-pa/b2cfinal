@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
-import { sendContactConfirmation, sendContactNotification, sendNewsletterWelcome } from "../services/email";
+import { publicLeadSource } from "../services/newsletter";
+import { sendContactConfirmation, sendContactNotification } from "../services/email";
 import { sendContactInquiryNotification, sendAvailabilityRequestNotification, sendAvailabilityRequestConfirmation } from "../services/transactional-email";
 
 /* ================================================================
@@ -254,7 +255,10 @@ export const leadsRouter = router({
 
   create: publicProcedure
     .input(leadInput)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input: raw }) => {
+      // Consent sources (newsletter*, nl-pending-*, nl-unsubscribed-*) are
+      // written only by newsletter.subscribe, its links and the checkout.
+      const input = { ...raw, source: publicLeadSource(raw.source) };
       const lead = await db.createLead(input);
 
       if (input.source === 'contact-form' && input.name) {
@@ -284,9 +288,10 @@ export const leadsRouter = router({
           guests: input.metadata?.guests ?? '—',
           locale: input.metadata?.locale,
         }).catch(e => console.error("[Email] Availability request confirmation failed:", e));
-      } else if (input.source.startsWith('newsletter')) {
-        sendNewsletterWelcome(input.email).catch(e => console.error("[Email] Newsletter welcome failed:", e));
       }
+      // Newsletter sign-ups no longer pass through here: the footer, the
+      // pop-up and the inline blocks call newsletter.subscribe (double opt-in
+      // with the site's own email, server/routers/newsletter.ts).
 
       return lead;
     }),

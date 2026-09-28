@@ -441,10 +441,6 @@
   "footer": {
     "allRightsReserved": "Alle Rechte vorbehalten",
     "tagline": "Private Hotels in Portugal.",
-    "newsletterHint": "Inspiration, neue Häuser und exklusive Angebote.",
-    "emailPlaceholder": "Ihre E-Mail",
-    "subscribe": "ABONNIEREN",
-    "welcomeInbox": "Willkommen. Bitte Posteingang prüfen.",
     "destinationsTitle": "REISEZIELE",
     "servicesTitle": "SERVICES",
     "companyTitle": "UNTERNEHMEN",
@@ -480,9 +476,6 @@
     "admin": "Admin",
     "paymentBankTransfer": "Banküberweisung",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
-    "nlHeadline": "Lassen Sie sich inspirieren.",
-    "nlSub": "Ausgewählte Aufenthalte, saisonale Angebote und Reisegeschichten aus Portugal — monatlich geliefert.",
-    "nlError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "conciergeServices": "Concierge-Dienste",
     "realEstate": "Ein Haus kaufen oder verkaufen",
     "offices": "Büros"
@@ -674,11 +667,6 @@
     "ownersBody": "Wir arbeiten mit Eigentümern zusammen, die unsere Vision von Gastfreundschaft teilen. Unser Managementmodell liefert außergewöhnliche Renditen bei null operativem Aufwand für Sie. Hauseigene Teams, Hotelstandards und eine Marke, die das ganze Jahr über Premium-Gäste anzieht.",
     "ownersCta": "UNSER MODELL KENNENLERNEN",
     "ownersNote": "Vertrauliche Einschätzung. Antwort innerhalb von 2 Stunden.",
-    "newsletterOverline": "LASSEN SIE SICH INSPIRIEREN",
-    "newsletterTitle": "Häuser, Geschichten und saisonale Angebote.",
-    "newsletterSuccess": "Willkommen in der Familie. Prüfen Sie Ihren Posteingang für eine Bestätigung.",
-    "newsletterPlaceholder": "Ihre E-Mail-Adresse",
-    "newsletterCta": "ABONNIEREN",
     "searchCheckin": "Anreise",
     "searchCheckout": "Abreise",
     "decreaseGuests": "Weniger Gäste",
@@ -2161,5 +2149,52 @@
     "faq1A": "Die Voraussetzungen hängen von der Aktivität ab. Auf der Erlebnis-Seite finden Sie Schwierigkeitsgrad, Altersgrenzen und die Packliste. Unser Team hilft Ihnen bei der Auswahl.",
     "faq2Q": "Kann ich Aktivitäten mit einem Aufenthalt verbinden?",
     "faq2A": "Ja. Wählen Sie Ihr Haus und entdecken Sie Aktivitäten in derselben Region. Unser Concierge hilft bei der Planung. Aktivitäten und mögliche Transfers werden separat berechnet."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Neuigkeiten und Angebote",
+      "title": "Neuigkeiten und Angebote unserer Häuser, direkt in Ihr Postfach.",
+      "body": "Frei werdende Termine, neue Häuser und Angebote. Wenige E-Mails, nur wenn es sich lohnt.",
+      "notNow": "Jetzt nicht",
+      "close": "Schließen"
+    },
+    "house": {
+      "overline": "Hinweise zu diesem Haus",
+      "title": "Möchten Sie wissen, wann dieses Haus freie Termine oder einen Nebensaisonpreis hat?",
+      "body": "Hinterlassen Sie Ihre E-Mail, und wir sagen Ihnen Bescheid. Außerdem erhalten Sie Neuigkeiten und Angebote unserer Häuser. Nur wenige E-Mails."
+    },
+    "houseInterest": {
+      "overline": "Neuigkeiten und Angebote",
+      "title": "Gefällt Ihnen dieses Haus? Erhalten Sie Neuigkeiten und Angebote unserer Häuser.",
+      "body": "Hinterlassen Sie Ihre E-Mail, und wir vermerken Ihr Interesse an diesem Haus. Frei werdende Termine, neue Häuser und Angebote. Nur wenige E-Mails."
+    },
+    "generic": {
+      "overline": "Neuigkeiten und Angebote",
+      "title": "Neuigkeiten und Angebote unserer Häuser, direkt in Ihr Postfach.",
+      "body": "Frei werdende Termine, neue Häuser und Angebote. Wenige E-Mails, nur wenn es sich lohnt."
+    },
+    "footer": {
+      "title": "Neuigkeiten und Angebote unserer Häuser",
+      "body": "Frei werdende Termine, neue Häuser und Angebote. Wenige E-Mails."
+    },
+    "form": {
+      "email": "Ihre E-Mail",
+      "cta": "Abonnieren",
+      "sending": "Wird gesendet…",
+      "success": "Noch ein Schritt: Wir haben Ihnen eine E-Mail zur Bestätigung geschickt. Öffnen Sie sie und klicken Sie auf die Schaltfläche.",
+      "errorInvalid": "Diese E-Mail-Adresse ist ungültig.",
+      "errorProxy": "Bitte verwenden Sie Ihre persönliche E-Mail-Adresse.",
+      "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuchen Sie es gleich noch einmal."
+    },
+    "interest": {
+      "title": "Damit wir Ihnen das Passende schicken: Welche Art von Aufenthalt suchen Sie? Optional.",
+      "family": "Familienurlaub",
+      "couple": "Auszeit zu zweit",
+      "friends": "Mit Freunden",
+      "celebration": "Ein besonderer Anlass",
+      "work": "Firma oder Retreat",
+      "longStay": "Ein Monat oder länger",
+      "thanks": "Danke, ist notiert."
+    }
   }
 }

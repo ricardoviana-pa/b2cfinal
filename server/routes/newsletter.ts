@@ -1,0 +1,184 @@
+/**
+ * Newsletter links that arrive from an email. Static branded pages
+ * (server/lib/brand-page.ts), uncached, noindex, no personal data.
+ *
+ * GET  /api/newsletter/confirm?lead=<id>&e=<exp>&t=<hmac>&lang=<xx>
+ *   The double opt-in click. Verifies the signature and the expiry (7 days),
+ *   promotes "nl-pending-<origin>" to "newsletter-<origin>" with confirmedAt
+ *   and shows "Subscrição confirmada" with the exit link. Idempotent. A HEAD
+ *   request (link checkers) changes nothing.
+ *
+ * GET  /api/newsletter/unsubscribe?lead=<id>&t=<hmac>&lang=<xx>
+ *   Shows one button. A GET never unsubscribes: mail scanners open links.
+ * POST /api/newsletter/unsubscribe  (lead, t, lang in the form or the query:
+ *   works as a one-click List-Unsubscribe-Post target too)
+ *   Every consent lead of that address stops counting (db.unsubscribeNewsletterEmail).
+ *   The exit token never expires: leaving must always work.
+ */
+import type { Express, Request, Response } from "express";
+import * as dbModule from "../db";
+import { brandPage } from "../lib/brand-page";
+import { NEWSLETTER_LANGS, NL_SUBSCRIBED_KEY, newsletterLang } from "@shared/newsletter";
+import { NEWSLETTER_PAGE_COPY } from "../services/newsletter-copy";
+import {
+  brevoAddConfirmed,
+  brevoRemove,
+  normaliseEmail,
+  originFromSource,
+  safeErrorLabel,
+  signToken,
+  verifyToken,
+  type FetchLike,
+} from "../services/newsletter";
+
+export interface NewsletterRouteDeps {
+  getLeadById: typeof dbModule.getLeadById;
+  confirmNewsletterLead: typeof dbModule.confirmNewsletterLead;
+  unsubscribeNewsletterEmail: typeof dbModule.unsubscribeNewsletterEmail;
+  env: NodeJS.ProcessEnv;
+  fetchImpl: FetchLike;
+  now: () => Date;
+}
+
+const defaultDeps = (): NewsletterRouteDeps => ({
+  getLeadById: dbModule.getLeadById,
+  confirmNewsletterLead: dbModule.confirmNewsletterLead,
+  unsubscribeNewsletterEmail: dbModule.unsubscribeNewsletterEmail,
+  env: process.env,
+  fetchImpl: (input, init) => globalThis.fetch(input, init),
+  now: () => new Date(),
+});
+
+function pick(req: Request, key: string): string {
+  const fromBody = req.body && typeof req.body === "object" ? (req.body as Record<string, unknown>)[key] : undefined;
+  const value = fromBody ?? req.query[key];
+  return typeof value === "string" ? value : "";
+}
+
+function langFromRequest(req: Request): string {
+  const q = pick(req, "lang").toLowerCase();
+  if ((NEWSLETTER_LANGS as readonly string[]).includes(q)) return q;
+  return newsletterLang(String(req.headers["accept-language"] ?? "").slice(0, 2));
+}
+
+function noStore(res: Response): void {
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-Robots-Tag", "noindex, nofollow");
+}
+
+/** Relative exit link shown on the confirmation page (same host, never an email in the URL). */
+export function exitPath(leadId: number, lang: string, env: NodeJS.ProcessEnv = process.env): string {
+  return `/api/newsletter/unsubscribe?lead=${leadId}&t=${signToken("exit", leadId, 0, env)}&lang=${newsletterLang(lang)}`;
+}
+
+export function registerNewsletterRoutes(app: Express, overrides: Partial<NewsletterRouteDeps> = {}): void {
+  const deps = { ...defaultDeps(), ...overrides };
+
+  app.get("/api/newsletter/confirm", async (req: Request, res: Response) => {
+    noStore(res);
+    // Link checkers and previews: never confirm on HEAD.
+    if (req.method === "HEAD") return res.status(200).end();
+
+    let lang = langFromRequest(req);
+    const leadId = Number(pick(req, "lead"));
+    const exp = Number(pick(req, "e"));
+    const check = verifyToken("confirm", leadId, exp, pick(req, "t"), deps.env, deps.now().getTime());
+    const copy = () => NEWSLETTER_PAGE_COPY[newsletterLang(lang)];
+    const invalid = () => res.status(400).type("html").send(brandPage(lang, copy().invalidTitle, copy().invalidBody));
+    const failed = () => res.status(500).type("html").send(brandPage(lang, copy().errorTitle, copy().errorBody));
+
+    if (check === "invalid") return invalid();
+    if (check === "expired") {
+      return res.status(410).type("html").send(
+        brandPage(lang, copy().expiredTitle, copy().expiredBody, { cta: { href: `/${lang}/homes`, label: copy().ctaHomes } }),
+      );
+    }
+
+    let lead: Awaited<ReturnType<typeof dbModule.getLeadById>>;
+    try {
+      lead = await deps.getLeadById(leadId);
+    } catch (err: unknown) {
+      console.error("[Newsletter] confirm: lead lookup failed:", safeErrorLabel(err));
+      return failed();
+    }
+    const origin = originFromSource(lead?.source);
+    // Unknown lead, not from this flow, or already unsubscribed: an old link does not subscribe again.
+    if (!lead || !origin) return invalid();
+    const meta: Record<string, string> = lead.metadata || {};
+    lang = newsletterLang(meta.locale || lang);
+
+    const confirmedAt = deps.now().toISOString();
+    let result: Awaited<ReturnType<typeof dbModule.confirmNewsletterLead>>;
+    try {
+      result = await deps.confirmNewsletterLead(leadId, origin, { confirmedAt });
+    } catch (err: unknown) {
+      console.error(`[Newsletter] confirm: lead #${leadId} update failed:`, safeErrorLabel(err));
+      return failed();
+    }
+    if (result === "gone") return invalid();
+
+    if (result === "confirmed") {
+      console.info(`[Newsletter] confirmed lead #${leadId} origin=${origin} lang=${lang}`);
+      // Optional: only with BREVO_API_KEY and BREVO_NEWSLETTER_LIST_ID. The site stays the record.
+      const brevo = await brevoAddConfirmed(normaliseEmail(lead.email), { ...meta, confirmedAt }, deps.env, deps.fetchImpl);
+      if (brevo && !brevo.ok) console.warn(`[Newsletter] Brevo add failed for lead #${leadId}: status=${brevo.status} code=${brevo.code ?? ""}`);
+    } else {
+      console.info(`[Newsletter] lead #${leadId} confirmed again (already confirmed)`);
+    }
+
+    const c = copy();
+    return res.type("html").send(
+      brandPage(lang, c.confirmedTitle, c.confirmedBody, {
+        cta: { href: `/${lang}/homes`, label: c.ctaHomes },
+        note: { text: c.exitPrompt, link: { href: exitPath(leadId, lang, deps.env), label: c.exitLink } },
+        // This browser: no pop-up any more (the person may confirm on another device than the one they signed up on).
+        localFlags: { [NL_SUBSCRIBED_KEY]: "1" },
+      }),
+    );
+  });
+
+  const exitCheck = (req: Request) => {
+    const leadId = Number(pick(req, "lead"));
+    return { leadId, ok: verifyToken("exit", leadId, 0, pick(req, "t"), deps.env) === "ok" };
+  };
+
+  app.get("/api/newsletter/unsubscribe", (req: Request, res: Response) => {
+    noStore(res);
+    const lang = langFromRequest(req);
+    const c = NEWSLETTER_PAGE_COPY[newsletterLang(lang)];
+    const { leadId, ok } = exitCheck(req);
+    if (!ok) return res.status(400).type("html").send(brandPage(lang, c.invalidTitle, c.invalidBody));
+    return res.type("html").send(
+      brandPage(lang, c.unsubscribeTitle, c.unsubscribeBody, {
+        form: {
+          action: "/api/newsletter/unsubscribe",
+          fields: { lead: String(leadId), t: pick(req, "t"), lang },
+          button: c.unsubscribeButton,
+        },
+      }),
+    );
+  });
+
+  app.post("/api/newsletter/unsubscribe", async (req: Request, res: Response) => {
+    noStore(res);
+    const lang = langFromRequest(req);
+    const c = NEWSLETTER_PAGE_COPY[newsletterLang(lang)];
+    const { leadId, ok } = exitCheck(req);
+    if (!ok) return res.status(400).type("html").send(brandPage(lang, c.invalidTitle, c.invalidBody));
+    try {
+      const lead = await deps.getLeadById(leadId);
+      if (!lead) return res.status(400).type("html").send(brandPage(lang, c.invalidTitle, c.invalidBody));
+      const email = normaliseEmail(lead.email);
+      const changed = await deps.unsubscribeNewsletterEmail(email, deps.now().toISOString());
+      console.info(`[Newsletter] unsubscribed via lead #${leadId}: ${changed} lead(s) changed`);
+      const brevo = await brevoRemove(email, deps.env, deps.fetchImpl);
+      if (brevo && !brevo.ok) console.warn(`[Newsletter] Brevo removal failed for lead #${leadId}: status=${brevo.status} code=${brevo.code ?? ""}`);
+    } catch (err: unknown) {
+      console.error(`[Newsletter] unsubscribe failed for lead #${leadId}:`, safeErrorLabel(err));
+      return res.status(500).type("html").send(brandPage(lang, c.errorTitle, c.errorBody));
+    }
+    // Someone who just left never gets the pop-up again in this browser either.
+    return res.type("html").send(brandPage(lang, c.unsubscribedTitle, c.unsubscribedBody, { localFlags: { [NL_SUBSCRIBED_KEY]: "1" } }));
+  });
+}

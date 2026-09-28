@@ -3,43 +3,25 @@
    Elevated design with better hierarchy, breathing room, and visual polish.
    ========================================================================== */
 
-import { useState } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { openCookiePreferences } from '@/lib/measurementConsent';
 import { IMAGES } from '@/lib/images';
-import { Instagram, Youtube, Linkedin, Facebook, Check, Phone, Mail, MessageCircle, ArrowUpRight } from 'lucide-react';
+import { Instagram, Youtube, Linkedin, Facebook, Phone, Mail, MessageCircle, ArrowUpRight } from 'lucide-react';
 import FooterPaymentLogos from './FooterPaymentLogos';
-import { trpc } from '@/lib/trpc';
-import { pushDL } from '@/lib/datalayer';
+import NewsletterForm from '@/components/marketing/NewsletterForm';
+import { useNewsletterConfig } from '@/components/marketing/useNewsletterConfig';
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
   const language = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0];
   const realEstateLanguage = ["pt", "fr", "es"].includes(language) ? language + "/" : "";
   const managementLanguage = language === "pt" ? "" : (["en", "fr", "es", "de", "it", "nl"].includes(language) ? language : "en") + "/";
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-  const [subscribing, setSubscribing] = useState(false);
-  const [nlError, setNlError] = useState('');
-
-  const createLead = trpc.leads.create.useMutation();
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setSubscribing(true);
-    setNlError('');
-    try {
-      await createLead.mutateAsync({ email, source: 'newsletter-footer' });
-      setSubscribed(true);
-      setEmail('');
-      pushDL({ event: 'generate_lead', lead_source: 'newsletter-footer', lead_type: 'newsletter' });
-    } catch {
-      setNlError(t('footer.nlError'));
-    } finally {
-      setSubscribing(false);
-    }
-  };
+  // Newsletter band: every language by default (as before; the server's
+  // footerLocales can narrow it), shown once the server says the sign-up
+  // works here (live site with database and email).
+  const newsletter = useNewsletterConfig();
+  const showNewsletter = !!newsletter.data?.available && (newsletter.data.footerLocales ?? []).includes(language);
 
   const footerLinks = (label: string, href: string, external?: boolean) => (
     <li>
@@ -58,59 +40,30 @@ export default function Footer() {
   return (
     <footer className="bg-[#1A1A18] text-white" role="contentinfo">
 
-      {/* Newsletter banner */}
-      <details className="border-b border-white/[0.1]">
-        <summary className="container py-5 flex items-center justify-between gap-4 cursor-pointer list-none">
-          <span className="text-[14px] text-white/80">{t('footer.nlHeadline')}</span>
-          <span className="text-[12px] text-white/70 flex items-center gap-3">{t('footer.subscribe')} <span aria-hidden="true">+</span></span>
-        </summary>
-        <div className="container pb-6">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-            <div className="max-w-md">
-
-              <p
-                className="text-[13px] text-white/65 leading-relaxed"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-              >
-                {t('footer.nlSub')}
-              </p>
-            </div>
-            <div className="w-full lg:w-auto lg:min-w-[380px]">
-              {subscribed ? (
-                <p className="text-[13px] flex items-center gap-2 text-[#C4A87C]" role="status" aria-live="polite">
-                  <Check className="w-3.5 h-3.5" /> {t('footer.welcomeInbox')}
+      {/* Newsletter band: open, not folded away. Same form as the pop-up and
+          the inline blocks (double opt-in with the site's own email). */}
+      {showNewsletter && (
+        <section className="border-b border-white/[0.1]" aria-labelledby="footer-newsletter-title" data-nl-block="footer">
+          <div className="container py-9 lg:py-10">
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 lg:gap-12">
+              <div className="max-w-md">
+                <h2
+                  id="footer-newsletter-title"
+                  className="font-display text-[22px] lg:text-[24px] font-light leading-[1.3] text-white mb-2"
+                >
+                  {t('newsletter.footer.title')}
+                </h2>
+                <p className="text-[13px] text-white/70 leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                  {t('newsletter.footer.body')}
                 </p>
-              ) : (
-                <form onSubmit={handleSubscribe} className="flex flex-col gap-1.5">
-                  <div className="flex">
-                    <input
-                      type="email"
-                      aria-label={t('footer.emailPlaceholder')}
-                      value={email}
-                      onChange={e => { setEmail(e.target.value); setNlError(''); }}
-                      placeholder={t('footer.emailPlaceholder')}
-                      required
-                      autoComplete="email"
-                      inputMode="email"
-                      className="flex-1 h-[48px] px-4 text-[13px] bg-white/[0.04] border border-white/10 text-white placeholder:text-white/65 focus:outline-none focus:border-white/30 transition-colors min-w-0"
-                      style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-                    />
-                    <button
-                      type="submit"
-                      disabled={subscribing}
-                      className="pa-action h-[48px] px-6 bg-[#C4A87C] text-[#1A1A18] text-[11px] font-semibold hover:bg-[#D4B88C] transition-colors flex-shrink-0 disabled:opacity-50"
-                      style={{ letterSpacing: '1.5px' }}
-                    >
-                      {subscribing ? '...' : t('footer.subscribe')}
-                    </button>
-                  </div>
-                  {nlError && <p className="text-[11px] text-red-400" role="alert" aria-live="assertive">{nlError}</p>}
-                </form>
-              )}
+              </div>
+              <div className="w-full lg:w-auto lg:min-w-[420px] lg:max-w-[460px]">
+                <NewsletterForm origin="footer" variant="dark" />
+              </div>
             </div>
           </div>
-        </div>
-      </details>
+        </section>
+      )}
 
       {/* Main link grid */}
       <div className="container py-10 lg:py-12">

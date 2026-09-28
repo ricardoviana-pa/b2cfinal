@@ -12,7 +12,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div data-nl-suppress="whatsapp" className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 space-y-6 relative">
         {/* Close button */}
         <button

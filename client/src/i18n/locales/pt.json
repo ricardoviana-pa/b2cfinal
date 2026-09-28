@@ -441,10 +441,6 @@
   "footer": {
     "allRightsReserved": "Todos os direitos reservados",
     "tagline": "Hotéis Privados em Portugal.",
-    "newsletterHint": "Mantenha-se inspirado. Novos alojamentos, ideias de viagem e ofertas exclusivas.",
-    "emailPlaceholder": "O seu email",
-    "subscribe": "SUBSCREVER",
-    "welcomeInbox": "Bem-vindo. Verifique a sua caixa de entrada.",
     "destinationsTitle": "DESTINOS",
     "servicesTitle": "SERVIÇOS",
     "companyTitle": "EMPRESA",
@@ -480,9 +476,6 @@
     "admin": "Admin",
     "paymentBankTransfer": "Transferência bancária",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
-    "nlHeadline": "Inspire-se.",
-    "nlSub": "Estadias selecionadas, ofertas sazonais e histórias de viagem por Portugal — entregues mensalmente.",
-    "nlError": "Algo correu mal. Por favor, tente novamente.",
     "conciergeServices": "Serviços de concierge",
     "realEstate": "Comprar ou vender casa",
     "offices": "Escritórios"
@@ -674,11 +667,6 @@
     "ownersBody": "Estabelecemos parcerias com proprietários que compartilham a nossa visão de hospitalidade. O nosso modelo de gestão oferece retornos excecionais sem envolvimento operacional de sua parte. Equipas internas, padrões de qualidade hoteleira e uma marca que atrai hóspedes premium o ano todo.",
     "ownersCta": "SAIBA MAIS SOBRE O NOSSO MODELO",
     "ownersNote": "Avaliação confidencial. Resposta em 2 horas.",
-    "newsletterOverline": "MANTENHA-SE INSPIRADO",
-    "newsletterTitle": "Casas, histórias e ofertas sazonais.",
-    "newsletterSuccess": "Bem-vindo à família. Verifique a sua caixa de entrada para uma confirmação.",
-    "newsletterPlaceholder": "O seu endereço de email",
-    "newsletterCta": "SUBSCREVER",
     "searchCheckin": "Check-in",
     "searchCheckout": "Check-out",
     "decreaseGuests": "Menos hóspedes",
@@ -1163,7 +1151,7 @@
     "s1Body": "Recolhemos informação que nos fornece diretamente, como quando faz um pedido de reserva, subscreve a nossa newsletter ou nos contacta. Isto pode incluir o seu nome, endereço de email, número de telefone e preferências de viagem.",
     "s2Title": "2. Como Utilizamos a Sua Informação",
     "s2Body": "Utilizamos a informação que recolhemos para processar as suas reservas, comunicar consigo sobre a sua estadia, enviar comunicações de marketing (com o seu consentimento) e melhorar os nossos serviços.",
-    "s2OriginBody": "Se autorizar os cookies de análise, escolhendo Aceitar tudo no aviso de cookies, guardamos também, junto do seu pedido de reserva, de onde veio a visita ao nosso site: a campanha, o anúncio ou o site de onde chegou. Usamos esta informação apenas internamente, para saber que ações de marketing funcionam, e não a partilhamos com terceiros. Sem essa autorização, não guardamos a origem da visita.",
+    "s2OriginBody": "Se autorizar os cookies de análise, escolhendo Aceitar tudo no aviso de cookies, guardamos também, junto do seu pedido de reserva ou da sua subscrição da newsletter, de onde veio a visita ao nosso site: a campanha, o anúncio ou o site de onde chegou. Usamos esta informação apenas internamente, para saber que ações de marketing funcionam, e não a partilhamos com terceiros. Sem essa autorização, não guardamos a origem da visita.",
     "s3Title": "3. Partilha de Dados",
     "s3Body": "Não vendemos a sua informação pessoal. Podemos partilhar os seus dados com proprietários e prestadores de serviços para cumprir a sua reserva e prestar os serviços que pediu. Se já ficou connosco ou nos deu o seu email, podemos também enviá-lo, sempre codificado (hash) e por isso ilegível, a plataformas de anúncios como a Meta (Facebook e Instagram) e a Google, para lhe mostrarmos as nossas ofertas nessas plataformas. Pode pedir para sair destas listas a qualquer momento em info@portugalactive.com.",
     "s4Title": "4. Os Seus Direitos",
@@ -2163,5 +2151,52 @@
     "faq1A": "Os requisitos variam por atividade. Consulte a página da experiência para conhecer a dificuldade, os limites de idade e o que levar. A nossa equipa pode ajudar a escolher.",
     "faq2Q": "Posso combinar atividades com uma estadia?",
     "faq2A": "Sim. Escolha a casa e explore atividades na mesma região. O concierge pode ajudar a coordenar o programa. As atividades e eventuais transfers são cobrados à parte."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Novidades e promoções",
+      "title": "As novidades e as promoções das nossas casas, no seu email.",
+      "body": "Datas que abrem, casas novas e promoções. Poucos emails, só quando há algo que valha a pena.",
+      "notNow": "Agora não",
+      "close": "Fechar"
+    },
+    "house": {
+      "overline": "Avisos desta casa",
+      "title": "Quer saber quando esta casa tiver datas livres ou preço de época baixa?",
+      "body": "Deixe o seu email e avisamos. Recebe também as novidades e as promoções das nossas casas. Poucos emails."
+    },
+    "houseInterest": {
+      "overline": "Novidades e promoções",
+      "title": "Gostou desta casa? Receba as novidades e as promoções das nossas casas.",
+      "body": "Deixe o seu email: fica registado o seu interesse nesta casa. Datas que abrem, casas novas e promoções. Poucos emails."
+    },
+    "generic": {
+      "overline": "Novidades e promoções",
+      "title": "As novidades e as promoções das nossas casas, no seu email.",
+      "body": "Datas que abrem, casas novas e promoções. Poucos emails, só quando há algo que valha a pena."
+    },
+    "footer": {
+      "title": "Novidades e promoções das nossas casas",
+      "body": "Datas que abrem, casas novas e promoções. Poucos emails."
+    },
+    "form": {
+      "email": "O seu email",
+      "cta": "Subscrever",
+      "sending": "A enviar…",
+      "success": "Falta um passo: enviámos um email para confirmar a subscrição. Abra-o e carregue no botão.",
+      "errorInvalid": "Este email não é válido.",
+      "errorProxy": "Use o seu email pessoal.",
+      "errorGeneric": "Algo correu mal. Tente outra vez daqui a instantes."
+    },
+    "interest": {
+      "title": "Para lhe enviarmos o que interessa: que estadia procura? É opcional.",
+      "family": "Férias em família",
+      "couple": "Escapadinha a dois",
+      "friends": "Grupo de amigos",
+      "celebration": "Ocasião especial",
+      "work": "Empresa ou retiro",
+      "longStay": "Um mês ou mais",
+      "thanks": "Obrigado, fica registado."
+    }
   }
 }

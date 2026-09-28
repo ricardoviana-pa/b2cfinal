@@ -1,4 +1,5 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
+import { safeErrorLabel, unsubscribeTarget } from "./services/newsletter";
 import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
@@ -421,6 +422,176 @@ export async function updateLead(id: number, data: Partial<InsertLead>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.update(leads).set(data).where(eq(leads.id, id));
+}
+
+/* ── Newsletter do site, dupla confirmação (server/services/newsletter.ts) ── */
+
+const NL_FLOW = "site-doi-v1";
+const sameEmail = (email: string) => sql`lower(trim(${leads.email})) = ${email}`;
+const affectedRows = (res: any): number => (Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows) ?? 0;
+
+export async function getLeadById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(leads).where(eq(leads.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+/**
+ * Quando saíram os emails de confirmação para este endereço nas últimas
+ * `sinceMs` (leads deste fluxo; um envio que falhou não conta). Serve o
+ * limite de um email por hora e três por dia por endereço.
+ */
+export async function recentNewsletterSends(email: string, sinceMs: number): Promise<number[]> {
+  const db = await getDb();
+  if (!db) return [];
+  const since = new Date(Date.now() - sinceMs);
+  const rows = await db
+    .select({ createdAt: leads.createdAt, metadata: leads.metadata })
+    .from(leads)
+    .where(and(
+      sameEmail(email),
+      or(like(leads.source, "nl-pending-%"), like(leads.source, "newsletter-%"), like(leads.source, "nl-unsubscribed-%")),
+      gt(leads.createdAt, since),
+    ))
+    .limit(20);
+  return rows
+    .filter((r) => r.metadata?.flow === NL_FLOW && !r.metadata?.doiError)
+    .map((r) => new Date(r.createdAt).getTime());
+}
+
+/**
+ * O clique no email: "nl-pending-<origem>" passa a "newsletter-<origem>".
+ * Só a partir daqui conta como consentimento (coletor da Mailing List e
+ * hasNewsletterConsent). Idempotente e sem corrida: o UPDATE só apanha a
+ * linha ainda pendente.
+ */
+export async function confirmNewsletterLead(
+  id: number,
+  origin: string,
+  patch: Record<string, string>,
+): Promise<"confirmed" | "already" | "gone"> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const current = await getLeadById(id);
+  if (!current) return "gone";
+  const pending = `nl-pending-${origin}`;
+  const confirmed = `newsletter-${origin}`;
+  if (current.source === confirmed) return "already";
+  if (current.source !== pending) return "gone";
+  const res = await db
+    .update(leads)
+    .set({ source: confirmed, metadata: { ...(current.metadata || {}), ...patch } })
+    .where(and(eq(leads.id, id), eq(leads.source, pending)));
+  if (affectedRows(res) > 0) return "confirmed";
+  const again = await getLeadById(id);
+  return again?.source === confirmed ? "already" : "gone";
+}
+
+/** Marca o envio falhado: não conta para o limite por endereço e fica visível na base. */
+export async function markNewsletterSendFailed(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const current = await getLeadById(id);
+  if (!current) return;
+  await db.update(leads).set({ metadata: { ...(current.metadata || {}), doiError: "1" } }).where(eq(leads.id, id));
+}
+
+/**
+ * A pergunta opcional depois de subscrever (tipo de estadia). Só em leads
+ * deste fluxo, pendentes ou confirmados. Devolve o lead atualizado.
+ */
+export async function setNewsletterInterest(id: number, interest: string, at: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const current = await getLeadById(id);
+  if (!current || current.metadata?.flow !== NL_FLOW) return null;
+  if (!current.source.startsWith("nl-pending-") && !current.source.startsWith("newsletter-")) return null;
+  const metadata = { ...(current.metadata || {}), interest, interestAt: at };
+  await db.update(leads).set({ metadata }).where(eq(leads.id, id));
+  return { ...current, metadata };
+}
+
+/**
+ * Saída, sempre possível: todos os leads com consentimento deste endereço
+ * deixam de o ter. "newsletter-*" e "nl-pending-*" passam a
+ * "nl-unsubscribed-<origem>"; o consentimento do checkout volta a "checkout"
+ * (como quando se desmarca a caixa). Devolve quantos leads mudaram.
+ */
+export async function unsubscribeNewsletterEmail(email: string, at: string): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const rows = await db
+    .select({ id: leads.id, source: leads.source, metadata: leads.metadata })
+    .from(leads)
+    .where(and(sameEmail(email), or(like(leads.source, "newsletter%"), like(leads.source, "nl-pending-%"))))
+    .limit(200);
+  let changed = 0;
+  for (const row of rows) {
+    const target = unsubscribeTarget(row.source);
+    const metadata = { ...(row.metadata || {}), unsubscribedAt: at, ...(target.consent ? { consent: target.consent } : {}) };
+    const res = await db
+      .update(leads)
+      .set({ source: target.source, metadata })
+      .where(and(eq(leads.id, row.id), eq(leads.source, row.source)));
+    changed += affectedRows(res) > 0 ? 1 : 0;
+  }
+  return changed;
+}
+
+/**
+ * Para aprender (admin): inscrições desde `sinceDays` por fonte (pendente,
+ * confirmada, saída), gatilho do pop-up, dispositivo, tipo de página, origem
+ * da visita (utm_source, só com consentimento) e interesse. Pendentes e
+ * confirmadas lado a lado dão a taxa de confirmação de cada combinação.
+ * Só contagens: nenhum email sai daqui. Conta em código (poucos milhares de
+ * linhas no máximo) para não depender do modo GROUP BY da base.
+ */
+export async function newsletterFunnel(sinceDays: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const since = new Date(Date.now() - sinceDays * 86_400_000);
+  const rows = await db
+    .select({ source: leads.source, metadata: leads.metadata })
+    .from(leads)
+    .where(and(
+      or(like(leads.source, "nl-pending-%"), like(leads.source, "newsletter-%"), like(leads.source, "nl-unsubscribed-%")),
+      gt(leads.createdAt, since),
+    ))
+    .limit(20_000);
+  return countNewsletterFunnel(rows);
+}
+
+export interface NewsletterFunnelRow {
+  source: string;
+  trigger: string | null;
+  device: string | null;
+  pageKind: string | null;
+  utmSource: string | null;
+  interest: string | null;
+  count: number;
+}
+
+/** Leads of this flow only (legacy "newsletter-footer" rows have no double opt-in), grouped. */
+export function countNewsletterFunnel(rows: Array<{ source: string; metadata: Record<string, string> | null }>): NewsletterFunnelRow[] {
+  const groups = new Map<string, NewsletterFunnelRow>();
+  for (const row of rows) {
+    const m = row.metadata || {};
+    if (m.flow !== NL_FLOW) continue;
+    const key = {
+      source: row.source,
+      trigger: m.trigger || null,
+      device: m.device || null,
+      pageKind: m.pageKind || null,
+      utmSource: m.utmSource || null,
+      interest: m.interest || null,
+    };
+    const id = JSON.stringify(key);
+    const hit = groups.get(id);
+    if (hit) hit.count += 1;
+    else groups.set(id, { ...key, count: 1 });
+  }
+  return Array.from(groups.values()).sort((a, b) => b.count - a.count);
 }
 
 export async function deleteLead(id: number) {
@@ -957,7 +1128,9 @@ export async function listUnsettledCardIntents(limit = 50): Promise<BookingInten
 
 /** Consentimento de marketing atual deste email: o captureLead mantém o
  *  source do lead em "newsletter-*" enquanto a caixa estiver marcada e
- *  retira-o quando é desmarcada, por isso é a fonte de verdade. */
+ *  retira-o quando é desmarcada, por isso é a fonte de verdade. A newsletter
+ *  do site só escreve "newsletter-<origem>" depois do clique de confirmação
+ *  ("nl-pending-*" não conta) e a saída troca-o por "nl-unsubscribed-*". */
 export async function hasNewsletterConsent(email: string): Promise<boolean> {
   const db = await getDb();
   if (!db || !email) return false;
@@ -969,7 +1142,8 @@ export async function hasNewsletterConsent(email: string): Promise<boolean> {
       .limit(1);
     return rows.length > 0;
   } catch (error) {
-    console.error("[Database] hasNewsletterConsent failed:", error);
+    // Só a classe do erro: a mensagem do Drizzle traz os parâmetros (o email).
+    console.error("[Database] hasNewsletterConsent failed:", safeErrorLabel(error));
     return false;
   }
 }

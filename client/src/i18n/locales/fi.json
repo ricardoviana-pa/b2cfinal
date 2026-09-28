@@ -441,10 +441,6 @@
   "footer": {
     "allRightsReserved": "Kaikki oikeudet pidätetään",
     "tagline": "Yksityishotelleja Portugalissa.",
-    "newsletterHint": "Pysy inspiroituneena. Uusia koteja, matkaideoita ja eksklusiivisia tarjouksia.",
-    "emailPlaceholder": "Sähköpostisi",
-    "subscribe": "TILAA",
-    "welcomeInbox": "Tervetuloa. Tarkista postilaatikkosi.",
     "destinationsTitle": "KOHTEET",
     "servicesTitle": "PALVELUT",
     "companyTitle": "YRITYS",
@@ -480,9 +476,6 @@
     "admin": "Admin",
     "paymentBankTransfer": "Tilisiirto",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
-    "nlHeadline": "Inspiroidu.",
-    "nlSub": "Valikoituja majoituksia, kausitarjouksia ja matkakertomuksia Portugalista — toimitetaan kuukausittain.",
-    "nlError": "Jokin meni pieleen. Yritä uudelleen.",
     "conciergeServices": "Concierge-palvelut",
     "realEstate": "Osta tai myy asunto",
     "offices": "Toimistot"
@@ -674,11 +667,6 @@
     "ownersBody": "Toimimme yhteistyössä kiinteistönomistajien kanssa, jotka jakavat vieraanvaraisuusnäkemyksemme. Hallinnointimallimme tuottaa poikkeuksellista tuottoa ilman operatiivista osallistumistasi. Omat tiimit, hotellitasoiset standardit ja brändi, joka houkuttelee premium-vieraita ympäri vuoden.",
     "ownersCta": "TUTUSTU MALLIIMME",
     "ownersNote": "Luottamuksellinen arvio. Vastaus 2 tunnin kuluessa.",
-    "newsletterOverline": "PYSY INSPIROITUNEENA",
-    "newsletterTitle": "Koteja, tarinoita ja kausitarjouksia.",
-    "newsletterSuccess": "Tervetuloa perheeseen. Tarkista postilaatikkosi vahvistusta varten.",
-    "newsletterPlaceholder": "Sähköpostiosoitteesi",
-    "newsletterCta": "TILAA",
     "searchCheckin": "Saapuminen",
     "searchCheckout": "Lähtö",
     "decreaseGuests": "Vähemmän vieraita",
@@ -2161,5 +2149,52 @@
     "faq1A": "Vaatimukset vaihtelevat aktiviteetin mukaan. Katso elämyksen sivulta vaikeustaso, ikärajat ja tarvittavat varusteet. Tiimimme auttaa valinnassa.",
     "faq2Q": "Voinko yhdistää aktiviteetteja majoitukseen?",
     "faq2A": "Kyllä. Valitse kotisi ja tutustu saman alueen aktiviteetteihin. Concierge voi auttaa ohjelman suunnittelussa. Aktiviteetit ja mahdolliset kuljetukset laskutetaan erikseen."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Uutiset ja tarjoukset",
+      "title": "Talojemme uutiset ja tarjoukset suoraan sähköpostiisi.",
+      "body": "Vapautuvia päiviä, uusia taloja ja tarjouksia. Vähän viestejä, vain kun on jotain kerrottavaa.",
+      "notNow": "Ei nyt",
+      "close": "Sulje"
+    },
+    "house": {
+      "overline": "Ilmoitukset tästä talosta",
+      "title": "Haluatko tietää, kun tässä talossa on vapaita päiviä tai matalan sesongin hinta?",
+      "body": "Jätä sähköpostiosoitteesi, niin kerromme. Saat myös talojemme uutiset ja tarjoukset. Vähän viestejä."
+    },
+    "houseInterest": {
+      "overline": "Uutiset ja tarjoukset",
+      "title": "Pidätkö tästä talosta? Tilaa talojemme uutiset ja tarjoukset.",
+      "body": "Jätä sähköpostiosoitteesi, niin kirjaamme kiinnostuksesi tähän taloon. Vapautuvia päiviä, uusia taloja ja tarjouksia. Vähän viestejä."
+    },
+    "generic": {
+      "overline": "Uutiset ja tarjoukset",
+      "title": "Talojemme uutiset ja tarjoukset suoraan sähköpostiisi.",
+      "body": "Vapautuvia päiviä, uusia taloja ja tarjouksia. Vähän viestejä, vain kun on jotain kerrottavaa."
+    },
+    "footer": {
+      "title": "Talojemme uutiset ja tarjoukset",
+      "body": "Vapautuvia päiviä, uusia taloja ja tarjouksia. Vähän viestejä."
+    },
+    "form": {
+      "email": "Sähköpostiosoitteesi",
+      "cta": "Tilaa",
+      "sending": "Lähetetään…",
+      "success": "Vielä yksi vaihe: lähetimme sinulle sähköpostin tilauksen vahvistamiseksi. Avaa viesti ja paina painiketta.",
+      "errorInvalid": "Sähköpostiosoite ei kelpaa.",
+      "errorProxy": "Käytä omaa sähköpostiosoitettasi.",
+      "errorGeneric": "Jokin meni vikaan. Yritä hetken kuluttua uudelleen."
+    },
+    "interest": {
+      "title": "Jotta voimme lähettää sinulle sitä, mikä kiinnostaa: millaista majoitusta etsit? Vapaaehtoinen.",
+      "family": "Perhelomat",
+      "couple": "Kahdenkeskinen loma",
+      "friends": "Ystäväporukka",
+      "celebration": "Erityinen tilaisuus",
+      "work": "Yritys tai retriitti",
+      "longStay": "Kuukausi tai pidempään",
+      "thanks": "Kiitos, kirjattu."
+    }
   }
 }

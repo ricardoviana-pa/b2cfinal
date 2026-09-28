@@ -441,10 +441,6 @@
   "footer": {
     "allRightsReserved": "Tutti i diritti riservati",
     "tagline": "Hotel privati in Portogallo.",
-    "newsletterHint": "Ispirazione, nuove case e offerte esclusive.",
-    "emailPlaceholder": "La sua e-mail",
-    "subscribe": "ISCRIVITI",
-    "welcomeInbox": "Benvenuto. Controlli la posta in arrivo.",
     "destinationsTitle": "DESTINAZIONI",
     "servicesTitle": "SERVIZI",
     "companyTitle": "AZIENDA",
@@ -480,9 +476,6 @@
     "admin": "Admin",
     "paymentBankTransfer": "Bonifico bancario",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
-    "nlHeadline": "Lasciati ispirare.",
-    "nlSub": "Soggiorni selezionati, offerte stagionali e storie di viaggio dal Portogallo — consegnati mensilmente.",
-    "nlError": "Qualcosa è andato storto. Per favore riprova.",
     "conciergeServices": "Servizi di concierge",
     "realEstate": "Comprare o vendere casa",
     "offices": "Uffici"
@@ -674,11 +667,6 @@
     "ownersBody": "Collaboriamo con proprietari che condividono la nostra visione dell'ospitalità. Il nostro modello di gestione offre rendimenti eccezionali senza alcun impegno operativo da parte vostra. Team interni, standard alberghieri e un marchio che attira ospiti premium tutto l'anno.",
     "ownersCta": "SCOPRI IL NOSTRO MODELLO",
     "ownersNote": "Valutazione riservata. Risposta entro 2 ore.",
-    "newsletterOverline": "RESTA ISPIRATO",
-    "newsletterTitle": "Case, storie e offerte stagionali.",
-    "newsletterSuccess": "Benvenuto nella famiglia. Controlla la posta in arrivo per la conferma.",
-    "newsletterPlaceholder": "Il tuo indirizzo e-mail",
-    "newsletterCta": "ISCRIVITI",
     "searchCheckin": "Arrivo",
     "searchCheckout": "Partenza",
     "decreaseGuests": "Meno ospiti",
@@ -2161,5 +2149,52 @@
     "faq1A": "I requisiti variano in base all’attività. Consulta la pagina dell’esperienza per difficoltà, limiti di età e cosa portare. Il nostro team può aiutarti a scegliere.",
     "faq2Q": "Posso abbinare attività e soggiorno?",
     "faq2A": "Sì. Scegli la casa ed esplora le attività nella stessa regione. Il concierge può aiutarti a coordinare il programma. Attività ed eventuali transfer si pagano separatamente."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Novità e offerte",
+      "title": "Le novità e le offerte delle nostre case, nella sua casella di posta.",
+      "body": "Date che si liberano, case nuove e offerte. Poche email, solo quando ne vale la pena.",
+      "notNow": "Non ora",
+      "close": "Chiudi"
+    },
+    "house": {
+      "overline": "Avvisi per questa casa",
+      "title": "Vuole sapere quando questa casa avrà date libere o un prezzo di bassa stagione?",
+      "body": "Lasci la sua email e la avvisiamo. Riceverà anche le novità e le offerte delle nostre case. Poche email."
+    },
+    "houseInterest": {
+      "overline": "Novità e offerte",
+      "title": "Le piace questa casa? Riceva le novità e le offerte delle nostre case.",
+      "body": "Lasci la sua email: registriamo il suo interesse per questa casa. Date che si liberano, case nuove e offerte. Poche email."
+    },
+    "generic": {
+      "overline": "Novità e offerte",
+      "title": "Le novità e le offerte delle nostre case, nella sua casella di posta.",
+      "body": "Date che si liberano, case nuove e offerte. Poche email, solo quando ne vale la pena."
+    },
+    "footer": {
+      "title": "Novità e offerte delle nostre case",
+      "body": "Date che si liberano, case nuove e offerte. Poche email."
+    },
+    "form": {
+      "email": "La sua email",
+      "cta": "Iscriviti",
+      "sending": "Invio in corso…",
+      "success": "Manca un passo: le abbiamo inviato un'email per confermare l'iscrizione. La apra e clicchi sul pulsante.",
+      "errorInvalid": "Questo indirizzo email non è valido.",
+      "errorProxy": "Usi la sua email personale.",
+      "errorGeneric": "Qualcosa non ha funzionato. Riprovi tra qualche istante."
+    },
+    "interest": {
+      "title": "Per inviarle ciò che le interessa: che soggiorno cerca? Facoltativo.",
+      "family": "Vacanze in famiglia",
+      "couple": "Una fuga in due",
+      "friends": "Gruppo di amici",
+      "celebration": "Un'occasione speciale",
+      "work": "Azienda o ritiro",
+      "longStay": "Un mese o più",
+      "thanks": "Grazie, ne abbiamo preso nota."
+    }
   }
 }

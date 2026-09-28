@@ -17,6 +17,8 @@ import { registerGoogleAuthRoutes } from "./googleAuth";
 import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/booking";
 import { redirectLegacyRecoveryEmail } from "../routes/checkout-recovery-redirect";
 import { registerRecoveryOptoutRoute } from "../routes/checkout-recovery-optout";
+import { registerNewsletterRoutes } from "../routes/newsletter";
+import { newsletterRateGuard } from "../lib/newsletter-rate-limit";
 import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhook";
 import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
 import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
@@ -114,6 +116,10 @@ async function startServer() {
   app.use("/api/auth/dev-login", authLimiter);
   app.use("/api/reservations", apiLimiter);
   app.use("/api/trpc/leads.create", leadLimiter);
+  // Newsletter (pop-up, blocos, rodapé): o limite vale também dentro de um lote
+  // tRPC, e um lote com a mesma mutation duas vezes é recusado.
+  app.use("/api/trpc", newsletterRateGuard(leadLimiter));
+  app.use("/api/newsletter", apiLimiter);
   app.use("/api/trpc/booking", apiLimiter);
   app.use("/api/trpc/checkout", apiLimiter); // checkout_v2 intents + lead capture
 
@@ -135,6 +141,8 @@ async function startServer() {
   registerBookingRoutes(app);
   // Bloco 2: opt-out dos lembretes de recuperação (link no rodapé dos emails)
   registerRecoveryOptoutRoute(app);
+  // Newsletter: clique de dupla confirmação e saída (links dos emails)
+  registerNewsletterRoutes(app);
   registerVitalsRoute(app);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
