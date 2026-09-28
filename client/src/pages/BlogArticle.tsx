@@ -208,7 +208,7 @@ export default function BlogArticle() {
             className="w-full aspect-[16/9] object-cover"
             width={1200} height={675} fetchPriority="high"
           />
-          {article.imageCaption && <p className="text-xs text-pa-stone-aa mt-3">{article.imageCaption}</p>}
+          {article.imageCaption && <p className="text-xs text-pa-earth mt-3">{article.imageCaption}</p>}
         </div>
       </section>
 
