@@ -2154,28 +2154,28 @@
     "popup": {
       "overline": "Novedades y promociones",
       "title": "Las novedades y las promociones de nuestras casas, en su correo.",
-      "body": "Fechas que se liberan, casas nuevas y promociones. Pocos correos, solo cuando hay algo que merezca la pena.",
+      "body": "Fechas que se liberan, casas nuevas y promociones.",
       "notNow": "Ahora no",
       "close": "Cerrar"
     },
     "house": {
       "overline": "Avisos de esta casa",
       "title": "¿Quiere saber cuándo tendrá esta casa fechas libres o precio de temporada baja?",
-      "body": "Déjenos su correo y le avisamos. También recibirá las novedades y las promociones de nuestras casas. Pocos correos."
+      "body": "Déjenos su correo y le avisamos. También recibirá las novedades y las promociones de nuestras casas."
     },
     "houseInterest": {
       "overline": "Novedades y promociones",
       "title": "¿Le ha gustado esta casa? Reciba las novedades y las promociones de nuestras casas.",
-      "body": "Déjenos su correo: queda registrado su interés en esta casa. Fechas que se liberan, casas nuevas y promociones. Pocos correos."
+      "body": "Déjenos su correo: queda registrado su interés en esta casa."
     },
     "generic": {
       "overline": "Novedades y promociones",
       "title": "Las novedades y las promociones de nuestras casas, en su correo.",
-      "body": "Fechas que se liberan, casas nuevas y promociones. Pocos correos, solo cuando hay algo que merezca la pena."
+      "body": "Fechas que se liberan, casas nuevas y promociones."
     },
     "footer": {
       "title": "Novedades y promociones de nuestras casas",
-      "body": "Fechas que se liberan, casas nuevas y promociones. Pocos correos."
+      "body": "Fechas que se liberan, casas nuevas y promociones."
     },
     "form": {
       "email": "Su correo",

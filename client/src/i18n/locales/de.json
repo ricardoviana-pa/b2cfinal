@@ -2154,28 +2154,28 @@
     "popup": {
       "overline": "Neuigkeiten und Angebote",
       "title": "Neuigkeiten und Angebote unserer Häuser, direkt in Ihr Postfach.",
-      "body": "Frei werdende Termine, neue Häuser und Angebote. Wenige E-Mails, nur wenn es sich lohnt.",
+      "body": "Frei werdende Termine, neue Häuser und Angebote.",
       "notNow": "Jetzt nicht",
       "close": "Schließen"
     },
     "house": {
       "overline": "Hinweise zu diesem Haus",
       "title": "Möchten Sie wissen, wann dieses Haus freie Termine oder einen Nebensaisonpreis hat?",
-      "body": "Hinterlassen Sie Ihre E-Mail, und wir sagen Ihnen Bescheid. Außerdem erhalten Sie Neuigkeiten und Angebote unserer Häuser. Nur wenige E-Mails."
+      "body": "Hinterlassen Sie Ihre E-Mail, und wir sagen Ihnen Bescheid. Außerdem erhalten Sie Neuigkeiten und Angebote unserer Häuser."
     },
     "houseInterest": {
       "overline": "Neuigkeiten und Angebote",
       "title": "Gefällt Ihnen dieses Haus? Erhalten Sie Neuigkeiten und Angebote unserer Häuser.",
-      "body": "Hinterlassen Sie Ihre E-Mail, und wir vermerken Ihr Interesse an diesem Haus. Frei werdende Termine, neue Häuser und Angebote. Nur wenige E-Mails."
+      "body": "Hinterlassen Sie Ihre E-Mail, und wir vermerken Ihr Interesse an diesem Haus."
     },
     "generic": {
       "overline": "Neuigkeiten und Angebote",
       "title": "Neuigkeiten und Angebote unserer Häuser, direkt in Ihr Postfach.",
-      "body": "Frei werdende Termine, neue Häuser und Angebote. Wenige E-Mails, nur wenn es sich lohnt."
+      "body": "Frei werdende Termine, neue Häuser und Angebote."
     },
     "footer": {
       "title": "Neuigkeiten und Angebote unserer Häuser",
-      "body": "Frei werdende Termine, neue Häuser und Angebote. Wenige E-Mails."
+      "body": "Frei werdende Termine, neue Häuser und Angebote."
     },
     "form": {
       "email": "Ihre E-Mail",

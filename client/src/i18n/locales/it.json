@@ -2154,28 +2154,28 @@
     "popup": {
       "overline": "Novità e offerte",
       "title": "Le novità e le offerte delle nostre case, nella sua casella di posta.",
-      "body": "Date che si liberano, case nuove e offerte. Poche email, solo quando ne vale la pena.",
+      "body": "Date che si liberano, case nuove e offerte.",
       "notNow": "Non ora",
       "close": "Chiudi"
     },
     "house": {
       "overline": "Avvisi per questa casa",
       "title": "Vuole sapere quando questa casa avrà date libere o un prezzo di bassa stagione?",
-      "body": "Lasci la sua email e la avvisiamo. Riceverà anche le novità e le offerte delle nostre case. Poche email."
+      "body": "Lasci la sua email e la avvisiamo. Riceverà anche le novità e le offerte delle nostre case."
     },
     "houseInterest": {
       "overline": "Novità e offerte",
       "title": "Le piace questa casa? Riceva le novità e le offerte delle nostre case.",
-      "body": "Lasci la sua email: registriamo il suo interesse per questa casa. Date che si liberano, case nuove e offerte. Poche email."
+      "body": "Lasci la sua email: registriamo il suo interesse per questa casa."
     },
     "generic": {
       "overline": "Novità e offerte",
       "title": "Le novità e le offerte delle nostre case, nella sua casella di posta.",
-      "body": "Date che si liberano, case nuove e offerte. Poche email, solo quando ne vale la pena."
+      "body": "Date che si liberano, case nuove e offerte."
     },
     "footer": {
       "title": "Novità e offerte delle nostre case",
-      "body": "Date che si liberano, case nuove e offerte. Poche email."
+      "body": "Date che si liberano, case nuove e offerte."
     },
     "form": {
       "email": "La sua email",

@@ -9,23 +9,29 @@
  *      double opt-in email with the transactional email the site already uses
  *      (Resend, the same sender as the booking emails).
  *   2. The click (link to GET /api/newsletter/confirm, HMAC token that
- *      expires after 7 days; the page posts the confirmation at once, so a
- *      mail scanner that only fetches the link confirms nothing) promotes the
- *      lead to "newsletter-<origin>" with confirmedAt. The POST also keeps the
- *      signals of who confirmed (seconds since the form, user agent, whether
- *      the page posted by itself): a confirmation that looks automated (a
- *      sandbox that runs the page) gets confirmSuspect "1" and counts only as
- *      a single opt-in until the person clicks again (confirmationSignals).
+ *      expires after 7 days) opens a page with one button; only the POST of
+ *      that button promotes the lead to "newsletter-<origin>" with
+ *      confirmedAt. The page never posts by itself: a mail scanner that
+ *      fetches the link, or runs its JavaScript in a sandbox, confirms
+ *      nothing. The POST also keeps the signals of who confirmed (seconds
+ *      since the form, user agent, whether it came from the button): a
+ *      confirmation that looks automated gets confirmSuspect "1", never goes
+ *      to Brevo and counts only as a single opt-in until the person clicks
+ *      again (confirmationSignals).
  *      A pending lead nobody confirms is anonymised after 8 days
  *      ("nl-expired-<origin>", no address; expireNewsletterPending).
  *   3. Exit, always: the unsubscribe link (no expiry) turns every consent
  *      lead of the address into "nl-unsubscribed-<origin>" (and a checkout
  *      consent back into "checkout"). The collector reads it as an
  *      "unsubscribed" preference and drops the address from the marketing
- *      audience (pa-mailing-list PR #5, which must go live with this one).
- *      Brevo is optional: when BREVO_API_KEY
- *      and BREVO_NEWSLETTER_LIST_ID exist, confirmed contacts are added to
- *      the list and removed on exit; without them nothing is called.
+ *      audience (pa-mailing-list PR #5, which must be live BEFORE this one:
+ *      the collector of today knows neither "nl-unsubscribed-*" nor
+ *      "nl-pending-*"; PR #5 reads the sources of today as before).
+ *      Brevo is optional: when BREVO_API_KEY and BREVO_NEWSLETTER_LIST_ID
+ *      exist, contacts confirmed by a click that looks human are added to the
+ *      site's own Brevo list ("Newsletter do site", never the "Newsletter"
+ *      nor the "Base de hóspedes" lists) and removed on exit; without them
+ *      nothing is called.
  *
  * What counts as consent, and at which level. The PA Mailing List collector
  * reads the leads table every 6 hours. Only a lead of this flow confirmed by
@@ -115,8 +121,11 @@ export function isProxyEmail(email: string): boolean {
 /**
  * Languages where the pop-up and the inline blocks show. Portuguese until the
  * other languages have native review (regra do pa-marketing: revisão nativa
- * nas duas primeiras peças de cada tipo). The footer form shows in every
- * language, as it did before this change.
+ * nas duas primeiras peças de cada tipo). The footer form follows the same
+ * languages (newsletterFooterLocales): with the defaults, the other eight
+ * languages have no sign-up at all, where the old single opt-in footer form
+ * showed in all nine. For ES and EN that is a regression recorded in
+ * docs/newsletter.md ("Decisões em aberto"), with an owner and a date.
  * TODO(humano): NEWSLETTER_LOCALES=pt,es,en in Render after the native review of ES and EN.
  */
 export function newsletterLocales(env: NodeJS.ProcessEnv = process.env): string[] {
@@ -130,12 +139,13 @@ export function newsletterLocales(env: NodeJS.ProcessEnv = process.env): string[
 /**
  * Languages where the footer form shows. The same as the pop-up and the
  * blocks (NEWSLETTER_LOCALES, PT by default) until the texts of each language
- * have native review: the consent sentence, the confirmation email and the
- * pages of its links are new in every language (regra do pa-marketing).
- * NEWSLETTER_FOOTER_LOCALES=pt,es,en,... in Render opens the footer in more
- * languages before that review: Ricardo's explicit decision, and each
- * language needs the visit-origin line in its privacy policy first
- * (privacy.s2OriginBody, PT only today).
+ * have native review: the form texts, the consent sentence, the confirmation
+ * email and the pages of its links are new in every language (regra do
+ * pa-marketing). NEWSLETTER_FOOTER_LOCALES=pt,es,en,... in Render opens the
+ * footer in more languages before that review: Ricardo's explicit decision.
+ * A language without the visit-origin line in its privacy policy
+ * (privacy.s2OriginBody, PT only today) keeps no visit origin with the
+ * sign-up (keepsVisitOrigin in shared/newsletter.ts).
  */
 export function newsletterFooterLocales(env: NodeJS.ProcessEnv = process.env): string[] {
   const raw = env.NEWSLETTER_FOOTER_LOCALES;
@@ -261,7 +271,7 @@ export function doiAllowed(times: number[], now: number = Date.now()): boolean {
 /**
  * A confirmation this soon after the form is almost always a mail security
  * scanner opening the link at delivery (Defender Safe Links detonation,
- * Mimecast, Proofpoint run the page in a sandbox and the page posts itself).
+ * Mimecast, Proofpoint open the link in a sandbox).
  */
 export const CONFIRM_MIN_HUMAN_SECONDS = 10;
 const AUTOMATED_AGENT =
@@ -270,12 +280,17 @@ const AUTOMATED_AGENT =
 /**
  * What the confirmation POST keeps about who confirmed: seconds since the
  * form (consentAt), the user agent (cut to 160 characters, never logged) and
- * whether the page posted by itself ("auto") or by the button ("click").
- * confirmSuspect "1" when the agent looks automated or empty, or the click
- * came under CONFIRM_MIN_HUMAN_SECONDS after the form: the lead is still
- * confirmed (the person did fill the form), but the collector counts it as a
- * single opt-in, never as a double one, until a later click that looks human
- * clears the mark (db.confirmNewsletterLead).
+ * how the POST came: "click" is the button of the page behind the email link
+ * (the page never posts by itself: a person has to press it), "auto" an old
+ * cached copy of that page that still posted by itself, "missing" a POST
+ * without the field (not the page at all).
+ *
+ * confirmSuspect "1" when the POST did not come from the button, the agent
+ * looks automated or empty, or the click came under CONFIRM_MIN_HUMAN_SECONDS
+ * after the form: the lead is still confirmed (the person did fill the form),
+ * but it never goes to Brevo and the collector counts it as a single opt-in,
+ * never as a double one, until a later click that looks human clears the
+ * mark (db.confirmNewsletterLead).
  */
 export function confirmationSignals(input: {
   consentAt?: string;
@@ -286,9 +301,10 @@ export function confirmationSignals(input: {
   const agent = String(input.userAgent ?? "").replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, 160);
   const started = Date.parse(String(input.consentAt ?? ""));
   const delay = Number.isFinite(started) ? Math.max(0, Math.round((input.confirmedAt.getTime() - started) / 1000)) : null;
-  const suspect = !agent || AUTOMATED_AGENT.test(agent) || (delay !== null && delay < CONFIRM_MIN_HUMAN_SECONDS);
+  const via = input.via === "click" ? "click" : input.via === "auto" ? "auto" : "missing";
+  const suspect = via !== "click" || !agent || AUTOMATED_AGENT.test(agent) || (delay !== null && delay < CONFIRM_MIN_HUMAN_SECONDS);
   return {
-    confirmVia: input.via === "auto" ? "auto" : "click",
+    confirmVia: via,
     ...(delay !== null ? { confirmDelaySec: String(delay) } : {}),
     ...(agent ? { confirmUa: agent } : {}),
     ...(suspect ? { confirmSuspect: "1" } : {}),
@@ -459,12 +475,23 @@ export const BREVO_TIMEOUT_MS = 10_000;
 
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
+/**
+ * Id of the site's OWN Brevo list, "Newsletter do site" (folder PA Marketing):
+ * the same number the CRM session puts in growth.settings.site_newsletter_list_id,
+ * which the welcome robot of pa-marketing reads. Never the id of the
+ * "Newsletter" or the "Base de hóspedes" lists: the Base robot removes from
+ * those whoever is not yet in the Mailing List catalogue (every subscriber
+ * who just arrived), and the welcome robot refuses them.
+ */
 export function brevoListId(env: NodeJS.ProcessEnv = process.env): number | null {
   const n = Number(env.BREVO_NEWSLETTER_LIST_ID);
   return Number.isInteger(n) && n > 0 ? n : null;
 }
 
-/** TODO(humano): BREVO_API_KEY and BREVO_NEWSLETTER_LIST_ID in Render Production, when the site gets its own Brevo key. */
+/**
+ * TODO(humano): BREVO_API_KEY (the site's own key) and BREVO_NEWSLETTER_LIST_ID
+ * (the id of the "Newsletter do site" list) in Render Production.
+ */
 export function isBrevoSyncEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   if (isPreviewDeployment(env)) return false;
   return !!env.BREVO_API_KEY && brevoListId(env) !== null;
@@ -523,8 +550,15 @@ async function brevoCall(method: "POST" | "PUT", path: string, body: unknown, en
 }
 
 /**
- * Confirmed subscriber → Brevo list (upsert, no second opt-in: the site
- * already did the double opt-in). Never called without the key and the list.
+ * Confirmed subscriber → the site's own Brevo list (upsert, no second
+ * opt-in: the site already did the double opt-in). Never called without the
+ * key and the list.
+ *
+ * Never for a confirmation marked as automated (confirmSuspect "1"), whoever
+ * calls: the confirmation page and the interest answer both go through here,
+ * and the welcome robot of pa-marketing reads that list as double opt-ins. A
+ * lead that a scanner confirmed enters Brevo only after a click that looks
+ * human clears the mark (db.confirmNewsletterLead, "upgraded").
  */
 export async function brevoAddConfirmed(
   email: string,
@@ -532,6 +566,7 @@ export async function brevoAddConfirmed(
   env: NodeJS.ProcessEnv = process.env,
   fetchImpl: FetchLike = globalThis.fetch,
 ): Promise<BrevoResult | null> {
+  if (meta?.confirmSuspect === "1") return null;
   const listId = brevoListId(env);
   if (!isBrevoSyncEnabled(env) || listId === null) return null;
   return brevoCall("POST", "/contacts", { email, listIds: [listId], updateEnabled: true, attributes: brevoAttributes(meta) }, env, fetchImpl);

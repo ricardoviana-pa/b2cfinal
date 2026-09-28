@@ -2154,28 +2154,28 @@
     "popup": {
       "overline": "News and offers",
       "title": "News and offers from our homes, in your inbox.",
-      "body": "Dates that open up, new homes and offers. Only a few emails, and only when there is something worth sharing.",
+      "body": "Dates that open up, new homes and offers.",
       "notNow": "Not now",
       "close": "Close"
     },
     "house": {
       "overline": "Alerts for this home",
       "title": "Want to know when this home has free dates or a low-season price?",
-      "body": "Leave your email and we will let you know. You will also get news and offers from our homes. Only a few emails."
+      "body": "Leave your email and we will let you know. You will also get news and offers from our homes."
     },
     "houseInterest": {
       "overline": "News and offers",
       "title": "Like this home? Get news and offers from our homes.",
-      "body": "Leave your email and we will note your interest in this home. Dates that open up, new homes and offers. Only a few emails."
+      "body": "Leave your email and we will note your interest in this home."
     },
     "generic": {
       "overline": "News and offers",
       "title": "News and offers from our homes, in your inbox.",
-      "body": "Dates that open up, new homes and offers. Only a few emails, and only when there is something worth sharing."
+      "body": "Dates that open up, new homes and offers."
     },
     "footer": {
       "title": "News and offers from our homes",
-      "body": "Dates that open up, new homes and offers. Only a few emails."
+      "body": "Dates that open up, new homes and offers."
     },
     "form": {
       "email": "Your email",

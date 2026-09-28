@@ -2156,28 +2156,28 @@
     "popup": {
       "overline": "Novidades e promoções",
       "title": "As novidades e as promoções das nossas casas, no seu email.",
-      "body": "Datas que abrem, casas novas e promoções. Poucos emails, só quando há algo que valha a pena.",
+      "body": "Datas que abrem, casas novas e promoções.",
       "notNow": "Agora não",
       "close": "Fechar"
     },
     "house": {
       "overline": "Avisos desta casa",
       "title": "Quer saber quando esta casa tiver datas livres ou preço de época baixa?",
-      "body": "Deixe o seu email e avisamos. Recebe também as novidades e as promoções das nossas casas. Poucos emails."
+      "body": "Deixe o seu email e avisamos. Recebe também as novidades e as promoções das nossas casas."
     },
     "houseInterest": {
       "overline": "Novidades e promoções",
       "title": "Gostou desta casa? Receba as novidades e as promoções das nossas casas.",
-      "body": "Deixe o seu email: fica registado o seu interesse nesta casa. Datas que abrem, casas novas e promoções. Poucos emails."
+      "body": "Deixe o seu email: fica registado o seu interesse nesta casa."
     },
     "generic": {
       "overline": "Novidades e promoções",
       "title": "As novidades e as promoções das nossas casas, no seu email.",
-      "body": "Datas que abrem, casas novas e promoções. Poucos emails, só quando há algo que valha a pena."
+      "body": "Datas que abrem, casas novas e promoções."
     },
     "footer": {
       "title": "Novidades e promoções das nossas casas",
-      "body": "Datas que abrem, casas novas e promoções. Poucos emails."
+      "body": "Datas que abrem, casas novas e promoções."
     },
     "form": {
       "email": "O seu email",

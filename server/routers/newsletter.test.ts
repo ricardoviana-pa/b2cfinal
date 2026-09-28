@@ -158,6 +158,18 @@ describe("newsletter.subscribe", () => {
     expect(meta.propertySlug).toBeUndefined();
   });
 
+  it("no campaign kept in a language whose privacy policy does not announce it yet (only PT has the line)", async () => {
+    await newsletterRouter.createCaller(ctx()).subscribe(input({
+      locale: "es",
+      visitOrigin: { v: 1, consent: true, stored: true, first: null, last: { ageSec: 60, utm_source: "google", utm_medium: "cpc", utm_campaign: "2026-10_o1_es_pilar", clickId: "gclid" } },
+    }));
+    const meta = mock.createLead.mock.calls[0][0].metadata;
+    expect(meta.locale).toBe("es");
+    expect(meta.utmSource).toBeUndefined();
+    expect(meta.clickId).toBeUndefined();
+    expect(meta.visitConsent).toBeUndefined();
+  });
+
   it("without measurement consent, no campaign is kept", async () => {
     await newsletterRouter.createCaller(ctx()).subscribe(input({ visitOrigin: { v: 1, consent: false } }));
     const meta = mock.createLead.mock.calls[0][0].metadata;
@@ -265,6 +277,45 @@ describe("newsletter.interest", () => {
     const ref = interestRef(91).replace(/^91\./, "92.");
     expect(await newsletterRouter.createCaller(ctx()).interest({ ref, interest: "work" })).toEqual({ ok: true });
     expect(mock.setInterest).not.toHaveBeenCalled();
+  });
+
+  it("interest on a lead marked as confirmed by a scanner never calls Brevo", async () => {
+    vi.stubEnv("BREVO_API_KEY", "xkeysib-synthetic-not-real");
+    vi.stubEnv("BREVO_NEWSLETTER_LIST_ID", "77");
+    mock.setInterest.mockResolvedValue({
+      id: 91,
+      email: EMAIL,
+      source: "newsletter-popup",
+      metadata: { flow: "site-doi-v1", origin: "popup", confirmedAt: "2026-09-28T10:00:05.000Z", confirmVia: "click", confirmSuspect: "1", interest: "family" },
+    });
+    expect(await newsletterRouter.createCaller(ctx()).interest({ ref: interestRef(91), interest: "family" })).toEqual({ ok: true });
+    expect(mock.setInterest).toHaveBeenCalledTimes(1);
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+
+  it("interest on a lead confirmed by a person updates the site's Brevo list", async () => {
+    vi.stubEnv("BREVO_API_KEY", "xkeysib-synthetic-not-real");
+    vi.stubEnv("BREVO_NEWSLETTER_LIST_ID", "77");
+    mock.setInterest.mockResolvedValue({
+      id: 91,
+      email: EMAIL,
+      source: "newsletter-popup",
+      metadata: { flow: "site-doi-v1", origin: "popup", confirmedAt: "2026-09-28T10:03:00.000Z", confirmVia: "click", interest: "couple" },
+    });
+    await newsletterRouter.createCaller(ctx()).interest({ ref: interestRef(91), interest: "couple" });
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    const [url, init] = (globalThis.fetch as any).mock.calls[0];
+    expect(url).toBe("https://api.brevo.com/v3/contacts");
+    const body = JSON.parse(init.body);
+    expect(body).toMatchObject({ email: EMAIL, listIds: [77], attributes: { INTERESSE: "couple", CONFIRMADO_EM: "2026-09-28T10:03:00.000Z" } });
+  });
+
+  it("interest on a pending lead never calls Brevo (no confirmation yet)", async () => {
+    vi.stubEnv("BREVO_API_KEY", "xkeysib-synthetic-not-real");
+    vi.stubEnv("BREVO_NEWSLETTER_LIST_ID", "77");
+    mock.setInterest.mockResolvedValue({ id: 91, email: EMAIL, source: "nl-pending-popup", metadata: { flow: "site-doi-v1", interest: "work" } });
+    await newsletterRouter.createCaller(ctx()).interest({ ref: interestRef(91), interest: "work" });
+    expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 
   it("only the listed answers are accepted (no free text)", async () => {

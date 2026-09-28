@@ -2154,28 +2154,28 @@
     "popup": {
       "overline": "Nyheter och erbjudanden",
       "title": "Nyheter och erbjudanden från våra hus, direkt i din inkorg.",
-      "body": "Datum som blir lediga, nya hus och erbjudanden. Få mejl, bara när det finns något värt att berätta.",
+      "body": "Datum som blir lediga, nya hus och erbjudanden.",
       "notNow": "Inte nu",
       "close": "Stäng"
     },
     "house": {
       "overline": "Aviseringar för det här huset",
       "title": "Vill du veta när det här huset har lediga datum eller lågsäsongspris?",
-      "body": "Lämna din e-postadress så hör vi av oss. Du får också nyheter och erbjudanden från våra hus. Få mejl."
+      "body": "Lämna din e-postadress så hör vi av oss. Du får också nyheter och erbjudanden från våra hus."
     },
     "houseInterest": {
       "overline": "Nyheter och erbjudanden",
       "title": "Gillar du det här huset? Få nyheter och erbjudanden från våra hus.",
-      "body": "Lämna din e-postadress så noterar vi ditt intresse för det här huset. Datum som blir lediga, nya hus och erbjudanden. Få mejl."
+      "body": "Lämna din e-postadress så noterar vi ditt intresse för det här huset."
     },
     "generic": {
       "overline": "Nyheter och erbjudanden",
       "title": "Nyheter och erbjudanden från våra hus, direkt i din inkorg.",
-      "body": "Datum som blir lediga, nya hus och erbjudanden. Få mejl, bara när det finns något värt att berätta."
+      "body": "Datum som blir lediga, nya hus och erbjudanden."
     },
     "footer": {
       "title": "Nyheter och erbjudanden från våra hus",
-      "body": "Datum som blir lediga, nya hus och erbjudanden. Få mejl."
+      "body": "Datum som blir lediga, nya hus och erbjudanden."
     },
     "form": {
       "email": "Din e-postadress",

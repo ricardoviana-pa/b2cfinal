@@ -118,13 +118,51 @@ describe("newsletter texts in the nine site languages", () => {
     expect(router).toContain("config: publicProcedure.query(() => newsletterConfigPayload())");
   });
 
-  it("phones and touch tablets get the small bottom sheet, never the centred dialog", () => {
+  it("phones and touch tablets get a strip that opens the form on a tap, never the centred dialog", () => {
     const gate = fs.readFileSync("client/src/components/marketing/NewsletterPopupGate.tsx", "utf8");
     expect(gate).toContain("const MOBILE_QUERY = '(max-width: 767px), (hover: none) and (pointer: coarse)';");
+    // The strip and the booking bar must fit in 30% of the visible height before it shows.
+    expect(gate).toContain("(mobile && !stripFits(window.innerHeight, bottomBarHeight()))");
     const popup = fs.readFileSync("client/src/components/marketing/NewsletterPopup.tsx", "utf8");
     expect(popup).toContain('aria-modal="false"');
-    expect(popup).toContain("maxHeight: '45vh'");
+    expect(popup).toContain("onClick={() => setExpanded(true)}");
+    expect(popup).toContain("h-[60px]");
+    expect(popup).not.toContain("45vh");
     expect(popup).toContain("focus({ preventScroll: true })");
+  });
+
+  it("the phone sheet sits under every overlay and closes when one opens or the booking bar is tapped", () => {
+    const popup = fs.readFileSync("client/src/components/marketing/NewsletterPopup.tsx", "utf8");
+    // Above the booking bar (z-40), under drawers, dialogs, menu and cookie banner (z-50 and up).
+    expect(popup).toContain("fixed inset-x-0 z-[45]");
+    expect(popup).not.toMatch(/z-\[9\d\][^"]*nl-sheet/);
+    expect(popup).toContain("useYieldToOverlays(sheetActive, yieldSheet)");
+    expect(popup).toContain("if (overlayOpen()) onYield();");
+    expect(popup).toContain("target?.closest?.('[data-nl-bottom-bar]')");
+    // The X stays outside the part that scrolls.
+    expect(popup).toMatch(/overflow-y-auto overscroll-contain[\s\S]*<\/div>\s*<CloseButton label=\{closeLabel\}/);
+    const banner = fs.readFileSync("client/src/components/layout/CookieBanner.tsx", "utf8");
+    expect(banner).toContain('data-nl-suppress="cookie-banner"');
+  });
+
+  it("the interest answer never goes to the dataLayer (only newsletter_signup)", () => {
+    const form = fs.readFileSync("client/src/components/marketing/NewsletterForm.tsx", "utf8");
+    expect(form).toContain("event: 'newsletter_signup'");
+    expect(form).not.toContain("newsletter_interest");
+  });
+
+  it("nothing is written in the browser before the cookie choice for a visit from our emails", () => {
+    const gate = fs.readFileSync("client/src/components/marketing/NewsletterPopupGate.tsx", "utf8");
+    expect(gate).not.toContain("sessionStorage");
+    const marks = fs.readFileSync("client/src/components/marketing/newsletterBrowser.ts", "utf8");
+    expect(marks).toContain("if (knownAt === null || !getCookieChoice()) return;");
+    expect(marks).toContain("window.addEventListener(COOKIE_CHOICE_EVENT, persist);");
+  });
+
+  it("the confirmation page has no script: only the button confirms", () => {
+    const brand = fs.readFileSync("server/lib/brand-page.ts", "utf8");
+    expect(brand).not.toContain("submit()");
+    expect(brand).not.toContain("autoSubmit");
   });
 });
 

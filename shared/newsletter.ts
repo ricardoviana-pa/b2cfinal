@@ -67,6 +67,20 @@ export const NEWSLETTER_PRIVACY_LABEL: Record<NewsletterLang, string> = {
   sv: "Integritetspolicy",
 };
 
+/**
+ * Languages whose privacy policy already says that the visit origin (UTM,
+ * click id type, referrer) is kept with the subscription (privacy.s2OriginBody
+ * in the i18n JSON; server/newsletter-rules.test.ts checks the two agree).
+ * In the other languages the sign-up keeps no visit origin, even with the
+ * "Aceitar tudo" choice, so opening a language (NEWSLETTER_LOCALES or
+ * NEWSLETTER_FOOTER_LOCALES) never stores what its policy does not announce.
+ */
+export const NEWSLETTER_VISIT_ORIGIN_LANGS: readonly NewsletterLang[] = ["pt"];
+
+export function keepsVisitOrigin(locale: string | null | undefined): boolean {
+  return NEWSLETTER_VISIT_ORIGIN_LANGS.includes(newsletterLang(locale));
+}
+
 /** The exact sentence the form shows, plus where the privacy policy link pointed. */
 export function consentRecord(locale: string | null | undefined): { lang: NewsletterLang; version: string; text: string } {
   const lang = newsletterLang(locale);
@@ -81,7 +95,14 @@ export function consentRecord(locale: string | null | undefined): { lang: Newsle
 
 export const NL_SUBSCRIBED_KEY = "pa_nl_subscribed";
 export const NL_POPUP_AT_KEY = "pa_nl_popup_at";
-export const NL_SKIP_SESSION_KEY = "pa_nl_skip";
+/**
+ * localStorage: Date.now() of the last sign we already have this person's
+ * email (a visit from one of our emails, a booking thank-you page, the
+ * newsletter box of the checkout). Written only after the cookie banner has
+ * an answer (client/src/components/marketing/newsletterBrowser.ts).
+ */
+export const NL_KNOWN_AT_KEY = "pa_nl_known_at";
+export const NL_KNOWN_DAYS = 180;
 
 export const NL_POPUP_COOLDOWN_DAYS = 30;
 /** Computer: 8 seconds on the site, or the pointer leaving through the top (exit intent). */
@@ -117,6 +138,7 @@ export type PopupIneligibleReason =
   | "locale"
   | "path"
   | "subscribed"
+  | "known"
   | "cooldown"
   | "utm"
   | "cookie_banner"
@@ -134,8 +156,10 @@ export interface PopupEligibilityInput {
   subscribed: string | null;
   /** localStorage[NL_POPUP_AT_KEY]: Date.now() of the last display (closing counts, it was seen). */
   lastShownAt: string | null;
-  /** sessionStorage[NL_SKIP_SESSION_KEY]: "1" when the visit came from one of our emails. */
+  /** "1" when this visit came from one of our emails (kept in memory: nothing is written before the cookie banner). */
   skipSession: string | null;
+  /** localStorage[NL_KNOWN_AT_KEY]: we already have this person's email (email visit, booking, checkout box). */
+  knownAt?: string | null;
   /** Cookie banner choice: null while the banner still waits for an answer. */
   cookieChoice: string | null;
   /** document.visibilityState === "visible" */
@@ -188,6 +212,7 @@ export function popupEligibility(input: PopupEligibilityInput): { eligible: bool
   if (!input.locales.includes(input.lang)) return { eligible: false, reason: "locale" };
   if (isExcludedPath(input.path)) return { eligible: false, reason: "path" };
   if (input.subscribed === "1") return { eligible: false, reason: "subscribed" };
+  if (!input.forced && isWithinCooldown(input.knownAt ?? null, input.now, NL_KNOWN_DAYS)) return { eligible: false, reason: "known" };
   if (!input.forced && isWithinCooldown(input.lastShownAt, input.now, input.cooldownDays)) return { eligible: false, reason: "cooldown" };
   if (!input.forced && input.skipSession === "1") return { eligible: false, reason: "utm" };
   if (!input.cookieChoice) return { eligible: false, reason: "cookie_banner" };
@@ -205,6 +230,69 @@ export function scrollProgressPct(scrollY: number, viewportHeight: number, docum
   const scrollable = documentHeight - viewportHeight;
   if (!(scrollable > 0) || !(scrollY > 0)) return 0;
   return Math.min(100, (scrollY / scrollable) * 100);
+}
+
+/* ── Phone sheet: how much of the screen it may take, and when it gives way ── */
+
+/**
+ * Phone: the pop-up first shows as a strip of NL_STRIP_PX (one short line,
+ * the "Subscrever" button and the X); the form with the consent sentence
+ * opens only when the person taps "Subscrever". Unrequested, the strip and a
+ * fixed bar at the bottom (the booking bar of a house page) together never
+ * take more than NL_STRIP_MAX_SHARE of the visible height (innerHeight, the
+ * dynamic viewport, never the large one of `vh`). Without a bar, up to 34 px
+ * of the iPhone's home indicator area count too.
+ */
+export const NL_STRIP_PX = 64;
+export const NL_STRIP_MAX_SHARE = 0.3;
+export const NL_SAFE_AREA_ALLOWANCE_PX = 34;
+
+export function stripFits(viewportHeight: number, bottomBarPx: number): boolean {
+  if (!(viewportHeight > 0)) return false;
+  const below = bottomBarPx > 0 ? bottomBarPx : NL_SAFE_AREA_ALLOWANCE_PX;
+  return NL_STRIP_PX + below <= NL_STRIP_MAX_SHARE * viewportHeight;
+}
+
+/**
+ * Overlays the phone sheet gives way to: dialogs and drawers (Radix and vaul
+ * mark them role="dialog"), the header menu (aria-modal), and anything that
+ * carries data-nl-suppress (the cookie banner, the "no availability" form).
+ */
+export const NL_OVERLAY_SELECTOR = '[role="dialog"], [role="alertdialog"], [aria-modal="true"], [data-nl-suppress]';
+
+/** The little of the DOM otherOverlayOpen needs (a real document in the browser, a stub in the tests). */
+export interface OverlayProbeElement {
+  closest(selector: string): unknown;
+  getBoundingClientRect(): { width: number; height: number };
+}
+export interface OverlayProbeDocument {
+  body: { style: { pointerEvents: string } } | null;
+  querySelectorAll(selector: string): ArrayLike<OverlayProbeElement>;
+}
+
+/**
+ * Another overlay is open on top of the page: the pop-up must not open, and
+ * the phone sheet (not modal) must close. A modal Radix layer (the booking
+ * drawer, the filters, the full-screen calendar) sets pointer-events:none on
+ * the body; the sheet would stay visible above it and stop answering taps.
+ * The sheet itself (data-nl-popup) and hidden or closed elements do not count.
+ */
+export function otherOverlayOpen(
+  doc: OverlayProbeDocument,
+  styleOf: (el: OverlayProbeElement) => { display: string; visibility: string },
+): boolean {
+  if (doc.body?.style.pointerEvents === "none") return true;
+  const nodes = doc.querySelectorAll(NL_OVERLAY_SELECTOR);
+  for (let i = 0; i < nodes.length; i++) {
+    const el = nodes[i];
+    if (el.closest("[data-nl-popup]") || el.closest("[inert]") || el.closest('[aria-hidden="true"]')) continue;
+    const rect = el.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) continue;
+    const style = styleOf(el);
+    if (style.display === "none" || style.visibility === "hidden") continue;
+    return true;
+  }
+  return false;
 }
 
 /** Exit intent: the pointer leaves the window through the top edge (towards the tabs or the address bar). */

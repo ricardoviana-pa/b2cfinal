@@ -2154,28 +2154,28 @@
     "popup": {
       "overline": "Nieuws en aanbiedingen",
       "title": "Het nieuws en de aanbiedingen van onze huizen, in uw inbox.",
-      "body": "Data die vrijkomen, nieuwe huizen en aanbiedingen. Weinig e-mails, alleen als het de moeite waard is.",
+      "body": "Data die vrijkomen, nieuwe huizen en aanbiedingen.",
       "notNow": "Niet nu",
       "close": "Sluiten"
     },
     "house": {
       "overline": "Meldingen voor dit huis",
       "title": "Wilt u weten wanneer dit huis vrije data of een laagseizoenprijs heeft?",
-      "body": "Laat uw e-mailadres achter en wij laten het u weten. U ontvangt ook het nieuws en de aanbiedingen van onze huizen. Weinig e-mails."
+      "body": "Laat uw e-mailadres achter en wij laten het u weten. U ontvangt ook het nieuws en de aanbiedingen van onze huizen."
     },
     "houseInterest": {
       "overline": "Nieuws en aanbiedingen",
       "title": "Bevalt dit huis u? Ontvang het nieuws en de aanbiedingen van onze huizen.",
-      "body": "Laat uw e-mailadres achter: we noteren uw interesse in dit huis. Data die vrijkomen, nieuwe huizen en aanbiedingen. Weinig e-mails."
+      "body": "Laat uw e-mailadres achter: we noteren uw interesse in dit huis."
     },
     "generic": {
       "overline": "Nieuws en aanbiedingen",
       "title": "Het nieuws en de aanbiedingen van onze huizen, in uw inbox.",
-      "body": "Data die vrijkomen, nieuwe huizen en aanbiedingen. Weinig e-mails, alleen als het de moeite waard is."
+      "body": "Data die vrijkomen, nieuwe huizen en aanbiedingen."
     },
     "footer": {
       "title": "Nieuws en aanbiedingen van onze huizen",
-      "body": "Data die vrijkomen, nieuwe huizen en aanbiedingen. Weinig e-mails."
+      "body": "Data die vrijkomen, nieuwe huizen en aanbiedingen."
     },
     "form": {
       "email": "Uw e-mailadres",

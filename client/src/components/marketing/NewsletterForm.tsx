@@ -9,16 +9,20 @@
    confirmation email is the second, mandatory step. Honeypot against bots.
 
    After the sign-up: "one more step" message and an optional question (what
-   kind of stay), one tap, no free text. It feeds the segmentation.
-   Measurement: newsletter_signup (newsletter_origin popup | house |
-   article | footer) and newsletter_interest in the dataLayer, only with the
-   "Aceitar tudo" choice (pushDL). Never the address, never a hash of it.
+   kind of stay), one tap, no free text. It feeds the segmentation. Focus
+   moves to the message, so screen readers read it (the form and its button
+   are gone) and keyboard users stay in place.
+   Measurement: only newsletter_signup (newsletter_origin popup | house |
+   article | footer) in the dataLayer, only with the "Aceitar tudo" choice
+   (pushDL). Never the address, never a hash of it, never the answer to the
+   interest question (a preference the person declared: it stays on the lead
+   and in the admin funnel, never in the GTM tags nor the Meta Pixel).
    Not generate_lead on purpose: the tags that already listen to
    generate_lead (lead forms, possibly primary conversions in Google Ads and
    the Meta Lead) would count every pop-up sign-up as a sales lead.
    ========================================================================== */
 
-import { useId, useState, type FormEvent } from 'react';
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
@@ -131,12 +135,25 @@ export default function NewsletterForm({
     }
   };
 
+  // The answer stays on the lead (and in the admin funnel): never in the dataLayer.
   const chooseInterest = (value: NewsletterInterest) => {
     if (!ref || interest) return;
     setInterest(value);
     saveInterest.mutate({ ref, interest: value });
-    pushDL({ event: 'newsletter_interest', newsletter_origin: origin, newsletter_interest: value });
   };
+
+  // The form (and the button that had the focus) is replaced by the message:
+  // move the focus to it, so screen readers read "one more step" and
+  // keyboard users do not fall back to the top of the page. The same after
+  // the interest answer.
+  const successRef = useRef<HTMLParagraphElement>(null);
+  const thanksRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    if (ref) successRef.current?.focus({ preventScroll: true });
+  }, [ref]);
+  useEffect(() => {
+    if (interest) thanksRef.current?.focus({ preventScroll: true });
+  }, [interest]);
 
   const muted = dark ? 'text-white/70' : 'text-[#6B6860]';
   const strong = dark ? 'text-[#C4A87C]' : 'text-[#1A1A18]';
@@ -145,12 +162,12 @@ export default function NewsletterForm({
   if (ref) {
     return (
       <div className="flex flex-col gap-4" style={{ fontFamily: 'var(--font-body)' }}>
-        <p className={`text-[13px] leading-relaxed flex items-start gap-2 ${strong}`} role="status" aria-live="polite">
+        <p ref={successRef} tabIndex={-1} className={`text-[13px] leading-relaxed flex items-start gap-2 outline-none ${strong}`} role="status">
           <Check className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
           <span>{t('newsletter.form.success')}</span>
         </p>
         {interest ? (
-          <p className={`text-[12.5px] ${muted}`} role="status" aria-live="polite">{t('newsletter.interest.thanks')}</p>
+          <p ref={thanksRef} tabIndex={-1} className={`text-[12.5px] outline-none ${muted}`} role="status">{t('newsletter.interest.thanks')}</p>
         ) : (
           <fieldset className="min-w-0">
             <legend className={`text-[12.5px] leading-relaxed mb-2.5 ${muted}`}>{t('newsletter.interest.title')}</legend>

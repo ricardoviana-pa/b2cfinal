@@ -4,17 +4,19 @@
  *
  * GET  /api/newsletter/confirm?lead=<id>&e=<exp>&t=<hmac>&lang=<xx>
  *   The link in the double opt-in email. Verifies the signature and the
- *   expiry (7 days) and shows a page whose form POSTs the same fields at once
- *   (button as the fallback without JavaScript). The GET changes nothing:
- *   mail scanners (Safe Links and the like) fetch links, and a subscription
- *   must come from the person.
+ *   expiry (7 days) and shows a page with one button that POSTs the same
+ *   fields. The GET changes nothing and the page never posts by itself: mail
+ *   scanners (Safe Links and the like) fetch links, some run the page in a
+ *   sandbox, and a subscription must come from the person pressing the
+ *   button.
  * POST /api/newsletter/confirm
  *   Promotes "nl-pending-<origin>" to "newsletter-<origin>" with confirmedAt
  *   and the signals of who confirmed (confirmationSignals: seconds since the
- *   form, user agent, "auto" or "click"), and shows "Subscrição confirmada"
- *   with the exit link. Idempotent. Scanners that run the page in a sandbox
- *   do post it: those confirmations get confirmSuspect and count only as a
- *   single opt-in downstream, until a later click that looks human.
+ *   form, user agent, "click" from the button or anything else), and shows
+ *   "Subscrição confirmada" with the exit link. Idempotent. A POST that did
+ *   not come from the button, or looks automated, gets confirmSuspect: no
+ *   Brevo, and a single opt-in downstream until a later click that looks
+ *   human.
  *
  * GET  /api/newsletter/unsubscribe?lead=<id>&t=<hmac>&lang=<xx>
  *   Shows one button. A GET never unsubscribes: mail scanners open links.
@@ -112,10 +114,9 @@ export function registerNewsletterRoutes(app: Express, overrides: Partial<Newsle
       brandPage(lang, E.heading, E.intro, {
         form: {
           action: "/api/newsletter/confirm",
-          // "via" says whether the page posted by itself (the script sets "auto") or by the button.
+          // Only the button posts "via=click"; a POST without it (not this page) is marked as automated.
           fields: { lead: String(link.leadId), e: String(link.exp), t: pick(req, "t"), lang, via: "click" },
           button: E.button,
-          autoSubmit: true,
         },
       }),
     );

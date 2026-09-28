@@ -24,6 +24,7 @@ import {
   NEWSLETTER_TRIGGERS,
   consentRecord,
   isNewsletterHouse,
+  keepsVisitOrigin,
   newsletterLang,
   pageKind,
 } from "@shared/newsletter";
@@ -120,7 +121,8 @@ async function subscribeOne(input: SubscribeInput, email: string, ctx: { req?: {
   const house = await resolveHouse(input.propertySlug);
   const consent = consentRecord(locale);
   const country = String(ctx.req?.headers?.["cf-ipcountry"] ?? "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 2);
-  const visit = input.visitOrigin === undefined ? null : parseVisitOriginPayload(input.visitOrigin, now);
+  // Only in the languages whose privacy policy announces it (privacy.s2OriginBody).
+  const visit = input.visitOrigin === undefined || !keepsVisitOrigin(locale) ? null : parseVisitOriginPayload(input.visitOrigin, now);
 
   let leadId: number;
   try {
@@ -216,6 +218,7 @@ export const newsletterRouter = router({
       if (!leadId) return { ok: true as const };
       try {
         const lead = await db.setNewsletterInterest(leadId, input.interest, new Date().toISOString());
+        // Confirmed leads only; brevoAddConfirmed itself refuses a confirmation marked as automated.
         if (lead && lead.source.startsWith("newsletter-")) {
           const result = await brevoAddConfirmed(lead.email, lead.metadata || {});
           if (result && !result.ok) console.warn(`[Newsletter] Brevo update failed for lead #${leadId}: status=${result.status}`);

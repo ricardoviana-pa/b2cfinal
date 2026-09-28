@@ -71,16 +71,16 @@ const confirmLink = (leadId = 77, exp = confirmExpiry(NOW.getTime()), lang = "es
 const exitQuery = (leadId = 77) => `lead=${leadId}&t=${signToken("exit", leadId, 0, env)}&lang=pt`;
 const get = (url: string, init: RequestInit = {}) => fetch(`${origin}${url}`, { redirect: "manual", ...init });
 const BROWSER = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15";
-/** What the page behind the email link posts (its form carries the link's fields; the script sets via=auto). */
-const confirm = (link: string, agent = BROWSER, via = "auto") =>
+/** What the button of the page behind the email link posts (its form carries the link's fields and via=click). */
+const confirm = (link: string, agent = BROWSER, via: string | null = "click") =>
   get("/api/newsletter/confirm", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded", "user-agent": agent },
-    body: `${link.split("?")[1]}&via=${via}`,
+    body: via === null ? link.split("?")[1] : `${link.split("?")[1]}&via=${via}`,
   });
 
 describe("GET /api/newsletter/confirm (the link in the email)", () => {
-  it("changes nothing: it shows a page that posts the confirmation at once, with the button as fallback", async () => {
+  it("changes nothing: it shows a page with one button, and the page never posts by itself", async () => {
     const res = await get(confirmLink());
     expect(res.status).toBe(200);
     expect(res.headers.get("cache-control")).toBe("no-store");
@@ -90,7 +90,9 @@ describe("GET /api/newsletter/confirm (the link in the email)", () => {
     expect(html).toMatch(/<input type="hidden" name="t" value="[0-9a-f]{32}">/);
     expect(html).toContain("Confirmar suscripción");
     expect(html).toContain('<input type="hidden" name="via" value="click">');
-    expect(html).toContain('<script>var f=document.getElementById("pa-form");if(f.via)f.via.value="auto";f.submit();</script>');
+    // No script at all: a scanner that runs the page's JavaScript in a sandbox posts nothing.
+    expect(html).not.toContain("<script");
+    expect(html).not.toContain("submit()");
     // A mail scanner fetching the link confirms nothing.
     expect(deps.getLeadById).not.toHaveBeenCalled();
     expect(deps.confirmNewsletterLead).not.toHaveBeenCalled();
@@ -121,7 +123,7 @@ describe("POST /api/newsletter/confirm", () => {
     expect(html).toContain('<script>try{localStorage.setItem("pa_nl_subscribed","1");}catch(e){}</script>');
     expect(deps.confirmNewsletterLead).toHaveBeenCalledWith(77, "house", {
       confirmedAt: NOW.toISOString(),
-      confirmVia: "auto",
+      confirmVia: "click",
       confirmDelaySec: "3600",
       confirmUa: BROWSER,
     });
@@ -139,8 +141,31 @@ describe("POST /api/newsletter/confirm", () => {
     expect(res.status).toBe(200);
     expect(deps.confirmNewsletterLead).toHaveBeenCalledWith(77, "house", expect.objectContaining({ confirmSuspect: "1", confirmUa: headless }));
     expect(deps.fetchImpl).not.toHaveBeenCalled();
-    expect(logs.join("\n")).toContain("confirmed lead #77 origin=house lang=es via=auto suspect=1");
+    expect(logs.join("\n")).toContain("confirmed lead #77 origin=house lang=es via=click suspect=1");
     expect(logs.join("\n")).not.toContain("HeadlessChrome");
+  });
+
+  it("a POST that did not come from the button is marked, even from a browser an hour later: no Brevo", async () => {
+    routeEnv.BREVO_API_KEY = "xkeysib-synthetic-not-real";
+    routeEnv.BREVO_NEWSLETTER_LIST_ID = "12";
+    // An old cached copy of the page that still posted by itself.
+    await confirm(confirmLink(), BROWSER, "auto");
+    expect(deps.confirmNewsletterLead).toHaveBeenLastCalledWith(77, "house", expect.objectContaining({ confirmVia: "auto", confirmSuspect: "1" }));
+    // A POST without the field at all (a script, not the page).
+    await confirm(confirmLink(), BROWSER, null);
+    expect(deps.confirmNewsletterLead).toHaveBeenLastCalledWith(77, "house", expect.objectContaining({ confirmVia: "missing", confirmSuspect: "1" }));
+    expect(deps.fetchImpl).not.toHaveBeenCalled();
+  });
+
+  it("the button pressed by a person goes to the site's Brevo list when the key and the list exist", async () => {
+    routeEnv.BREVO_API_KEY = "xkeysib-synthetic-not-real";
+    routeEnv.BREVO_NEWSLETTER_LIST_ID = "12";
+    await confirm(confirmLink());
+    expect(deps.confirmNewsletterLead.mock.calls[0][2]).not.toHaveProperty("confirmSuspect");
+    expect(deps.fetchImpl).toHaveBeenCalledTimes(1);
+    const [url, init] = deps.fetchImpl.mock.calls[0];
+    expect(url).toBe("https://api.brevo.com/v3/contacts");
+    expect(JSON.parse(init.body)).toMatchObject({ email: EMAIL, listIds: [12], attributes: { ORIGEM_SITE: "house", CONFIRMADO_EM: NOW.toISOString() } });
   });
 
   it("seconds after the sign-up is a scanner at delivery, whatever the agent says", async () => {

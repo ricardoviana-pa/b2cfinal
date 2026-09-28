@@ -9,13 +9,18 @@
        the booking pages, the legal pages, login, account or admin;
      - never to someone who subscribed (any form writes pa_nl_subscribed) or
        who saw it in the last 30 days (closing counts);
-     - never in a visit that came from one of our emails;
-     - never on top of another dialog, the "no availability" form, or while
-       the person is typing in a field (it waits and tries again);
+     - never in a visit that came from one of our emails, nor for 180 days
+       to someone we already know (that visit, a booking thank-you page, the
+       checkout box: newsletterBrowser.ts, written after the cookie choice);
+     - never on top of another dialog, a drawer, the menu, the cookie
+       banner, the "no availability" form, or while the person is typing in
+       a field (it waits and tries again); on the phone the sheet also closes
+       as soon as one of those opens (NewsletterPopup);
      - computer: after 8 s on the site, or on exit intent (pointer leaving
        through the top), whichever comes first;
-     - phone or touch tablet: a small sheet at the bottom after 40% of the
-       page or 15 s;
+     - phone or touch tablet: a strip at the bottom after 40% of the page or
+       15 s, only while the strip and the house page booking bar together
+       fit in 30% of the visible height (stripFits);
      - ?nl=1 in the landing URL (an ad that promises the sign-up): at once,
        after the cookie choice, ignoring the 30-day rule.
    The 8 s and 15 s count time on the site since the visit became eligible,
@@ -29,9 +34,7 @@ import { pushDL } from '@/lib/datalayer';
 import { COOKIE_CHOICE_EVENT, getCookieChoice } from '@/lib/measurementConsent';
 import {
   NL_POPUP_AT_KEY,
-  NL_SKIP_SESSION_KEY,
   NL_SUBSCRIBED_KEY,
-  hasEmailOrRecoveryUtm,
   hasPopupLinkParam,
   houseSlugFromPath,
   isExitIntent,
@@ -39,10 +42,12 @@ import {
   popupEligibility,
   remainingDelay,
   scrollProgressPct,
+  stripFits,
   type NewsletterDevice,
   type NewsletterTrigger,
 } from '@shared/newsletter';
 import { useNewsletterConfig } from './useNewsletterConfig';
+import { bottomBarHeight, landedFromEmail, noteLandingFromEmail, overlayOpen, readKnownAt } from './newsletterBrowser';
 import type { PopupCloseReason } from './NewsletterPopup';
 
 const NewsletterPopup = lazy(() => import('./NewsletterPopup'));
@@ -53,28 +58,19 @@ const NewsletterPopup = lazy(() => import('./NewsletterPopup'));
 const MOBILE_QUERY = '(max-width: 767px), (hover: none) and (pointer: coarse)';
 const RETRY_MS = 4_000;
 
-const read = (storage: 'local' | 'session', key: string): string | null => {
+const readLocal = (key: string): string | null => {
   try {
-    return (storage === 'local' ? window.localStorage : window.sessionStorage).getItem(key);
+    return window.localStorage.getItem(key);
   } catch {
     return null;
   }
 };
 
-/** Another dialog, a lead form that must not be covered, or a field being typed in. */
+/** Another overlay or a lead form that must not be covered, or a field being typed in. */
 function busy(): boolean {
   const active = document.activeElement as HTMLElement | null;
   if (active && (active.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName))) return true;
-  const nodes = document.querySelectorAll('[role="dialog"], [aria-modal="true"], [data-nl-suppress]');
-  for (const el of Array.from(nodes)) {
-    if (el.closest('[data-nl-popup]') || el.closest('[inert]') || el.closest('[aria-hidden="true"]')) continue;
-    const rect = (el as HTMLElement).getBoundingClientRect();
-    if (rect.width === 0 && rect.height === 0) continue;
-    const style = window.getComputedStyle(el as HTMLElement);
-    if (style.display === 'none' || style.visibility === 'hidden') continue;
-    return true;
-  }
-  return false;
+  return overlayOpen();
 }
 
 export default function NewsletterPopupGate() {
@@ -95,11 +91,10 @@ export default function NewsletterPopupGate() {
   const path = location.split('?')[0] || '/';
   const lang = (i18n.language || 'en').slice(0, 2);
 
-  // First load only: the landing URL decides the session (SPA navigation loses the query).
+  // First load only: the landing URL decides the visit (SPA navigation loses
+  // the query). Nothing is written before the cookie choice (newsletterBrowser.ts).
   useEffect(() => {
-    try {
-      if (hasEmailOrRecoveryUtm(window.location.search)) window.sessionStorage.setItem(NL_SKIP_SESSION_KEY, '1');
-    } catch { /* storage unavailable */ }
+    noteLandingFromEmail(window.location.search);
     forcedRef.current = hasPopupLinkParam(window.location.search);
     const syncCookie = () => setCookieChoice(getCookieChoice());
     syncCookie();
@@ -123,9 +118,10 @@ export default function NewsletterPopupGate() {
       locales: data.locales,
       lang,
       path,
-      subscribed: read('local', NL_SUBSCRIBED_KEY),
-      lastShownAt: read('local', NL_POPUP_AT_KEY),
-      skipSession: read('session', NL_SKIP_SESSION_KEY),
+      subscribed: readLocal(NL_SUBSCRIBED_KEY),
+      lastShownAt: readLocal(NL_POPUP_AT_KEY),
+      skipSession: landedFromEmail(),
+      knownAt: readKnownAt(),
       cookieChoice,
       visible: document.visibilityState === 'visible',
       now: Date.now(),
@@ -141,7 +137,10 @@ export default function NewsletterPopupGate() {
     const show = (why: NewsletterTrigger) => {
       if (!armed || shownRef.current || retrying) return;
       if (!evaluate().eligible) return;
-      if (busy()) {
+      // Phone: the strip and the house page booking bar must fit in 30% of
+      // the visible height (a small phone on a house page waits: the house
+      // block on the page is there).
+      if (busy() || (mobile && !stripFits(window.innerHeight, bottomBarHeight()))) {
         // One pending retry at a time (scroll events keep firing meanwhile).
         retrying = true;
         timers.push(window.setTimeout(() => { retrying = false; show(why); }, RETRY_MS));
@@ -196,7 +195,8 @@ export default function NewsletterPopupGate() {
   const handleSubscribed = useCallback(() => { subscribedRef.current = true; }, []);
 
   // The phone sheet does not block the page: a tap on a link navigates with it
-  // open. Any navigation closes it (and the checkout never shows it).
+  // open. Any navigation closes it (and the checkout never shows it); so does
+  // any overlay that opens and the booking bar (NewsletterPopup).
   const openedPathRef = useRef<string | null>(null);
   useEffect(() => {
     if (!open) { openedPathRef.current = null; return; }

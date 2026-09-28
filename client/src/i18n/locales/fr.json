@@ -2154,28 +2154,28 @@
     "popup": {
       "overline": "Nouveautés et offres",
       "title": "Les nouveautés et les offres de nos maisons, dans votre boîte mail.",
-      "body": "Des dates qui se libèrent, de nouvelles maisons et des offres. Peu d'e-mails, seulement quand cela en vaut la peine.",
+      "body": "Des dates qui se libèrent, de nouvelles maisons et des offres.",
       "notNow": "Pas maintenant",
       "close": "Fermer"
     },
     "house": {
       "overline": "Alertes pour cette maison",
       "title": "Envie de savoir quand cette maison aura des dates libres ou un prix de basse saison ?",
-      "body": "Laissez votre e-mail et nous vous prévenons. Vous recevrez aussi les nouveautés et les offres de nos maisons. Peu d'e-mails."
+      "body": "Laissez votre e-mail et nous vous prévenons. Vous recevrez aussi les nouveautés et les offres de nos maisons."
     },
     "houseInterest": {
       "overline": "Nouveautés et offres",
       "title": "Cette maison vous plaît ? Recevez les nouveautés et les offres de nos maisons.",
-      "body": "Laissez votre e-mail : nous notons votre intérêt pour cette maison. Des dates qui se libèrent, de nouvelles maisons et des offres. Peu d'e-mails."
+      "body": "Laissez votre e-mail : nous notons votre intérêt pour cette maison."
     },
     "generic": {
       "overline": "Nouveautés et offres",
       "title": "Les nouveautés et les offres de nos maisons, dans votre boîte mail.",
-      "body": "Des dates qui se libèrent, de nouvelles maisons et des offres. Peu d'e-mails, seulement quand cela en vaut la peine."
+      "body": "Des dates qui se libèrent, de nouvelles maisons et des offres."
     },
     "footer": {
       "title": "Nouveautés et offres de nos maisons",
-      "body": "Des dates qui se libèrent, de nouvelles maisons et des offres. Peu d'e-mails."
+      "body": "Des dates qui se libèrent, de nouvelles maisons et des offres."
     },
     "form": {
       "email": "Votre e-mail",

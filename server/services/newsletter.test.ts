@@ -207,6 +207,13 @@ describe("Brevo is optional", () => {
     expect(JSON.parse(String(init2.body))).toEqual({ unlinkListIds: [42] });
   });
 
+  it("never a confirmation marked as automated, whoever calls (confirmation page or interest answer)", async () => {
+    const env = { ...LIVE, BREVO_API_KEY: "xkeysib-synthetic", BREVO_NEWSLETTER_LIST_ID: "42" };
+    const fetchImpl = vi.fn(async () => new Response(null, { status: 204 }));
+    expect(await brevoAddConfirmed("a@b.test", { origin: "popup", confirmedAt: "y", confirmSuspect: "1" }, env, fetchImpl)).toBeNull();
+    expect(fetchImpl).not.toHaveBeenCalled();
+  });
+
   it("never on a preview, even with a key", async () => {
     const fetchImpl = vi.fn();
     expect(await brevoAddConfirmed("a@b.test", {}, { APP_ENV: "preview", BREVO_API_KEY: "k", BREVO_NEWSLETTER_LIST_ID: "1" }, fetchImpl)).toBeNull();
@@ -249,30 +256,37 @@ describe("who confirmed: a person or a mail scanner", () => {
   const form = "2026-10-05T09:00:00.000Z";
   const browser = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
 
-  it("a click from a browser minutes after the form is a double opt-in", () => {
-    const out = confirmationSignals({ consentAt: form, confirmedAt: new Date("2026-10-05T09:03:00Z"), userAgent: browser, via: "auto" });
-    expect(out).toEqual({ confirmVia: "auto", confirmDelaySec: "180", confirmUa: browser.slice(0, 160) });
+  it("the button pressed from a browser minutes after the form is a double opt-in", () => {
+    const out = confirmationSignals({ consentAt: form, confirmedAt: new Date("2026-10-05T09:03:00Z"), userAgent: browser, via: "click" });
+    expect(out).toEqual({ confirmVia: "click", confirmDelaySec: "180", confirmUa: browser.slice(0, 160) });
+  });
+
+  it("anything but the button is marked: an old page that posted by itself, or a POST without the field", () => {
+    const later = new Date("2026-10-05T10:00:00Z");
+    expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: browser, via: "auto" })).toMatchObject({ confirmVia: "auto", confirmSuspect: "1" });
+    expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: browser })).toMatchObject({ confirmVia: "missing", confirmSuspect: "1" });
+    expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: browser, via: "anything" })).toMatchObject({ confirmVia: "missing", confirmSuspect: "1" });
   });
 
   it("too soon after the form, an empty agent or a robot's agent is marked, not refused", () => {
     const soon = new Date(Date.parse(form) + (CONFIRM_MIN_HUMAN_SECONDS - 4) * 1000);
-    expect(confirmationSignals({ consentAt: form, confirmedAt: soon, userAgent: browser }).confirmSuspect).toBe("1");
+    expect(confirmationSignals({ consentAt: form, confirmedAt: soon, userAgent: browser, via: "click" }).confirmSuspect).toBe("1");
     const later = new Date("2026-10-05T10:00:00Z");
-    expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: "" }).confirmSuspect).toBe("1");
+    expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: "", via: "click" }).confirmSuspect).toBe("1");
     for (const agent of [
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/129.0.0.0 Safari/537.36",
       "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
       "python-requests/2.32",
       "node",
     ]) {
-      expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: agent }).confirmSuspect).toBe("1");
+      expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: agent, via: "click" }).confirmSuspect).toBe("1");
     }
     // A phone brand with "bot" inside its name is still a person.
-    expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: "Mozilla/5.0 (Linux; Android 10; CUBOT X30) Chrome/120 Mobile" }).confirmSuspect).toBeUndefined();
+    expect(confirmationSignals({ consentAt: form, confirmedAt: later, userAgent: "Mozilla/5.0 (Linux; Android 10; CUBOT X30) Chrome/120 Mobile", via: "click" }).confirmSuspect).toBeUndefined();
   });
 
-  it("the button without JavaScript is a click; the agent is cut and cleaned", () => {
-    const out = confirmationSignals({ confirmedAt: new Date(), userAgent: `${"x".repeat(200)}\n`, via: "anything" });
+  it("the agent is cut and cleaned; without the form date there is no delay", () => {
+    const out = confirmationSignals({ confirmedAt: new Date(), userAgent: `${"x".repeat(200)}\n`, via: "click" });
     expect(out.confirmVia).toBe("click");
     expect(out.confirmUa).toHaveLength(160);
     expect(out.confirmDelaySec).toBeUndefined();

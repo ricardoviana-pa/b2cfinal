@@ -11,6 +11,7 @@ import { formatEurCents, formatBookingDate } from "@/lib/format";
 import { optimizeGuestyImage } from "@/lib/images";
 import propertiesData from "@/data/properties.json";
 import { cancellationPolicyText } from "@/lib/cancellation";
+import { markNewsletterKnown } from "@/components/marketing/newsletterBrowser";
 
 const CONCIERGE_EMAIL = "info@portugalactive.com";
 
@@ -81,6 +82,8 @@ export default function PaymentThankYouPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const purchaseFiredRef = useRef(false);
+  // Just booked: the newsletter pop-up stays away from this guest (stored after the cookie choice).
+  useEffect(() => { markNewsletterKnown(); }, []);
 
   // Prefer the payload stashed by the return page (Open-API reservations aren't
   // reliably readable via GET right after creation). Fall back to the server
