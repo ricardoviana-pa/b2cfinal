@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Calendar, Check, Loader2, Minus, Plus, User } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
@@ -79,6 +79,7 @@ export function PartnerBookingPanel({
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
+  const submitting = useRef(false);
   const [submitError, setSubmitError] = useState('');
 
   const datesValid = !!checkIn && !!checkOut && checkOut > checkIn;
@@ -131,7 +132,9 @@ export function PartnerBookingPanel({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) return;
+    if (submitting.current || sent || !name.trim() || !email.trim()) return;
+    submitting.current = true;
+    pushDL({ event: 'partner_request_attempt', property_id: propertySlug });
     setSubmitError('');
     try {
       await createLead.mutateAsync({
@@ -141,6 +144,8 @@ export function PartnerBookingPanel({
         source: 'partner-home-request',
         message: message.trim() || undefined,
         metadata: {
+          locale: lang,
+          quoteStatus: quote?.available ? (quote.feesKnown ? 'complete' : 'partial') : 'unavailable',
           property: propertySlug,
           propertyName,
           checkin: checkIn || '—',
@@ -158,11 +163,14 @@ export function PartnerBookingPanel({
       });
       setSent(true);
     } catch {
+      pushDL({ event: 'partner_request_error', property_id: propertySlug });
       // Before this the rejection was swallowed: the guest clicked and nothing
       // happened at all.
       setSubmitError(
         t('partnerBooking.submitError', 'We could not send your request. Please try again, or message the concierge.'),
       );
+    } finally {
+      submitting.current = false;
     }
   }
 
@@ -181,7 +189,7 @@ export function PartnerBookingPanel({
           <p className="text-sm text-black/60 leading-relaxed">
             {t(
               'partnerBooking.sentBody',
-              'Our concierge is confirming these dates with the property and will come back to you by email with the final total. Nothing is charged at this stage.',
+              'Your request has been saved. Our team will check availability and the final total with the home. This is not a confirmed reservation and no payment has been taken.',
             )}
           </p>
           <div className="bg-black/[0.02] p-4 space-y-1">
@@ -259,7 +267,7 @@ export function PartnerBookingPanel({
         )}
       </div>
 
-      <form onSubmit={submit}>
+      <form id="partner-home-request" name="partner-home-request" onSubmit={submit}>
         {/* Dates — the portfolio's own calendar, not a native picker. */}
         <div className="mx-5">
           <div

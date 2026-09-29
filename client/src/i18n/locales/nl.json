@@ -1919,7 +1919,7 @@
   "partnerBooking": {
     "sentTitle": "Aanvraag ontvangen",
     "requestDetails": "Details van de aanvraag",
-    "sentBody": "Onze concierge bevestigt deze data met het huis en komt per e-mail bij u terug met het eindtotaal. In deze fase wordt niets in rekening gebracht.",
+    "sentBody": "Je aanvraag is opgeslagen. Ons team controleert de beschikbaarheid en het definitieve totaalbedrag bij de accommodatie. De boeking is nog niet bevestigd en er is niets betaald.",
     "soFarLabel": "tot nu toe",
     "perNight": "per nacht",
     "pickDates": "Kies uw data voor het exacte totaal",

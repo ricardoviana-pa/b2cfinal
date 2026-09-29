@@ -5,6 +5,7 @@ import { formatQuotedMoney } from "@shared/booking-money";
  */
 
 import { Resend } from "resend";
+import { isPreviewDeployment } from "../lib/preview-isolation";
 import { getEmailSigner } from "@shared/concierges";
 import { FUNNEL_I18N } from "./recovery-copy";
 import { sanitizePropertyName } from "@shared/displayName";
@@ -1424,4 +1425,41 @@ export async function sendDatesOpenedEmail(data: {
 
   const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, isPt);
   await sendEmail(data.email, subject, html, BOOKING_NOTIFICATION_EMAIL);
+}
+
+
+/** Partner enquiries are requests, never reservations. Provider acceptance is
+ * recorded separately from delivery; DEV must never pretend an email was sent. */
+export async function sendPartnerRequestEmail(data: {
+  id: number; email: string; name?: string | null; phone?: string | null;
+  message?: string | null; metadata: Record<string, string>;
+}, channel: "team" | "guest"): Promise<string> {
+  if (isPreviewDeployment() || !resend) throw new Error("PARTNER_EMAIL_UNAVAILABLE");
+  const esc = (s: string | null | undefined) => (s || "—").replace(/[&<>"']/g,
+    c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+  const m = data.metadata;
+  const pt = channel === "team" || m.locale?.startsWith("pt");
+  const title = channel === "team" ? `Pedido de casa parceira #${data.id}` : pt ? "Recebemos o seu pedido" : "We received your request";
+  const subject = `${title} · ${m.propertyName || m.property}`.replace(/[\r\n]/g, " ");
+  const rows = [
+    [pt ? "Casa" : "Home", m.propertyName || m.property],
+    [pt ? "Entrada" : "Check-in", m.checkin], [pt ? "Saída" : "Check-out", m.checkout],
+    [pt ? "Hóspedes" : "Guests", m.guests],
+    ...(channel === "team" ? [["Nome", data.name], ["Email", data.email], ["Telefone", data.phone],
+      ["Valor apresentado (EUR, por confirmar)", m.total], ["Estado do orçamento", m.quoteStatus || "unknown"]] : []),
+    [pt ? "Mensagem" : "Message", data.message],
+  ];
+  const intro = channel === "team"
+    ? "Pedido guardado no painel de leads. Contactar o hóspede e confirmar disponibilidade, encargos e total com o parceiro antes de propor a reserva."
+    : pt ? "O seu pedido ficou registado. A nossa equipa irá verificar a disponibilidade e o total final com a casa. A reserva ainda não está confirmada e não foi efetuado qualquer pagamento."
+      : "Your request has been saved. Our team will check availability and the final total with the home. This is not a confirmed reservation and no payment has been taken.";
+  const html = wrapTemplate(`<h1>${esc(title)}</h1><p>${intro}</p><table>${rows.map(([label, value]) =>
+    `<tr><td style="padding:8px;vertical-align:top">${esc(label)}</td><td style="padding:8px;white-space:pre-wrap">${esc(value)}</td></tr>`).join("")}</table><p>${pt ? "Referência" : "Reference"}: PA-${data.id}</p>`, title, !!pt);
+  const { data: result, error } = await resend.emails.send({
+    from: FROM_EMAIL, to: channel === "team" ? BOOKING_NOTIFICATION_EMAIL : data.email,
+    replyTo: channel === "team" ? data.email : BOOKING_NOTIFICATION_EMAIL, subject, html,
+  }, { idempotencyKey: `partner-request-${data.id}-${channel}-v1` });
+  if (error || !result?.id) throw new Error("PARTNER_EMAIL_REJECTED");
+  console.info(`[Partner request] provider accepted lead=${data.id} channel=${channel}`);
+  return result.id;
 }
