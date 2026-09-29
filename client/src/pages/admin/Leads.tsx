@@ -63,6 +63,15 @@ export default function AdminLeads() {
     },
   });
 
+  const retryM = trpc.leads.retryPartnerNotification.useMutation({
+    onSuccess: (result) => {
+      utils.leads.list.invalidate();
+      if (result.teamNotification === "accepted") toast.success("Team notification accepted by email provider");
+      else toast.error("Notification failed. The request is saved; please contact the guest manually.");
+    },
+    onError: () => toast.error("Could not retry notification"),
+  });
+
   const leads = (listQ.data as Lead[]) || [];
 
   const exportCSV = () => {
@@ -70,19 +79,20 @@ export default function AdminLeads() {
       toast.error("No leads to export");
       return;
     }
-    const headers = ["Email", "Name", "Phone", "Source", "Status", "Message", "Date"];
+    const headers = ["Email", "Name", "Phone", "Source", "Status", "Message", "Date", "Home", "Check-in", "Check-out", "Guests", "Displayed EUR (unconfirmed)", "Team notification", "Guest acknowledgment"];
     const rows = leads.map((l) => [
       l.email,
       l.name || "",
       l.phone || "",
       l.source,
       l.status,
-      (l.message || "").replace(/"/g, '""'),
+      l.message || "",
       new Date(l.createdAt).toISOString(),
+      ...["propertyName", "checkin", "checkout", "guests", "total", "teamNotification", "guestNotification"].map(key => l.metadata?.[key] || ""),
     ]);
     const csv = [
       headers.join(","),
-      ...rows.map((r) => r.map((v) => `"${v}"`).join(",")),
+      ...rows.map((r) => r.map((v) => `"${(/^[=+@\-\t\r\n]/.test(v) ? "'" + v : v).replace(/"/g, '\"\"')}"`).join(",")),
     ].join("\n");
 
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -125,6 +135,20 @@ export default function AdminLeads() {
       ),
     },
     {
+      key: "metadata",
+      label: "Partner request",
+      render: (item) => item.source === "partner-home-request" ? (
+        <div className="min-w-[220px] text-xs space-y-1">
+          <p className="font-medium">#{item.id} · {item.metadata?.propertyName || item.metadata?.property || "—"}</p>
+          <p>{item.metadata?.checkin || "—"} → {item.metadata?.checkout || "—"}</p>
+          <p>{item.metadata?.guests || "—"} guests · EUR {item.metadata?.total || "—"} (unconfirmed)</p>
+          <p>Team email: {item.metadata?.teamNotification || "No record — review"}</p>
+          <p>Guest acknowledgment: {item.metadata?.guestNotification || "No record"}</p>
+          <p className="text-muted-foreground">Accepted means accepted by the email provider, not confirmed delivery.</p>
+        </div>
+      ) : <span className="text-muted-foreground">—</span>,
+    },
+    {
       key: "status",
       label: "Status",
       render: (item) => (
@@ -141,7 +165,7 @@ export default function AdminLeads() {
       label: "Message",
       render: (item) =>
         item.message ? (
-          <p className="text-xs text-muted-foreground line-clamp-2 max-w-[200px]">
+          <p className="text-xs text-muted-foreground whitespace-pre-wrap max-w-[240px]">
             {item.message}
           </p>
         ) : (
@@ -162,7 +186,7 @@ export default function AdminLeads() {
   return (
     <div className="space-y-6">
       {/* Stats bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
         <div className="rounded-lg border p-4">
           <p className="text-xs text-muted-foreground">Total leads</p>
           <p className="text-2xl font-semibold">{statsQ.data?.total ?? 0}</p>
@@ -191,6 +215,10 @@ export default function AdminLeads() {
           <p className="text-xs text-muted-foreground">Availability requests</p>
           <p className="text-2xl font-semibold">{(statsQ.data as any)?.availability ?? 0}</p>
         </div>
+        <div className="rounded-lg border p-4">
+          <p className="text-xs text-muted-foreground">Partner requests</p>
+          <p className="text-2xl font-semibold">{statsQ.data?.partner ?? 0}</p>
+        </div>
       </div>
 
       {/* Filters + export */}
@@ -211,6 +239,7 @@ export default function AdminLeads() {
                   lead nasce "newsletter-checkout" e cai no filtro Newsletter. */}
               <SelectItem value="checkout">Checkout (no opt-in)</SelectItem>
               <SelectItem value="search-no-availability">Availability request</SelectItem>
+              <SelectItem value="partner-home-request">Partner homes</SelectItem>
               <SelectItem value="owners">Owners</SelectItem>
             </SelectContent>
           </Select>
@@ -255,6 +284,11 @@ export default function AdminLeads() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              {item.source === "partner-home-request" && item.metadata?.teamNotification !== "accepted" && (
+                <DropdownMenuItem disabled={retryM.isPending} onClick={() => retryM.mutate({ id: item.id })}>
+                  <Mail className="h-4 w-4 mr-2" />Notify booking team (no guest email)
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onClick={() =>
                   updateM.mutate({ id: item.id, status: "contacted" })

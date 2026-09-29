@@ -417,6 +417,13 @@ export async function demoteCheckoutLeadFromNewsletter(email: string) {
     .where(and(eq(leads.email, email), eq(leads.source, "newsletter-checkout")));
 }
 
+export async function getLeadById(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [lead] = await db.select().from(leads).where(eq(leads.id, id)).limit(1);
+  return lead;
+}
+
 export async function updateLead(id: number, data: Partial<InsertLead>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -431,7 +438,7 @@ export async function deleteLead(id: number) {
 
 export async function getLeadStats() {
   const db = await getDb();
-  if (!db) return { total: 0, newsletter: 0, contact: 0, checkout: 0, availability: 0, newLeads: 0 };
+  if (!db) return { total: 0, newsletter: 0, contact: 0, checkout: 0, availability: 0, partner: 0, newLeads: 0 };
   const [total] = await db.select({ count: sql<number>`count(*)` }).from(leads);
   const [newsletter] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "newsletter%"));
   const [contact] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "contact%"));
@@ -445,6 +452,7 @@ export async function getLeadStats() {
     .from(leads)
     .where(or(like(leads.source, "checkout%"), like(leads.source, "newsletter-checkout%")));
   const [availability] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "search-no-availability%"));
+  const [partner] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(eq(leads.source, "partner-home-request"));
   const [newLeads] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(eq(leads.status, "new"));
   return {
     total: total.count,
@@ -452,6 +460,7 @@ export async function getLeadStats() {
     contact: contact.count,
     checkout: checkout.count,
     availability: availability.count,
+    partner: partner.count,
     newLeads: newLeads.count,
   };
 }

@@ -1919,7 +1919,7 @@
   "partnerBooking": {
     "sentTitle": "Anfrage erhalten",
     "requestDetails": "Details der Anfrage",
-    "sentBody": "Unser Concierge bestätigt diese Daten mit dem Haus und meldet sich per E-Mail mit dem Endbetrag. In dieser Phase wird nichts berechnet.",
+    "sentBody": "Ihre Anfrage wurde gespeichert. Unser Team prüft die Verfügbarkeit und den endgültigen Gesamtpreis mit der Unterkunft. Die Buchung ist noch nicht bestätigt und es wurde keine Zahlung vorgenommen.",
     "soFarLabel": "bisher",
     "perNight": "pro Nacht",
     "pickDates": "Wählen Sie Ihre Daten für den genauen Gesamtpreis",
