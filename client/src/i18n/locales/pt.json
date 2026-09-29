@@ -1921,7 +1921,7 @@
   "partnerBooking": {
     "sentTitle": "Pedido recebido",
     "requestDetails": "Detalhes do pedido",
-    "sentBody": "O nosso concierge está a confirmar estas datas com a casa e volta a contactá-lo por email com o total final. Nada é cobrado nesta fase.",
+    "sentBody": "O seu pedido ficou registado. A nossa equipa irá verificar a disponibilidade e o total final com a casa. A reserva ainda não está confirmada e não foi efetuado qualquer pagamento.",
     "soFarLabel": "até agora",
     "perNight": "por noite",
     "pickDates": "Escolha as datas para saber o total exacto",

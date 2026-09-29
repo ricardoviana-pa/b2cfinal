@@ -1919,7 +1919,7 @@
   "partnerBooking": {
     "sentTitle": "Richiesta ricevuta",
     "requestDetails": "Dettagli della richiesta",
-    "sentBody": "Il nostro concierge sta confermando queste date con la casa e le risponderà via email con il totale finale. In questa fase non viene addebitato nulla.",
+    "sentBody": "La tua richiesta è stata registrata. Il nostro team verificherà la disponibilità e il totale finale con la struttura. La prenotazione non è ancora confermata e non è stato effettuato alcun pagamento.",
     "soFarLabel": "finora",
     "perNight": "a notte",
     "pickDates": "Scelga le date per il totale esatto",

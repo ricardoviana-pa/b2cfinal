@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
+import { createPartnerRequest, retryPartnerTeamNotification } from "../services/partner-requests";
 import { sendContactConfirmation, sendContactNotification, sendNewsletterWelcome } from "../services/email";
 import { sendContactInquiryNotification, sendAvailabilityRequestNotification, sendAvailabilityRequestConfirmation } from "../services/transactional-email";
 
@@ -252,9 +253,14 @@ export const leadsRouter = router({
 
   stats: adminProcedure.query(() => db.getLeadStats()),
 
+  retryPartnerNotification: adminProcedure
+    .input(z.object({ id: z.number().int().positive() }))
+    .mutation(({ input }) => retryPartnerTeamNotification(input.id)),
+
   create: publicProcedure
     .input(leadInput)
     .mutation(async ({ input }) => {
+      if (input.source === "partner-home-request") return createPartnerRequest(input);
       const lead = await db.createLead(input);
 
       if (input.source === 'contact-form' && input.name) {

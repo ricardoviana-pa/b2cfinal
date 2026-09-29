@@ -1919,7 +1919,7 @@
   "partnerBooking": {
     "sentTitle": "Förfrågan mottagen",
     "requestDetails": "Uppgifter om förfrågan",
-    "sentBody": "Vår concierge bekräftar datumen med huset och återkommer via e-post med sluttotalen. Inget debiteras i detta skede.",
+    "sentBody": "Din förfrågan har registrerats. Vårt team kontrollerar tillgängligheten och slutpriset med boendet. Bokningen är ännu inte bekräftad och ingen betalning har gjorts.",
     "soFarLabel": "hittills",
     "perNight": "per natt",
     "pickDates": "Välj dina datum för exakt totalsumma",
