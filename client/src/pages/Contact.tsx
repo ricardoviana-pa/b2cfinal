@@ -14,6 +14,7 @@ import { StructuredData, buildBreadcrumbSchema, buildFaqPageSchema } from '@/com
 import { trpc } from '@/lib/trpc';
 import { useSearch } from 'wouter';
 import { corporatePlanning } from '@/data/corporatePlanning';
+import { contactEnquiryContext } from '@shared/contactEnquiryContext';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -71,6 +72,7 @@ export default function Contact() {
   const formLoadTimeRef = useRef<number | null>(null);
   const createLead = trpc.leads.create.useMutation();
   const searchString = useSearch();
+  const enquiryContext = useMemo(() => contactEnquiryContext(searchString), [searchString]);
   const enquiryParams = new URLSearchParams(searchString);
   const planning = enquiryParams.get('intent') === 'corporate' && subject === 'events' ? corporatePlanning(i18n.language) : null;
   const selectedFormat = planning?.formats.find(format => format.id === enquiryParams.get('format'));
@@ -182,7 +184,7 @@ export default function Contact() {
         phone: phone || undefined,
         message: `[${subject}] ${message}` + (planning ? Object.entries(corporateDetails).filter(([, value]) => value.trim()).map(([key, value]) => `\n${planning[key as keyof typeof corporateDetails]}: ${value.trim()}`).join('') : ''),
         source: 'contact-form',
-        metadata: { subject, ...(planning ? { intent: 'corporate', ...(selectedFormat ? { format: selectedFormat.id } : {}), ...corporateDetails } : {}) },
+        metadata: { ...enquiryContext, locale: i18n.language, subject, ...(planning ? { intent: 'corporate', ...(selectedFormat ? { format: selectedFormat.id } : {}), ...corporateDetails } : {}) },
       });
       setSubmitted(true);
       pushDL({ event: 'generate_lead', lead_source: 'contact-form', lead_type: planning ? 'corporate' : 'contact', lead_subject: subject, ...(selectedFormat ? { corporate_format: selectedFormat.id } : {}) });
@@ -232,6 +234,17 @@ export default function Contact() {
                 {t('contact.formSubtitle', 'We typically respond within 2 hours.')}
               </p>
 
+              {!submitted && (enquiryContext.checkin || enquiryContext.guests) && (
+                <dl className="mb-6 flex flex-wrap gap-x-8 gap-y-3 rounded-lg border border-pa-sand bg-white p-4 text-sm">
+                  {[
+                    [t('bookingWidget.checkInLabel'), enquiryContext.checkin],
+                    [t('bookingWidget.checkOutLabel'), enquiryContext.checkout],
+                    [t('booking.guestsLabel'), enquiryContext.guests],
+                  ].filter(([, value]) => value).map(([label, value]) => (
+                    <div key={label}><dt className="text-pa-earth">{label}</dt><dd className="font-medium text-pa-dark">{value}</dd></div>
+                  ))}
+                </dl>
+              )}
               {submitted ? (
                 <div className="rounded-lg border border-[#E8E4DC] bg-white p-10 md:p-14 text-center" role="status" aria-live="polite">
                   <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#8B7355]">
