@@ -441,10 +441,6 @@
   "footer": {
     "allRightsReserved": "Alla rättigheter förbehållna",
     "tagline": "Privata hotell i Portugal.",
-    "newsletterHint": "Håll dig inspirerad. Nya hem, reseidéer och exklusiva erbjudanden.",
-    "emailPlaceholder": "Din e-post",
-    "subscribe": "PRENUMERERA",
-    "welcomeInbox": "Välkommen. Kontrollera din inkorg.",
     "destinationsTitle": "DESTINATIONER",
     "servicesTitle": "TJÄNSTER",
     "companyTitle": "FÖRETAG",
@@ -480,9 +476,6 @@
     "admin": "Admin",
     "paymentBankTransfer": "Banköverföring",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
-    "nlHeadline": "Låt dig inspireras.",
-    "nlSub": "Utvalda vistelser, säsongserbjudanden och reseberättelser från Portugal — levereras månadsvis.",
-    "nlError": "Något gick fel. Försök igen.",
     "conciergeServices": "Conciergetjänster",
     "realEstate": "Köpa eller sälja bostad",
     "offices": "Kontor"
@@ -674,11 +667,6 @@
     "ownersBody": "Vi samarbetar med fastighetsägare som delar vår vision om gästfrihet. Vår förvaltningsmodell levererar exceptionell avkastning utan operativt engagemang från dig. Egna team, hotellstandarder och ett varumärke som attraherar premiumgäster året runt.",
     "ownersCta": "LÄR DIG OM VÅR MODELL",
     "ownersNote": "Konfidentiell bedömning. Svar inom 2 timmar.",
-    "newsletterOverline": "HÅLL DIG INSPIRERAD",
-    "newsletterTitle": "Hem, berättelser och säsongserbjudanden.",
-    "newsletterSuccess": "Välkommen till familjen. Kontrollera din inkorg för en bekräftelse.",
-    "newsletterPlaceholder": "Din e-postadress",
-    "newsletterCta": "PRENUMERERA",
     "searchCheckin": "Incheckning",
     "searchCheckout": "Utcheckning",
     "decreaseGuests": "Färre gäster",
@@ -2161,5 +2149,52 @@
     "faq1A": "Kraven varierar mellan aktiviteterna. Läs upplevelsens sida för svårighetsgrad, åldersgränser och vad du ska ta med. Vårt team hjälper dig att välja.",
     "faq2Q": "Kan jag kombinera aktiviteter med en vistelse?",
     "faq2A": "Ja. Välj ditt hus och upptäck aktiviteter i samma region. Vår concierge kan hjälpa till att planera programmet. Aktiviteter och eventuell transfer debiteras separat."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Nyheter och erbjudanden",
+      "title": "Nyheter och erbjudanden från våra hus, direkt i din inkorg.",
+      "body": "Datum som blir lediga, nya hus och erbjudanden.",
+      "notNow": "Inte nu",
+      "close": "Stäng"
+    },
+    "house": {
+      "overline": "Aviseringar för det här huset",
+      "title": "Vill du veta när det här huset har lediga datum eller lågsäsongspris?",
+      "body": "Lämna din e-postadress så hör vi av oss. Du får också nyheter och erbjudanden från våra hus."
+    },
+    "houseInterest": {
+      "overline": "Nyheter och erbjudanden",
+      "title": "Gillar du det här huset? Få nyheter och erbjudanden från våra hus.",
+      "body": "Lämna din e-postadress så noterar vi ditt intresse för det här huset."
+    },
+    "generic": {
+      "overline": "Nyheter och erbjudanden",
+      "title": "Nyheter och erbjudanden från våra hus, direkt i din inkorg.",
+      "body": "Datum som blir lediga, nya hus och erbjudanden."
+    },
+    "footer": {
+      "title": "Nyheter och erbjudanden från våra hus",
+      "body": "Datum som blir lediga, nya hus och erbjudanden."
+    },
+    "form": {
+      "email": "Din e-postadress",
+      "cta": "Prenumerera",
+      "sending": "Skickar…",
+      "success": "Ett steg kvar: vi har skickat ett mejl för att bekräfta prenumerationen. Öppna det och tryck på knappen.",
+      "errorInvalid": "E-postadressen är inte giltig.",
+      "errorProxy": "Använd din personliga e-postadress.",
+      "errorGeneric": "Något gick fel. Försök igen om en stund."
+    },
+    "interest": {
+      "title": "Så att vi skickar det som intresserar dig: vilken typ av vistelse söker du? Valfritt.",
+      "family": "Familjesemester",
+      "couple": "En resa för två",
+      "friends": "Resa med vänner",
+      "celebration": "Ett speciellt tillfälle",
+      "work": "Företag eller retreat",
+      "longStay": "En månad eller mer",
+      "thanks": "Tack, det är noterat."
+    }
   }
 }

@@ -441,10 +441,6 @@
   "footer": {
     "allRightsReserved": "Todos los derechos reservados",
     "tagline": "Hoteles privados en Portugal.",
-    "newsletterHint": "Inspiración, nuevas casas y ofertas exclusivas.",
-    "emailPlaceholder": "Su correo",
-    "subscribe": "SUSCRIBIRSE",
-    "welcomeInbox": "Bienvenido. Revise su bandeja de entrada.",
     "destinationsTitle": "DESTINOS",
     "servicesTitle": "SERVICIOS",
     "companyTitle": "EMPRESA",
@@ -480,9 +476,6 @@
     "admin": "Admin",
     "paymentBankTransfer": "Transferencia bancaria",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
-    "nlHeadline": "Inspírate.",
-    "nlSub": "Estancias seleccionadas, ofertas de temporada e historias de viaje por Portugal — entregadas mensualmente.",
-    "nlError": "Algo salió mal. Por favor, inténtalo de nuevo.",
     "conciergeServices": "Servicios de conserjería",
     "realEstate": "Comprar o vender una casa",
     "offices": "Oficinas"
@@ -673,11 +666,6 @@
     "ownersBody": "Nos asociamos con propietarios que comparten nuestra visión de hospitalidad. Nuestro modelo de gestión ofrece rendimientos excepcionales sin implicación operativa por tu parte. Equipos internos, estándares de calidad hotelera y una marca que atrae clientes premium todo el año.",
     "ownersCta": "APRENDE SOBRE NUESTRO MODELO",
     "ownersNote": "Valoración confidencial. Respuesta en 2 horas.",
-    "newsletterOverline": "MANTENTE INSPIRADO",
-    "newsletterTitle": "Casas, historias y ofertas estacionales.",
-    "newsletterSuccess": "Bienvenido a la familia. Verifica tu bandeja de entrada para una confirmación.",
-    "newsletterPlaceholder": "Tu correo electrónico",
-    "newsletterCta": "SUSCRIBIRSE",
     "destComingSoon": "Próximamente",
     "searchCheckin": "Llegada",
     "searchCheckout": "Salida",
@@ -2161,5 +2149,52 @@
     "faq1A": "Los requisitos varían según la actividad. Consulta su página para conocer la dificultad, los límites de edad y qué llevar. Nuestro equipo puede ayudarte a elegir.",
     "faq2Q": "¿Puedo combinar actividades con una estancia?",
     "faq2A": "Sí. Elige tu casa y explora actividades en la misma región. Nuestro concierge puede ayudarte a coordinar el programa. Las actividades y los traslados se cobran por separado."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Novedades y promociones",
+      "title": "Las novedades y las promociones de nuestras casas, en su correo.",
+      "body": "Fechas que se liberan, casas nuevas y promociones.",
+      "notNow": "Ahora no",
+      "close": "Cerrar"
+    },
+    "house": {
+      "overline": "Avisos de esta casa",
+      "title": "¿Quiere saber cuándo tendrá esta casa fechas libres o precio de temporada baja?",
+      "body": "Déjenos su correo y le avisamos. También recibirá las novedades y las promociones de nuestras casas."
+    },
+    "houseInterest": {
+      "overline": "Novedades y promociones",
+      "title": "¿Le ha gustado esta casa? Reciba las novedades y las promociones de nuestras casas.",
+      "body": "Déjenos su correo: queda registrado su interés en esta casa."
+    },
+    "generic": {
+      "overline": "Novedades y promociones",
+      "title": "Las novedades y las promociones de nuestras casas, en su correo.",
+      "body": "Fechas que se liberan, casas nuevas y promociones."
+    },
+    "footer": {
+      "title": "Novedades y promociones de nuestras casas",
+      "body": "Fechas que se liberan, casas nuevas y promociones."
+    },
+    "form": {
+      "email": "Su correo",
+      "cta": "Suscribirse",
+      "sending": "Enviando…",
+      "success": "Falta un paso: le hemos enviado un correo para confirmar la suscripción. Ábralo y pulse el botón.",
+      "errorInvalid": "Este correo no es válido.",
+      "errorProxy": "Use su correo personal.",
+      "errorGeneric": "Algo ha fallado. Inténtelo de nuevo en unos instantes."
+    },
+    "interest": {
+      "title": "Para enviarle lo que le interesa: ¿qué estancia busca? Es opcional.",
+      "family": "Vacaciones en familia",
+      "couple": "Escapada en pareja",
+      "friends": "Grupo de amigos",
+      "celebration": "Ocasión especial",
+      "work": "Empresa o retiro",
+      "longStay": "Un mes o más",
+      "thanks": "Gracias, queda registrado."
+    }
   }
 }

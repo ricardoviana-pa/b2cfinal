@@ -26,6 +26,8 @@ import PropertyCard from '@/components/property/PropertyCard';
 import PropertyUnitsSection from '@/components/property/PropertyUnitsSection';
 import SecurityDepositNotice from '@/components/property/SecurityDepositNotice';
 import ReviewsSection from '@/components/property/ReviewsSection';
+import NewsletterBlock from '@/components/marketing/NewsletterBlock';
+import { isNewsletterHouse } from '@shared/newsletter';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@/components/ui/drawer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
@@ -1697,6 +1699,7 @@ export default function PropertyDetail() {
 
         {/* Mobile: sticky booking bar at bottom */}
         <div
+          data-nl-bottom-bar
           className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-pa-sand px-4 pt-3 z-40"
           style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
         >
@@ -1751,6 +1754,11 @@ export default function PropertyDetail() {
             </DrawerContent>
           </Drawer>
         )}
+
+        {/* Newsletter: "avisem-me quando esta casa tiver datas livres ou preço
+            de época baixa" (the house is recorded as the interest). Full-width
+            band after the booking column, before the related homes. */}
+        <NewsletterBlock origin="house" propertySlug={property.slug} promotableHouse={isNewsletterHouse(property)} />
 
         {/* Related properties from same region */}
         {relatedProperties.length > 0 && (

@@ -92,19 +92,7 @@ export async function sendContactNotification(data: { name: string; email: strin
   }
 }
 
-export async function sendNewsletterWelcome(to: string) {
-  try {
-    const contactId = await syncContact({ email: to });
-    if (!contactId) return;
-
-    await addTag(contactId, "newsletter");
-    await addTag(contactId, "website-subscriber");
-
-    const listId = process.env.ACTIVECAMPAIGN_NEWSLETTER_LIST_ID;
-    if (listId) await addToList(contactId, listId);
-
-    console.log(`[ActiveCampaign] Newsletter subscriber synced: ${to} → contact #${contactId}`);
-  } catch (err: any) {
-    console.error("[ActiveCampaign] Newsletter sync failed:", err.response?.data || err.message);
-  }
-}
+// sendNewsletterWelcome (ActiveCampaign) was removed: the tool is no longer
+// used (decisão de 22 de setembro de 2026) and the function wrote the
+// subscriber's address to the log. Newsletter sign-ups now use the site's own
+// double opt-in (server/routers/newsletter.ts).

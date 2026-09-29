@@ -1,5 +1,6 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
-import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
+import { EXPIRED_PREFIX, PENDING_RETENTION_DAYS, expiredMetadata, safeErrorLabel, unsubscribeTarget } from "./services/newsletter";
+import { ne, eq, desc, asc, and, or, like, notLike, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -374,6 +375,8 @@ export async function listLeads(opts?: { source?: string; status?: string }) {
   if (!db) return [];
   const conditions: any[] = [];
   if (opts?.source) conditions.push(like(leads.source, `${opts.source}%`));
+  // Pending newsletter sign-ups nobody confirmed, already without an address: only counted (newsletter.stats).
+  else conditions.push(notLike(leads.source, `${EXPIRED_PREFIX}%`));
   if (opts?.status) conditions.push(eq(leads.status, opts.status as any));
   const where = conditions.length > 0 ? and(...conditions) : undefined;
   return db.select().from(leads).where(where).orderBy(desc(leads.createdAt));
@@ -421,6 +424,263 @@ export async function updateLead(id: number, data: Partial<InsertLead>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.update(leads).set(data).where(eq(leads.id, id));
+}
+
+/* ── Newsletter do site, dupla confirmação (server/services/newsletter.ts) ── */
+
+const NL_FLOW = "site-doi-v1";
+const sameEmail = (email: string) => sql`lower(trim(${leads.email})) = ${email}`;
+const affectedRows = (res: any): number => (Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows) ?? 0;
+
+export async function getLeadById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(leads).where(eq(leads.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+/**
+ * Quando saíram os emails de confirmação para este endereço nas últimas
+ * `sinceMs` (leads deste fluxo; um envio que falhou não conta). Serve o
+ * limite de um email por hora e três por dia por endereço.
+ */
+export async function recentNewsletterSends(email: string, sinceMs: number): Promise<number[]> {
+  const db = await getDb();
+  if (!db) return [];
+  const since = new Date(Date.now() - sinceMs);
+  const rows = await db
+    .select({ createdAt: leads.createdAt, metadata: leads.metadata })
+    .from(leads)
+    .where(and(
+      sameEmail(email),
+      or(like(leads.source, "nl-pending-%"), like(leads.source, "newsletter-%"), like(leads.source, "nl-unsubscribed-%")),
+      gt(leads.createdAt, since),
+    ))
+    .limit(20);
+  return rows
+    .filter((r) => r.metadata?.flow === NL_FLOW && !r.metadata?.doiError)
+    .map((r) => new Date(r.createdAt).getTime());
+}
+
+/**
+ * O clique no email: "nl-pending-<origem>" passa a "newsletter-<origem>".
+ * Só a partir daqui conta como consentimento (coletor da Mailing List e
+ * hasNewsletterConsent). Idempotente e sem corrida: o UPDATE só apanha a
+ * linha ainda pendente. `patch` traz confirmedAt e os sinais de quem
+ * confirmou (services/newsletter.ts, confirmationSignals).
+ *
+ * Um lead já confirmado com confirmSuspect (um scanner que correu a página)
+ * sobe a "upgraded" quando chega um clique que não parece automático: fica
+ * com a data e os sinais desse clique (firstConfirmedAt guarda a primeira) e
+ * perde a marca, e o coletor passa a contá-lo como dupla confirmação.
+ */
+export async function confirmNewsletterLead(
+  id: number,
+  origin: string,
+  patch: Record<string, string>,
+): Promise<"confirmed" | "upgraded" | "already" | "gone"> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const current = await getLeadById(id);
+  if (!current) return "gone";
+  const pending = `nl-pending-${origin}`;
+  const confirmed = `newsletter-${origin}`;
+  if (current.source === confirmed) {
+    const meta = current.metadata || {};
+    if (meta.confirmSuspect !== "1" || patch.confirmSuspect === "1") return "already";
+    const { confirmSuspect: _suspect, ...rest } = meta;
+    const res = await db
+      .update(leads)
+      .set({ metadata: { ...rest, ...patch, firstConfirmedAt: meta.confirmedAt || "" } })
+      .where(and(eq(leads.id, id), eq(leads.source, confirmed)));
+    return affectedRows(res) > 0 ? "upgraded" : "already";
+  }
+  if (current.source !== pending) return "gone";
+  const res = await db
+    .update(leads)
+    .set({ source: confirmed, metadata: { ...(current.metadata || {}), ...patch } })
+    .where(and(eq(leads.id, id), eq(leads.source, pending)));
+  if (affectedRows(res) > 0) return "confirmed";
+  const again = await getLeadById(id);
+  return again?.source === confirmed ? "already" : "gone";
+}
+
+/**
+ * Pendentes que ninguém confirmou em PENDING_RETENTION_DAYS (os 7 dias do
+ * link e mais um): ficam sem endereço, sem nome e sem telefone, com a fonte
+ * "nl-expired-<origem>" e só os campos que o funil conta. Um endereço que
+ * alguém escreveu e nunca confirmou (talvez nem seja o seu) não fica
+ * guardado. Por lotes de 500; devolve quantos mudaram. Nunca lança.
+ */
+export async function expireNewsletterPending(nowMs: number = Date.now()): Promise<number> {
+  try {
+    const db = await getDb();
+    if (!db) return 0;
+    const before = new Date(nowMs - PENDING_RETENTION_DAYS * 86_400_000);
+    const rows = await db
+      .select({ id: leads.id, source: leads.source, metadata: leads.metadata })
+      .from(leads)
+      .where(and(like(leads.source, "nl-pending-%"), lt(leads.createdAt, before)))
+      .limit(500);
+    const at = new Date(nowMs).toISOString();
+    let changed = 0;
+    for (const row of rows) {
+      const origin = row.source.slice("nl-pending-".length) || "unknown";
+      const res = await db
+        .update(leads)
+        .set({ source: `${EXPIRED_PREFIX}${origin}`.slice(0, 100), email: "", name: null, phone: null, metadata: expiredMetadata(row.metadata, at) })
+        .where(and(eq(leads.id, row.id), eq(leads.source, row.source)));
+      changed += affectedRows(res) > 0 ? 1 : 0;
+    }
+    if (changed) console.info(`[Newsletter] ${changed} pending sign-up(s) older than ${PENDING_RETENTION_DAYS} days anonymised`);
+    return changed;
+  } catch (error) {
+    console.warn("[Newsletter] pending clean-up failed:", safeErrorLabel(error));
+    return 0;
+  }
+}
+
+let newsletterPurgeStarted = false;
+
+/** Limpeza dos pendentes: 2 minutos depois do arranque e a cada 6 horas (como a origem da visita). */
+export function startNewsletterPendingPurge(): void {
+  if (newsletterPurgeStarted || isPreviewDeployment()) return;
+  newsletterPurgeStarted = true;
+  setTimeout(() => void expireNewsletterPending(), 2 * 60 * 1000).unref?.();
+  setInterval(() => void expireNewsletterPending(), 6 * 60 * 60 * 1000).unref?.();
+}
+
+/** Marca o envio falhado: não conta para o limite por endereço e fica visível na base. */
+export async function markNewsletterSendFailed(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const current = await getLeadById(id);
+  if (!current) return;
+  await db.update(leads).set({ metadata: { ...(current.metadata || {}), doiError: "1" } }).where(eq(leads.id, id));
+}
+
+/**
+ * A pergunta opcional depois de subscrever (tipo de estadia). Só em leads
+ * deste fluxo, pendentes ou confirmados. Devolve o lead atualizado.
+ */
+export async function setNewsletterInterest(id: number, interest: string, at: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const current = await getLeadById(id);
+  if (!current || current.metadata?.flow !== NL_FLOW) return null;
+  if (!current.source.startsWith("nl-pending-") && !current.source.startsWith("newsletter-")) return null;
+  const metadata = { ...(current.metadata || {}), interest, interestAt: at };
+  await db.update(leads).set({ metadata }).where(eq(leads.id, id));
+  return { ...current, metadata };
+}
+
+/**
+ * Saída, sempre possível: todos os leads com consentimento deste endereço
+ * deixam de o ter. "newsletter-*" e "nl-pending-*" passam a
+ * "nl-unsubscribed-<origem>"; o consentimento do checkout volta a "checkout"
+ * (como quando se desmarca a caixa). Devolve quantos leads mudaram.
+ */
+export async function unsubscribeNewsletterEmail(email: string, at: string): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const rows = await db
+    .select({ id: leads.id, source: leads.source, metadata: leads.metadata })
+    .from(leads)
+    .where(and(sameEmail(email), or(like(leads.source, "newsletter%"), like(leads.source, "nl-pending-%"))))
+    .limit(200);
+  let changed = 0;
+  for (const row of rows) {
+    const target = unsubscribeTarget(row.source);
+    const metadata = { ...(row.metadata || {}), unsubscribedAt: at, ...(target.consent ? { consent: target.consent } : {}) };
+    const res = await db
+      .update(leads)
+      .set({ source: target.source, metadata })
+      .where(and(eq(leads.id, row.id), eq(leads.source, row.source)));
+    changed += affectedRows(res) > 0 ? 1 : 0;
+  }
+  return changed;
+}
+
+/**
+ * Para aprender (admin, /admin/leads): inscrições desde `sinceDays` por
+ * origem e estado (pendente, confirmada, saída, expirada), se chegou a ser
+ * confirmada e se a confirmação parece automática, gatilho do pop-up,
+ * dispositivo, tipo de página, origem da visita (utm_source, só com
+ * consentimento) e interesse. Inscritas contra confirmadas dão a taxa de
+ * confirmação de cada combinação. Só contagens: nenhum email sai daqui. Conta
+ * em código (poucos milhares de linhas no máximo) para não depender do modo
+ * GROUP BY da base.
+ */
+export async function newsletterFunnel(sinceDays: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const since = new Date(Date.now() - sinceDays * 86_400_000);
+  const rows = await db
+    .select({ source: leads.source, metadata: leads.metadata })
+    .from(leads)
+    .where(and(
+      or(
+        like(leads.source, "nl-pending-%"),
+        like(leads.source, "newsletter-%"),
+        like(leads.source, "nl-unsubscribed-%"),
+        like(leads.source, `${EXPIRED_PREFIX}%`),
+      ),
+      gt(leads.createdAt, since),
+    ))
+    .limit(20_000);
+  return countNewsletterFunnel(rows);
+}
+
+export type NewsletterFunnelState = "pending" | "confirmed" | "left" | "expired";
+
+export interface NewsletterFunnelRow {
+  origin: string;
+  state: NewsletterFunnelState;
+  /** Clicked the confirmation link at some point (confirmed, or confirmed and left later). */
+  wasConfirmed: boolean;
+  /** The confirmation looks automated (a mail scanner): counted as a single opt-in downstream. */
+  suspect: boolean;
+  trigger: string | null;
+  device: string | null;
+  pageKind: string | null;
+  utmSource: string | null;
+  interest: string | null;
+  count: number;
+}
+
+const FUNNEL_STATES: Array<[string, NewsletterFunnelState]> = [
+  ["nl-pending-", "pending"],
+  ["newsletter-", "confirmed"],
+  ["nl-unsubscribed-", "left"],
+  [EXPIRED_PREFIX, "expired"],
+];
+
+/** Leads of this flow only (legacy "newsletter-footer" rows have no double opt-in), grouped. */
+export function countNewsletterFunnel(rows: Array<{ source: string; metadata: Record<string, string> | null }>): NewsletterFunnelRow[] {
+  const groups = new Map<string, NewsletterFunnelRow>();
+  for (const row of rows) {
+    const m = row.metadata || {};
+    if (m.flow !== NL_FLOW) continue;
+    const hit = FUNNEL_STATES.find(([prefix]) => row.source.startsWith(prefix));
+    if (!hit) continue;
+    const [prefix, state] = hit;
+    const key = {
+      origin: m.origin || row.source.slice(prefix.length) || "unknown",
+      state,
+      wasConfirmed: !!m.confirmedAt,
+      suspect: !!m.confirmedAt && m.confirmSuspect === "1",
+      trigger: m.trigger || null,
+      device: m.device || null,
+      pageKind: m.pageKind || null,
+      utmSource: m.utmSource || null,
+      interest: m.interest || null,
+    };
+    const id = JSON.stringify(key);
+    const found = groups.get(id);
+    if (found) found.count += 1;
+    else groups.set(id, { ...key, count: 1 });
+  }
+  return Array.from(groups.values()).sort((a, b) => b.count - a.count);
 }
 
 export async function deleteLead(id: number) {
@@ -957,7 +1217,9 @@ export async function listUnsettledCardIntents(limit = 50): Promise<BookingInten
 
 /** Consentimento de marketing atual deste email: o captureLead mantém o
  *  source do lead em "newsletter-*" enquanto a caixa estiver marcada e
- *  retira-o quando é desmarcada, por isso é a fonte de verdade. */
+ *  retira-o quando é desmarcada, por isso é a fonte de verdade. A newsletter
+ *  do site só escreve "newsletter-<origem>" depois do clique de confirmação
+ *  ("nl-pending-*" não conta) e a saída troca-o por "nl-unsubscribed-*". */
 export async function hasNewsletterConsent(email: string): Promise<boolean> {
   const db = await getDb();
   if (!db || !email) return false;
@@ -965,11 +1227,13 @@ export async function hasNewsletterConsent(email: string): Promise<boolean> {
     const rows = await db
       .select({ id: leads.id })
       .from(leads)
-      .where(and(eq(leads.email, email), like(leads.source, "newsletter%")))
+      // Same address match as the newsletter flow (stored lowercased) and its exit.
+      .where(and(sameEmail(email.trim().toLowerCase()), like(leads.source, "newsletter%")))
       .limit(1);
     return rows.length > 0;
   } catch (error) {
-    console.error("[Database] hasNewsletterConsent failed:", error);
+    // Só a classe do erro: a mensagem do Drizzle traz os parâmetros (o email).
+    console.error("[Database] hasNewsletterConsent failed:", safeErrorLabel(error));
     return false;
   }
 }

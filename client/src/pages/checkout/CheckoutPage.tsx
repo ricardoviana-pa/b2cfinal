@@ -52,6 +52,7 @@ import CustomizeStep, {
 import FlexBlock, { type FlexConfig } from "./FlexBlock";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
+import { markNewsletterKnown } from "@/components/marketing/newsletterBrowser";
 
 type Step = "stay" | "customize" | "pay";
 
@@ -581,6 +582,8 @@ export default function CheckoutPage() {
       captureLead
         .mutateAsync({ intentId: intent.id, email, locale: lang, consent: newsletterOptIn })
         .catch(() => {/* fail-soft: the step advance below never blocks on persistence */});
+      // Ticked the newsletter box: the site pop-up stays away (stored after the cookie choice).
+      if (newsletterOptIn) markNewsletterKnown();
     }
     utils.checkout.getIntent.setData({ intentId: intent.id }, (prev) =>
       prev?.intent ? { ...prev, intent: { ...prev.intent, email } } : prev,

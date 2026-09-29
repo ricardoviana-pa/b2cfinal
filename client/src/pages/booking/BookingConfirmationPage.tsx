@@ -8,6 +8,7 @@ import { fetchReservation } from "@/lib/booking-api";
 import { pushDL } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
 import { reservationStatusLabel } from "@/lib/cancellation";
+import { markNewsletterKnown } from "@/components/marketing/newsletterBrowser";
 
 export default function BookingConfirmationPage() {
   const { t, i18n } = useTranslation();
@@ -21,6 +22,8 @@ export default function BookingConfirmationPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  // Just booked: the newsletter pop-up stays away from this guest (stored after the cookie choice).
+  useEffect(() => { markNewsletterKnown(); }, []);
 
   useEffect(() => {
     let active = true;

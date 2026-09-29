@@ -441,10 +441,6 @@
   "footer": {
     "allRightsReserved": "Tous droits réservés",
     "tagline": "Hôtels privés au Portugal.",
-    "newsletterHint": "Inspiration, nouvelles maisons et offres exclusives.",
-    "emailPlaceholder": "Votre e-mail",
-    "subscribe": "S'INSCRIRE",
-    "welcomeInbox": "Bienvenue. Vérifiez votre boîte mail.",
     "destinationsTitle": "DESTINATIONS",
     "servicesTitle": "SERVICES",
     "companyTitle": "ENTREPRISE",
@@ -480,9 +476,6 @@
     "admin": "Admin",
     "paymentBankTransfer": "Virement bancaire",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
-    "nlHeadline": "Restez inspiré.",
-    "nlSub": "Séjours sélectionnés, offres saisonnières et récits de voyage au Portugal — livrés mensuellement.",
-    "nlError": "Une erreur est survenue. Veuillez réessayer.",
     "conciergeServices": "Services de conciergerie",
     "realEstate": "Acheter ou vendre une maison",
     "offices": "Bureaux"
@@ -673,11 +666,6 @@
     "ownersBody": "Nous nous associons à des propriétaires qui partagent notre vision de l'hospitalité. Notre modèle de gestion offre des rendements exceptionnels sans implication opérationnelle de votre part. Équipes internes, normes de qualité hôtelière et une marque qui attire des clients haut de gamme toute l'année.",
     "ownersCta": "EN SAVOIR PLUS SUR NOTRE MODÈLE",
     "ownersNote": "Évaluation confidentielle. Réponse sous 2 heures.",
-    "newsletterOverline": "RESTEZ INSPIRÉ",
-    "newsletterTitle": "Maisons, histoires et offres saisonnières.",
-    "newsletterSuccess": "Bienvenue dans la famille. Vérifiez votre boîte de réception pour une confirmation.",
-    "newsletterPlaceholder": "Votre adresse e-mail",
-    "newsletterCta": "S'INSCRIRE",
     "destComingSoon": "Bientôt disponible",
     "searchCheckin": "Arrivée",
     "searchCheckout": "Départ",
@@ -2161,5 +2149,52 @@
     "faq1A": "Les conditions varient selon l’activité. Consultez sa page pour connaître la difficulté, les limites d’âge et les affaires à prévoir. Notre équipe peut vous conseiller.",
     "faq2Q": "Puis-je associer des activités à mon séjour ?",
     "faq2A": "Oui. Choisissez votre maison et découvrez les activités de la région. Notre concierge peut coordonner le programme. Les activités et les éventuels transferts sont facturés séparément."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Nouveautés et offres",
+      "title": "Les nouveautés et les offres de nos maisons, dans votre boîte mail.",
+      "body": "Des dates qui se libèrent, de nouvelles maisons et des offres.",
+      "notNow": "Pas maintenant",
+      "close": "Fermer"
+    },
+    "house": {
+      "overline": "Alertes pour cette maison",
+      "title": "Envie de savoir quand cette maison aura des dates libres ou un prix de basse saison ?",
+      "body": "Laissez votre e-mail et nous vous prévenons. Vous recevrez aussi les nouveautés et les offres de nos maisons."
+    },
+    "houseInterest": {
+      "overline": "Nouveautés et offres",
+      "title": "Cette maison vous plaît ? Recevez les nouveautés et les offres de nos maisons.",
+      "body": "Laissez votre e-mail : nous notons votre intérêt pour cette maison."
+    },
+    "generic": {
+      "overline": "Nouveautés et offres",
+      "title": "Les nouveautés et les offres de nos maisons, dans votre boîte mail.",
+      "body": "Des dates qui se libèrent, de nouvelles maisons et des offres."
+    },
+    "footer": {
+      "title": "Nouveautés et offres de nos maisons",
+      "body": "Des dates qui se libèrent, de nouvelles maisons et des offres."
+    },
+    "form": {
+      "email": "Votre e-mail",
+      "cta": "S'abonner",
+      "sending": "Envoi…",
+      "success": "Plus qu'une étape : nous vous avons envoyé un e-mail pour confirmer l'abonnement. Ouvrez-le et cliquez sur le bouton.",
+      "errorInvalid": "Cet e-mail n'est pas valable.",
+      "errorProxy": "Utilisez votre e-mail personnel.",
+      "errorGeneric": "Une erreur s'est produite. Réessayez dans quelques instants."
+    },
+    "interest": {
+      "title": "Pour vous envoyer ce qui vous intéresse : quel séjour recherchez-vous ? Facultatif.",
+      "family": "Vacances en famille",
+      "couple": "Escapade à deux",
+      "friends": "Groupe d'amis",
+      "celebration": "Une occasion spéciale",
+      "work": "Séminaire ou retraite",
+      "longStay": "Un mois ou plus",
+      "thanks": "Merci, c'est noté."
+    }
   }
 }

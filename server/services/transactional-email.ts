@@ -10,6 +10,8 @@ import { FUNNEL_I18N } from "./recovery-copy";
 import { sanitizePropertyName } from "@shared/displayName";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import { originEmailSummary, type ServerVisitOrigin } from "./visit-origin";
+import { escapeHtml } from "../lib/brand-page";
+import { CONFIRM_EMAIL_COPY, SENDER_ADDRESS, newsletterLang } from "./newsletter-copy";
 import {
   emailLang,
   skuNameFor,
@@ -30,7 +32,9 @@ const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <booking@portugala
 /* ================================================================
    CORE SEND
    ================================================================ */
-async function sendEmail(to: string, subject: string, html: string, replyTo?: string): Promise<void> {
+/** logLabel: log this label instead of the recipient (emails whose recipient must never reach the logs). */
+async function sendEmail(to: string, subject: string, html: string, replyTo?: string, opts: { logLabel?: string } = {}): Promise<void> {
+  const who = opts.logLabel ? `(${opts.logLabel})` : to;
   if (isProduction && resend) {
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
@@ -39,10 +43,10 @@ async function sendEmail(to: string, subject: string, html: string, replyTo?: st
       html,
       ...(replyTo ? { replyTo } : {}),
     });
-    if (error) throw new Error(`Resend error: ${error.message}`);
-    console.info(`[EMAIL] Sent to ${to}: "${subject}"`);
+    if (error) throw new Error(opts.logLabel ? "Resend error" : `Resend error: ${error.message}`);
+    console.info(`[EMAIL] Sent to ${who}: "${subject}"`);
   } else {
-    console.log(`\n[EMAIL SERVICE - DEV MODE] To: ${to}${replyTo ? ` | Reply-To: ${replyTo}` : ""} | Subject: ${subject}`);
+    console.log(`\n[EMAIL SERVICE - DEV MODE] To: ${who}${replyTo ? ` | Reply-To: ${replyTo}` : ""} | Subject: ${subject}`);
     console.log(html);
     console.log(`[EMAIL SERVICE - DEV MODE] End of email\n`);
   }
@@ -51,9 +55,11 @@ async function sendEmail(to: string, subject: string, html: string, replyTo?: st
 /* ================================================================
    TEMPLATE BASE
    ================================================================ */
-function wrapTemplate(content: string, _preheader?: string, pt = false): string {
+/** opts.lang: the email's language for <html lang> (English when absent, as before);
+ *  opts.tagline: the footer tagline in that language (the PT or EN legacy one when absent). */
+function wrapTemplate(content: string, _preheader?: string, pt = false, opts: { lang?: string; tagline?: string } = {}): string {
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${/^[a-z]{2}$/.test(opts.lang ?? "") ? opts.lang : "en"}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="margin:0;padding:0;background:#FDFBF7;font-family:Arial,sans-serif;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FDFBF7;">
@@ -78,7 +84,7 @@ ${content}
 <tr><td style="padding:30px 0 0 0;"><div style="height:1px;background:#8B7355;"></div></td></tr>
 
 <!-- Footer -->
-${brandFooter(legacyTagline(pt))}
+${brandFooter(opts.tagline ?? legacyTagline(pt))}
 
 </table>
 </td></tr>
@@ -1424,4 +1430,47 @@ export async function sendDatesOpenedEmail(data: {
 
   const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, isPt);
   await sendEmail(data.email, subject, html, BOOKING_NOTIFICATION_EMAIL);
+}
+
+/* ================================================================
+   NEWSLETTER — DOUBLE OPT-IN CONFIRMATION (guest-facing)
+
+   Sent right after a sign-up on the site (pop-up, house or article block,
+   footer). The subscription only exists after the click: the link carries a
+   signed token that expires (server/services/newsletter.ts). Texts in the
+   nine site languages (server/services/newsletter-copy.ts). The recipient is
+   never logged: the log line carries the lead id only.
+   ================================================================ */
+export async function sendNewsletterConfirmation(data: {
+  email: string;
+  locale: string;
+  confirmUrl: string;
+  leadId: number;
+  /** Name of the house when the sign-up came from a house page (PA houses only). */
+  houseName?: string;
+}): Promise<void> {
+  const lang = newsletterLang(data.locale);
+  const T = CONFIRM_EMAIL_COPY[lang];
+  const url = escapeHtml(data.confirmUrl);
+  const P = (text: string, style = `font-family:${SANS};font-size:14px;color:${PA.dark};line-height:1.7;margin:0 0 14px 0;`) =>
+    `<p style="${style}">${text}</p>`;
+  const small = `font-family:${SANS};font-size:12.5px;color:${PA.stoneAA};line-height:1.6;margin:0 0 10px 0;`;
+  const house = (data.houseName || "").trim();
+  const body = [
+    `<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(T.preheader)}</div>`,
+    `<h1 style="font-family:${SERIF};font-size:26px;font-weight:400;line-height:1.3;color:${PA.dark};margin:0 0 16px 0;">${escapeHtml(T.heading)}</h1>`,
+    P(escapeHtml(T.intro)),
+    house ? P(escapeHtml(T.house(house))) : "",
+    `<p style="margin:22px 0 22px 0;"><a href="${url}" style="display:inline-block;background:${PA.dark};color:#FFFFFF;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;padding:14px 28px;letter-spacing:.06em;">${escapeHtml(T.button)}</a></p>`,
+    P(escapeHtml(T.validity), small),
+    P(`${escapeHtml(T.fallback)}<br><a href="${url}" style="color:${PA.gold};word-break:break-all;">${url}</a>`, small),
+    P(escapeHtml(T.ignore), small),
+    P(escapeHtml(SENDER_ADDRESS), small),
+  ].join("\n");
+  // Language of the subscriber all the way: <html lang> and the footer tagline of the recovery emails (9 languages).
+  const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, lang === "pt", {
+    lang,
+    tagline: RECOVERY_I18N[emailLang(lang)].footerTagline,
+  });
+  await sendEmail(data.email, T.subject, html, undefined, { logLabel: `newsletter confirmation, lead #${data.leadId}` });
 }

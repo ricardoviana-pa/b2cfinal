@@ -16,6 +16,9 @@ import { useMeasurementConsent } from "./hooks/useMeasurementConsent";
 
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
+// Decides when the newsletter pop-up may show; the pop-up itself is a second
+// lazy chunk loaded only after the trigger (see NewsletterPopupGate).
+const NewsletterPopupGate = lazy(() => import("./components/marketing/NewsletterPopupGate"));
 
 const Homes = lazy(() => import("./pages/Homes"));
 const PropertyDetail = lazy(() => import("./pages/PropertyDetail"));
@@ -301,6 +304,7 @@ function App({ ssrLocation }: { ssrLocation?: string }) {
               <BackToTop />
               <Suspense fallback={null}><ItineraryDrawer /></Suspense>
               <Suspense fallback={null}><CookieBanner /></Suspense>
+              <Suspense fallback={null}><NewsletterPopupGate /></Suspense>
               <main id="main-content" role="main">
                 <PageTransition><Router /></PageTransition>
               </main>

@@ -19,6 +19,7 @@ import {
 import { uploadRouter } from "./routers/upload";
 import { customerRouter } from "./routers/customer";
 import { bokunRouter } from "./routers/bokun";
+import { newsletterRouter } from "./routers/newsletter";
 
 export const appRouter = router({
   system: systemRouter,
@@ -55,6 +56,7 @@ export const appRouter = router({
   upload: uploadRouter,
   customer: customerRouter,
   bokun: bokunRouter,
+  newsletter: newsletterRouter,
 });
 
 export type AppRouter = typeof appRouter;
