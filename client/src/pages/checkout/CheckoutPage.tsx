@@ -1948,6 +1948,8 @@ export default function CheckoutPage() {
                     <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
                     <p className="body-sm text-pa-dark">{t("checkout.confirmingPayment", "Payment received — confirming your booking…")}</p>
                   </div>
+                ) : isDemo ? (
+                  <p role="status" className="body-sm text-pa-earth">{t('conversion.demoNotice')}</p>
                 ) : termsAccepted && firstName.trim() && lastName.trim() && isValidEmail(email) && isValidPhone(phone) && quoteId && effective && !quoteStale ? (
                   <CheckoutPaymentForm
                     onBeforePay={flushPendingSaves}

@@ -241,7 +241,7 @@ export function DestinationAccess({
         </p>
         <Link
           href={withEditorialTrip(
-            "/contact?subject=services-enquiry&service=airport-shuttle",
+            `/contact?subject=services-enquiry&service=airport-shuttle&destination=${encodeURIComponent(slug)}`,
             search
           )}
           className="mt-auto inline-flex min-h-12 items-center justify-between gap-3 rounded-lg border border-white/60 px-4 py-3 text-base font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"

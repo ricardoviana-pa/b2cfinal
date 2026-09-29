@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { contactEnquiryMessage } from '@shared/contactEnquiryContext';
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
 import { createPartnerRequest, retryPartnerTeamNotification } from "../services/partner-requests";
@@ -265,7 +266,7 @@ export const leadsRouter = router({
 
       if (input.source === 'contact-form' && input.name) {
         const subject = input.metadata?.subject || 'general';
-        const messageBody = input.message?.replace(/^\[.*?\]\s*/, '') || '';
+        const messageBody = contactEnquiryMessage(input.message?.replace(/^\[.*?\]\s*/, '') || '', input.metadata);
         sendContactConfirmation(input.email, input.name).catch(e => console.error("[Email] Contact confirmation failed:", e));
         sendContactNotification({ name: input.name, email: input.email, phone: input.phone, subject, message: messageBody }).catch(e => console.error("[Email] Team notification failed:", e));
         sendContactInquiryNotification({ name: input.name, email: input.email, phone: input.phone, subject, message: messageBody }).catch(e => console.error("[Email] Contact inquiry notification failed:", e));
