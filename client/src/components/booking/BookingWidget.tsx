@@ -9,6 +9,7 @@ import { visitOriginPayload } from "@/lib/visitOrigin";
 import { cn } from "@/lib/utils";
 import { pushDL, pushEcommerce, pushPurchaseOnce, buildPropertyItem, ADDON_PREFIX } from "@/lib/datalayer";
 import { cancellationPolicyText } from "@/lib/cancellation";
+import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { localizeProduct } from "@/lib/localizeProduct";
 import { Calendar, User, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
@@ -1353,7 +1354,7 @@ export default function BookingWidget({
                             ) : (
                               <p className="body-sm text-black font-medium">{planLabel}</p>
                             )}
-                            {!isNonRefundable && (
+                            {!isNonRefundable && hasVerifiedRefundAdvantage(opt, quote.ratePlanOptions!, checkIn) && (
                               <span className="eyebrow font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
                             )}
                           </div>

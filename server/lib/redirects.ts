@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
+import { blogLanguages } from "../../shared/blogPublication.js";
 
 /**
  * SEO 301 redirects for the 2026 Webflow → React migration.
@@ -224,6 +225,24 @@ interface PatternRule {
   resolve: (match: RegExpMatchArray, originalPath: string) => string;
 }
 
+// Use the same published catalogue as the blog, rather than a migration-era
+// shortlist. Cache only route metadata; article bodies are not needed here.
+let publishedBlogLocales: Map<string, string[]> | null = null;
+function isPublishedBlogSlug(slug: string, language: string): boolean {
+  if (!publishedBlogLocales) {
+    publishedBlogLocales = new Map();
+    try {
+      const data = JSON.parse(fs.readFileSync(path.join(process.cwd(), "client", "src", "data", "blog.json"), "utf-8"));
+      for (const article of data.articles ?? []) {
+        if (article.status === "published" && typeof article.slug === "string") {
+          publishedBlogLocales.set(article.slug, blogLanguages(article));
+        }
+      }
+    } catch { /* unavailable catalogue: keep the existing blog-index fallback */ }
+  }
+  return publishedBlogLocales.get(slug)?.includes(language) ?? false;
+}
+
 // === GUESTY BOOKING ENGINE (booking.portugalactive.com) ====================
 // The old Guesty-hosted engine addresses a home by its Guesty listing id
 // (/properties/6965339dbf04fe0013743e2d) or, in an older layout, by
@@ -369,20 +388,16 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     },
   },
 
-  // /journal/<slug> (Webflow new-site era) → /blog/<slug> when present, else /blog
-  // Known new-site blog slugs from client/src/data/blog.json
+  // Preserve a published article and its locale; unknown or unpublished
+  // editions retain the existing blog-index fallback.
   {
-    pattern: /^\/journal\/([^/?#]+)\/?$/i,
+    pattern: /^\/(?:(en|pt|fr|es|it|fi|de|nl|sv)\/)?journal\/([^/?#]+)\/?$/i,
     resolve: (m) => {
-      const slug = m[1];
-      const knownBlogSlugs = new Set([
-        "complete-guide-north-portugal",
-        "porto-douro-valley-guide",
-      ]);
-      // Aliases: /journal/<slug> in the recent migration where <slug> matches a blog post we have
-      if (knownBlogSlugs.has(slug)) return `/en/blog/${slug}`;
-      // Otherwise fall back to /en/blog (preserves session, no 404)
-      return "/en/blog";
+      const language = m[1]?.toLowerCase() ?? "en";
+      const slug = m[2];
+      return isPublishedBlogSlug(slug, language)
+        ? `/${language}/blog/${slug}`
+        : `/${language}/blog`;
     },
   },
 

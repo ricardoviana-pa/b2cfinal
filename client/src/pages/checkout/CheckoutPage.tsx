@@ -36,6 +36,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import { useVisitOriginSync } from "@/hooks/useVisitOriginSync";
 import { formatQuotedEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
 import { cancellationPolicyText, freeCancellationDeadline } from "@/lib/cancellation";
+import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
 import { pushDL, pushEcommerce, buildPropertyItem } from "@/lib/datalayer";
@@ -1438,7 +1439,7 @@ export default function CheckoutPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="body-sm text-pa-dark font-medium">{label}</p>
-                            {!nonRef && (
+                            {!nonRef && hasVerifiedRefundAdvantage(opt, quote!.ratePlanOptions!, checkIn) && (
                               <span className="eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand rounded-sm">
                                 {t("bookingWidget.recommended", "Recommended")}
                               </span>
@@ -1947,6 +1948,8 @@ export default function CheckoutPage() {
                     <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
                     <p className="body-sm text-pa-dark">{t("checkout.confirmingPayment", "Payment received — confirming your booking…")}</p>
                   </div>
+                ) : isDemo ? (
+                  <p role="status" className="body-sm text-pa-earth">{t('conversion.demoNotice')}</p>
                 ) : termsAccepted && firstName.trim() && lastName.trim() && isValidEmail(email) && isValidPhone(phone) && quoteId && effective && !quoteStale ? (
                   <CheckoutPaymentForm
                     onBeforePay={flushPendingSaves}

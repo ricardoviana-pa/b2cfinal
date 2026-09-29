@@ -4,7 +4,10 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { getDisplayName } from '@shared/displayName';
-import { useParams, Link } from 'wouter';
+import { articleHeadings, reviewedArticleDate } from '@shared/articleNavigation';
+import { pushDL } from '@/lib/datalayer';
+import { useParams, Link, useSearch } from 'wouter';
+import { withEditorialTrip } from '@shared/editorialTripContext';
 import ArticleBody from '@/components/blog/ArticleBody';
 import { stripPhotoLines } from '@shared/articlePhotos';
 import { blogLanguageRedirect, isBlogLanguagePublished } from '@shared/blogPublication';
@@ -87,18 +90,20 @@ function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: s
 export default function BlogArticle() {
   const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
+  const search = useSearch();
   // Articles are authored in English; overlay per-locale translations
   // (slug-keyed), loading only the active language's file. EN fallback.
   const blogOverrides = useBlogOverrides(i18n.language);
   const rawArticle = articles.find(a => a.slug === slug && a.status === 'published');
   const article = useMemo(() => mergeBlogOverride(rawArticle, blogOverrides), [rawArticle, blogOverrides]);
   const redirect = rawArticle ? blogLanguageRedirect(rawArticle, i18n.language) : null;
+  const reviewed = article ? reviewedArticleDate(article,i18n.language) : undefined;
   useEffect(() => { if (redirect) window.location.replace(redirect + window.location.search); }, [redirect]);
   usePageMeta({
     title: article?.seoTitle || article?.title,
     description: article?.seoDescription || article?.excerpt,
     publishedLocales: article?.publishedLocales,
-    image: article?.featuredImage,
+    image: article?.coverImage || article?.featuredImage,
     url: article ? `/blog/${article.slug}` : undefined,
     type: 'article',
   });
@@ -112,7 +117,7 @@ export default function BlogArticle() {
       description: article.excerpt,
       image: article.featuredImage || (article as any).coverImage,
       publishDate: article.publishDate,
-      modifiedDate: article.publishDate,
+      modifiedDate: reviewed || article.publishDate,
       authorName: article.author.name,
       authorType: article.author.type,
       language: i18n.language,
@@ -120,7 +125,7 @@ export default function BlogArticle() {
       wordCount: body ? body.split(/\s+/).filter(Boolean).length : null,
       readTimeMinutes: article.readTime ?? null,
     });
-  }, [article, i18n.language]);
+  }, [article, i18n.language, reviewed]);
 
   // Homes to send the reader to. Keyed off rawArticle, not the merged one:
   // destinationTag is language-independent and the locale overrides load
@@ -140,7 +145,7 @@ export default function BlogArticle() {
         <Header variant="solid" />
         <div className="pt-32 pb-20 text-center container">
           <h1 className="text-[#1A1A18] mb-4">{t('blogArticle.notFound')}</h1>
-          <Link href="/blog" className="btn btn-ghost">{t('blogArticle.backToJournal')}</Link>
+          <Link href={withEditorialTrip("/blog",search)} className="btn btn-ghost">{t('blogArticle.backToJournal')}</Link>
         </div>
         <Footer />
       </div>
@@ -166,15 +171,16 @@ export default function BlogArticle() {
       {/* Article Header */}
       <section className="pt-28 md:pt-36 pb-8">
         <div className="container max-w-3xl mx-auto">
-          <Link href="/blog" className="inline-flex items-center gap-2 text-[0.8125rem] text-[#726D63] hover:text-[#1A1A18] transition-colors mb-8">
+          <Link href={withEditorialTrip("/blog",search)} className="inline-flex items-center gap-2 text-[0.8125rem] text-[#726D63] hover:text-[#1A1A18] transition-colors mb-8">
             <ArrowLeft className="w-4 h-4" /> {t('blogArticle.backToJournal')}
           </Link>
           <p className="eyebrow mb-4">{blogCategoryLabel(article.category, t)}</p>
           <h1 className="text-[#1A1A18] mb-6">{article.title}</h1>
+          {reviewed && <p className="body-lg mb-6">{article.excerpt}</p>}
           <div className="flex flex-wrap items-center gap-4 text-sm text-[#726D63]">
             <span className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
-              {new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' })}
+              {reviewed ? t('planning.updated') + ' ' : ''}{new Date(reviewed || article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric',timeZone:'UTC' })}
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5" />
@@ -202,7 +208,7 @@ export default function BlogArticle() {
             className="w-full aspect-[16/9] object-cover"
             width={1200} height={675} fetchPriority="high"
           />
-          {article.imageCaption && <p className="text-xs text-pa-stone-aa mt-3">{article.imageCaption}</p>}
+          {article.imageCaption && <p className="text-xs text-pa-earth mt-3">{article.imageCaption}</p>}
         </div>
       </section>
 
@@ -212,7 +218,7 @@ export default function BlogArticle() {
       )}
 
       {/* Answer capsule — citable TL;DR for AI engines */}
-      {article.excerpt && (
+      {article.excerpt && !reviewed && (
         <section className="pb-10">
           <div className="container max-w-3xl">
             <AnswerCapsule
@@ -231,7 +237,8 @@ export default function BlogArticle() {
       {/* Article Content */}
       <section className="pb-16">
         <div className="container max-w-3xl mx-auto">
-          <ArticleBody content={article.content} />
+          {reviewed && <nav aria-label={t('planning.inThisGuide')} className="bg-pa-warm border-y border-pa-sand p-6 mb-10"><h2 className="text-base font-medium mb-3">{t('planning.inThisGuide')}</h2><ol className="grid sm:grid-cols-2 gap-x-7 gap-y-1">{articleHeadings(article.content).map(h=><li key={h.id}><a href={`#${h.id}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4" onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:h.id,action:'chapter'})}>{h.title}</a></li>)}</ol></nav>}
+          <ArticleBody content={article.content} onLink={action=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'body',action})} />
         </div>
       </section>
 
@@ -265,7 +272,7 @@ export default function BlogArticle() {
             {article.commercialIntent === 'corporate' ? t('corporate.brief') : t('blogArticle.ctaBody')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href={article.commercialIntent === 'corporate' ? '/contact?subject=events&intent=corporate' : '/homes'} className="btn-white inline-flex items-center gap-2">
+            <Link href={withEditorialTrip(article.commercialIntent === 'corporate' ? '/contact?subject=events&intent=corporate' : article.slug === 'viana-do-castelo-guide' ? '/homes?location=viana-do-castelo' : article.destinationTag === 'minho-coast' ? '/homes?destination=minho' : '/homes', search)} onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'cta',action:'homes'})} className="btn-white inline-flex items-center gap-2">
               {article.commercialIntent === 'corporate' ? t('destinationGrowth.corporateCta') : t('blogArticle.ctaExplore')} <ArrowRight size={14} />
             </Link>
             <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost-light inline-flex items-center gap-2">
@@ -285,7 +292,7 @@ export default function BlogArticle() {
             <p className="text-pa-stone-aa mb-8">{t('blogArticle.relatedHomesSub')}</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {relatedHomes.map(home => (
-                <Link key={home.slug} href={`/homes/${home.slug}`} className="group block">
+                <Link key={home.slug} href={withEditorialTrip(`/homes/${home.slug}`,search)} className="group block">
                   <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-3">
                     {home.image && (
                       <img
@@ -325,7 +332,7 @@ export default function BlogArticle() {
             <h2 className="text-[#1A1A18] mb-8">{t('blogArticle.relatedStories')}</h2>
             <div className="grid md:grid-cols-3 gap-8">
               {relatedArticles.map(a => (
-                <Link key={a.id} href={`/blog/${a.slug}`} className="group block">
+                <Link key={a.id} href={withEditorialTrip(`/blog/${a.slug}`,search)} className="group block">
                   <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4">
                     <img
                       src={cdnResize((a as any).coverImage || (a as any).featuredImage || '/images/destinations/minho-coast.webp', 768)}

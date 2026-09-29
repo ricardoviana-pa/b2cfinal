@@ -246,6 +246,8 @@ export default function Footer() {
               <span className="mx-3 text-white/15" aria-hidden="true">·</span>
               <Link href="/legal/terms" className="hover:text-white/60 transition-colors">{t('footer.terms')}</Link>
               <span className="mx-3 text-white/15" aria-hidden="true">·</span>
+              <a href="/destinations/photography.html" className="hover:text-white/60 transition-colors">{({pt:"Fotografia",en:"Photography",de:"Fotografie",es:"Fotografía",fi:"Valokuvat",fr:"Photographie",it:"Fotografia",nl:"Fotografie",sv:"Fotografi"} as Record<string,string>)[language] || "Photography"}</a>
+              <span className="mx-3 text-white/15" aria-hidden="true">·</span>
               <Link href="/legal/cookies" className="hover:text-white/60 transition-colors">{t('footer.cookies')}</Link>
               <span className="mx-3 text-white/15" aria-hidden="true">·</span>
               <button type="button" onClick={openCookiePreferences} className="hover:text-white transition-colors underline underline-offset-2">{t('cookieBanner.managePreferences')}</button>

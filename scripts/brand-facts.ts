@@ -47,39 +47,26 @@ async function countPublicHomes() {
   return { total: all.length, own, partner, source: "properties-store" };
 }
 
-function experiencePrices(): string[] {
-  try {
-    const raw = JSON.parse(fs.readFileSync(path.join(ROOT, "client", "src", "data", "experienceDetails.json"), "utf8"));
-    const list = Array.isArray(raw) ? raw : raw.experiences || Object.values(raw)[0];
-    return list
-      .filter((e: any) => e && e.name && e.price)
-      .map((e: any) => `- ${String(e.name).split(/ — | – |: /)[0]}: ${String(e.price).replace(/^from /i, "from ")}`);
-  } catch {
-    return [];
-  }
-}
-
 function llmsTxt(facts: typeof FACTS & { HOME_COUNT: number; HOME_COUNT_LABEL: string }): string {
   const regions = facts.REGIONS.join(", ");
   return `# Portugal Active — Private Hotels in Portugal
 
-> Portugal Active operates ${facts.HOME_COUNT_LABEL} private hotels across Portugal: private homes run by one in-house team to hotel standards — dedicated concierge, private chef, housekeeping and curated experiences. The privacy of a home, the service of a hotel. Book direct for the best rate.
+> Portugal Active offers a collection of holiday homes and travel experiences in Portugal. The public catalogue combines directly managed homes and partner properties. Location, configuration, included services, availability and booking method vary by listing.
 
 ## What we do
-- Private hotels (whole private homes with hotel service) in ${regions}
-- Dedicated WhatsApp concierge before, during and after every stay (response within ${facts.CONCIERGE_SLA_HOURS} hours)
-- Private chef and in-home dining
+- Holiday homes and partner properties in ${regions}. Some listings are individual units within a larger property; check the configuration.
+- Guest support and optional services: consult the property and booking terms for scope and availability.
+- Private chef and in-home dining may be available by arrangement; they are not universally included.
 - Curated experiences: horseback riding, canyoning, surfing, sailing, e-bike tours, stand-up paddle, hiking
 - Private events: weddings, corporate retreats, celebrations
 - Best rate guarantee: same home, dates and conditions cheaper on Airbnb or Booking.com → we match it (https://www.portugalactive.com/en/best-rate-guarantee)
 
 ## Key facts
 - Founded ${facts.FOUNDED} in Viana do Castelo, Portugal
-- ${facts.HOME_COUNT_LABEL} private hotels operated end to end by our own team
-- Every home prepared with our ${facts.CHECKLIST_POINTS}-item checklist before each arrival
+- ${facts.HOME_COUNT_LABEL} public catalogue listings, including directly managed homes and partner properties; this is not a count of unique whole properties available for particular dates.
 - Regions: ${regions}
 - Website in ${facts.LANGUAGES} languages: English, Portuguese, Spanish, French, Italian, German, Dutch, Swedish, Finnish
-- Direct booking, no service fees
+- Check the property page for direct booking or partner enquiry. Only the dated quote establishes the total and terms; an enquiry is not a confirmed stay.
 
 ## Contact
 - [Website](https://www.portugalactive.com)
@@ -87,8 +74,8 @@ function llmsTxt(facts: typeof FACTS & { HOME_COUNT: number; HOME_COUNT_LABEL: s
 - Phone: +351 258 358 434
 - WhatsApp: +351 927 161 771
 
-## Experience prices (per person)
-${experiencePrices().join("\n")}
+## Prices and services
+Consult each experience and property page for the pricing unit, included services and confirmation process. No generic per-person price list applies to the entire collection.
 
 ## Pages
 - [Homes](https://www.portugalactive.com/en/homes)

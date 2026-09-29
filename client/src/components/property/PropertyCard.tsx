@@ -6,6 +6,7 @@
 
 import { useState, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'wouter';
+import { propertyTripHref } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
 import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
@@ -164,7 +165,7 @@ export default function PropertyCard({
 
   return (
     <Link
-      href={`/homes/${property.slug}${checkin && checkout ? `?checkin=${encodeURIComponent(checkin)}&checkout=${encodeURIComponent(checkout)}${guests && guests > 1 ? `&guests=${guests}` : ''}` : ''}`}
+      href={propertyTripHref(property.slug, {checkin, checkout, guests})}
       onClick={handleCardClick}
     >
       <article className="group cursor-pointer block">

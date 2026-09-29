@@ -292,6 +292,14 @@ function App({ ssrLocation }: { ssrLocation?: string }) {
               {/* Skip to content link for keyboard navigation */}
               <a
                 href="#main-content"
+                onClick={event => {
+                  const content = document.getElementById('main-content');
+                  const target = content?.querySelector<HTMLElement>('h1') || content;
+                  if (!target) return;
+                  event.preventDefault();
+                  target.tabIndex = -1;
+                  target.focus();
+                }}
                 className="absolute top-0 left-0 z-[9998] px-4 py-2 bg-[#8B7355] text-white text-sm font-medium rounded-b-md transform -translate-y-full focus:translate-y-0 transition-transform"
               >
                 {t('header.skipToContent')}
@@ -301,7 +309,7 @@ function App({ ssrLocation }: { ssrLocation?: string }) {
               <BackToTop />
               <Suspense fallback={null}><ItineraryDrawer /></Suspense>
               <Suspense fallback={null}><CookieBanner /></Suspense>
-              <main id="main-content" role="main">
+              <main id="main-content" role="main" tabIndex={-1}>
                 <PageTransition><Router /></PageTransition>
               </main>
             </TooltipProvider>
