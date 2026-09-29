@@ -329,7 +329,7 @@
       "note": "Ensimmäinen portugalilainen kaupunki maailman kolmen kärkeen"
     },
     "journalSectionTitle": "Päiväkirjasta — tarinoita Viana do Castelosta",
-    "whereToStayIntro": "Portugal Active hoitaa huolellisesti valittua kotiportfoliota Viana do Castelossa ja sen ympäristössä, restauroiduista kauppiaiden aatelistaloista historiallisessa keskustassa yksityisiin kartanoihin Lima-laaksossa ja Atlantille avautuviin kohteisiin rannikolla. Jokaista kotia hoidetaan hotellistandardein: tarjolla on varakokki, concierge varaa pöytiä, joita varauksettomat asiakkaat eivät saa, ja kohde tarkastetaan 147 kohdan listan mukaan ennen jokaista saapumista. Alla oleva valikoima on vain lähtökohta. Koko kokoelmaa voi etsiä kapasiteetin, päivämäärien ja historiallisen keskustan, joen tai valtameren läheisyyden mukaan.",
+    "whereToStayIntro": "Portugal Active hoitaa huolellisesti valittua kotiportfoliota Viana do Castelossa ja sen ympäristössä, restauroiduista kauppiaiden aatelistaloista historiallisessa keskustassa yksityisiin kartanoihin Lima-laaksossa ja Atlantille avautuviin kohteisiin rannikolla. Palvelut vaihtelevat kodin mukaan. Tarkista ennen varaamista kohdesivulta ja tarjouksesta hintaan sisältyvä siivous, valinnaiset palvelut ja mahdolliset lisämaksut. Alla oleva valikoima on vain lähtökohta. Koko kokoelmaa voi etsiä kapasiteetin, päivämäärien ja historiallisen keskustan, joen tai valtameren läheisyyden mukaan.",
     "thingsToDoIntro": "Seuraavassa on se, mitä paikalliset suosittelisivat ensikertalaiselle kävijälle, jolla on kolme päivää. Historiallinen keskusta on riittävän pieni kierrettäväksi jalan yhdessä iltapäivässä. Kukkula ansaitsee oman aamunsa. Rantavyöhyke on oma maailmansa, joen ja valtameren välissä. Ja se, mikä jää kaupungin ulkopuolelle — Lima-laakso, Ponte de Lima, Caminha Espanjan rajan kupeessa, Peneda-Gerês — on syy, jonka vuoksi useimmat kävijät palaavat toiselle vierailulle.",
     "thingsToDo": [
       {
@@ -497,7 +497,7 @@
         "description": "Lima-laakso on Loureiro-rypäleen kotiseutu. Raikas, vähäalkoholinen ja sitruksinen — juodaan nuorena ja jääkylmänä."
       }
     ],
-    "experiencesIntro": "Seuraavassa on valikoima elämyksiä, joita concierge järjestää, yksinään tai yhdistettynä, Portugal Activen kodeissa majoittuville vieraille. Jokainen voidaan varata kahdenkymmenenneljän tunnin varoitusajalla, useimmat lyhyemmälläkin. Yksikään ei vaadi autoa: concierge hoitaa kuljetukset, varaukset ja (tarvittaessa) esittelyt tuottajille, viininvalmistajille ja ohjaajille, jotka yleensä eivät ota varauksettomia asiakkaita.",
+    "experiencesIntro": "Vahvista tässä esiteltyjen elämysten tapaamispaikka, kuljetus, saatavuus ja hinta ennen varaamista.",
     "experiences": [
       {
         "name": "Vinho Verde -maistelu Lima-laaksossa",
@@ -630,7 +630,7 @@
       },
       {
         "question": "Onko Viana do Castelo turvallinen perheille?",
-        "answer": "Kyllä — se on yksi Euroopan turvallisimmista pikkukaupungeista. Praia Norte on valvottu kesällä. Historiallinen keskusta on kävellen kierrettävä, hyvin valaistu ja jalankulkijoille. Terveydenhuolto on erinomaista (Santa Lúzian sairaala on viiden minuutin päässä kaikista kohteistamme)."
+        "answer": "Historiallinen keskusta on kompakti ja siihen voi tutustua kävellen. Tarkista perhematkaa varten kodin pohjaratkaisu, kulku rannalle ja uima-altaan järjestelyt. Matka-aika Hospital de Santa Luziaan riippuu kohteen sijainnista."
       },
       {
         "question": "Mikä on Viana do Castelon tyypillistä ruokaa?",
@@ -642,7 +642,7 @@
       },
       {
         "question": "Mitkä ovat parhaat vuokrahuvilat Viana do Castelossa?",
-        "answer": "Hoidamme kahtatoista kohdetta Vianassa ja sen ympäristössä — restauroiduista kivisistä maalaistaloista Lima-laaksossa nykyaikaisiin huviloihin Cabedelon dyynien yllä. Kaikkiin sisältyy päivittäinen siivous, paikallinen concierge ja varakokki. Katso Vianan kokoelmamme yltä."
+        "answer": "Vertaile yllä olevan valikoiman koteja sijainnin, makuuhuoneiden, henkilömäärän ja vahvistetun varustelun perusteella. Palvelut vaihtelevat kodin mukaan. Tarkista ennen varaamista kohdesivulta ja tarjouksesta hintaan sisältyvä siivous, valinnaiset palvelut ja mahdolliset lisämaksut."
       }
     ],
     "ownersCTA": {
@@ -915,7 +915,7 @@
     "howToGetHere": "Porton lentokenttä (OPO) noin 35 min A28:aa pitkin. Braga 30 min itään. Viana do Castelo 25 min pohjoiseen. Ei rautatietä: lähimmät asemat ovat Barcelosissa ja Viana do Castelossa.",
     "bestTimeToVisit": "Kesäkuu ja syyskuu. Lämpimät päivät, pitkät rannat, joilla on tilaa, ja iltapäivän tuuli, joka sopii purjelautailuun ja leijasurffaukseen. Heinä- ja elokuu täyttä kesää varten.",
     "whatToExpect": "Rauhallinen rantakaupunki joen suulla, rannikon luonnonpuiston sisällä. Dyynejä, mäntyjä ja leveitä rantoja, ei jyrkänteitä eikä yöelämää.",
-    "whereToStayIntro": "Esposenden kotimme ovat kaksi huoneistoa meren äärellä, ja molemmat sopivat perheille ja pienille ryhmille. Toinen on kolmen makuuhuoneen parvekkeellinen huoneisto Marinhasissa, viidensadan metrin päässä rannasta ja luonnonpuistosta. Toinen on merinäköalainen kaksikerroksinen huoneisto rantabulevardi Avenida dos Banhosilla, ja siinä on kolme makuuhuonetta kahdessa kerroksessa. Molemmista on lyhyt kävelymatka rannalle ja kaupunkiin, ja molemmista huolehtii Minhon tiimimme. Vieraat, jotka haluavat talon uima-altaalla, yhdistävät usein täkäläisen rannikon koteihimme Viana do Castelon ympäristössä, kahdenkymmenenviiden minuutin päässä pohjoisessa.",
+    "whereToStayIntro": "Nykyisessä valikoimassamme ei ole koteja Esposendessa. Alla on vaihtoehtoja muualla Minhossa, ja kunkin kodin paikkakunta on ilmoitettu. Suunnittele tämän oppaan avulla vierailu Esposendeen ja tarkista matka valitsemastasi tukikohdasta.",
     "journalSectionTitle": "Päiväkirjasta: tarinoita Esposendesta",
     "thingsToDoIntro": "Esposende on pitkien kävelyjen ja verkkaisten päivien paikka, ei nähtävyyslistojen. Rannikko on syy tulla, ja se muuttuu pohjoisesta etelään: joen suu ja kaupunki, mäntymetsä ja dyynit, sitten vanha merilevänkerääjien kylä Apúlia. Näin me sen jakaisimme.",
     "thingsToDo": [
@@ -1032,7 +1032,7 @@
         "description": "Yksi Vinho Verde -nimityksen alialueista, tunnettu raikkaista, sitruksisista valkoviineistään. Juodaan nuorena ja kylmänä kalan kanssa."
       }
     ],
-    "experiencesIntro": "Seuraavassa on elämyksiä, joita conciergemme järjestää Esposenden kodeissamme yöpyville vieraille. Useimmat vaativat päivän varoitusajan, ja concierge voi järjestää kuljetukset kaikkialle, missä muuten tarvittaisiin autoa.",
+    "experiencesIntro": "Vahvista tässä esiteltyjen elämysten tapaamispaikka, kuljetus, saatavuus ja hinta ennen varaamista.",
     "experiences": [
       {
         "name": "Suppailua tai melontaa Cávadon suistossa",
@@ -1086,7 +1086,7 @@
       },
       {
         "question": "Sopiiko Esposende lapsiperheille?",
-        "answer": "Sopii. Rannat ovat pitkiä eivätkä ruuhkaisia, suistossa vesi on tyynempää, ja kaupunki on pieni ja helppo kiertää. Päärannoilla on uimakaudella hengenpelastajat. Molemmat merenrantahuoneistomme sopivat perheille."
+        "answer": "Sopii. Rannat ovat pitkiä eivätkä ruuhkaisia, suistossa vesi on tyynempää, ja kaupunki on pieni ja helppo kiertää. Päärannoilla on uimakaudella hengenpelastajat. Tällä hetkellä ehdotetut majoitukset sijaitsevat muualla Minhossa; tarkista kunkin kodin sijainti ennen varaamista."
       },
       {
         "question": "Keitä olivat Apúlian sargaceirot?",
@@ -1109,7 +1109,7 @@
     }
   },
   "porto": {
-    "name": "Porto ja Douro",
+    "name": "Porto",
     "tagline": "Kaupunki, joki, viini.",
     "description": "Kaupunki, joki, viini.",
     "heroSubtitle": "Kaupunki, joka antoi Portugalille nimensä, ja joki, joka sen rakensi.",
@@ -1117,8 +1117,8 @@
     "whyDescription": "Kaupunki, joka antoi Portugalille nimensä. Portviinikellareita reunustamassa joen rantaa. Michelin-tähden ravintoloita restauroiduissa varastoissa. Luova energia, joka saa Lissabonin tuntumaan tavanomaiselta. Porto on kompakti, kävellen kierrettävä ja loputtoman palkitseva niille, jotka käyttävät aikaa tutkiakseen postikorttinäkymien ulkopuolelle.\n\nKaupungin ulkopuolella Douron laakso avautuu UNESCOn maailmanperintökohteeksi luokitelluiksi pengerretyiksi viinitarhoiksi. Täältä portviini tulee, mutta täällä tehdään myös Portugalin innostavimpia pöytäviinejä. Vieraile kartanolla, maistele viininvalmistajan kanssa ja ymmärrä, miksi tätä aluetta pidetään yhtenä Euroopan kauneimmista.",
     "howToGetHere": "Porton lentokenttä (OPO) 1 h 30 min Pinhãosta. Douron linjan juna Porto São Bentosta, 2 h 15 min.",
     "bestTimeToVisit": "Syyskuu sadonkorjuuta varten; huhtikuusta kesäkuuhun vihreitä viinitarhoja varten.",
-    "seoTitle": "Douron laakso, Portugali: UNESCOn maailmanperintöviinialue | Portugal Active",
-    "seoDescription": "Täydellinen opas Douron laaksoon — pengerrettyjä viinitarhoja, portviinikartanoita, jokiristeilyjä ja valikoidut majoituksemme.",
+    "seoTitle": "Porto: Kaupunkiopas, Liikkuminen ja Majoitus",
+    "seoDescription": "Suunnittele matka Portoon: vertaile historiallista keskustaa, Gaiaa ja Atlantin rannikkoa, lentoasemayhteyksiä ja majoituspaikkojen sijaintia.",
     "highlights": [
       "UNESCOn maailmanperintökohteen kulttuurimaisema",
       "Vuosisatoja vanhoja portviinikartanoita",
@@ -1411,7 +1411,7 @@
     "bestTimeToVisit": "Huhtikuusta kesäkuuhun ja syyskuusta lokakuuhun täydellistä säätä varten. Heinä- ja elokuu ovat sesonkia korkeammin hinnoin.",
     "whatToExpect": "Kultaista valoa, pastellinsävyisiä rakennuksia, maailmanluokan pastéis de nata -leivoksia ja rannikko, joka ulottuu surffiaalloista glamoröösiin beach clubeihin.",
     "seoTitle": "Lissabon — yksityiskoteja Lissabonissa ja rannikolla",
-    "seoDescription": "Löydä Lissabon: kultaista valoa, rannikon viehätystä, ajatonta eleganssia. Yksityiskoteja pian.",
+    "seoDescription": "Tutustu Lissaboniin, Sintraan ja Cascaisiin, vertaile majoitusalueita ja tarkista kunkin kodin sijainti, palvelut ja varausehdot.",
     "highlights": [
       "Euroopan aurinkoisin pääkaupunki, 300 aurinkoista päivää",
       "Cascais ja Sintra — rannikon glamour kohtaa satumaiset palatsit",
@@ -1451,7 +1451,7 @@
     "bestTimeToVisit": "Huhtikuusta kesäkuuhun luonnonkukkia ja leutoa säätä varten. Syys–lokakuu sadonkorjuuta varten. Rannikko on kaunis ympäri vuoden.",
     "whatToExpect": "Laajoja, avoimia maisemia, syvää hiljaisuutta, tähtien täyttämiä pimeitä taivaita ja ruokaperinne, joka on juurtunut yksinkertaisuuteen ja laadukkaisiin raaka-aineisiin.",
     "seoTitle": "Alentejo — yksityiskoteja Alentejossa",
-    "seoDescription": "Löydä Alentejo: aaltoilevia tasankoja, korkkitammia, villi rannikko. Yksityiskoteja pian.",
+    "seoDescription": "Tutustu Alentejon rannikkoon ja sisämaahan. Vertaile Comportan ja Ferreira do Alentejon koteja sekä niiden sijaintia ja varausehtoja.",
     "highlights": [
       "Rota Vicentina — Euroopan villein rannikko",
       "Korkkitammimetsiä ja kultaisia vehnätasankoja",
@@ -1498,7 +1498,7 @@
       "note": "Myönnetty Algarvelle toistuvasti viimeisen vuosikymmenen aikana"
     },
     "whyOverline": "MIKSI ALGARVE",
-    "whyDescription": "Kaikki tuntevat Algarven sen lomakeskuksista, golfista ja kesärannoista, ja syystä: tämä on Euroopan aurinkoisin rannikko, jonka meri on lämmin kesäkuusta lokakuuhun ja talvi tuntuu englantilaiselta keväältä. Sitä, mitä useimmat kävijät eivät koskaan näe, on kaikki muu. Länsirannikko Sagresin ja Aljezurin ympärillä, missä kalliot kohtaavat avoimen Atlantin ja surffaajilla on tyhjät rannat vain itselleen. Ria Formosa idässä, saarten, suola-altaiden ja kalastajakylien laguuni, joka on yksi Portugalin hienoimmista luonnonpuistoista. Serra de Monchiquen ja Barrocalin kukkulat korkkitammineen, appelsiinilehtoineen, valkoisiksi kalkittuine kylineen ja ravintoloineen, jotka eivät ole koskaan nähneet turistimenua. Ja huvilat: Quinta do Lagon ja Vale do Lobon muurien takana, keskirannikon kallioilla ja lännen maaseudulla on yksityiskoteja, jotka tekevät Algarvesta jotakin aivan muuta kuin lomakeskusloman — talon, jossa on lämmitetty allas, kokki keittiössä ja concierge, joka tietää, mikä poukama on tyhjä kello neljältä iltapäivällä. Algarven kotimme ovat juuri niitä taloja.",
+    "whyDescription": "Kaikki tuntevat Algarven sen lomakeskuksista, golfista ja kesärannoista, ja syystä: tämä on Euroopan aurinkoisin rannikko, jonka meri on lämmin kesäkuusta lokakuuhun ja talvi tuntuu englantilaiselta keväältä. Sitä, mitä useimmat kävijät eivät koskaan näe, on kaikki muu. Länsirannikko Sagresin ja Aljezurin ympärillä, missä kalliot kohtaavat avoimen Atlantin ja surffaajilla on tyhjät rannat vain itselleen. Ria Formosa idässä, saarten, suola-altaiden ja kalastajakylien laguuni, joka on yksi Portugalin hienoimmista luonnonpuistoista. Serra de Monchiquen ja Barrocalin kukkulat korkkitammineen, appelsiinilehtoineen, valkoisiksi kalkittuine kylineen ja ravintoloineen, jotka eivät ole koskaan nähneet turistimenua. Vertaile kotia valitessasi sijaintia, allasvarustelua ja palveluita. Altaan lämmitys ja yksityiskokki riippuvat kohteesta ja sovituista varausehdoista.",
     "highlights": [
       "Kolmesataa aurinkoista päivää vuodessa ja Portugalin lämpimin meri kesäkuusta lokakuuhun",
       "Kalkkikivikallioita, meriluolia ja poukamarantoja Lagosista Albufeiraan — Benagil, Marinha, Falésia",
@@ -1511,7 +1511,7 @@
     "howToGetHere": "Faron lentokenttä (FAO) on 20–60 moottoritieminuutin päässä kodeistamme — 20 Quinta do Lagoon, 40 Albufeiraan, 60 Lagosiin ja länteen. Lissabon on kaksi ja puoli tuntia A2:ta pitkin. Järjestämme lentokenttäkuljetukset jokaiselle oleskelulle.",
     "bestTimeToVisit": "Toukokuusta kesäkuuhun ja syyskuusta lokakuuhun: kaksikymmentäkaksi–kaksikymmentäkahdeksan astetta, lämmin meri sekä rannat ja ravintolat ilman elokuun tungosta. Heinä- ja elokuu taattuun lämpöön. Talvi on Manner-Euroopan leudoin — viisitoista–kahdeksantoista astetta, golfia, vaellusta ja mantelinkukkia helmikuussa.",
     "whatToExpect": "Ensinnäkin aurinkoa: Portugalin kuivin ja aurinkoisin kolkka. Rannikko, joka muuttuu viidenkymmenen kilometrin välein — kultaisia kallioita ja luolia keskellä, avoin Atlantti ja surffia lännessä, laguuneja ja särkkäsaaria idässä. Lomakeskuksia siellä, missä niitä odottaa, ja muutaman minuutin päässä sisämaassa tai rannikolla hiljaisempi Algarve kylineen, hedelmätarhoineen ja kalasatamineen.",
-    "whereToStayIntro": "Portugal Active hoitaa pientä kokoelmaa koteja eri puolilla Algarvea: huviloita Quinta do Lagon sisällä ja keskirannikolla Albufeiran ja Vilamouran välissä, taloja idässä Taviran ympärillä ja tiloja lännessä Lagosin lähellä. Jokaista hoidetaan samalla tasolla kuin pohjoisen kotejamme — lämmitetty allas, täytetty keittiö, yksityiskokki pyynnöstä ja alueella asuva concierge.",
+    "whereToStayIntro": "Valitse Algarven länsi-, keski- tai itäosa ja vertaile kunkin kodin tarkkaa sijaintia ja varustelua. Altaan lämmitys, ateriat, yksityiskokki ja kuljetukset eivät sisälly jokaiseen majoitukseen; tarkista saatavuus ja lisämaksut kohdesivulta ja tarjouksesta.",
     "journalSectionTitle": "Päiväkirjasta — tarinoita Algarvesta",
     "thingsToDoIntro": "Algarve on sataviisikymmentä kilometriä leveä ja sillä on kolme erilaista rannikkoa, joten ensimmäinen päätös on, minne majoittua. Seuraavassa on conciergemme lista ensivierailulle, järjestettynä lännestä itään, ajoaikoineen keskirannikolta.",
     "thingsToDo": [
@@ -1680,7 +1680,7 @@
         "description": "Maurilaisen muotoisia manteli- ja viikunamakeisia jokaisessa pastelariassa; dom rodrigo on se, jota kannattaa maistaa."
       }
     ],
-    "experiencesIntro": "Algarvessa elämyksemme järjestää concierge paikallisten kumppaneiden kanssa, joiden kanssa työskentelemme joka viikko — veneitä, oppaita, kokkeja ja golfkenttiä — ja ne toteutetaan samalla tasolla kuin oman tiimimme elämykset pohjoisessa.",
+    "experiencesIntro": "Vahvista tässä esiteltyjen elämysten tapaamispaikka, kuljetus, saatavuus ja hinta ennen varaamista.",
     "experiences": [
       {
         "name": "Benagil ja luolat veneellä tai kajakilla",
@@ -1782,7 +1782,7 @@
       },
       {
         "question": "Milloin meri on tarpeeksi lämmin uimiseen?",
-        "answer": "Kesäkuusta lokakuuhun. Meri saavuttaa etelärannikolla kaksikymmentäkaksi–kaksikymmentäkolme astetta elo- ja syyskuussa; länsirannikko on kaksi tai kolme astetta kylmempi ja karumpi. Useimmissa kodeissamme on lämmitetty allas välikausia varten."
+        "answer": "Kesäkuusta lokakuuhun. Meri saavuttaa etelärannikolla kaksikymmentäkaksi–kaksikymmentäkolme astetta elo- ja syyskuussa; länsirannikko on kaksi tai kolme astetta kylmempi ja karumpi. Jos haluat lämmitetyn uima-altaan, tarkista valitun kodin varustelu, lämmityksen saatavuus ja mahdolliset lisämaksut."
       },
       {
         "question": "Kuinka kaukana Faron lentokenttä on huviloista?",
@@ -1790,7 +1790,7 @@
       },
       {
         "question": "Kannattaako Algarveen matkustaa talvella?",
-        "answer": "Kyllä, jos tarkoitus ei ole ranta. Viisitoista–kahdeksantoista astetta, enemmän aurinkoa kuin Pohjois-Euroopassa kesäkuussa, tyhjiä polkuja, mantelinkukkia helmikuussa, golfia ja pitkiä lounaita. Hinnat ovat alimmillaan ja kodeissa on lämmitetyt altaat ja takat."
+        "answer": "Talvi voi sopia kävelyyn, golfiin ja kaupunkeihin tutustumiseen; osa nähtävyyksistä ja ravintoloista toimii kausittain. Jos haluat lämmitetyn altaan tai takan, tarkista nämä varusteet ja niiden käyttöehdot kunkin kodin sivulta."
       },
       {
         "question": "Tarvitsenko auton?",

@@ -605,14 +605,14 @@ export default function PropertyDetail() {
     if (!property) return undefined;
     const dest = destinations.find(d => d.slug === property.destination);
     const beds = property.bedrooms ? `${property.bedrooms}-Bed` : '';
-    const loc = dest?.name || property.region || '';
+    const loc = dest?.name || property.locality || property.region || '';
     return `${displayName} — ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
   }, [property, displayName]);
   const pdpDesc = useMemo(() => {
     if (!property) return undefined;
     const dest = destinations.find(d => d.slug === property.destination);
     const beds = property.bedrooms ? `${property.bedrooms}-bedroom` : '';
-    const loc = dest?.name || property.region || 'Portugal';
+    const loc = dest?.name || property.locality || property.region || 'Portugal';
     const tag = property.tagline || '';
     return `${beds} luxury villa in ${loc}. ${tag} Book direct with Portugal Active.`.replace(/\s+/g, ' ').trim().slice(0, 155);
   }, [property]);
@@ -834,7 +834,7 @@ export default function PropertyDetail() {
     }
     return null;
   }, [property]);
-  const destName = destObj?.name || property?.destination || '';
+  const destName = destObj?.name || property?.locality || property?.region || '';
 
   const { data: allPropsData } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
   // "From €X per night" = lowest REAL bookable nightly (next 90 days), not the

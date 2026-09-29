@@ -2161,5 +2161,14 @@
     "faq1A": "Les conditions varient selon l’activité. Consultez sa page pour connaître la difficulté, les limites d’âge et les affaires à prévoir. Notre équipe peut vous conseiller.",
     "faq2Q": "Puis-je associer des activités à mon séjour ?",
     "faq2A": "Oui. Choisissez votre maison et découvrez les activités de la région. Notre concierge peut coordonner le programme. Les activités et les éventuels transferts sont facturés séparément."
+  },
+  "planning": {
+    "alternativeHomes": "Maisons dans d’autres localités du Minho",
+    "noLocalHomes": "Nous ne proposons actuellement aucune maison à Esposende. Ces alternatives se trouvent dans d’autres localités du Minho ; vérifiez leur emplacement et prévoyez le trajet avant de choisir.",
+    "datesKept": "Vos dates sont conservées :",
+    "checkPrice": "Ouvrez une maison ou la recherche pour vérifier la disponibilité et le prix à ces dates.",
+    "towns": "Villes du littoral du Minho",
+    "updated": "Mis à jour le",
+    "inThisGuide": "Dans ce guide"
   }
 }

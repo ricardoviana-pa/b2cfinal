@@ -5,7 +5,7 @@
 
 // --- DESTINATIONS ---
 // Region slugs (broad areas, kept for back-compat with existing property data).
-export type DestinationRegion = 'minho' | 'porto' | 'lisbon' | 'alentejo' | 'algarve' | 'brazil';
+export type DestinationRegion = 'minho' | 'porto' | 'lisbon' | 'alentejo' | 'algarve' | 'brazil' | 'silver-coast';
 
 // Destination slugs: region-level + city-level spokes per the destinations
 // strategy doc (May 2026, hub-and-spoke editorial). City spokes use flat URLs
@@ -349,6 +349,8 @@ export interface BlogAuthor {
 }
 
 export interface BlogArticle {
+  modifiedDate?: string;
+  updatedLocales?: string[];
   publishedLocales?: string[];
   commercialIntent?: 'corporate';
   imageCaption?: string;
