@@ -1919,7 +1919,7 @@
   "partnerBooking": {
     "sentTitle": "Pyyntö vastaanotettu",
     "requestDetails": "Pyynnön tiedot",
-    "sentBody": "Concierge vahvistaa päivät talon kanssa ja palaa asiaan sähköpostitse lopullisen summan kanssa. Tässä vaiheessa ei veloiteta mitään.",
+    "sentBody": "Pyyntösi on tallennettu. Tiimimme tarkistaa saatavuuden ja lopullisen hinnan majoituspaikalta. Varausta ei ole vielä vahvistettu eikä maksua ole veloitettu.",
     "soFarLabel": "toistaiseksi",
     "perNight": "per yö",
     "pickDates": "Valitse päivät nähdäksesi tarkan kokonaissumman",

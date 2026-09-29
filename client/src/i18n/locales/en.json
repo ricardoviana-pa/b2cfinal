@@ -1919,7 +1919,7 @@
   "partnerBooking": {
     "sentTitle": "Request received",
     "requestDetails": "Request details",
-    "sentBody": "Our concierge is confirming these dates with the property and will come back to you by email with the final total. Nothing is charged at this stage.",
+    "sentBody": "Your request has been saved. Our team will check availability and the final total with the home. This is not a confirmed reservation and no payment has been taken.",
     "soFarLabel": "so far",
     "perNight": "per night",
     "pickDates": "Pick your dates for the exact total",
