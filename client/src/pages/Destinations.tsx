@@ -69,7 +69,11 @@ export default function Destinations() {
                 </div>
                 {destinationAccommodationCaption(d.slug,i18n.language) && <p className="text-xs text-pa-earth mb-3">{destinationAccommodationCaption(d.slug,i18n.language)}</p>}
                 <div className="flex justify-between items-center gap-3">
-                  <h2 className="headline-md">{d.name}</h2>
+                  <h2 className="headline-md">
+                    {d.slug === 'minho' ? d.name.split(' · ').map((part, partIndex) => (
+                      <span key={part} className={partIndex === 0 ? 'block' : 'block mt-1 text-[0.78em] text-pa-stone-aa'}>{part}</span>
+                    )) : d.name}
+                  </h2>
                   <ArrowRight className="w-5 h-5 shrink-0 text-pa-gold-aa" aria-hidden="true" />
                 </div>
                 </Link>

@@ -18,12 +18,16 @@ export default function PortugalMap({ destinations }: { destinations: Destinatio
     {destinations.map(d => {
       const p = POINTS[d.slug];
       if (!p) return null;
+      const [regionName, localName] = d.slug === 'minho' ? d.name.split(' · ') : [d.name, ''];
       return <a key={d.slug} href={withEditorialTrip(`/${i18n.language.split('-')[0]}/destinations/${d.slug}`,search)}
         aria-label={t('destinationGrowth.explore', { name: d.name })} className="group">
         <path d={`M${p.x},${p.y} L228,${p.labelY} H250`} fill="none" stroke="#8b9e91" strokeWidth="1" />
         <circle cx={p.x} cy={p.y} r="5" fill="#0b4541" className="group-hover:fill-pa-brown" />
         <rect x="246" y={p.labelY-22} width="215" height="44" rx="8" fill="transparent" className="group-hover:fill-white group-focus:fill-white" />
-        <text x="260" y={p.labelY+6} fontSize="19" fill="#1a1a18" style={{fontFamily:'var(--font-display)'}}>{d.name}</text>
+        {localName ? <text x="260" y={p.labelY-3} fill="#1a1a18" style={{fontFamily:'var(--font-display)'}}>
+          <tspan x="260" fontSize="16">{regionName}</tspan>
+          <tspan x="260" dy="17" fontSize="14" fill="#52644e">{localName}</tspan>
+        </text> : <text x="260" y={p.labelY+6} fontSize="19" fill="#1a1a18" style={{fontFamily:'var(--font-display)'}}>{d.name}</text>}
         <text x="435" y={p.labelY+5} fontSize="18" fill="#0b4541" aria-hidden="true">→</text>
       </a>;
     })}

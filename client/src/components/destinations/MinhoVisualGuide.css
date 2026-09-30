@@ -301,11 +301,22 @@
 }
 .minho-hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(5rem, 10vw, 9rem);
-  line-height: 0.95;
   font-weight: 400;
   letter-spacing: -0.045em;
   color: white;
+}
+.minho-hero-region,
+.minho-hero-place {
+  display: block;
+}
+.minho-hero-region {
+  font-size: clamp(3.7rem, 7vw, 6.5rem);
+  line-height: 0.96;
+}
+.minho-hero-place {
+  font-size: clamp(5rem, 10vw, 9rem);
+  line-height: 0.9;
+  margin-top: 0.08em;
 }
 .minho-hero .minho-hero-line {
   font-family: var(--font-display);
@@ -781,8 +792,14 @@
     max-width: 19rem;
     font-size: 0.62rem;
   }
-  .minho-hero h1 {
-    font-size: 5.25rem;
+  .minho-hero-region {
+    font-size: clamp(2.75rem, 12vw, 3.15rem);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .minho-hero-place {
+    font-size: 4.65rem;
+    margin-top: 0.12em;
   }
   .minho-hero .minho-hero-line {
     max-width: 18rem;
