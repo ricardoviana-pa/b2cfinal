@@ -26,7 +26,8 @@ export default function Destinations() {
   });
   const overrides = useDestinationOverrides(i18n.language);
   const active = destinations.filter(d => d.status === 'active' && !d.comingSoon)
-    .map(d => localizeDestination(d, overrides)!);
+    .map(d => localizeDestination(d, overrides)!)
+    .map(d => d.slug === 'minho' ? { ...d, name: t('destinations.minho') } : d);
   const regions = active.filter(d => ['minho','porto','douro','lisbon','alentejo','algarve'].includes(d.slug));
   const towns = active.filter(d => !regions.includes(d));
   const base = `https://www.portugalactive.com/${i18n.language.split('-')[0]}`;

@@ -61,7 +61,7 @@ export function MinhoOrientation({ language }: { language: string }) {
             </text>
           </svg>
           <figcaption>
-            {pt ? "Minho · Norte de Portugal" : "Minho · Northern Portugal"}
+            {pt ? "Norte de Portugal · Minho" : "Northern Portugal · Minho"}
           </figcaption>
         </figure>
         <div>

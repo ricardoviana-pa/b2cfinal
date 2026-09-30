@@ -241,7 +241,7 @@ export function MinhoVisualGuide({
                 ? "NORTE DE PORTUGAL · COSTA, RIOS E SERRA"
                 : "NORTHERN PORTUGAL · COAST, RIVERS & MOUNTAINS"}
             </p>
-            <h1>Minho</h1>
+            <h1>{pt ? "Norte de Portugal · Minho" : "Northern Portugal · Minho"}</h1>
             <p className="minho-hero-line">
               {pt
                 ? "O verde encontra o Atlântico."
