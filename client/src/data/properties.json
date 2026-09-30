@@ -12885,6 +12885,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Wir wsren mitte September rin pasr Tsge da. Die Wohnung ist im zweiten Stock (von 3) gelegen, sehr schön hell, gut temperiert, gut ausgestattet, sehr zentral gelegen, toller Ausblick auf einen Platz, zu Kneipen, Restaurants und Geschäften ist es nur ein Katzensprung. Man fühlt sich „mittendrin statt nur dabei“. Die Kommunikation (mit Sam) war gut und wir durften auch flexibel später auschecken. \nWas uns nicht so gut gefallen hat, ist die Koffer das steile enge Treppenhaus ohne Lift hoch zu schle",
+        "guestDisplayName": "Oliver",
+        "guestName": "Oliver",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-26T09:01:12.738Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Alojamiento muy recomendable. En pleno centro. La única pega el aparcamiento, complicado en días de festejos",
         "guestDisplayName": "David",
         "guestName": "David",
@@ -12955,7 +12990,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2,
+    "reviewCount": 3,
     "lastModified": "2026-09-24",
     "contentHash": "29a7418c810fc619be16e226f9b8e3b3dd3cc9fd"
   },
