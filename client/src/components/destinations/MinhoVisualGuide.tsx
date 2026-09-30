@@ -238,10 +238,15 @@ export function MinhoVisualGuide({
           <div className="minho-hero-copy">
             <p className="minho-kicker">
               {pt
-                ? "NORTE DE PORTUGAL · COSTA, RIOS E SERRA"
-                : "NORTHERN PORTUGAL · COAST, RIVERS & MOUNTAINS"}
+                ? "COSTA, RIOS E SERRA"
+                : "COAST, RIVERS & MOUNTAINS"}
             </p>
-            <h1>{pt ? "Norte de Portugal · Minho" : "Northern Portugal · Minho"}</h1>
+            <h1>
+              <span className="minho-hero-region">
+                {pt ? "Norte de Portugal" : "Northern Portugal"}
+              </span>
+              <span className="minho-hero-place">Minho</span>
+            </h1>
             <p className="minho-hero-line">
               {pt
                 ? "O verde encontra o Atlântico."
