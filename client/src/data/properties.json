@@ -2508,6 +2508,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "בית יפיפה בחלקה עם כרמים ונוף עוצר נשימה . בריכה יפה וכל מה שצריך לחופשה ! \nבית מעוצב בטוב טעם \nחמש סוויטות עם פרטיות , מאוד נהנו",
+        "guestDisplayName": "Alon",
+        "guestName": "Alon",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-29T20:08:12.415Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Beautiful villa and amazing location! \n\nWill definitely be back soon!",
         "guestDisplayName": "Nathan Loya",
         "guestName": "Nathan Loya",
@@ -2788,7 +2823,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 8,
+    "reviewCount": 9,
     "lastModified": "2026-09-25",
     "contentHash": "523e10142b06494147e2f930955b1ed6d9ab54f7"
   },
@@ -10412,11 +10447,11 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/5b55253e-04f8-47-uCVG6",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/1e504e65-3ebe-4b-Dzp4S",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/d19ec5e0-5b34-48-gg1nt",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/63a8d65a-6610-41--j_mA",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/38cd91dc-0614-4a-TtCUg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/194d3382-fb2d-4a-TlBF1",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/82e44dbe-d2b7-49-d5xmp",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/bb29e4ea-5921-4d-ATQVe",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/63a8d65a-6610-41--j_mA",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/0239d13d-22ed-4d-RT46D",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/70087316-8484-42-GeQst",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/ff864b04-fcce-4c-jIzAk",
@@ -11015,8 +11050,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 14,
-    "lastModified": "2026-09-18",
-    "contentHash": "5087aeb6220031149a130b28a0b86c105e7d1146"
+    "lastModified": "2026-10-01",
+    "contentHash": "dfc1fe7999a8b1760bf9c81b10a459a9d94d47a5"
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
@@ -18126,11 +18161,12 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1790351176/production/6957de4388cba42d9e7a905e/okelm5xjfonizlmkikq3.jpg",
+      "https://assets.guesty.com/image/upload/v1790843208/production/6957de4388cba42d9e7a905e/uk60myzlwgv0ofm0izqj.jpg",
       "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/i2th0b7b9eplebijd7rc.jpg",
       "https://assets.guesty.com/image/upload/v1790073159/production/6957de4388cba42d9e7a905e/legpvod1ey1x2dggx8pn.jpg",
       "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/oe0ejjnlxcfuqgductjg.jpg",
       "https://assets.guesty.com/image/upload/v1790073231/production/6957de4388cba42d9e7a905e/uh2nl3sdltmynz6xaggu.jpg",
+      "https://assets.guesty.com/image/upload/v1790351176/production/6957de4388cba42d9e7a905e/okelm5xjfonizlmkikq3.jpg",
       "https://assets.guesty.com/image/upload/v1790073145/production/6957de4388cba42d9e7a905e/tia0ofp3gyub4hzjc26i.jpg",
       "https://assets.guesty.com/image/upload/v1790078898/production/6957de4388cba42d9e7a905e/xlrkhsiykkcpnk549dqz.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/02e25e3b-d8b6-4e-qPkPU",
@@ -18481,8 +18517,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 7,
-    "lastModified": "2026-09-25",
-    "contentHash": "2c33aac1b21cfb8001b4d1affcdf6beb6a9a8a95"
+    "lastModified": "2026-10-01",
+    "contentHash": "56a1b00bb573ecc23348081ff208608cd2bd3d4f"
   },
   {
     "id": "guesty-696533284b583900135ceb91",
