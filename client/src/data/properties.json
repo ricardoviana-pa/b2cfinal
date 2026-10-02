@@ -18161,13 +18161,13 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1790843208/production/6957de4388cba42d9e7a905e/uk60myzlwgv0ofm0izqj.jpg",
+      "https://assets.guesty.com/image/upload/v1790073145/production/6957de4388cba42d9e7a905e/tia0ofp3gyub4hzjc26i.jpg",
       "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/i2th0b7b9eplebijd7rc.jpg",
       "https://assets.guesty.com/image/upload/v1790073159/production/6957de4388cba42d9e7a905e/legpvod1ey1x2dggx8pn.jpg",
       "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/oe0ejjnlxcfuqgductjg.jpg",
       "https://assets.guesty.com/image/upload/v1790073231/production/6957de4388cba42d9e7a905e/uh2nl3sdltmynz6xaggu.jpg",
       "https://assets.guesty.com/image/upload/v1790351176/production/6957de4388cba42d9e7a905e/okelm5xjfonizlmkikq3.jpg",
-      "https://assets.guesty.com/image/upload/v1790073145/production/6957de4388cba42d9e7a905e/tia0ofp3gyub4hzjc26i.jpg",
+      "https://assets.guesty.com/image/upload/v1790843208/production/6957de4388cba42d9e7a905e/uk60myzlwgv0ofm0izqj.jpg",
       "https://assets.guesty.com/image/upload/v1790078898/production/6957de4388cba42d9e7a905e/xlrkhsiykkcpnk549dqz.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/02e25e3b-d8b6-4e-qPkPU",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/fc7c07cf-3734-43-gGWei",
@@ -18517,8 +18517,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 7,
-    "lastModified": "2026-10-01",
-    "contentHash": "56a1b00bb573ecc23348081ff208608cd2bd3d4f"
+    "lastModified": "2026-10-02",
+    "contentHash": "94d34934ef1394468bcd0953cf7fac8189e7959d"
   },
   {
     "id": "guesty-696533284b583900135ceb91",
