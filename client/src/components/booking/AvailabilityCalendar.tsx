@@ -1,7 +1,7 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/useMobile";
 import { intlLocale } from "@/lib/format";
 
@@ -106,6 +106,11 @@ export default function AvailabilityCalendar({
   const { t, i18n } = useTranslation();
   const isMobile = useIsMobile();
   const [mobileOpen, setMobileOpen] = useState(false);
+  // On a phone the calendar only mounts once the guest has tapped the date
+  // field, so open the full-screen picker straight away: the intermediate
+  // "Select dates" button was a second tap for nothing (it stays as the way
+  // back in if the picker is dismissed without choosing).
+  useEffect(() => { if (isMobile) setMobileOpen(true); }, [isMobile]);
   const [hoverDate, setHoverDate] = useState<string>("");
 
   // Month/weekday labels come from Intl for the SITE locale (F6) — all 9 languages
@@ -577,12 +582,12 @@ export default function AvailabilityCalendar({
         {t("booking.selectDates")}
       </button>
       <Dialog open={mobileOpen} onOpenChange={setMobileOpen}>
-        <DialogContent className="max-w-none w-screen h-screen top-0 left-0 translate-x-0 translate-y-0 rounded-none p-0 bg-white">
+        <DialogContent showCloseButton={false} className="max-w-none w-screen h-screen top-0 left-0 translate-x-0 translate-y-0 rounded-none p-0 bg-white">
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between px-5 pt-5 pb-3">
-              <p className="text-[13px] font-medium tracking-wide text-black">
+              <DialogTitle className="text-[13px] font-medium tracking-wide text-black leading-normal">
                 {t("booking.selectDates")}
-              </p>
+              </DialogTitle>
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}

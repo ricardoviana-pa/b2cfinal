@@ -7,7 +7,7 @@ import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } fro
 import { useMeasurementConsent } from '@/hooks/useMeasurementConsent';
 import { getConcierge } from '@shared/concierges';
 import { localizeDuration, localizeRoomName } from '@/lib/duration';
-import { useParams, Link, useSearch } from 'wouter';
+import { useParams, Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
 import { localizeProduct } from '@/lib/localizeProduct';
@@ -283,6 +283,9 @@ function cleanDescription(raw: string): string {
     .trim();
 }
 
+const LIGHTBOX_SLIDE_MS = 300;
+const LIGHTBOX_WIDTHS = [1080, 1600, 2560];
+
 function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onClose, t }: {
   images: string[];
   rawImages?: string[];
@@ -297,10 +300,27 @@ function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onC
   const lbTouchStartX = useRef(0);
   const lbTouchDelta = useRef(0);
   const [lbDragOffset, setLbDragOffset] = useState(0);
+  // Slide in flight: the three-slot track animates one slot sideways, then
+  // `idx` catches up and the track snaps back to the centre without animating.
+  const [slideDir, setSlideDir] = useState<-1 | 0 | 1>(0);
+  const [loaded, setLoaded] = useState<Record<number, true>>({});
   const lbRef = useRef<HTMLDivElement>(null);
 
-  const prev = useCallback(() => setIdx(p => (p - 1 + total) % total), [total]);
-  const next = useCallback(() => setIdx(p => (p + 1) % total), [total]);
+  const go = useCallback((dir: -1 | 1) => {
+    if (total < 2) return;
+    setSlideDir(current => current || dir);
+  }, [total]);
+  const prev = useCallback(() => go(-1), [go]);
+  const next = useCallback(() => go(1), [go]);
+
+  useEffect(() => {
+    if (!slideDir) return;
+    const timer = window.setTimeout(() => {
+      setIdx(p => (p + slideDir + total) % total);
+      setSlideDir(0);
+    }, LIGHTBOX_SLIDE_MS);
+    return () => window.clearTimeout(timer);
+  }, [slideDir, total]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -332,13 +352,20 @@ function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onC
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose, prev, next]);
 
+  // The neighbours are real <img> slots (below), so they download with the
+  // same srcset candidate the browser will show when they slide in. Warm two
+  // further out the same way — a bare 2560px preload the <img> never used
+  // only competed with the visible photo for the phone's bandwidth.
   useEffect(() => {
-    const preload = [idx - 1, idx + 1].map(i => (i + total) % total);
-    preload.forEach(i => {
+    if (total < 4) return;
+    [idx - 2, idx + 2].forEach(i => {
+      const j = (i + total) % total;
       const img = new Image();
-      img.src = images[i];
+      const srcSet = guestySrcSet(rawImages?.[j], LIGHTBOX_WIDTHS);
+      if (srcSet) { img.sizes = '100vw'; img.srcset = srcSet; }
+      img.src = images[j];
     });
-  }, [idx, images, total]);
+  }, [idx, images, rawImages, total]);
 
   const handleLbTouchStart = (e: React.TouchEvent) => {
     lbTouchStartX.current = e.touches[0].clientX;
@@ -353,8 +380,18 @@ function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onC
       if (lbTouchDelta.current < 0) next();
       else prev();
     }
+    lbTouchDelta.current = 0;
     setLbDragOffset(0);
   };
+  // The browser cancels the touch when it takes the gesture over (pinch,
+  // system edge swipe); without this the track stayed frozen mid-drag.
+  const handleLbTouchCancel = () => { lbTouchDelta.current = 0; setLbDragOffset(0); };
+
+  // Previous / current / next. Keyed by photo index so a slide moves the
+  // existing, already-decoded <img> nodes instead of re-creating them.
+  const slots = total >= 3
+    ? [(idx - 1 + total) % total, idx, (idx + 1) % total].map(i => ({ imgIdx: i, key: String(i) }))
+    : [idx - 1, idx, idx + 1].map((i, pos) => ({ imgIdx: (i + total) % total, key: `${pos}-${(i + total) % total}` }));
 
   return (
     <div
@@ -382,10 +419,12 @@ function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onC
 
       {/* Main image area */}
       <div
-        className="flex-1 flex items-center justify-center relative overflow-hidden"
+        className="flex-1 relative overflow-hidden"
+        style={{ touchAction: 'pan-y pinch-zoom' }}
         onTouchStart={handleLbTouchStart}
         onTouchMove={handleLbTouchMove}
         onTouchEnd={handleLbTouchEnd}
+        onTouchCancel={handleLbTouchCancel}
       >
         {/* Desktop arrows */}
         <button
@@ -403,19 +442,39 @@ function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onC
           <ChevronRight size={24} className="text-white" />
         </button>
 
-        <img
-          src={images[idx]}
-          srcSet={guestySrcSet(rawImages?.[idx], [1080, 1600, 2560])}
-          sizes="100vw"
-          alt={`${propertyName} – ${destName} – image ${idx + 1} of ${total}`}
-          className="max-w-full max-h-full object-contain select-none"
-          decoding="async"
+        {/* Three-slot track. Each slot is its own <img>, so a swipe reveals a
+            photo that is already downloading. Swapping `src` on one element
+            kept the OLD photo on screen (counter moving, picture not) until
+            the new 1600–2560px file had arrived over mobile data. */}
+        <div
+          className="flex h-full"
           style={{
-            transform: lbDragOffset ? `translateX(${lbDragOffset}px)` : 'translateX(0)',
-            transition: lbDragOffset ? 'none' : 'transform 300ms ease',
+            width: '300%',
+            transform: `translateX(calc(${-(1 + slideDir) * (100 / 3)}% + ${lbDragOffset}px))`,
+            transition: slideDir ? `transform ${LIGHTBOX_SLIDE_MS}ms ease` : 'none',
           }}
-          draggable={false}
-        />
+        >
+          {slots.map(({ imgIdx, key }, pos) => (
+            <div key={key} className="h-full flex items-center justify-center" style={{ width: `${100 / 3}%` }} aria-hidden={pos !== 1}>
+              <img
+                src={images[imgIdx]}
+                srcSet={guestySrcSet(rawImages?.[imgIdx], LIGHTBOX_WIDTHS)}
+                sizes="100vw"
+                alt={pos === 1 ? `${propertyName} – ${destName} – image ${imgIdx + 1} of ${total}` : ''}
+                className="max-w-full max-h-full object-contain select-none"
+                decoding="async"
+                draggable={false}
+                onLoad={() => setLoaded(l => (l[imgIdx] ? l : { ...l, [imgIdx]: true }))}
+                onError={() => setLoaded(l => (l[imgIdx] ? l : { ...l, [imgIdx]: true }))}
+              />
+            </div>
+          ))}
+        </div>
+        {!loaded[idx] && !slideDir && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+            <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -733,6 +792,7 @@ export default function PropertyDetail() {
   }, [property, pdpFaq]);
 
   const searchString = useSearch();
+  const [, navigate] = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
   const initialCheckin = searchParams.get('checkin') || '';
   const initialCheckout = searchParams.get('checkout') || '';
@@ -852,6 +912,25 @@ export default function PropertyDetail() {
     },
     { enabled: !!property?.guestyId || !!tripwixUid, staleTime: 60_000 },
   );
+
+  // The header's RESERVE button on this page books THIS home (Header.tsx
+  // dispatches `pa:reserve`; it used to send the guest back to the catalogue).
+  // Desktop scrolls to the booking card, a phone opens the booking sheet; a
+  // showcase-only home goes to the concierge with the home pre-filled.
+  useEffect(() => {
+    const open = () => {
+      const canBookHere = !!tripwixUid || (!!property?.guestyId && !property?.isPortfolio);
+      if (window.matchMedia('(min-width: 1024px)').matches) {
+        document.getElementById('property-booking')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (canBookHere) {
+        setBookingOpen(true);
+      } else if (property?.slug) {
+        navigate(`/contact?property=${encodeURIComponent(property.slug)}&intent=availability`);
+      }
+    };
+    window.addEventListener('pa:reserve', open);
+    return () => window.removeEventListener('pa:reserve', open);
+  }, [tripwixUid, property?.guestyId, property?.isPortfolio, property?.slug, navigate]);
   const relatedProperties = useMemo(() => {
     if (!property || !allPropsData) return [];
     return (allPropsData as Property[])
@@ -965,6 +1044,13 @@ export default function PropertyDetail() {
     setDragOffset(0);
     isDragging.current = false;
   }, [property]);
+  // A cancelled touch (the browser took the gesture) left `dragOffset` stuck
+  // and the strip parked between two photos; snap back instead.
+  const handleGalleryTouchCancel = useCallback(() => {
+    touchDeltaX.current = 0;
+    setDragOffset(0);
+    isDragging.current = false;
+  }, []);
 
   if (isLoading) {
     return (
@@ -1041,6 +1127,17 @@ export default function PropertyDetail() {
   // o widget pedia preço ao Guesty, falhava e mostrava "não conseguimos
   // confirmar o preço" a quem só queria conhecer a casa.
   const bookableOnline = !!property.guestyId && !property.isPortfolio;
+
+  // What the fixed mobile bar says before any dates: the real "from" nightly
+  // when we have one. "Select dates for price" alone read as if the home could
+  // not be booked online, and the number was already on the widget behind it.
+  // Same figure the widget leads with: live lowest nightly first, and only
+  // our own homes fall back to the imported rate (a partner home without a
+  // live figure says "Price on request" on its panel, so the bar stays quiet).
+  const barNightly = lowestNightly?.from ?? (bookableOnline ? ((property as any).pricePerNight ?? property.priceFrom ?? 0) : 0);
+  const barFromPrice = (bookableOnline || tripwixUid) && barNightly > 0
+    ? `${t('property.fromPerNight', { price: Math.round(barNightly).toLocaleString(intlLocale(i18n.language)) })} ${t('partnerBooking.perNight', 'per night')}`
+    : null;
 
   // Booking panel — shared between the desktop sticky sidebar and the mobile
   // bottom-sheet drawer so the two stay in sync (single source of truth).
@@ -1204,9 +1301,11 @@ export default function PropertyDetail() {
         {/* Mobile: swipeable carousel */}
         <div
           className="lg:hidden group relative w-full overflow-hidden bg-pa-warm aspect-[4/3] cursor-pointer select-none"
+          style={{ touchAction: 'pan-y' }}
           onTouchStart={handleGalleryTouchStart}
           onTouchMove={handleGalleryTouchMove}
           onTouchEnd={handleGalleryTouchEnd}
+          onTouchCancel={handleGalleryTouchCancel}
           onClick={() => { if (!isDragging.current) { setLightboxImage(currentImage); setLightboxOpen(true); } }}
         >
           <div
@@ -1218,10 +1317,15 @@ export default function PropertyDetail() {
               willChange: 'transform',
             }}
           >
+            {/* `loading="lazy"` never fires for a slide clipped by the
+                overflow:hidden strip, so every photo only started downloading
+                AFTER it slid into view — a beige box per swipe on mobile data.
+                Keep the next photo (two once the guest is swiping) eager, at
+                low priority so it never competes with the hero LCP. */}
             {(images.length ? images : ['']).map((img: string, idx: number) => (
               <div key={idx} className="relative shrink-0 h-full bg-pa-sand img-fallback" style={{ width: `${100 / totalImages}%` }}>
                 {img ? (
-                  <img src={img} srcSet={guestySrcSet(sourceImages[idx], [640, 828, 1080, 1440])} sizes="100vw" alt={`${displayName} – luxury villa in ${destName}, Portugal – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
+                  <img src={img} srcSet={guestySrcSet(sourceImages[idx], [640, 828, 1080, 1440])} sizes="100vw" alt={`${displayName} – luxury villa in ${destName}, Portugal – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={Math.abs(idx - currentImage) <= (currentImage === 0 ? 1 : 2) ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : Math.abs(idx - currentImage) <= 2 ? { fetchPriority: 'low' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-pa-stone body-sm">{t('propertyDetail.noImage')}</div>
                 )}
@@ -1703,10 +1807,10 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="body-sm text-pa-dark font-medium">
-                {bookingSelection?.total ? formatQuotedEur(bookingSelection.total, i18n.language) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : t('property.selectDatesForPrice')}
+                {bookingSelection?.total ? formatQuotedEur(bookingSelection.total, i18n.language) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : barFromPrice ?? t('property.selectDatesForPrice')}
               </p>
               <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
-                {bookingSelection?.total ? (bookingSelection.isPartial ? t('partnerBooking.totalSoFar') : t('conversion.stayTotal')) : (bookingSelection?.checkIn || initialCheckin) ? formatBookingDate(bookingSelection?.checkIn || initialCheckin, i18n.language) : t('property.conciergeShort')}
+                {bookingSelection?.total ? (bookingSelection.isPartial ? t('partnerBooking.totalSoFar') : t('conversion.stayTotal')) : (bookingSelection?.checkIn || initialCheckin) ? formatBookingDate(bookingSelection?.checkIn || initialCheckin, i18n.language) : barFromPrice ? t('property.selectDatesForPrice') : t('property.conciergeShort')}
               </p>
             </div>
             {/* Partner homes open the same drawer: the request form lives on
