@@ -2508,6 +2508,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Tudo incrível",
+        "guestDisplayName": "Júlio",
+        "guestName": "Júlio",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-06T05:56:17.380Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "בית יפיפה בחלקה עם כרמים ונוף עוצר נשימה . בריכה יפה וכל מה שצריך לחופשה ! \nבית מעוצב בטוב טעם \nחמש סוויטות עם פרטיות , מאוד נהנו",
         "guestDisplayName": "Alon",
         "guestName": "Alon",
@@ -2823,7 +2858,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 9,
+    "reviewCount": 10,
     "lastModified": "2026-09-25",
     "contentHash": "523e10142b06494147e2f930955b1ed6d9ab54f7"
   },
