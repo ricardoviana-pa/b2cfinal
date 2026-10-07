@@ -8390,14 +8390,15 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1791296832/production/6957de4388cba42d9e7a905e/k6weiikm0ac70gunobu0.jpg",
+      "https://assets.guesty.com/image/upload/v1791294841/production/6957de4388cba42d9e7a905e/iba6vkppgpu2lds1l2ht.jpg",
+      "https://assets.guesty.com/image/upload/v1791383482/production/6957de4388cba42d9e7a905e/rhch4zt94yk16iu70l9o.jpg",
       "https://assets.guesty.com/image/upload/v1791294844/production/6957de4388cba42d9e7a905e/qho20slzvhwonbbwoctz.jpg",
       "https://assets.guesty.com/image/upload/v1791295097/production/6957de4388cba42d9e7a905e/hleh9cnrkokl85mvgpe1.jpg",
       "https://assets.guesty.com/image/upload/v1791297372/production/6957de4388cba42d9e7a905e/cug7era6phop1v9ry6dd.jpg",
       "https://assets.guesty.com/image/upload/v1791296499/production/6957de4388cba42d9e7a905e/b35msmwhfvrpeipdxgci.jpg",
+      "https://assets.guesty.com/image/upload/v1791383331/production/6957de4388cba42d9e7a905e/hnsii75sszvkjfpdj8dm.jpg",
       "https://assets.guesty.com/image/upload/v1791295161/production/6957de4388cba42d9e7a905e/ajgco6ysbz16xstrvi3x.jpg",
       "https://assets.guesty.com/image/upload/v1791296828/production/6957de4388cba42d9e7a905e/gliwgsccb3lglclbpayc.jpg",
-      "https://assets.guesty.com/image/upload/v1791294841/production/6957de4388cba42d9e7a905e/iba6vkppgpu2lds1l2ht.jpg",
       "https://assets.guesty.com/image/upload/v1791294845/production/6957de4388cba42d9e7a905e/fmlc9kfcu4r8zfk8inin.jpg",
       "https://assets.guesty.com/image/upload/v1791297817/production/6957de4388cba42d9e7a905e/jjs1tj3owv9z3qkiazqv.jpg",
       "https://assets.guesty.com/image/upload/v1791294906/production/6957de4388cba42d9e7a905e/zycflgpblmqdioxejumm.jpg",
@@ -8458,6 +8459,8 @@
       "https://assets.guesty.com/image/upload/v1791295158/production/6957de4388cba42d9e7a905e/qmp6n8gjlkwqc0zgq2xz.jpg",
       "https://assets.guesty.com/image/upload/v1791298424/production/6957de4388cba42d9e7a905e/hrsyxrqnye5ultr3hqu5.jpg",
       "https://assets.guesty.com/image/upload/v1791295161/production/6957de4388cba42d9e7a905e/c9efliygolaxitgrumlz.jpg",
+      "https://assets.guesty.com/image/upload/v1791296832/production/6957de4388cba42d9e7a905e/k6weiikm0ac70gunobu0.jpg",
+      "https://assets.guesty.com/image/upload/v1791383512/production/6957de4388cba42d9e7a905e/fip9auwkugke0fxhi5yg.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965330729bb8c00141e8cd6/edf1ae14-f310-4a-vOMGZ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965330729bb8c00141e8cd6/ba0120f1-ab2a-47-DVoZD",
       "https://assets.guesty.com/image/upload/v1791296495/production/6957de4388cba42d9e7a905e/g5akhtlzje79nelzatzj.jpg",
@@ -8936,8 +8939,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 18,
-    "lastModified": "2026-10-06",
-    "contentHash": "37b49b6fc96338956fa45ea4f4b7d463949aee63"
+    "lastModified": "2026-10-07",
+    "contentHash": "9e761f8385f7cbb5ae0678a7e917574161b47659"
   },
   {
     "id": "guesty-6a3549e5edd13800142415e0",
@@ -24520,6 +24523,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Estadia perfeita",
+        "guestDisplayName": "Joana",
+        "guestName": "Joana",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-06T22:39:57.272Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "The house was stunning and saved our vacation when we booked it last minute so we could leave a noisy ecoresort. The location is peaceful but accessible to so many restaurants and activities. I also like that it was professionally managed.",
         "guestDisplayName": "Lisa",
         "guestName": "Lisa",
@@ -24835,7 +24873,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 9,
+    "reviewCount": 10,
     "lastModified": "2026-08-24",
     "contentHash": "160b6ed08f8dad74157dff810de4a5f56a00c05d"
   },
