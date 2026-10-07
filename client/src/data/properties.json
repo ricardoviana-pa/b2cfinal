@@ -21981,6 +21981,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Das Wohnzimmer war etwas kleiner als erwartet. Jedoch passen und funktional.\nDie Kinder liebten den grossen Fernseher.\nDie Aussicht zum Meer war Atemberaubend.",
+        "guestDisplayName": "Daniel",
+        "guestName": "Daniel",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-05T10:31:19.947Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Absolutely amazing stay at this beautiful beach house in Viana! The location was perfect, with stunning views, easy access to the beach, and everything we could have asked for to make our stay comfortable and relaxing.\n\nThe house was beautiful, spotless, spacious, and extremely well equipped. You can tell the hosts put a lot of thought into making guests feel welcome. Waking up here and enjoying the views was definitely a highlight of our trip.\n\nThe hosts were incredibly friendly, helpful, and r",
         "guestDisplayName": "Ryan",
         "guestName": "Ryan",
@@ -22296,7 +22331,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 14,
+    "reviewCount": 15,
     "lastModified": "2026-09-21",
     "contentHash": "d2ee21aee228a85229f1944f0d112d90b82e56b5"
   },
