@@ -6,6 +6,10 @@
    ========================================================================== */
 
 import { hasMeasurementConsent } from './measurementConsent';
+import { isLiveSiteHostname } from '@shared/deployment';
+
+/** Purchases already reported in this document without consent (memory only). */
+const cookielessPurchases = new Set<string>();
 
 /** Map service slug → GA4 item_category2 and ADDON ID prefix */
 export const ADDON_PREFIX: Record<string, string> = {
@@ -45,10 +49,23 @@ export function pushPurchaseOnce(
   transactionId: string | null | undefined,
   event: Record<string, unknown>,
 ): void {
-  // A declined/unset choice must neither queue a later replay nor mark a
-  // purchase as reported. Operational booking data is independent of this guard.
-  if (!hasMeasurementConsent()) return;
+  // Advanced consent mode: without a grant the purchase still reaches GTM so
+  // Google tags send a cookieless conversion ping (Meta/Clarity are gated in
+  // GTM). Nothing is written to the browser: dedupe is in memory only, and
+  // Google Ads / GA4 also dedupe on transaction_id. Never replayed on accept.
+  if (!hasMeasurementConsent()) {
+    if (typeof window === 'undefined' || !isLiveSiteHostname(window.location.hostname)) return;
+    if (transactionId) {
+      if (cookielessPurchases.has(transactionId)) return;
+      cookielessPurchases.add(transactionId);
+    }
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push(event);
+    return;
+  }
   if (transactionId) {
+    if (cookielessPurchases.has(transactionId)) return;
     const key = `dl_purchase_${transactionId}`;
     try {
       if (window.localStorage.getItem(key)) return;

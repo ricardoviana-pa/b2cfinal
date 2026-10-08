@@ -40,15 +40,42 @@ beforeEach(() => { vi.resetModules(); vi.useFakeTimers(); });
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe('measurement consent and booking isolation', () => {
-  it.each([undefined, 'essential', 'invalid'])('does not load optional scripts with choice %s', async saved => {
+  it.each([undefined, 'essential', 'invalid'])('loads GTM in denied consent mode with choice %s', async saved => {
     const b = setup(saved);
     const consent = await import('../client/src/lib/measurementConsent');
     await vi.runAllTimersAsync();
-    expect(b.scripts).toHaveLength(0);
+    // Advanced consent mode: one GTM, Google tags stay cookieless; Meta/Clarity are gated in GTM.
+    expect(b.scripts).toHaveLength(1);
+    expect(b.scripts[0].src).toContain('GTM-TRPCDT3');
     expect(consent.hasMeasurementConsent()).toBe(false);
     expect(Array.from(b.win.dataLayer[0])).toEqual(['consent', 'default', {
       ad_storage: 'denied', analytics_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
     }]);
+    expect(b.win.dataLayer.some(entry => entry[0] === 'consent' && entry[1] === 'update' && entry[2]?.ad_storage === 'granted')).toBe(false);
+    expect(b.win.dataLayer.some(entry => entry.event === 'pa_consent_granted')).toBe(false);
+  });
+  it('starts gated vendors on the same page when a guest accepts after GTM loaded', async () => {
+    const b = setup();
+    const consent = await import('../client/src/lib/measurementConsent');
+    await vi.runAllTimersAsync();
+    consent.saveCookieChoice('all');
+    await vi.runAllTimersAsync();
+    expect(b.scripts).toHaveLength(1);
+    const grant = b.win.dataLayer.findIndex(entry => entry[0] === 'consent' && entry[1] === 'update' && entry[2]?.ad_storage === 'granted');
+    const started = b.win.dataLayer.findIndex(entry => entry.event === 'pa_consent_granted');
+    expect(grant).toBeGreaterThan(0); expect(started).toBeGreaterThan(grant);
+    consent.saveCookieChoice('all');
+    expect(b.win.dataLayer.filter(entry => entry.event === 'pa_consent_granted')).toHaveLength(1);
+    expect(consent.willReloadForEssential()).toBe(true);
+  });
+  it('does not reload when a guest who never accepted chooses essential', async () => {
+    const b = setup();
+    const consent = await import('../client/src/lib/measurementConsent');
+    await vi.runAllTimersAsync();
+    expect(consent.willReloadForEssential()).toBe(false);
+    consent.saveCookieChoice('essential');
+    expect(b.win.location.reload).not.toHaveBeenCalled();
+    expect(b.scripts).toHaveLength(1);
   });
   it.each(['dev.portugalactive.com', 'preview.onrender.com', 'localhost'])('never loads production tracking on %s even with consent', async hostname => {
     const b = setup('all'); b.win.location.hostname = hostname;
@@ -84,7 +111,10 @@ describe('measurement consent and booking isolation', () => {
     const b = setup(); const consent = await import('../client/src/lib/measurementConsent');
     consent.saveCookieChoice('all'); consent.saveCookieChoice('essential');
     await vi.runAllTimersAsync();
-    expect(b.scripts).toHaveLength(0); expect(b.win.location.reload).not.toHaveBeenCalled();
+    // GTM still loads (denied mode), but the brief grant never reached it.
+    expect(b.scripts).toHaveLength(1); expect(b.win.location.reload).not.toHaveBeenCalled();
+    expect(b.win.dataLayer.some(entry => entry.event === 'pa_consent_granted')).toBe(false);
+    expect(consent.willReloadForEssential()).toBe(false);
   });
   it('revokes vendors, removes measurement cookies and reloads without touching booking storage', async () => {
     const b = setup('all'); const consent = await import('../client/src/lib/measurementConsent');
@@ -98,20 +128,34 @@ describe('measurement consent and booking isolation', () => {
     expect(b.cookieWrites.every(cookie => !cookie.startsWith('session=') && !cookie.startsWith('pa_booking='))).toBe(true);
     expect(b.cookieWrites.some(cookie => cookie.startsWith('_fbi=') && cookie.includes('Domain=portugalactive.com'))).toBe(true);
   });
-  it('drops events before consent and does not mark a declined purchase as reported', async () => {
+  it('drops funnel events before consent but sends a cookieless purchase without storing a marker', async () => {
     const b = setup(); const consent = await import('../client/src/lib/measurementConsent');
     const dl = await import('../client/src/lib/datalayer');
     dl.pushDL({ event: 'generate_lead' });
     dl.pushEcommerce({ event: 'begin_checkout', ecommerce: { value: 800 } });
-    dl.pushPurchaseOnce('TEST-1', { event: 'purchase', ecommerce: { transaction_id: 'TEST-1' } });
-    expect(b.win.dataLayer.some(entry => entry.event)).toBe(false);
-    expect(b.win.localStorage.getItem('dl_purchase_TEST-1')).toBeNull();
-    consent.saveCookieChoice('all');
-    const event = { event: 'purchase', ecommerce: { transaction_id: 'TEST-1', value: 800 } };
-    dl.pushPurchaseOnce('TEST-1', event); dl.pushPurchaseOnce('TEST-1', event);
+    const declined = { event: 'purchase', ecommerce: { transaction_id: 'TEST-1', value: 800 } };
+    dl.pushPurchaseOnce('TEST-1', declined); dl.pushPurchaseOnce('TEST-1', declined);
     expect(b.win.dataLayer.filter(entry => entry.event === 'purchase')).toHaveLength(1);
+    expect(b.win.dataLayer.some(entry => entry.event === 'generate_lead' || entry.event === 'begin_checkout')).toBe(false);
+    expect(b.win.localStorage.getItem('dl_purchase_TEST-1')).toBeNull();
+    expect(b.win.localStorage.setItem).not.toHaveBeenCalledWith('dl_purchase_TEST-1', expect.anything());
+    // Accepting later neither replays nor duplicates the purchase already sent.
+    consent.saveCookieChoice('all');
+    dl.pushPurchaseOnce('TEST-1', declined);
+    expect(b.win.dataLayer.filter(entry => entry.event === 'purchase')).toHaveLength(1);
+    const event = { event: 'purchase', ecommerce: { transaction_id: 'TEST-2', value: 900 } };
+    dl.pushPurchaseOnce('TEST-2', event); dl.pushPurchaseOnce('TEST-2', event);
+    expect(b.win.dataLayer.filter(entry => entry.event === 'purchase')).toHaveLength(2);
     expect(b.win.dataLayer.slice(-2)).toEqual([{ ecommerce: null }, event]);
+    expect(b.win.localStorage.getItem('dl_purchase_TEST-2')).not.toBeNull();
     expect(b.win.dataLayer.some(entry => entry.event === 'begin_checkout')).toBe(false);
+  });
+  it('never sends a cookieless purchase outside the live site', async () => {
+    const b = setup(); b.win.location.hostname = 'dev.portugalactive.com';
+    await import('../client/src/lib/measurementConsent');
+    const dl = await import('../client/src/lib/datalayer');
+    dl.pushPurchaseOnce('TEST-3', { event: 'purchase', ecommerce: { transaction_id: 'TEST-3' } });
+    expect(b.win.dataLayer.some(entry => entry.event === 'purchase')).toBe(false);
   });
   it('applies a withdrawal made in another tab', async () => {
     const b = setup('all'); await import('../client/src/lib/measurementConsent');
