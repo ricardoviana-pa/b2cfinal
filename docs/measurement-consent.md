@@ -24,6 +24,10 @@ no carregamento do GTM e no `purchase`; o resto mantém-se.
   e GA4 também deduplicam por `transaction_id`) e nunca é reproduzido ao aceitar.
   Os restantes eventos do funil, a origem da visita (`pa-origin`) e a atribuição
   AI continuam a exigir "Aceitar tudo".
+- **Conversões otimizadas (Google Ads)**: com "Aceitar tudo", o `purchase` leva
+  `user_data` (`email` normalizado, `phone_number` em E.164 quando tem indicativo).
+  A tag "2 - Google Ads - Booking B2C" lê-o como dados fornecidos pelo utilizador e
+  a Google faz o hash. Sem consentimento o `purchase` vai sem `user_data`.
 - **Pendente (legal/copy)**: a política de cookies diz que GA/Clarity só atuam
   com autorização. Rever o texto para mencionar os pings sem cookies da Google
   antes ou junto com o deploy.

@@ -721,7 +721,7 @@ export default function BookingWidget({
           },
         ],
       },
-    });
+    }, { email: guestEmail, phone: guestPhone });
   }, [effectiveQuote, currency, guestyId, propertyName, nights, checkIn, checkOut, guests]);
 
   const resetDates = () => {

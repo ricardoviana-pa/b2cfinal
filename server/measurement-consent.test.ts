@@ -150,6 +150,26 @@ describe('measurement consent and booking isolation', () => {
     expect(b.win.localStorage.getItem('dl_purchase_TEST-2')).not.toBeNull();
     expect(b.win.dataLayer.some(entry => entry.event === 'begin_checkout')).toBe(false);
   });
+  it('adds enhanced-conversion user_data only to a consented purchase', async () => {
+    const b = setup(); const consent = await import('../client/src/lib/measurementConsent');
+    const dl = await import('../client/src/lib/datalayer');
+    const guest = { email: '  Guest@Example.COM ', phone: '+351 912 345 678' };
+    dl.pushPurchaseOnce('EC-1', { event: 'purchase', ecommerce: { transaction_id: 'EC-1' } }, guest);
+    const cookieless = b.win.dataLayer.find(entry => entry.event === 'purchase');
+    expect(cookieless).toBeDefined(); expect(cookieless.user_data).toBeUndefined();
+    expect(JSON.stringify(b.win.dataLayer)).not.toContain('guest@example.com');
+    consent.saveCookieChoice('all');
+    dl.pushPurchaseOnce('EC-2', { event: 'purchase', ecommerce: { transaction_id: 'EC-2' } }, guest);
+    const consented = b.win.dataLayer.filter(entry => entry.event === 'purchase').at(-1);
+    expect(consented.user_data).toEqual({ email: 'guest@example.com', phone_number: '+351912345678' });
+  });
+  it('normalises guest contact for enhanced conversions', async () => {
+    const { buildUserData } = await import('../client/src/lib/datalayer');
+    expect(buildUserData({ email: 'not-an-email', phone: '12' })).toBeUndefined();
+    expect(buildUserData({ phone: '0044 7700 900123' })).toEqual({ phone_number: '+447700900123' });
+    expect(buildUserData({ phone: '912 345 678' })).toEqual({ phone_number: '912345678' });
+    expect(buildUserData(null)).toBeUndefined();
+  });
   it('never sends a cookieless purchase outside the live site', async () => {
     const b = setup(); b.win.location.hostname = 'dev.portugalactive.com';
     await import('../client/src/lib/measurementConsent');
