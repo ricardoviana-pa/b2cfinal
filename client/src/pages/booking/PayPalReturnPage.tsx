@@ -196,7 +196,7 @@ export default function PayPalReturnPage() {
               // purchase leva o carrinho completo em todos os métodos
               ...(Array.isArray(bookingData.purchaseItems) ? bookingData.purchaseItems : [])],
             },
-          });
+          }, { email: bookingData.guestEmail, phone: bookingData.guestPhone });
 
           navigate(`/booking/thank-you/${result.reservationId}?method=paypal`);
         } catch (err: any) {

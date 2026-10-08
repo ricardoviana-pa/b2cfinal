@@ -45,9 +45,31 @@ export function pushEcommerce(event: Record<string, unknown>): void {
  * localStorage key per transaction_id; if storage is unavailable we still
  * push (a duplicate beats a lost purchase).
  */
+/** Guest contact for Google Ads enhanced conversions (only sent with consent). */
+export type PurchaseUserData = { email?: string | null; phone?: string | null };
+
+/** GA4/Google Ads `user_data` shape: email trimmed + lowercased, phone in E.164
+ *  when it already carries a country code (otherwise digits only, so Google
+ *  can still try). Empty → undefined, so nothing is pushed. */
+export function buildUserData(u?: PurchaseUserData | null): Record<string, string> | undefined {
+  if (!u) return undefined;
+  const out: Record<string, string> = {};
+  const email = (u.email || '').trim().toLowerCase();
+  if (email.includes('@')) out.email = email;
+  const raw = (u.phone || '').trim();
+  const digits = raw.replace(/[^0-9]/g, '');
+  if (digits.length >= 7) {
+    if (raw.startsWith('+')) out.phone_number = `+${digits}`;
+    else if (raw.startsWith('00')) out.phone_number = `+${digits.slice(2)}`;
+    else out.phone_number = digits;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 export function pushPurchaseOnce(
   transactionId: string | null | undefined,
   event: Record<string, unknown>,
+  userData?: PurchaseUserData | null,
 ): void {
   // Advanced consent mode: without a grant the purchase still reaches GTM so
   // Google tags send a cookieless conversion ping (Meta/Clarity are gated in
@@ -74,7 +96,10 @@ export function pushPurchaseOnce(
       /* storage unavailable — push anyway */
     }
   }
-  pushEcommerce(event);
+  // Enhanced conversions: the guest's contact rides only on a consented
+  // purchase (Google hashes it in the tag; ad_user_data must be granted).
+  const user_data = buildUserData(userData);
+  pushEcommerce(user_data ? { ...event, user_data } : event);
 }
 
 /** Build a GA4 addon item object from a service/adventure product */

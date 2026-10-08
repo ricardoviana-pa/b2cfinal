@@ -143,7 +143,7 @@ export default function PaymentThankYouPage() {
           ...(Array.isArray(data.purchaseItems) ? data.purchaseItems : []),
         ],
       },
-    });
+    }, { email: data.guestEmail, phone: data.guestPhone });
   }, [data]);
 
   return (
