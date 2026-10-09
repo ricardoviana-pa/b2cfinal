@@ -66,17 +66,17 @@ const TOTAL: Record<EmailLang, string> = {
   fi: "Yhteensä",
 };
 
-/** Rótulo da taxa de preparação, igual ao resumo do checkout (property.cleaningFee). */
+/** Rótulo da taxa de limpeza final, igual ao resumo do checkout (property.cleaningFee). */
 const CLEANING: Record<EmailLang, string> = {
-  pt: "Preparação da casa",
-  en: "Home preparation",
-  es: "Preparación de la casa",
-  fr: "Préparation de la maison",
-  it: "Preparazione della casa",
-  de: "Vorbereitung des Hauses",
-  nl: "Voorbereiding van de woning",
-  sv: "Förberedelse av huset",
-  fi: "Talon valmistelu",
+  pt: "Limpeza final",
+  en: "Final cleaning",
+  es: "Limpieza final",
+  fr: "Ménage final",
+  it: "Pulizia finale",
+  de: "Endreinigung",
+  nl: "Eindschoonmaak",
+  sv: "Slutstädning",
+  fi: "Loppusiivous",
 };
 
 /** Texto da célula à esquerda do valor final (o total) do cartão. */
@@ -127,10 +127,10 @@ describe("email de recuperação: sem texto em inglês nas outras 8 línguas", (
     expect(totalRowLabel(html)).toBe(TOTAL[lang]);
   });
 
-  it("inglês: rótulos e rodapé em inglês, com o rótulo do checkout para a preparação", async () => {
+  it("inglês: rótulos e rodapé em inglês, com o rótulo do checkout para a limpeza final", async () => {
     const html = await render("en", 1);
     expect(totalRowLabel(html)).toBe("Total");
-    expect(html).toContain(">Home preparation</td>");
+    expect(html).toContain(">Final cleaning</td>");
     expect(html).not.toContain("Service fee");
     expect(html).toContain("Private hotels in Portugal. The privacy of a home, the service of a hotel.");
   });

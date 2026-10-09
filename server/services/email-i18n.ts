@@ -48,8 +48,8 @@ export function skuNameFor(sku: string, lang: EmailLang): string | undefined {
 }
 
 /** Rótulo da linha quote.cleaningFee tal como o resumo do checkout a mostrou
- *  nessa língua (property.cleaningFee: "Preparação da casa", "Home
- *  preparation"...). Lido do mesmo ficheiro do site para o email não voltar a
+ *  nessa língua (property.cleaningFee: "Limpeza final", "Final
+ *  cleaning"...). Lido do mesmo ficheiro do site para o email não voltar a
  *  ficar dessincronizado: em agosto o site deixou "Service fee" e o email
  *  ficou com o rótulo antigo, em inglês, nas 9 línguas. */
 export function cleaningFeeLabel(lang: EmailLang): string {

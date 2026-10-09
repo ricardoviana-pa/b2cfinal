@@ -406,7 +406,7 @@ export function PartnerBookingPanel({
 
                 {quote.cleaningFee > 0 && (
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-black/50">{t('property.cleaningFee', 'Home preparation')}</span>
+                    <span className="text-sm text-black/50">{t('property.cleaningFee', 'Final cleaning')}</span>
                     <span className="text-sm text-black tabular-nums">{formatQuotedEur(quote.cleaningFee, lang)}</span>
                   </div>
                 )}

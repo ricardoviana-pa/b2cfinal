@@ -295,7 +295,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                 {data.cleaningFeeCents != null ? (
                   <div className="mb-2.5 flex items-baseline justify-between text-[13.5px] text-pa-earth">
                     <span>
-                      {t("paymentThankYou.cleaning", { defaultValue: "Home preparation service" })}
+                      {t("paymentThankYou.cleaning", { defaultValue: "Final cleaning" })}
                     </span>
                     <span className="tabular-nums">
                       {formatEurCents(data.cleaningFeeCents, lang)}
