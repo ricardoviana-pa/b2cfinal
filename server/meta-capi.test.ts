@@ -50,7 +50,7 @@ describe('Meta CAPI payload', () => {
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
     await sendMetaEvent(purchase);
-    vi.stubEnv('META_PIXEL_ID', '1428229772653572');
+    // Só o token é obrigatório: o pixel por omissão é o B2C
     vi.stubEnv('META_CAPI_TOKEN', 'token');
     await sendMetaEvent({ ...purchase, signals: { ...signals, userAgent: null } });
     await sendMetaEvent({ ...purchase, value: 0 });
