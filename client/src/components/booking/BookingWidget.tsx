@@ -13,6 +13,7 @@ import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { localizeProduct } from "@/lib/localizeProduct";
 import { Calendar, User, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
+import { useDateRangePicker } from "./useDateRangePicker";
 import type { AvailabilityDay } from "./AvailabilityCalendar";
 // Lazy-loaded: pulls in @stripe/stripe-js + js.stripe.com/v3 (~246KB). Split so
 // it loads only when the guest reaches the payment step, not on every PDP view.
@@ -374,8 +375,10 @@ export default function BookingWidget({
 
   const [calendarDays, setCalendarDays] = useState<AvailabilityDay[]>([]);
   const [calendarLoading, setCalendarLoading] = useState(false);
-  // Fechado por defeito: o widget cabe no viewport; clicar nas datas abre (12 jul)
-  const [showCalendar, setShowCalendar] = useState(false);
+  // Fechado por defeito: o widget cabe no viewport; clicar nas datas abre (12 jul).
+  // Cada campo abre o calendário na sua data (Saída → muda só a saída).
+  const datePicker = useDateRangePicker(!!checkIn);
+  const showCalendar = datePicker.open;
 
   const widgetRef = useRef<HTMLDivElement>(null);
 
@@ -968,36 +971,37 @@ export default function BookingWidget({
       </div>
 
       {/* Date selection */}
-      <div className="mx-5">
-        {/* Date display / toggle — clicking either box opens calendar */}
+      <div className="mx-5" ref={datePicker.containerRef}>
+        {/* Two fields: each opens the calendar on the date it shows */}
         <div
-          className={`border overflow-hidden cursor-pointer transition-colors ${
+          className={`border overflow-hidden transition-colors ${
             showCalendar ? "border-black rounded-t-lg" : "border-black/15 hover:border-black/30 rounded-lg"
           }`}
-          role="button"
-          tabIndex={0}
-          aria-label={`${t("bookingWidget.checkInLabel")}: ${checkIn || t("bookingWidget.selectDate")}. ${t("bookingWidget.checkOutLabel")}: ${checkOut || t("bookingWidget.selectDate")}`}
-          aria-expanded={showCalendar}
-          onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setShowCalendar(v => !v); } }}
-          onClick={() => setShowCalendar((v) => !v)}
         >
           <div className="grid grid-cols-2 divide-x divide-black/10">
-            <div className={`px-4 py-3.5 transition-colors ${
-              showCalendar && checkIn && !checkOut ? "bg-black/[0.03]" : "hover:bg-black/[0.02]"
-            }`}>
-              <p className="eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkInLabel")}</p>
-              <p className={`body-sm text-inherit font-normal ${checkIn ? "text-black" : "text-black/30"}`}>
-                {checkIn ? formatBookingDate(checkIn, lang) : t("bookingWidget.selectDate", "Select")}
-              </p>
-            </div>
-            <div className={`px-4 py-3.5 transition-colors ${
-              showCalendar && checkIn && !checkOut ? "hover:bg-black/[0.02]" : showCalendar && !checkIn ? "hover:bg-black/[0.02]" : "hover:bg-black/[0.02]"
-            }`}>
-              <p className="eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkOutLabel")}</p>
-              <p className={`body-sm text-inherit font-normal ${checkOut ? "text-black" : "text-black/30"}`}>
-                {checkOut ? formatBookingDate(checkOut, lang) : t("bookingWidget.selectDate", "Select")}
-              </p>
-            </div>
+            {(["check-in", "check-out"] as const).map((field) => {
+              const value = field === "check-in" ? checkIn : checkOut;
+              const label = t(field === "check-in" ? "bookingWidget.checkInLabel" : "bookingWidget.checkOutLabel");
+              const shown = value ? formatBookingDate(value, lang) : t("bookingWidget.selectDate", "Select");
+              const active = showCalendar && datePicker.phase === field;
+              return (
+                <button
+                  key={field}
+                  type="button"
+                  aria-expanded={showCalendar}
+                  aria-label={`${label}: ${shown}`}
+                  onClick={() => datePicker.openField(field)}
+                  className={`text-left px-4 py-3.5 transition-colors focus-visible:outline-none focus-visible:bg-black/[0.04] ${
+                    active ? "bg-black/[0.04] shadow-[inset_0_-2px_0_#1A1A18]" : "hover:bg-black/[0.02]"
+                  }`}
+                >
+                  <span className="block eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{label}</span>
+                  <span className={`block body-sm text-inherit font-normal ${value ? "text-black" : "text-black/30"}`}>
+                    {shown}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -1059,14 +1063,19 @@ export default function BookingWidget({
                 checkIn={checkIn}
                 checkOut={checkOut}
                 minNights={minNights}
-                onSelectRange={({ checkIn: ci, checkOut: co }) => {
+                phase={datePicker.phase}
+                onPhaseChange={datePicker.setPhase}
+                onClose={datePicker.close}
+                onSelectRange={({ checkIn: ci, checkOut: co, done }) => {
                   setCheckIn(ci);
                   setCheckOut(co);
                   setQuote(null);
                   setError("");
                   setBeQuoteError("");
                   setStep("dates");
-                  if (ci && co) setShowCalendar(false);
+                  // Fecha só quando a saída é escolhida; mudar só a entrada
+                  // deixa o calendário aberto na saída.
+                  if (done) datePicker.close();
                 }}
               />
             )}

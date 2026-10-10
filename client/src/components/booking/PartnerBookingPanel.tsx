@@ -6,6 +6,7 @@ import { pushDL } from '@/lib/datalayer';
 import type { BookingSelection } from './BookingWidget';
 import { formatQuotedEur, intlLocale, formatBookingDate } from '@/lib/format';
 import AvailabilityCalendar from './AvailabilityCalendar';
+import { useDateRangePicker } from './useDateRangePicker';
 import PhoneInput from './PhoneInput';
 
 /**
@@ -61,7 +62,8 @@ export function PartnerBookingPanel({
   const [checkIn, setCheckIn] = useState(initialCheckIn ?? '');
   const [checkOut, setCheckOut] = useState(initialCheckOut ?? '');
   const [guests, setGuests] = useState(initialGuests || 2);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const datePicker = useDateRangePicker(!!checkIn);
+  const showCalendar = datePicker.open;
 
   // The dates arrive from the URL when a guest clicks through from a dated
   // search, but they are not there on the first render — useState would keep
@@ -269,39 +271,38 @@ export function PartnerBookingPanel({
 
       <form id="partner-home-request" name="partner-home-request" onSubmit={submit}>
         {/* Dates — the portfolio's own calendar, not a native picker. */}
-        <div className="mx-5">
+        <div className="mx-5" ref={datePicker.containerRef}>
           <div
-            role="button"
-            tabIndex={0}
-            aria-expanded={showCalendar}
-            onClick={() => setShowCalendar((v) => !v)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                setShowCalendar((v) => !v);
-              }
-            }}
-            className={`border overflow-hidden cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black ${
+            className={`border overflow-hidden transition-colors ${
               showCalendar ? 'border-black rounded-t-lg' : 'border-black/15 hover:border-black/30 rounded-lg'
             }`}
           >
             <div className="grid grid-cols-2 divide-x divide-black/10">
-              <div className="px-4 py-3.5 transition-colors hover:bg-black/[0.02]">
-                <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">
-                  {t('bookingWidget.checkInLabel')}
-                </p>
-                <p className={`text-[15px] font-normal ${checkIn ? 'text-black' : 'text-black/30'}`}>
-                  {checkIn ? formatBookingDate(checkIn, lang) : t('bookingWidget.selectDate', 'Select')}
-                </p>
-              </div>
-              <div className="px-4 py-3.5 transition-colors hover:bg-black/[0.02]">
-                <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">
-                  {t('bookingWidget.checkOutLabel')}
-                </p>
-                <p className={`text-[15px] font-normal ${checkOut ? 'text-black' : 'text-black/30'}`}>
-                  {checkOut ? formatBookingDate(checkOut, lang) : t('bookingWidget.selectDate', 'Select')}
-                </p>
-              </div>
+              {(['check-in', 'check-out'] as const).map((field) => {
+                const value = field === 'check-in' ? checkIn : checkOut;
+                const label = t(field === 'check-in' ? 'bookingWidget.checkInLabel' : 'bookingWidget.checkOutLabel');
+                const shown = value ? formatBookingDate(value, lang) : t('bookingWidget.selectDate', 'Select');
+                const active = showCalendar && datePicker.phase === field;
+                return (
+                  <button
+                    key={field}
+                    type="button"
+                    aria-expanded={showCalendar}
+                    aria-label={`${label}: ${shown}`}
+                    onClick={() => datePicker.openField(field)}
+                    className={`text-left px-4 py-3.5 transition-colors focus-visible:outline-none focus-visible:bg-black/[0.04] ${
+                      active ? 'bg-black/[0.04] shadow-[inset_0_-2px_0_#1A1A18]' : 'hover:bg-black/[0.02]'
+                    }`}
+                  >
+                    <span className="block text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">
+                      {label}
+                    </span>
+                    <span className={`block text-[15px] font-normal ${value ? 'text-black' : 'text-black/30'}`}>
+                      {shown}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -321,11 +322,14 @@ export function PartnerBookingPanel({
                   checkIn={checkIn}
                   checkOut={checkOut}
                   minNights={minNights}
-                  onSelectRange={({ checkIn: ci, checkOut: co }) => {
+                  phase={datePicker.phase}
+                  onPhaseChange={datePicker.setPhase}
+                  onClose={datePicker.close}
+                  onSelectRange={({ checkIn: ci, checkOut: co, done }) => {
                     setCheckIn(ci);
                     setCheckOut(co);
                     clearDates();
-                    if (ci && co) setShowCalendar(false);
+                    if (done) datePicker.close();
                   }}
                 />
               )}

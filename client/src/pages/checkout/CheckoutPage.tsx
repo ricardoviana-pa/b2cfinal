@@ -268,6 +268,10 @@ export default function CheckoutPage() {
   const [nif, setNif] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [editingStay, setEditingStay] = useState(false);
+  // Datas a meio de mudar: o calendário precisa de mostrar a nova entrada antes
+  // de haver saída (sem isto, escolher uma entrada que não servia a saída antiga
+  // não fazia nada — 10 out 2026). Só vira requote quando a estadia fecha.
+  const [stayDraft, setStayDraft] = useState<{ checkIn: string; checkOut: string } | null>(null);
   const [requoting, setRequoting] = useState(false);
   const [quoteStale, setQuoteStale] = useState(false);
   const [datesUnavailable, setDatesUnavailable] = useState(false);
@@ -573,6 +577,15 @@ export default function CheckoutPage() {
     },
     [intent, selectedRatePlanId, syncIntent, utils, applyCouponMut],
   );
+
+  /** Fecha a edição de datas: re-cota se a estadia mudou e ficou completa. */
+  const finishStayEdit = (draft = stayDraft) => {
+    if (draft?.checkIn && draft.checkOut && (draft.checkIn !== checkIn || draft.checkOut !== checkOut)) {
+      requote(draft.checkIn, draft.checkOut, guests);
+    }
+    setStayDraft(null);
+    setEditingStay(false);
+  };
 
   // ── Step 1 → 2: email capture ──
   const submitEmail = useCallback(() => {
@@ -1621,7 +1634,7 @@ export default function CheckoutPage() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => setEditingStay((v) => !v)}
+                    onClick={() => (editingStay ? finishStayEdit() : setEditingStay(true))}
                     className="shrink-0 flex items-center gap-1.5 caption text-pa-gold hover:text-pa-dark transition-colors"
                   >
                     <Pencil className="w-3.5 h-3.5" />
@@ -1638,14 +1651,13 @@ export default function CheckoutPage() {
                     ) : (
                       <AvailabilityCalendar
                         days={calendarDays}
-                        checkIn={checkIn}
-                        checkOut={checkOut}
+                        checkIn={stayDraft?.checkIn ?? checkIn}
+                        checkOut={stayDraft?.checkOut ?? checkOut}
                         minNights={property?.minNights}
-                        onSelectRange={({ checkIn: ci, checkOut: co }) => {
-                          if (ci && co) {
-                            requote(ci, co, guests);
-                            setEditingStay(false);
-                          }
+                        onClose={() => finishStayEdit()}
+                        onSelectRange={({ checkIn: ci, checkOut: co, done }) => {
+                          setStayDraft({ checkIn: ci, checkOut: co });
+                          if (done) finishStayEdit({ checkIn: ci, checkOut: co });
                         }}
                       />
                     )}
