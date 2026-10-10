@@ -17,6 +17,7 @@ import { registerGoogleAuthRoutes } from "./googleAuth";
 import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/booking";
 import { redirectLegacyRecoveryEmail } from "../routes/checkout-recovery-redirect";
 import { registerRecoveryOptoutRoute } from "../routes/checkout-recovery-optout";
+import { registerLeadsExportRoute } from "../routes/leads-export";
 import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhook";
 import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
 import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
@@ -135,6 +136,8 @@ async function startServer() {
   registerBookingRoutes(app);
   // Bloco 2: opt-out dos lembretes de recuperação (link no rodapé dos emails)
   registerRecoveryOptoutRoute(app);
+  // Exportação interna dos carrinhos e pedidos por tratar (pa-marketing, lost_leads.py)
+  registerLeadsExportRoute(app);
   registerVitalsRoute(app);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
