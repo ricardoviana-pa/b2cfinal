@@ -225,11 +225,19 @@ variáveis DLV `ecommerce.*` da tag "1 - GA4 - Reservation"). Acionador: evento 
 - **Gestor de Eventos**: lista de permissões `portugalactive.com` + subdomínios, **feita a
   10/10/2026**. Bloqueia Guesty (guestybookings.com), Bokun, localhost, 127.0.0.1 e os previews
   onrender. As experiências reservadas no Bokun deixam de contar como compra no Meta.
-- **Gestor de Eventos**: confirmar o domínio portugalactive.com no Business Manager (Ricardo).
-- **Google Ads → Conversões**: "Iniciar pagamento" como secundária; "Adicionar ao carrinho"
-  passa a secundária; a compra ("Reserva B2C") fica a única principal; Enhanced
-  Conversions ativas na ação de compra (o GTM já envia `user_data` com consentimento).
-- **Render**: `META_PIXEL_ID`, `META_CAPI_TOKEN` e, durante o teste, `META_CAPI_TEST_CODE`.
+- **Business Manager → Domínios**: `portugalactive.com` adicionado a 10/10 (id 2346717209378286).
+  A meta tag `facebook-domain-verification` está no `<head>` (`client/index.html`). Depois
+  do deploy, carregar em "Verificar domínio" (a Meta pode demorar até 72 h a ler a tag).
+- **Google Ads → Conversões** (verificado a 10/10): "Adicionar ao carrinho" e "Iniciar
+  pagamento" já são secundárias (0 ações principais) e a Compra é principal. As Enhanced
+  Conversions estão ativas ("Geridas através do Gestor de Etiquetas"). **Por decidir**:
+  "Contacto" e "Fazer marcação" também têm uma ação principal cada. O brief pede a compra
+  como única principal, mas o Contacto inclui o WhatsApp, que é o canal principal de
+  conversão. Mudar isto altera os lances de 12 a 18 campanhas.
+- **Render**: `META_PIXEL_ID`, `META_CAPI_TOKEN` e, durante o teste, `META_CAPI_TEST_CODE`
+  (o Ricardo cola o token: o agente não introduz tokens).
+- **Política de privacidade**: parágrafo `privacy.s3AdsBody` em PT (10/10). As outras oito
+  línguas omitem-no até serem traduzidas, como o `s2OriginBody`.
 
 ## 7. Como testar
 
