@@ -1,18 +1,15 @@
+import { freeCancellationDays, lisbonToday, normalizePolicyCode } from "@shared/cancellationPolicy";
+
 type ComparableRatePlan = {
   ratePlanId: string;
   cancellationPolicy?: readonly string[];
 };
 
-/** Existing published policy semantics (also used by cancellation.ts).
- * These are comparison ranks, not a quote of an amount refundable.
+/** Guesty's policies (shared/cancellationPolicy.ts): every refundable code
+ * is "free cancellation until N days before arrival, 100 % after", so an
+ * open free-cancellation period ranks 1 and anything that charges the full
+ * stay if cancelled (non-refundable, or the period ended) ranks 0.
  */
-const REFUND_WINDOWS: Record<string, { days: number; rank: number }> = {
-  flexible: { days: 1, rank: 2 },
-  moderate: { days: 14, rank: 2 },
-  firm: { days: 30, rank: 1 },
-  strict: { days: 60, rank: 1 },
-};
-
 function refundRank(
   plan: ComparableRatePlan,
   checkIn: string,
@@ -20,16 +17,16 @@ function refundRank(
 ): number | null {
   // Conflicting/multiple policy codes are not evidence for a recommendation.
   if (plan.cancellationPolicy?.length !== 1) return null;
-  const code = plan.cancellationPolicy[0].trim().toLowerCase();
-  if (code === "super_strict" || code === "non_refundable") return 0;
-  const policy = REFUND_WINDOWS[code];
-  if (!policy) return null;
+  const code = normalizePolicyCode(plan.cancellationPolicy[0]);
+  if (code === "non_refundable") return 0;
+  const days = freeCancellationDays(code);
+  if (days == null) return null;
   const deadline = new Date(`${checkIn}T12:00:00Z`);
-  deadline.setUTCDate(deadline.getUTCDate() - policy.days);
+  deadline.setUTCDate(deadline.getUTCDate() - days);
   const day = deadline.toISOString().slice(0, 10);
   // Date-only policies do not establish the cutoff time. On the deadline
   // day itself, withhold the badge rather than infer a remaining window.
-  return day > today ? policy.rank : day < today ? 0 : null;
+  return day > today ? 1 : day < today ? 0 : null;
 }
 
 /** A name such as "Flexible" is insufficient. Recommend only a known,
@@ -55,12 +52,7 @@ export function hasVerifiedRefundAdvantage(
     parsed.toISOString().slice(0, 10) !== checkIn
   )
     return false;
-  const today = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Lisbon",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(now);
+  const today = lisbonToday(now);
   const rank = refundRank(plan, checkIn, today);
   if (rank == null || rank <= 0) return false;
   return alternatives.some(other => {

@@ -13,9 +13,10 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema, buildFaqPageSchema } from '@/components/seo/StructuredData';
+import { cancellationPolicyCopy, cancellationPolicySummary } from '@shared/cancellationPolicy';
 
 export default function FAQ() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [query, setQuery] = useState('');
   const normalize = (text: string) => text.toLocaleLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
   usePageMeta({ title: 'FAQ | Booking, Check-in & Villa Services Explained', description: 'Answers to common questions about booking, check-in, cancellation, concierge services, and what to expect at your villa.', url: '/faq' });
@@ -34,8 +35,11 @@ export default function FAQ() {
       a: t('faq.a3'),
     },
     {
+      // The answer is the policy itself, from the single source shared with
+      // the checkout, the emails and the legal page (Guesty's codes).
       q: t('faq.q4'),
-      a: t('faq.a4'),
+      a: cancellationPolicySummary(i18n.language),
+      link: { href: '/legal/cancellation-policy', label: cancellationPolicyCopy(i18n.language).termsLink },
     },
     {
       q: t('faq.q5'),
@@ -63,7 +67,7 @@ export default function FAQ() {
       a: t('faq.a10'),
     },
     { q: t('securityDeposit.title'), a: t('securityDeposit.notice') },
-  ], [t]);
+  ], [t, i18n.language]);
 
   const filteredQuestions = FAQ_ITEMS.map((item, index) => ({ item, index })).filter(({ item }) => normalize(`${item.q} ${item.a}`).includes(normalize(query.trim())));
 

@@ -10,19 +10,19 @@
  * Output: a table showing the rate plan inventory per listing + a final
  * list of listings that need a Refundable plan added in the Guesty UI.
  *
- * Heuristic for "refundable plan exists":
- *   - Rate plan name contains "refund" (case-insensitive)
- *     AND does NOT contain "non" / "não"
- *   - OR cancellation policy is "flexible" / "moderate" / "firm"
- * Heuristic for "non-refundable plan exists":
- *   - Rate plan name contains "non" + "refund" OR "não" + "reembols"
- *   - OR cancellation policy is "super_strict" / "strict"
+ * Classification follows shared/cancellationPolicy.ts (Guesty's codes):
+ *   - non-refundable: super_strict / NON_REFUNDABLE code, or a
+ *     "Não-Reembolsável" / "Non refundable" name
+ *   - refundable: MODERATE / FIRM / STRICT / STRICT_60 (free cancellation
+ *     until 7 / 14 / 30 / 60 days before arrival), or a "refund" / "flex" name
+ *   - anything else: unknown
  *
  * Read-only. Never writes to Guesty.
  */
 
 import "dotenv/config";
 import { guestyClient } from "../server/lib/guesty.ts";
+import { freeCancellationDays, isNonRefundablePlan } from "../shared/cancellationPolicy.ts";
 
 interface PlanSummary {
   name: string;
@@ -47,13 +47,10 @@ function readPlanField(rp: any, key: string): any {
 
 function classify(name: string, policy: string): PlanSummary["classification"] {
   const n = name.toLowerCase();
-  const p = policy.toLowerCase();
-  if (n.includes("non") && n.includes("refund")) return "non-refundable";
-  if (n.includes("não") && n.includes("reembols")) return "non-refundable";
-  if (p === "super_strict" || p === "strict") return "non-refundable";
-  if (n.includes("refund")) return "refundable";
+  if (isNonRefundablePlan({ name, cancellationPolicy: policy })) return "non-refundable";
+  if (freeCancellationDays(policy) != null) return "refundable";
+  if (n.includes("refund") || n.includes("reembols")) return "refundable";
   if (n.includes("flex") || n.includes("free cancel")) return "refundable";
-  if (p === "flexible" || p === "moderate" || p === "firm") return "refundable";
   return "unknown";
 }
 

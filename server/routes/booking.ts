@@ -8,6 +8,18 @@ import { updateTripStatusByReservationId } from "../db";
 import { sendBookingFailureAlert } from "../services/transactional-email";
 import { reservationBreakdown, reservationTotalCents } from "../lib/reservation-money";
 import { readReservationPaidCents } from "../services/reservation-receipt";
+import { isNonRefundablePlan, planPolicyCode, policyGenerosity } from "@shared/cancellationPolicy";
+import {
+  policyToStrings,
+  reservationRatePlanPolicy,
+  warnIfFeeDiffers,
+  withTimeout,
+  type RatePlanPolicy,
+} from "../services/rate-plan-policy";
+
+/** The confirmation answers after this long even when Guesty is slow; the
+ *  page then says "the cancellation terms of your rate" with a link. */
+const RATE_PLAN_LOOKUP_TIMEOUT_MS = 2500;
 
 const TTL_LISTING_MS = 6 * 60 * 60 * 1000;
 const TTL_CALENDAR_MS = 60 * 1000;
@@ -68,26 +80,14 @@ function mapGuestyError(err: unknown, res: Response): void {
   });
 }
 
-/** cancellationPolicy arrives as string[], a single string, or an object
- *  depending on the payload generation — never assume array. */
-function policyToStrings(policy: unknown): string[] {
-  if (Array.isArray(policy)) return policy.map((p) => (typeof p === "string" ? p : JSON.stringify(p)));
-  if (typeof policy === "string") return [policy];
-  if (policy && typeof policy === "object") {
-    return Object.values(policy as Record<string, unknown>)
-      .filter((v) => typeof v === "string" || typeof v === "number")
-      .map(String);
-  }
-  return [];
-}
-
 function classifyRatePlan(name: string, cancellationPolicy?: unknown): "flexible" | "non_refundable" | "other" {
-  const hay = `${name} ${policyToStrings(cancellationPolicy).join(" ")}`.toLowerCase();
+  const policy = policyToStrings(cancellationPolicy);
   // Live plan names: "Não-Reembolsável", "Reembolsável Star Low 26/27", … —
-  // match the negative with any separator before probing the positive terms.
-  if (/n[aã]o[\s-]*reembols|non[\s-]*refund|super_strict/.test(hay)) {
+  // Guesty's code or the non-refundable name decide first (shared rule).
+  if (isNonRefundablePlan({ name, cancellationPolicy: policy })) {
     return "non_refundable";
   }
+  const hay = `${name} ${policy.join(" ")}`.toLowerCase();
   if (/flex|free cancellation|cancel|reembols|refund/.test(hay)) {
     return "flexible";
   }
@@ -395,6 +395,11 @@ export function registerBookingRoutes(app: Express): void {
           const plan = entry?.ratePlan || entry || {};
           const moneyWrapper = entry?.money || plan?.money || {};
           const money = moneyWrapper?.money || moneyWrapper || {};
+          warnIfFeeDiffers(`quote ${listingId}`, {
+            ratePlanId: plan?._id || plan?.id,
+            name: plan?.name,
+            cancellationFee: plan?.cancellationFee,
+          });
           return {
             ratePlanId: plan?._id || plan?.id || "",
             name: plan?.name || "Tarifa",
@@ -412,10 +417,8 @@ export function registerBookingRoutes(app: Express): void {
       // Same binary collapse as parseBEQuote: cheapest non-refundable +
       // cheapest refundable — internal Guesty tiers never reach the guest.
       // Same generosity tie-break as parseBEQuote: at equal totals the plan
-      // with the friendliest cancellation policy wins.
-      const OPT_GENEROSITY: Record<string, number> = { flexible: 4, moderate: 3, firm: 2, strict: 1 };
-      const optGenerosity = (o: any): number =>
-        OPT_GENEROSITY[String(o.cancellationPolicy?.[0] || "").toLowerCase()] ?? 0;
+      // that stays free to cancel the longest wins (shared/cancellationPolicy).
+      const optGenerosity = (o: any): number => policyGenerosity(o.cancellationPolicy);
       const cheapestOpt = (arr: any[]) =>
         [...arr].sort((a, b) => (a.total - b.total) || (optGenerosity(b) - optGenerosity(a)))[0];
       const nonRefOpts = ratePlanOptions.filter((o: any) => o.type === "non_refundable");
@@ -533,6 +536,26 @@ export function registerBookingRoutes(app: Express): void {
       const location =
         listingAddress?.city || listingAddress?.region || listingAddress?.state || "";
 
+      // Guesty does not return cancellationPolicy on website reservations:
+      // read it from the reservation's own rate plan (ratePlanId → the
+      // listing's plans → code + name), bounded so a slow Guesty never holds
+      // the confirmation. One classification (planPolicyCode): non-refundable
+      // by code or name, a known code with the 100 % fee, else [] → the page
+      // says "the cancellation terms of your rate" with a link. Guesty's
+      // internal plan name is never sent to the guest.
+      // On timeout: only what the reservation itself carries (usually nothing).
+      const unknownPlan: RatePlanPolicy = {
+        ratePlanId: null,
+        name: reservation?.ratePlan?.name ? String(reservation.ratePlan.name) : null,
+        cancellationPolicy: policyToStrings(reservation?.cancellationPolicy ?? reservation?.ratePlan?.cancellationPolicy),
+      };
+      const ratePlan = await withTimeout(
+        reservationRatePlanPolicy(req.params.id, reservation, String(listingId || "")),
+        RATE_PLAN_LOOKUP_TIMEOUT_MS,
+        unknownPlan,
+      );
+      const guestPolicy = planPolicyCode(ratePlan);
+
       res.json({
         reservationId: reservation?._id || req.params.id,
         confirmationCode: reservation?.confirmationCode || reservation?._id?.slice(-8) || "",
@@ -553,10 +576,8 @@ export function registerBookingRoutes(app: Express): void {
         nights,
         cleaningFeeCents,
         currency: reservation?.money?.currency || "EUR",
-        cancellationPolicy:
-          reservation?.cancellationPolicy ||
-          reservation?.ratePlan?.cancellationPolicy ||
-          [],
+        cancellationPolicy: guestPolicy ? [guestPolicy] : [],
+        ratePlanId: ratePlan.ratePlanId,
         checkInInstructions,
         googleCalendarUrl,
         icsFileName: `portugal-active-booking-${reservation?._id || req.params.id}.ics`,

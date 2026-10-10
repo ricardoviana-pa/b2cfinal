@@ -10,7 +10,7 @@ import { pushPurchaseOnce, stayValue } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
 import { optimizeGuestyImage } from "@/lib/images";
 import propertiesData from "@/data/properties.json";
-import { cancellationPolicyText } from "@/lib/cancellation";
+import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
 
 const CONCIERGE_EMAIL = "info@portugalactive.com";
 
@@ -93,12 +93,34 @@ export default function PaymentThankYouPage() {
     (methodParam === "klarna" ? "klarna" : methodParam === "card" ? "card" : "paypal");
 
   useEffect(() => {
-    if (stash) {
-      setData(stash);
-      setLoading(false);
-      return;
-    }
     let active = true;
+    if (stash) {
+      // Return pages (PayPal/Klarna) do not carry the rate's policy: read it
+      // from the reservation's rate plan in Guesty, without blocking the page.
+      // Until it answers the policy row stays hidden (no fallback sentence
+      // that then swaps for the real one); on failure the fallback shows.
+      const needsPolicy = !stash.cancellationPolicy?.length;
+      setData(needsPolicy ? { ...stash, policyPending: true } : stash);
+      setLoading(false);
+      if (needsPolicy) {
+        fetchReservation(id)
+          .then((r) => {
+            if (!active) return;
+            setData((prev: any) => ({
+              ...prev,
+              cancellationPolicy: r?.cancellationPolicy?.length ? r.cancellationPolicy : prev?.cancellationPolicy,
+              policyPending: false,
+            }));
+          })
+          .catch(() => {
+            // the fallback sentence + terms link shows
+            if (active) setData((prev: any) => ({ ...prev, policyPending: false }));
+          });
+      }
+      return () => {
+        active = false;
+      };
+    }
     fetchReservation(id)
       .then((response) => {
         if (active) setData(response);
@@ -312,12 +334,20 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                     {formatEurCents(totalPaidCents, lang, t("bookingConfirmation.toConfirm"))}
                   </span>
                 </div>
-                {data.cancellationPolicy?.length ? (
+                {/* Policy of the booking's rate plan (Guesty code → rule, classified
+                    server-side like its rate card); unknown code → "the terms of
+                    your rate" + a link. Hidden while it is still being read. */}
+                {!data.policyPending && (
                   <div className="mt-[11px] flex items-center gap-1.5 text-[11.5px] text-pa-earth">
                     <Clock className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
-                    {cancellationPolicyText(data.cancellationPolicy[0], data.checkIn, t, lang)}
+                    <CancellationPolicyLine
+                      as="span"
+                      code={data.cancellationPolicy}
+                      checkIn={data.checkIn}
+                      lang={lang}
+                    />
                   </div>
-                ) : null}
+                )}
               </div>
 
               {/* Paid row */}

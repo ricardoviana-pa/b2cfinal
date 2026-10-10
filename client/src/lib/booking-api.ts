@@ -25,7 +25,7 @@ export interface BookingQuoteResponse {
     name: string;
     type: "flexible" | "non_refundable" | "other";
     cancellationPolicy?: string[];
-    cancellationFee?: string | null;
+    cancellationFee?: string | number | null;
     total: number;
     baseRent: number;
     cleaningFee: number;
@@ -73,6 +73,8 @@ export interface ThankYouStash {
   /** M12: preço/noites do item da casa no purchase (sem isto o item ia vazio) */
   nightlyRateCents?: number;
   nights?: number;
+  /** Policy of the rate paid, classified like its rate card (planPolicyCode). */
+  cancellationPolicy?: string[];
 }
 
 const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;
@@ -134,7 +136,7 @@ export function fetchRatePlans(listingId: string): Promise<{
     name: string;
     type: "flexible" | "non_refundable" | "other";
     cancellationPolicy?: string[];
-    cancellationFee?: string | null;
+    cancellationFee?: string | number | null;
   }>;
 }> {
   return fetchJson(`/api/listings/${listingId}/rate-plans`);
@@ -183,7 +185,10 @@ export function fetchReservation(reservationId: string) {
     nights?: number | null;
     cleaningFeeCents?: number | null;
     currency: string;
+    /** Policy of the reservation's rate plan, read from Guesty and classified
+     *  (planPolicyCode); [] when unknown. */
     cancellationPolicy: string[];
+    ratePlanId?: string | null;
     checkInInstructions: string;
     googleCalendarUrl: string;
     icsFileName: string;

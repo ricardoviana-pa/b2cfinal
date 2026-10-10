@@ -15,6 +15,7 @@ import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import { cardChargeIdempotencyKey, withCheckoutChargeLock } from "../lib/checkout-charge-attempt";
 import { randomUUID } from "crypto";
 import { sanitizePropertyName } from "@shared/displayName";
+import { planPolicyCode } from "@shared/cancellationPolicy";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "../_core/trpc";
@@ -236,8 +237,31 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
             ? CHECKOUT_RECEPTION.hostedLatePrice
             : CHECKOUT_RECEPTION.hostedPrice
           : 0;
-      void photoPromise
-        .then((imageUrl) =>
+      // Política da tarifa paga, com a mesma classificação de todo o site
+      // (planPolicyCode): código Guesty da quote do intent (ou o nome
+      // "Não-Reembolsável"); sem código, o rate plan da casa no Guesty, com
+      // limite de tempo. Nunca adivinhada, nunca o nome interno da tarifa.
+      const paidPlan = (Array.isArray((m.quote as any)?.ratePlanOptions) ? (m.quote as any).ratePlanOptions : [])
+        .find((o: any) => o?.ratePlanId && o.ratePlanId === m.ratePlanId);
+      const quotedCode = planPolicyCode(paidPlan);
+      const cancellationPromise: Promise<{ policy: unknown } | null> =
+        quotedCode
+          ? Promise.resolve({ policy: quotedCode })
+          : m.listingId && m.ratePlanId
+            ? import("../services/rate-plan-policy")
+                .then(({ ratePlanPolicyFor, withTimeout }) =>
+                  withTimeout(
+                    ratePlanPolicyFor(String(m.listingId), String(m.ratePlanId)).then((p) => ({
+                      policy: planPolicyCode({ ...p, name: p.name ?? paidPlan?.name }),
+                    })),
+                    10_000,
+                    { policy: null },
+                  ),
+                )
+                .catch(() => ({ policy: null }))
+            : Promise.resolve(null);
+      void Promise.all([photoPromise, cancellationPromise])
+        .then(([imageUrl, cancellation]) =>
           sendCheckoutGuestConfirmation({
             canonical,
             email: m.email,
@@ -262,6 +286,7 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
               ? `${CHECKOUT_EMAIL_ORIGIN}/${m.locale || "en"}/booking/thank-you/${m.reservationId}?method=card`
               : `${CHECKOUT_EMAIL_ORIGIN}/${m.locale || "en"}/checkout/${intentId}`,
             locale: m.locale,
+            cancellation,
             intentId,
           }),
         )

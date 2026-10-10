@@ -14,6 +14,24 @@ import { getSearchHint, type SearchHint } from "../services/search-hint";
 import { getDisplayedLowestNightly, getLowestNightlyBatch } from "../services/lowest-nightly";
 import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
+import { ratePlanPolicyFor, withTimeout } from "../services/rate-plan-policy";
+import { planPolicyCode } from "@shared/cancellationPolicy";
+
+/** Policy of the rate booked, from the listing's rate plan in Guesty — for
+ *  the confirmation email. One classification (planPolicyCode): the
+ *  non-refundable plan by code or name, a known code with the 100 % fee, else
+ *  null → the email says "the cancellation terms of your rate" with a link.
+ *  Bounded: a slow Guesty never holds the email for long. Guesty's internal
+ *  plan name never reaches the guest. */
+async function bookedRateCancellation(listingId?: string | null, ratePlanId?: string | null) {
+  if (!listingId || !ratePlanId || ratePlanId === "N/A") return null;
+  const plan = await withTimeout(
+    ratePlanPolicyFor(listingId, ratePlanId).catch(() => null),
+    10_000,
+    null,
+  );
+  return plan ? { policy: planPolicyCode(plan) } : null;
+}
 
 async function partnerProperty(uid: string) {
   const { getPropertiesForSite } = await import('../services/properties-store');
@@ -596,22 +614,27 @@ export const bookingRouter = router({
           });
         }
 
-        // Send booking confirmation email (non-blocking, never breaks booking)
-        try {
-          await sendBookingConfirmation({
-            guestName: input.guestName,
-            guestEmail: input.guestEmail,
-            propertyName: input.propertyName || "Portugal Active Home",
-            destination: input.destination,
-            checkIn: input.checkIn || "",
-            checkOut: input.checkOut || "",
-            guests: input.guests || 2,
-            totalPrice: input.totalPrice,
-            confirmationCode: result.confirmationCode,
+        // Send booking confirmation email (non-blocking, never breaks booking).
+        // Fire-and-forget like PayPal/Klarna: the card was already charged, so
+        // the response never waits for the rate-plan lookup or the email.
+        void bookedRateCancellation(input.listingId, input.ratePlanId)
+          .then((cancellation) =>
+            sendBookingConfirmation({
+              guestName: input.guestName,
+              guestEmail: input.guestEmail,
+              propertyName: input.propertyName || "Portugal Active Home",
+              destination: input.destination,
+              checkIn: input.checkIn || "",
+              checkOut: input.checkOut || "",
+              guests: input.guests || 2,
+              totalPrice: input.totalPrice,
+              confirmationCode: result.confirmationCode,
+              cancellation,
+            }),
+          )
+          .catch((emailErr: any) => {
+            console.warn(`[Booking] Confirmation email failed (non-blocking): ${emailErr?.message || emailErr}`);
           });
-        } catch (emailErr: any) {
-          console.warn(`[Booking] Confirmation email failed (non-blocking): ${emailErr.message}`);
-        }
 
         return result;
       } catch (error: any) {
@@ -837,7 +860,8 @@ export const bookingRouter = router({
         status: "upcoming",
       });
 
-      sendBookingConfirmation({
+      // Fire-and-forget: the rate's policy is read first (cached, bounded), then the email goes
+      void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
         guestName: `${input.guestFirstName} ${input.guestLastName}`,
         guestEmail: input.guestEmail,
         propertyName: input.propertyName || "Portugal Active Home",
@@ -847,7 +871,8 @@ export const bookingRouter = router({
         guests: input.numberOfAdults + input.numberOfChildren,
         totalPrice: input.totalAmount,
         confirmationCode: reservation.confirmationCode,
-      }).catch((err: any) => {
+        cancellation,
+      })).catch((err: any) => {
         console.warn(`[PayPal] Confirmation email failed (non-blocking): ${err.message}`);
       });
 
@@ -1030,7 +1055,8 @@ export const bookingRouter = router({
         status: "upcoming",
       });
 
-      sendBookingConfirmation({
+      // Fire-and-forget: the rate's policy is read first (cached, bounded), then the email goes
+      void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
         guestName: `${input.guestFirstName} ${input.guestLastName}`,
         guestEmail: input.guestEmail,
         propertyName: input.propertyName || "Portugal Active Home",
@@ -1040,7 +1066,8 @@ export const bookingRouter = router({
         guests: input.numberOfAdults + input.numberOfChildren,
         totalPrice: input.totalAmount,
         confirmationCode: reservation.confirmationCode,
-      }).catch((err: any) => {
+        cancellation,
+      })).catch((err: any) => {
         console.warn(`[Klarna] Confirmation email failed (non-blocking): ${err.message}`);
       });
 
