@@ -15,9 +15,9 @@
  * (booking_intent_ad_signals), o que só acontece com "Aceitar tudo" no site
  * live. Sem registo → nada sai para a Meta.
  *
- * Config por env no Render (sem env → no-op silencioso):
- *   META_PIXEL_ID=1428229772653572
- *   META_CAPI_TOKEN=EAAB...
+ * Config por env no Render (sem token → no-op silencioso):
+ *   META_CAPI_TOKEN=EAAB...       (o único obrigatório)
+ *   META_PIXEL_ID=...             (opcional; por omissão o B2C Pixel)
  *   META_CAPI_TEST_CODE=TEST123   (opcional, só para o "Testar eventos";
  *                                  retirar depois do teste)
  *
@@ -27,6 +27,9 @@ import { createHash } from "crypto";
 import type { StoredAdSignals } from "./ad-signals-store";
 
 const GRAPH_VERSION = "v21.0";
+/** B2C Pixel (conjunto de dados 1428229772653572), o mesmo do GTM. */
+const DEFAULT_PIXEL_ID = "1428229772653572";
+const pixelId = () => process.env.META_PIXEL_ID?.trim() || DEFAULT_PIXEL_ID;
 
 const sha256 = (v: string) => createHash("sha256").update(v).digest("hex");
 const normEmail = (e?: string | null) => {
@@ -44,7 +47,7 @@ const normPhone = (p?: string | null) => {
 };
 
 export function isMetaCapiConfigured(): boolean {
-  return !!(process.env.META_PIXEL_ID && process.env.META_CAPI_TOKEN);
+  return !!process.env.META_CAPI_TOKEN?.trim();
 }
 
 export type MetaCapiEvent = {
@@ -109,7 +112,7 @@ export async function sendMetaEvent(d: MetaCapiEvent): Promise<void> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5_000);
     const res = await fetch(
-      `https://graph.facebook.com/${GRAPH_VERSION}/${process.env.META_PIXEL_ID}/events?access_token=${encodeURIComponent(process.env.META_CAPI_TOKEN!)}`,
+      `https://graph.facebook.com/${GRAPH_VERSION}/${pixelId()}/events?access_token=${encodeURIComponent(process.env.META_CAPI_TOKEN!.trim())}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

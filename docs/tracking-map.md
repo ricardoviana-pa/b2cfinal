@@ -89,18 +89,18 @@ e Flex vão no `purchase_extras`. Os valores do Google Ads descem a partir do de
   essenciais" no checkout apaga o registo.
 - Sem registo, nada sai para a Meta. A origem da visita (`booking_intent_origins`)
   continua a nunca sair para terceiros.
-- Envs no Render: `META_PIXEL_ID=1428229772653572`, `META_CAPI_TOKEN` (gerar em Gestor de
-  Eventos → B2C Pixel → Definições → API de Conversões → Gerar token de acesso), e
-  `META_CAPI_TEST_CODE` só durante o teste (retirar depois).
+- Env no Render: só `META_CAPI_TOKEN` (gerar em Gestor de Eventos → B2C Pixel → Definições →
+  API de Conversões → Gerar token de acesso). O pixel por omissão é o B2C (`META_PIXEL_ID`
+  é opcional). `META_CAPI_TEST_CODE` também é opcional e serve só para o "Testar eventos".
 - **Pendente legal**: a política de privacidade deve dizer que, com autorização, os dados
   da reserva (email e telefone em hash, cookies do pixel, IP, browser) seguem para a Meta
   pelo servidor.
 
 ## 5. Alterações no GTM (workspace por publicar)
 
-O agente não conseguiu guardar no GTM por falta de permissão nesta sessão. Fazer à mão
-no workspace "Default", **pré-visualizar no Tag Assistant e só publicar depois da
-aprovação**. Antes de publicar, exportar a v30 para reposição.
+**Estado a 10/10/2026: as 7 alterações abaixo estão guardadas no workspace "Default"
+(5 tags modificadas, 1 tag e 1 acionador novos), por publicar.** Falta só carregar em
+Enviar → Publicar. A versão publicada até aí é a v30, que serve para reposição.
 
 ### 5.1 "2 - Facebook Pixel - Transaction" (Purchase)
 
@@ -213,7 +213,7 @@ retomar (está em pausa), acionador `begin_checkout`, exceção "Block - Managem
 valor = a variável de dataLayer de `ecommerce.value` que a tag "2 - Google Ads - Booking B2C"
 já usa, moeda = a de `ecommerce.currency`.
 
-### 5.6 GA4 `purchase_extras` (nova)
+### 5.6 GA4 `purchase_extras` (nova: tag "1 - GA4 - purchase_extras", acionador "PA - Event - purchase_extras")
 
 Tag "Google Analytics: evento do GA4", ID de medição `G-5DHEE0V85C`, nome do evento
 `purchase_extras`, parâmetros `transaction_id`, `value`, `currency`, `items` (mesmas
