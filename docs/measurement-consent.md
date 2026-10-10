@@ -118,6 +118,9 @@ da linha `Cupao:`, na mesma escrita. Serve a atribuição do marketing
   parte); cada registo sai 31 dias depois da última atualização, numa limpeza
   a cada 6 horas.
 - **Nunca sai para terceiros:** nem Stripe, nem CAPI da Meta, nem dataLayer.
+  Os sinais da CAPI da Meta (cookies do pixel, IP, browser) vivem noutra tabela,
+  `booking_intent_ad_signals`, só com "Aceitar tudo" e com as mesmas regras de retirada
+  e de 31 dias: ver [tracking-map.md](tracking-map.md) §4.
 - **Formato da linha e testes:** `server/services/visit-origin.ts`,
   `server/visit-origin.test.ts`, `server/visit-origin-consent.test.ts`,
   `server/checkout-sandbox/checkout-flow.test.ts`.

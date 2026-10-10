@@ -13,7 +13,7 @@ import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import destinationsData from '@/data/destinations.json';
-import { pushEcommerce } from '@/lib/datalayer';
+import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 
 const destinations = destinationsData as unknown as Destination[];
@@ -151,7 +151,7 @@ export default function PropertyCard({
         item_list_name: listName,
         items: [
           {
-            item_id: `PROP-${property.id}`,
+            item_id: `PROP-${propertyCatalogId(property)}`,
             item_name: property.name,
             item_category: 'villa',
             item_category2: property.locality || property.destination || '',

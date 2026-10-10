@@ -1030,6 +1030,8 @@ export default function CheckoutPage() {
         guestPhone: phone,
         // 2b: o cartão v2 cobra o todayTotal (estadia + serviços) num só PI
         totalCents: Math.round(todayTotal * 100),
+        // Valor do purchase nos anúncios: só a estadia (extras à parte)
+        stayTotalCents: effective ? Math.round(effective.total * 100) : null,
         // M12 (auditoria set/2026): sem isto o item da casa ia sem preço nem
         // quantidade no purchase do cartão
         nightlyRateCents: effective ? Math.round(effective.nightlyRate * 100) : undefined,

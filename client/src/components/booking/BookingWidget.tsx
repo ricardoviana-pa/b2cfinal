@@ -6,6 +6,7 @@ import { useLocation } from "wouter";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { visitOriginPayload } from "@/lib/visitOrigin";
+import { adSignalsPayload, newMetaEventId } from "@/lib/adSignals";
 import { cn } from "@/lib/utils";
 import { pushDL, pushEcommerce, pushPurchaseOnce, buildPropertyItem, ADDON_PREFIX } from "@/lib/datalayer";
 import { cancellationPolicyText } from "@/lib/cancellation";
@@ -707,6 +708,7 @@ export default function BookingWidget({
     setStep("success");
     pushPurchaseOnce(code, {
       event: 'purchase',
+      property_id: guestyId,
       ecommerce: {
         transaction_id: code,
         value: effectiveQuote?.total ?? undefined,
@@ -1410,9 +1412,14 @@ export default function BookingWidget({
                 if (reserveClickRef.current) return;
                 reserveClickRef.current = true;
                 window.setTimeout(() => { reserveClickRef.current = false; }, 4_000);
-                // GA4: begin_checkout
+                // GA4: begin_checkout. O event_id é o mesmo que o servidor
+                // usa no InitiateCheckout da CAPI (createIntent), para a Meta
+                // deduplicar o pixel e o servidor.
+                const initiateCheckoutEventId = newMetaEventId('ic');
                 pushEcommerce({
                   event: 'begin_checkout',
+                  event_id: initiateCheckoutEventId,
+                  property_id: guestyId,
                   ecommerce: {
                     currency: quote?.currency || currency,
                     value: effectiveQuote?.total ?? quote?.total,
@@ -1455,6 +1462,9 @@ export default function BookingWidget({
                       // Origem da visita para a nota da reserva (sem
                       // consentimento segue só { consent: false })
                       origin: visitOriginPayload(),
+                      // CAPI da Meta: só com "Aceitar tudo" no site live
+                      adSignals: adSignalsPayload(),
+                      initiateCheckoutEventId,
                       quote: {
                         nightlyRate: base.nightlyRate,
                         totalNights: base.totalNights,

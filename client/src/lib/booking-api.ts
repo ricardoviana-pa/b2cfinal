@@ -60,6 +60,9 @@ export interface ThankYouStash {
   guestEmail?: string;
   guestPhone?: string;
   totalCents: number | null;
+  /** Só a estadia (sem extras, receção nem Flex): valor do purchase no
+   *  GA4/Google Ads/Meta. Sem ele usa-se totalCents − purchaseItems. */
+  stayTotalCents?: number | null;
   currency: string;
   /** Promo code applied to the quote — carried into the GA4 purchase event */
   couponCode?: string;

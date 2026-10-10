@@ -5,7 +5,7 @@
    - ecommerce object is always cleared before each ecommerce event
    ========================================================================== */
 
-import { hasMeasurementConsent } from './measurementConsent';
+import { dataLayerDebugEnabled, hasMeasurementConsent } from './measurementConsent';
 import { isLiveSiteHostname } from '@shared/deployment';
 
 /** Purchases already reported in this document without consent (memory only). */
@@ -23,11 +23,27 @@ export const ADDON_PREFIX: Record<string, string> = {
   'daily-housekeeping': 'ADDON-HSK',
 };
 
+/**
+ * Id da casa no catálogo da Meta (scripts/meta-catalog.mjs: `id` = guestyId).
+ * O `id` interno das propriedades vem como "guesty-<id>"; o item GA4 usa
+ * PROP-<guestyId> em todo o funil e as tags Meta do GTM tiram o prefixo PROP-
+ * para os content_ids. Assim ViewContent, InitiateCheckout e Purchase batem
+ * com o catálogo.
+ */
+export function propertyCatalogId(property: { id?: string | number | null; guestyId?: string | null }): string {
+  return String(property.guestyId || property.id || '').replace(/^guesty-/, '');
+}
+
+function debugLog(event: Record<string, unknown>): void {
+  if (dataLayerDebugEnabled()) console.info('[dataLayer]', event.event, event);
+}
+
 /** Push any event to the dataLayer */
 export function pushDL(event: Record<string, unknown>): void {
   if (!hasMeasurementConsent()) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(event);
+  debugLog(event);
 }
 
 /** Push an ecommerce event — automatically clears the previous ecommerce object first */
@@ -36,6 +52,30 @@ export function pushEcommerce(event: Record<string, unknown>): void {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ ecommerce: null });
   window.dataLayer.push(event);
+  debugLog(event);
+}
+
+/** Item comprado no checkout além da estadia (extra, receção, Flex). */
+export type PurchaseExtraItem = { price?: number | null; quantity?: number | null } & Record<string, unknown>;
+
+/** Soma price × quantity dos itens, arredondada ao cêntimo. */
+export function sumItems(items: PurchaseExtraItem[] | null | undefined): number {
+  const total = (items ?? []).reduce((s, it) => s + (Number(it.price) || 0) * (Number(it.quantity) || 1), 0);
+  return Math.round(total * 100) / 100;
+}
+
+/**
+ * Valor da reserva para o `purchase`: só a estadia (alojamento, limpeza,
+ * taxas, já com o desconto do código), sem extras, receção nem Flex. É o
+ * valor que vai para GA4, Google Ads e Meta (decisão de 10/10/2026). Os
+ * serviços seguem no evento `purchase_extras` (pushPurchaseOnce).
+ * Quando a página só conhece o total pago, a estadia é total − serviços.
+ */
+export function stayValue(stayTotalCents: number | null | undefined, totalPaidCents: number | null | undefined, extras?: PurchaseExtraItem[] | null): number | undefined {
+  if (stayTotalCents != null && Number.isFinite(stayTotalCents) && stayTotalCents > 0) return Math.round(stayTotalCents) / 100;
+  if (totalPaidCents == null || !Number.isFinite(totalPaidCents)) return undefined;
+  const stay = Math.round(totalPaidCents) / 100 - sumItems(extras);
+  return stay > 0 ? Math.round(stay * 100) / 100 : undefined;
 }
 
 /**
@@ -70,6 +110,9 @@ export function pushPurchaseOnce(
   transactionId: string | null | undefined,
   event: Record<string, unknown>,
   userData?: PurchaseUserData | null,
+  /** Serviços pagos com a reserva: saem num `purchase_extras` à parte, para o
+   *  `purchase` levar só a estadia. Só com consentimento (GA4). */
+  extras?: PurchaseExtraItem[] | null,
 ): void {
   // Advanced consent mode: without a grant the purchase still reaches GTM so
   // Google tags send a cookieless conversion ping (Meta/Clarity are gated in
@@ -100,6 +143,18 @@ export function pushPurchaseOnce(
   // purchase (Google hashes it in the tag; ad_user_data must be granted).
   const user_data = buildUserData(userData);
   pushEcommerce(user_data ? { ...event, user_data } : event);
+  if (extras && extras.length) {
+    const ecommerce = (event.ecommerce ?? {}) as Record<string, unknown>;
+    pushEcommerce({
+      event: 'purchase_extras',
+      ecommerce: {
+        transaction_id: transactionId ?? ecommerce.transaction_id,
+        currency: ecommerce.currency || 'EUR',
+        value: sumItems(extras),
+        items: extras,
+      },
+    });
+  }
 }
 
 /** Build a GA4 addon item object from a service/adventure product */
@@ -171,6 +226,7 @@ export function detectAiReferrer(landingLocation = { pathname: window.location.p
 /** Build a GA4 property item object */
 export function buildPropertyItem(property: {
   id: string | number;
+  guestyId?: string | null;
   name: string;
   locality?: string;
   destination?: string;
@@ -186,7 +242,7 @@ export function buildPropertyItem(property: {
   index?: number;
 } = {}): Record<string, unknown> {
   return {
-    item_id: `PROP-${property.id}`,
+    item_id: `PROP-${propertyCatalogId(property)}`,
     item_name: property.name,
     item_category: 'villa',
     item_category2: property.locality || property.destination || '',

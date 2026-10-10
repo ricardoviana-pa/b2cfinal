@@ -3,7 +3,7 @@ import { useSearch, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { loadStripe } from "@/lib/stripeLoader";
 import { trpc } from "@/lib/trpc";
-import { pushPurchaseOnce } from "@/lib/datalayer";
+import { pushPurchaseOnce, stayValue } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
 import PaymentProcessing from "@/components/booking/PaymentProcessing";
 
@@ -155,6 +155,8 @@ export default function PayPalReturnPage() {
             guestEmail: bookingData.guestEmail || "",
             guestPhone: bookingData.guestPhone || "",
             totalCents: totalPaidCents,
+            // Para o obrigado separar a estadia dos serviços se for ele a reportar
+            purchaseItems: Array.isArray(bookingData.purchaseItems) ? bookingData.purchaseItems : undefined,
             currency: (bookingData.currency || "EUR").toUpperCase(),
             couponCode: bookingData.couponCode || undefined,
           });
@@ -163,40 +165,30 @@ export default function PayPalReturnPage() {
 
           // Deduped by transaction_id — the thank-you page also reports this
           // purchase, but only the first push wins (pushPurchaseOnce).
+          // Decisão 10/10/2026: o purchase leva só a estadia (total pago −
+          // serviços); extras, receção e Flex seguem no purchase_extras.
+          const extras = Array.isArray(bookingData.purchaseItems) ? bookingData.purchaseItems : [];
+          const value = stayValue(null, totalPaidCents, extras);
           pushPurchaseOnce(result.confirmationCode, {
             event: "purchase",
+            ...(bookingData.listingId ? { property_id: bookingData.listingId } : {}),
             ecommerce: {
               transaction_id: result.confirmationCode,
-              value: totalPaidCents / 100,
+              value,
               currency: (bookingData.currency || "EUR").toUpperCase(),
               ...(bookingData.couponCode ? { coupon: bookingData.couponCode } : {}),
-              // M12 (auditoria set/2026): o item da casa ia com o TOTAL (extras
-              // incluídos) e os extras eram somados outra vez — os items davam
-              // mais do que o value. A casa leva só a parte da estadia.
               items: [{
                 item_id: `PROP-${bookingData.listingId}`,
                 item_name: bookingData.propertyName || "Portugal Active Home",
                 item_category: "villa",
-                price: Math.max(
-                  0,
-                  totalPaidCents / 100 -
-                    (Array.isArray(bookingData.purchaseItems)
-                      ? bookingData.purchaseItems.reduce(
-                          (s: number, it: any) => s + (Number(it.price) || 0) * (Number(it.quantity) || 1),
-                          0,
-                        )
-                      : 0),
-                ),
+                price: value,
                 quantity: 1,
                 checkin_date: bookingData.checkIn,
                 checkout_date: bookingData.checkOut,
                 guests_adults: bookingData.numberOfAdults || undefined,
-              },
-              // Bloco 6: serviços comprados (extras, receção, Flex) — o
-              // purchase leva o carrinho completo em todos os métodos
-              ...(Array.isArray(bookingData.purchaseItems) ? bookingData.purchaseItems : [])],
+              }],
             },
-          }, { email: bookingData.guestEmail, phone: bookingData.guestPhone });
+          }, { email: bookingData.guestEmail, phone: bookingData.guestPhone }, extras);
 
           navigate(`/booking/thank-you/${result.reservationId}?method=paypal`);
         } catch (err: any) {

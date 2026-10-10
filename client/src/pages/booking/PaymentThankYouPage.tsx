@@ -6,7 +6,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { fetchReservation, readThankYou } from "@/lib/booking-api";
-import { pushPurchaseOnce } from "@/lib/datalayer";
+import { pushPurchaseOnce, stayValue } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
 import { optimizeGuestyImage } from "@/lib/images";
 import propertiesData from "@/data/properties.json";
@@ -120,11 +120,16 @@ export default function PaymentThankYouPage() {
     // Reopening an email receipt on another device is not a new purchase.
     if (!data || !stash || purchaseFiredRef.current) return;
     purchaseFiredRef.current = true;
+    // Decisão 10/10/2026: o purchase leva só a estadia; extras, receção e
+    // Flex seguem num purchase_extras à parte (pushPurchaseOnce).
+    const extras = Array.isArray(data.purchaseItems) ? data.purchaseItems : [];
+    const value = stayValue(data.stayTotalCents, data.totalCents, extras);
     pushPurchaseOnce(data.confirmationCode, {
       event: "purchase",
+      ...(data.listingId ? { property_id: data.listingId } : {}),
       ecommerce: {
         transaction_id: data.confirmationCode,
-        value: data.totalCents != null ? data.totalCents / 100 : undefined,
+        value,
         currency: data.currency || "EUR",
         ...(data.couponCode ? { coupon: data.couponCode } : {}),
         items: [
@@ -138,12 +143,9 @@ export default function PaymentThankYouPage() {
             checkout_date: data.checkOut ?? undefined,
             guests_adults: data.guestsCount ?? undefined,
           },
-          // Bloco 6: serviços comprados (extras, receção, Flex) — o cartão e
-          // as wallets reportam o purchase aqui, com o carrinho completo
-          ...(Array.isArray(data.purchaseItems) ? data.purchaseItems : []),
         ],
       },
-    }, { email: data.guestEmail, phone: data.guestPhone });
+    }, { email: data.guestEmail, phone: data.guestPhone }, extras);
   }, [data]);
 
   return (
