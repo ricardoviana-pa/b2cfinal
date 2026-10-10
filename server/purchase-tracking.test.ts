@@ -119,3 +119,13 @@ describe('inspeção do dataLayer fora do live', () => {
     expect(consent.hasMeasurementConsent()).toBe(false);
   });
 });
+
+describe('política de privacidade: envio à Meta pelo servidor', () => {
+  it('PT explains the consent-gated server send; other languages leave it out until translated', async () => {
+    const pt = (await import('../client/src/i18n/locales/pt.json')).default as any;
+    const en = (await import('../client/src/i18n/locales/en.json')).default as any;
+    const body: string = pt.privacy.s3AdsBody;
+    for (const fact of ['Aceitar tudo', 'Meta', 'servidor', 'hash', '31 dias', 'Apenas essenciais']) expect(body).toContain(fact);
+    expect(en.privacy.s3AdsBody).toBeUndefined();
+  });
+});

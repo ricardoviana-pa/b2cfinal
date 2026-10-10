@@ -1158,7 +1158,7 @@
   "privacy": {
     "overline": "LEGAL",
     "title": "Política de Privacidade",
-    "lastUpdated": "Última atualização: setembro de 2026",
+    "lastUpdated": "Última atualização: outubro de 2026",
     "s1Title": "1. Informação que Recolhemos",
     "s1Body": "Recolhemos informação que nos fornece diretamente, como quando faz um pedido de reserva, subscreve a nossa newsletter ou nos contacta. Isto pode incluir o seu nome, endereço de email, número de telefone e preferências de viagem.",
     "s2Title": "2. Como Utilizamos a Sua Informação",
@@ -1166,6 +1166,7 @@
     "s2OriginBody": "Se autorizar os cookies de análise, escolhendo Aceitar tudo no aviso de cookies, guardamos também, junto do seu pedido de reserva, de onde veio a visita ao nosso site: a campanha, o anúncio ou o site de onde chegou. Usamos esta informação apenas internamente, para saber que ações de marketing funcionam, e não a partilhamos com terceiros. Sem essa autorização, não guardamos a origem da visita.",
     "s3Title": "3. Partilha de Dados",
     "s3Body": "Não vendemos a sua informação pessoal. Podemos partilhar os seus dados com proprietários e prestadores de serviços para cumprir a sua reserva e prestar os serviços que pediu. Se já ficou connosco ou nos deu o seu email, podemos também enviá-lo, sempre codificado (hash) e por isso ilegível, a plataformas de anúncios como a Meta (Facebook e Instagram) e a Google, para lhe mostrarmos as nossas ofertas nessas plataformas. Pode pedir para sair destas listas a qualquer momento em info@portugalactive.com.",
+    "s3AdsBody": "Se escolher Aceitar tudo no aviso de cookies, quando começa ou conclui uma reserva no nosso site enviamos também à Meta (Facebook e Instagram), a partir do nosso servidor, o valor e o código da reserva, a casa escolhida, o seu email e telefone codificados (hash), os identificadores dos cookies da Meta, o endereço IP e o tipo de navegador. Serve para sabermos que anúncios trazem reservas. Guardamos esses identificadores durante 31 dias. Sem essa autorização, ou se escolher Apenas essenciais, não enviamos nada à Meta.",
     "s4Title": "4. Os Seus Direitos",
     "s4Body": "Ao abrigo do RGPD, tem o direito de aceder, corrigir, eliminar ou portar os seus dados pessoais. Pode também retirar o consentimento para comunicações de marketing, incluindo anúncios personalizados, a qualquer momento. Contacte-nos em info@portugalactive.com para exercer estes direitos.",
     "s5Title": "5. Contacto",

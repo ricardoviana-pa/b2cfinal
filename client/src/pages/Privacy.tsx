@@ -31,6 +31,11 @@ export default function Privacy() {
             )}
             <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('privacy.s3Title')}</h2>
             <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('privacy.s3Body')}</p>
+            {/* Envio server-side à Meta com "Aceitar tudo" (docs/tracking-map.md §4).
+                Só o PT tem o texto até chegarem as outras oito línguas. */}
+            {i18n.exists('privacy.s3AdsBody') && (
+              <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('privacy.s3AdsBody')}</p>
+            )}
             <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('privacy.s4Title')}</h2>
             <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('privacy.s4Body')}</p>
             <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('privacy.s5Title')}</h2>
