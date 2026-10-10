@@ -35,7 +35,7 @@ import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useVisitOriginSync } from "@/hooks/useVisitOriginSync";
 import { formatQuotedEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
-import { freeCancellationDeadline, isNonRefundablePlan } from "@/lib/cancellation";
+import { freeCancellationDeadline, isNonRefundablePlan, planPolicyCode, rateKind } from "@/lib/cancellation";
 import { freeCancellationDays } from "@shared/cancellationPolicy";
 import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
@@ -77,6 +77,8 @@ interface QuoteSnapshot {
     cleaningFee: number;
     taxesAndFees?: number;
     cancellationPolicy?: string[];
+    /** Guesty's share charged after the deadline (percent) — 100 on every plan today. */
+    cancellationFee?: string | number | null;
   }>;
 }
 
@@ -799,10 +801,11 @@ export default function CheckoutPage() {
   // free-cancellation date of the CURRENT selection (coherence with the policy)
   const selectedPlanOption = quote?.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
   const nonRefundableSelected = selectedPlanOption ? isNonRefundableOption(selectedPlanOption) : false;
-  const freeCancelUntil = freeCancellationDeadline(
-    selectedPlanOption?.cancellationPolicy?.[0],
-    checkIn,
-  );
+  // One classification for the chosen plan (planPolicyCode) — the same one
+  // its rate card uses — for the summary, the pay button, the Flex block and
+  // the thank-you page, so a plan never reads two different ways.
+  const selectedPolicyCode = planPolicyCode(selectedPlanOption);
+  const freeCancelUntil = freeCancellationDeadline(selectedPolicyCode, checkIn);
 
   // AUDIT A1: extras/flex sincronizam com o intent a cada alteração (debounce
   // 600ms) — antes só persistiam no continueToPay: um refresh no Personalizar
@@ -1025,15 +1028,14 @@ export default function CheckoutPage() {
         currency: "EUR",
         couponCode: quote?.couponCode || undefined,
         purchaseItems,
-        // Política da tarifa paga (código Guesty da quote) para a confirmação
-        cancellationPolicy: effective?.cancellationPolicy,
-        ratePlanName: selectedPlanOption?.name,
+        // Política da tarifa paga (mesma classificação do cartão) para a confirmação
+        cancellationPolicy: selectedPolicyCode ? [selectedPolicyCode] : undefined,
       });
       // The server records payment and reservation confirmation after settlement.
       void utils.checkout.getIntent.invalidate({ intentId: intent.id });
       navigate(`/booking/thank-you/${rid}?method=card`);
     },
-    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, effective, selectedPlanOption?.name, quote?.nights, quote?.couponCode, purchaseItems, syncIntent, navigate],
+    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, effective, selectedPolicyCode, quote?.nights, quote?.couponCode, purchaseItems, syncIntent, navigate],
   );
 
   // M5 (auditoria set/2026): regresso de um redirect 3DS do banco. O Stripe
@@ -1359,13 +1361,12 @@ export default function CheckoutPage() {
         <p className="caption text-pa-earth leading-relaxed">{t('securityDeposit.notice')}</p>
         {couponRow}
         {conciergeRequests}
-        {/* Política da tarifa escolhida, pelo código Guesty; código
-            desconhecido → nome da tarifa + ligação às condições */}
-        {effective?.cancellationPolicy?.length ? (
+        {/* Política da tarifa escolhida (planPolicyCode, igual ao cartão);
+            código desconhecido → "as condições da sua tarifa" + ligação */}
+        {selectedPolicyCode || effective?.cancellationPolicy?.length ? (
           <CancellationPolicyLine
-            code={effective.cancellationPolicy}
+            code={selectedPolicyCode}
             checkIn={checkIn}
-            planName={selectedPlanOption?.name}
             lang={lang}
             className="caption text-pa-stone-aa leading-snug"
           />
@@ -1412,8 +1413,16 @@ export default function CheckoutPage() {
                   <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
                   {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
                     const isSelected = selectedRatePlanId === opt.ratePlanId;
-                    const nonRef = isNonRefundableOption(opt);
-                    const label = nonRef ? t("booking.nonRefundable") : t("booking.flexibleRate");
+                    // "Reembolsável" só quando o Guesty o diz (código conhecido ou
+                    // nome "Reembolsável"); senão o neutro "Tarifa" (rateKind)
+                    const kind = rateKind(opt);
+                    const nonRef = kind === "non_refundable";
+                    const label =
+                      kind === "non_refundable"
+                        ? t("booking.nonRefundable")
+                        : kind === "refundable"
+                          ? t("booking.flexibleRate")
+                          : t("bookingConfirm.rate");
                     const savings = maxTotal - opt.total;
                     return (
                       <label
@@ -1449,9 +1458,8 @@ export default function CheckoutPage() {
                             )}
                           </div>
                           <CancellationPolicyLine
-                            code={nonRef ? "non_refundable" : opt.cancellationPolicy}
+                            code={planPolicyCode(opt)}
                             checkIn={checkIn}
-                            planName={opt.name}
                             lang={lang}
                             className="caption mt-0.5 text-pa-earth"
                           />
@@ -2010,11 +2018,10 @@ export default function CheckoutPage() {
                   </div>
                 )}
                 {/* Cancellation policy repeated in human text next to the pay button (spec §7) */}
-                {effective?.cancellationPolicy?.length ? (
+                {selectedPolicyCode || effective?.cancellationPolicy?.length ? (
                   <CancellationPolicyLine
-                    code={effective.cancellationPolicy}
+                    code={selectedPolicyCode}
                     checkIn={checkIn}
-                    planName={selectedPlanOption?.name}
                     lang={lang}
                     className="caption text-pa-stone-aa text-center leading-snug"
                   />

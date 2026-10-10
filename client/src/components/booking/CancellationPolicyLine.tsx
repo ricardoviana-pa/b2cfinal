@@ -2,13 +2,14 @@ import { cancellationPolicyCopy, cancellationPolicyInfo, cancellationPolicyPath 
 
 /**
  * One rate's cancellation policy as a sentence. Guesty's code gives the rule
- * (shared/cancellationPolicy.ts); when the code is unknown the sentence names
- * the rate and links to the cancellation terms, so nothing is ever invented.
+ * (shared/cancellationPolicy.ts); when the code is unknown the sentence says
+ * "the cancellation terms of your rate" and links to them, so nothing is ever
+ * invented. Callers pass planPolicyCode(plan) so the same plan reads the same
+ * everywhere; Guesty's internal plan name is never shown.
  */
 export default function CancellationPolicyLine({
   code,
   checkIn,
-  planName,
   lang,
   className,
   linkClassName = "underline underline-offset-2 hover:opacity-70",
@@ -17,7 +18,6 @@ export default function CancellationPolicyLine({
 }: {
   code: unknown;
   checkIn?: string | null;
-  planName?: string | null;
   lang: string;
   className?: string;
   linkClassName?: string;
@@ -25,7 +25,7 @@ export default function CancellationPolicyLine({
   /** Also link to the policy section when the code is known. */
   alwaysLink?: boolean;
 }) {
-  const info = cancellationPolicyInfo(code, checkIn, lang, planName);
+  const info = cancellationPolicyInfo(code, checkIn, lang);
   const showLink = alwaysLink || !info.known;
   return (
     <Tag className={className}>

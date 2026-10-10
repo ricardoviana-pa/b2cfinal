@@ -7,14 +7,17 @@ import {
   cancellationPolicyMetaDescription,
   cancellationPolicyPath,
   cancellationPolicySummary,
+  cancellationFeeMatches,
   describeCancellationPolicy,
   freeCancellationDays,
   freeCancellationDeadline,
   isNonRefundablePlan,
   normalizePolicyCode,
+  planPolicyCode,
   policyGenerosity,
   policyLang,
   policyRuleSentence,
+  rateKind,
 } from "../shared/cancellationPolicy";
 
 // Guesty's codes as they arrive (read 10 Oct 2026) → the policy and its days.
@@ -65,6 +68,39 @@ describe("Guesty code → rule", () => {
     // STRICT is refundable until 30 days — not the non-refundable plan
     expect(isNonRefundablePlan({ name: "Reembolsável Star Low 26/27", cancellationPolicy: ["STRICT"] })).toBe(false);
     expect(isNonRefundablePlan({ name: "Reembolsável Premium High 26", cancellationPolicy: ["STRICT_60"] })).toBe(false);
+  });
+
+  it("classifies a plan once, the same way for its card, the summary, the confirmation and the emails", () => {
+    // non-refundable by Guesty's name even when the code is missing or odd
+    expect(planPolicyCode({ name: "Não-Reembolsável", cancellationPolicy: [] })).toBe("non_refundable");
+    expect(planPolicyCode({ name: "Não-Reembolsável", cancellationPolicy: ["something_else"] })).toBe("non_refundable");
+    expect(planPolicyCode({ name: "Tarifa", cancellationPolicy: ["super_strict"], cancellationFee: 100 })).toBe("non_refundable");
+    expect(planPolicyCode({ name: "Reembolsável Star Low 26/27", cancellationPolicy: ["MODERATE"], cancellationFee: 100 })).toBe("moderate");
+    expect(planPolicyCode({ name: "Reembolsável Star Low 26/27", cancellationPolicy: "STRICT_60" })).toBe("strict_60");
+    // unknown code → null (the terms-of-your-rate sentence)
+    expect(planPolicyCode({ name: "Reembolsável Especial", cancellationPolicy: [] })).toBeNull();
+    expect(planPolicyCode(undefined)).toBeNull();
+  });
+
+  it("does not state 100 % for a plan Guesty charges differently", () => {
+    expect(cancellationFeeMatches(100)).toBe(true);
+    expect(cancellationFeeMatches("100")).toBe(true);
+    expect(cancellationFeeMatches("100%")).toBe(true);
+    expect(cancellationFeeMatches(undefined)).toBe(true);
+    expect(cancellationFeeMatches(null)).toBe(true);
+    expect(cancellationFeeMatches(50)).toBe(false);
+    expect(cancellationFeeMatches("abc")).toBe(false);
+    expect(planPolicyCode({ name: "Reembolsável Star", cancellationPolicy: ["MODERATE"], cancellationFee: 50 })).toBeNull();
+    expect(planPolicyCode({ name: "Não-Reembolsável", cancellationPolicy: ["super_strict"], cancellationFee: 0 })).toBeNull();
+  });
+
+  it("labels a card refundable only when Guesty says so", () => {
+    expect(rateKind({ name: "Não-Reembolsável" })).toBe("non_refundable");
+    expect(rateKind({ name: "Tarifa", cancellationPolicy: ["FIRM"] })).toBe("refundable");
+    expect(rateKind({ name: "Reembolsável Star Low 26/27", cancellationPolicy: [] })).toBe("refundable");
+    expect(rateKind({ name: "Rembolsável Premium High 26" })).toBe("refundable");
+    expect(rateKind({ name: "Standard rate", cancellationPolicy: [] })).toBe("unknown");
+    expect(rateKind({ name: "Flexible", cancellationPolicy: ["flexible"] })).toBe("unknown");
   });
 
   it("ranks equal prices by how long cancelling stays free", () => {
@@ -139,7 +175,10 @@ describe("the words, in every language the site supports", () => {
           expect(open.deadline).toBeNull();
         } else {
           expect(open.deadline).toBe(freeCancellationDeadline(raw, "2027-03-01", TODAY));
-          expect(open.text).toBe(copy.freeUntilDate(`<${open.deadline}>`));
+          expect(open.text).toBe(copy.freeUntilDate(days, `<${open.deadline}>`));
+          // the day count (Guesty's rule) always comes with the date
+          expect(open.text).toContain(String(days));
+          expect(open.text).toContain(`(<${open.deadline}>)`);
           const passed = describeCancellationPolicy(raw, { lang, checkIn: "2026-10-11", formatDate: fmt, today: TODAY });
           expect(passed.text).toBe(copy.windowPassed);
           const noDate = describeCancellationPolicy(raw, { lang });
@@ -149,17 +188,14 @@ describe("the words, in every language the site supports", () => {
     }
   });
 
-  it("falls back to the rate's name and the terms when the code is unknown", () => {
+  it("falls back to the terms of the rate when the code is unknown — never Guesty's plan name", () => {
     for (const lang of POLICY_LANGS) {
       const copy = cancellationPolicyCopy(lang);
       for (const raw of ["flexible", undefined, [], ["MODERATE", "STRICT"]]) {
-        const named = describeCancellationPolicy(raw, { lang, checkIn: "2027-03-01", planName: "Reembolsável Star Low 26/27" });
-        expect(named.known).toBe(false);
-        expect(named.code).toBeNull();
-        expect(named.text).toBe(copy.unknownNamed("Reembolsável Star Low 26/27"));
-        expect(named.text).toContain("Reembolsável Star Low 26/27");
-        const anonymous = describeCancellationPolicy(raw, { lang, planName: "  " });
-        expect(anonymous.text).toBe(copy.unknown);
+        const d = describeCancellationPolicy(raw, { lang, checkIn: "2027-03-01" });
+        expect(d.known).toBe(false);
+        expect(d.code).toBeNull();
+        expect(d.text).toBe(copy.unknown);
       }
       expect(copy.termsLink.length).toBeGreaterThan(5);
       expect(cancellationPolicyPath(lang)).toBe(`/${lang}/legal/cancellation-policy`);
@@ -184,6 +220,8 @@ describe("the words, in every language the site supports", () => {
       expect(summary).not.toMatch(/50\s*%|24\s*h/);
       expect(summary.length).toBeGreaterThan(meta.length);
       expect(cancellationPolicyCopy(lang).otherPlatformsBody).toMatch(/Airbnb/);
+      // fits the 155-character meta description without being cut mid-sentence
+      expect(meta.length).toBeLessThanOrEqual(155);
     }
     expect(cancellationPolicySummary("pt")).toContain("até 7, 14, 30 ou 60 dias antes da chegada");
     expect(cancellationPolicySummary("en")).toContain("until 7, 14, 30 or 60 days before arrival");

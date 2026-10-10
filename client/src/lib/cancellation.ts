@@ -16,26 +16,26 @@ type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
 
 export {
   isNonRefundablePlan,
+  planPolicyCode,
+  rateKind,
   cancellationPolicyPath,
   cancellationPolicyCopy,
 } from "@shared/cancellationPolicy";
 
 /**
  * The policy of one rate for these dates: Guesty's code → rule, with the
- * concrete cancel-by date when the arrival is known. Unknown code → the
- * rate's name and "the cancellation terms of your rate" (`known: false`, so
- * the caller adds the link to the terms).
+ * concrete cancel-by date when the arrival is known. Unknown code → "the
+ * cancellation terms of your rate" (`known: false`, so the caller adds the
+ * link to the terms). Pass planPolicyCode(plan) when the plan is at hand.
  */
 export function cancellationPolicyInfo(
   rawCode: unknown,
   checkIn: string | undefined | null,
   lang?: string,
-  planName?: string | null,
 ): CancellationDescription {
   return describeCancellationPolicy(rawCode, {
     lang,
     checkIn,
-    planName,
     formatDate: (ymd) => formatBookingDate(ymd, lang, true),
   });
 }
@@ -45,9 +45,8 @@ export function cancellationPolicyText(
   rawCode: unknown,
   checkIn: string | undefined | null,
   lang?: string,
-  planName?: string | null,
 ): string {
-  return cancellationPolicyInfo(rawCode, checkIn, lang, planName).text;
+  return cancellationPolicyInfo(rawCode, checkIn, lang).text;
 }
 
 /**

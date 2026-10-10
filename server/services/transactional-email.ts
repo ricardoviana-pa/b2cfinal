@@ -108,7 +108,7 @@ interface BookingConfirmationData {
   confirmationCode: string;
   /** Guest language (site locale); falls back to English. */
   locale?: string | null;
-  /** Rate plan of the booking (Guesty code + name) for the policy line. */
+  /** Policy of the booked rate (planPolicyCode) for the policy line. */
   cancellation?: EmailCancellation | null;
 }
 
@@ -602,21 +602,21 @@ function conciergeSignature(lang: EmailLang, destination?: string | null, locali
 const SERIF = "'Cormorant Garamond',Georgia,'Times New Roman',serif";
 const SANS = "'DM Sans',Arial,Helvetica,sans-serif";
 
-/** Rate plan of the booking, as Guesty sent it (code + name). */
+/** Policy of the booked rate, already classified (planPolicyCode). */
 export interface EmailCancellation {
   policy?: unknown;
-  planName?: string | null;
 }
 
 const escapeHtml = (v: string): string =>
   v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /** The booking's cancellation policy in one line — the rule of its Guesty
- *  code (shared/cancellationPolicy.ts); unknown code → the rate's name and a
- *  link to the cancellation terms. Never an invented rule. */
+ *  code (shared/cancellationPolicy.ts); unknown code → "the cancellation
+ *  terms of your rate" and a link to them. Never an invented rule, never
+ *  Guesty's internal plan name. */
 function cancellationEmailLine(c: EmailCancellation | null | undefined, lang: EmailLang, checkIn?: string | null): string {
   const copy = cancellationPolicyCopy(lang);
-  const d = describeCancellationPolicy(c?.policy, { lang, checkIn, planName: c?.planName });
+  const d = describeCancellationPolicy(c?.policy, { lang, checkIn });
   const link = d.known
     ? ""
     : ` <a href="${CHECKOUT_EMAIL_ORIGIN}${cancellationPolicyPath(lang)}" target="_blank" style="color:${PA.gold};text-decoration:underline;">${escapeHtml(copy.termsLink)}</a>`;
@@ -938,7 +938,7 @@ export async function sendCheckoutGuestConfirmation(d: {
   /** Link "Ver a minha reserva" (checkout pago mostra o estado confirmado) */
   viewUrl?: string | null;
   locale?: string | null;
-  /** Tarifa paga (código Guesty + nome) para a linha da política */
+  /** Política da tarifa paga (planPolicyCode) para a linha da política */
   cancellation?: EmailCancellation | null;
   intentId: string;
 }): Promise<void> {

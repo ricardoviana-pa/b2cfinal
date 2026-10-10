@@ -11,6 +11,7 @@
 
 import { guestyBEClient } from "../lib/guesty";
 import { isNonRefundablePlan, policyGenerosity } from "@shared/cancellationPolicy";
+import { warnIfFeeDiffers } from "./rate-plan-policy";
 
 /**
  * In-flight booking guard: prevents double-charging when the same quoteId
@@ -234,6 +235,8 @@ export function parseBEQuote(quote: any, listingId: string, checkIn: string, che
     const cancellationPolicy = rp.cancellationPolicy
       ? [String(rp.cancellationPolicy)]
       : (p.cancellationPolicy ?? undefined);
+    const cancellationFee = rp.cancellationFee ?? p.cancellationFee;
+    warnIfFeeDiffers(`BE quote ${listingId}`, { ratePlanId: resolvePlanId(p), name: rp.name || p.name, cancellationFee });
     return {
       ratePlanId: resolvePlanId(p),
       name: rp.name || p.name || "Standard rate",
@@ -242,7 +245,7 @@ export function parseBEQuote(quote: any, listingId: string, checkIn: string, che
       cleaningFee: fareCleaning,
       taxesAndFees,
       cancellationPolicy,
-      cancellationFee: rp.cancellationFee ?? p.cancellationFee,
+      cancellationFee,
     };
   };
 

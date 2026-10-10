@@ -99,7 +99,6 @@ export default function BookingConfirmationPage() {
                     <CancellationPolicyLine
                       code={data.cancellationPolicy}
                       checkIn={data.checkIn}
-                      planName={data.ratePlanName}
                       lang={lang}
                       className="text-pa-dark"
                     />

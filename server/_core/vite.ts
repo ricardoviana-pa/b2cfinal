@@ -870,8 +870,10 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
   faq.push(pt
     ? { q: 'Qual é a estadia mínima?', a: 'A estadia mínima varia com a época — o calendário mostra o requisito exato para as suas datas. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites.' }
     : { q: 'What is the minimum stay?', a: 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.' });
-  // Same cancellation Q&A as the visible "Good to know" (shared source = Guesty's codes)
-  faq.push({ q: cancellationPolicyCopy(lang).question, a: cancellationPolicySummary(lang) });
+  // Same cancellation Q&A as the visible "Good to know" (shared source = Guesty's
+  // codes), in the same pt/en language as the rest of this FAQPage.
+  const faqLang = pt ? 'pt' : 'en';
+  faq.push({ q: cancellationPolicyCopy(faqLang).question, a: cancellationPolicySummary(faqLang) });
   faq.push(pt
     ? { q: 'Porquê reservar diretamente com a Portugal Active?', a: 'Reservar direto garante o melhor preço online sem taxas de serviço de OTAs, concierge dedicado por WhatsApp e uma equipa local que gere a casa de ponta a ponta.' }
     : { q: 'Why book directly with Portugal Active?', a: 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.' });

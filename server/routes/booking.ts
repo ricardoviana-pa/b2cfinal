@@ -8,8 +8,18 @@ import { updateTripStatusByReservationId } from "../db";
 import { sendBookingFailureAlert } from "../services/transactional-email";
 import { reservationBreakdown, reservationTotalCents } from "../lib/reservation-money";
 import { readReservationPaidCents } from "../services/reservation-receipt";
-import { isNonRefundablePlan, policyGenerosity } from "@shared/cancellationPolicy";
-import { policyToStrings, reservationRatePlanPolicy } from "../services/rate-plan-policy";
+import { isNonRefundablePlan, planPolicyCode, policyGenerosity } from "@shared/cancellationPolicy";
+import {
+  policyToStrings,
+  reservationRatePlanPolicy,
+  warnIfFeeDiffers,
+  withTimeout,
+  type RatePlanPolicy,
+} from "../services/rate-plan-policy";
+
+/** The confirmation answers after this long even when Guesty is slow; the
+ *  page then says "the cancellation terms of your rate" with a link. */
+const RATE_PLAN_LOOKUP_TIMEOUT_MS = 2500;
 
 const TTL_LISTING_MS = 6 * 60 * 60 * 1000;
 const TTL_CALENDAR_MS = 60 * 1000;
@@ -385,6 +395,11 @@ export function registerBookingRoutes(app: Express): void {
           const plan = entry?.ratePlan || entry || {};
           const moneyWrapper = entry?.money || plan?.money || {};
           const money = moneyWrapper?.money || moneyWrapper || {};
+          warnIfFeeDiffers(`quote ${listingId}`, {
+            ratePlanId: plan?._id || plan?.id,
+            name: plan?.name,
+            cancellationFee: plan?.cancellationFee,
+          });
           return {
             ratePlanId: plan?._id || plan?.id || "",
             name: plan?.name || "Tarifa",
@@ -523,9 +538,23 @@ export function registerBookingRoutes(app: Express): void {
 
       // Guesty does not return cancellationPolicy on website reservations:
       // read it from the reservation's own rate plan (ratePlanId → the
-      // listing's plans → code + name). Unknown → [] and the page falls back
-      // to the rate's name and a link to the terms.
-      const ratePlan = await reservationRatePlanPolicy(req.params.id, reservation, String(listingId || ""));
+      // listing's plans → code + name), bounded so a slow Guesty never holds
+      // the confirmation. One classification (planPolicyCode): non-refundable
+      // by code or name, a known code with the 100 % fee, else [] → the page
+      // says "the cancellation terms of your rate" with a link. Guesty's
+      // internal plan name is never sent to the guest.
+      // On timeout: only what the reservation itself carries (usually nothing).
+      const unknownPlan: RatePlanPolicy = {
+        ratePlanId: null,
+        name: reservation?.ratePlan?.name ? String(reservation.ratePlan.name) : null,
+        cancellationPolicy: policyToStrings(reservation?.cancellationPolicy ?? reservation?.ratePlan?.cancellationPolicy),
+      };
+      const ratePlan = await withTimeout(
+        reservationRatePlanPolicy(req.params.id, reservation, String(listingId || "")),
+        RATE_PLAN_LOOKUP_TIMEOUT_MS,
+        unknownPlan,
+      );
+      const guestPolicy = planPolicyCode(ratePlan);
 
       res.json({
         reservationId: reservation?._id || req.params.id,
@@ -547,9 +576,8 @@ export function registerBookingRoutes(app: Express): void {
         nights,
         cleaningFeeCents,
         currency: reservation?.money?.currency || "EUR",
-        cancellationPolicy: ratePlan.cancellationPolicy,
+        cancellationPolicy: guestPolicy ? [guestPolicy] : [],
         ratePlanId: ratePlan.ratePlanId,
-        ratePlanName: ratePlan.name,
         checkInInstructions,
         googleCalendarUrl,
         icsFileName: `portugal-active-booking-${reservation?._id || req.params.id}.ics`,

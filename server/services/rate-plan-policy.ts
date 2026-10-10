@@ -9,14 +9,45 @@
  */
 import { cacheManager } from "../lib/cacheManager";
 import { guestyClient } from "../lib/guesty";
+import { cancellationFeeMatches } from "@shared/cancellationPolicy";
 
 const TTL_RATE_PLANS_MS = 6 * 60 * 60 * 1000;
 
 export interface RatePlanPolicy {
   ratePlanId: string | null;
+  /** Guesty's internal plan name — for classification and logs, never shown to guests. */
   name: string | null;
   /** Guesty's code(s) as sent, e.g. ["MODERATE"]; [] when unknown. */
   cancellationPolicy: string[];
+  /** Guesty's cancellationFee (percent) when it sent one. */
+  cancellationFee?: unknown;
+}
+
+const feeWarned = new Set<string>();
+
+/** Every sentence says 100 % after the deadline; a plan set to anything else
+ *  is shown as unknown (planPolicyCode) and logged once, so someone updates
+ *  the copy. */
+export function warnIfFeeDiffers(where: string, plan: { ratePlanId?: string | null; name?: string | null; cancellationFee?: unknown }): void {
+  if (cancellationFeeMatches(plan.cancellationFee)) return;
+  const key = `${plan.ratePlanId ?? plan.name ?? "?"}|${String(plan.cancellationFee)}`;
+  if (feeWarned.has(key)) return;
+  feeWarned.add(key);
+  console.warn(
+    `[cancellation] ${where}: rate plan ${plan.ratePlanId ?? "?"} ("${plan.name ?? ""}") has cancellationFee=${String(plan.cancellationFee)}, not 100 — the site shows "the cancellation terms of your rate" for it until the policy copy is updated`,
+  );
+}
+
+/** Resolve `p`, or `fallback` after `ms` — the slow Guesty call keeps running
+ *  (and fills the cache) but nobody waits for it. */
+export function withTimeout<T>(p: Promise<T>, ms: number, fallback: T): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const late = new Promise<T>((resolve) => {
+    timer = setTimeout(() => resolve(fallback), ms);
+  });
+  return Promise.race([p.catch(() => fallback), late]).finally(() => {
+    if (timer) clearTimeout(timer);
+  });
 }
 
 /** cancellationPolicy arrives as string[], a single string, or an object
@@ -57,11 +88,17 @@ export async function getListingRatePlansCached(listingId: string): Promise<any[
 export async function ratePlanPolicyFor(listingId: string, ratePlanId: string): Promise<RatePlanPolicy> {
   const plans = await getListingRatePlansCached(listingId);
   const plan = plans.find((p) => String(planField(p, "_id") ?? planField(p, "id") ?? "") === ratePlanId);
-  return {
+  const out: RatePlanPolicy = {
     ratePlanId,
     name: plan ? String(planField(plan, "name") || "") || null : null,
     cancellationPolicy: plan ? policyToStrings(planField(plan, "cancellationPolicy")) : [],
   };
+  const fee = plan ? planField(plan, "cancellationFee") : undefined;
+  if (fee != null) {
+    out.cancellationFee = fee;
+    warnIfFeeDiffers(`listing ${listingId}`, out);
+  }
+  return out;
 }
 
 /**
@@ -96,11 +133,13 @@ export async function reservationRatePlanPolicy(
   if (ratePlanId && planListing) {
     try {
       const plan = await ratePlanPolicyFor(planListing, ratePlanId);
-      return {
+      const out: RatePlanPolicy = {
         ratePlanId,
         name: name || plan.name,
         cancellationPolicy: direct.length ? direct : plan.cancellationPolicy,
       };
+      if (plan.cancellationFee != null) out.cancellationFee = plan.cancellationFee;
+      return out;
     } catch {
       /* fail-soft */
     }

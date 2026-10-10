@@ -9,7 +9,7 @@ import { visitOriginPayload } from "@/lib/visitOrigin";
 import { adSignalsPayload, newMetaEventId } from "@/lib/adSignals";
 import { cn } from "@/lib/utils";
 import { pushDL, pushEcommerce, pushPurchaseOnce, buildPropertyItem, ADDON_PREFIX } from "@/lib/datalayer";
-import { isNonRefundablePlan as isNonRefundableRatePlan, cancellationPolicyPath } from "@/lib/cancellation";
+import { isNonRefundablePlan as isNonRefundableRatePlan, cancellationPolicyPath, planPolicyCode, rateKind } from "@/lib/cancellation";
 import { freeCancellationDays, freeCancellationDeadline } from "@shared/cancellationPolicy";
 import CancellationPolicyLine from "./CancellationPolicyLine";
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
@@ -86,6 +86,8 @@ interface RatePlanOption {
   /** Taxes, service fees, and other mandatory charges included in total */
   taxesAndFees?: number;
   cancellationPolicy?: string[];
+  /** Guesty's share charged after the deadline (percent) — 100 on every plan today. */
+  cancellationFee?: string | number | null;
   priceOnRequest?: boolean;
   fallbackMessage?: string;
 }
@@ -152,6 +154,18 @@ function parseBookingError(msg: string): string {
  *  (shared/cancellationPolicy.ts — the one source for policy rules). */
 function isNonRefundablePlan(o: RatePlanOption): boolean {
   return isNonRefundableRatePlan(o);
+}
+
+/** The policy shown for the quote's chosen plan — the same classification as
+ *  its rate card (planPolicyCode), so a plan never reads two ways. */
+function quotePolicyCode(q?: QuoteData | null) {
+  if (!q) return null;
+  const opt = q.ratePlanOptions?.find(o => o.ratePlanId === q.ratePlanId);
+  return planPolicyCode({
+    name: opt?.name,
+    cancellationPolicy: opt?.cancellationPolicy?.length ? opt.cancellationPolicy : q.cancellationPolicy,
+    cancellationFee: opt?.cancellationFee,
+  });
 }
 
 /** Guesty often returns several messy rate plans (duplicate "Flexible",
@@ -855,9 +869,8 @@ export default function BookingWidget({
               </div>
               {/* Cancellation policy */}
               <CancellationPolicyLine
-                code={successQuote.cancellationPolicy}
+                code={quotePolicyCode(successQuote)}
                 checkIn={checkIn}
-                planName={successQuote.ratePlanOptions?.find(o => o.ratePlanId === successQuote.ratePlanId)?.name}
                 lang={lang}
                 className="caption text-black/30 pt-1"
               />
@@ -1294,10 +1307,18 @@ export default function BookingWidget({
                     const savings = maxTotal - opt.total;
                     // Plans are collapsed to exactly one refundable + one non-refundable
                     // (pickTwoRatePlans), so the label comes from the bucket — never the
-                    // raw Guesty plan name (F1). The sentence under it is the rule of the
-                    // plan's Guesty code (or its name + the terms link when unknown).
-                    const isNonRefundable = isNonRefundablePlan(opt);
-                    const planLabel = isNonRefundable ? t("booking.nonRefundable") : t("booking.flexibleRate");
+                    // raw Guesty plan name (F1). "Refundable" only when Guesty says so
+                    // (a known refundable code or its "Reembolsável" name); otherwise
+                    // the neutral "Rate". The sentence under it is the rule of the
+                    // plan's Guesty code, or "the terms of your rate" + link when unknown.
+                    const kind = rateKind(opt);
+                    const isNonRefundable = kind === "non_refundable";
+                    const planLabel =
+                      kind === "non_refundable"
+                        ? t("booking.nonRefundable")
+                        : kind === "refundable"
+                          ? t("booking.flexibleRate")
+                          : t("bookingConfirm.rate");
                     return (
                       <label
                         key={opt.ratePlanId}
@@ -1345,9 +1366,8 @@ export default function BookingWidget({
                             )}
                           </div>
                           <CancellationPolicyLine
-                            code={isNonRefundable ? "non_refundable" : opt.cancellationPolicy}
+                            code={planPolicyCode(opt)}
                             checkIn={checkIn}
-                            planName={opt.name}
                             lang={lang}
                             className="caption text-inherit mt-0.5 text-black/50"
                           />
@@ -1664,13 +1684,13 @@ export default function BookingWidget({
 
         {/* Política humana com data concreta — sem legalês nem salto para FAQs.
             Sem tarifa escolhida, não se mostra nada (o passo 1 do checkout
-            mostra a política por tarifa). Código desconhecido: nome da tarifa
-            + ligação às condições (nunca uma regra inventada). */}
-        {effectiveQuote?.cancellationPolicy?.length ? (
+            mostra a política por tarifa). Mesma classificação do cartão da
+            tarifa (planPolicyCode); código desconhecido: "as condições da sua
+            tarifa" + ligação (nunca uma regra inventada nem o nome interno). */}
+        {effectiveQuote && (quotePolicyCode(effectiveQuote) || effectiveQuote.cancellationPolicy?.length) ? (
           <CancellationPolicyLine
-            code={effectiveQuote.cancellationPolicy}
+            code={quotePolicyCode(effectiveQuote)}
             checkIn={checkIn}
-            planName={effectiveQuote.ratePlanOptions?.find(o => o.ratePlanId === effectiveQuote.ratePlanId)?.name}
             lang={lang}
             className="caption text-black/35 text-center"
           />
