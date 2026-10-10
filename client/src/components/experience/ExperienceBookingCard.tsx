@@ -5,12 +5,12 @@
    Fallback: WhatsApp prefill when Bókun not configured or no activityId.
    ========================================================================== */
 
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, MessageCircle, ChevronRight } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
 import BokunWidgetModal from './BokunWidgetModal';
-import { pushEcommerce } from '@/lib/datalayer';
+import { pushDL, pushEcommerce } from '@/lib/datalayer';
 
 export interface BokunOption {
   name: string;
@@ -61,28 +61,10 @@ export default function ExperienceBookingCard({
   const isMultiOption = (bokunOptions?.length ?? 0) > 1;
   const [modalOpen, setModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (!hasBokun || !experienceSlug) return;
-    // Only fire on desktop — card is CSS-hidden (not unmounted) on mobile,
-    // so without this guard it would double-fire alongside the mobile bar click.
-    if (window.matchMedia('(max-width: 1023px)').matches) return;
-    pushEcommerce({
-      event: 'begin_checkout',
-      ecommerce: {
-        currency: 'EUR',
-        value: priceOta || 0,
-        items: [{
-          item_id: `EXP-${experienceSlug}`,
-          item_name: experienceName,
-          item_category: experienceCategory || '',
-          price: priceOta || 0,
-          quantity: 1,
-        }],
-      },
-    });
-  // Fires once per slug/hasBokun pair — price/name changes must not re-fire.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasBokun, experienceSlug]);
+  // Funil (out/2026): este cartão disparava begin_checkout ao abrir a página
+  // no desktop. A página da experiência já envia view_item, e o
+  // begin_checkout ia para o Meta como InitiateCheckout, misturando visitas a
+  // experiências com inícios de checkout de casas. Removido.
 
   const finalMessage = useMemo(() => {
     let msg = whatsappMessage || `Hi Portugal Active, I'd like to book the ${experienceName} experience.`;
@@ -138,8 +120,10 @@ export default function ExperienceBookingCard({
                 onClick={() => {
                   setModalOpen(true);
                   if (experienceSlug) {
+                    // Abre o widget Bókun: intenção real, mas a compra acontece no
+                    // Bókun. Evento próprio para não contar como checkout de casa.
                     pushEcommerce({
-                      event: 'begin_checkout',
+                      event: 'experience_booking_open',
                       ecommerce: {
                         currency: 'EUR',
                         value: opt.priceFrom || priceOta || 0,
@@ -192,20 +176,8 @@ export default function ExperienceBookingCard({
             style={{ minHeight: '52px' }}
             onClick={() => {
               if (!experienceSlug) return;
-              pushEcommerce({
-                event: 'begin_checkout',
-                ecommerce: {
-                  currency: 'EUR',
-                  value: priceOta || 0,
-                  items: [{
-                    item_id: `EXP-${experienceSlug}`,
-                    item_name: experienceName,
-                    item_category: experienceCategory || '',
-                    price: priceOta || 0,
-                    quantity: 1,
-                  }],
-                },
-              });
+              // Abre o WhatsApp, não um checkout: conta como contacto
+              pushDL({ event: 'whatsapp_click', source: 'experience_card', item_id: `EXP-${experienceSlug}`, value: priceOta || 0 });
             }}
           >
             Check availability
