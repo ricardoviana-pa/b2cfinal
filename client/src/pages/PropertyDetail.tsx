@@ -29,7 +29,7 @@ import ReviewsSection from '@/components/property/ReviewsSection';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@/components/ui/drawer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
-import { pushEcommerce } from '@/lib/datalayer';
+import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
 import { formatQuotedEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
 import {
@@ -844,12 +844,14 @@ export default function PropertyDetail() {
       : 1;
     pushEcommerce({
       event: 'view_item',
+      // Id do catálogo Meta: o ViewContent do GTM usa-o nos content_ids
+      property_id: propertyCatalogId(property),
       ecommerce: {
         currency: 'EUR',
         value: (property.priceFrom || 0) * nights,
         items: [
           {
-            item_id: `PROP-${property.id}`,
+            item_id: `PROP-${propertyCatalogId(property)}`,
             item_name: property.name,
             item_category: 'villa',
             item_category2: property.locality || property.destination || '',
@@ -967,7 +969,7 @@ export default function PropertyDetail() {
         const items = Array.from(relatedPendingRef.current.values())
           .sort((a, b) => a.index - b.index)
           .map(({ property: rp, index }) => ({
-            item_id: `PROP-${rp.id}`,
+            item_id: `PROP-${propertyCatalogId(rp)}`,
             item_name: rp.name,
             item_category: 'villa',
             item_category2: rp.locality || rp.destination || '',

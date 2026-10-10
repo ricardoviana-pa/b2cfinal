@@ -45,6 +45,13 @@ import { appendReservationNote } from "../services/guesty-openapi-paypal";
 import { couponNoteLine } from "../services/coupon-note";
 import { mergeVisitOrigins, originNoteEnabled, originNoteLine, parseVisitOriginPayload } from "../services/visit-origin";
 import { getIntentOrigin, saveIntentOrigin } from "../services/visit-origin-store";
+import { deleteAdSignals, getAdSignals, saveAdSignals } from "../services/ad-signals-store";
+
+/** Cookies _fbp/_fbc do pixel (client/src/lib/adSignals.ts). Formato validado na gravação. */
+const adSignalsSchema = z.object({
+  fbp: z.string().max(255).optional(),
+  fbc: z.string().max(512).optional(),
+});
 
 const quoteSnapshotSchema = z.object({
   nightlyRate: z.number(),
@@ -155,6 +162,29 @@ async function resolveIntentPhoto(intent: {
   }
 }
 
+/** Purchase na CAPI da Meta, só para intents com sinais (consentimento). */
+async function sendCapiPurchase(m: any, intentId: string, value: number): Promise<void> {
+  const { isMetaCapiConfigured, sendMetaEvent } = await import("../services/meta-capi");
+  if (!isMetaCapiConfigured()) return;
+  const { getAdSignals } = await import("../services/ad-signals-store");
+  const signals = await getAdSignals(intentId);
+  if (!signals) return;
+  await sendMetaEvent({
+    eventName: "Purchase",
+    eventId: String(m.confirmationCode),
+    value,
+    currency: String(m.quote?.currency ?? "EUR"),
+    contentId: m.listingId,
+    contentName: m.propertyName,
+    orderId: String(m.confirmationCode),
+    numItems: 1,
+    email: m.email,
+    phone: m.guestPhone,
+    sourceUrl: `https://www.portugalactive.com/${m.locale || "en"}/checkout/${intentId}`,
+    signals,
+  });
+}
+
 /**
  * Emails + nota Guesty da transição para paid (manifesto CS + confirmação
  * premium do hóspede). Partilhado: o updateIntent chama-o no caminho normal
@@ -165,30 +195,20 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
   try {
     const { breakdownFromIntent } = await import("../services/checkout-card-charge");
     const canonical = (() => {
-      try { const b = breakdownFromIntent(m); return { lines: b.lines, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
+      try { const b = breakdownFromIntent(m); return { lines: b.lines, stayCents: b.stayCents, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
       catch { return null; }
     })();
     // M13 (spec §13): CAPI server-side do Purchase — este é o ponto único por
     // onde TODAS as transições para paid passam (cartão, wallets, PayPal,
     // Klarna, webhook, sweep). event_id = confirmationCode deduplica com o
-    // Pixel do GTM. Fire-and-forget, nunca trava emails nem pagamentos.
+    // Pixel do GTM. Valor = só a estadia (decisão 10/10/2026), igual ao
+    // purchase do browser. Só com sinais gravados (= "Aceitar tudo").
+    // Fire-and-forget, nunca trava emails nem pagamentos.
     if (m.confirmationCode) {
       const purchaseValue = canonical
-        ? canonical.totalCents / 100
+        ? canonical.stayCents / 100
         : Number(m.quote?.total ?? 0);
-      void import("../services/meta-capi")
-        .then(({ sendMetaPurchase }) =>
-          sendMetaPurchase({
-            eventId: String(m.confirmationCode),
-            value: purchaseValue,
-            currency: String(m.quote?.currency ?? "EUR"),
-            email: m.email,
-            phone: m.guestPhone,
-            contentName: m.propertyName,
-            sourceUrl: `https://www.portugalactive.com/${m.locale || "en"}/checkout/${intentId}`,
-          }),
-        )
-        .catch(() => {/* marketing nunca parte o funil */});
+      void sendCapiPurchase(m, intentId, purchaseValue).catch(() => {/* marketing nunca parte o funil */});
     }
     const photoPromise = resolveIntentPhoto(m).catch(() => undefined);
     // Origem da visita (UTM, clique, referrer): nota da reserva e email
@@ -303,9 +323,14 @@ export const checkoutRouter = router({
         /** Origem da visita (shared/visit-origin.ts). Validada à parte: um
          *  valor inválido nunca impede o checkout, só fica sem origem. */
         origin: z.unknown().optional(),
+        /** Sinais da Meta (client/src/lib/adSignals.ts): só vêm com
+         *  "Aceitar tudo" no site live. Validados na gravação. */
+        adSignals: adSignalsSchema.optional(),
+        /** event_id do begin_checkout/InitiateCheckout do pixel */
+        initiateCheckoutEventId: z.string().regex(/^ic-[A-Za-z0-9-]{8,64}$/).optional(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const trusted = await trustedStayQuote(input);
       assertQuotedTotal(input.quote, trusted.quote);
       const id = randomUUID();
@@ -330,6 +355,28 @@ export const checkoutRouter = router({
         if (origin) await saveIntentOrigin(created, origin).catch(() => false);
         else console.warn(`[VisitOrigin] origem recusada (intent ${created}): formato inválido`);
       }
+      if (created && input.adSignals) {
+        const headers = ctx.req.headers as Record<string, unknown>;
+        void saveAdSignals(created, input.adSignals, headers)
+          .then(async (saved) => {
+            if (!saved || !input.initiateCheckoutEventId) return;
+            const { sendMetaEvent } = await import("../services/meta-capi");
+            const signals = await getAdSignals(created);
+            if (!signals) return;
+            await sendMetaEvent({
+              eventName: "InitiateCheckout",
+              eventId: input.initiateCheckoutEventId,
+              value: Number(trusted.quote.total ?? 0),
+              currency: String(trusted.quote.currency ?? "EUR"),
+              contentId: input.listingId,
+              contentName: input.propertyName,
+              numItems: 1,
+              sourceUrl: `https://www.portugalactive.com/${input.locale || "en"}/homes/${input.propertySlug || ""}`,
+              signals,
+            });
+          })
+          .catch(() => {/* marketing nunca parte o funil */});
+      }
       // null → DB unavailable; the client falls back to the legacy flow
       return { intentId: created };
     }),
@@ -344,12 +391,16 @@ export const checkoutRouter = router({
    * das origens; nunca depois de pago.
    */
   setOrigin: publicProcedure
-    .input(z.object({ intentId: z.string().uuid(), origin: z.unknown() }))
-    .mutation(async ({ input }) => {
+    .input(z.object({ intentId: z.string().uuid(), origin: z.unknown(), adSignals: adSignalsSchema.optional() }))
+    .mutation(async ({ input, ctx }) => {
       const incoming = parseVisitOriginPayload(input.origin);
       if (!incoming) return { ok: false };
       const current = await getBookingIntent(input.intentId);
       if (!current || current.status === "paid") return { ok: false };
+      // Sinais da CAPI da Meta seguem a mesma escolha: "Aceitar tudo" grava,
+      // "Apenas essenciais" apaga (nada sai para a Meta neste intent).
+      if (!incoming.consent) await deleteAdSignals(input.intentId);
+      else if (input.adSignals) await saveAdSignals(input.intentId, input.adSignals, ctx.req.headers as Record<string, unknown>);
       const existing = await getIntentOrigin(input.intentId).catch(() => null);
       // Retirada repetida (cada abertura do checkout com "Apenas essenciais"): nada a gravar.
       if (!incoming.consent && existing && !existing.consent) return { ok: true };

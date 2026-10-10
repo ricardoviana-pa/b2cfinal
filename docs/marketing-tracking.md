@@ -1,5 +1,9 @@
 # Tracking de marketing — funil do checkout 2.0
 
+> **10/10/2026:** o mapeamento para a Meta, o valor do `purchase` (só a estadia, extras em
+> `purchase_extras`) e a CAPI estão em [tracking-map.md](tracking-map.md), que prevalece sobre a
+> coluna "Evento Meta" e o §4 abaixo.
+
 Estado: implementado no código (dataLayer) a 11 jul 2026. Container GTM: **GTM-TRPCDT3**.
 Atualização de 16/09/2026: os eventos dependem agora da autorização de medição;
 ver [comportamento e validação](measurement-consent.md). Esta tabela é um contrato

@@ -105,8 +105,20 @@ export function getCookieChoice(): CookieChoice | null {
   return typeof window === 'undefined' ? null : choice;
 }
 
+/** Inspeção do dataLayer fora do live (DEV, previews, localhost): com
+ *  `localStorage['pa-dl-debug'] = '1'` os eventos entram no window.dataLayer e
+ *  aparecem na consola. O GTM nunca carrega fora do live, por isso nada sai do
+ *  browser. Serve para rever payloads no preview antes de um deploy. */
+export const DATALAYER_DEBUG_KEY = 'pa-dl-debug';
+export function dataLayerDebugEnabled(): boolean {
+  if (typeof window === 'undefined' || isLiveSiteHostname(window.location.hostname)) return false;
+  try { return window.localStorage.getItem(DATALAYER_DEBUG_KEY) === '1'; } catch { return false; }
+}
+
 export function hasMeasurementConsent(): boolean {
-  return typeof window !== 'undefined' && isLiveSiteHostname(window.location.hostname) && choice === 'all';
+  if (typeof window === 'undefined') return false;
+  if (dataLayerDebugEnabled()) return true;
+  return isLiveSiteHostname(window.location.hostname) && choice === 'all';
 }
 
 export function willReloadForEssential(): boolean {

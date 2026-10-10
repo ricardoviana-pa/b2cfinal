@@ -512,6 +512,23 @@ export const bookingIntentOrigins = mysqlTable("booking_intent_origins", {
 }, (t) => [index("idx_booking_intent_origins_updated").on(t.updatedAt)]);
 
 /* ================================================================
+   SINAIS DA META POR INTENT — só com "Aceitar tudo" no site live
+   (client/src/lib/adSignals.ts). Cookies _fbp/_fbc do pixel, user agent e IP
+   do pedido, para a API de Conversões (server/services/meta-capi.ts). Sem
+   registo, o servidor não envia nada à Meta. "Apenas essenciais" apaga;
+   cada registo sai 31 dias depois da última atualização
+   (server/services/ad-signals-store.ts). Criada no arranque.
+   ================================================================ */
+export const bookingIntentAdSignals = mysqlTable("booking_intent_ad_signals", {
+  intentId: varchar("intent_id", { length: 36 }).primaryKey(),
+  fbp: varchar("fbp", { length: 255 }),
+  fbc: varchar("fbc", { length: 512 }),
+  userAgent: varchar("user_agent", { length: 512 }),
+  clientIp: varchar("client_ip", { length: 64 }),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+}, (t) => [index("idx_booking_intent_ad_signals_updated").on(t.updatedAt)]);
+
+/* ================================================================
    WEB VITALS — anonymous field Core Web Vitals (client/src/lib/vitals.ts,
    server/routes/vitals.ts). No ids, no cookies; pruned after 90 days.
    ================================================================ */

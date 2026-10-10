@@ -25,7 +25,7 @@ import { hasConfirmedQuote, sortSearchResults } from '@/lib/homeSearch';
 import { parseHomeFacets, matchesFacets, matchesBudget, nightlyRate, countFacetOptions, activeFacetCount, FACET_PARAM_KEYS, FEATURE_KEYS, type FeatureKey } from '@/lib/homeFacets';
 import HomesFilterRail, { type CatalogueView, type FilterToken } from '@/components/homes/HomesFilterRail';
 import { openDatePickerWithin } from '@/lib/datePicker';
-import { pushDL, pushEcommerce } from '@/lib/datalayer';
+import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
@@ -303,7 +303,7 @@ export default function Homes() {
         const items = Array.from(pendingItemsRef.current.values())
           .sort((a, b) => a.index - b.index)
           .map(({ property, index }) => ({
-            item_id: `PROP-${property.id}`,
+            item_id: `PROP-${propertyCatalogId(property)}`,
             item_name: property.name,
             item_category: 'villa',
             item_category2: property.locality || property.destination || '',

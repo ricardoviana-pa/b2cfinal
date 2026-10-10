@@ -42,7 +42,7 @@ import { localizeDestination, useDestinationOverrides } from '@/lib/localizeCont
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 import { getUniqueLocalities } from '@/lib/utils';
-import { pushDL, pushEcommerce } from '@/lib/datalayer';
+import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
 import { HOME_FEATURED_ORDER, HOME_FEATURED_COUNT, catalogKey, curatedPosition } from '@/config/propertyOrder';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { isChildUnit } from '@/config/propertyGroups';
@@ -331,7 +331,7 @@ export default function Home() {
         item_list_id: 'featured_homes',
         item_list_name: "Editor's Picks",
         items: featured.map((property, index) => ({
-          item_id: `PROP-${property.id}`,
+          item_id: `PROP-${propertyCatalogId(property)}`,
           item_name: property.name,
           item_category: 'villa',
           item_category2: property.locality || property.destination || '',
