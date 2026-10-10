@@ -12,6 +12,11 @@ import { sanitizePropertyName } from "@shared/displayName";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import { originEmailSummary, type ServerVisitOrigin } from "./visit-origin";
 import {
+  cancellationPolicyCopy,
+  cancellationPolicyPath,
+  describeCancellationPolicy,
+} from "@shared/cancellationPolicy";
+import {
   emailLang,
   skuNameFor,
   cleaningFeeLabel,
@@ -103,6 +108,8 @@ interface BookingConfirmationData {
   confirmationCode: string;
   /** Guest language (site locale); falls back to English. */
   locale?: string | null;
+  /** Rate plan of the booking (Guesty code + name) for the policy line. */
+  cancellation?: EmailCancellation | null;
 }
 
 export async function sendBookingConfirmation(input: BookingConfirmationData): Promise<void> {
@@ -138,6 +145,9 @@ export async function sendBookingConfirmation(input: BookingConfirmationData): P
     </table>
   </td></tr>
 </table>
+</td></tr>
+<tr><td style="padding:0 0 20px 0;">
+  ${cancellationEmailLine(data.cancellation, lang, data.checkIn)}
 </td></tr>
 <tr><td style="padding:0 0 20px 0;">
   <p style="font-family:${SANS};font-size:14px;color:${PA.earth};line-height:1.6;margin:0;">${T.conciergeLine}</p>
@@ -592,6 +602,27 @@ function conciergeSignature(lang: EmailLang, destination?: string | null, locali
 const SERIF = "'Cormorant Garamond',Georgia,'Times New Roman',serif";
 const SANS = "'DM Sans',Arial,Helvetica,sans-serif";
 
+/** Rate plan of the booking, as Guesty sent it (code + name). */
+export interface EmailCancellation {
+  policy?: unknown;
+  planName?: string | null;
+}
+
+const escapeHtml = (v: string): string =>
+  v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+/** The booking's cancellation policy in one line — the rule of its Guesty
+ *  code (shared/cancellationPolicy.ts); unknown code → the rate's name and a
+ *  link to the cancellation terms. Never an invented rule. */
+function cancellationEmailLine(c: EmailCancellation | null | undefined, lang: EmailLang, checkIn?: string | null): string {
+  const copy = cancellationPolicyCopy(lang);
+  const d = describeCancellationPolicy(c?.policy, { lang, checkIn, planName: c?.planName });
+  const link = d.known
+    ? ""
+    : ` <a href="${CHECKOUT_EMAIL_ORIGIN}${cancellationPolicyPath(lang)}" target="_blank" style="color:${PA.gold};text-decoration:underline;">${escapeHtml(copy.termsLink)}</a>`;
+  return `<p style="font-family:${SANS};font-size:12.5px;color:${PA.earth};line-height:1.6;margin:0;"><span style="color:${PA.dark};font-weight:600;">${escapeHtml(copy.label)}</span> &middot; ${escapeHtml(d.text)}${link}</p>`;
+}
+
 function formatStayDate(iso: string, lang: EmailLang): string {
   try {
     return new Intl.DateTimeFormat(INTL_TAG[lang] ?? "en-GB", {
@@ -907,6 +938,8 @@ export async function sendCheckoutGuestConfirmation(d: {
   /** Link "Ver a minha reserva" (checkout pago mostra o estado confirmado) */
   viewUrl?: string | null;
   locale?: string | null;
+  /** Tarifa paga (código Guesty + nome) para a linha da política */
+  cancellation?: EmailCancellation | null;
   intentId: string;
 }): Promise<void> {
   try {
@@ -1088,7 +1121,9 @@ export async function sendCheckoutGuestConfirmation(d: {
       </tr>
     </table>
   </td></tr>` : ""}
-  <tr><td style="padding:0 0 20px 0;"></td></tr>
+  <tr><td style="padding:14px 24px 20px 24px;">
+    ${cancellationEmailLine(d.cancellation, lang, d.checkIn)}
+  </td></tr>
 </table>
 </td></tr>
 

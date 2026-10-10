@@ -9,6 +9,7 @@ import express, { type Express } from "express";
 import { HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
 import { serviceRouteSlug } from '@shared/serviceRoutes';
+import { POLICY_LANGS, cancellationPolicyCopy, cancellationPolicyMetaDescription, cancellationPolicySummary } from '@shared/cancellationPolicy';
 import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
@@ -689,44 +690,24 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     fi: { title: 'Parhaan hinnan takuu | Portugal Active',
           description: 'Löydä sama koti, päivämäärät ja ehdot halvemmalla Airbnb:stä tai Booking.comista 24 tunnin kuluessa varauksesta, niin Portugal Active vastaa hintaan. Ehdot selkokielellä.' },
   },
-  '/legal/cancellation-policy': {
-  "en": {
-    "title": "Cancellation Policies | Portugal Active",
-    "description": "We offer multiple rate plans with different cancellation terms. Please review the applicable policy before confirming your booking."
-  },
-  "pt": {
-    "title": "Políticas de Cancelamento | Portugal Active",
-    "description": "Oferecemos vários planos de tarifa com diferentes condições de cancelamento. Por favor, reveja a política aplicável antes de confirmar a sua reserva."
-  },
-  "es": {
-    "title": "Políticas de Cancelación | Portugal Active",
-    "description": "Ofrecemos varios planes tarifarios con diferentes condiciones de cancelación. Por favor, revise la política aplicable antes de confirmar su reserva."
-  },
-  "fr": {
-    "title": "Politiques d'Annulation | Portugal Active",
-    "description": "Nous proposons plusieurs formules tarifaires avec différentes conditions d'annulation. Veuillez consulter la politique applicable avant de confirmer votre "
-  },
-  "de": {
-    "title": "Stornierungsbedingungen | Portugal Active",
-    "description": "Wir bieten verschiedene Tarifpläne mit unterschiedlichen Stornierungsbedingungen an. Bitte lesen Sie die geltende Richtlinie sorgfältig, bevor Sie Ihre Buc"
-  },
-  "it": {
-    "title": "Politiche di Cancellazione | Portugal Active",
-    "description": "Offriamo diversi piani tariffari con diverse condizioni di cancellazione. Si prega di rivedere la politica applicabile prima di confermare la prenotazione."
-  },
-  "nl": {
-    "title": "Annuleringsbeleid | Portugal Active",
-    "description": "We bieden meerdere tariefplannen met verschillende annuleringsvoorwaarden. Bekijk het toepasselijke beleid aandachtig voordat u uw boeking bevestigt."
-  },
-  "sv": {
-    "title": "Avbokningspolicyer | Portugal Active",
-    "description": "Vi erbjuder flera prisplaner med olika avbokningsvillkor. Vänligen granska tillämplig policy innan du bekräftar din bokning."
-  },
-  "fi": {
-    "title": "Peruutuskäytännöt | Portugal Active",
-    "description": "Tarjoamme useita hinnoittelusuunnitelmia erilaisilla peruutusehdoilla. Tarkista sovellettava käytäntö ennen varauksen vahvistamista."
-  }
-},
+  // Titles per language; the description is Guesty's policy summary from
+  // shared/cancellationPolicy.ts (the single source, never restated here).
+  '/legal/cancellation-policy': Object.fromEntries(
+    POLICY_LANGS.map((l) => [l, {
+      title: ({
+        en: 'Cancellation Policies | Portugal Active',
+        pt: 'Políticas de Cancelamento | Portugal Active',
+        es: 'Políticas de Cancelación | Portugal Active',
+        fr: "Politiques d'Annulation | Portugal Active",
+        de: 'Stornierungsbedingungen | Portugal Active',
+        it: 'Politiche di Cancellazione | Portugal Active',
+        nl: 'Annuleringsbeleid | Portugal Active',
+        sv: 'Avbokningspolicyer | Portugal Active',
+        fi: 'Peruutuskäytännöt | Portugal Active',
+      } as Record<string, string>)[l],
+      description: cancellationPolicyMetaDescription(l),
+    }]),
+  ),
   '/legal/cookies': {
     en: { title: 'Cookie Policy | Portugal Active',
           description: 'How Portugal Active uses cookies to improve your browsing experience.' },
@@ -889,6 +870,8 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
   faq.push(pt
     ? { q: 'Qual é a estadia mínima?', a: 'A estadia mínima varia com a época — o calendário mostra o requisito exato para as suas datas. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites.' }
     : { q: 'What is the minimum stay?', a: 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.' });
+  // Same cancellation Q&A as the visible "Good to know" (shared source = Guesty's codes)
+  faq.push({ q: cancellationPolicyCopy(lang).question, a: cancellationPolicySummary(lang) });
   faq.push(pt
     ? { q: 'Porquê reservar diretamente com a Portugal Active?', a: 'Reservar direto garante o melhor preço online sem taxas de serviço de OTAs, concierge dedicado por WhatsApp e uma equipa local que gere a casa de ponta a ponta.' }
     : { q: 'Why book directly with Portugal Active?', a: 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.' });

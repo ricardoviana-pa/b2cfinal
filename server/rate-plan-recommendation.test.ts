@@ -5,10 +5,12 @@ const plan = (id: string, code?: string) => ({
   ratePlanId: id,
   cancellationPolicy: code ? [code] : undefined,
 });
+// Guesty's codes (shared/cancellationPolicy.ts): MODERATE free until 7 days
+// before arrival, STRICT until 30, STRICT_60 until 60, 100 % after.
 const nr = plan("synthetic-non-refundable", "super_strict");
-const flexible = plan("synthetic-flex", "flexible");
 const moderate = plan("synthetic-moderate", "moderate");
-const strict = plan("synthetic-strict", "strict");
+const strict = plan("synthetic-strict", "STRICT");
+const strict60 = plan("synthetic-strict-60", "STRICT_60");
 
 describe("rate recommendations require a distinct verified refund benefit", () => {
   it("recommends a known open window against a known non-refundable alternative", () => {
@@ -34,6 +36,8 @@ describe("rate recommendations require a distinct verified refund benefit", () =
     for (const unknown of [
       plan("u"),
       plan("u", "custom-flex"),
+      // "flexible" is not a code our direct rates use: no rule is assumed
+      plan("u", "flexible"),
       { ratePlanId: "u", cancellationPolicy: ["moderate", "super_strict"] },
     ]) {
       expect(
@@ -53,67 +57,95 @@ describe("rate recommendations require a distinct verified refund benefit", () =
         "2026-11-20"
       )
     ).toBe(false);
+    // Every refundable code refunds 100 % while open — no badge between them
+    expect(
+      hasVerifiedRefundAdvantage(
+        moderate,
+        [moderate, strict],
+        "2026-11-20",
+        new Date("2026-09-28T10:00:00Z")
+      )
+    ).toBe(false);
   });
 
   it("withholds a badge after expiry and throughout the ambiguous deadline day", () => {
+    // STRICT_60: last free day 21 Sep for a 20 Nov arrival
     expect(
       hasVerifiedRefundAdvantage(
-        strict,
-        [strict, nr],
+        strict60,
+        [strict60, nr],
         "2026-11-20",
         new Date("2026-09-20T10:00:00Z")
       )
     ).toBe(true);
     expect(
       hasVerifiedRefundAdvantage(
-        strict,
-        [strict, nr],
+        strict60,
+        [strict60, nr],
         "2026-11-20",
         new Date("2026-09-21T00:00:00Z")
       )
     ).toBe(false);
     expect(
       hasVerifiedRefundAdvantage(
+        strict60,
+        [strict60, nr],
+        "2026-11-20",
+        new Date("2026-09-22T10:00:00Z")
+      )
+    ).toBe(false);
+    // STRICT: last free day 21 Oct for the same arrival
+    expect(
+      hasVerifiedRefundAdvantage(
         strict,
         [strict, nr],
         "2026-11-20",
-        new Date("2026-09-22T10:00:00Z")
+        new Date("2026-10-20T10:00:00Z")
+      )
+    ).toBe(true);
+    expect(
+      hasVerifiedRefundAdvantage(
+        strict,
+        [strict, nr],
+        "2026-11-20",
+        new Date("2026-10-22T10:00:00Z")
       )
     ).toBe(false);
   });
 
   it("uses Lisbon calendar days across summer time and UTC midnight", () => {
-    // The deadline is 2 July. It is already 2 July in Portugal at 23:30 UTC.
+    // MODERATE, arrival 9 July: the deadline is 2 July. It is already 2 July
+    // in Portugal at 23:30 UTC.
     expect(
       hasVerifiedRefundAdvantage(
-        flexible,
-        [flexible, nr],
-        "2026-07-03",
+        moderate,
+        [moderate, nr],
+        "2026-07-09",
         new Date("2026-07-01T22:30:00Z")
       )
     ).toBe(true);
     expect(
       hasVerifiedRefundAdvantage(
-        flexible,
-        [flexible, nr],
-        "2026-07-03",
+        moderate,
+        [moderate, nr],
+        "2026-07-09",
         new Date("2026-07-01T23:30:00Z")
       )
     ).toBe(false);
-    // After the autumn clock change, subtracting a day remains a calendar operation.
+    // After the autumn clock change, subtracting days remains a calendar operation.
     expect(
       hasVerifiedRefundAdvantage(
-        flexible,
-        [flexible, nr],
-        "2026-10-27",
+        moderate,
+        [moderate, nr],
+        "2026-11-02",
         new Date("2026-10-25T22:30:00Z")
       )
     ).toBe(true);
     expect(
       hasVerifiedRefundAdvantage(
-        flexible,
-        [flexible, nr],
-        "2026-10-27",
+        moderate,
+        [moderate, nr],
+        "2026-11-02",
         new Date("2026-10-26T00:00:00Z")
       )
     ).toBe(false);

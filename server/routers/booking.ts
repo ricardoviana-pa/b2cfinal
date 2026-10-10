@@ -14,6 +14,20 @@ import { getSearchHint, type SearchHint } from "../services/search-hint";
 import { getDisplayedLowestNightly, getLowestNightlyBatch } from "../services/lowest-nightly";
 import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
+import { ratePlanPolicyFor } from "../services/rate-plan-policy";
+
+/** Policy of the rate booked, from the listing's rate plan in Guesty
+ *  (code + name) — for the confirmation email. Fail-soft: null → the email
+ *  says "the cancellation terms of your rate" with a link. */
+async function bookedRateCancellation(listingId?: string | null, ratePlanId?: string | null) {
+  if (!listingId || !ratePlanId || ratePlanId === "N/A") return null;
+  try {
+    const plan = await ratePlanPolicyFor(listingId, ratePlanId);
+    return { policy: plan.cancellationPolicy, planName: plan.name };
+  } catch {
+    return null;
+  }
+}
 
 async function partnerProperty(uid: string) {
   const { getPropertiesForSite } = await import('../services/properties-store');
@@ -608,6 +622,7 @@ export const bookingRouter = router({
             guests: input.guests || 2,
             totalPrice: input.totalPrice,
             confirmationCode: result.confirmationCode,
+            cancellation: await bookedRateCancellation(input.listingId, input.ratePlanId),
           });
         } catch (emailErr: any) {
           console.warn(`[Booking] Confirmation email failed (non-blocking): ${emailErr.message}`);
@@ -837,7 +852,8 @@ export const bookingRouter = router({
         status: "upcoming",
       });
 
-      sendBookingConfirmation({
+      // Fire-and-forget: the rate's policy is read first (cached), then the email goes
+      void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
         guestName: `${input.guestFirstName} ${input.guestLastName}`,
         guestEmail: input.guestEmail,
         propertyName: input.propertyName || "Portugal Active Home",
@@ -847,7 +863,8 @@ export const bookingRouter = router({
         guests: input.numberOfAdults + input.numberOfChildren,
         totalPrice: input.totalAmount,
         confirmationCode: reservation.confirmationCode,
-      }).catch((err: any) => {
+        cancellation,
+      })).catch((err: any) => {
         console.warn(`[PayPal] Confirmation email failed (non-blocking): ${err.message}`);
       });
 
@@ -1030,7 +1047,8 @@ export const bookingRouter = router({
         status: "upcoming",
       });
 
-      sendBookingConfirmation({
+      // Fire-and-forget: the rate's policy is read first (cached), then the email goes
+      void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
         guestName: `${input.guestFirstName} ${input.guestLastName}`,
         guestEmail: input.guestEmail,
         propertyName: input.propertyName || "Portugal Active Home",
@@ -1040,7 +1058,8 @@ export const bookingRouter = router({
         guests: input.numberOfAdults + input.numberOfChildren,
         totalPrice: input.totalAmount,
         confirmationCode: reservation.confirmationCode,
-      }).catch((err: any) => {
+        cancellation,
+      })).catch((err: any) => {
         console.warn(`[Klarna] Confirmation email failed (non-blocking): ${err.message}`);
       });
 

@@ -32,6 +32,7 @@ import { trpc } from '@/lib/trpc';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
 import { formatQuotedEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
+import { cancellationPolicyCopy, cancellationPolicySummary } from '@shared/cancellationPolicy';
 import {
   StructuredData,
   buildVacationRentalSchema,
@@ -724,8 +725,14 @@ export default function PropertyDetail() {
       q: t('pdpFaq.qMin', 'What is the minimum stay?'),
       a: t('pdpFaq.aMin', 'Minimum stays and arrival days depend on the home and season. Select your dates to check the requirements, or ask our concierge.'),
     });
+    // Cancellation: Guesty's policies, from the single shared source (the
+    // server mirrors the same Q&A into the bot-facing FAQPage).
+    out.push({
+      q: cancellationPolicyCopy(i18n.language).question,
+      a: cancellationPolicySummary(i18n.language),
+    });
     return out;
-  }, [property, displayName, t]);
+  }, [property, displayName, t, i18n.language]);
 
 
   const propertyGraph = useMemo(() => {

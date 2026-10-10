@@ -10,6 +10,7 @@
  */
 
 import { guestyBEClient } from "../lib/guesty";
+import { isNonRefundablePlan, policyGenerosity } from "@shared/cancellationPolicy";
 
 /**
  * In-flight booking guard: prevents double-charging when the same quoteId
@@ -180,20 +181,17 @@ export function parseBEQuote(quote: any, listingId: string, checkIn: string, che
   //   + flexible/refundable name or policy → preferred
   //   – non-refundable / super_strict       → demoted
   // If only one plan exists, it's used as-is.
+  // Policy rules come from shared/cancellationPolicy.ts (Guesty's codes):
+  // non-refundable is demoted; a longer free-cancellation period ranks higher.
   const planFriendliness = (p: any): number => {
     const rp = p?.ratePlan || p;
-    const name = String(rp?.name || p?.name || "").toLowerCase();
-    const policy = String(rp?.cancellationPolicy || p?.cancellationPolicy || "").toLowerCase();
-    let score = 0;
-    if (name.includes("non") && name.includes("refund")) score -= 10;
-    if (name.includes("não") && name.includes("reembols")) score -= 10;
-    if (policy === "super_strict") score -= 10;
-    if (policy === "strict") score -= 5;
-    if (policy === "firm") score -= 3;
-    if (name.includes("flex") || name.includes("free cancel")) score += 5;
-    if (name.includes("refund") && !name.includes("non")) score += 4;
-    if (policy === "flexible") score += 5;
-    if (policy === "moderate") score += 3;
+    const name = String(rp?.name || p?.name || "");
+    const policy = rp?.cancellationPolicy ?? p?.cancellationPolicy;
+    if (isNonRefundablePlan({ name, cancellationPolicy: policy })) return -10;
+    let score = policyGenerosity(policy);
+    const n = name.toLowerCase();
+    if (n.includes("flex") || n.includes("free cancel")) score += 5;
+    if (n.includes("refund") && !n.includes("non")) score += 4;
     return score;
   };
   const nights = Math.ceil(
@@ -283,19 +281,15 @@ export function parseBEQuote(quote: any, listingId: string, checkIn: string, che
   // refundable tiers (Star/Premium/Standard) that differ only internally;
   // exposing them all reads as a bug. Collapse to the cheapest of each side
   // here so EVERY consumer (widget, checkout, future callers) gets at most 2.
-  // Only super_strict means non-refundable — strict still refunds 50%.
-  const isNonRefOption = (o: { name: string; cancellationPolicy?: string[] }): boolean => {
-    const n = (o.name || "").toLowerCase();
-    const code = (o.cancellationPolicy?.[0] || "").toLowerCase();
-    return /n[aã]o[\s-]*reembols|non[\s-]*refund/.test(n) || code === "super_strict";
-  };
-  // At equal price the guest-friendliest policy must win: Guesty ties three
-  // refundable tiers at the same total, but "moderate" refunds 100% until
-  // 14 days out while "strict" only ever refunds 50% — same money, strictly
-  // better terms.
-  const POLICY_GENEROSITY: Record<string, number> = { flexible: 4, moderate: 3, firm: 2, strict: 1 };
+  // Non-refundable = Guesty's super_strict/NON_REFUNDABLE code or the
+  // "Não-Reembolsável" name (shared/cancellationPolicy.ts).
+  const isNonRefOption = (o: { name: string; cancellationPolicy?: string[] }): boolean =>
+    isNonRefundablePlan(o);
+  // At equal price the guest-friendliest policy must win: Guesty ties
+  // refundable tiers at the same total, but MODERATE is free to cancel until
+  // 7 days out while STRICT_60 stops at 60 days — same money, better terms.
   const generosity = (o: { cancellationPolicy?: string[] }): number =>
-    POLICY_GENEROSITY[(o.cancellationPolicy?.[0] || "").toLowerCase()] ?? 0;
+    policyGenerosity(o.cancellationPolicy);
   const cheapestOf = (arr: typeof deduped) =>
     [...arr].sort((a, b) => (a.total - b.total) || (generosity(b) - generosity(a)))[0];
   const nonRefSide = deduped.filter(isNonRefOption);

@@ -10,7 +10,7 @@ import { pushPurchaseOnce, stayValue } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
 import { optimizeGuestyImage } from "@/lib/images";
 import propertiesData from "@/data/properties.json";
-import { cancellationPolicyText } from "@/lib/cancellation";
+import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
 
 const CONCIERGE_EMAIL = "info@portugalactive.com";
 
@@ -93,12 +93,28 @@ export default function PaymentThankYouPage() {
     (methodParam === "klarna" ? "klarna" : methodParam === "card" ? "card" : "paypal");
 
   useEffect(() => {
+    let active = true;
     if (stash) {
       setData(stash);
       setLoading(false);
-      return;
+      // Return pages (PayPal/Klarna) do not carry the rate's policy: read it
+      // from the reservation's rate plan in Guesty, without blocking the page.
+      if (!stash.cancellationPolicy?.length) {
+        fetchReservation(id)
+          .then((r) => {
+            if (!active || (!r?.cancellationPolicy?.length && !r?.ratePlanName)) return;
+            setData((prev: any) => ({
+              ...prev,
+              cancellationPolicy: r.cancellationPolicy,
+              ratePlanName: prev?.ratePlanName || r.ratePlanName || undefined,
+            }));
+          })
+          .catch(() => { /* the fallback sentence + terms link stays */ });
+      }
+      return () => {
+        active = false;
+      };
     }
-    let active = true;
     fetchReservation(id)
       .then((response) => {
         if (active) setData(response);
@@ -312,12 +328,18 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                     {formatEurCents(totalPaidCents, lang, t("bookingConfirmation.toConfirm"))}
                   </span>
                 </div>
-                {data.cancellationPolicy?.length ? (
-                  <div className="mt-[11px] flex items-center gap-1.5 text-[11.5px] text-pa-earth">
-                    <Clock className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
-                    {cancellationPolicyText(data.cancellationPolicy[0], data.checkIn, t, lang)}
-                  </div>
-                ) : null}
+                {/* Policy of the booking's rate plan (Guesty code → rule); unknown
+                    code → the rate's name + a link to the cancellation terms */}
+                <div className="mt-[11px] flex items-center gap-1.5 text-[11.5px] text-pa-earth">
+                  <Clock className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+                  <CancellationPolicyLine
+                    as="span"
+                    code={data.cancellationPolicy}
+                    checkIn={data.checkIn}
+                    planName={data.ratePlanName}
+                    lang={lang}
+                  />
+                </div>
               </div>
 
               {/* Paid row */}

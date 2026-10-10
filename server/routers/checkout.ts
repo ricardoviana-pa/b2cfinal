@@ -236,8 +236,21 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
             ? CHECKOUT_RECEPTION.hostedLatePrice
             : CHECKOUT_RECEPTION.hostedPrice
           : 0;
-      void photoPromise
-        .then((imageUrl) =>
+      // Política da tarifa paga: o código Guesty e o nome vêm da quote do
+      // intent; sem eles, do rate plan da casa no Guesty (nunca adivinhada).
+      const paidPlan = (Array.isArray((m.quote as any)?.ratePlanOptions) ? (m.quote as any).ratePlanOptions : [])
+        .find((o: any) => o?.ratePlanId && o.ratePlanId === m.ratePlanId);
+      const cancellationPromise: Promise<{ policy: unknown; planName: string | null } | null> =
+        paidPlan?.cancellationPolicy?.length
+          ? Promise.resolve({ policy: paidPlan.cancellationPolicy, planName: paidPlan.name ?? null })
+          : m.listingId && m.ratePlanId
+            ? import("../services/rate-plan-policy")
+                .then(({ ratePlanPolicyFor }) => ratePlanPolicyFor(String(m.listingId), String(m.ratePlanId)))
+                .then((p) => ({ policy: p.cancellationPolicy, planName: p.name ?? paidPlan?.name ?? null }))
+                .catch(() => (paidPlan ? { policy: [], planName: paidPlan.name ?? null } : null))
+            : Promise.resolve(paidPlan ? { policy: [], planName: paidPlan.name ?? null } : null);
+      void Promise.all([photoPromise, cancellationPromise])
+        .then(([imageUrl, cancellation]) =>
           sendCheckoutGuestConfirmation({
             canonical,
             email: m.email,
@@ -262,6 +275,7 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
               ? `${CHECKOUT_EMAIL_ORIGIN}/${m.locale || "en"}/booking/thank-you/${m.reservationId}?method=card`
               : `${CHECKOUT_EMAIL_ORIGIN}/${m.locale || "en"}/checkout/${intentId}`,
             locale: m.locale,
+            cancellation,
             intentId,
           }),
         )

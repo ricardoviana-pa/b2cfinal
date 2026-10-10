@@ -73,6 +73,10 @@ export interface ThankYouStash {
   /** M12: preço/noites do item da casa no purchase (sem isto o item ia vazio) */
   nightlyRateCents?: number;
   nights?: number;
+  /** Guesty cancellation code of the rate paid (from the quote). */
+  cancellationPolicy?: string[];
+  /** Guesty name of that rate — the fallback when the code is unknown. */
+  ratePlanName?: string;
 }
 
 const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;
@@ -183,7 +187,10 @@ export function fetchReservation(reservationId: string) {
     nights?: number | null;
     cleaningFeeCents?: number | null;
     currency: string;
+    /** Code of the reservation's rate plan, read from Guesty (may be empty). */
     cancellationPolicy: string[];
+    ratePlanId?: string | null;
+    ratePlanName?: string | null;
     checkInInstructions: string;
     googleCalendarUrl: string;
     icsFileName: string;
