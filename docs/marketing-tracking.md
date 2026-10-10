@@ -34,12 +34,22 @@ Ordem aproximada do funil, do primeiro preço visto até à compra.
 | `rate_plan_selected` | Troca entre plano flexível e não reembolsável | `rate_plan` (`flexible`/`non_refundable`), `value` (total do plano), `property_id` | Trigger `rate_plan_selected` → tag GA4 event | — |
 | `coupon_applied` | Código promocional aplicado com sucesso à quote | `coupon`, `property_id` | Trigger `coupon_applied` → tag GA4 event | — |
 | `add_payment_info` | Submissão de dados de pagamento: cartão (`CheckoutPaymentForm.tsx`), PayPal e Klarna (antes do redirect) | `payment_type` (`card`/`paypal`/`klarna`), `property_id`, `ecommerce.currency`, `ecommerce.value` | Trigger `add_payment_info` → tag GA4 event + tag Meta | `AddPaymentInfo` (com `value`, `currency`) |
+| `payment_failed` | Recusa ou erro no pagamento, antes de haver cobrança: validação do formulário, `confirmPayment` do Stripe ou resposta do servidor (`CheckoutPaymentForm.tsx`, cartão, carteiras e cartão legacy) | `payment_stage` (`validation`/`confirm`/`server`), `payment_type`, `error_type`, `error_code`, `decline_code` (códigos Stripe, sem mensagem nem dados do hóspede), `property_id`, `value`, `currency` | Trigger `payment_failed` → tag GA4 event (diagnóstico de funil; sem Meta) | — |
 | `purchase` | Reserva confirmada. Dispara nas return pages (PayPal/Klarna), na thank-you page e na confirmação legacy; **deduplicado por `transaction_id`** via `pushPurchaseOnce` (guard em localStorage) | `ecommerce.transaction_id` (código de confirmação), `ecommerce.value`, `ecommerce.currency`, `ecommerce.coupon` (quando a quote tinha código promocional), `ecommerce.items[]` | Trigger `purchase` → tag GA4 event + tag Meta. No GTM usar variável dataLayer `ecommerce.transaction_id` como `event_id` da Meta para dedupe futuro com CAPI | `Purchase` (com `value`, `currency`, `content_ids`, `event_id=transaction_id`) |
-| `whatsapp_click` | Clique em qualquer CTA de WhatsApp do funil (`source`: `booking_widget`, `pricing_unavailable`, `booking_success`, `booking_confirmation`) | `source`, `property_id` | Trigger `whatsapp_click` → tag GA4 event + tag Meta | `Contact` |
+| `whatsapp_click` | Clique em qualquer CTA de WhatsApp do funil (`source`: `booking_widget`, `pricing_unavailable`, `booking_success`, `booking_confirmation`, `experience_card`, `experience_mobile_bar`) | `source`, `property_id` | Trigger `whatsapp_click` → tag GA4 event + tag Meta | `Contact` |
 | `generate_lead` | Formulários de lead fora do checkout (contacto, newsletter) | conforme a superfície | Já coberto pelas tags existentes | `Lead` |
 | `ai_referral` | Visita vinda de uma fonte AI (ChatGPT, Perplexity, Claude, AI Overview) | `ai_source`, `ai_referrer`, `ai_landing_page` | Trigger `ai_referral` → tag GA4 event (atribuição; sem Meta) | — |
 
 Notas de implementação confirmadas no código:
+
+- (out/2026) `begin_checkout` é só das casas. As experiências deixaram de o disparar: o
+  cartão da experiência disparava-o ao abrir a página no desktop, e os CTAs de WhatsApp das
+  experiências também. Abrir o widget Bókun passa a `experience_booking_open` (mesmos
+  parâmetros ecommerce, item EXP-) e o WhatsApp a `whatsapp_click`. O teste
+  `server/checkout-funnel-events.test.ts` impede que volte. Os InitiateCheckout no Meta
+  anteriores a esta mudança incluem visitas a experiências.
+- (out/2026) O funil real por passo está na base de dados: `npm run report:funnel`
+  (Render → Shell; `DAYS=90`, `LIST=1` para a lista de quem tentou pagar).
 
 - `begin_checkout` já dispara com `value` = total e `items[]` no clique do CTA do widget,
   antes de `createIntent` + navegação. Nada a adicionar.

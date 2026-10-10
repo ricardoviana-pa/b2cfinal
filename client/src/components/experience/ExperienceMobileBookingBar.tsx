@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { X, MessageCircle } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
 import type { BokunOption } from './ExperienceBookingCard';
-import { pushEcommerce } from '@/lib/datalayer';
+import { pushDL, pushEcommerce } from '@/lib/datalayer';
 
 interface ExperienceMobileBookingBarProps {
   experienceName: string;
@@ -103,8 +103,10 @@ export default function ExperienceMobileBookingBar({
             <button
               onClick={() => {
                 if (experienceSlug) {
+                  // Abre o widget Bókun; a compra acontece lá. Evento próprio
+                  // para não contar como checkout de casa no GA4 e no Meta.
                   pushEcommerce({
-                    event: 'begin_checkout',
+                    event: 'experience_booking_open',
                     ecommerce: {
                       currency: 'EUR',
                       value: priceOta || 0,
@@ -134,20 +136,8 @@ export default function ExperienceMobileBookingBar({
               style={{ minHeight: '48px' }}
               onClick={() => {
                 if (!experienceSlug) return;
-                pushEcommerce({
-                  event: 'begin_checkout',
-                  ecommerce: {
-                    currency: 'EUR',
-                    value: priceOta || 0,
-                    items: [{
-                      item_id: `EXP-${experienceSlug}`,
-                      item_name: experienceName,
-                      item_category: experienceCategory || '',
-                      price: priceOta || 0,
-                      quantity: 1,
-                    }],
-                  },
-                });
+                // Abre o WhatsApp, não um checkout: conta como contacto
+                pushDL({ event: 'whatsapp_click', source: 'experience_mobile_bar', item_id: `EXP-${experienceSlug}`, value: priceOta || 0 });
               }}
             >
               {t('experience.checkAvailability', 'Check availability')}
