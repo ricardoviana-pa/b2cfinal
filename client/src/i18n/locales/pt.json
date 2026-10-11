@@ -484,7 +484,9 @@
     "nlError": "Algo correu mal. Por favor, tente novamente.",
     "conciergeServices": "Serviços de concierge",
     "realEstate": "Comprar ou vender casa",
-    "offices": "Escritórios"
+    "offices": "Escritórios",
+    "porto": "Porto",
+    "douro": "Vale do Douro"
   },
   "propertyDetail": {
     "notFound": "Propriedade não encontrada",
@@ -2098,7 +2100,7 @@
   },
   "destinationGrowth": {
     "eyebrow": "Encontre o seu Portugal",
-    "intro": "Comece pelo destino. Escolha a casa, explore o guia local e desenhe uma estadia à sua medida.",
+    "intro": "Manhãs de mar, caminhos de montanha ou uma mesa entre vinhas. Encontre a sua região, escolha uma casa só sua e conte com a equipa local para os detalhes.",
     "explore": "Explorar {{name}}",
     "cityTitle": "Viana do Castelo, mais de perto",
     "cityIntro": "O nosso guia da costa atlântica, do vale do Lima e da cidade onde estamos em casa.",
@@ -2112,8 +2114,8 @@
     "corporateTitle": "Junte a sua equipa em Portugal",
     "corporateIntro": "A planear um encontro de equipa ou team building? Explore espaços privados e atividades. A nossa equipa ajuda a adequar o local e o programa ao seu grupo.",
     "corporateCta": "Planear um evento de empresa",
-    "metaTitle": "Destinos em Portugal e Casas de Férias | Portugal Active",
-    "metaDescription": "Compare Minho, Porto e Douro, Lisboa, Alentejo e Algarve. Explore guias locais, descubra casas e escolha a melhor altura para a sua estadia em Portugal.",
+    "metaTitle": "Onde Ficar em Portugal: Regiões e Casas | Portugal Active",
+    "metaDescription": "Encontre o seu lugar em Portugal: compare regiões de praia, natureza e vinho, descubra casas de férias e planeie a estadia com a nossa equipa local.",
     "eventsNote": "Eventos anuais e sugestões sazonais. As datas e os programas variam por edição; consulte as ligações dos organizadores para os detalhes confirmados."
   },
   "corporate": {

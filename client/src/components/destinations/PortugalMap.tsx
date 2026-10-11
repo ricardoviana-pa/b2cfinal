@@ -1,4 +1,5 @@
-import { useSearch } from 'wouter';
+import { Link, useSearch } from 'wouter';
+import { pushDL } from '@/lib/datalayer';
 import { withEditorialTrip } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
 import type { Destination } from '@/lib/types';
@@ -12,24 +13,25 @@ const POINTS: Record<string, {x: number; y: number; labelY: number}> = {"minho":
 export default function PortugalMap({ destinations }: { destinations: Destination[] }) {
   const { t, i18n } = useTranslation();
   const search = useSearch();
-  return <svg viewBox="0 0 480 420" className="block w-full max-w-lg mx-auto" role="group" aria-label={t('destinationsPage.titleFull')}>
-    <title>{t('destinationsPage.titleFull')}</title>
-    <path d={PORTUGAL_MAINLAND_OUTLINE} fill="#e4ebe5" stroke="#b5c4b7" strokeWidth="1.2" />
-    {destinations.map(d => {
-      const p = POINTS[d.slug];
-      if (!p) return null;
-      const [regionName, localName] = d.slug === 'minho' ? d.name.split(' · ') : [d.name, ''];
-      return <a key={d.slug} href={withEditorialTrip(`/${i18n.language.split('-')[0]}/destinations/${d.slug}`,search)}
-        aria-label={t('destinationGrowth.explore', { name: d.name })} className="group">
-        <path d={`M${p.x},${p.y} L228,${p.labelY} H250`} fill="none" stroke="#8b9e91" strokeWidth="1" />
-        <circle cx={p.x} cy={p.y} r="5" fill="#0b4541" className="group-hover:fill-pa-brown" />
-        <rect x="246" y={p.labelY-22} width="215" height="44" rx="8" fill="transparent" className="group-hover:fill-white group-focus:fill-white" />
-        {localName ? <text x="260" y={p.labelY-3} fill="#1a1a18" style={{fontFamily:'var(--font-display)'}}>
-          <tspan x="260" fontSize="16">{regionName}</tspan>
-          <tspan x="260" dy="17" fontSize="14" fill="#52644e">{localName}</tspan>
-        </text> : <text x="260" y={p.labelY+6} fontSize="19" fill="#1a1a18" style={{fontFamily:'var(--font-display)'}}>{d.name}</text>}
-        <text x="435" y={p.labelY+5} fontSize="18" fill="#0b4541" aria-hidden="true">→</text>
-      </a>;
-    })}
-  </svg>;
+  return <nav className="grid grid-cols-[minmax(90px,0.7fr)_minmax(0,1.3fr)] sm:grid-cols-[1fr_1.2fr] gap-3 sm:gap-6 w-full max-w-lg mx-auto items-center" aria-label={t('destinationsPage.titleFull')}>
+    <svg viewBox="45 20 185 380" className="w-full max-h-[350px]" aria-hidden="true">
+      <path d={PORTUGAL_MAINLAND_OUTLINE} fill="#e4ebe5" stroke="#b5c4b7" strokeWidth="1.2" />
+      {destinations.map((d, index) => {
+        const p = POINTS[d.slug];
+        return p ? <g key={d.slug}><circle cx={p.x} cy={p.y} r="12" fill="#0b4541" /><text x={p.x} y={p.y + 4} textAnchor="middle" fill="white" fontSize="12">{index + 1}</text></g> : null;
+      })}
+    </svg>
+    <ol className="space-y-2 py-3">
+      {destinations.map((d, index) => <li key={d.slug}>
+        <Link href={withEditorialTrip(`/destinations/${d.slug}`, search)}
+          onClick={() => pushDL({event:'destination_planning',destination:d.slug,language:i18n.language.split('-')[0],section:'map',action:'guide'})}
+          aria-label={t('destinationGrowth.explore', { name: d.name })}
+          className="flex min-h-12 items-center gap-3 rounded-lg px-2 py-2 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2">
+          <span className="text-xs text-pa-gold-aa shrink-0" aria-hidden="true">0{index + 1}</span>
+          <span className="text-base leading-snug flex-1">{d.slug === 'minho' ? d.name.split(' · ').map((part, i) => <span key={part} className={i ? 'block text-sm text-pa-stone-aa mt-1' : 'block'}>{part}</span>) : d.name}</span>
+          <span aria-hidden="true" className="text-pa-dark">→</span>
+        </Link>
+      </li>)}
+    </ol>
+  </nav>;
 }

@@ -484,7 +484,9 @@
     "nlError": "Something went wrong. Please try again.",
     "conciergeServices": "Concierge services",
     "realEstate": "Buy or sell a home",
-    "offices": "Offices"
+    "offices": "Offices",
+    "porto": "Porto",
+    "douro": "Douro Valley"
   },
   "propertyDetail": {
     "notFound": "Home not found",
@@ -2095,7 +2097,7 @@
   },
   "destinationGrowth": {
     "eyebrow": "Find your Portugal",
-    "intro": "Start with the place. Choose your home, explore the local guide and build a stay around what you love.",
+    "intro": "Atlantic mornings, mountain paths or a table among the vines. Find your region, choose a home of your own and let our local team help with the details.",
     "explore": "Explore {{name}}",
     "cityTitle": "A closer look at Viana do Castelo",
     "cityIntro": "Our local guide to the Atlantic coast, the Lima valley and the city we call home.",
@@ -2109,8 +2111,8 @@
     "corporateTitle": "Bring your team together in Portugal",
     "corporateIntro": "Planning an offsite or team building? Explore private settings and activities, then ask our team to match the venue and programme to your group.",
     "corporateCta": "Plan a team event",
-    "metaTitle": "Portugal Destinations & Villa Holidays | Portugal Active",
-    "metaDescription": "Compare Minho, Porto and Douro, Lisbon, Alentejo and the Algarve. Explore local guides, discover villas and choose the right time for your Portugal stay.",
+    "metaTitle": "Where to Stay in Portugal: Regions & Villas | Portugal Active",
+    "metaDescription": "Find your place in Portugal: compare beach, nature and wine regions, discover holiday homes and plan your stay with help from our local team.",
     "eventsNote": "Annual events and seasonal ideas. Dates and programmes vary by edition; follow the organiser links for confirmed details."
   },
   "corporate": {

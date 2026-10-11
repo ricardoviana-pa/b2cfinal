@@ -1,3 +1,4 @@
+import { discoveryText, featuredDestinationHomes, selectDestinationHomes } from '@/data/destination-discovery';
 /* ==========================================================================
    DESTINATION — 11-SECTION TEMPLATE COMPONENTS
    ========================================================================
@@ -102,9 +103,10 @@ interface WhereToStayProps {
   intro?: string;
   sectionId?: string;
   viewAllHref?: string;
+  featured?: boolean;
 }
 
-export function WhereToStay({ destination: d, properties, heading, intro, sectionId = 'destination-homes', viewAllHref }: WhereToStayProps) {
+export function WhereToStay({ destination: d, properties, heading, intro, sectionId = 'destination-homes', viewAllHref, featured = false }: WhereToStayProps) {
   const { t, i18n } = useTranslation();
   const search = useSearch();
   const trip = editorialTripContext(search);
@@ -112,8 +114,9 @@ export function WhereToStay({ destination: d, properties, heading, intro, sectio
   const visibleHomes = useMemo(() => {
     const present = new Set(properties.map(p=>p.guestyId));
     const groupedChildren = new Set(PROPERTY_GROUPS.filter(g=>present.has(g.parentGuestyId)).flatMap(g=>g.unitGuestyIds.filter(id=>id!==g.parentGuestyId)));
-    return properties.filter(p=>!p.guestyId || !groupedChildren.has(p.guestyId)).slice(0,6);
-  }, [properties]);
+    const homes = properties.filter(p=>p.isActive !== false && (!p.guestyId || !groupedChildren.has(p.guestyId)));
+    return featured ? selectDestinationHomes(homes, d.slug) : homes.slice(0,6);
+  }, [properties, featured, d.slug]);
   const listingIds = useMemo(() => visibleHomes.filter(p => p.guestyId).map(p => p.guestyId!), [visibleHomes]);
   const { data: fromPrices } = trpc.booking.lowestNightlyBatch.useQuery({ listingIds }, { enabled: listingIds.length > 0, staleTime: 5 * 60_000 });
   const partner = usePartnerPrices(visibleHomes);
@@ -152,7 +155,13 @@ export function WhereToStay({ destination: d, properties, heading, intro, sectio
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {visibleHomes.map((p,index) => <PropertyCard key={p.id} property={p} checkin={trip.checkin} checkout={trip.checkout} guests={trip.guests} hidePrice={!!trip.checkin} listId={`destination_${d.slug}`} listName={d.name} itemIndex={index} fromPrice={p.supplierUid ? partner.prices[p.supplierUid] : fromPrices?.[p.guestyId ?? '']} />)}
+          {visibleHomes.map((p, index) => {
+            const recommendation = featured ? featuredDestinationHomes[d.slug]?.find(pick => pick.id === p.guestyId) : undefined;
+            return <div key={p.id}>
+              <PropertyCard key={p.id} property={p} checkin={trip.checkin} checkout={trip.checkout} guests={trip.guests} hidePrice={!!trip.checkin} listId={`destination_${d.slug}`} listName={d.name} itemIndex={index} fromPrice={p.supplierUid ? partner.prices[p.supplierUid] : fromPrices?.[p.guestyId ?? '']} />
+              {recommendation && <p className="mt-4 pl-4 border-l-2 border-pa-gold-aa text-sm leading-relaxed text-pa-stone-aa">{discoveryText(recommendation.reason, i18n.language)}</p>}
+            </div>;
+          })}
         </div>
       </div>
     </section>
