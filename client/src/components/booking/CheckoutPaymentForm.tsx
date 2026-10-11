@@ -58,23 +58,7 @@ function GooglePayLogo() {
 }
 
 function PayPalLogo() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        fontWeight: 700,
-        fontStyle: "italic",
-        fontSize: "16px",
-        letterSpacing: "-0.02em",
-        lineHeight: 1,
-      }}
-      aria-label="PayPal"
-    >
-      <span style={{ color: "#003087" }}>Pay</span>
-      <span style={{ color: "#009cde" }}>Pal</span>
-    </span>
-  );
+  return <img src="/payments/paypal-wordmark.png" alt="PayPal" className="h-5 w-auto" />;
 }
 
 function KlarnaLogo() {
