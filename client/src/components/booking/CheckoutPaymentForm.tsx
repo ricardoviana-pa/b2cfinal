@@ -78,22 +78,7 @@ function PayPalLogo() {
 }
 
 function KlarnaLogo() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#ffb3c7",
-        borderRadius: "5px",
-        padding: "3px 8px",
-        lineHeight: 1,
-      }}
-      aria-label="Klarna"
-    >
-      <span style={{ color: "#17120f", fontWeight: 700, fontSize: "12px" }}>Klarna</span>
-    </span>
-  );
+  return <img src="/payments/klarna-badge.svg" alt="Klarna" className="h-6 w-auto" />;
 }
 
 const PAYMENT_METHODS: Array<{ id: PaymentMethodId; label: string; Logo: () => ReactElement }> = [

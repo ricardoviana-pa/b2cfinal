@@ -48,22 +48,7 @@ function PayPalLogo() {
 }
 
 function KlarnaLogo() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#ffb3c7",
-        borderRadius: "6px",
-        padding: "4px 8px",
-        lineHeight: 1,
-      }}
-      aria-label="Klarna"
-    >
-      <span style={{ color: "#17120f", fontWeight: 700, fontSize: "13px" }}>Klarna</span>
-    </span>
-  );
+  return <img src="/payments/klarna-badge.svg" alt="Klarna" className="h-6 w-auto" />;
 }
 
 export default function PaymentThankYouPage() {

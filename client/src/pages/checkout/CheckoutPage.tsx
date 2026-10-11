@@ -245,6 +245,8 @@ export default function CheckoutPage() {
   const [selectedRatePlanId, setSelectedRatePlanId] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [emailTouched, setEmailTouched] = useState(false);
+  const [contactSaveError, setContactSaveError] = useState(false);
+  const contactSavingRef = useRef(false);
   // Consentimento de marketing — por omissão desligado (RGPD: opt-in tem de
   // ser um acto afirmativo). Sem ele o email só serve a recuperação
   // transacional do checkout; com ele o lead entra no segmento da newsletter.
@@ -576,13 +578,21 @@ export default function CheckoutPage() {
   };
 
   // ── Step 1 → 2: email capture ──
-  const submitEmail = useCallback(() => {
+  const submitEmail = useCallback(async () => {
     setEmailTouched(true);
-    if (!intent || !isValidEmail(email)) return;
-    if (!isDemo) {
-      captureLead
-        .mutateAsync({ intentId: intent.id, email, locale: lang, consent: newsletterOptIn })
-        .catch(() => {/* fail-soft: the step advance below never blocks on persistence */});
+    if (!intent || !isValidEmail(email) || contactSavingRef.current) return;
+    setContactSaveError(false);
+    contactSavingRef.current = true;
+    try {
+      if (!isDemo) {
+        const saved = await captureLead.mutateAsync({ intentId: intent.id, email, locale: lang, consent: newsletterOptIn });
+        if (!saved.ok) throw new Error("Contact not saved");
+      }
+    } catch {
+      setContactSaveError(true);
+      return;
+    } finally {
+      contactSavingRef.current = false;
     }
     utils.checkout.getIntent.setData({ intentId: intent.id }, (prev) =>
       prev?.intent ? { ...prev, intent: { ...prev.intent, email } } : prev,
@@ -1744,11 +1754,16 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={submitEmail}
-                  disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
+                  disabled={!isValidEmail(email) || quoteStale || datesUnavailable || captureLead.isPending}
                   className="hidden lg:inline-flex btn-primary w-full disabled:opacity-40"
                 >
                   {t("booking.continue", "Continue")}
                 </button>
+                {contactSaveError && (
+                  <p className="caption text-red-600" role="alert">
+                    {t("payment.errors.saveFailed")}
+                  </p>
+                )}
                 {/* L2: o botão desativado sem dica era um toque morto */}
                 {!isValidEmail(email) && !quoteStale && !datesUnavailable && (
                   <p className="caption text-pa-stone-aa" role="status">
@@ -2092,7 +2107,7 @@ export default function CheckoutPage() {
             <button
               type="button"
               onClick={submitEmail}
-              disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
+              disabled={!isValidEmail(email) || quoteStale || datesUnavailable || captureLead.isPending}
               className="btn-primary flex-1 max-w-[220px] disabled:opacity-40"
             >
               {t("booking.continue", "Continue")}

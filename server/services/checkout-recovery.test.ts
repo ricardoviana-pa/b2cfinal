@@ -178,4 +178,27 @@ describe("funil de 4 contactos", () => {
     await runCheckoutRecoverySweep();
     expect(mock.alert).not.toHaveBeenCalled();
   });
+  it.each([false, 'unavailable'])("não alerta o concierge sem confirmar abandono: %s", async (eligible) => {
+    mock.candidates.mockResolvedValue([intent(2, { status: "payment_pending", guestPhone: "+351900000000", quote: { total: 4200 } })]);
+    if (eligible === false) mock.eligible.mockResolvedValue(false);
+    else mock.eligible.mockRejectedValue(new Error('timeout'));
+    await runCheckoutRecoverySweep();
+    expect(mock.claimAlert).not.toHaveBeenCalled();
+    expect(mock.alert).not.toHaveBeenCalled();
+    expect(mock.send).not.toHaveBeenCalled();
+  });
+  it("grupo de controlo mantém alerta humano após verificar a estadia", async () => {
+    mock.candidates.mockResolvedValue([intent(2, { id: HOLDOUT_ID, status: "payment_pending", guestPhone: "+351900000000", quote: { total: 4200 } })]);
+    await runCheckoutRecoverySweep();
+    expect(mock.eligible).toHaveBeenCalledOnce();
+    expect(mock.alert).toHaveBeenCalledOnce();
+    expect(mock.send).not.toHaveBeenCalled();
+  });
+  it("cotação expirada mantém alerta humano elegível sem email automático", async () => {
+    mock.candidates.mockResolvedValue([intent(25, { status: "payment_pending", guestPhone: "+351900000000", quote: { total: 4200 }, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    await runCheckoutRecoverySweep();
+    expect(mock.eligible).toHaveBeenCalledOnce();
+    expect(mock.alert).toHaveBeenCalledOnce();
+    expect(mock.send).not.toHaveBeenCalled();
+  });
 });

@@ -102,6 +102,20 @@ beforeEach(() => {
 });
 
 describe('synthetic checkout integration — real router and settlement, no providers', () => {
+  it('does not report contact captured or create a lead when saving the email fails', async () => {
+    const id = await draft();
+    fake.updateIntent.mockResolvedValueOnce(false);
+    expect(await caller().captureLead({ intentId: id, email: 'guest@checkout.invalid', consent: true }))
+      .toEqual({ ok: false });
+    expect(fake.intents.get(id).email).toBeUndefined();
+    expect(fake.lead).not.toHaveBeenCalled();
+    // A retry can persist the contact and enter the recovery funnel.
+    expect(await caller().captureLead({ intentId: id, email: 'guest@checkout.invalid', consent: true }))
+      .toEqual({ ok: true });
+    expect(fake.intents.get(id)).toMatchObject({ email: 'guest@checkout.invalid', status: 'contact_captured' });
+    expect(fake.lead).toHaveBeenCalledOnce();
+  });
+
   it('captures contact, prices extras on the server, settles the stay and prepares one confirmation', async () => {
     const id = await draft();
     await caller().captureLead({ intentId: id, email: 'guest@checkout.invalid', consent: false, locale: 'pt' });
