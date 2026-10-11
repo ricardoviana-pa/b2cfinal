@@ -1,3 +1,4 @@
+import LocalStaySupport from './LocalStaySupport';
 import { Link, useSearch } from "wouter";
 import {
   ArrowRight,
@@ -356,6 +357,20 @@ export function MinhoVisualGuide({
           </div>
         </div>
       </section>
+      <WhereToStay
+        destination={d}
+        properties={properties}
+        featured
+        heading={
+          pt ? "Casas para viver o Minho" : "Find your home in the Minho"
+        }
+        intro={
+          pt
+            ? "Um jardim para almoços demorados, uma piscina para tardes em família ou uma localização para sair a pé. Escolha o que faz diferença nos seus dias e consulte o total para as suas datas. A Portugal Active ajuda a preparar a chegada e os extras que quiser reservar."
+            : "A garden for long lunches, a pool for family afternoons or a location for exploring on foot. Choose what matters to your days and check the total for your dates. Portugal Active can help arrange your arrival and any extras you would like to book."
+        }
+      />
+      <LocalStaySupport destination={d.slug} />
       <section id="destination-areas" className="minho-section bg-white">
         <div className="container">
           <div className="minho-section-heading">
@@ -772,18 +787,6 @@ export function MinhoVisualGuide({
           </div>
         </div>
       </section>
-      <WhereToStay
-        destination={d}
-        properties={properties}
-        heading={
-          pt ? "Casas para viver o Minho" : "Find your home in the Minho"
-        }
-        intro={
-          pt
-            ? "Um jardim para almoços demorados, uma piscina para tardes em família ou uma localização para sair a pé. Escolha o que faz diferença nos seus dias e consulte o total para as suas datas. A Portugal Active ajuda a preparar a chegada e os extras que quiser reservar."
-            : "A garden for long lunches, a pool for family afternoons or a location for exploring on foot. Choose what matters to your days and check the total for your dates. Portugal Active can help arrange your arrival and any extras you would like to book."
-        }
-      />
       <TheJournal destination={d} articles={articles} />
       <section className="minho-section bg-pa-cream">
         <div className="container max-w-4xl">

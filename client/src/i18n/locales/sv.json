@@ -484,7 +484,9 @@
     "nlError": "Något gick fel. Försök igen.",
     "conciergeServices": "Conciergetjänster",
     "realEstate": "Köpa eller sälja bostad",
-    "offices": "Kontor"
+    "offices": "Kontor",
+    "porto": "Porto",
+    "douro": "Douro-dalen"
   },
   "propertyDetail": {
     "notFound": "Bostad hittades inte",

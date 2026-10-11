@@ -484,7 +484,9 @@
     "nlError": "Qualcosa è andato storto. Per favore riprova.",
     "conciergeServices": "Servizi di concierge",
     "realEstate": "Comprare o vendere casa",
-    "offices": "Uffici"
+    "offices": "Uffici",
+    "porto": "Porto",
+    "douro": "Valle del Douro"
   },
   "propertyDetail": {
     "notFound": "Proprietà non trovata",

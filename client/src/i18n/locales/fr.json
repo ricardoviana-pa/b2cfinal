@@ -484,7 +484,9 @@
     "nlError": "Une erreur est survenue. Veuillez réessayer.",
     "conciergeServices": "Services de conciergerie",
     "realEstate": "Acheter ou vendre une maison",
-    "offices": "Bureaux"
+    "offices": "Bureaux",
+    "porto": "Porto",
+    "douro": "Vallée du Douro"
   },
   "propertyDetail": {
     "notFound": "Propriété introuvable",

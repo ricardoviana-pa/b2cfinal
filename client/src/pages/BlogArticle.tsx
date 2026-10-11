@@ -279,6 +279,12 @@ export default function BlogArticle() {
               {t('blogArticle.ctaConcierge')}
             </a>
           </div>
+          {article.commercialIntent !== 'corporate' && (article.slug === 'viana-do-castelo-guide' || article.destinationTag === 'minho-coast') && <Link
+            href={withEditorialTrip(`/destinations/${article.slug === 'viana-do-castelo-guide' ? 'viana-do-castelo' : 'minho'}`, search)}
+            onClick={() => pushDL({event:'destination_planning',destination:article.slug === 'viana-do-castelo-guide' ? 'viana-do-castelo' : 'minho',language:i18n.language.split('-')[0],section:'journal',action:'guide'})}
+            className="inline-flex min-h-11 items-center gap-2 mt-5 text-sm text-white underline underline-offset-4">
+            {t('destinationGrowth.guide')} · {article.slug === 'viana-do-castelo-guide' ? 'Viana do Castelo' : t('destinations.minho')}<ArrowRight size={14} />
+          </Link>}
         </div>
       </section>
 

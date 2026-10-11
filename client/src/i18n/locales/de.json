@@ -484,7 +484,9 @@
     "nlError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "conciergeServices": "Concierge-Dienste",
     "realEstate": "Ein Haus kaufen oder verkaufen",
-    "offices": "Büros"
+    "offices": "Büros",
+    "porto": "Porto",
+    "douro": "Douro-Tal"
   },
   "propertyDetail": {
     "notFound": "Unterkunft nicht gefunden",

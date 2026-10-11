@@ -484,7 +484,9 @@
     "nlError": "Er is iets misgegaan. Probeer het opnieuw.",
     "conciergeServices": "Conciërgediensten",
     "realEstate": "Een huis kopen of verkopen",
-    "offices": "Kantoren"
+    "offices": "Kantoren",
+    "porto": "Porto",
+    "douro": "Dourovallei"
   },
   "propertyDetail": {
     "notFound": "Accommodatie niet gevonden",

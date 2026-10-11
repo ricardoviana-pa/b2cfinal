@@ -484,7 +484,9 @@
     "nlError": "Jokin meni pieleen. Yritä uudelleen.",
     "conciergeServices": "Concierge-palvelut",
     "realEstate": "Osta tai myy asunto",
-    "offices": "Toimistot"
+    "offices": "Toimistot",
+    "porto": "Porto",
+    "douro": "Douron laakso"
   },
   "propertyDetail": {
     "notFound": "Kohdetta ei löytynyt",

@@ -435,8 +435,8 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
           description: 'Utforska {{homes}} privata hotell i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Filtrera efter resmål, gäster och bekvämligheter. Boka direkt för bästa pris.' },
   },
   '/destinations': {
-    en: { title: "Portugal Destinations & Villa Holidays | Portugal Active", description: "Compare Minho, Porto and Douro, Lisbon, Alentejo and the Algarve. Explore local guides, discover villas and choose the right time for your Portugal stay." },
-    pt: { title: "Destinos em Portugal e Casas de Férias | Portugal Active", description: "Compare Minho, Porto e Douro, Lisboa, Alentejo e Algarve. Explore guias locais, descubra casas e escolha a melhor altura para a sua estadia em Portugal." },
+    en: { title: "Where to Stay in Portugal: Regions & Villas | Portugal Active", description: "Find your place in Portugal: compare beach, nature and wine regions, discover holiday homes and plan your stay with help from our local team." },
+    pt: { title: "Onde Ficar em Portugal: Regiões e Casas | Portugal Active", description: "Encontre o seu lugar em Portugal: compare regiões de praia, natureza e vinho, descubra casas de férias e planeie a estadia com a nossa equipa local." },
     es: { title: "Destinos en Portugal y Casas de Vacaciones | Portugal Active", description: "Compara Minho, Oporto y Duero, Lisboa, Alentejo y Algarve. Consulta guías locales, descubre casas y elige cuándo viajar a Portugal." },
     fr: { title: "Destinations au Portugal et Villas de Vacances | Portugal Active", description: "Comparez Minho, Porto et Douro, Lisbonne, Alentejo et Algarve. Consultez nos guides locaux, découvrez des villas et choisissez quand partir au Portugal." },
     de: { title: "Reiseziele und Ferienhäuser in Portugal | Portugal Active", description: "Vergleichen Sie Minho, Porto und Douro, Lissabon, Alentejo und Algarve. Entdecken Sie lokale Reiseführer, Ferienhäuser und passende Reisezeiten für Portugal." },

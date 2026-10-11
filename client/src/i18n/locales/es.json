@@ -484,7 +484,9 @@
     "nlError": "Algo salió mal. Por favor, inténtalo de nuevo.",
     "conciergeServices": "Servicios de conserjería",
     "realEstate": "Comprar o vender una casa",
-    "offices": "Oficinas"
+    "offices": "Oficinas",
+    "porto": "Oporto",
+    "douro": "Valle del Duero"
   },
   "propertyDetail": {
     "notFound": "Propiedad no encontrada",

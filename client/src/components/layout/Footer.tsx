@@ -158,8 +158,9 @@ export default function Footer() {
               {t('footer.destinationsTitle')}
             </h4>
             <ul className="flex flex-col gap-3">
-              {footerLinks(t('footer.minhoCoast'), '/destinations/minho')}
-              {footerLinks(t('footer.portoDouro'), '/destinations/porto')}
+              {footerLinks(t('destinations.minho'), '/destinations/minho')}
+              {footerLinks(t('footer.porto'), '/destinations/porto')}
+              {footerLinks(t('footer.douro'), '/destinations/douro')}
               {footerLinks(t('footer.lisbon'), '/destinations/lisbon')}
               {footerLinks(t('footer.alentejo'), '/destinations/alentejo')}
               {footerLinks(t('footer.algarve'), '/destinations/algarve')}
