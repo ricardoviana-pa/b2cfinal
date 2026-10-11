@@ -1,3 +1,4 @@
+import { RealEstateLocalCTA } from './RealEstateLocalCTA';
 import { discoveryText, featuredDestinationHomes, selectDestinationHomes } from '@/data/destination-discovery';
 /* ==========================================================================
    DESTINATION — 11-SECTION TEMPLATE COMPONENTS
@@ -828,6 +829,7 @@ export function RelatedDestinationsAndOwnersCTA({
       )}
 
       <BookingCTA href={withEditorialTrip(destinationHomesHref(d), search)} />
+      <RealEstateLocalCTA slug={d.slug} />
     </>
   );
 }
