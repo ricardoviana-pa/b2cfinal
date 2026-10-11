@@ -901,31 +901,77 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
   const db = await getDb();
   if (!db) return [];
   try {
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-    // Funil de 4 contactos (recovery-funnel.ts): os contactos 3 e 4 chegam
-    // depois de a cotação expirar, por isso já não se filtra por expiresAt.
-    // Janela de 9 dias e check-in a pelo menos 2 dias.
-    const nineDaysAgo = new Date(Date.now() - 9 * 24 * 60 * 60 * 1000);
-    const minCheckIn = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-    return await db
+    const now = Date.now();
+    const HOUR = 60 * 60 * 1000;
+    const oneHourAgo = new Date(now - HOUR);
+    const nineDaysAgo = new Date(now - 9 * 24 * HOUR);
+    const threeDaysAgo = new Date(now - 72 * HOUR);
+    const sevenDaysAgo = new Date(now - 7 * 24 * HOUR);
+    const twoDaysAgo = new Date(now - 48 * HOUR);
+    const minCheckIn = new Date(now + 2 * 24 * HOUR).toISOString().slice(0, 10);
+    const base = [
+      isNotNull(bookingIntents.email),
+      inArray(bookingIntents.status, ["draft", "contact_captured", "payment_pending"]),
+      gt(bookingIntents.checkIn, minCheckIn),
+      sql`${bookingIntents.reservationId} IS NULL`,
+      // Bloco 2: quem carregou em "Não quero receber estes lembretes"
+      // sai da automação para sempre
+      eq(bookingIntents.recoveryOptout, false),
+    ];
+
+    // Duas filas, cada uma com o seu limite, as mais recentes primeiro.
+    //
+    // Até out/2026 era UMA consulta de 200 intents, do mais antigo para o mais
+    // recente, numa janela de 9 dias. Os intents que nunca avançam (grupo de
+    // controlo, sem consentimento para os contactos 3/4) ficavam lá 9 dias e
+    // enchiam as 200 vagas: com mais tráfego, os checkouts novos, que precisam
+    // do contacto de 1 h, nunca entravam, e quando entravam a cotação já tinha
+    // expirado. Resultado: o funil deixou de enviar sem dar erro.
+
+    // 1) Contactos 1 e 2 (cotação ainda válida) e o alerta ao concierge
+    //    (abandono no pagamento, até 48 h). Janela curta por natureza.
+    const early = await db
       .select()
       .from(bookingIntents)
       .where(
         and(
-          isNotNull(bookingIntents.email),
-          inArray(bookingIntents.status, ["draft", "contact_captured", "payment_pending"]),
-          lt(bookingIntents.recoveryStage, 4),
+          ...base,
           lt(bookingIntents.createdAt, oneHourAgo),
-          gt(bookingIntents.createdAt, nineDaysAgo),
-          gt(bookingIntents.checkIn, minCheckIn),
-          sql`${bookingIntents.reservationId} IS NULL`,
-          // Bloco 2: quem carregou em "Não quero receber estes lembretes"
-          // sai da automação para sempre
-          eq(bookingIntents.recoveryOptout, false),
+          or(
+            and(lt(bookingIntents.recoveryStage, 2), gt(bookingIntents.expiresAt, new Date(now))),
+            and(
+              eq(bookingIntents.status, "payment_pending"),
+              eq(bookingIntents.conciergeAlerted, false),
+              gt(bookingIntents.createdAt, twoDaysAgo),
+            ),
+          ),
         ),
       )
-      .orderBy(asc(bookingIntents.createdAt))
+      .orderBy(desc(bookingIntents.createdAt))
       .limit(limit);
+
+    // 2) Contactos 3 (3 dias) e 4 (7 dias): só com consentimento de marketing,
+    //    filtrado aqui para que quem não deu consentimento não ocupe vagas.
+    const late = await db
+      .select()
+      .from(bookingIntents)
+      .where(
+        and(
+          ...base,
+          lt(bookingIntents.createdAt, threeDaysAgo),
+          gt(bookingIntents.createdAt, nineDaysAgo),
+          or(
+            lt(bookingIntents.recoveryStage, 3),
+            and(lt(bookingIntents.recoveryStage, 4), lt(bookingIntents.createdAt, sevenDaysAgo)),
+          ),
+          sql`EXISTS (SELECT 1 FROM ${leads} WHERE ${leads.email} = ${bookingIntents.email} AND ${leads.source} LIKE ${"newsletter%"})`,
+        ),
+      )
+      .orderBy(desc(bookingIntents.createdAt))
+      .limit(limit);
+
+    const seen = new Set<string>();
+    return [...early, ...late].filter((i) => (seen.has(i.id) ? false : (seen.add(i.id), true)));
   } catch (error) {
     console.error("[Database] listRecoveryCandidates failed:", error);
     return [];
