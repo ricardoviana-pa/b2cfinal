@@ -9,12 +9,12 @@ const PAYMENTS = [
   { src: '/payments/amex-badge.svg', alt: 'American Express', fill: true },
   { src: '/payments/apple-pay-c.svg', alt: 'Apple Pay', h: 'h-[26px]' },
   { src: '/payments/paypal-c.svg', alt: 'PayPal', h: 'h-[16px]' },
-  { src: '/payments/klarna-c.svg', alt: 'Klarna', h: 'h-[15px]' },
+  { src: '/payments/klarna-badge.svg', alt: 'Klarna', fill: true },
 ];
 
 export default function FooterPaymentLogos() {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-1.5 md:pr-12">
       {PAYMENTS.map((p) =>
         p.fill ? (
           <span

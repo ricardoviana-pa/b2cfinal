@@ -252,12 +252,17 @@ async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
   }
 }
 
-/** Alerta ao concierge: abandono no pagamento de valor alto (uma vez). */
-async function maybeAlertConcierge(intent: BookingIntent, ageMs: number): Promise<void> {
+function conciergeAlertDue(intent: BookingIntent, ageMs: number): boolean {
   const total = Number((intent.quote as QuoteSnap | null)?.total ?? 0);
-  if (intent.status !== "payment_pending" || total < CONCIERGE_ALERT_MIN_TOTAL) return;
-  if ((intent as any).conciergeAlerted || !intent.guestPhone) return;
-  if (ageMs < RECOVERY_TIMING.stage1AfterMs || ageMs > 48 * HOUR_MS) return;
+  return intent.status === "payment_pending" && total >= CONCIERGE_ALERT_MIN_TOTAL &&
+    !intent.conciergeAlerted && !!intent.guestPhone &&
+    ageMs >= RECOVERY_TIMING.stage1AfterMs && ageMs <= 48 * HOUR_MS;
+}
+
+/** Alerta ao concierge: abandono verificado no pagamento de valor alto (uma vez). */
+async function maybeAlertConcierge(intent: BookingIntent, ageMs: number): Promise<void> {
+  if (!conciergeAlertDue(intent, ageMs) || !intent.guestPhone) return;
+  const total = Number((intent.quote as QuoteSnap | null)?.total ?? 0);
   if (!await claimConciergeAlert(intent.id)) return;
   await sendConciergeCallAlert({
     intentId: intent.id,
@@ -296,16 +301,14 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       const stage = intent.recoveryStage ?? 0;
       const quoteValid = !!intent.expiresAt && intent.expiresAt.getTime() > now;
 
-      // O alerta humano vale para todos (inclui o grupo de controlo): o
-      // controlo mede os emails automáticos, não a chamada do concierge.
-      await maybeAlertConcierge(intent, ageMs);
-
       // O consentimento só importa depois de a cotação expirar (contactos 3/4)
       const needsConsent = !quoteValid || ageMs >= RECOVERY_TIMING.stage3AfterMs;
       const consent = needsConsent ? await hasNewsletterConsent(intent.email) : false;
       let target = nextRecoveryStage({ stage, ageMs, quoteValid, consent });
-      if (!target) { skip.notDue++; continue; }
-      if (isRecoveryHoldout(intent.id)) { skip.holdout++; continue; }
+      const holdout = isRecoveryHoldout(intent.id);
+      const alertDue = conciergeAlertDue(intent, ageMs);
+      if (!target && !alertDue) { skip.notDue++; continue; }
+      if (holdout && !alertDue) { skip.holdout++; continue; }
 
       try {
         if (!await canRemindRecoveryStay(intent)) { skip.notRemindable++; continue; }
@@ -315,6 +318,12 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
         console.warn('[Recovery] Stay verification unavailable; reminder deferred');
         continue;
       }
+
+      // Human alerts include the control group, but must obey the same
+      // booked/superseded-stay protection before an alert is claimed.
+      await maybeAlertConcierge(intent, ageMs);
+      if (!target) { skip.notDue++; continue; }
+      if (holdout) { skip.holdout++; continue; }
 
       // Preparação específica de cada contacto, antes do claim: se o Guesty
       // falhar, adia-se sem perder o contacto.

@@ -738,11 +738,12 @@ export const checkoutRouter = router({
       if (!intent) return { ok: false };
 
       const alreadyCaptured = intent.status !== "draft" && intent.email === input.email;
-      await updateBookingIntent(input.intentId, {
+      const saved = await updateBookingIntent(input.intentId, {
         email: input.email,
         locale: input.locale ?? intent.locale ?? undefined,
         ...(intent.status === "draft" ? { status: "contact_captured" as const } : {}),
       });
+      if (!saved) return { ok: false };
 
       try {
         if (!alreadyCaptured) {
