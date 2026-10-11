@@ -281,6 +281,8 @@ async function maybeAlertConcierge(intent: BookingIntent, ageMs: number): Promis
 export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checked: number }> {
   let sent = 0;
   let checked = 0;
+  // Resumo por passagem nos logs: sem isto, um funil parado não deixa rasto.
+  const skip = { notDue: 0, holdout: 0, notRemindable: 0, deferred: 0, failed: 0 };
   // Check before reading or claiming anything in the shared database.
   if (!canSendCheckoutRecovery()) return { sent, checked };
   try {
@@ -302,12 +304,13 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       const needsConsent = !quoteValid || ageMs >= RECOVERY_TIMING.stage3AfterMs;
       const consent = needsConsent ? await hasNewsletterConsent(intent.email) : false;
       let target = nextRecoveryStage({ stage, ageMs, quoteValid, consent });
-      if (!target) continue;
-      if (isRecoveryHoldout(intent.id)) continue;
+      if (!target) { skip.notDue++; continue; }
+      if (isRecoveryHoldout(intent.id)) { skip.holdout++; continue; }
 
       try {
-        if (!await canRemindRecoveryStay(intent)) continue;
+        if (!await canRemindRecoveryStay(intent)) { skip.notRemindable++; continue; }
       } catch {
+        skip.deferred++;
         // Leave the stage unclaimed so a later sweep can retry verification.
         console.warn('[Recovery] Stay verification unavailable; reminder deferred');
         continue;
@@ -320,7 +323,7 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       let flexGift: { until: Date; value: number; days: number } | null = null;
       if (target === 3) {
         const rq = await requoteForStage3(intent);
-        if (!rq) continue;
+        if (!rq) { skip.deferred++; continue; }
         if (rq.kind === "unavailable") {
           target = 4; // datas perdidas: saltar para as alternativas
         } else {
@@ -362,11 +365,18 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
         sent++;
         console.info(`[Recovery] Contacto ${target} (${STAGE_TAG[target]}) enviado para intent ${intent.id}`);
       } catch (err: any) {
+        skip.failed++;
         console.error(`[Recovery] Send failed for intent ${intent.id}:`, err?.message ?? err);
       }
     }
   } catch (err: any) {
     console.warn("[Recovery] Sweep failed:", err?.message ?? err);
+  }
+  if (checked > 0) {
+    console.info(
+      `[Recovery] Sweep: ${checked} candidatos, ${sent} enviados · por enviar: ${skip.notDue} sem contacto devido, ` +
+        `${skip.holdout} controlo, ${skip.notRemindable} reservados/substituídos, ${skip.deferred} adiados (Guesty), ${skip.failed} falhas de envio`,
+    );
   }
   return { sent, checked };
 }
