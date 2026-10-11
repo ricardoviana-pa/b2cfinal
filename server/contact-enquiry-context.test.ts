@@ -16,4 +16,10 @@ describe('destination to contact enquiry', () => {
   it('keeps a property enquiry with one guest and no dates', () => {
     expect(contactEnquiryContext('property=synthetic-home&guests=1&checkin=2099-10-01')).toEqual({ property: 'synthetic-home', guests: '1' });
   });
+  it('preserves a collection choice and dates in the team message, even after the guest edits their message', () => {
+    const href = withEditorialTrip('/contact?subject=plan-my-stay&collection=beach-villas', 'checkin=2099-06-01&checkout=2099-06-08&guests=6&token=private');
+    const context = contactEnquiryContext(href.split('?')[1]);
+    expect(context).toEqual({ collection: 'beach-villas', checkin: '2099-06-01', checkout: '2099-06-08', guests: '6' });
+    expect(contactEnquiryMessage('Please help us choose', context)).toContain('Collection: beach-villas\nCheck-in: 2099-06-01\nCheck-out: 2099-06-08\nGuests: 6');
+  });
 });

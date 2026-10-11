@@ -7,6 +7,7 @@ import { getPropertiesForDestination } from './services/properties-store';
 import destinations from '../client/src/data/destinations.json';
 import journalLinks from '../client/src/data/destination-journal.json';
 import articles from '../client/src/data/blog.json';
+import { experienceSearchCopy } from '../shared/experienceSearchCopy';
 
 const rental = {
   id: 25, guestyId: 'listing-25', slug: 'villa', name: 'Villa', maxGuests: 8,
@@ -14,6 +15,15 @@ const rental = {
   licenseNumber: '123/AL', images: Array.from({length:12}, (_,i)=>`https://example.com/${i}.jpg`),
   address: { lat: 41.693239, lng: -8.832321 },
 };
+
+describe('reviewed experience search copy', () => {
+  it('uses the same title in the server response and client copy without leaking English into other locales', () => {
+    const copy = experienceSearchCopy('horseback-riding', 'pt-PT')!;
+    expect(__testing.experienceTitle('pt', { name: 'Passeio', seoTitle: copy.seoTitle })).toBe(`${copy.seoTitle} | Portugal Active`);
+    expect(experienceSearchCopy('horseback-riding', 'de')).toBeUndefined();
+    expect(__testing.experienceTitle('de', { name: 'Reiten in Viana do Castelo' })).toBe('Reiten in Viana do Castelo | Portugal Active');
+  });
+});
 
 describe('Google rental fields survive SSR and client navigation', () => {
   it('uses the same required facts on the server and in the browser builder', () => {

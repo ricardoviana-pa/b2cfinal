@@ -498,7 +498,7 @@ export default function Homes() {
       <section className="container pt-24 md:pt-28 pb-4 md:pb-5">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <div className="min-w-0 lg:shrink-0">
-            <h1 className="headline-lg text-pa-dark whitespace-nowrap">{collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title')}</h1>
+            <h1 className="headline-lg text-pa-dark break-words">{collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title')}</h1>
             <p className="body-sm text-pa-stone mt-1.5 max-w-lg">{t('conversion.homesIntro')}</p>
           </div>
           {/* Desktop — pill (same as homepage) */}

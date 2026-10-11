@@ -9,7 +9,10 @@ import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { matchesCollection } from '@/lib/collectionFilters';
 import { getDisplayName } from '@/lib/format';
 import { useMemo } from 'react';
-import { Link, useParams } from 'wouter';
+import { Link, useParams, useSearch } from 'wouter';
+import { editorialTripContext, withEditorialTrip } from '@shared/editorialTripContext';
+import { collectionPlanning } from '@/data/collectionPlanning';
+import FaqItem from '@/components/ui/FaqItem';
 import { useTranslation } from 'react-i18next';
 import { trpc } from '@/lib/trpc';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -34,11 +37,14 @@ const COLLECTIONS = collectionsData as CollectionDef[];
 export default function Collection() {
   const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
+  const search = useSearch();
+  const trip = editorialTripContext(search);
   const def = COLLECTIONS.find(c => c.slug === slug);
 
   const { data: propsData, isLoading } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
   const lang = (i18n.language || 'en').split('-')[0];
   const copy = def ? ((def as any)[lang] ?? def.en) : null;
+  const planning = def ? collectionPlanning(def.slug, lang) : null;
 
   const homes = useMemo(() => {
     if (!def || !propsData) return [] as Property[];
@@ -110,7 +116,16 @@ export default function Collection() {
       </div></section>
 
       <section className="container pt-8 pb-12 md:pb-16">
-        <Link href={`/homes?collection=${encodeURIComponent(def.slug)}`} className="btn-primary mb-8">{t('property.checkAvailability')}</Link>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8 border-b border-pa-sand pb-8">
+          {planning && <div className="max-w-xl">
+            <h2 className="text-xl font-display text-pa-dark mb-2">{planning.title}</h2>
+            <p className="body-sm text-pa-earth">{planning.help}</p>
+          </div>}
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+            <Link href={withEditorialTrip(`/homes?collection=${encodeURIComponent(def.slug)}`, search)} className="btn-primary text-center">{t('property.checkAvailability')}</Link>
+            {planning && <Link href={withEditorialTrip(`/contact?subject=plan-my-stay&collection=${encodeURIComponent(def.slug)}`, search)} className="btn-ghost text-center">{planning.contact}</Link>}
+          </div>
+        </div>
         {isLoading && <p className="body-sm text-pa-earth" role="status">{t('bookingWidget.loadingCalendar')}</p>}
         {!isLoading && homes.length === 0 && <p className="body-sm text-pa-earth mb-6">{t('homes.noResults')}</p>}
 
@@ -122,11 +137,19 @@ export default function Collection() {
               listId={`collection_${slug}`}
               listName={copy.title}
               itemIndex={idx}
+              checkin={trip.checkin}
+              checkout={trip.checkout}
+              guests={trip.guests}
               fromPrice={property.supplierUid ? partner.prices[property.supplierUid] : fromPrices?.[property.guestyId ?? '']}
             />
           ))}
         </div>
       </section>
+
+      {planning && <section className="container max-w-4xl pb-12 md:pb-16">
+        <h2 className="headline-md text-pa-dark mb-6">{planning.questionsTitle}</h2>
+        {planning.questions.map(item => <FaqItem key={item.q} item={{ ...item, ...(item.link ? { link: { ...item.link, href: withEditorialTrip(item.link.href, search) } } : {}) }} />)}
+      </section>}
 
       {/* Cross-links — internal linking is the point of a programmatic set */}
       <section className="container pb-16">
@@ -137,7 +160,7 @@ export default function Collection() {
           {others.map(c => (
             <Link
               key={c.slug}
-              href={`/collections/${c.slug}`}
+              href={withEditorialTrip(`/collections/${c.slug}`, search)}
               className="pa-action min-h-[40px] inline-flex items-center px-4 border border-[#E8E4DC] bg-white text-[13px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
             >
               {((c as any)[lang] ?? c.en).title}

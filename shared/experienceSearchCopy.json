@@ -1,0 +1,42 @@
+{
+  "horseback-riding": {
+    "en": {
+      "seoTitle": "Horse Riding in Viana do Castelo, Portugal",
+      "seoDescription": "Explore Viana do Castelo on a guided horse ride through fields and trails. See the itinerary, riding levels and available dates. Optional pickup on request."
+    },
+    "pt": {
+      "seoTitle": "Passeios a Cavalo em Viana do Castelo",
+      "seoDescription": "Descubra Viana do Castelo num passeio guiado a cavalo por campos e trilhos. Consulte percurso, níveis e datas. Recolha opcional mediante pedido."
+    }
+  },
+  "canyoning": {
+    "en": {
+      "seoTitle": "Canyoning in Peneda-Gerês National Park, Portugal",
+      "seoDescription": "Explore river canyons and natural pools on a guided canyoning experience in Peneda-Gerês. See the route, equipment, requirements and available dates."
+    },
+    "pt": {
+      "seoTitle": "Canyoning no Parque Nacional da Peneda-Gerês",
+      "seoDescription": "Explore desfiladeiros e lagoas naturais numa experiência guiada de canyoning no Gerês. Consulte percurso, equipamento, requisitos e datas disponíveis."
+    }
+  },
+  "ebike-tours": {
+    "en": {
+      "seoTitle": "Guided E-Bike Tour in Viana do Castelo, Minho",
+      "seoDescription": "Discover Viana do Castelo by e-bike, from historic streets to Atlantic viewpoints. Explore the route, duration and available dates with Portugal Active."
+    },
+    "pt": {
+      "seoTitle": "Passeio de Bicicleta Elétrica em Viana do Castelo",
+      "seoDescription": "Descubra Viana do Castelo de bicicleta elétrica, entre ruas históricas e vistas sobre o Atlântico. Consulte o percurso, a duração e as datas disponíveis."
+    }
+  },
+  "surf-lessons": {
+    "en": {
+      "seoTitle": "Surf Lessons in Viana do Castelo, Portugal",
+      "seoDescription": "Plan a surf lesson in Viana do Castelo on Portugal’s Atlantic coast. Check the location, equipment, skill levels and available dates with Portugal Active."
+    },
+    "pt": {
+      "seoTitle": "Aulas de Surf em Viana do Castelo",
+      "seoDescription": "Planeie uma aula de surf em Viana do Castelo, na costa atlântica. Consulte a localização, o equipamento, os níveis e as datas disponíveis."
+    }
+  }
+}

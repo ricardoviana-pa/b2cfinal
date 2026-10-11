@@ -5,7 +5,7 @@ export function contactEnquiryContext(search: string): Record<string, string> {
   const params = new URLSearchParams(search);
   const trip = editorialTripContext(search);
   const context: Record<string, string> = {};
-  for (const key of ['service', 'property', 'destination']) {
+  for (const key of ['service', 'property', 'destination', 'collection']) {
     const value = params.get(key);
     if (value && /^[a-z0-9][a-z0-9-]{0,119}$/.test(value)) context[key] = value;
   }
@@ -21,7 +21,7 @@ export function contactEnquiryContext(search: string): Record<string, string> {
 export function contactEnquiryMessage(message: string, metadata?: Record<string, string>) {
   const context = contactEnquiryContext(new URLSearchParams(metadata).toString());
   const labels: Record<string, string> = {
-    service: 'Service', property: 'Property', destination: 'Destination',
+    service: 'Service', property: 'Property', destination: 'Destination', collection: 'Collection',
     checkin: 'Check-in', checkout: 'Check-out', guests: 'Guests',
   };
   const lines = Object.entries(context).map(([key, value]) => `${labels[key]}: ${value}`);

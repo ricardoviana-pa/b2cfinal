@@ -1,4 +1,5 @@
 import { buildDestinationGraph } from '../../shared/destinationSchema';
+import { experienceSearchCopy } from '../../shared/experienceSearchCopy';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
 import { articlePhotos, stripPhotoLines } from '../../shared/articlePhotos';
 import { reviewedArticleDate } from '../../shared/articleNavigation';
@@ -1458,7 +1459,8 @@ function esIn(label: string): string {
  *  no Gerês", "…na Serra d'Arga"); adding the destination again produced
  *  "…na Serra d'Arga em Costa do Minho, Portugal" (auditoria set/2026). */
 const NAME_HAS_PLACE = /\s(em|no|na|nos|nas|en|por|in|à|au|im|nel|nella)\s+(?:la\s+|el\s+|the\s+)?[A-ZÁÉÍÓÚÂÊÔ]/;
-function experienceTitle(lang: string, e: { name: string; destination?: string | null }): string {
+function experienceTitle(lang: string, e: { name: string; destination?: string | null; seoTitle?: string }): string {
+  if (e.seoTitle) return `${e.seoTitle.replace(/(?:\s*\|\s*Portugal Active)+$/i, '')} | Portugal Active`;
   if (NAME_HAS_PLACE.test(e.name)) return `${e.name} | Portugal Active`;
   return (EXPERIENCE_TITLE[lang] ?? EXPERIENCE_TITLE.en)(e);
 }
@@ -2110,6 +2112,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
           }
           if (exp) {
             exp = localizeExperienceForMeta(exp, lang);
+            const searchCopy = experienceSearchCopy(exp.slug, lang);
 
             const descFn = EXPERIENCE_DESCRIPTION[lang] ?? EXPERIENCE_DESCRIPTION.en;
             const destination = exp.destination || (Array.isArray(exp.destinations) ? exp.destinations[0] : '');
@@ -2119,8 +2122,8 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
               expImage = `${BOT_BASE_URL}${expImage.startsWith('/') ? '' : '/'}${expImage}`;
             }
             dynamicMeta = {
-              title: experienceTitle(lang, { name: exp.name, destination }),
-              description: truncateWords(exp.seoDescription || descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }), 155),
+              title: experienceTitle(lang, { name: exp.name, destination, seoTitle: searchCopy?.seoTitle }),
+              description: truncateWords(searchCopy?.seoDescription || exp.seoDescription || descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }), 155),
               image: expImage,
               url: `${BOT_BASE_URL}/${lang}${p}`,
               schemaDomId: `sd-experience-${exp.slug}`,
