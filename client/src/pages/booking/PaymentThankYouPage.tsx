@@ -28,23 +28,7 @@ function CardLogo() {
 }
 
 function PayPalLogo() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        fontWeight: 700,
-        fontStyle: "italic",
-        fontSize: "16px",
-        letterSpacing: "-0.02em",
-        lineHeight: 1,
-      }}
-      aria-label="PayPal"
-    >
-      <span style={{ color: "#003087" }}>Pay</span>
-      <span style={{ color: "#009cde" }}>Pal</span>
-    </span>
-  );
+  return <img src="/payments/paypal-wordmark.png" alt="PayPal" className="h-5 w-auto" />;
 }
 
 function KlarnaLogo() {
@@ -338,7 +322,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
               {/* Paid row */}
               {fullyPaid ? (
               <div className="mt-[22px] flex items-center gap-3 rounded-lg border border-pa-sand px-4 py-3.5">
-                <div className="flex w-[46px] shrink-0 items-center justify-center">
+                <div className="flex w-16 shrink-0 items-center justify-center">
                   {method === "klarna" ? <KlarnaLogo /> : method === "card" ? <CardLogo /> : <PayPalLogo />}
                 </div>
                 <div className="min-w-0 flex-1">

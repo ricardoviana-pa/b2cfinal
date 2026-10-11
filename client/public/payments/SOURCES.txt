@@ -1,0 +1,21 @@
+Payment artwork updated on 2026-10-11 following Ricardo's request.
+
+Apple Pay: unmodified official SVG from
+https://developer.apple.com/apple-pay/marketing/Apple-Pay-Mark.zip
+
+Google Pay: unmodified official acceptance mark SVG from
+https://developers.google.com/static/pay/api/download-assets/Google-Pay-Acceptance.zip
+
+American Express: official SMALLscale alternate SVG from
+https://www.americanexpress.com/content/dam/amex/us/merchant/supplies-uplift/product/digital/WEBLOGO1IT.zip
+Text encoding converted from UTF-16 to UTF-8. SVG line endings and trailing
+whitespace normalized. Artwork unchanged.
+
+PayPal: current official black wordmark PNG from
+https://newsroom.paypal-corp.com/download/PayPal-Logo-Black-2024.zip
+
+Klarna: official pink SVG from
+https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg
+
+Visa and Mastercard: existing vector marks retained and enlarged.
+Original proportions and built-in clear space are preserved for all marks.
