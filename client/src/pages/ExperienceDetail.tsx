@@ -36,6 +36,7 @@ import ExperienceStickyNav from '@/components/experience/ExperienceStickyNav';
 import ExperienceMobileBookingBar from '@/components/experience/ExperienceMobileBookingBar';
 import ExperienceGuideProfile from '@/components/experience/ExperienceGuideProfile';
 import ExperienceRelatedExperiences from '@/components/experience/ExperienceRelatedExperiences';
+import ExperiencePlanningGuide from '@/components/experience/ExperiencePlanningGuide';
 
 import experienceDetailsData from '@/data/experienceDetails.json';
 import { localizeExperience, useExperienceOverrides } from '@/lib/localizeContent';
@@ -781,6 +782,7 @@ export default function ExperienceDetail() {
                 </div>
               </section>
             )}
+            <ExperiencePlanningGuide slug={exp.slug} />
           </div>
 
           {/* ───── RIGHT COLUMN — sticky booking ───── */}

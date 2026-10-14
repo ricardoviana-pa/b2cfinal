@@ -353,6 +353,7 @@ export interface BlogArticle {
   updatedLocales?: string[];
   publishedLocales?: string[];
   commercialIntent?: 'corporate';
+  cta?: { title: string; body: string; label: string; href: string; action: 'homes' | 'experience' | 'service' };
   imageCaption?: string;
   id: string;
   slug: string;

@@ -1,5 +1,6 @@
 import { buildDestinationGraph } from '../../shared/destinationSchema';
 import { experienceSearchCopy } from '../../shared/experienceSearchCopy';
+import { servicePlanning } from '../../shared/servicePlanning';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
 import { articlePhotos, stripPhotoLines } from '../../shared/articlePhotos';
 import { reviewedArticleDate } from '../../shared/articleNavigation';
@@ -2080,6 +2081,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
             } catch { /* DB not available, that's OK */ }
           }
           if (svc) {
+            const planning = servicePlanning(svc.slug, lang);
             const titleFn = SERVICE_TITLE[lang] ?? SERVICE_TITLE.en;
             const descFn = SERVICE_DESCRIPTION[lang] ?? SERVICE_DESCRIPTION.en;
             // Resolve relative image to full URL for social sharing
@@ -2088,8 +2090,8 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
               svcImage = `${BOT_BASE_URL}${svcImage.startsWith('/') ? '' : '/'}${svcImage}`;
             }
             dynamicMeta = {
-              title: titleFn({ name: svc.name }),
-              description: truncateWords(descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }), 155),
+              title: planning?.seoTitle ?? titleFn({ name: svc.name }),
+              description: planning?.seoDescription ?? truncateWords(descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }), 155),
               image: svcImage,
               url: `${BOT_BASE_URL}/${lang}/services/${svc.slug}`,
             };
