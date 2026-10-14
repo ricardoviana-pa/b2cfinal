@@ -1,17 +1,10 @@
 {
-  "minho-september-october-harvest-empty-beaches": {
-    "slug": "minho-september-october-harvest-empty-beaches",
-    "title": "Minho in September and October: Harvest, Empty Beaches and the Case for Autumn",
-    "excerpt": "As the grape harvest sweeps through the Lima and Vez valleys and the coast empties of summer crowds, autumn becomes the Minho's best-kept secret for a private villa stay.",
-    "coverImage": "https://assets.guesty.com/image/upload/v1784731465/production/6957de4388cba42d9e7a905e/mk4lwv5o2myxcudibmvr.jpg",
-    "publishedAt": "2026-08-24"
-  },
-  "peneda-geres-national-park-autumn-2026-guide": {
-    "slug": "peneda-geres-national-park-autumn-2026-guide",
-    "title": "Peneda-Gerês in Autumn: Where to Stay for Walking, Waterfalls and Wine",
-    "excerpt": "Portugal's only national park is at its best from October to November — cooler trails, full waterfalls and a wine harvest just down the valley. Here's how to base yourself well.",
-    "coverImage": "https://assets.guesty.com/image/upload/v1786113138/production/6957de4388cba42d9e7a905e/mnnjl3tw3pxedj0oypuw.jpg",
-    "publishedAt": "2026-08-21"
+  "complete-guide-north-portugal": {
+    "slug": "complete-guide-north-portugal",
+    "title": "Northern Portugal: Beaches, Nature and Where to Stay",
+    "excerpt": "Choose your northern Portugal holiday base: Viana do Castelo, Caminha or Esposende, with Atlantic beaches, nature, day-trip ideas and homes to compare.",
+    "coverImage": "https://assets.guesty.com/image/upload/v1776950966/production/6957de4388cba42d9e7a905e/gbu3pgilt9l7nmkakdvy.jpg",
+    "publishedAt": "2026-03-30"
   },
   "porto-douro-valley-guide": {
     "slug": "porto-douro-valley-guide",
@@ -22,8 +15,8 @@
   },
   "viana-do-castelo-guide": {
     "slug": "viana-do-castelo-guide",
-    "title": "Viana do Castelo: A Two-Day Guide, With or Without a Car",
-    "excerpt": "Plan two days in Viana do Castelo: the historic centre, Santa Luzia and Cabedelo, with public transport, cultural visits and advice on choosing a base.",
+    "title": "Things to Do in Viana do Castelo: A Two-Day Stay by the Coast",
+    "excerpt": "Discover Viana through Santa Luzia, the old town, Cabedelo and local experiences. A two-day itinerary with places to stay and practical transport advice.",
     "coverImage": "https://images.pexels.com/photos/33812433/pexels-photo-33812433.jpeg?auto=compress&cs=tinysrgb&w=1200",
     "publishedAt": "2026-03-30"
   },
@@ -50,15 +43,15 @@
   },
   "when-to-visit-north-portugal": {
     "slug": "when-to-visit-north-portugal",
-    "title": "When to Visit Northern Portugal: A Month-by-Month Guide",
-    "excerpt": "Choose dates for the Minho coast, Porto, the northern interior or the Douro. Month-by-month planning, indoor alternatives and what to check before booking.",
+    "title": "When to Visit Northern Portugal: A Season for Every Kind of Stay",
+    "excerpt": "Choose when to visit northern Portugal for beaches, walking, wine or a cosy villa escape. Compare seasons and plan a stay around what you love.",
     "coverImage": "/destinations/minho-coast.webp",
     "publishedAt": "2026-03-30"
   },
   "surfing-minho-coast": {
     "slug": "surfing-minho-coast",
-    "title": "Surfing the Minho Coast: Northern Portugal's Best Kept Waves",
-    "excerpt": "Surf the Minho Coast: Cabedelo, Moledo, Afife, and Esposende. Spot guide, best season, where to stay, and how to book lessons in northern Portugal.",
+    "title": "Surfing in Northern Portugal: Plan a Minho Coast Stay",
+    "excerpt": "Plan a surf holiday on the Minho coast: choose a base near Viana, compare lessons, prepare your first session and enjoy more of northern Portugal.",
     "coverImage": "/experiences/surf-lessons/cover.webp",
     "publishedAt": "2026-03-30"
   },
@@ -71,8 +64,8 @@
   },
   "private-chef-portugal-villa": {
     "slug": "private-chef-portugal-villa",
-    "title": "What It Means to Have a Private Chef During Your Portugal Holiday",
-    "excerpt": "A private chef in your Portugal villa: how it works, what it costs, seasonal menus, and why it transforms a holiday from good to extraordinary.",
+    "title": "A Private Chef at Your Portugal Villa: Menus, Costs and Planning",
+    "excerpt": "Plan a private chef meal during your Portugal holiday: choose the occasion, compare proposals and confirm the menu, inclusions and details of your home.",
     "coverImage": "/experiences/private-chef-dinner.webp",
     "publishedAt": "2026-03-30"
   }
