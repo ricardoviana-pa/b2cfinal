@@ -28,7 +28,7 @@ function CardLogo() {
 }
 
 function PayPalLogo() {
-  return <img src="/payments/paypal-wordmark.png" alt="PayPal" className="h-5 w-auto" />;
+  return <img src="/payments/marks/paypal-blue.png" alt="PayPal" className="h-auto w-16" />;
 }
 
 function KlarnaLogo() {
