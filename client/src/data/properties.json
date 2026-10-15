@@ -1610,7 +1610,7 @@
     "maxGuests": 6,
     "priceFrom": 360,
     "pricePerNight": 360,
-    "cleaningFee": 275,
+    "cleaningFee": 203,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -3587,7 +3587,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 210,
+    "cleaningFee": 184,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -3968,7 +3968,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 203,
+    "cleaningFee": 178,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4362,7 +4362,7 @@
     "maxGuests": 6,
     "priceFrom": 120,
     "pricePerNight": 120,
-    "cleaningFee": 152,
+    "cleaningFee": 140,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4971,7 +4971,7 @@
     "maxGuests": 2,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 92,
+    "cleaningFee": 61,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -7484,7 +7484,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 148,
+    "cleaningFee": 93,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -8087,7 +8087,7 @@
     "maxGuests": 2,
     "priceFrom": 70,
     "pricePerNight": 70,
-    "cleaningFee": 89,
+    "cleaningFee": 61,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -8284,7 +8284,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 108,
+    "cleaningFee": 94,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -9371,7 +9371,7 @@
     "maxGuests": 3,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 121,
+    "cleaningFee": 89,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -10276,7 +10276,7 @@
     "maxGuests": 8,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 279,
+    "cleaningFee": 231,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -10566,7 +10566,7 @@
     "maxGuests": 4,
     "priceFrom": 180,
     "pricePerNight": 180,
-    "cleaningFee": 144,
+    "cleaningFee": 121,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -11844,7 +11844,7 @@
     "maxGuests": 4,
     "priceFrom": 170,
     "pricePerNight": 170,
-    "cleaningFee": 185,
+    "cleaningFee": 160,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -12111,7 +12111,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 501,
+    "cleaningFee": 439,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -14887,7 +14887,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 164,
+    "cleaningFee": 145,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -16356,7 +16356,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 98,
+    "cleaningFee": 70,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -16911,7 +16911,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 88,
+    "cleaningFee": 70,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -19993,7 +19993,7 @@
     "maxGuests": 4,
     "priceFrom": 145,
     "pricePerNight": 145,
-    "cleaningFee": 123,
+    "cleaningFee": 90,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -20234,7 +20234,7 @@
     "maxGuests": 4,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 157,
+    "cleaningFee": 139,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -20997,7 +20997,7 @@
     "maxGuests": 4,
     "priceFrom": 70,
     "pricePerNight": 70,
-    "cleaningFee": 123,
+    "cleaningFee": 88,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -21362,7 +21362,7 @@
     "maxGuests": 6,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 158,
+    "cleaningFee": 126,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -22010,7 +22010,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 178,
+    "cleaningFee": 156,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -22597,7 +22597,7 @@
     "maxGuests": 14,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 403,
+    "cleaningFee": 362,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -23017,7 +23017,7 @@
     "maxGuests": 7,
     "priceFrom": 140,
     "pricePerNight": 140,
-    "cleaningFee": 186,
+    "cleaningFee": 152,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -23983,7 +23983,7 @@
     "maxGuests": 10,
     "priceFrom": 175,
     "pricePerNight": 175,
-    "cleaningFee": 276,
+    "cleaningFee": 208,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -25549,7 +25549,7 @@
     "maxGuests": 10,
     "priceFrom": 510,
     "pricePerNight": 510,
-    "cleaningFee": 413,
+    "cleaningFee": 367,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -25884,7 +25884,7 @@
     "maxGuests": 19,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 458,
+    "cleaningFee": 398,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -27027,7 +27027,7 @@
     "maxGuests": 4,
     "priceFrom": 190,
     "pricePerNight": 190,
-    "cleaningFee": 147,
+    "cleaningFee": 95,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -27851,7 +27851,7 @@
   {
     "id": "guesty-6965331fec80690013738c68",
     "slug": "villa-aura-sauna-gym-5min-beach-city-738c68",
-    "name": "Villa Aura · Sauna, Gym, 5min Beach & City",
+    "name": "Villa Aura · Heated Pool, Sauna & Gym",
     "tagline": "A newly renovated design villa with sauna, gym and pool — five minutes from wild Cabedelo beach and Viana's old town.",
     "tier": "select",
     "destination": "minho",
@@ -28029,11 +28029,11 @@
     "bookingUrl": "",
     "guestyId": "6965331fec80690013738c68",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Villa Aura · Sauna, Gym, 5min Beach & City",
+    "whatsappMessage": "Hi, I am interested in Villa Aura · Heated Pool, Sauna & Gym",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "Villa Aura · Sauna, Gym, 5min Beach & City — Portugal Active",
+    "seoTitle": "Villa Aura · Heated Pool, Sauna & Gym — Portugal Active",
     "seoDescription": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 5-bedroom design villa with private sauna, in-house gym, outdoor pool and tropical ",
     "address": {
       "full": "",
@@ -28356,8 +28356,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 18,
-    "lastModified": "2026-09-29",
-    "contentHash": "c98630f73d33eb3f70e8e6e1e726101aae45314e"
+    "lastModified": "2026-10-15",
+    "contentHash": "3cd73573e946a06954a9415acd756d5fa25b3209"
   },
   {
     "id": "guesty-6a341163c50f210012f12b80",
@@ -28372,7 +28372,7 @@
     "maxGuests": 9,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 280,
+    "cleaningFee": 209,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -28930,7 +28930,7 @@
     "maxGuests": 3,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 90,
+    "cleaningFee": 59,
     "minNights": 2,
     "currency": "EUR",
     "images": [
