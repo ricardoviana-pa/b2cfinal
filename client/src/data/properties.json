@@ -14765,6 +14765,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Lugar tranquilo y con zonas cercanas para disfrutar, la casa con todas las comodidades, con zonas amplias y zonas y rincones por si quieres intimidad, la verdad que merece mucho la pena. Nos facilitaron otra casa, la tener una incidencia la que habiamos alquilado, asi que el servicio de diez.",
+        "guestDisplayName": "Antonio José",
+        "guestName": "Antonio José",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-12T15:05:07.422Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Hemos estado muy bien en este alojamiento 6 adultos y 3 niños  sin dudarlo repetiríamos",
         "guestDisplayName": "Laura",
         "guestName": "Laura",
@@ -14835,7 +14870,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2,
+    "reviewCount": 3,
     "lastModified": "2026-09-30",
     "contentHash": "e6eab66349cd0a2056ebd4ffed50a34a329584b4"
   },
