@@ -14275,14 +14275,14 @@
       }
     ],
     "propertyType": "House",
-    "checkInTime": "15:00",
-    "checkOutTime": "10:00",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
     "areaSquareFeet": 1400,
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-09-26",
-    "contentHash": "019d4f7662506dd819638821a5b4ec1275616f94"
+    "lastModified": "2026-10-17",
+    "contentHash": "340619c2d648517cd7d8fbeb53ed4fd2a13c164c"
   },
   {
     "id": "guesty-6aa92951957eb000118fb1f8",
@@ -14489,14 +14489,14 @@
       }
     ],
     "propertyType": "House",
-    "checkInTime": "15:00",
-    "checkOutTime": "10:00",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
     "areaSquareFeet": 1400,
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-09-26",
-    "contentHash": "3ccc205f1073562f72d2d2f9dadd5f62ab79adb0"
+    "lastModified": "2026-10-17",
+    "contentHash": "4282d32a1d3e030b644a3e20db1c7ff020185de9"
   },
   {
     "id": "guesty-6a4297f706510a0014f79dd1",
@@ -19862,14 +19862,14 @@
       }
     ],
     "propertyType": "House",
-    "checkInTime": "15:00",
-    "checkOutTime": "10:00",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
     "areaSquareFeet": 1292,
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-09-21",
-    "contentHash": "45ec60d7ec9d55f870959f3daca14555099dae3f"
+    "lastModified": "2026-10-17",
+    "contentHash": "8929538cddc7860a014ec9537c3d6eba5186b960"
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
