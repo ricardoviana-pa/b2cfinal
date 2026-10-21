@@ -43,7 +43,7 @@ describe('Pataias geography without removing a home from the catalogue', () => {
 
   it('preserves all catalogue exclusions through the geographic correction', () => {
     const hidden = [...CATALOG_HIDDEN_GUESTY_IDS].map(guestyId => ({ ...home, guestyId }));
-    expect(hidden.length).toBe(18);
+    expect(hidden.length).toBe(16);
     expect(catalogProperties(filterPublicProperties(hidden))).toEqual([]);
   });
 });

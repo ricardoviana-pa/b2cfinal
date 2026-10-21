@@ -67,6 +67,6 @@ describe('homes kept off the catalogue', () => {
     const list = [{ guestyId: hidden, slug: 'calejo' }, { guestyId: 'visible-id', slug: 'aura' }];
     expect(isHiddenFromCatalog(list[0])).toBe(true);
     expect(catalogProperties(list).map((p) => p.slug)).toEqual(['aura']);
-    expect(CATALOG_HIDDEN_GUESTY_IDS.size).toBe(18);
+    expect(CATALOG_HIDDEN_GUESTY_IDS.size).toBe(16);
   });
 });

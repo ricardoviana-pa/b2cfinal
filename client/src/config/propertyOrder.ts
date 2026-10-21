@@ -74,7 +74,6 @@ export const CURATED_PROPERTY_ORDER: string[] = [
   '6965338cecf7490014ed2c2d', // #49 Framed Corner by Portugal Active
   '6965338554dbb5001568a505', // #50 Classic Meets Modern Downtown Balcony Retreat
   '696533752def930014e9167c', // #51 Seaside Urban Retreat 5min to Esposende Beach
-  '696533d2ec19770014fd1b52', // #52 Coastal Horizon by Portugal Active
   '696532f3753fb0001424a570', // #53 Countryside House near the Beach and City
   '6965332c6d209c001510e1c1', // #54 Slow Living Countryside House
   '696533af4fe6a100145fecb6', // #55 White Charm by the Sea
@@ -83,10 +82,27 @@ export const CURATED_PROPERTY_ORDER: string[] = [
   '696533794fe6a100145fe4bf', // #58 Ocean Bliss - Beach & BBQ Apartment
   '6965335df1c3a8001597c8e4', // #59 Divine Waves Duplex by Portugal Active
   '6965337d2def930014e919c6', // #60 Urban Reflections by Portugal Active
-  '696533cf4b583900135cfb02', // #61 Shoreline Escape by Portugal Active
   // #62 Portugal Active Encosta House — guestyId unknown (not in current Guesty
   //     catalogue). Add the id here when the listing is back active/listed.
 ];
+
+/**
+ * Homes that are listed, but close the default gallery order — behind the
+ * curated picks AND behind everything that is on no curated list at all
+ * (Ricardo, 21 Oct 2026: Shoreline Escape and Coastal Horizon came back to
+ * the site, at the end).
+ *
+ * This lives here rather than as a high `sortOrder` on the property, because
+ * the Guesty sync rewrites sortOrder to 0 on every run (guesty-sync.ts).
+ *
+ * Apartments are grouped after houses in the gallery, so a pinned home closes
+ * its own block: Shoreline is an Apartment and is the very last card;
+ * Coastal is a House and closes the houses.
+ */
+export const PINNED_LAST_GUESTY_IDS = new Set<string>([
+  '696533cf4b583900135cfb02', // Shoreline Escape by Portugal Active
+  '696533d2ec19770014fd1b52', // Coastal Horizon by Portugal Active
+]);
 
 const positionByGuestyId = new Map<string, number>(
   CURATED_PROPERTY_ORDER.map((id, i) => [id, i]),
@@ -97,6 +113,17 @@ export function curatedPosition(guestyId: string | undefined): number {
   if (!guestyId) return Number.POSITIVE_INFINITY;
   const p = positionByGuestyId.get(guestyId);
   return p === undefined ? Number.POSITIVE_INFINITY : p;
+}
+
+/**
+ * Rank for the default ("Recommended") gallery order: curated picks first in
+ * array order, then everything uncurated, then the pinned-last homes.
+ */
+const UNCURATED_RANK = Number.MAX_SAFE_INTEGER;
+export function galleryRank(guestyId: string | undefined): number {
+  if (guestyId && PINNED_LAST_GUESTY_IDS.has(guestyId)) return Number.POSITIVE_INFINITY;
+  const p = curatedPosition(guestyId);
+  return p === Number.POSITIVE_INFINITY ? UNCURATED_RANK : p;
 }
 
 /** True when this Guesty id is in the curated top list. */

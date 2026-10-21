@@ -135,8 +135,10 @@ const EXCLUDED_GUESTY_IDS = new Set<string>([]);
 /**
  * Off the catalogue, still findable by name (Ricardo, 24–26 Sep 2026).
  *
- * In June these 18 homes left www to protect the luxury positioning, and
- * their pages 404'd. But many direct bookings come from guests who saw a home
+ * In June 18 homes left www to protect the luxury positioning, and their
+ * pages 404'd. Shoreline Escape and Coastal Horizon came back into the
+ * listings on 21 Oct 2026 (Ricardo), at the end of the default order; the
+ * 16 below stay off. But many direct bookings come from guests who saw a home
  * on an OTA and search its name, so each keeps a page: 200, "index, follow",
  * in sitemap.xml. What they don't get is a place in anything that *lists*
  * homes: /homes, the homepage, collections, destinations, the search picker,
@@ -150,7 +152,6 @@ export const CATALOG_HIDDEN_GUESTY_IDS = new Set<string>([
   "696533616cff760015e28965", // Tide Terrace Duplex
   "6a341163c50f210012f12b80", // Douro Garden
   "6a0359b4e343150013abc14d", // Atlas Hideway
-  "696533d2ec19770014fd1b52", // Coastal Horizon
   "696533752def930014e9167c", // Seaside Urban Retreat
   "6965332c6d209c001510e1c1", // Slow Living Countryside House
   "696532f3753fb0001424a570", // Countryside House near the Beach
@@ -160,7 +161,6 @@ export const CATALOG_HIDDEN_GUESTY_IDS = new Set<string>([
   "696533794fe6a100145fe4bf", // Ocean Bliss
   "6965335df1c3a8001597c8e4", // Divine Waves Duplex
   "6965337d2def930014e919c6", // Urban Reflections
-  "696533cf4b583900135cfb02", // Shoreline Escape
   "6a3a63f9e19cb0001db6a05e", // Saltwind Studio
 ]);
 
