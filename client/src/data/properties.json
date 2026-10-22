@@ -1138,8 +1138,8 @@
     "tier": "select",
     "destination": "minho",
     "locality": "Famalicão",
-    "bedrooms": 4,
-    "bathrooms": 4,
+    "bedrooms": 5,
+    "bathrooms": 3.5,
     "maxGuests": 10,
     "priceFrom": 500,
     "pricePerNight": 500,
@@ -1170,12 +1170,21 @@
       "https://assets.guesty.com/image/upload/v1786010062/production/6957de4388cba42d9e7a905e/v1memo9yx7solzmvki94.jpg",
       "https://assets.guesty.com/image/upload/v1786010075/production/6957de4388cba42d9e7a905e/q0gzvxorl03omu8zj8rs.jpg",
       "https://assets.guesty.com/image/upload/v1786010072/production/6957de4388cba42d9e7a905e/xlunib1yyeultidmmcwr.jpg",
-      "https://assets.guesty.com/image/upload/v1786010064/production/6957de4388cba42d9e7a905e/qd1cip0uz3q9w6fcxlbt.jpg",
       "https://assets.guesty.com/image/upload/v1786010073/production/6957de4388cba42d9e7a905e/v6frqrtro4rh4jawzts.jpg",
+      "https://assets.guesty.com/image/upload/v1786010147/production/6957de4388cba42d9e7a905e/evxtylr3lagaus1zecvt.jpg",
+      "https://assets.guesty.com/image/upload/v1786010173/production/6957de4388cba42d9e7a905e/i6fzqi5yveh8kyzc9acr.jpg",
+      "https://assets.guesty.com/image/upload/v1786010006/production/6957de4388cba42d9e7a905e/jcjt4jnxhgyrurstkk9d.jpg",
+      "https://assets.guesty.com/image/upload/v1786010147/production/6957de4388cba42d9e7a905e/nsruthq2tnuamueote06.jpg",
+      "https://assets.guesty.com/image/upload/v1792659845/production/6957de4388cba42d9e7a905e/imgdytplvz6dzwum7vnf.jpg",
+      "https://assets.guesty.com/image/upload/v1792659841/production/6957de4388cba42d9e7a905e/qi1pnzpbrt4inbszouq6.jpg",
+      "https://assets.guesty.com/image/upload/v1792659850/production/6957de4388cba42d9e7a905e/bw7mv1qo0xoyxwcmydht.jpg",
+      "https://assets.guesty.com/image/upload/v1792659851/production/6957de4388cba42d9e7a905e/xw1wm3ce5hzkwwdq6ivz.jpg",
+      "https://assets.guesty.com/image/upload/v1786010064/production/6957de4388cba42d9e7a905e/qd1cip0uz3q9w6fcxlbt.jpg",
       "https://assets.guesty.com/image/upload/v1786010008/production/6957de4388cba42d9e7a905e/qsfaei5vuarxanf37mtv.jpg",
       "https://assets.guesty.com/image/upload/v1786009952/production/6957de4388cba42d9e7a905e/kl0dy2hopbobk4rdotnz.jpg",
       "https://assets.guesty.com/image/upload/v1786009949/production/6957de4388cba42d9e7a905e/vkri5rxuzpb8gyoj2ge7.jpg",
       "https://assets.guesty.com/image/upload/v1786009953/production/6957de4388cba42d9e7a905e/dnf9x0ydvmfvw5stkw27.jpg",
+      "https://assets.guesty.com/image/upload/v1786010142/production/6957de4388cba42d9e7a905e/msyexn5boahislhsjeyw.jpg",
       "https://assets.guesty.com/image/upload/v1786009952/production/6957de4388cba42d9e7a905e/gg41snkruyprlyz78bpt.jpg",
       "https://assets.guesty.com/image/upload/v1786009948/production/6957de4388cba42d9e7a905e/yogesrt7aktw6hjhxyhe.jpg",
       "https://assets.guesty.com/image/upload/v1786009952/production/6957de4388cba42d9e7a905e/kexcflxztbv0e4uksa4c.jpg",
@@ -1186,11 +1195,6 @@
       "https://assets.guesty.com/image/upload/v1786010139/production/6957de4388cba42d9e7a905e/ccxdvfhnnvbakccrt9s4.jpg",
       "https://assets.guesty.com/image/upload/v1786010128/production/6957de4388cba42d9e7a905e/ziyokvkhnvhrbkyabtmc.jpg",
       "https://assets.guesty.com/image/upload/v1786010127/production/6957de4388cba42d9e7a905e/khirt36auwygdkcj1h5v.jpg",
-      "https://assets.guesty.com/image/upload/v1786010142/production/6957de4388cba42d9e7a905e/msyexn5boahislhsjeyw.jpg",
-      "https://assets.guesty.com/image/upload/v1786010147/production/6957de4388cba42d9e7a905e/nsruthq2tnuamueote06.jpg",
-      "https://assets.guesty.com/image/upload/v1786010147/production/6957de4388cba42d9e7a905e/evxtylr3lagaus1zecvt.jpg",
-      "https://assets.guesty.com/image/upload/v1786010173/production/6957de4388cba42d9e7a905e/i6fzqi5yveh8kyzc9acr.jpg",
-      "https://assets.guesty.com/image/upload/v1786010006/production/6957de4388cba42d9e7a905e/jcjt4jnxhgyrurstkk9d.jpg",
       "https://assets.guesty.com/image/upload/v1786010008/production/6957de4388cba42d9e7a905e/qgxi8i69ddemmdhnlkgu.jpg",
       "https://assets.guesty.com/image/upload/v1786010005/production/6957de4388cba42d9e7a905e/fxlu03qzg5uviyupdm1k.jpg",
       "https://assets.guesty.com/image/upload/v1786010010/production/6957de4388cba42d9e7a905e/zw7mb4w7ndaa0tzswylv.jpg",
@@ -1350,6 +1354,15 @@
           {
             "type": "SINGLE_BED",
             "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
           }
         ]
       }
@@ -1577,8 +1590,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 9,
-    "lastModified": "2026-10-16",
-    "contentHash": "9ec8518dce127f8f0495417b419570d92930dca4"
+    "lastModified": "2026-10-22",
+    "contentHash": "5cbcca35960bb79cd53d327705afa343c6f64470"
   },
   {
     "id": "guesty-6a50d66857c8010015595ad0",
