@@ -49,7 +49,7 @@ async function countPublicHomes() {
 
 function llmsTxt(facts: typeof FACTS & { HOME_COUNT: number; HOME_COUNT_LABEL: string }): string {
   const regions = facts.REGIONS.join(", ");
-  return `# Portugal Active — Private Hotels in Portugal
+  return `# Portugal Active — Luxury Villas & Private Homes in Portugal
 
 > Portugal Active offers a collection of holiday homes and travel experiences in Portugal. The public catalogue combines directly managed homes and partner properties. Location, configuration, included services, availability and booking method vary by listing.
 

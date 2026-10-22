@@ -35,7 +35,7 @@
 
 ### Footer
 
-**Tagline:** "Private Hotels in Portugal."
+**Tagline:** "Luxury villas in Portugal, with the service of a hotel."
 
 **Newsletter:**
 - "Stay inspired. New homes, travel ideas, and exclusive offers."
@@ -72,7 +72,7 @@
 ## PAGE 1: HOME
 
 ### Hero
-- **Overline:** "Private Hotels in Portugal"
+- **Overline:** "Luxury Villas & Private Homes in Portugal"
 - **Headline:** "The privacy of a home. The service of a hotel."
 - **Body:** "Handpicked homes across Portugal, each one operated end to end by our in house team. Your private chef is ready. Your concierge is local. You simply arrive."
 - **CTA 1:** `EXPLORE OUR HOMES`

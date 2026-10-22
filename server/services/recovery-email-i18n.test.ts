@@ -132,6 +132,6 @@ describe("email de recuperação: sem texto em inglês nas outras 8 línguas", (
     expect(totalRowLabel(html)).toBe("Total");
     expect(html).toContain(">Final cleaning</td>");
     expect(html).not.toContain("Service fee");
-    expect(html).toContain("Private hotels in Portugal. The privacy of a home, the service of a hotel.");
+    expect(html).toContain("Luxury villas in Portugal. The privacy of a home, the service of a hotel.");
   });
 });

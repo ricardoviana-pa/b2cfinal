@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import i18n, { LOCALE_MAP } from '@/i18n';
 
 const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
-const BASE_TITLE = 'Private Hotels in Portugal | Portugal Active';
-const BASE_DESC = 'Private hotels in Portugal: whole private homes operated end to end by one in-house team, with dedicated concierge, private chef and housekeeping. Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Book direct.';
+const BASE_TITLE = 'Luxury Villas & Private Homes in Portugal | Portugal Active';
+const BASE_DESC = 'Luxury villas and private homes in Portugal, run end to end by our own in-house team: concierge, private chef and housekeeping. Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Book direct.';
 const BASE_URL = 'https://www.portugalactive.com';
 const BASE_IMAGE = 'https://www.portugalactive.com/hero/home-mirante-tennis-og.jpg';
 

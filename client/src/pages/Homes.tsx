@@ -48,7 +48,7 @@ interface LiveQuote {
 export default function Homes() {
   const measurementAllowed = useMeasurementConsent();
   const { t, i18n } = useTranslation();
-  usePageMeta({ title: 'Luxury Holiday Homes in Portugal | Private Villas & Premium Rentals', description: 'Handpicked luxury holiday homes across Portugal. Each property managed to five-star hotel standards. Porto, Lisbon, Algarve, Douro and Minho.', image: IMAGES.heroHomes, url: '/homes' });
+  usePageMeta({ title: 'Villa Rentals & Holiday Homes in Portugal', description: 'Browse luxury villas and holiday homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
   const searchString = useSearch();
   const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);

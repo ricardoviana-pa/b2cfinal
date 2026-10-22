@@ -27,7 +27,7 @@ const TEAM = [
     name: 'Ricardo Viana',
     role: 'CEO & Founder',
     photo: '/team/ricardo-viana.webp',
-    oneLiner: 'From adventure tourism to private hotels. Built PA on the coast he grew up on.',
+    oneLiner: 'From adventure tourism to luxury villas. Built PA on the coast he grew up on.',
   },
   {
     id: 'db',
@@ -162,7 +162,7 @@ export default function About() {
 
   const STATS = [
     { value: '2017', label: t('about.statFounded', 'Founded') },
-    { value: `${HOME_COUNT}`, label: t('about.statHomes', 'Private hotels') },
+    { value: `${HOME_COUNT}`, label: t('about.statHomes', 'Villas and homes') },
     { value: '5', label: t('about.statRegions', 'Regions') },
     { value: '24/7', label: t('about.statConcierge', 'Concierge') },
   ];

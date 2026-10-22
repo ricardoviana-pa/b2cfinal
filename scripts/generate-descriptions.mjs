@@ -28,7 +28,7 @@ let overrides = {};
 try { overrides = JSON.parse(readFileSync(OUT_PATH, "utf8")); } catch { /* first run */ }
 
 const STYLE = `You write property descriptions for Portugal Active, a Portuguese company that
-operates luxury private homes ("private hotels") end to end with its own local team.
+operates luxury villas and private homes end to end with its own local team. Call them villas or homes, never "private hotels"; "hotel" only as the comparison ("the service of a hotel").
 HOUSE STYLE — non-negotiable:
 - Structure: 4 short paragraphs — (1) the house itself, concrete and specific;
   (2) the place around it, with real distances/names from the source; (3) a

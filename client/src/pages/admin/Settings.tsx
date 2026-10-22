@@ -117,7 +117,7 @@ export default function AdminSettings() {
         </CardHeader>
         <CardContent className="space-y-4">
           <SettingField label="Site name" settingKey="site_name" settings={values} onChange={handleChange} placeholder="Portugal Active" />
-          <SettingField label="Site tagline" settingKey="site_tagline" settings={values} onChange={handleChange} placeholder="Private Hotels in Portugal" />
+          <SettingField label="Site tagline" settingKey="site_tagline" settings={values} onChange={handleChange} placeholder="Luxury Villas & Private Homes in Portugal" />
           <SettingField label="Site description (SEO)" settingKey="site_description" settings={values} onChange={handleChange} multiline placeholder="Default meta description for the website" />
         </CardContent>
       </Card>
