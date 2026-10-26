@@ -2504,6 +2504,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Beautiful place, host were very helpful and responsive. Definitely recommend Portugal active.",
+        "guestDisplayName": "Matthew",
+        "guestName": "Matthew",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-26T09:36:03.377Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Tudo incrível",
         "guestDisplayName": "Júlio",
         "guestName": "Júlio",
@@ -2854,7 +2889,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 10,
+    "reviewCount": 11,
     "lastModified": "2026-10-25",
     "contentHash": "d6af4a016c811bb7564d1d13102133134162240b"
   },
@@ -5133,6 +5168,161 @@
     "reviewCount": 2,
     "lastModified": "2026-10-25",
     "contentHash": "dac4e1baf6db7925facfd7035801a1767f3c3610"
+  },
+  {
+    "id": "guesty-6adf6ec753313e00790e647f",
+    "slug": "central-pearl-duplex-by-portugal-active-0e647f",
+    "name": "Central Pearl Duplex by Portugal Active",
+    "tagline": "Discover Central Pearl Duplex by Portugal Active, an elegant retreat in the heart of Viana do Castelo. Spread across two floors, this contemporary apa…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "maxGuests": 4,
+    "priceFrom": 80,
+    "pricePerNight": 80,
+    "cleaningFee": 0,
+    "minNights": 1,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1793036386/production/6957de4388cba42d9e7a905e/wswn5ugitcpbah1tvtzm.jpg",
+      "https://assets.guesty.com/image/upload/v1793036395/production/6957de4388cba42d9e7a905e/chqccamws5ltxffvrryl.jpg",
+      "https://assets.guesty.com/image/upload/v1793036394/production/6957de4388cba42d9e7a905e/mowc71rfghbhv9mpm3xx.jpg",
+      "https://assets.guesty.com/image/upload/v1793036396/production/6957de4388cba42d9e7a905e/v68jzzn2oc7mkkm9nmok.jpg",
+      "https://assets.guesty.com/image/upload/v1793036427/production/6957de4388cba42d9e7a905e/vpfhjathkpztcjwt7ugd.jpg",
+      "https://assets.guesty.com/image/upload/v1793036434/production/6957de4388cba42d9e7a905e/aottripz0wjmzs3rmg3j.jpg",
+      "https://assets.guesty.com/image/upload/v1793036404/production/6957de4388cba42d9e7a905e/ehy6wo4jliasywkpd1fj.jpg",
+      "https://assets.guesty.com/image/upload/v1793036431/production/6957de4388cba42d9e7a905e/apqmsrrsgtwxrzsy3jdu.jpg",
+      "https://assets.guesty.com/image/upload/v1793036426/production/6957de4388cba42d9e7a905e/n5cx8coow9ssqsag2rcd.jpg",
+      "https://assets.guesty.com/image/upload/v1793036429/production/6957de4388cba42d9e7a905e/ybetjs3pnscw0zzjmjne.jpg",
+      "https://assets.guesty.com/image/upload/v1793036408/production/6957de4388cba42d9e7a905e/osyvq8u6xx7uqdoktabf.jpg",
+      "https://assets.guesty.com/image/upload/v1793036396/production/6957de4388cba42d9e7a905e/bajkx7nyqxdjfgmmhjwc.jpg",
+      "https://assets.guesty.com/image/upload/v1793036382/production/6957de4388cba42d9e7a905e/e1pp6gx9esavc5l1ufyp.jpg",
+      "https://assets.guesty.com/image/upload/v1793036394/production/6957de4388cba42d9e7a905e/gxdkqsw0jc44wyb2tc4j.jpg",
+      "https://assets.guesty.com/image/upload/v1793036406/production/6957de4388cba42d9e7a905e/hmhitaecjq9gt46csc93.jpg",
+      "https://assets.guesty.com/image/upload/v1793036419/production/6957de4388cba42d9e7a905e/lc5rjchb62lj31k1lrhr.jpg",
+      "https://assets.guesty.com/image/upload/v1793036413/production/6957de4388cba42d9e7a905e/tp1tayjx4m7s3aszabs2.jpg",
+      "https://assets.guesty.com/image/upload/v1793036415/production/6957de4388cba42d9e7a905e/ifpwvjqvqewclikwuerh.jpg",
+      "https://assets.guesty.com/image/upload/v1793036418/production/6957de4388cba42d9e7a905e/xjedlv98ooccivley7kl.jpg",
+      "https://assets.guesty.com/image/upload/v1793036418/production/6957de4388cba42d9e7a905e/d1ykuysiybc6guk4iwgo.jpg",
+      "https://assets.guesty.com/image/upload/v1793036422/production/6957de4388cba42d9e7a905e/qsjwnuihvodh5ren7iyy.jpg",
+      "https://assets.guesty.com/image/upload/v1793036430/production/6957de4388cba42d9e7a905e/f5hhbw26o2osmkopbumv.jpg",
+      "https://assets.guesty.com/image/upload/v1793036422/production/6957de4388cba42d9e7a905e/wblbg3wbb2y3htzkvykh.jpg",
+      "https://assets.guesty.com/image/upload/v1793036382/production/6957de4388cba42d9e7a905e/oheki0fqvddty5obnips.jpg",
+      "https://assets.guesty.com/image/upload/v1793036385/production/6957de4388cba42d9e7a905e/w7bbefnp4s5yk0hokwjd.jpg",
+      "https://assets.guesty.com/image/upload/v1793036389/production/6957de4388cba42d9e7a905e/facbtprxla60oiy3wur3.jpg",
+      "https://assets.guesty.com/image/upload/v1793036386/production/6957de4388cba42d9e7a905e/u1qnv0q3ebf4sbbmewjm.jpg",
+      "https://assets.guesty.com/image/upload/v1793036386/production/6957de4388cba42d9e7a905e/acvnumm3arqvtspe1r9q.jpg",
+      "https://assets.guesty.com/image/upload/v1793036402/production/6957de4388cba42d9e7a905e/r2dinhymfxrt0lu6fjgg.jpg",
+      "https://assets.guesty.com/image/upload/v1793036407/production/6957de4388cba42d9e7a905e/awxkpoez6wjc6rzvg8zc.jpg",
+      "https://assets.guesty.com/image/upload/v1793036408/production/6957de4388cba42d9e7a905e/ottsaos0yppjl7megzew.jpg"
+    ],
+    "description": "Discover Central Pearl Duplex by Portugal Active, an elegant retreat in the heart of Viana do Castelo. Spread across two floors, this contemporary apartment combines comfort, privacy, and functionality, featuring two en-suite bedrooms with queen beds. The bright interiors create a welcoming atmosphere for relaxing or working remotely, while the private patio offers a peaceful outdoor space. Just steps away from the city’s main attractions, it’s the perfect setting for a memorable stay.\n\nCentral Pearl Duplex by Portugal Active offers an elegant retreat in the heart of Viana do Castelo, where contemporary design meets the comfort of a peaceful and thoughtfully curated stay.\nThis duplex apartment features two bedrooms with double beds, each with its own en-suite bathroom, providing privacy and convenience for families, friends, or guests staying for extended periods.\nThe bright, inviting interiors span two floors, creating a comfortable and functional atmosphere. The living area is perfect for relaxing, spending time together, or working remotely with Wi-Fi access.\nThe kitchen is equipped with all the essentials for everyday living, allowing guests to enjoy the flexibility of an independent stay.\nOutside, the private patio offers a secluded space to start the morning with a cup of coffee or enjoy peaceful moments at the end of the day.\nThoughtfully prepared for both short and long stays, Central Pearl combines functionality, comfort, and elegance in a setting designed to make you feel truly at home.\n\nLocated in the historic heart of Viana do Castelo, Central Pearl Duplex by Portugal Active offers a prime location for those looking to immerse themselves in the authentic culture of the Minho region. Just a few minutes’ walk away, you’ll find the vibrant Praça da República, where Manueline architecture blends with inviting outdoor terraces and traditional cafés. For food lovers, the surrounding area is a true haven of authentic flavors, with excellent restaurants serving fresh fish and seafood just a five-minute walk away.\nHistory and art enthusiasts can explore the Museu do Traje or the impressive Sé Catedral, both within a ten-minute walk. The nearby Lima River offers the perfect setting for refreshing morning strolls, while the iconic climb to Monte de Santa Luzia can be reached in just a few minutes by car or via the famous funicular, offering unparalleled panoramic views of the ocean and the estuary.\nThis neighborhood combines the tranquility of cobblestone streets with the convenience of local craft shops and exclusive boutiques, ensuring a stay where urban comforts meet the timeless charm of northern Portugal.\n\nGuests have exclusive access to the entire property, including the patio and all indoor amenities. The Portugal Active concierge service is available 24/7 to assist with all your needs, including arranging local excursions or booking a private chef. Please request any services at least 72 hours in advance.\n\nGetting to Central Pearl Duplex by Portugal Active is easy thanks to Viana do Castelo’s excellent transport connections. For those traveling by air, Francisco Sá Carneiro Airport in Porto is approximately a 60-minute drive away and can be reached by private transportation or a transfer service, which our team will be happy to arrange.\nThe city’s main train station is just a few minutes from the property, making it easy to travel comfortably to other destinations in the region. Although the property’s prime location in the historic city center means that almost everything can be reached on foot, we also provide information about nearby paid public parking options for guests who prefer to explore northern Portugal by car.\n\nExclusive Concierge Services by Portugal Active\n\nEnhance your stay with our exclusive services:\n✔️ Luxury transfers: Private chauffeur from the airport directly to your apartment.\n✔️ Personalized experience: From a Private Chef to a Personal Trainer, we shape every detail to your liking.\n✔️ Daily cleaning and babysitting: Services for a worry‑free stay.\n✔️ Local team available: A member of the Portugal Active team will always be within reach throughout your stay.\n\nAdventure Experiences\n✔️ Horseback riding: Ride through scenic trails and beaches on horseback, in a unique experience along the Minho coastline.\n✔️ Guided hikes, dives, and lunches: Explore stunning landscapes, dive into a secret lagoon, and savor traditional tapas.\n✔️ E‑Bike Wild Tour: Discover the hidden corners of Viana do Castelo on an e‑bike, at your own pace.\n✔️ Surf and water sports: Kitesurf, stand up paddle, windsurf, and bodyboard at Cabedelo Beach.\n\nBook your stay. Portugal Active, your private hotel.",
+    "descriptionSections": {
+      "summary": "Discover Central Pearl Duplex by Portugal Active, an elegant retreat in the heart of Viana do Castelo. Spread across two floors, this contemporary apartment combines comfort, privacy, and functionality, featuring two en-suite bedrooms with queen beds. The bright interiors create a welcoming atmosphere for relaxing or working remotely, while the private patio offers a peaceful outdoor space. Just steps away from the city’s main attractions, it’s the perfect setting for a memorable stay.",
+      "space": "Central Pearl Duplex by Portugal Active offers an elegant retreat in the heart of Viana do Castelo, where contemporary design meets the comfort of a peaceful and thoughtfully curated stay.\nThis duplex apartment features two bedrooms with double beds, each with its own en-suite bathroom, providing privacy and convenience for families, friends, or guests staying for extended periods.\nThe bright, inviting interiors span two floors, creating a comfortable and functional atmosphere. The living area is perfect for relaxing, spending time together, or working remotely with Wi-Fi access.\nThe kitchen is equipped with all the essentials for everyday living, allowing guests to enjoy the flexibility of an independent stay.\nOutside, the private patio offers a secluded space to start the morning with a cup of coffee or enjoy peaceful moments at the end of the day.\nThoughtfully prepared for both short and long stays, Central Pearl combines functionality, comfort, and elegance in a setting designed to make you feel truly at home.",
+      "access": "Guests have exclusive access to the entire property, including the patio and all indoor amenities. The Portugal Active concierge service is available 24/7 to assist with all your needs, including arranging local excursions or booking a private chef. Please request any services at least 72 hours in advance.",
+      "neighborhood": "Located in the historic heart of Viana do Castelo, Central Pearl Duplex by Portugal Active offers a prime location for those looking to immerse themselves in the authentic culture of the Minho region. Just a few minutes’ walk away, you’ll find the vibrant Praça da República, where Manueline architecture blends with inviting outdoor terraces and traditional cafés. For food lovers, the surrounding area is a true haven of authentic flavors, with excellent restaurants serving fresh fish and seafood just a five-minute walk away.\nHistory and art enthusiasts can explore the Museu do Traje or the impressive Sé Catedral, both within a ten-minute walk. The nearby Lima River offers the perfect setting for refreshing morning strolls, while the iconic climb to Monte de Santa Luzia can be reached in just a few minutes by car or via the famous funicular, offering unparalleled panoramic views of the ocean and the estuary.\nThis neighborhood combines the tranquility of cobblestone streets with the convenience of local craft shops and exclusive boutiques, ensuring a stay where urban comforts meet the timeless charm of northern Portugal.",
+      "gettingAround": "Getting to Central Pearl Duplex by Portugal Active is easy thanks to Viana do Castelo’s excellent transport connections. For those traveling by air, Francisco Sá Carneiro Airport in Porto is approximately a 60-minute drive away and can be reached by private transportation or a transfer service, which our team will be happy to arrange.\nThe city’s main train station is just a few minutes from the property, making it easy to travel comfortably to other destinations in the region. Although the property’s prime location in the historic city center means that almost everything can be reached on foot, we also provide information about nearby paid public parking options for guests who prefer to explore northern Portugal by car.",
+      "notes": "",
+      "interaction": "The Portugal Active team is committed to ensuring your stay is both memorable and enjoyable. We are always available to support, guide, and accompany you throughout your visit. From the moment you arrive, we’re here to make you feel at home.\nWe offer an excellent selection of experiences to elevate your vacation, including adventure tours, private chefs, massages, babysitting services, and much more. Whatever your needs may be, we’re here to help you create unforgettable memories. If you have any questions, feel free to contact us at any time."
+    },
+    "amenities": {
+      "property": [
+        "Baking sheet",
+        "Bed linens",
+        "Cleaning Disinfection",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Dishes and silverware",
+        "Downtown",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Fire extinguisher",
+        "First aid kit",
+        "Freezer",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Hot water",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Museums",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Paid parking",
+        "Patio or balcony",
+        "Pets allowed",
+        "Refrigerator",
+        "Shampoo",
+        "Shopping",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "petsAllowed": true,
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6adf6ec753313e00790e647f",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Central Pearl Duplex by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Central Pearl Duplex by Portugal Active — Portugal Active",
+    "seoDescription": "Discover Central Pearl Duplex by Portugal Active, an elegant retreat in the heart of Viana do Castelo. Spread across two floors, this contemporary apartment com",
+    "address": {
+      "full": "",
+      "street": "Rua de Altamira 63",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.69126139999999,
+      "lng": -8.8325212
+    },
+    "licenseNumber": null,
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 517749,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0,
+    "lastModified": "2026-10-26",
+    "contentHash": "64dde3187be0a478abdfc509eb45a57966efc086"
   },
   {
     "id": "guesty-696533d2ec19770014fd1b52",
@@ -9809,6 +9999,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Appartement propre et très bien situé pour visiter Porto à pied.",
+        "guestDisplayName": "Aurélie",
+        "guestName": "Aurélie",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-26T17:33:29.990Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "We loved the apartment, especially the jacuzzi. Once heated up we were starting and ending our day in the jacuzzi. Apartment is very close to situated to center of all tourist attractions at walking distance. Supermarket is around the corner at less than 2 minute walk. Transport from and to the airport takes about 20 minutes by Uber. A great place to stay and explore Porto!",
         "guestDisplayName": "Arthur",
         "guestName": "Arthur",
@@ -10309,7 +10534,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 15,
+    "reviewCount": 16,
     "lastModified": "2026-10-25",
     "contentHash": "aacabbd0df58bc1e0f07143a83cd415293fdcd47"
   },
@@ -15584,561 +15809,6 @@
     "contentHash": "34891c244fd20d0fbcc0087c4e2a4cd9433b3abe"
   },
   {
-    "id": "guesty-696532eee44e1a0015bb2460",
-    "slug": "portugal-active-beach-flat-bb2460",
-    "name": "Portugal Active Beach Flat",
-    "tagline": "A quiet beach flat by Cabedelo, steps from the surf and sand.",
-    "tier": "select",
-    "destination": "minho",
-    "locality": "Viana do Castelo",
-    "bedrooms": 1,
-    "bathrooms": 1,
-    "maxGuests": 4,
-    "priceFrom": 90,
-    "pricePerNight": 90,
-    "cleaningFee": 70,
-    "minNights": 2,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/01abff78-8d17-41-_NGT1",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/5a36f0db-93da-49-Oe3Zb",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/d5322936-b56e-43-3_jOu",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/1eb95fd3-1b07-4b-B9YIi",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/4de65601-d3e2-49-kbfSw",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/3e21011c-15b6-4b-Kf4xO",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/e920024f-29c8-43-zYXJn",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/dd6b0a55-ff25-48-cjltp",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/61926758-59df-4b-2j2-X",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/7d0301c2-0ce3-4b-80EYj",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/d1cec8ab-ba2a-41-59VgK",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/0d6ff6e9-c37b-4a-5gRET",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/64a7c440-d273-4d-R8_5j",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/b8ab0854-761b-4e-ofP9C",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/05e9c5f5-a7d1-49-XguMu",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/eebd0d02-dbd5-44-QElLb",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/d66e70c5-eb1f-46-m8zcO",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/efd1fbf4-9319-46-wqGBy",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/a0bc533c-38ed-47-Vmy8z",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/e3072840-2af9-45-63YRG",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/f5518e4d-a91a-44-T2ZhQ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/dbc7dd47-7421-40-mzDax",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/ffdcc94e-a8bf-4a-wrxLx",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/fc00e5a2-47a3-42-NXyxj",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/84e01bbd-9eeb-47-1oExv",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/619854de-00b1-42-7Snf5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/57a0ed92-66ca-4f-XW1lg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/84a4f60e-566d-4e-TRqJx",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/99128717-2a84-4a-cLsm3"
-    ],
-    "description": "The apartment covers 80 square metres on a single level, with one bedroom and an open-plan kitchen kept bright and unfussy. A private garden with outdoor furniture sits alongside a terrace, and air conditioning and heating cover both ends of the year. The kitchen is fully equipped for home cooking.\n\nIt sits in a quiet corner of Viana do Castelo, right next to Cabedelo Beach — the surf, sand and sea a short walk from the door. Porto Airport is 60 km south, close enough for an easy transfer without the crowds of a city stay.\n\nMornings start with coffee on the terrace before the short walk down to Cabedelo for a swim or a surf. Afternoons suit cycling along the coast or reading in the garden, and evenings settle back onto the terrace as the light fades over the beach.\n\nIt suits couples or small families after a simple beach base rather than a resort, with Portugal Active's local team available for anything from private chef bookings to airport transfers.",
-    "descriptionSections": null,
-    "amenities": {
-      "property": [
-        "Air conditioning",
-        "Babysitter recommendations",
-        "Baking sheet",
-        "Beach",
-        "Beach Front",
-        "Beach access",
-        "Beach essentials",
-        "Bed linens",
-        "Cleaning Disinfection",
-        "Cleaning products",
-        "Clothing storage",
-        "Coffee",
-        "Coffee maker",
-        "Cookware",
-        "Crib",
-        "Cycling",
-        "Desk",
-        "Dining table",
-        "Dishes and silverware",
-        "Dishwasher",
-        "Enhanced cleaning practices",
-        "Essentials",
-        "Extra pillows and blankets",
-        "Fire extinguisher",
-        "First aid kit",
-        "Fishing",
-        "Free parking on street",
-        "Freezer",
-        "Garden View",
-        "Garden or backyard",
-        "Hair dryer",
-        "Hangers",
-        "Heating",
-        "High chair",
-        "High touch surfaces disinfected",
-        "Horseback Riding",
-        "Hot water",
-        "Internet",
-        "Iron",
-        "Kettle",
-        "Kitchen",
-        "Laptop friendly workspace",
-        "Laundromat nearby",
-        "Long term stays allowed",
-        "Microwave",
-        "Museums",
-        "Near Ocean",
-        "Ocean Front",
-        "Outdoor seating (furniture)",
-        "Oven",
-        "Patio or balcony",
-        "Pets allowed",
-        "Private entrance",
-        "Refrigerator",
-        "Room-darkening shades",
-        "Safe",
-        "Shampoo",
-        "Shopping",
-        "Shower gel",
-        "Single level home",
-        "Smoke detector",
-        "Sound system",
-        "Stereo system",
-        "Stove",
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)",
-        "TV",
-        "Toaster",
-        "Towels provided",
-        "Town",
-        "Washer",
-        "Washer in common space",
-        "Water Parks",
-        "Water Sports",
-        "Waterfront",
-        "Window guards",
-        "Wine glasses",
-        "Wireless Internet"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "petsAllowed": true,
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "696532eee44e1a0015bb2460",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Portugal Active Beach Flat",
-    "sortOrder": 0,
-    "isActive": true,
-    "isPortfolio": false,
-    "seoTitle": "Portugal Active Beach Flat — Portugal Active",
-    "seoDescription": "Bright and inviting 1 bedroom apartment by Cabedelo Beach in Viana do Castelo. With garden, terrace, AC, WiFi and a full kitchen, it’s the perfect retreat for u",
-    "address": {
-      "full": "",
-      "street": "Rua Fernão Martins da Costa 3 R/C",
-      "city": "Viana do Castelo",
-      "state": "Viana do Castelo District",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.68254186880869,
-      "lng": -8.830086071877977
-    },
-    "licenseNumber": null,
-    "rooms": [
-      {
-        "name": "Bedroom 1",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 2",
-        "beds": [
-          {
-            "type": "SOFA_BED",
-            "quantity": 1
-          }
-        ]
-      }
-    ],
-    "propertyType": "Apartment",
-    "checkInTime": "16:00",
-    "checkOutTime": "11:00",
-    "areaSquareFeet": 861.1128336,
-    "reviews": [
-      {
-        "rating": 5,
-        "text": "La casa estupenda, sin escaleras (planta baja), con una terraza con sillas y mesas para disfrutar desayunos o cenas, la casa bien equipada con aire acondicionado, bonita, moderna, talvez algunos mantenimientos de cosas mal atornilladas o detalles así. Tienen lavaplatos y lavadora con jabón disponible, así como en el baño, todo limpio, agradable muy bien comunicado. Plaza de garaje a aire libre privada a 30 metros de la casa. Nos encantó.\nLa zona tranquila para familias, un par de restaurantes ce",
-        "guestDisplayName": "Anselmo",
-        "guestName": "Anselmo",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-08-02T09:09:29.038Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Nice place to spend a good time, near to the beach and few minutes of the center of the city by car. We enjoyed!",
-        "guestDisplayName": "Mário",
-        "guestName": "Mário",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-06-21T16:17:02.584Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 4
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "对于需要去海滩风筝冲浪和冲浪的玩家来说，位置非常方便。也有小庭院可以用！装修可能时间稍长了，但整体还算比较方便！房东基本上响应积极！",
-        "guestDisplayName": "Fujun",
-        "guestName": "Fujun",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-05-29T05:18:25.281Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 4
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 4
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "对于需要去海滩风筝冲浪和冲浪的玩家来说，位置非常方便。也有小庭院可以用！装修可能时间稍长了，但整体还算比较方便！房东基本上响应积极！",
-        "guestDisplayName": "Fujun",
-        "guestName": "Fujun",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-05-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Great location, cosy space 👍",
-        "guestDisplayName": "Ian",
-        "guestName": "Ian",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-04-30T06:43:43.784Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Buena ubicación cerca de la playa",
-        "guestDisplayName": "Javier",
-        "guestName": "Javier",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-04-12T18:02:14.149Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "espaço muito agradável e convidativo à permanência",
-        "guestDisplayName": "Carla",
-        "guestName": "Carla",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-03-17T11:48:55.484Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Il n’y a rien le logement était plus que propre terres bien situé et nous avons passé un agréable séjour",
-        "guestDisplayName": "Mike Et Margaux",
-        "guestName": "Mike Et Margaux",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-01-03T13:13:54.581Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Alles wunderbar. Habe es nicht sofort gefunden aber es war dann nicht so schwer. Sonst alles wunderbar. Batterien der Fernbedienung von der Klima waren leer. Hab ich getauscht. Preis Leistung war super.",
-        "guestDisplayName": "Alois",
-        "guestName": "Alois",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-11-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Sehr schönes Appartement in dem wir als Familie zu viert gut Platz hatten. Es war sehr sauber und viele Kleinigkeiten wie Salz, Servietten, Kaffeetabs, Waschmittel, usw sind sehr hilfreich und nicht selbstverständlich. Wir vergaßen nach der Abreise einen Pullover und wurden 20 Minuten später informiert und bekamen auch das Angebot einer Postsendung. Das Appartement ist  ruhig gelegen und fußläufig 5 Minuten vom Strand entfernt. Wir waren sehr zufrieden,  jedoch ist dieses Appartement Anfang Augu",
-        "guestDisplayName": "Barbara",
-        "guestName": "Barbara",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-08-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Todo perfecto",
-        "guestDisplayName": "Erica",
-        "guestName": "Erica",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-06-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "All was good! Great communication. Pretty nice apartments",
-        "guestDisplayName": "Максим",
-        "guestName": "Максим",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-05-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Proximité de la plage avec accès facile Embarcadère pour Viana do castello centre à 150m. Excellente boulangerie et petite boutique à 500m. Endroit calme, parking. De nombreux chemins côté plage et belle promenade à faire le long de la rivière. Hôte très à l'écoute et réactif à nos demandes.",
-        "guestDisplayName": "Joëlle",
-        "guestName": "Joëlle",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-05-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Recomendo. Próximo à praia de cabedelo, com uma excelente acomodação",
-        "guestDisplayName": "Bruno",
-        "guestName": "Bruno",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-05-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Aqui está um bom apartamento confortável e bem localizado.",
-        "guestDisplayName": "Ezequiel",
-        "guestName": "Ezequiel",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-04-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "We had such a lovely stay and felt right at home with a bottle of wine and sparkling water waiting for us upon arrival. The outside area was very comfortable and the washingline was helpful for all the laundry that we had to do with a months travelling through Portugal 😃. Walking distance to the beach with two little kids was a big bonus.",
-        "guestDisplayName": null,
-        "guestName": "",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-04-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "O apartamento é incrível, super cozy. O terraço faz imensa diferença :) Recomendo",
-        "guestDisplayName": "Beatriz",
-        "guestName": "Beatriz",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-04-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "I had an amazing stay in Ricardo’s flat. It’s 2m walk from the most beautiful beach, and surrounded by nature. The flat is equiped with everything you need for a small or longer stay like mine. Lovely to start the day having breakfast in the terrace hearing the birds after a long walk in the beach and to take a glass of wine at night watching the stars. Oh and it has a súper surround sound system to enjoy home cinema or just some nice music. The neighborhood is súper chill and at night super sil",
-        "guestDisplayName": "Gisela",
-        "guestName": "Gisela",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2021-08-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Óptima estadia, com excelente localização perto da praia. Espaço exterior agradável. Casa com todas as comodidades. Boa comunicação com o anfitrião quando precisamos. Recomendo!",
-        "guestDisplayName": "Michael",
-        "guestName": "Michael",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2021-08-15",
-        "categories": []
-      }
-    ],
-    "averageRating": 5,
-    "reviewCount": 19,
-    "lastModified": "2026-10-25",
-    "contentHash": "56ffb76d7cbe934db0162378ae304fd10268c2a6"
-  },
-  {
     "id": "guesty-696533266dec35001492fdbb",
     "slug": "portugal-active-bluegreen-beach-apartment-92fdbb",
     "name": "Portugal Active BlueGreen Beach Apartment",
@@ -18783,7 +18453,7 @@
     "tagline": "Quinta da Teimosa by Portugal Active is a serene retreat where three independent apartments blend into a warm and peaceful setting. With views over th…",
     "tier": "select",
     "destination": "minho",
-    "locality": "Viana do Castelo",
+    "locality": "Monção",
     "bedrooms": 3,
     "bathrooms": 3.5,
     "maxGuests": 12,
@@ -18900,7 +18570,7 @@
     "address": {
       "full": "",
       "street": "Rua João Pereira Caldas 905",
-      "city": "Viana do Castelo",
+      "city": "Monção",
       "state": "Viana do Castelo",
       "zipcode": "",
       "country": "Portugal",
@@ -18971,8 +18641,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-10-25",
-    "contentHash": "2adb6bc77c6bd5d488a3869efc862057707656c2"
+    "lastModified": "2026-10-26",
+    "contentHash": "dc73f45995a33413dc76458408475db8dfe1b244"
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
