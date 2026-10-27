@@ -27,6 +27,7 @@ async function main() {
       status: bookingIntents.status,
       stage: bookingIntents.recoveryStage,
       flexGiftUntil: bookingIntents.flexGiftUntil,
+      flexGiftReason: bookingIntents.flexGiftReason,
       flex: bookingIntents.flex,
       createdAt: bookingIntents.createdAt,
     })
@@ -52,7 +53,9 @@ async function main() {
     const xs = treat.filter((r) => (r.stage ?? 0) === st);
     console.log(`  contacto ${st}: ${xs.length} checkouts · ${xs.filter((r) => r.status === "paid").length} reservas`);
   }
-  const gifted = treat.filter((r) => r.flexGiftUntil);
+  // Só as ofertas do funil: o Flex oferecido a quem paga tudo agora (pagamento
+  // em duas partes) usa a mesma coluna e mede-se no relatório desse projeto.
+  const gifted = treat.filter((r) => r.flexGiftUntil && r.flexGiftReason !== "full_payment");
   console.log(`\nFlex oferecido: ${gifted.length} ofertas · ${gifted.filter((r) => r.status === "paid").length} reservas com a oferta`);
   process.exit(0);
 }

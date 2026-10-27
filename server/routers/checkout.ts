@@ -46,7 +46,21 @@ import { appendReservationNote } from "../services/guesty-openapi-paypal";
 import { couponNoteLine } from "../services/coupon-note";
 import { mergeVisitOrigins, originNoteEnabled, originNoteLine, parseVisitOriginPayload } from "../services/visit-origin";
 import { getIntentOrigin, saveIntentOrigin } from "../services/visit-origin-store";
-import { deleteAdSignals, getAdSignals, saveAdSignals } from "../services/ad-signals-store";
+import { deleteAdSignals, getAdSignals, requestClientIp, saveAdSignals } from "../services/ad-signals-store";
+import { computePaymentPlan } from "../services/checkout-pricing";
+import { readTwoPartsConfig, splitTwoParts } from "../services/payment-plan";
+import {
+  effectiveFlexChoice,
+  fullPaymentGiftPatchFor,
+  grantFullPaymentGiftPatch,
+  intentPaymentPlan,
+  isFullPaymentGift,
+  offerForIntent,
+  publicIntent,
+  revokeFullPaymentGiftPatch,
+  withoutExpiredFullPaymentGift,
+} from "../services/checkout-plan";
+import { FLEX_IMMEDIATE_CONSENT_VERSION, renderTwoPartsMandate } from "../services/two-parts-mandate";
 
 /** Cookies _fbp/_fbc do pixel (client/src/lib/adSignals.ts). Formato validado na gravação. */
 const adSignalsSchema = z.object({
@@ -192,11 +206,11 @@ async function sendCapiPurchase(m: any, intentId: string, value: number): Promis
  * (cliente fecha a reserva) e o webhook chama-o quando é ele a fechar (o
  * cliente morreu depois do pagamento). Fire-and-forget, nunca lança.
  */
-export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<void> {
+export async function fireCheckoutPaidEmails(m: any, intentId: string, pricing?: { flexGift?: boolean; at?: number }): Promise<void> {
   try {
     const { breakdownFromIntent } = await import("../services/checkout-card-charge");
     const canonical = (() => {
-      try { const b = breakdownFromIntent(m); return { lines: b.lines, stayCents: b.stayCents, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
+      try { const b = breakdownFromIntent(m, null, pricing ?? {}); return { lines: b.lines, stayCents: b.stayCents, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
       catch { return null; }
     })();
     // M13 (spec §13): CAPI server-side do Purchase — este é o ponto único por
@@ -316,6 +330,51 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
   }
 }
 
+/**
+ * Oferta de duas partes para o ecrã do checkout, com os valores que o
+ * createCardCharge vai cobrar: o depósito mede-se sem o Flex oferecido pelo
+ * pagamento integral (que se retira em duas partes) e o "tudo agora" com ele.
+ */
+async function clientPaymentPlanFor(intent: any) {
+  if (intent.status === "paid") return { available: false as const, reason: null };
+  const config = readTwoPartsConfig();
+  if (!config.enabled) return { available: false as const, reason: "disabled" as const };
+  const { breakdownFromIntent } = await import("../services/checkout-card-charge");
+  const facts = await listingFacts(intent.listingId);
+  const petSafe = (x: any) => facts.pets
+    ? x
+    : { ...x, extras: ((x as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
+  const asTwoParts = { ...intent, ...(revokeFullPaymentGiftPatch(intent) ?? {}) };
+  const bTwo = breakdownFromIntent(petSafe(asTwoParts), facts.bedrooms);
+  const offer = offerForIntent(intent, bTwo, { config });
+  if (!offer.available) return { available: false as const, reason: offer.reason };
+  const asFull = { ...intent, ...(offer.incentive === "flex" ? grantFullPaymentGiftPatch(intent) ?? {} : {}) };
+  const bFull = breakdownFromIntent(petSafe(asFull), facts.bedrooms);
+  const full = computePaymentPlan({ breakdown: bFull, offer, requested: "full", wallet: false });
+  const split = splitTwoParts(bTwo);
+  const mandate = renderTwoPartsMandate(intent.locale, {
+    amountLaterCents: split.balanceCents,
+    chargeAt: offer.instants.chargeAt,
+    retryAt: offer.instants.retryAt,
+    freeCancelDeadlineAt: offer.instants.freeCancelDeadlineAt,
+  });
+  return {
+    available: true as const,
+    reason: null,
+    policyCode: offer.schedule.policyCode,
+    incentive: offer.incentive,
+    fullTodayCents: full.amountDueTodayCents,
+    depositCents: split.depositCents,
+    depositStayCents: split.depositStayCents,
+    balanceCents: split.balanceCents,
+    chargeAt: offer.instants.chargeAt.toISOString(),
+    retryAt: offer.instants.retryAt.map((d) => d.toISOString()),
+    freeCancelDeadlineAt: offer.instants.freeCancelDeadlineAt.toISOString(),
+    hardStopAt: offer.instants.hardStopAt.toISOString(),
+    mandate: { lang: mandate.lang, checkbox: mandate.checkbox, text: mandate.text, version: mandate.version },
+  };
+}
+
 export const checkoutRouter = router({
   /**
    * Feature flag. Enabled by env (CHECKOUT_V2=true) anywhere, and ALWAYS on
@@ -433,15 +492,26 @@ export const checkoutRouter = router({
       return { ok };
     }),
 
+  /** Projeção explícita (spec 5.1, Fase 1): o browser recebe só os campos que
+   *  o checkout lê, nunca o PI, o Customer da Stripe ou o estado interno dos
+   *  funis. `paymentPlan` diz se a opção de duas partes existe e com que valores,
+   *  calculados no servidor; com a flag desligada é só { available: false }. */
   getIntent: publicProcedure
     .input(z.object({ intentId: z.string().uuid() }))
     .query(async ({ input }) => {
       const intent = await getBookingIntent(input.intentId);
-      if (!intent) return { intent: null, expired: false };
+      if (!intent) return { intent: null, expired: false, paymentPlan: null };
       const expired =
         intent.status === "expired" ||
         (intent.expiresAt != null && intent.expiresAt.getTime() < Date.now());
-      return { intent, expired };
+      // Uma oferta de Flex por pagamento integral que expirou não se mostra: o
+      // ecrã tem de dizer o que a próxima cobrança vai cobrar.
+      const view = withoutExpiredFullPaymentGift(intent);
+      const paymentPlan = await clientPaymentPlanFor(view).catch((err: any) => {
+        console.warn(`[TwoParts] oferta nao calculada intent=${input.intentId}: ${err?.message}`);
+        return { available: false as const, reason: null };
+      });
+      return { intent: publicIntent(view), expired, paymentPlan };
     }),
 
   updateIntent: publicProcedure
@@ -499,6 +569,35 @@ export const checkoutRouter = router({
       }
       // Requote com quote nova renova a validade do link de retoma (AUDIT)
       const dbPatch: Record<string, unknown> = { ...patch };
+      // Com um Flex oferecido por pagamento integral no intent, um clique do
+      // hóspede no Flex é a escolha DELE: é essa que se repõe se a oferta
+      // deixar de valer (duas partes, expirou, deixou de ser elegível).
+      // Só um clique conta: o checkout reenvia o Flex que o próprio intent já
+      // tinha (o flex=true da oferta) antes de cada pagamento, e esse eco não
+      // pode passar a "escolha do hóspede".
+      // Compara com o Flex que o hóspede VÊ (oferta expirada = a escolha dele),
+      // não com o flex=true que a oferta forçou na BD.
+      if (patch.flex !== undefined && isFullPaymentGift(current) && patch.flex !== effectiveFlexChoice(current)) {
+        dbPatch.flexGiftPrevFlex = patch.flex;
+      }
+      // Nova tarifa, datas ou hóspedes podem tirar a elegibilidade (tarifa NR,
+      // antecedência): o Flex oferecido sai e volta só se a próxima cobrança
+      // integral ainda o merecer. Senão um Klarna ou PayPal, que não passam
+      // pelo createCardCharge, levavam-no numa reserva já sem direito a ele.
+      // Só uma mudança verdadeira: o checkout reenvia a tarifa e as datas que
+      // já estavam no intent, e esse eco não pode tirar a oferta.
+      const c = current as any;
+      const stayChanged =
+        (patch.ratePlanId !== undefined && patch.ratePlanId !== c.ratePlanId) ||
+        (patch.checkIn !== undefined && patch.checkIn !== c.checkIn) ||
+        (patch.checkOut !== undefined && patch.checkOut !== c.checkOut) ||
+        (patch.guests !== undefined && patch.guests !== c.guests) ||
+        (patch.guestyQuoteId !== undefined && patch.guestyQuoteId !== c.guestyQuoteId) ||
+        (patch.quote !== undefined && Math.round(Number(patch.quote.total) * 100) !== Math.round(Number(c.quote?.total) * 100));
+      if (isFullPaymentGift(current) && stayChanged) {
+        const revoke = revokeFullPaymentGiftPatch({ ...current, ...(patch.flex !== undefined ? { flexGiftPrevFlex: patch.flex } : {}) });
+        if (revoke) Object.assign(dbPatch, revoke);
+      }
       if (patch.quote || patch.guestyQuoteId || patch.ratePlanId || patch.checkIn || patch.checkOut || patch.guests) {
         const trusted = await trustedStayQuote({ ...current, ...patch } as any);
         Object.assign(dbPatch, { quote: trusted.quote, ratePlanId: trusted.ratePlanId, expiresAt: trusted.expiresAt });
@@ -516,19 +615,33 @@ export const checkoutRouter = router({
   /** 2b: cria o PI de plataforma com o total canonico (nunca valores do cliente).
    *  wallet=true (fila express): PI automatic_payment_methods — a sessao ECE e
    *  automatic. Sem wallet (card form): PI types:[card] — a sessao e types.
-   *  Formatos trocados sao recusados pelo Stripe no confirm (vistos 16 e 21 ago). */
+   *  Formatos trocados sao recusados pelo Stripe no confirm (vistos 16 e 21 ago).
+   *
+   *  Pagamento em duas partes (docs/pagamento_duas_partes.md, Fase 1): o browser
+   *  diz só o plano que o hóspede escolheu; o servidor decide se é possível e
+   *  quanto se cobra hoje. Sem a flag, `plan` omisso ou "full" faz exatamente o
+   *  que fazia antes; "two_parts" é recusado em vez de cair para 100% calado. */
   createCardCharge: publicProcedure
-    .input(z.object({ intentId: z.string().uuid(), wallet: z.boolean().optional() }))
-    .mutation(async ({ input }) => withCheckoutChargeLock(input.intentId, async () => {
-      const m = await getBookingIntent(input.intentId);
+    .input(z.object({
+      intentId: z.string().uuid(),
+      wallet: z.boolean().optional(),
+      plan: z.enum(["full", "two_parts"]).optional(),
+      /** Caixa do mandato marcada (spec 6.2). Obrigatória em duas partes. */
+      mandateAccepted: z.boolean().optional(),
+      /** Declaração de execução imediata do Flex (spec 6.4), quando o Flex vai na reserva. */
+      flexImmediateConsent: z.boolean().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => withCheckoutChargeLock(input.intentId, async () => {
+      let m = await getBookingIntent(input.intentId);
       if (!m) throw new TRPCError({ code: "NOT_FOUND" });
       if ((m as any).status === "paid") throw new TRPCError({ code: "PRECONDITION_FAILED", message: "already paid" });
       const { breakdownFromIntent } = await import("../services/checkout-card-charge");
       const { createCardPaymentIntent } = await import("../services/stripe-klarna");
       const factsForCharge = await listingFacts((m as any).listingId);
-      const mSafe = factsForCharge.pets
-        ? m
-        : { ...m, extras: ((m as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
+      const petSafe = (x: any) => factsForCharge.pets
+        ? x
+        : { ...x, extras: ((x as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
+      let mSafe = petSafe(m);
       let b = breakdownFromIntent(mSafe, factsForCharge.bedrooms);
       if (!Number.isSafeInteger(b.totalCents) || b.totalCents < 100) {
         throw new TRPCError({ code: "PRECONDITION_FAILED", message: "invalid total" });
@@ -574,30 +687,97 @@ export const checkoutRouter = router({
         if (availErr instanceof TRPCError) throw availErr;
         console.warn(`[Card2b] recheck de disponibilidade falhou (fail-open): ${availErr?.message}`);
       }
-      if (priorPi) {
-        const { getPaymentIntent, cancelPaymentIntent } = await import("../services/stripe-klarna");
-        const prev = await getPaymentIntent(priorPi);
-        // Recheck after the validity checks in case a callback completed it.
-        if (prev.status === "succeeded") {
-          return { clientSecret: null, paymentIntentId: prev.id, totalCents: prev.amount, alreadyPaid: true };
+
+      // ── Plano (duas partes ou integral) ─────────────────────────────────
+      // A oferta depende só da estadia, da tarifa e das datas (nunca do Flex),
+      // por isso mede-se já; o Flex oferecido é consequência da escolha.
+      const measured = offerForIntent(m, b, { quote: trusted.quote });
+      // O incentivo é a contrapartida de uma ESCOLHA que o hóspede viu: sem
+      // `plan` no pedido (o checkout de hoje, sem seletor), nada de Flex
+      // oferecido, mesmo com a flag ligada. Só o ecrã com as duas opções o dá.
+      const offer = measured.available && input.plan === undefined ? { ...measured, incentive: "none" as const } : measured;
+      const first = computePaymentPlan({ breakdown: b, offer, requested: input.plan ?? "full", wallet: !!input.wallet });
+      if (first.requestedUnavailable) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: "two-part payment is not available for this booking; refresh to see the options",
+        });
+      }
+      if (first.incentiveApplied === "discount") {
+        // Opção B sem o acerto do folio provado: nunca cobrar um valor que o
+        // settle não consegue reconciliar no Guesty (readTwoPartsConfig recusa-a).
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "full-payment discount is not available" });
+      }
+      // Flex oferecido por pagamento integral: dá-se, renova-se ou retira-se
+      // conforme a escolha. Só em memória por agora: grava-se junto com o PI,
+      // depois de o PI anterior estar resolvido (um PI anterior que entretanto
+      // ficou pago não pode ver o Flex do intent mudar debaixo dele).
+      const giftPatch = fullPaymentGiftPatchFor(m, first);
+      if (giftPatch) {
+        m = { ...m, ...giftPatch } as any;
+        mSafe = petSafe(m);
+        b = breakdownFromIntent({ ...mSafe, quote: trusted.quote }, factsForCharge.bedrooms);
+      }
+      const decision = computePaymentPlan({ breakdown: b, offer, requested: first.plan, wallet: !!input.wallet });
+      const intentPatch: Record<string, unknown> = { ...(giftPatch ?? {}) };
+      if (input.flexImmediateConsent && (m as any).flex) {
+        intentPatch.flexImmediateConsentAt = new Date();
+        intentPatch.flexConsentVersion = FLEX_IMMEDIATE_CONSENT_VERSION;
+      }
+      const amountDue = decision.amountDueTodayCents;
+      if (!Number.isSafeInteger(amountDue) || amountDue < 100) {
+        throw new TRPCError({ code: "PRECONDITION_FAILED", message: "invalid total" });
+      }
+
+      // ── Duas partes: mandato e Customer da plataforma ───────────────────
+      let customer: string | undefined;
+      let mandate: ReturnType<typeof renderTwoPartsMandate> | null = null;
+      let twoParts: Extract<typeof offer, { available: true }> | null = null;
+      if (decision.plan === "two_parts") {
+        if (!offer.available) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "inconsistent payment plan" });
+        twoParts = offer;
+        if (input.mandateAccepted !== true) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "the authorisation for the second payment must be accepted" });
         }
-        if (["requires_payment_method", "requires_confirmation", "requires_action"].includes(prev.status)) {
-          const sameFormat = !!prev.automatic_payment_methods?.enabled === !!input.wallet;
-          if (prev.amount === b.totalCents && sameFormat) {
-            return { clientSecret: prev.client_secret!, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: false };
+        mandate = renderTwoPartsMandate((m as any).locale, {
+          amountLaterCents: decision.balanceCents,
+          chargeAt: offer.instants.chargeAt,
+          retryAt: offer.instants.retryAt,
+          freeCancelDeadlineAt: offer.instants.freeCancelDeadlineAt,
+        });
+        // A plataforma é dona do cartão nas duas partes (spec 5.1): Customer
+        // nosso, gravado ANTES do PI e nunca devolvido ao browser.
+        customer = ((m as any).stripeCustomerId as string | null) || undefined;
+        if (!customer) {
+          const { ensureStripeCustomer } = await import("../services/stripe-klarna");
+          customer = await ensureStripeCustomer({
+            intentId: input.intentId,
+            email: (m as any).email,
+            name: [(m as any).guestFirstName, (m as any).guestLastName].filter(Boolean).join(" ") || null,
+            phone: (m as any).guestPhone,
+            locale: (m as any).locale,
+          });
+          const { setIntentStripeCustomer } = await import("../db");
+          if (!(await setIntentStripeCustomer(input.intentId, customer))) {
+            throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "payment could not be prepared; retry the same checkout" });
           }
-          // Retire the stale amount/method before exposing a replacement.
-          // A cancel failure is surfaced; it must never be swallowed.
-          await cancelPaymentIntent(prev.id);
-        } else if (prev.status !== "canceled") {
-          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "payment is still processing; do not pay again" });
         }
       }
+
       if (b.divergent.length) console.warn(`[Card2b] client amounts diverged intent=${input.intentId}: ${b.divergent.join(",")}`);
       const paymentParams = {
-        amount: b.totalCents,
+        amount: amountDue,
         currency: "eur",
         wallet: !!input.wallet,
+        ...(customer && twoParts
+          ? {
+              // Dentro do objeto que alimenta a idempotency key: outro plano ou
+              // outro Customer nunca reaproveita um PI anterior por engano.
+              customer,
+              statementDescriptorSuffix: "PART 1/2",
+              description: `Estadia ${sanitizePropertyName(String((m as any).propertyName || (m as any).listingId))} ${(m as any).checkIn}: 1.a parte`,
+            }
+          : {}),
         metadata: (() => {
           const metadata: Record<string, string> = {
             flow: "card_v2",
@@ -612,15 +792,108 @@ export const checkoutRouter = router({
           // 500 chars por valor — se não couber, o refund recalcula do intent)
           const lines = b.lines.map((l) => `${l.sku}:${l.cents}`).join("|");
           if (lines && lines.length <= 480) metadata.lines = lines;
+          // Medição da 2.6: só quando o Flex a 0 € vem mesmo do pagamento integral.
+          if (decision.plan === "full" && decision.incentiveApplied === "flex" && isFullPaymentGift(m)) metadata.incentive = "flex";
+          if (twoParts && mandate) {
+            const split = splitTwoParts(b);
+            Object.assign(metadata, {
+              plan: "two_parts",
+              part: "deposit",
+              depositStayCents: String(split.depositStayCents),
+              balanceCents: String(decision.balanceCents),
+              policyCode: twoParts.schedule.policyCode,
+              freeCancelDeadlineAt: twoParts.instants.freeCancelDeadlineAt.toISOString(),
+              chargeAt: twoParts.instants.chargeAt.toISOString(),
+              hardStopAt: twoParts.instants.hardStopAt.toISOString(),
+              mandateVersion: mandate.version,
+              mandateHash: mandate.hash,
+            });
+          }
           return metadata;
         })(),
       };
+
+      /** Regista a autorização da 2.ª parte para o PI que o hóspede vai confirmar. Sem
+       *  registo não há clientSecret: nada é cobrado sem a prova do mandato. */
+      const recordMandate = async (paymentIntentId: string) => {
+        if (!mandate || !twoParts) return;
+        const { insertCardMandate } = await import("../db");
+        try {
+          await insertCardMandate({
+            id: randomUUID(),
+            intentId: input.intentId,
+            paymentIntentId,
+            mandateVersion: mandate.version,
+            mandateLang: mandate.lang,
+            mandateTextHash: mandate.hash,
+            amountLaterCents: decision.balanceCents,
+            chargeAt: twoParts.instants.chargeAt,
+            acceptedAt: new Date(),
+            acceptedIp: requestClientIp(ctx.req.headers as Record<string, unknown>),
+            source: "checkout",
+          } as any);
+        } catch (err: any) {
+          console.error(`[TwoParts] mandato nao registado intent=${input.intentId} pi=${paymentIntentId}: ${err?.message}`);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "payment could not be prepared; retry the same checkout" });
+        }
+      };
+      const planResult = decision.plan === "two_parts" && twoParts
+        ? { plan: "two_parts" as const, balanceCents: decision.balanceCents, chargeAt: twoParts.instants.chargeAt.toISOString() }
+        : { plan: "full" as const, balanceCents: 0, chargeAt: null };
+      /** Uma só escrita: o PI, o plano e o Flex oferecido ficam juntos ou não ficam. */
+      const persist = async (paymentIntentId: string) => {
+        const patch: Record<string, unknown> = { ...intentPatch, paymentIntentId };
+        // O plano integral só se escreve quando muda: o caminho de hoje fica igual.
+        if (decision.plan === "two_parts" || intentPaymentPlan(m) !== "full") patch.paymentPlan = decision.plan;
+        return updateBookingIntent(input.intentId, patch as any);
+      };
+      /** Componentes do preço gravadas no PI: um PI só se reaproveita se forem
+       *  todas iguais às de agora, não só o total. Um Flex trocado por um extra
+       *  do mesmo valor deixava no PI as linhas e o Flex antigos, e o settle e
+       *  os reembolsos por linha liam um PI que já não descrevia a reserva. */
+      const PRICE_FINGERPRINT = ["stayCents", "extrasCents", "receptionCents", "flexCents", "lines", "incentive"];
+      /** Condições autorizadas no mandato: um PI de duas partes só se reaproveita se forem todas iguais. */
+      const TWO_PART_TERMS = ["plan", "part", "depositStayCents", "balanceCents", "policyCode", "freeCancelDeadlineAt", "chargeAt", "hardStopAt", "mandateVersion", "mandateHash"];
+      const sameTerms = (prev: { metadata?: Record<string, string> | null }) =>
+        // PIs sem as componentes gravadas (anteriores ao 2b) comparam-se só pelo total, como antes.
+        (prev.metadata?.stayCents == null ||
+          PRICE_FINGERPRINT.every((k) => (prev.metadata?.[k] ?? null) === (paymentParams.metadata[k] ?? null))) &&
+        (decision.plan !== "two_parts" || TWO_PART_TERMS.every((k) => prev.metadata?.[k] === paymentParams.metadata[k]));
+
+      if (priorPi) {
+        const { getPaymentIntent, cancelPaymentIntent } = await import("../services/stripe-klarna");
+        const prev = await getPaymentIntent(priorPi);
+        // Recheck after the validity checks in case a callback completed it.
+        if (prev.status === "succeeded") {
+          return { clientSecret: null, paymentIntentId: prev.id, totalCents: prev.amount, alreadyPaid: true };
+        }
+        if (["requires_payment_method", "requires_confirmation", "requires_action"].includes(prev.status)) {
+          const sameFormat = !!prev.automatic_payment_methods?.enabled === !!input.wallet;
+          const samePlan = (prev.metadata?.plan === "two_parts" ? "two_parts" : "full") === decision.plan;
+          const prevCustomer = typeof prev.customer === "string" ? prev.customer : (prev.customer as any)?.id ?? "";
+          if (prev.amount === amountDue && sameFormat && samePlan && prevCustomer === (customer ?? "") && sameTerms(prev)) {
+            if (decision.plan === "two_parts" || Object.keys(intentPatch).length) {
+              if (!(await persist(prev.id))) {
+                throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "payment could not be saved; retry the same checkout" });
+              }
+            }
+            await recordMandate(prev.id);
+            return { clientSecret: prev.client_secret!, paymentIntentId: prev.id, totalCents: amountDue, alreadyPaid: false, ...planResult };
+          }
+          // Retire the stale amount/method before exposing a replacement.
+          // A cancel failure is surfaced; it must never be swallowed.
+          await cancelPaymentIntent(prev.id);
+        } else if (prev.status !== "canceled") {
+          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "payment is still processing; do not pay again" });
+        }
+      }
       const pi = await createCardPaymentIntent({ ...paymentParams,
         idempotencyKey: cardChargeIdempotencyKey(paymentParams, priorPi || null),
       });
-      const saved = await updateBookingIntent(input.intentId, { paymentIntentId: pi.id } as any);
+      const saved = await persist(pi.id);
       if (!saved) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "payment could not be saved; retry the same checkout" });
-      return { clientSecret: pi.client_secret!, paymentIntentId: pi.id, totalCents: b.totalCents, alreadyPaid: false };
+      await recordMandate(pi.id);
+      return { clientSecret: pi.client_secret!, paymentIntentId: pi.id, totalCents: amountDue, alreadyPaid: false, ...planResult };
     })),
 
   /** 2b: finaliza apos confirmPayment — cria a reserva Guesty (so estadia). */

@@ -1,0 +1,219 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const h = vi.hoisted(() => ({
+  constructEvent: vi.fn(),
+  record: vi.fn(),
+  processed: vi.fn(async () => {}),
+  failed: vi.fn(async () => {}),
+  getIntent: vi.fn(),
+  updateIntent: vi.fn(async () => true),
+  settle: vi.fn(),
+  alert: vi.fn(async () => {}),
+  emails: vi.fn(async () => {}),
+}));
+
+vi.mock("stripe", () => ({ default: vi.fn(() => ({ webhooks: { constructEvent: h.constructEvent } })) }));
+vi.mock("../db", () => ({
+  recordStripeWebhookEvent: h.record,
+  markStripeWebhookEventProcessed: h.processed,
+  markStripeWebhookEventFailed: h.failed,
+  getBookingIntent: h.getIntent,
+  updateBookingIntent: h.updateIntent,
+}));
+vi.mock("../services/checkout-card-charge", () => ({ settleCardCharge: h.settle, alertFailedSettle: h.alert }));
+vi.mock("../routers/checkout", () => ({ fireCheckoutPaidEmails: h.emails }));
+vi.mock("../services/stripe-card-webhook-setup", () => ({ cardWebhookSecretFromSetup: () => null }));
+
+import { registerStripeCardWebhookRoute } from "./stripe-card-webhook";
+
+const intentId = "12345678-1234-4234-8234-123456789abc";
+const succeeded = (metadata: Record<string, string>, id = "evt_synthetic_1") => ({
+  id,
+  type: "payment_intent.succeeded",
+  livemode: false,
+  data: { object: { id: "pi_synthetic_1", metadata } },
+});
+const cardEvent = (id?: string) => succeeded({ flow: "card_v2", intentId }, id);
+
+// O handler é chamado diretamente (sem servidor HTTP): express.raw e a rede
+// não interessam aqui, só o que acontece depois de a assinatura ser válida.
+function routeHandler() {
+  let handler: any;
+  const app = {
+    post: (path: string, ...handlers: any[]) => {
+      expect(path).toBe("/api/webhooks/stripe-card");
+      handler = handlers[handlers.length - 1];
+    },
+  };
+  registerStripeCardWebhookRoute(app as any);
+  return handler;
+}
+
+function fakeRes() {
+  return {
+    statusCode: 200,
+    body: undefined as unknown,
+    status(code: number) { this.statusCode = code; return this; },
+    json(body: unknown) { this.body = body; return this; },
+    send(body: unknown) { this.body = body; return this; },
+  };
+}
+
+async function deliver(event: unknown) {
+  h.constructEvent.mockReturnValueOnce(event);
+  const res = fakeRes();
+  await routeHandler()({ headers: { "stripe-signature": "t=1,v1=synthetic" }, body: Buffer.from("{}") }, res);
+  return res;
+}
+
+/** Corre o setTimeout de 15 s do settle diferido e espera que o callback acabe. */
+async function runDeferredSettle(until: () => void) {
+  await vi.advanceTimersByTimeAsync(15_000);
+  await vi.waitFor(until);
+}
+
+beforeEach(() => {
+  vi.useFakeTimers();
+  Object.values(h).forEach((fn) => fn.mockClear());
+  h.record.mockReset();
+  h.getIntent.mockReset();
+  h.settle.mockReset();
+  h.constructEvent.mockReset();
+  vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_synthetic_not_a_real_key");
+  vi.stubEnv("STRIPE_CARD_WEBHOOK_SECRET", "whsec_synthetic_not_a_real_secret");
+  vi.spyOn(console, "info").mockImplementation(() => {});
+  vi.spyOn(console, "warn").mockImplementation(() => {});
+  vi.spyOn(console, "error").mockImplementation(() => {});
+});
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllEnvs();
+  vi.restoreAllMocks();
+});
+
+describe("stripe card webhook: dedup em stripe_webhook_events", () => {
+  it("um evento já processado não volta a correr o settle", async () => {
+    h.record.mockResolvedValueOnce({ fresh: false, processed: true });
+    const res = await deliver(cardEvent());
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ received: true, duplicate: true });
+    expect(vi.getTimerCount()).toBe(0);
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(h.settle).not.toHaveBeenCalled();
+    expect(h.getIntent).not.toHaveBeenCalled();
+    expect(h.processed).not.toHaveBeenCalled();
+  });
+
+  it("um evento novo é registado, responde já e só fica processado depois do settle", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    h.getIntent.mockResolvedValueOnce({ id: intentId, status: "pending" })
+      .mockResolvedValueOnce({ id: intentId, status: "pending", email: "guest@example.invalid" });
+    h.settle.mockResolvedValueOnce({ reservationId: "res_synthetic", confirmationCode: "SYN-1" });
+    const res = await deliver(cardEvent());
+    expect(h.record).toHaveBeenCalledWith({ eventId: "evt_synthetic_1", type: "payment_intent.succeeded", livemode: false });
+    expect(res.body).toEqual({ received: true });
+    expect(h.settle).not.toHaveBeenCalled();
+    expect(h.processed).not.toHaveBeenCalled();
+    await runDeferredSettle(() => expect(h.processed).toHaveBeenCalledWith("evt_synthetic_1"));
+    expect(h.settle).toHaveBeenCalledWith(intentId, "pi_synthetic_1");
+    expect(h.updateIntent).toHaveBeenCalledWith(intentId, { status: "paid" });
+    expect(h.emails).toHaveBeenCalledWith(
+      expect.objectContaining({ status: "paid", reservationId: "res_synthetic", confirmationCode: "SYN-1" }),
+      intentId,
+    );
+    expect(h.failed).not.toHaveBeenCalled();
+  });
+
+  it("um evento recebido mas por processar (reentrega) volta a correr o settle", async () => {
+    h.record.mockResolvedValueOnce({ fresh: false, processed: false });
+    h.getIntent.mockResolvedValue({ id: intentId, status: "pending" });
+    h.settle.mockResolvedValueOnce({ reservationId: "res_synthetic", confirmationCode: "SYN-1" });
+    expect((await deliver(cardEvent())).body).toEqual({ received: true });
+    await runDeferredSettle(() => expect(h.processed).toHaveBeenCalledWith("evt_synthetic_1"));
+    expect(h.settle).toHaveBeenCalledTimes(1);
+  });
+
+  it("intent já pago pelo cliente: marca processado sem settle", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    h.getIntent.mockResolvedValueOnce({ id: intentId, status: "paid" });
+    await deliver(cardEvent());
+    await runDeferredSettle(() => expect(h.processed).toHaveBeenCalledWith("evt_synthetic_1"));
+    expect(h.settle).not.toHaveBeenCalled();
+    expect(h.updateIntent).not.toHaveBeenCalled();
+  });
+
+  it("settle falhado: marca failed com o erro e mantém o alerta", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    h.getIntent.mockResolvedValueOnce({ id: intentId, status: "pending" });
+    h.settle.mockRejectedValueOnce(new Error("guesty reservation failed: 500"));
+    await deliver(cardEvent());
+    await runDeferredSettle(() => expect(h.alert).toHaveBeenCalled());
+    expect(h.failed).toHaveBeenCalledWith("evt_synthetic_1", "guesty reservation failed: 500");
+    expect(h.alert).toHaveBeenCalledWith(intentId, "pi_synthetic_1", "guesty reservation failed: 500", "webhook-card");
+    expect(h.processed).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["devolve null", () => h.record.mockResolvedValueOnce(null)],
+    ["lança", () => h.record.mockRejectedValueOnce(new Error("connect ECONNREFUSED"))],
+  ])("BD em baixo (o registo %s) não impede o settle", async (_label, setup) => {
+    setup();
+    h.getIntent.mockResolvedValue({ id: intentId, status: "pending" });
+    h.settle.mockResolvedValueOnce({ reservationId: "res_synthetic", confirmationCode: "SYN-1" });
+    const res = await deliver(cardEvent());
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ received: true });
+    await runDeferredSettle(() => expect(h.settle).toHaveBeenCalledWith(intentId, "pi_synthetic_1"));
+    await vi.waitFor(() => expect(h.processed).toHaveBeenCalled());
+  });
+
+  it("BD lenta: passados 3 s responde e segue como BD em baixo", async () => {
+    h.record.mockReturnValueOnce(new Promise(() => {}));
+    h.getIntent.mockResolvedValue({ id: intentId, status: "pending" });
+    h.settle.mockResolvedValueOnce({ reservationId: "res_synthetic", confirmationCode: "SYN-1" });
+    h.constructEvent.mockReturnValueOnce(cardEvent());
+    const res = fakeRes();
+    const pending = routeHandler()({ headers: { "stripe-signature": "t=1,v1=synthetic" }, body: Buffer.from("{}") }, res);
+    await vi.waitFor(() => expect(h.record).toHaveBeenCalled());
+    expect(res.body).toBeUndefined();
+    await vi.advanceTimersByTimeAsync(3_000);
+    await pending;
+    expect(res.body).toEqual({ received: true });
+    await runDeferredSettle(() => expect(h.settle).toHaveBeenCalledTimes(1));
+  });
+});
+
+describe("stripe card webhook: eventos fora do settle da 1.ª parte", () => {
+  it("tipos não tratados respondem 200 e ficam processados", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    const res = await deliver({ id: "evt_refund", type: "charge.refunded", livemode: true, data: { object: {} } });
+    expect(res.body).toEqual({ received: true });
+    expect(h.record).toHaveBeenCalledWith({ eventId: "evt_refund", type: "charge.refunded", livemode: true });
+    await vi.waitFor(() => expect(h.processed).toHaveBeenCalledWith("evt_refund"));
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it.each([
+    ["saldo (Fase 2)", { flow: "card_v2_balance", part: "balance", intentId }],
+    ["part=balance mesmo com flow card_v2", { flow: "card_v2", part: "balance", intentId }],
+    ["Klarna", { flow: "klarna_v2", intentId }],
+    ["card_v2 sem intentId", { flow: "card_v2" }],
+  ])("%s: marca processado e nunca agenda o settle", async (_label, metadata) => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    const res = await deliver(succeeded(metadata as Record<string, string>, "evt_other"));
+    expect(res.body).toEqual({ received: true });
+    await vi.waitFor(() => expect(h.processed).toHaveBeenCalledWith("evt_other"));
+    expect(vi.getTimerCount()).toBe(0);
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(h.settle).not.toHaveBeenCalled();
+  });
+
+  it("assinatura inválida: 400 e nada é registado", async () => {
+    h.constructEvent.mockImplementationOnce(() => { throw new Error("No signatures found matching the expected signature"); });
+    const res = fakeRes();
+    await routeHandler()({ headers: { "stripe-signature": "t=1,v1=forged" }, body: Buffer.from("{}") }, res);
+    expect(res.statusCode).toBe(400);
+    expect(h.record).not.toHaveBeenCalled();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+});

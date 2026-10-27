@@ -9,6 +9,11 @@ import {
   json,
   double,
   index,
+  uniqueIndex,
+  datetime,
+  char,
+  tinyint,
+  smallint,
 } from "drizzle-orm/mysql-core";
 
 /* ================================================================
@@ -472,11 +477,33 @@ export const bookingIntents = mysqlTable("booking_intents", {
    *  do Flex conta 0 em TODAS as cobranças enquanto for válido. Só o
    *  servidor escreve este campo (nunca vem do browser). */
   flexGiftUntil: timestamp("flex_gift_until"),
+  /** Porque é que o Flex foi oferecido (spec 2.6): NULL = funil de
+   *  recuperação (todas as ofertas anteriores à Fase 1), 'full_payment' =
+   *  incentivo a pagar tudo agora. Só serve para medir e para saber que
+   *  oferta se pode revogar quando o hóspede muda para duas partes. */
+  flexGiftReason: varchar("flex_gift_reason", { length: 32 }),
+  /** Escolha de Flex do hóspede antes do Flex oferecido por pagamento
+   *  integral. Ao revogar a oferta repõe-se este valor: quem não tinha
+   *  escolhido o Flex não pode ficar a pagá-lo por ter visto a oferta. */
+  flexGiftPrevFlex: boolean("flex_gift_prev_flex"),
+  /** Declaração de execução imediata do Flex (spec 6.4): quando e que versão
+   *  do texto o hóspede aceitou. Prova legal, nunca sai para o browser. */
+  flexImmediateConsentAt: timestamp("flex_immediate_consent_at"),
+  flexConsentVersion: varchar("flex_consent_version", { length: 40 }),
   /** Alerta "ligar ao hóspede" enviado ao concierge (abandono no pagamento
    *  de valor alto). Claim condicional: um alerta por intent. */
   conciergeAlerted: boolean("concierge_alerted").default(false).notNull(),
-  /** 2b: PI pendente/capturado — o retry retoma este em vez de criar novo */
+  /** 2b: PI pendente/capturado — o retry retoma este em vez de criar novo.
+   *  Em duas partes guarda só o PI da 1.ª parte: o sweep de settle nunca
+   *  pode ver o PI do saldo (esse vive em checkout_scheduled_payments). */
   paymentIntentId: varchar("payment_intent_id", { length: 64 }),
+  /** Pagamento em duas partes (docs/pagamento_duas_partes.md). 'full' é o
+   *  checkout de sempre; todos os intents anteriores à Fase 1 ficam 'full'
+   *  pelo DEFAULT, por isso nada muda para eles. */
+  paymentPlan: mysqlEnum("payment_plan", ["full", "two_parts"]).default("full").notNull(),
+  /** Customer Stripe a que o cartão fica guardado para a 2.ª parte. Só
+   *  existe em intents two_parts; nunca sai para o browser. */
+  stripeCustomerId: varchar("stripe_customer_id", { length: 64 }),
   status: mysqlEnum("status", [
     "draft",
     "contact_captured",
@@ -496,6 +523,191 @@ export const bookingIntents = mysqlTable("booking_intents", {
 
 export type BookingIntent = typeof bookingIntents.$inferSelect;
 export type InsertBookingIntent = typeof bookingIntents.$inferInsert;
+
+/* ================================================================
+   PAGAMENTO EM DUAS PARTES (docs/pagamento_duas_partes.md, 2.5 e 5.2)
+   Criadas no arranque por server/services/two-parts-migrations.ts, que
+   tem de declarar exatamente estas colunas (o teste compara os dois).
+   Instantes em datetime UTC (o drizzle grava e lê em UTC, sem depender
+   do fuso da sessão MySQL); as horas de Lisboa convertem-se antes de
+   gravar (lisbonWallTimeToUtc em server/services/payment-plan.ts).
+   O livemode vai em cada linha para as leituras do motor de cobrança
+   (sweep, Fase 2) filtrarem por ele: as linhas de teste da Stripe nunca
+   podem ser cobradas pelo sweep de produção.
+   ================================================================ */
+
+/** Uma linha por intent em duas partes: o saldo agendado e tudo o que o
+ *  sweep precisa para o cobrar, avisar, reconciliar ou cancelar sem voltar
+ *  a ler o intent (dados desnormalizados de propósito). */
+export const checkoutScheduledPayments = mysqlTable("checkout_scheduled_payments", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  intentId: varchar("intent_id", { length: 36 }).notNull(),
+  livemode: boolean("livemode").notNull(),
+  siteOrigin: varchar("site_origin", { length: 64 }).notNull(),
+  reservationId: varchar("reservation_id", { length: 64 }).notNull(),
+  confirmationCode: varchar("confirmation_code", { length: 64 }),
+  listingId: varchar("listing_id", { length: 64 }).notNull(),
+  propertyName: varchar("property_name", { length: 255 }),
+  checkIn: varchar("check_in", { length: 10 }).notNull(),
+  checkOut: varchar("check_out", { length: 10 }).notNull(),
+  email: varchar("email", { length: 320 }),
+  phone: varchar("phone", { length: 50 }),
+  locale: varchar("locale", { length: 5 }),
+  currency: char("currency", { length: 3 }).default("EUR").notNull(),
+  /** PI da 1.ª parte; os montantes ficam congelados no settle e nunca se
+   *  recalculam de uma quote (a quote pode mudar, o contrato não). */
+  depositPaymentIntentId: varchar("deposit_payment_intent_id", { length: 64 }).notNull(),
+  depositCents: int("deposit_cents").notNull(),
+  depositStayCents: int("deposit_stay_cents").notNull(),
+  balanceCents: int("balance_cents").notNull(),
+  /** Decomposição da 1.ª parte por taxa de IVA, para a fatura de
+   *  adiantamento (spec 6.3). */
+  depositFiscalLines: json("deposit_fiscal_lines").$type<Array<Record<string, unknown>>>(),
+  stripeCustomerId: varchar("stripe_customer_id", { length: 64 }).notNull(),
+  paymentMethodId: varchar("payment_method_id", { length: 64 }).notNull(),
+  cardBrand: varchar("card_brand", { length: 32 }),
+  cardLast4: varchar("card_last4", { length: 4 }),
+  cardExpMonth: tinyint("card_exp_month"),
+  cardExpYear: smallint("card_exp_year"),
+  policyCode: varchar("policy_code", { length: 20 }).notNull(),
+  /** D: fim do cancelamento gratuito (23:59 de Lisboa, em UTC). */
+  freeCancelDeadline: datetime("free_cancel_deadline", { mode: "date" }).notNull(),
+  /** C: cobrança do saldo. */
+  chargeAt: datetime("charge_at", { mode: "date" }).notNull(),
+  /** H: hard stop; recalcula-se quando o aviso de falha (E3) sai. */
+  hardStopAt: datetime("hard_stop_at", { mode: "date" }).notNull(),
+  nextAttemptAt: datetime("next_attempt_at", { mode: "date" }).notNull(),
+  /** Máquina de estados da spec 2.5. */
+  status: mysqlEnum("status", [
+    "scheduled",
+    "charging",
+    "retry",
+    "needs_action",
+    "succeeded",
+    "paid_externally",
+    "needs_review",
+    "cancelling",
+    "cancelled_unpaid",
+    "cancelled_by_guest",
+  ])
+    .default("scheduled")
+    .notNull(),
+  attempts: tinyint("attempts").default(0).notNull(),
+  /** Claim da tentativa em curso (estado charging) e quem a fez. */
+  claimedAt: datetime("claimed_at", { mode: "date" }),
+  claimSource: mysqlEnum("claim_source", ["sweep", "guest", "webhook", "admin"]),
+  lastDeclineCode: varchar("last_decline_code", { length: 64 }),
+  lastError: varchar("last_error", { length: 500 }),
+  balancePaymentIntentId: varchar("balance_payment_intent_id", { length: 64 }),
+  guestPaymentIntentId: varchar("guest_payment_intent_id", { length: 64 }),
+  succeededAt: datetime("succeeded_at", { mode: "date" }),
+  paidExternallyRef: varchar("paid_externally_ref", { length: 120 }),
+  failureNoticeSentAt: datetime("failure_notice_sent_at", { mode: "date" }),
+  failureNoticeStage: tinyint("failure_notice_stage").default(0).notNull(),
+  reminderStage: tinyint("reminder_stage").default(0).notNull(),
+  smsStage: tinyint("sms_stage").default(0).notNull(),
+  helpPausedUntil: datetime("help_paused_until", { mode: "date" }),
+  reviewReason: varchar("review_reason", { length: 120 }),
+  reviewDueAt: datetime("review_due_at", { mode: "date" }),
+  /** Um claim por efeito (claim-then-act): cada efeito externo corre no
+   *  máximo uma vez, mesmo com dois sweeps ou um restart a meio. */
+  guestyDepositRecordedAt: datetime("guesty_deposit_recorded_at", { mode: "date" }),
+  guestyBalanceClaimedAt: datetime("guesty_balance_claimed_at", { mode: "date" }),
+  guestyBalanceRecordedAt: datetime("guesty_balance_recorded_at", { mode: "date" }),
+  noteClaimedAt: datetime("note_claimed_at", { mode: "date" }),
+  emailPaidClaimedAt: datetime("email_paid_claimed_at", { mode: "date" }),
+  invoiceClaimedAt: datetime("invoice_claimed_at", { mode: "date" }),
+  cancelPisClaimedAt: datetime("cancel_pis_claimed_at", { mode: "date" }),
+  guestyCancelClaimedAt: datetime("guesty_cancel_claimed_at", { mode: "date" }),
+  refundClaimedAt: datetime("refund_claimed_at", { mode: "date" }),
+  creditNoteClaimedAt: datetime("credit_note_claimed_at", { mode: "date" }),
+  emailCancelClaimedAt: datetime("email_cancel_claimed_at", { mode: "date" }),
+  /** Última leitura da reserva no Guesty (reconciliação, spec 5.10). */
+  guestyStatus: varchar("guesty_status", { length: 32 }),
+  guestyCheckIn: varchar("guesty_check_in", { length: 10 }),
+  guestyCheckOut: varchar("guesty_check_out", { length: 10 }),
+  guestyListingId: varchar("guesty_listing_id", { length: 64 }),
+  guestyTotalCents: int("guesty_total_cents"),
+  guestyTotalPaidCents: int("guesty_total_paid_cents"),
+  guestyPendingForeignCents: int("guesty_pending_foreign_cents"),
+  lastReconciledAt: datetime("last_reconciled_at", { mode: "date" }),
+  lastReconcileError: varchar("last_reconcile_error", { length: 500 }),
+  /** Documentos fiscais (spec 5.13). */
+  invoiceServicesRef: varchar("invoice_services_ref", { length: 64 }),
+  invoiceStayRef: varchar("invoice_stay_ref", { length: 64 }),
+  invoiceBalanceRef: varchar("invoice_balance_ref", { length: 64 }),
+  creditNoteRef: varchar("credit_note_ref", { length: 64 }),
+  creditNoteDue: boolean("credit_note_due").default(false).notNull(),
+  guestyCancelledAt: datetime("guesty_cancelled_at", { mode: "date" }),
+  refundId: varchar("refund_id", { length: 64 }),
+  refundCents: int("refund_cents"),
+  refundStatus: varchar("refund_status", { length: 32 }),
+  cancelledAt: datetime("cancelled_at", { mode: "date" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+}, (t) => [
+  // Uma linha por intent: um segundo settle que tente agendar outra vez
+  // bate aqui (ER_DUP_ENTRY) em vez de criar uma segunda cobrança.
+  uniqueIndex("uq_checkout_scheduled_payments_intent").on(t.intentId),
+  index("idx_checkout_scheduled_payments_due").on(t.livemode, t.status, t.nextAttemptAt),
+  index("idx_checkout_scheduled_payments_hard_stop").on(t.livemode, t.status, t.hardStopAt),
+  index("idx_checkout_scheduled_payments_charge").on(t.livemode, t.status, t.chargeAt),
+  index("idx_checkout_scheduled_payments_reservation").on(t.reservationId),
+]);
+
+export type CheckoutScheduledPayment = typeof checkoutScheduledPayments.$inferSelect;
+export type InsertCheckoutScheduledPayment = typeof checkoutScheduledPayments.$inferInsert;
+
+/** Prova do mandato de cobrança futura (spec 6.2): um registo por cartão
+ *  autorizado, com a versão, a língua e o hash do texto exato que o hóspede
+ *  aceitou. Nasce no createCardCharge (antes de se saber o cartão) e liga-se
+ *  ao agendamento no settle. Conservação: 10 anos com o processo da reserva;
+ *  IP pseudonimizado 180 dias depois do check-out. */
+export const checkoutCardMandates = mysqlTable("checkout_card_mandates", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  intentId: varchar("intent_id", { length: 36 }).notNull(),
+  paymentIntentId: varchar("payment_intent_id", { length: 64 }),
+  setupIntentId: varchar("setup_intent_id", { length: 64 }),
+  scheduledPaymentId: varchar("scheduled_payment_id", { length: 36 }),
+  paymentMethodId: varchar("payment_method_id", { length: 64 }),
+  cardLast4: varchar("card_last4", { length: 4 }),
+  mandateVersion: varchar("mandate_version", { length: 40 }).notNull(),
+  mandateLang: varchar("mandate_lang", { length: 5 }).notNull(),
+  mandateTextHash: char("mandate_text_hash", { length: 64 }).notNull(),
+  amountLaterCents: int("amount_later_cents").notNull(),
+  chargeAt: datetime("charge_at", { mode: "date" }).notNull(),
+  acceptedAt: datetime("accepted_at", { mode: "date" }).notNull(),
+  acceptedIp: varchar("accepted_ip", { length: 64 }),
+  source: mysqlEnum("source", ["checkout", "card_change"]).notNull(),
+  supersededAt: datetime("superseded_at", { mode: "date" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (t) => [
+  // Um mandato por PI de checkout: a retoma do mesmo PI (retry, duplo
+  // clique) não cria um segundo registo. As trocas de cartão vêm por
+  // SetupIntent, com payment_intent_id NULL, e o MySQL aceita vários NULL.
+  uniqueIndex("uq_checkout_card_mandates_pi").on(t.paymentIntentId),
+  index("idx_checkout_card_mandates_intent").on(t.intentId),
+  index("idx_checkout_card_mandates_schedule").on(t.scheduledPaymentId),
+]);
+
+export type CheckoutCardMandate = typeof checkoutCardMandates.$inferSelect;
+export type InsertCheckoutCardMandate = typeof checkoutCardMandates.$inferInsert;
+
+/** Deduplicação dos webhooks da Stripe (spec 5.4): insert antes de
+ *  processar, processed_at só no fim. A Stripe reentrega o mesmo evento;
+ *  sem isto, um evento repetido corria o settle (ou, na Fase 2, a
+ *  pós-cobrança do saldo) duas vezes. */
+export const stripeWebhookEvents = mysqlTable("stripe_webhook_events", {
+  eventId: varchar("event_id", { length: 64 }).primaryKey(),
+  type: varchar("type", { length: 64 }).notNull(),
+  livemode: boolean("livemode").notNull(),
+  receivedAt: timestamp("received_at").defaultNow().notNull(),
+  processedAt: datetime("processed_at", { mode: "date" }),
+  lastError: varchar("last_error", { length: 500 }),
+});
+
+export type StripeWebhookEvent = typeof stripeWebhookEvents.$inferSelect;
+export type InsertStripeWebhookEvent = typeof stripeWebhookEvents.$inferInsert;
 
 /* ================================================================
    BOOKING INTENT ORIGINS — origem da visita de cada intent (UTM, tipo de
