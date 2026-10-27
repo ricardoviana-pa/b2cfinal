@@ -193,7 +193,9 @@ async function requoteForStage3(intent: BookingIntent): Promise<
       guestyQuoteId: be.quoteId,
       ratePlanId: plan?.ratePlanId ?? be.ratePlanId,
       expiresAt,
-      ...(flexGift ? { flexGiftUntil: flexGift.until, flex: true } : {}),
+      // A origem da oferta fica gravada: o pagamento em duas partes retira o
+      // Flex oferecido por pagamento integral, e nunca pode retirar este.
+      ...(flexGift ? { flexGiftUntil: flexGift.until, flex: true, flexGiftReason: "recovery", flexGiftPrevFlex: null } : {}),
     } as any);
     if (!ok) return null;
     return { kind: "ok", quote, expiresAt, flexGift };

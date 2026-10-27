@@ -10,7 +10,10 @@ import { completeCheckoutIntent } from "./checkout-confirmation";
  * cliente + webhook como rede de segurança, idempotente via metadata do PI.
  */
 import { getBookingIntent, updateBookingIntent } from "../db";
+import { randomUUID } from "crypto";
 import { computeChargeBreakdown } from "./checkout-pricing";
+import { splitTwoParts, twoPartsInstants, twoPartsSchedule } from "./payment-plan";
+import { effectiveFlexChoice, intentPaymentPlan, intentPolicyCode } from "./checkout-plan";
 import { flexGiftActive } from "./recovery-funnel";
 import { resolveCleaningRates } from "../config/cleaning-rates";
 import { PETS_ONLY_SKUS } from "../config/checkout-extras";
@@ -87,7 +90,15 @@ async function waitForBalanceAtLeast(reservationId: string, targetEur: number): 
 /** `bedrooms` alinha o preço de limpeza COBRADO com o MOSTRADO: o getExtras
  *  preça por quartos, e sem este dado uma casa fora da tabela caía no preço
  *  de 3 quartos na cobrança (auditoria set/2026, H2). */
-export function breakdownFromIntent(m: any, bedrooms: number | null = null) {
+export function breakdownFromIntent(
+  m: any,
+  bedrooms: number | null = null,
+  /** `at`: o instante que conta para as ofertas de Flex (no settle, o do
+   *  pagamento). `flexGift`: o que o PI cobrado diz sobre o Flex, quando se
+   *  sabe; ganha à leitura das datas da oferta. */
+  opts: { at?: number; flexGift?: boolean } = {},
+) {
+  const at = opts.at ?? Date.now();
   const q = (m?.quote ?? {}) as any;
   return computeChargeBreakdown({
     quoteTotal: Number(q.total ?? 0),
@@ -95,10 +106,15 @@ export function breakdownFromIntent(m: any, bedrooms: number | null = null) {
     nights: q.nights != null ? Number(q.nights) : null,
     reception: (m?.reception as any) ?? null,
     extras: (m?.extras as any) ?? null,
-    flex: !!m?.flex,
-    // Flex oferecido pelo funil de recuperação: vale para cartão, wallets,
-    // PayPal e Klarna porque todos passam por aqui
-    flexGift: flexGiftActive(m),
+    // Um Flex oferecido por pagamento integral que expirou volta à escolha do
+    // hóspede (effectiveFlexChoice): nunca se cobra um Flex que ele não pediu.
+    flex: effectiveFlexChoice(m, at),
+    // Flex oferecido (funil de recuperação ou pagamento integral): vale para
+    // cartão, wallets, PayPal e Klarna porque todos passam por aqui. No settle
+    // conta o que foi cobrado: avaliada à hora do settle, uma oferta expirada
+    // entre o pagamento e um settle tardio (sweep, até 48 h) punha o Flex no
+    // total esperado e a reserva nunca nascia.
+    flexGift: opts.flexGift ?? flexGiftActive(m, at),
     unitPriceOverrides: (() => {
       const r = resolveCleaningRates((m as any)?.listingId, bedrooms);
       return { "daily-cleaning": r.daily, "deep-cleaning": r.deep };
@@ -116,13 +132,13 @@ export function breakdownFromIntent(m: any, bedrooms: number | null = null) {
  * que o cartão cobrou. Fail-soft como o listingFacts (sem dados da casa,
  * cai na tabela por omissão).
  */
-export async function listingBreakdownFromIntent(m: any) {
+export async function listingBreakdownFromIntent(m: any, opts: { at?: number; flexGift?: boolean } = {}) {
   const { listingFacts } = await import("../routers/checkout");
   const facts = await listingFacts(m?.listingId);
   const safe = facts.pets
     ? m
     : { ...m, extras: ((m?.extras ?? []) as any[]).filter((e) => !PETS_ONLY_SKUS.includes(e?.sku)) };
-  return breakdownFromIntent(safe, facts.bedrooms);
+  return breakdownFromIntent(safe, facts.bedrooms, opts);
 }
 
 /**
@@ -154,6 +170,93 @@ export function resolveRatePlanId(intent: any, quote: any): string {
   return String(match?.ratePlanId ?? "").trim();
 }
 
+/** "28/06/2027" no calendário de Lisboa, para as notas do Guesty (ASCII). */
+function lisbonDayLabel(iso: string | undefined): string {
+  const d = iso ? new Date(iso) : null;
+  if (!d || !Number.isFinite(d.getTime())) return "data por confirmar";
+  return new Intl.DateTimeFormat("pt-PT", { timeZone: "Europe/Lisbon", day: "2-digit", month: "2-digit", year: "numeric" }).format(d);
+}
+
+function isoDate(raw: string | undefined, label: string): Date {
+  const d = raw ? new Date(raw) : null;
+  if (!d || !Number.isFinite(d.getTime())) throw new Error(`PI em duas partes sem ${label} valido`);
+  return d;
+}
+
+/**
+ * Grava a linha da 2.ª parte (checkout_scheduled_payments) para um depósito
+ * pago. Idempotente pelo UNIQUE(intent_id): uma 2.ª passagem devolve "exists".
+ * Datas, valores e cartão vêm do PI (o que foi autorizado e cobrado); o
+ * cartão lê-se com o payment_method expandido.
+ */
+async function recordTwoPartsSchedule(input: {
+  intentId: string;
+  intent: any;
+  pi: any;
+  reservationId: string;
+  confirmationCode: string;
+  depositStayCents: number;
+}): Promise<void> {
+  const { intentId, intent, reservationId, confirmationCode, depositStayCents } = input;
+  const pi = await getPaymentIntent(input.pi.id, undefined, { expand: ["payment_method"] });
+  const pm: any = pi.payment_method;
+  const paymentMethodId = typeof pm === "string" ? pm : pm?.id;
+  const customer = typeof pi.customer === "string" ? pi.customer : (pi.customer as any)?.id;
+  if (!paymentMethodId || !customer) {
+    throw new Error(`PI ${pi.id} em duas partes sem cartao guardado (pm=${paymentMethodId ?? "-"}, customer=${customer ?? "-"})`);
+  }
+  const meta = pi.metadata as Record<string, string>;
+  const balanceCents = Number(meta.balanceCents);
+  if (!Number.isSafeInteger(balanceCents) || balanceCents <= 0) throw new Error(`PI ${pi.id} em duas partes sem balanceCents valido`);
+  const chargeAt = isoDate(meta.chargeAt, "chargeAt");
+  const card = typeof pm === "object" && pm ? pm.card : null;
+  const { insertScheduledPayment, linkCardMandatesToSchedule, getScheduledPaymentByIntent } = await import("../db");
+  const { siteOriginForSchedule } = await import("./checkout-plan");
+  const id = randomUUID();
+  const outcome = await insertScheduledPayment({
+    id,
+    intentId,
+    livemode: !!pi.livemode,
+    siteOrigin: siteOriginForSchedule(),
+    reservationId,
+    confirmationCode: confirmationCode || null,
+    listingId: String(intent.listingId),
+    propertyName: intent.propertyName ?? null,
+    checkIn: String(intent.checkIn),
+    checkOut: String(intent.checkOut),
+    email: intent.email ?? null,
+    phone: intent.guestPhone ?? null,
+    locale: intent.locale ?? null,
+    currency: "EUR",
+    depositPaymentIntentId: pi.id,
+    depositCents: pi.amount,
+    depositStayCents,
+    balanceCents,
+    depositFiscalLines: { stayCents: depositStayCents, servicesCents: pi.amount - depositStayCents, lines: meta.lines ?? null },
+    stripeCustomerId: customer,
+    paymentMethodId,
+    cardBrand: card?.brand ?? null,
+    cardLast4: card?.last4 ?? null,
+    cardExpMonth: card?.exp_month ?? null,
+    cardExpYear: card?.exp_year ?? null,
+    policyCode: String(meta.policyCode),
+    freeCancelDeadline: isoDate(meta.freeCancelDeadlineAt, "freeCancelDeadlineAt"),
+    chargeAt,
+    hardStopAt: isoDate(meta.hardStopAt, "hardStopAt"),
+    nextAttemptAt: chargeAt,
+    status: "scheduled",
+  } as any);
+  const row = outcome === "exists" ? await getScheduledPaymentByIntent(intentId) : null;
+  const scheduledId = outcome === "inserted" ? id : (row as any)?.id;
+  if (scheduledId) await linkCardMandatesToSchedule(intentId, pi.id, scheduledId, paymentMethodId, card?.last4 ?? null);
+  // O cartão guardado pode ser mostrado na página do saldo ("••••1234"). Fail-soft.
+  const { allowPaymentMethodRedisplay } = await import("./stripe-klarna");
+  await allowPaymentMethodRedisplay(paymentMethodId).catch((e: any) =>
+    console.warn(`[TwoParts] allow_redisplay falhou pm=${paymentMethodId}: ${e?.message}`),
+  );
+  console.info(`[TwoParts] 2.a parte ${outcome === "inserted" ? "agendada" : "ja agendada"} intent=${intentId} reserva=${reservationId} em ${chargeAt.toISOString()}`);
+}
+
 /** Cria a reserva Guesty (só estadia) para um PI card_v2 pago. Idempotente. */
 export function settleCardCharge(intentId: string, paymentIntentId: string) {
   return withCheckoutChargeLock(intentId, () => settleCardChargeUnlocked(intentId, paymentIntentId));
@@ -168,11 +271,37 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
   if (pi.metadata?.flow !== "card_v2" || pi.metadata?.intentId !== intentId) {
     throw new Error("PI does not belong to this intent");
   }
+  // A 2.ª parte (Fase 2) nunca cria nem fecha a reserva: é um movimento à parte.
+  if (pi.metadata?.part === "balance") throw new Error("PI does not belong to this intent (2.a parte)");
   const m = await getBookingIntent(intentId);
   if (!m) throw new Error("intent not found");
+  // O plano é o que foi COBRADO: a metadata do PI só a escreve o servidor, no
+  // createCardCharge, junto com o valor. O intent diz o mesmo; se divergir,
+  // fica registado e manda o PI.
+  const twoParts = pi.metadata?.plan === "two_parts";
+  if (twoParts !== (intentPaymentPlan(m) === "two_parts")) {
+    console.error(`[TwoParts] plano do intent ${intentPaymentPlan(m)} difere do PI ${paymentIntentId} (${twoParts ? "two_parts" : "full"}) — segue o PI`);
+  }
+  const paidAt = typeof pi.created === "number" ? pi.created * 1000 : Date.now();
+  // O Flex oferecido decide-se pelo que foi COBRADO, confirmado pelo intent:
+  // - flexCents > 0 no PI: o Flex foi pago, nunca conta como oferecido (um PI
+  //   criado antes de uma oferta e pago depois de ela expirar continua certo);
+  // - flexCents 0: só é oferta se houve uma em vigor, no pagamento ou agora.
+  //   Um Flex ligado no intent depois de o PI existir, sem oferta nenhuma,
+  //   volta a dar diferença de valor e o settle pára (como sempre parou).
+  // Sem metadata (PIs antigos), a oferta lê-se no instante do pagamento.
+  const piFlexRaw = pi.metadata?.flexCents;
+  const piFlexCents = piFlexRaw != null && piFlexRaw !== "" ? Number(piFlexRaw) : NaN;
+  // `incentive: "flex"` só o servidor o escreve, quando ofereceu o Flex por
+  // pagamento integral nesse mesmo PI: é prova bastante, mesmo que a oferta
+  // tenha saído do intent depois (troca de tarifa, expiração).
+  const flexGiftAtPayment = Number.isFinite(piFlexCents)
+    ? piFlexCents === 0 && (pi.metadata?.incentive === "flex" || flexGiftActive(m, paidAt) || flexGiftActive(m))
+    : flexGiftActive(m, paidAt);
+  const breakdownOpts = { at: paidAt, flexGift: flexGiftAtPayment };
   const { listingFacts } = await import("../routers/checkout");
   const facts = await listingFacts((m as any).listingId);
-  let b = breakdownFromIntent(m, facts.bedrooms);
+  let b = breakdownFromIntent(m, facts.bedrooms, breakdownOpts);
 
   // Retomável: a reserva pode já existir de uma tentativa anterior (metadata do
   // PI, ou intent — inclui recuperação manual de um settle que morreu a meio).
@@ -183,13 +312,49 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
 
   if (!reservationId) {
     if (pi.currency !== 'eur' || (m as any).paymentIntentId !== pi.id) throw new Error('Payment identity mismatch');
-    const trusted = await trustedStayQuote(m as any, typeof pi.created === 'number' ? pi.created * 1000 : Date.now());
+    const trusted = await trustedStayQuote(m as any, paidAt);
     assertQuotedTotal(m.quote, trusted.quote);
-    b = breakdownFromIntent({ ...m, quote: trusted.quote }, facts.bedrooms);
-    // Defesa central: o valor cobrado TEM de bater com a matemática do servidor
-    if (Math.abs(pi.amount - b.totalCents) > 1) {
-      console.error(`[Card2b] AMOUNT MISMATCH intent=${intentId} pi=${pi.amount}c expected=${b.totalCents}c — reserva NÃO criada`);
+    b = breakdownFromIntent({ ...m, quote: trusted.quote }, facts.bedrooms, breakdownOpts);
+    // Defesa central: o valor cobrado TEM de bater com a matemática do servidor.
+    // Em duas partes, com a primeira parte da divisão exata (spec 2.2), e a
+    // divisão gravada no PI tem de ser a mesma que o servidor recalcula.
+    const expected = twoParts ? splitTwoParts(b).depositCents : b.totalCents;
+    if (Math.abs(pi.amount - expected) > 1) {
+      console.error(`[Card2b] AMOUNT MISMATCH intent=${intentId} pi=${pi.amount}c expected=${expected}c — reserva NÃO criada`);
       throw new Error("charged amount does not match server pricing");
+    }
+    if (twoParts) {
+      const split = splitTwoParts(b);
+      if (
+        Number(pi.metadata.depositStayCents) !== split.depositStayCents ||
+        Number(pi.metadata.balanceCents) !== split.balanceCents ||
+        !pi.customer
+      ) {
+        console.error(
+          `[TwoParts] divisao do PI ${paymentIntentId} nao bate com o servidor (estadia ${pi.metadata.depositStayCents}/${split.depositStayCents}, ` +
+            `saldo ${pi.metadata.balanceCents}/${split.balanceCents}, customer ${pi.customer ? "sim" : "nao"}) — reserva NÃO criada`,
+        );
+        throw new Error("charged amount does not match server pricing");
+      }
+      // As datas autorizadas no mandato têm de ser as da política da tarifa
+      // que o hóspede está a pagar. Se o intent mudou de tarifa sem passar por
+      // nova cobrança, a 2.ª parte cairia noutra data: pára antes da reserva.
+      const schedule = twoPartsSchedule(intentPolicyCode(m), String((m as any).checkIn ?? ""));
+      const instants = schedule ? twoPartsInstants(schedule) : null;
+      if (
+        !schedule ||
+        !instants ||
+        pi.metadata.policyCode !== schedule.policyCode ||
+        pi.metadata.chargeAt !== instants.chargeAt.toISOString() ||
+        pi.metadata.hardStopAt !== instants.hardStopAt.toISOString() ||
+        pi.metadata.freeCancelDeadlineAt !== instants.freeCancelDeadlineAt.toISOString()
+      ) {
+        console.error(
+          `[TwoParts] datas do PI ${paymentIntentId} nao batem com a tarifa do intent ` +
+            `(${pi.metadata.policyCode}/${schedule?.policyCode ?? "-"}, C ${pi.metadata.chargeAt}/${instants?.chargeAt.toISOString() ?? "-"}) — reserva NÃO criada`,
+        );
+        throw new Error("charged amount does not match server pricing");
+      }
     }
     // O intent guarda o nome em guestFirstName/guestLastName (não existe
     // "guestName" em booking_intents — ler esse campo mandava "Guest -" para
@@ -232,6 +397,19 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
   }
   if (!confirmationCode) {
     confirmationCode = (await fetchReservationConfirmationCode(reservationId)) ?? "";
+  }
+
+  // Duas partes: o que pagou hoje e o que fica agendado. A metade da estadia e
+  // o saldo vêm do PI (congelados na cobrança, validados acima na 1.ª passagem).
+  const depositStayCents = twoParts ? Number(pi.metadata.depositStayCents) : b.stayCents;
+  if (twoParts && !(Number.isSafeInteger(depositStayCents) && depositStayCents > 0)) {
+    throw new Error(`PI ${paymentIntentId} em duas partes sem depositStayCents valido`);
+  }
+  if (twoParts && pi.metadata.scheduleRecorded !== "1") {
+    // Logo a seguir ao carimbo da reserva (spec 5.5): sem esta linha ninguém
+    // cobraria a 2.ª parte. Falha → o settle lança e o sweep/webhook retoma.
+    await recordTwoPartsSchedule({ intentId, intent: m, pi, reservationId, confirmationCode, depositStayCents });
+    await updatePaymentIntentMetadata(paymentIntentId, { scheduleRecorded: "1" }).catch(() => {});
   }
 
   // O Guesty tem de receber o TOTAL da estadia do site (Ricardo, 21 ago): o
@@ -312,7 +490,9 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
   // Idempotente pelo carimbo no PI e, por baixo, pela nota com o id do PI no
   // próprio registo do Guesty (recordExternalPayment).
   if (pi.metadata.guestyPaymentRecorded !== "1") {
-    const outcome = await recordExternalPayment(reservationId, b.stayCents / 100, "EUR", paymentIntentId);
+    // Em duas partes só a metade da estadia paga hoje; o saldo regista-se
+    // quando for cobrado (Fase 2), nunca antes.
+    const outcome = await recordExternalPayment(reservationId, depositStayCents / 100, "EUR", paymentIntentId);
     if (outcome === "settled") {
       console.warn(
         `[Card2b] reserva=${reservationId}: saldo ja a zero sem registo visivel do PI ${paymentIntentId} — ` +
@@ -322,19 +502,32 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
     await updatePaymentIntentMetadata(paymentIntentId, { guestyPaymentRecorded: "1" }).catch(() => {});
   }
   if (pi.metadata.splitNoteAdded !== "1") {
-    const noted = await appendReservationNote(
-      reservationId,
-      `Checkout 2.0: pagamento unico ${(pi.amount / 100).toFixed(2)} EUR na plataforma ` +
+    // Quem abrir a reserva vê "Pending payment collection" e nao tem como
+    // saber que o saldo nao e divida do hospede. Fica dito aqui, ao lado.
+    const gapWarning = priceGap > 0
+      ? ` ATENCAO: o Guesty preca esta estadia ${priceGap.toFixed(2)} EUR acima do que o site cobrou, ` +
+        `e esse saldo aparece como "pending payment collection". NAO e divida do hospede: ` +
+        (twoParts
+          ? `alem da 2.a parte agendada, nao ha nada a pedir-lhe. `
+          : `ele pagou por inteiro o preco que lhe foi apresentado. `) +
+        `Nao lhe pedir pagamento nem dados de cartao. Diferenca a resolver internamente.`
+      : "";
+    // O NIF pedido no checkout tem de chegar a quem fatura (spec 5.13). O campo
+    // do Guesty que a Hostkit lê está por confirmar; até lá vai na nota, onde o
+    // CS o vê ao lado da reserva.
+    const nif = String((m as any).nif ?? "").trim();
+    const nifLine = nif ? ` NIF para a fatura: ${nif}.` : "";
+    const servicesEur = ((pi.amount - depositStayCents) / 100).toFixed(2);
+    const noteText = twoParts
+      ? `Checkout 2.0 em duas partes: 1.a parte ${(depositStayCents / 100).toFixed(2)} EUR registada (PI ${paymentIntentId}); ` +
+        `2.a parte ${(Number(pi.metadata.balanceCents) / 100).toFixed(2)} EUR agendada para ${lisbonDayLabel(pi.metadata.chargeAt)}, ` +
+        `cobrada AUTOMATICAMENTE pela plataforma. NAO cobrar no Guesty, NAO criar payment link, NAO pedir cartao ao hospede, ` +
+        `NAO alterar datas aqui (alterar pelo site/admin). Servicos ${servicesEur} EUR faturados pela Portugal Active.` +
+        gapWarning + nifLine
+      : `Checkout 2.0: pagamento unico ${(pi.amount / 100).toFixed(2)} EUR na plataforma ` +
         `(estadia ${(b.stayCents / 100).toFixed(2)} registada aqui; servicos ${((pi.amount - b.stayCents) / 100).toFixed(2)} faturados pela Portugal Active). PI ${paymentIntentId}.` +
-        // Quem abrir a reserva vê "Pending payment collection" e nao tem como
-        // saber que o saldo nao e divida do hospede. Fica dito aqui, ao lado.
-        (priceGap > 0
-          ? ` ATENCAO: o Guesty preca esta estadia ${priceGap.toFixed(2)} EUR acima do que o site cobrou, ` +
-            `e esse saldo aparece como "pending payment collection". NAO e divida do hospede: ele pagou ` +
-            `por inteiro o preco que lhe foi apresentado. Nao lhe pedir pagamento nem dados de cartao. ` +
-            `Diferenca a resolver internamente.`
-          : ""),
-    ).catch(() => false);
+        gapWarning + nifLine;
+    const noted = await appendReservationNote(reservationId, noteText).catch(() => false);
     if (noted) {
       await updatePaymentIntentMetadata(paymentIntentId, { splitNoteAdded: "1" }).catch(() => {});
     }
@@ -343,7 +536,15 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
   // caucao, danos, noites extra ou saldos — capacidade que o fluxo antigo
   // (BE instant com ccToken) tinha e o checkout 2.0 perdeu. Idempotente pelo
   // carimbo cardOnFile; fail-soft, nunca trava a reserva.
-  if (pi.metadata.cardOnFile !== "1") {
+  if (twoParts) {
+    // A plataforma é dona do cartão nas duas partes (spec 5.1): o cartão nunca
+    // entra na carteira do Guesty, nem depois do saldo. Um pm_ só pode estar
+    // num Customer, e no Guesty ficaria ao alcance da Auto-Payment com saldo
+    // aberto (o padrão do GY-WRBPgyUu).
+    if (pi.metadata.cardOnFile !== "platform") {
+      await updatePaymentIntentMetadata(paymentIntentId, { cardOnFile: "platform" }).catch(() => {});
+    }
+  } else if (pi.metadata.cardOnFile !== "1") {
     // GY-WRBPgyUu, 2 set 2026: o cartao entrou na carteira 60 segundos depois
     // do recordExternalPayment, e a politica de Auto-Payment da listagem — a
     // do fluxo antigo, nunca desligada — viu um cartao numa reserva cujo saldo
@@ -381,7 +582,9 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
     reservationId,
     confirmationCode,
   } as any);
-  await completeCheckoutIntent(intentId, reservationId, confirmationCode);
+  // Os emails e o manifesto mostram o Flex como foi cobrado, não como a
+  // oferta estaria agora (pode ter expirado desde o pagamento).
+  await completeCheckoutIntent(intentId, reservationId, confirmationCode, { flexGift: flexGiftAtPayment, at: paidAt });
   return { reservationId, confirmationCode };
 }
 
@@ -653,7 +856,26 @@ export async function alertFailedSettle(
     const step = kind === "final" ? "ÚLTIMO AVISO" : `aviso ${sent + 1} de ${SETTLE_ALERT_SCHEDULE_MS.length}`;
     const verify = pi ? "" : "VERIFICAR NO STRIPE · ";
     const guestLine = `Hóspede: ${[m.guestFirstName, m.guestLastName].filter(Boolean).join(" ") || "?"} · ${m.email || "?"} · ${m.guestPhone || "?"}`;
-    const stayLine = `Estadia: ${m.checkIn || "?"} → ${m.checkOut || "?"} · ${m.guests ?? "?"} hóspedes · estadia ${m.quote?.total ?? "?"} EUR`;
+    // Em duas partes, só a metade da estadia foi paga hoje: é esse o valor a
+    // registar à mão, nunca a estadia inteira (o saldo é cobrado mais tarde).
+    // Com o PI ilegível, o plano lê-se no intent: nunca mandar registar a
+    // estadia inteira numa reserva em que só se pagou metade.
+    const twoPartsPlan = meta ? meta.plan === "two_parts" : m.paymentPlan === "two_parts";
+    const twoPartsDeposit = twoPartsPlan && meta && Number(meta.depositStayCents) > 0
+      ? (Number(meta.depositStayCents) / 100).toFixed(2)
+      : null;
+    const twoPartsLine = !twoPartsPlan
+      ? ""
+      : twoPartsDeposit
+        ? ` · PAGAMENTO EM DUAS PARTES: pago hoje ${twoPartsDeposit} EUR da estadia; 2.ª parte ${(Number(meta!.balanceCents) / 100).toFixed(2)} EUR ` +
+          (meta!.scheduleRecorded === "1"
+            ? "agendada"
+            : "AINDA NÃO AGENDADA (sem esta linha ninguém a cobra; o settle grava-a quando voltar a correr)")
+        : " · PAGAMENTO EM DUAS PARTES: confirmar no Stripe quanto foi pago (metadata depositStayCents) antes de registar o que quer que seja";
+    const stayLine = `Estadia: ${m.checkIn || "?"} → ${m.checkOut || "?"} · ${m.guests ?? "?"} hóspedes · estadia ${m.quote?.total ?? "?"} EUR` + twoPartsLine;
+    const stayToRecord = twoPartsPlan
+      ? twoPartsDeposit ?? "a 1.ª parte da estadia indicada no Stripe (depositStayCents, nunca a estadia inteira)"
+      : (m.quote?.total ?? "a estadia");
     const unknownPi = pi
       ? []
       : [`Não foi possível ler este pagamento no Stripe agora: confirmar no Stripe que está pago antes de fazer o que quer que seja.`];
@@ -672,7 +894,7 @@ export async function alertFailedSettle(
           `Intent ${intentId} · PI ${paymentIntentId}`,
           `Erro: ${reason}`,
           kind === "final"
-            ? `O sweep automático deixa de tentar dentro de 1 hora. Resolver hoje: abrir a reserva no Guesty e, só se não existir um pagamento com "PaymentIntent: ${paymentIntentId}" na nota, registar ${m.quote?.total ?? "a estadia"} EUR como pagamento externo com essa nota.`
+            ? `O sweep automático deixa de tentar dentro de 1 hora. Resolver hoje: abrir a reserva no Guesty e, só se não existir um pagamento com "PaymentIntent: ${paymentIntentId}" na nota, registar ${stayToRecord} EUR como pagamento externo com essa nota.`
             : `O sweep automático continua a tentar de 10 em 10 minutos; nada a fazer por agora. Próximo aviso só se continuar a falhar.`,
         ]
       : [

@@ -2,15 +2,16 @@
  * Pagamento em duas partes: calendário e elegibilidade.
  * Regras e porquês em docs/pagamento_duas_partes.md (secções 2.1 e 2.3).
  *
- * Fase 0: só a matemática das datas, pura e testada. Ainda nada no checkout a
- * usa; alimenta o relatório de antecedência (npm run report:leadtime), que diz
- * que parte das reservas do site teria podido pagar em duas partes e calibra
- * os limiares antes de a opção ser mostrada a alguém.
+ * Fase 0: a matemática das datas, pura e testada, que alimenta o relatório de
+ * antecedência (npm run report:leadtime). Fase 1: instantes UTC das horas da
+ * regra, divisão exata, grupo de controlo e configuração por env, usados por
+ * computePaymentPlan (checkout-pricing.ts). Tudo puro, sem BD nem rede.
  *
  * Datas em YYYY-MM-DD no calendário de Lisboa, onde estão todas as casas. As
  * horas são fixas por regra (D até às 23:59, C às 10:00, H às 12:00, hora de
  * Lisboa) e só viram instantes UTC quando a cobrança for agendada (Fase 1).
  */
+import { createHash } from "crypto";
 import {
   FREE_CANCELLATION_DAYS,
   normalizePolicyCode,
@@ -116,6 +117,8 @@ export function twoPartsEligibility(input: {
   /** Dia da reserva no calendário de Lisboa (lisbonToday no checkout). */
   bookingDate: string;
   stayCents: number;
+  /** Mínimo configurado (CHECKOUT_TWO_PARTS_MIN_STAY_CENTS); por omissão o da regra. */
+  minStayCents?: number;
 }): TwoPartsEligibility {
   if (!isYmd(input.checkIn) || !isYmd(input.bookingDate)) {
     return { eligible: false, reason: "invalid", schedule: null };
@@ -125,8 +128,179 @@ export function twoPartsEligibility(input: {
   if (daysBetween(input.bookingDate, schedule.chargeDate) < TWO_PARTS_RULES.minDaysFromBookingToCharge) {
     return { eligible: false, reason: "lead_time", schedule };
   }
-  if (!Number.isFinite(input.stayCents) || input.stayCents < TWO_PARTS_RULES.minStayCents) {
+  const minStay = input.minStayCents ?? TWO_PARTS_RULES.minStayCents;
+  if (!Number.isFinite(input.stayCents) || input.stayCents < minStay) {
     return { eligible: false, reason: "min_stay", schedule };
   }
   return { eligible: true, schedule };
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Fase 1: instantes, divisão, grupo de controlo e configuração.
+   ════════════════════════════════════════════════════════════════ */
+
+/** Horas fixas por regra, no relógio de Lisboa (spec 2.3). */
+export const TWO_PARTS_TIMES = {
+  freeCancelDeadline: { hour: 23, minute: 59 },
+  charge: { hour: 10, minute: 0 },
+  hardStop: { hour: 12, minute: 0 },
+} as const;
+
+/** Desvio de Lisboa face a UTC, em minutos, num dado instante (0 no inverno, 60 no verão). */
+function lisbonOffsetMinutes(at: Date): number {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Lisbon",
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).formatToParts(at);
+  const get = (t: string) => Number(parts.find((p) => p.type === t)?.value);
+  const asUtc = Date.UTC(get("year"), get("month") - 1, get("day"), get("hour"), get("minute"));
+  return Math.round((asUtc - Math.floor(at.getTime() / 60_000) * 60_000) / 60_000);
+}
+
+/**
+ * Instante UTC de uma hora de parede em Lisboa. As horas da regra (10:00,
+ * 12:00, 23:59) nunca caem no salto da mudança de hora (01:00 a 02:00), por
+ * isso o desvio lido uma hora antes basta e é exato.
+ */
+export function lisbonWallTimeToUtc(ymd: string, hour: number, minute: number): Date {
+  if (!isYmd(ymd)) throw new Error(`data inválida: ${ymd}`);
+  const [y, m, d] = ymd.split("-").map(Number);
+  const naive = Date.UTC(y, m - 1, d, hour, minute);
+  const offset = lisbonOffsetMinutes(new Date(naive - 60 * 60_000));
+  const at = new Date(naive - offset * 60_000);
+  // Confirmação: o instante tem de voltar a dar a mesma hora de parede.
+  const back = lisbonOffsetMinutes(at);
+  return back === offset ? at : new Date(naive - back * 60_000);
+}
+
+export interface TwoPartsInstants {
+  /** D às 23:59 de Lisboa. */
+  freeCancelDeadlineAt: Date;
+  /** C às 10:00 de Lisboa. */
+  chargeAt: Date;
+  /** Retentativas às 10:00 de Lisboa. */
+  retryAt: Date[];
+  /** H às 12:00 de Lisboa (caso normal; o motor recalcula-o quando o aviso de falha sai). */
+  hardStopAt: Date;
+}
+
+export function twoPartsInstants(s: TwoPartsSchedule): TwoPartsInstants {
+  const t = TWO_PARTS_TIMES;
+  return {
+    freeCancelDeadlineAt: lisbonWallTimeToUtc(s.freeCancelDeadline, t.freeCancelDeadline.hour, t.freeCancelDeadline.minute),
+    chargeAt: lisbonWallTimeToUtc(s.chargeDate, t.charge.hour, t.charge.minute),
+    retryAt: s.retryDates.map((d) => lisbonWallTimeToUtc(d, t.charge.hour, t.charge.minute)),
+    hardStopAt: lisbonWallTimeToUtc(s.hardStopDate, t.hardStop.hour, t.hardStop.minute),
+  };
+}
+
+export interface TwoPartsSplit {
+  /** Metade da estadia, arredondada ao euro para cima. */
+  depositStayCents: number;
+  /** O que se paga hoje: metade da estadia + receção + extras + Flex, por inteiro. */
+  depositCents: number;
+  /** O que fica para a segunda cobrança: o resto exato da estadia. */
+  balanceCents: number;
+}
+
+/**
+ * Divisão exata (spec 2.2). Só a estadia se divide; a soma das duas partes é
+ * sempre o total, ao cêntimo. Os valores vêm do breakdown do servidor.
+ */
+export function splitTwoParts(b: {
+  stayCents: number;
+  receptionCents: number;
+  extrasCents: number;
+  flexCents: number;
+}): TwoPartsSplit {
+  for (const v of [b.stayCents, b.receptionCents, b.extrasCents, b.flexCents]) {
+    if (!Number.isSafeInteger(v) || v < 0) throw new Error(`valor inválido para dividir: ${v}`);
+  }
+  const depositStayCents = Math.min(b.stayCents, Math.ceil(b.stayCents / 2 / 100) * 100);
+  return {
+    depositStayCents,
+    depositCents: depositStayCents + b.receptionCents + b.extrasCents + b.flexCents,
+    balanceCents: b.stayCents - depositStayCents,
+  };
+}
+
+/**
+ * Grupo de controlo determinístico: o mesmo intent cai sempre do mesmo lado,
+ * em qualquer instância e em qualquer recarregamento da página.
+ */
+export function inTwoPartsHoldout(intentId: string, fraction: number): boolean {
+  if (!(fraction > 0)) return false;
+  if (fraction >= 1) return true;
+  const hex = createHash("sha256").update(`two-parts-holdout:${intentId}`).digest("hex").slice(0, 8);
+  return parseInt(hex, 16) / 0x1_0000_0000 < fraction;
+}
+
+export type FullPaymentIncentive = "flex" | "discount" | "none";
+
+/**
+ * O motor da segunda cobrança (Fase 2) ainda não existe. Enquanto isto for
+ * false, nenhum pagamento real (Stripe live) pode ser feito em duas partes,
+ * mesmo com a flag ligada por engano: haveria metades por cobrar sem ninguém
+ * para as cobrar. Em modo de teste da Stripe a opção funciona, para os testes.
+ */
+export const TWO_PARTS_BALANCE_ENGINE_READY = false;
+
+export interface TwoPartsConfig {
+  /** CHECKOUT_TWO_PARTS=true */
+  enabled: boolean;
+  /** Chave Stripe live (sk_live_/rk_live_). Sem chave conta como live: na dúvida, fechado. */
+  livemode: boolean;
+  engineReady: boolean;
+  holdout: number;
+  minStayCents: number;
+  incentive: FullPaymentIncentive;
+  /** Avisos de configuração (valores recusados), para o log do arranque. */
+  warnings: string[];
+}
+
+export function readTwoPartsConfig(env: NodeJS.ProcessEnv = process.env): TwoPartsConfig {
+  const warnings: string[] = [];
+  const key = String(env.STRIPE_SECRET_KEY ?? "");
+  const livemode = !/^(sk|rk)_test_/.test(key);
+  const holdoutRaw = env.CHECKOUT_TWO_PARTS_HOLDOUT;
+  let holdout = 0.1;
+  if (holdoutRaw != null && holdoutRaw !== "") {
+    const n = Number(holdoutRaw);
+    if (Number.isFinite(n) && n >= 0 && n <= 1) holdout = n;
+    else warnings.push(`CHECKOUT_TWO_PARTS_HOLDOUT inválido (${holdoutRaw}); fica 0.10`);
+  }
+  const minRaw = env.CHECKOUT_TWO_PARTS_MIN_STAY_CENTS;
+  let minStayCents: number = TWO_PARTS_RULES.minStayCents;
+  if (minRaw != null && minRaw !== "") {
+    const n = Number(minRaw);
+    if (Number.isSafeInteger(n) && n >= 10_000) minStayCents = n;
+    else warnings.push(`CHECKOUT_TWO_PARTS_MIN_STAY_CENTS inválido (${minRaw}); fica ${TWO_PARTS_RULES.minStayCents}`);
+  }
+  const incRaw = String(env.FULL_PAYMENT_INCENTIVE ?? "").trim().toLowerCase();
+  let incentive: FullPaymentIncentive = "flex";
+  if (incRaw === "none") incentive = "none";
+  else if (incRaw === "discount") {
+    // Opção B (1%): a matemática existe e está testada, mas o acerto do folio
+    // no Guesty (ajuste negativo ao AF via Price Adjustments) não foi provado
+    // com dinheiro real (teste de 1 € da Fase 0, alínea d). Sem esse acerto o
+    // folio ficava acima do cobrado e o CS via dívida falsa. Até lá, recusa.
+    incentive = "none";
+    warnings.push("FULL_PAYMENT_INCENTIVE=discount ainda não está disponível (acerto do folio Guesty por provar); fica none");
+  } else if (incRaw && incRaw !== "flex") {
+    warnings.push(`FULL_PAYMENT_INCENTIVE desconhecido (${incRaw}); fica flex`);
+  }
+  return {
+    enabled: env.CHECKOUT_TWO_PARTS === "true",
+    livemode,
+    engineReady: TWO_PARTS_BALANCE_ENGINE_READY,
+    holdout,
+    minStayCents,
+    incentive,
+    warnings,
+  };
 }

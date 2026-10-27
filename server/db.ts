@@ -1,5 +1,5 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
-import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
+import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, isNull, gt, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -20,6 +20,9 @@ import {
   customerTrips, InsertCustomerTrip,
   propertyReferrals, InsertPropertyReferral,
   bookingIntents, InsertBookingIntent, BookingIntent,
+  checkoutScheduledPayments, CheckoutScheduledPayment, InsertCheckoutScheduledPayment,
+  checkoutCardMandates, InsertCheckoutCardMandate,
+  stripeWebhookEvents,
   webVitals, InsertWebVital,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -1117,6 +1120,226 @@ export async function claimRecoveryStage(
   } catch (error) {
     console.error("[Database] claimRecoveryStage failed:", error);
     return false;
+  }
+}
+
+/* ================================================================
+   PAGAMENTO EM DUAS PARTES — Fase 1 (docs/pagamento_duas_partes.md, 5.2)
+   Tabelas criadas no arranque (services/two-parts-migrations.ts).
+   ================================================================ */
+
+function affectedRowsOf(res: any): number {
+  const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;
+  return affected ?? 0;
+}
+
+/** Chave única repetida (ER_DUP_ENTRY, 1062). O drizzle embrulha o erro do
+ *  mysql2 num "Failed query: …" com o original em .cause. A mensagem do
+ *  drizzle traz os parâmetros (telefone, nome da casa): o texto só se lê no
+ *  erro do driver, nunca no embrulho, para um valor escrito pelo hóspede não
+ *  fazer passar uma falha verdadeira por "já existe". */
+function isDuplicateEntryError(err: any): boolean {
+  const driver = err?.cause ?? err;
+  if (driver?.code === "ER_DUP_ENTRY" || driver?.errno === 1062) return true;
+  // A mensagem do MySQL começa por "Duplicate entry"; a do embrulho começa por
+  // "Failed query" e é a que traz os parâmetros, por isso nunca se lê.
+  return /^Duplicate entry /i.test(String(driver?.message ?? ""));
+}
+
+/** Corta por caracteres, não por unidades UTF-16: o varchar(500) do MySQL
+ *  conta caracteres e um par substituto partido ao meio não é texto válido. */
+function truncateChars(text: string, max: number): string {
+  const chars = Array.from(text);
+  return chars.length > max ? chars.slice(0, max).join("") : text;
+}
+
+/**
+ * Grava o customer Stripe do intent, uma vez. Só escreve se o intent ainda
+ * não está pago e não tem outro customer: dois pedidos em paralelo com
+ * customers diferentes não podem trocar o cartão guardado debaixo de um PI
+ * já criado. true se gravou ou se a linha já tem exatamente este id (o
+ * customer é criado com idempotency key por intent, por isso a repetição
+ * devolve o mesmo); false sem BD, com outro customer ou com erro.
+ */
+export async function setIntentStripeCustomer(intentId: string, customerId: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    const res: any = await db
+      .update(bookingIntents)
+      .set({ stripeCustomerId: customerId })
+      .where(and(
+        eq(bookingIntents.id, intentId),
+        ne(bookingIntents.status, "paid"),
+        or(isNull(bookingIntents.stripeCustomerId), eq(bookingIntents.stripeCustomerId, customerId)),
+      ));
+    if (affectedRowsOf(res) > 0) return true;
+    // affectedRows 0 também pode ser "já tinha este id" num MySQL que conte
+    // só linhas alteradas: confirma na linha antes de dizer que falhou.
+    const rows = await db
+      .select({ stripeCustomerId: bookingIntents.stripeCustomerId })
+      .from(bookingIntents)
+      .where(eq(bookingIntents.id, intentId))
+      .limit(1);
+    return rows[0]?.stripeCustomerId === customerId;
+  } catch (error) {
+    console.error("[Database] setIntentStripeCustomer failed:", error);
+    return false;
+  }
+}
+
+/**
+ * Regista a prova do mandato (spec 6.2). "exists" quando o mesmo PI já tem
+ * mandato (retoma do pagamento, duplo clique): o primeiro registo é o que
+ * vale. Sem BD ou com outro erro lança: sem prova do mandato não se pode
+ * guardar o cartão para cobrar mais tarde.
+ */
+export async function insertCardMandate(row: InsertCheckoutCardMandate): Promise<"inserted" | "exists"> {
+  const db = await getDb();
+  if (!db) throw new Error("Cannot record card mandate without database");
+  try {
+    await db.insert(checkoutCardMandates).values(row);
+    return "inserted";
+  } catch (error) {
+    if (isDuplicateEntryError(error)) return "exists";
+    throw error;
+  }
+}
+
+/**
+ * No settle, liga os mandatos do checkout deste intent ao agendamento e ao
+ * cartão que a Stripe confirmou (no createCardCharge o cartão ainda não é
+ * conhecido). Só toca em mandatos ainda por ligar e nunca nos de troca de
+ * cartão. Nunca lança: o agendamento já existe e a ligação é rastreio, que
+ * se refaz a partir do intent; uma falha aqui não pode travar o settle.
+ */
+export async function linkCardMandatesToSchedule(
+  intentId: string,
+  paymentIntentId: string,
+  scheduledPaymentId: string,
+  paymentMethodId: string,
+  cardLast4: string | null,
+): Promise<void> {
+  const db = await getDb();
+  if (!db) { console.warn("[Database] Cannot link card mandates: database not available"); return; }
+  try {
+    await db
+      .update(checkoutCardMandates)
+      // Sem last4 não se apaga um que já lá esteja.
+      .set({ scheduledPaymentId, paymentMethodId, ...(cardLast4 ? { cardLast4 } : {}) })
+      .where(and(
+        eq(checkoutCardMandates.intentId, intentId),
+        // Só o mandato do PI que foi pago: os de PIs cancelados (outro valor,
+        // outra data) ficam como registo do que foi aceite e nunca cobrado.
+        eq(checkoutCardMandates.paymentIntentId, paymentIntentId),
+        isNull(checkoutCardMandates.scheduledPaymentId),
+        eq(checkoutCardMandates.source, "checkout"),
+      ));
+  } catch (error) {
+    console.error("[Database] linkCardMandatesToSchedule failed:", error);
+  }
+}
+
+/**
+ * Agenda a 2.ª parte: uma linha por intent (UNIQUE intent_id). "exists"
+ * quando um settle anterior já agendou (retoma pelo sweep, webhook e
+ * redirect em paralelo). Sem BD ou com outro erro lança, para o settle
+ * falhar e o sweep o retomar: um depósito cobrado sem saldo agendado é
+ * dinheiro que nunca se cobraria.
+ */
+export async function insertScheduledPayment(row: InsertCheckoutScheduledPayment): Promise<"inserted" | "exists"> {
+  const db = await getDb();
+  if (!db) throw new Error("Cannot schedule balance payment without database");
+  try {
+    await db.insert(checkoutScheduledPayments).values(row);
+    return "inserted";
+  } catch (error) {
+    if (isDuplicateEntryError(error)) return "exists";
+    throw error;
+  }
+}
+
+/** Agendamento do intent, ou null sem BD. Outros erros propagam: quem chama
+ *  não pode confundir "BD falhou" com "não há agendamento". */
+export async function getScheduledPaymentByIntent(intentId: string): Promise<CheckoutScheduledPayment | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db
+    .select()
+    .from(checkoutScheduledPayments)
+    .where(eq(checkoutScheduledPayments.intentId, intentId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+/**
+ * Deduplicação dos webhooks Stripe (spec 5.4): insert antes de processar.
+ * fresh = primeira vez que se vê o evento; processed = já foi tratado até
+ * ao fim (reentrega a ignorar). Uma reentrega de um evento que falhou a
+ * meio volta com processed=false e processa-se outra vez. Fail-open: sem
+ * BD ou com erro devolve null e o webhook segue como antes desta tabela
+ * (o settle tem a sua própria idempotência).
+ */
+export async function recordStripeWebhookEvent(e: {
+  eventId: string;
+  type: string;
+  livemode: boolean;
+}): Promise<{ fresh: boolean; processed: boolean } | null> {
+  const db = await getDb();
+  if (!db) return null;
+  try {
+    await db.insert(stripeWebhookEvents).values({
+      eventId: e.eventId,
+      type: truncateChars(e.type, 64),
+      livemode: e.livemode,
+    });
+    return { fresh: true, processed: false };
+  } catch (error) {
+    if (!isDuplicateEntryError(error)) {
+      console.error("[Database] recordStripeWebhookEvent failed:", error);
+      return null;
+    }
+  }
+  try {
+    const rows = await db
+      .select({ processedAt: stripeWebhookEvents.processedAt })
+      .from(stripeWebhookEvents)
+      .where(eq(stripeWebhookEvents.eventId, e.eventId))
+      .limit(1);
+    return { fresh: false, processed: rows[0]?.processedAt != null };
+  } catch (error) {
+    console.error("[Database] recordStripeWebhookEvent read failed:", error);
+    return null;
+  }
+}
+
+/** Evento tratado até ao fim. Nunca lança: o webhook já respondeu e, no
+ *  pior caso, uma reentrega volta a processar (os efeitos são idempotentes). */
+export async function markStripeWebhookEventProcessed(eventId: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  try {
+    await db
+      .update(stripeWebhookEvents)
+      .set({ processedAt: new Date(), lastError: null })
+      .where(eq(stripeWebhookEvents.eventId, eventId));
+  } catch (error) {
+    console.error("[Database] markStripeWebhookEventProcessed failed:", error);
+  }
+}
+
+/** Guarda o último erro do evento (processed_at fica NULL, a reentrega
+ *  processa outra vez). Nunca lança. */
+export async function markStripeWebhookEventFailed(eventId: string, error: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  try {
+    await db
+      .update(stripeWebhookEvents)
+      .set({ lastError: truncateChars(String(error ?? ""), 500) })
+      .where(eq(stripeWebhookEvents.eventId, eventId));
+  } catch (err) {
+    console.error("[Database] markStripeWebhookEventFailed failed:", err);
   }
 }
 

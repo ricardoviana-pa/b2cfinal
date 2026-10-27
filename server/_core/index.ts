@@ -30,6 +30,7 @@ import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
 import { runDatesOpenedAlerts } from "../services/dates-opened-alert";
 import { applyCleaningFeeFix } from "../services/cleaning-fee-sync";
+import { runTwoPartsMigrations, scheduleTwoPartsSchemaRetry, TwoPartsSchemaError, verifyTwoPartsColumns } from "../services/two-parts-migrations";
 import cron from "node-cron";
 import { legacyRedirects } from "../lib/redirects.js";
 import { isNonIndexableHost } from "../lib/hosts.js";
@@ -538,6 +539,7 @@ ${allUrls.join("\n")}
 
   // Checkout 2.0 (Fase 1): booking_intents — server-side checkout state.
   // Same idempotent boot-migration pattern as property_referrals above.
+  let twoPartsSchemaVerified = false;
   try {
     const { getDb } = await import("../db");
     const db = await getDb();
@@ -632,10 +634,63 @@ ${allUrls.join("\n")}
           }
         }
       }
+      // Pagamento em duas partes (Fase 1, dormente): colunas novas em
+      // booking_intents e as tabelas do motor (services/two-parts-migrations.ts).
+      // Cada passo é independente e tolera "já existe".
+      const executeTwoParts = (q: string) => (db as any).execute(q);
+      const twoParts = await runTwoPartsMigrations(executeTwoParts);
+      console.info(
+        `[Migration] two-parts: added=[${twoParts.added.join(", ")}] ` +
+          `existing=${twoParts.existing.length} failed=${twoParts.failed.length}`,
+      );
+      for (const f of twoParts.failed) console.warn(`[Migration] two-parts ${f.step}:`, f.error);
+      // O select de getBookingIntent passa a pedir as colunas novas: se
+      // faltarem, partem TODOS os checkouts. Lança TwoPartsSchemaError, que
+      // o catch abaixo transforma em saída antes do listen.
+      twoPartsSchemaVerified = await verifyTwoPartsColumns(executeTwoParts);
       console.info("[Migration] booking_intents table OK");
     }
   } catch (migErr: any) {
+    if (migErr instanceof TwoPartsSchemaError) {
+      // Fail-closed, como o preview-isolation: este arranque morre antes do
+      // server.listen, o health check falha e o Render mantém no ar a versão
+      // anterior (que não pede estas colunas). Nunca servir com o esquema a
+      // meio.
+      console.error(`[Migration] FATAL: ${migErr.message}. Arranque abortado para não partir o checkout.`);
+      process.exit(1);
+    }
     console.warn("[Migration] booking_intents:", migErr.message);
+  }
+  // BD em baixo no arranque: as migrações não correram ou não se confirmaram.
+  // Repetem-se em segundo plano até o esquema estar confirmado, para o select
+  // de getBookingIntent não ficar a pedir colunas que não existem.
+  if (!twoPartsSchemaVerified && process.env.DATABASE_URL) {
+    scheduleTwoPartsSchemaRetry(
+      async () => {
+        const { getDb } = await import("../db");
+        const db = await getDb();
+        return db ? (q: string) => (db as any).execute(q) : null;
+      },
+      (() => {
+        const alert = (lines: string[]) =>
+          import("../services/transactional-email")
+            .then(({ sendOpsAlert }) =>
+              sendOpsAlert("CHECKOUT EM RISCO: colunas do pagamento em duas partes por confirmar", lines, { copyToSales: true }),
+            )
+            .catch(() => {});
+        return {
+          onSchemaMissing: (err: Error) => void alert([
+            `O servidor arrancou com a BD em baixo e, quando ela voltou, a migração de booking_intents não ficou feita.`,
+            `Enquanto as colunas faltarem, abrir ou pagar um checkout falha. Fazer um novo deploy (ou reiniciar o serviço) resolve se a BD estiver de pé.`,
+            `Erro: ${err.message}`,
+          ]),
+          onGiveUp: (attempts: number) => void alert([
+            `O servidor arrancou com a BD em baixo e, ao fim de ${attempts} tentativas, ainda não confirmou as colunas de booking_intents.`,
+            `Se a BD já estiver de pé, abrir ou pagar um checkout pode estar a falhar: fazer um novo deploy (ou reiniciar o serviço).`,
+          ]),
+        };
+      })(),
+    );
   }
 
   // Origem da visita (UTM, tipo de clique, domínio de origem, página de
