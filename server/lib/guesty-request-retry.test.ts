@@ -9,6 +9,14 @@ vi.mock("../db", () => ({
   upsertSetting: vi.fn(async () => {}),
 }));
 
+// O CI corre com APP_ENV=preview, e aí o cliente recusa-se a falar com o
+// Guesty antes de chegar à lógica de repetição que este ficheiro testa. O
+// isolamento de previews tem os seus próprios testes (preview-isolation.test.ts).
+vi.mock("./preview-isolation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./preview-isolation")>()),
+  isPreviewDeployment: () => false,
+}));
+
 import { guestyClient, isAmbiguousGuestyFailure } from "./guesty";
 
 const ok = () => new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "Content-Type": "application/json" } });
