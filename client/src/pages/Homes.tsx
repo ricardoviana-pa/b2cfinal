@@ -25,7 +25,7 @@ import { hasConfirmedQuote, sortSearchResults } from '@/lib/homeSearch';
 import { parseHomeFacets, matchesFacets, matchesBudget, nightlyRate, countFacetOptions, activeFacetCount, FACET_PARAM_KEYS, FEATURE_KEYS, type FeatureKey } from '@/lib/homeFacets';
 import HomesFilterRail, { type CatalogueView, type FilterToken } from '@/components/homes/HomesFilterRail';
 import { openDatePickerWithin } from '@/lib/datePicker';
-import { pushDL, pushEcommerce } from '@/lib/datalayer';
+import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
@@ -48,7 +48,7 @@ interface LiveQuote {
 export default function Homes() {
   const measurementAllowed = useMeasurementConsent();
   const { t, i18n } = useTranslation();
-  usePageMeta({ title: 'Luxury Holiday Homes in Portugal | Private Villas & Premium Rentals', description: 'Handpicked luxury holiday homes across Portugal. Each property managed to five-star hotel standards. Porto, Lisbon, Algarve, Douro and Minho.', image: IMAGES.heroHomes, url: '/homes' });
+  usePageMeta({ title: 'Villa Rentals & Holiday Homes in Portugal', description: 'Browse luxury villas and holiday homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
   const searchString = useSearch();
   const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
@@ -303,7 +303,7 @@ export default function Homes() {
         const items = Array.from(pendingItemsRef.current.values())
           .sort((a, b) => a.index - b.index)
           .map(({ property, index }) => ({
-            item_id: `PROP-${property.id}`,
+            item_id: `PROP-${propertyCatalogId(property)}`,
             item_name: property.name,
             item_category: 'villa',
             item_category2: property.locality || property.destination || '',
@@ -498,7 +498,7 @@ export default function Homes() {
       <section className="container pt-24 md:pt-28 pb-4 md:pb-5">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <div className="min-w-0 lg:shrink-0">
-            <h1 className="headline-lg text-pa-dark whitespace-nowrap">{collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title')}</h1>
+            <h1 className="headline-lg text-pa-dark break-words">{collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title')}</h1>
             <p className="body-sm text-pa-stone mt-1.5 max-w-lg">{t('conversion.homesIntro')}</p>
           </div>
           {/* Desktop — pill (same as homepage) */}

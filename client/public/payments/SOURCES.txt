@@ -1,0 +1,35 @@
+Payment artwork updated on 2026-10-11 following Ricardo's request.
+
+Apple Pay: unmodified official SVG from
+https://developer.apple.com/apple-pay/marketing/Apple-Pay-Mark.zip
+
+Google Pay: unmodified official acceptance mark SVG from
+https://developers.google.com/static/pay/api/download-assets/Google-Pay-Acceptance.zip
+
+American Express: official SMALLscale alternate SVG from
+https://www.americanexpress.com/content/dam/amex/us/merchant/supplies-uplift/product/digital/WEBLOGO1IT.zip
+Text encoding converted from UTF-16 to UTF-8. SVG line endings and trailing
+whitespace normalized. Artwork unchanged.
+
+PayPal: current official black wordmark PNG from
+https://newsroom.paypal-corp.com/download/PayPal-Logo-Black-2024.zip
+
+Klarna: official pink SVG from
+https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg
+
+Visa and Mastercard: existing vector marks retained and enlarged.
+Original proportions and built-in clear space are preserved for all marks.
+
+2026-10-14 — consistent card frames following Ricardo's visual feedback:
+- All seven outer frames now share dimensions, radius and border in CSS.
+- marks/apple-pay.svg and marks/klarna.svg retain the previous official
+  lettering, with the standalone badge background supplied by the shared frame.
+- marks/amex.svg uses the complete core wordmark, not the cropped alternate:
+  https://www.aexp-static.com/cdaas/one/statics/axp-static-assets/1.8.0/package/dist/img/logos/dls-logo-bluebox-solid.svg
+  Blue box background supplied by the shared frame; wordmark geometry unchanged.
+- marks/paypal-blue.png is the blue monogram + wordmark from PayPal:
+  https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-200px.png
+- marks/google-pay.svg uses the mark from ActiveMerchant/Shopify payment_icons,
+  revision fc8c830a5ca576553df88bf364fd449ea7b4f069, with the original frame
+  replaced by our shared frame. MIT license retained in marks/MIT-LICENSE.txt.
+  https://github.com/activemerchant/payment_icons/blob/fc8c830a5ca576553df88bf364fd449ea7b4f069/app/assets/images/payment_icons/google_pay.svg

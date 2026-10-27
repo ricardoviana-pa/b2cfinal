@@ -14,7 +14,7 @@ export function articleHeadings(content: string) {
     const count = (used.get(base) || 0) + 1;
     used.set(base, count);
     return [
-      { index, title, id: `guide-${base}${count > 1 ? `-${count}` : ""}` },
+      { index, title, level: match[1].length, id: `guide-${base}${count > 1 ? `-${count}` : ""}` },
     ];
   });
 }

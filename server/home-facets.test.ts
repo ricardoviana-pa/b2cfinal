@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { sortProperties } from '../client/src/lib/utils';
+import { CURATED_PROPERTY_ORDER, PINNED_LAST_GUESTY_IDS } from '../client/src/config/propertyOrder';
 import { countFacetOptions, matchesFacets, parseHomeFacets, activeFacetCount } from '../client/src/lib/homeFacets';
 import type { Property } from '../client/src/lib/types';
 
@@ -20,6 +21,25 @@ describe('catalogue order', () => {
     expect(sortProperties(list, 'recommended').map((p) => p.guestyId)).toEqual(['v1', 'h1', 'a1', 'a2']);
     // Price sorts stay pure price.
     expect(sortProperties(list, 'price-asc')[0].guestyId).toBe('a1');
+  });
+
+  it('closes each block with the pinned-last homes, behind the uncurated ones', () => {
+    const [shoreline, coastal] = [...PINNED_LAST_GUESTY_IDS];
+    const list = [
+      home({ guestyId: coastal, propertyType: 'House' }),
+      home({ guestyId: shoreline, propertyType: 'Apartment' }),
+      home({ guestyId: 'uncurated-house', propertyType: 'House' }),
+      home({ guestyId: 'uncurated-flat', propertyType: 'Apartment' }),
+      home({ guestyId: CURATED_PROPERTY_ORDER[0], propertyType: 'House' }),
+    ];
+    expect(sortProperties(list, 'recommended').map((p) => p.guestyId)).toEqual([
+      CURATED_PROPERTY_ORDER[0], 'uncurated-house', coastal,
+      'uncurated-flat', shoreline,
+    ]);
+  });
+
+  it('keeps the pinned-last homes out of the curated tier', () => {
+    for (const id of PINNED_LAST_GUESTY_IDS) expect(CURATED_PROPERTY_ORDER).not.toContain(id);
   });
 });
 

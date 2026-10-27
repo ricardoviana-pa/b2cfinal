@@ -252,12 +252,17 @@ async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
   }
 }
 
-/** Alerta ao concierge: abandono no pagamento de valor alto (uma vez). */
-async function maybeAlertConcierge(intent: BookingIntent, ageMs: number): Promise<void> {
+function conciergeAlertDue(intent: BookingIntent, ageMs: number): boolean {
   const total = Number((intent.quote as QuoteSnap | null)?.total ?? 0);
-  if (intent.status !== "payment_pending" || total < CONCIERGE_ALERT_MIN_TOTAL) return;
-  if ((intent as any).conciergeAlerted || !intent.guestPhone) return;
-  if (ageMs < RECOVERY_TIMING.stage1AfterMs || ageMs > 48 * HOUR_MS) return;
+  return intent.status === "payment_pending" && total >= CONCIERGE_ALERT_MIN_TOTAL &&
+    !intent.conciergeAlerted && !!intent.guestPhone &&
+    ageMs >= RECOVERY_TIMING.stage1AfterMs && ageMs <= 48 * HOUR_MS;
+}
+
+/** Alerta ao concierge: abandono verificado no pagamento de valor alto (uma vez). */
+async function maybeAlertConcierge(intent: BookingIntent, ageMs: number): Promise<void> {
+  if (!conciergeAlertDue(intent, ageMs) || !intent.guestPhone) return;
+  const total = Number((intent.quote as QuoteSnap | null)?.total ?? 0);
   if (!await claimConciergeAlert(intent.id)) return;
   await sendConciergeCallAlert({
     intentId: intent.id,
@@ -281,6 +286,8 @@ async function maybeAlertConcierge(intent: BookingIntent, ageMs: number): Promis
 export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checked: number }> {
   let sent = 0;
   let checked = 0;
+  // Resumo por passagem nos logs: sem isto, um funil parado não deixa rasto.
+  const skip = { notDue: 0, holdout: 0, notRemindable: 0, deferred: 0, failed: 0 };
   // Check before reading or claiming anything in the shared database.
   if (!canSendCheckoutRecovery()) return { sent, checked };
   try {
@@ -294,24 +301,29 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       const stage = intent.recoveryStage ?? 0;
       const quoteValid = !!intent.expiresAt && intent.expiresAt.getTime() > now;
 
-      // O alerta humano vale para todos (inclui o grupo de controlo): o
-      // controlo mede os emails automáticos, não a chamada do concierge.
-      await maybeAlertConcierge(intent, ageMs);
-
       // O consentimento só importa depois de a cotação expirar (contactos 3/4)
       const needsConsent = !quoteValid || ageMs >= RECOVERY_TIMING.stage3AfterMs;
       const consent = needsConsent ? await hasNewsletterConsent(intent.email) : false;
       let target = nextRecoveryStage({ stage, ageMs, quoteValid, consent });
-      if (!target) continue;
-      if (isRecoveryHoldout(intent.id)) continue;
+      const holdout = isRecoveryHoldout(intent.id);
+      const alertDue = conciergeAlertDue(intent, ageMs);
+      if (!target && !alertDue) { skip.notDue++; continue; }
+      if (holdout && !alertDue) { skip.holdout++; continue; }
 
       try {
-        if (!await canRemindRecoveryStay(intent)) continue;
+        if (!await canRemindRecoveryStay(intent)) { skip.notRemindable++; continue; }
       } catch {
+        skip.deferred++;
         // Leave the stage unclaimed so a later sweep can retry verification.
         console.warn('[Recovery] Stay verification unavailable; reminder deferred');
         continue;
       }
+
+      // Human alerts include the control group, but must obey the same
+      // booked/superseded-stay protection before an alert is claimed.
+      await maybeAlertConcierge(intent, ageMs);
+      if (!target) { skip.notDue++; continue; }
+      if (holdout) { skip.holdout++; continue; }
 
       // Preparação específica de cada contacto, antes do claim: se o Guesty
       // falhar, adia-se sem perder o contacto.
@@ -320,7 +332,7 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       let flexGift: { until: Date; value: number; days: number } | null = null;
       if (target === 3) {
         const rq = await requoteForStage3(intent);
-        if (!rq) continue;
+        if (!rq) { skip.deferred++; continue; }
         if (rq.kind === "unavailable") {
           target = 4; // datas perdidas: saltar para as alternativas
         } else {
@@ -362,11 +374,18 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
         sent++;
         console.info(`[Recovery] Contacto ${target} (${STAGE_TAG[target]}) enviado para intent ${intent.id}`);
       } catch (err: any) {
+        skip.failed++;
         console.error(`[Recovery] Send failed for intent ${intent.id}:`, err?.message ?? err);
       }
     }
   } catch (err: any) {
     console.warn("[Recovery] Sweep failed:", err?.message ?? err);
+  }
+  if (checked > 0) {
+    console.info(
+      `[Recovery] Sweep: ${checked} candidatos, ${sent} enviados · por enviar: ${skip.notDue} sem contacto devido, ` +
+        `${skip.holdout} controlo, ${skip.notRemindable} reservados/substituídos, ${skip.deferred} adiados (Guesty), ${skip.failed} falhas de envio`,
+    );
   }
   return { sent, checked };
 }

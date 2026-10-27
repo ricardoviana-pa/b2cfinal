@@ -7,7 +7,8 @@ import Footer from "@/components/layout/Footer";
 import { fetchReservation } from "@/lib/booking-api";
 import { pushDL } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
-import { reservationStatusLabel } from "@/lib/cancellation";
+import { reservationStatusLabel, cancellationPolicyCopy } from "@/lib/cancellation";
+import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
 
 export default function BookingConfirmationPage() {
   const { t, i18n } = useTranslation();
@@ -91,6 +92,16 @@ export default function BookingConfirmationPage() {
                   <div>
                     <p className="text-pa-stone-aa mb-1">{t('bookingConfirmation.total')}</p>
                     <p className="text-pa-dark">{formatEurCents(data.totalCents, lang, t('bookingConfirmation.toConfirm'))}</p>
+                  </div>
+                  {/* Policy of the booking's rate plan, read from Guesty */}
+                  <div className="md:col-span-2">
+                    <p className="text-pa-stone-aa mb-1">{cancellationPolicyCopy(lang).label}</p>
+                    <CancellationPolicyLine
+                      code={data.cancellationPolicy}
+                      checkIn={data.checkIn}
+                      lang={lang}
+                      className="text-pa-dark"
+                    />
                   </div>
                 </div>
               </div>

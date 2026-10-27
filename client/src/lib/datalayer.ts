@@ -5,7 +5,11 @@
    - ecommerce object is always cleared before each ecommerce event
    ========================================================================== */
 
-import { hasMeasurementConsent } from './measurementConsent';
+import { dataLayerDebugEnabled, hasMeasurementConsent } from './measurementConsent';
+import { isLiveSiteHostname } from '@shared/deployment';
+
+/** Purchases already reported in this document without consent (memory only). */
+const cookielessPurchases = new Set<string>();
 
 /** Map service slug → GA4 item_category2 and ADDON ID prefix */
 export const ADDON_PREFIX: Record<string, string> = {
@@ -19,11 +23,27 @@ export const ADDON_PREFIX: Record<string, string> = {
   'daily-housekeeping': 'ADDON-HSK',
 };
 
+/**
+ * Id da casa no catálogo da Meta (scripts/meta-catalog.mjs: `id` = guestyId).
+ * O `id` interno das propriedades vem como "guesty-<id>"; o item GA4 usa
+ * PROP-<guestyId> em todo o funil e as tags Meta do GTM tiram o prefixo PROP-
+ * para os content_ids. Assim ViewContent, InitiateCheckout e Purchase batem
+ * com o catálogo.
+ */
+export function propertyCatalogId(property: { id?: string | number | null; guestyId?: string | null }): string {
+  return String(property.guestyId || property.id || '').replace(/^guesty-/, '');
+}
+
+function debugLog(event: Record<string, unknown>): void {
+  if (dataLayerDebugEnabled()) console.info('[dataLayer]', event.event, event);
+}
+
 /** Push any event to the dataLayer */
 export function pushDL(event: Record<string, unknown>): void {
   if (!hasMeasurementConsent()) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(event);
+  debugLog(event);
 }
 
 /** Push an ecommerce event — automatically clears the previous ecommerce object first */
@@ -32,6 +52,30 @@ export function pushEcommerce(event: Record<string, unknown>): void {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ ecommerce: null });
   window.dataLayer.push(event);
+  debugLog(event);
+}
+
+/** Item comprado no checkout além da estadia (extra, receção, Flex). */
+export type PurchaseExtraItem = { price?: number | null; quantity?: number | null } & Record<string, unknown>;
+
+/** Soma price × quantity dos itens, arredondada ao cêntimo. */
+export function sumItems(items: PurchaseExtraItem[] | null | undefined): number {
+  const total = (items ?? []).reduce((s, it) => s + (Number(it.price) || 0) * (Number(it.quantity) || 1), 0);
+  return Math.round(total * 100) / 100;
+}
+
+/**
+ * Valor da reserva para o `purchase`: só a estadia (alojamento, limpeza,
+ * taxas, já com o desconto do código), sem extras, receção nem Flex. É o
+ * valor que vai para GA4, Google Ads e Meta (decisão de 10/10/2026). Os
+ * serviços seguem no evento `purchase_extras` (pushPurchaseOnce).
+ * Quando a página só conhece o total pago, a estadia é total − serviços.
+ */
+export function stayValue(stayTotalCents: number | null | undefined, totalPaidCents: number | null | undefined, extras?: PurchaseExtraItem[] | null): number | undefined {
+  if (stayTotalCents != null && Number.isFinite(stayTotalCents) && stayTotalCents > 0) return Math.round(stayTotalCents) / 100;
+  if (totalPaidCents == null || !Number.isFinite(totalPaidCents)) return undefined;
+  const stay = Math.round(totalPaidCents) / 100 - sumItems(extras);
+  return stay > 0 ? Math.round(stay * 100) / 100 : undefined;
 }
 
 /**
@@ -41,14 +85,52 @@ export function pushEcommerce(event: Record<string, unknown>): void {
  * localStorage key per transaction_id; if storage is unavailable we still
  * push (a duplicate beats a lost purchase).
  */
+/** Guest contact for Google Ads enhanced conversions (only sent with consent). */
+export type PurchaseUserData = { email?: string | null; phone?: string | null };
+
+/** GA4/Google Ads `user_data` shape: email trimmed + lowercased, phone in E.164
+ *  when it already carries a country code (otherwise digits only, so Google
+ *  can still try). Empty → undefined, so nothing is pushed. */
+export function buildUserData(u?: PurchaseUserData | null): Record<string, string> | undefined {
+  if (!u) return undefined;
+  const out: Record<string, string> = {};
+  const email = (u.email || '').trim().toLowerCase();
+  if (email.includes('@')) out.email = email;
+  const raw = (u.phone || '').trim();
+  const digits = raw.replace(/[^0-9]/g, '');
+  if (digits.length >= 7) {
+    if (raw.startsWith('+')) out.phone_number = `+${digits}`;
+    else if (raw.startsWith('00')) out.phone_number = `+${digits.slice(2)}`;
+    else out.phone_number = digits;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 export function pushPurchaseOnce(
   transactionId: string | null | undefined,
   event: Record<string, unknown>,
+  userData?: PurchaseUserData | null,
+  /** Serviços pagos com a reserva: saem num `purchase_extras` à parte, para o
+   *  `purchase` levar só a estadia. Só com consentimento (GA4). */
+  extras?: PurchaseExtraItem[] | null,
 ): void {
-  // A declined/unset choice must neither queue a later replay nor mark a
-  // purchase as reported. Operational booking data is independent of this guard.
-  if (!hasMeasurementConsent()) return;
+  // Advanced consent mode: without a grant the purchase still reaches GTM so
+  // Google tags send a cookieless conversion ping (Meta/Clarity are gated in
+  // GTM). Nothing is written to the browser: dedupe is in memory only, and
+  // Google Ads / GA4 also dedupe on transaction_id. Never replayed on accept.
+  if (!hasMeasurementConsent()) {
+    if (typeof window === 'undefined' || !isLiveSiteHostname(window.location.hostname)) return;
+    if (transactionId) {
+      if (cookielessPurchases.has(transactionId)) return;
+      cookielessPurchases.add(transactionId);
+    }
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push(event);
+    return;
+  }
   if (transactionId) {
+    if (cookielessPurchases.has(transactionId)) return;
     const key = `dl_purchase_${transactionId}`;
     try {
       if (window.localStorage.getItem(key)) return;
@@ -57,7 +139,22 @@ export function pushPurchaseOnce(
       /* storage unavailable — push anyway */
     }
   }
-  pushEcommerce(event);
+  // Enhanced conversions: the guest's contact rides only on a consented
+  // purchase (Google hashes it in the tag; ad_user_data must be granted).
+  const user_data = buildUserData(userData);
+  pushEcommerce(user_data ? { ...event, user_data } : event);
+  if (extras && extras.length) {
+    const ecommerce = (event.ecommerce ?? {}) as Record<string, unknown>;
+    pushEcommerce({
+      event: 'purchase_extras',
+      ecommerce: {
+        transaction_id: transactionId ?? ecommerce.transaction_id,
+        currency: ecommerce.currency || 'EUR',
+        value: sumItems(extras),
+        items: extras,
+      },
+    });
+  }
 }
 
 /** Build a GA4 addon item object from a service/adventure product */
@@ -129,6 +226,7 @@ export function detectAiReferrer(landingLocation = { pathname: window.location.p
 /** Build a GA4 property item object */
 export function buildPropertyItem(property: {
   id: string | number;
+  guestyId?: string | null;
   name: string;
   locality?: string;
   destination?: string;
@@ -144,7 +242,7 @@ export function buildPropertyItem(property: {
   index?: number;
 } = {}): Record<string, unknown> {
   return {
-    item_id: `PROP-${property.id}`,
+    item_id: `PROP-${propertyCatalogId(property)}`,
     item_name: property.name,
     item_category: 'villa',
     item_category2: property.locality || property.destination || '',

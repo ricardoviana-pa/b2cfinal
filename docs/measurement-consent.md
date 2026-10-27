@@ -1,4 +1,44 @@
-# Consentimento e medição — 16 setembro 2026
+# Consentimento e medição
+
+## Atualização 8 outubro 2026: modo de consentimento avançado
+
+Decisão aprovada pelo Ricardo. Substitui o modo básico descrito abaixo apenas
+no carregamento do GTM e no `purchase`; o resto mantém-se.
+
+- **GTM carrega sempre no site live**, para todos os visitantes, depois de
+  `gtag('consent','default', denied)`. Sem "Aceitar tudo", as tags Google (GA4,
+  Google Ads) enviam apenas pings sem cookies, o que permite a modelação de
+  conversões. Fora do live (DEV, previews, localhost) continua a não carregar.
+- **Meta e Clarity ficam bloqueados no GTM** (container v28): consentimento
+  adicional `ad_storage` (todas as tags Meta) e `analytics_storage` (Clarity).
+  Esta configuração do GTM tem de estar publicada antes deste código.
+- **`pa_consent_granted`**: quando alguém aceita depois de o GTM já ter carregado,
+  o site envia este evento a seguir ao `consent update`. É o trigger extra de
+  "2 - Facebook Pixel Geral", "2 - Facebook - PageView" e "3 - Clarity - Main",
+  para arrancarem na própria página da aceitação.
+- **Recarregamento ao recusar**: só acontece se Meta/Clarity possam ter
+  arrancado nesta página (havia autorização com GTM carregado). Quem nunca
+  aceitou não recarrega.
+- **`purchase` sem consentimento**: é enviado ao dataLayer para o ping sem
+  cookies da Google. Não escreve nada no browser (dedupe só em memória; Google Ads
+  e GA4 também deduplicam por `transaction_id`) e nunca é reproduzido ao aceitar.
+  Os restantes eventos do funil, a origem da visita (`pa-origin`) e a atribuição
+  AI continuam a exigir "Aceitar tudo".
+- **Conversões otimizadas (Google Ads)**: com "Aceitar tudo", o `purchase` leva
+  `user_data` (`email` normalizado, `phone_number` em E.164 quando tem indicativo).
+  A tag "2 - Google Ads - Booking B2C" lê-o como dados fornecidos pelo utilizador e
+  a Google faz o hash. Sem consentimento o `purchase` vai sem `user_data`.
+- **Pendente (legal/copy)**: a política de cookies diz que GA/Clarity só atuam
+  com autorização. Rever o texto para mencionar os pings sem cookies da Google
+  antes ou junto com o deploy.
+
+Verificar no live: sem escolha e com "Apenas essenciais" → um GTM, nenhum evento
+Meta em "Testar eventos", cookies `_ga`/`_fbp` ausentes; "Aceitar tudo" → Meta
+e Clarity arrancam na mesma página, um único PageView.
+
+---
+
+## Modo básico — 16 setembro 2026 (histórico)
 
 ## Comportamento
 
@@ -78,6 +118,9 @@ da linha `Cupao:`, na mesma escrita. Serve a atribuição do marketing
   parte); cada registo sai 31 dias depois da última atualização, numa limpeza
   a cada 6 horas.
 - **Nunca sai para terceiros:** nem Stripe, nem CAPI da Meta, nem dataLayer.
+  Os sinais da CAPI da Meta (cookies do pixel, IP, browser) vivem noutra tabela,
+  `booking_intent_ad_signals`, só com "Aceitar tudo" e com as mesmas regras de retirada
+  e de 31 dias: ver [tracking-map.md](tracking-map.md) §4.
 - **Formato da linha e testes:** `server/services/visit-origin.ts`,
   `server/visit-origin.test.ts`, `server/visit-origin-consent.test.ts`,
   `server/checkout-sandbox/checkout-flow.test.ts`.

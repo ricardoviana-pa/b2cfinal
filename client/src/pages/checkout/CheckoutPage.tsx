@@ -35,7 +35,9 @@ import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useVisitOriginSync } from "@/hooks/useVisitOriginSync";
 import { formatQuotedEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
-import { cancellationPolicyText, freeCancellationDeadline } from "@/lib/cancellation";
+import { freeCancellationDeadline, isNonRefundablePlan, planPolicyCode, rateKind } from "@/lib/cancellation";
+import { freeCancellationDays } from "@shared/cancellationPolicy";
+import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
@@ -75,6 +77,8 @@ interface QuoteSnapshot {
     cleaningFee: number;
     taxesAndFees?: number;
     cancellationPolicy?: string[];
+    /** Guesty's share charged after the deadline (percent) — 100 on every plan today. */
+    cancellationFee?: string | number | null;
   }>;
 }
 
@@ -157,23 +161,14 @@ function useCountUp(value: number, duration = 400): number {
   return display;
 }
 
-/** Máximo 2 tarifas visíveis: a flexível e a não reembolsável mais baratas. */
-const POLICY_REFUND_WINDOW_DAYS: Record<string, number> = {
-  flexible: 1,
-  moderate: 14,
-  firm: 30,
-  strict: 60,
-};
-
-/** A pricier refundable plan is only offered while its refund window is still
- *  open — inside the window both plans refund nothing (see BookingWidget). */
+/** Máximo 2 tarifas visíveis: a reembolsável e a não reembolsável mais baratas.
+ *  A tarifa reembolsável mais cara só se oferece enquanto o cancelamento
+ *  gratuito do seu código Guesty ainda estiver aberto (7/14/30/60 dias antes
+ *  da chegada, shared/cancellationPolicy.ts) — depois, ambas cobram a estadia
+ *  toda. Códigos desconhecidos ficam (benefício da dúvida). */
 function flexStillRefundable(o: { cancellationPolicy?: string[] }, checkIn?: string): boolean {
-  const code = (o.cancellationPolicy?.[0] || "").toLowerCase();
-  const days = POLICY_REFUND_WINDOW_DAYS[code];
-  if (!days || !checkIn) return true;
-  const deadline = new Date(`${checkIn}T12:00:00`);
-  deadline.setDate(deadline.getDate() - days);
-  return deadline.getTime() > Date.now();
+  if (!checkIn || freeCancellationDays(o.cancellationPolicy) == null) return true;
+  return freeCancellationDeadline(o.cancellationPolicy, checkIn) != null;
 }
 
 function collapseRatePlans<T extends { name: string; total: number; cancellationPolicy?: string[] }>(
@@ -191,14 +186,7 @@ function collapseRatePlans<T extends { name: string; total: number; cancellation
 }
 
 function isNonRefundableOption(o: { name: string; cancellationPolicy?: string[] }): boolean {
-  const n = (o.name || "").toLowerCase();
-  const code = (o.cancellationPolicy?.[0] || "").toLowerCase();
-  return (
-    (n.includes("non") && n.includes("refund")) ||
-    (n.includes("não") && n.includes("reembols")) ||
-    // Only super_strict is non-refundable — strict still refunds 50%.
-    code === "super_strict"
-  );
+  return isNonRefundablePlan(o);
 }
 
 export default function CheckoutPage() {
@@ -257,6 +245,8 @@ export default function CheckoutPage() {
   const [selectedRatePlanId, setSelectedRatePlanId] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [emailTouched, setEmailTouched] = useState(false);
+  const [contactSaveError, setContactSaveError] = useState(false);
+  const contactSavingRef = useRef(false);
   // Consentimento de marketing — por omissão desligado (RGPD: opt-in tem de
   // ser um acto afirmativo). Sem ele o email só serve a recuperação
   // transacional do checkout; com ele o lead entra no segmento da newsletter.
@@ -268,6 +258,10 @@ export default function CheckoutPage() {
   const [nif, setNif] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [editingStay, setEditingStay] = useState(false);
+  // Datas a meio de mudar: o calendário precisa de mostrar a nova entrada antes
+  // de haver saída (sem isto, escolher uma entrada que não servia a saída antiga
+  // não fazia nada — 10 out 2026). Só vira requote quando a estadia fecha.
+  const [stayDraft, setStayDraft] = useState<{ checkIn: string; checkOut: string } | null>(null);
   const [requoting, setRequoting] = useState(false);
   const [quoteStale, setQuoteStale] = useState(false);
   const [datesUnavailable, setDatesUnavailable] = useState(false);
@@ -574,14 +568,31 @@ export default function CheckoutPage() {
     [intent, selectedRatePlanId, syncIntent, utils, applyCouponMut],
   );
 
+  /** Fecha a edição de datas: re-cota se a estadia mudou e ficou completa. */
+  const finishStayEdit = (draft = stayDraft) => {
+    if (draft?.checkIn && draft.checkOut && (draft.checkIn !== checkIn || draft.checkOut !== checkOut)) {
+      requote(draft.checkIn, draft.checkOut, guests);
+    }
+    setStayDraft(null);
+    setEditingStay(false);
+  };
+
   // ── Step 1 → 2: email capture ──
-  const submitEmail = useCallback(() => {
+  const submitEmail = useCallback(async () => {
     setEmailTouched(true);
-    if (!intent || !isValidEmail(email)) return;
-    if (!isDemo) {
-      captureLead
-        .mutateAsync({ intentId: intent.id, email, locale: lang, consent: newsletterOptIn })
-        .catch(() => {/* fail-soft: the step advance below never blocks on persistence */});
+    if (!intent || !isValidEmail(email) || contactSavingRef.current) return;
+    setContactSaveError(false);
+    contactSavingRef.current = true;
+    try {
+      if (!isDemo) {
+        const saved = await captureLead.mutateAsync({ intentId: intent.id, email, locale: lang, consent: newsletterOptIn });
+        if (!saved.ok) throw new Error("Contact not saved");
+      }
+    } catch {
+      setContactSaveError(true);
+      return;
+    } finally {
+      contactSavingRef.current = false;
     }
     utils.checkout.getIntent.setData({ intentId: intent.id }, (prev) =>
       prev?.intent ? { ...prev, intent: { ...prev.intent, email } } : prev,
@@ -800,10 +811,11 @@ export default function CheckoutPage() {
   // free-cancellation date of the CURRENT selection (coherence with the policy)
   const selectedPlanOption = quote?.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
   const nonRefundableSelected = selectedPlanOption ? isNonRefundableOption(selectedPlanOption) : false;
-  const freeCancelUntil = freeCancellationDeadline(
-    selectedPlanOption?.cancellationPolicy?.[0],
-    checkIn,
-  );
+  // One classification for the chosen plan (planPolicyCode) — the same one
+  // its rate card uses — for the summary, the pay button, the Flex block and
+  // the thank-you page, so a plan never reads two different ways.
+  const selectedPolicyCode = planPolicyCode(selectedPlanOption);
+  const freeCancelUntil = freeCancellationDeadline(selectedPolicyCode, checkIn);
 
   // AUDIT A1: extras/flex sincronizam com o intent a cada alteração (debounce
   // 600ms) — antes só persistiam no continueToPay: um refresh no Personalizar
@@ -1017,6 +1029,8 @@ export default function CheckoutPage() {
         guestPhone: phone,
         // 2b: o cartão v2 cobra o todayTotal (estadia + serviços) num só PI
         totalCents: Math.round(todayTotal * 100),
+        // Valor do purchase nos anúncios: só a estadia (extras à parte)
+        stayTotalCents: effective ? Math.round(effective.total * 100) : null,
         // M12 (auditoria set/2026): sem isto o item da casa ia sem preço nem
         // quantidade no purchase do cartão
         nightlyRateCents: effective ? Math.round(effective.nightlyRate * 100) : undefined,
@@ -1024,12 +1038,14 @@ export default function CheckoutPage() {
         currency: "EUR",
         couponCode: quote?.couponCode || undefined,
         purchaseItems,
+        // Política da tarifa paga (mesma classificação do cartão) para a confirmação
+        cancellationPolicy: selectedPolicyCode ? [selectedPolicyCode] : undefined,
       });
       // The server records payment and reservation confirmation after settlement.
       void utils.checkout.getIntent.invalidate({ intentId: intent.id });
       navigate(`/booking/thank-you/${rid}?method=card`);
     },
-    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, effective, quote?.nights, quote?.couponCode, purchaseItems, syncIntent, navigate],
+    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, effective, selectedPolicyCode, quote?.nights, quote?.couponCode, purchaseItems, syncIntent, navigate],
   );
 
   // M5 (auditoria set/2026): regresso de um redirect 3DS do banco. O Stripe
@@ -1355,15 +1371,16 @@ export default function CheckoutPage() {
         <p className="caption text-pa-earth leading-relaxed">{t('securityDeposit.notice')}</p>
         {couponRow}
         {conciergeRequests}
-        {(() => {
-          const code = effective?.cancellationPolicy?.[0];
-          if (!code) return null;
-          const text = cancellationPolicyText(code, checkIn, t, lang);
-          // Sem política conhecida o helper devolve o texto genérico de
-          // legalês — nesse caso não mostramos nada (noise, 12 jul)
-          if (text === t("cancellationPolicy.shortGeneric")) return null;
-          return <p className="caption text-pa-stone-aa leading-snug">{text}</p>;
-        })()}
+        {/* Política da tarifa escolhida (planPolicyCode, igual ao cartão);
+            código desconhecido → "as condições da sua tarifa" + ligação */}
+        {selectedPolicyCode || effective?.cancellationPolicy?.length ? (
+          <CancellationPolicyLine
+            code={selectedPolicyCode}
+            checkIn={checkIn}
+            lang={lang}
+            className="caption text-pa-stone-aa leading-snug"
+          />
+        ) : null}
         {guaranteeLabel && (
           <p className="flex items-start gap-1.5 caption text-pa-gold leading-snug">
             <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
@@ -1406,12 +1423,17 @@ export default function CheckoutPage() {
                   <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
                   {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
                     const isSelected = selectedRatePlanId === opt.ratePlanId;
-                    const nonRef = isNonRefundableOption(opt);
-                    const label = nonRef ? t("booking.nonRefundable") : t("booking.flexibleRate");
+                    // "Reembolsável" só quando o Guesty o diz (código conhecido ou
+                    // nome "Reembolsável"); senão o neutro "Tarifa" (rateKind)
+                    const kind = rateKind(opt);
+                    const nonRef = kind === "non_refundable";
+                    const label =
+                      kind === "non_refundable"
+                        ? t("booking.nonRefundable")
+                        : kind === "refundable"
+                          ? t("booking.flexibleRate")
+                          : t("bookingConfirm.rate");
                     const savings = maxTotal - opt.total;
-                    const policyLine = opt.cancellationPolicy?.[0]
-                      ? cancellationPolicyText(opt.cancellationPolicy[0], checkIn, t, lang)
-                      : null;
                     return (
                       <label
                         key={opt.ratePlanId}
@@ -1445,11 +1467,12 @@ export default function CheckoutPage() {
                               </span>
                             )}
                           </div>
-                          <p className="caption mt-0.5 text-pa-earth">
-                            {nonRef
-                              ? t("bookingWidget.nonRefundableWarning", "No refund if you cancel or modify")
-                              : policyLine}
-                          </p>
+                          <CancellationPolicyLine
+                            code={planPolicyCode(opt)}
+                            checkIn={checkIn}
+                            lang={lang}
+                            className="caption mt-0.5 text-pa-earth"
+                          />
                         </div>
                         <div className="text-right shrink-0">
                           <span className="body-sm text-pa-dark font-medium tabular-nums">
@@ -1621,7 +1644,7 @@ export default function CheckoutPage() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => setEditingStay((v) => !v)}
+                    onClick={() => (editingStay ? finishStayEdit() : setEditingStay(true))}
                     className="shrink-0 flex items-center gap-1.5 caption text-pa-gold hover:text-pa-dark transition-colors"
                   >
                     <Pencil className="w-3.5 h-3.5" />
@@ -1638,14 +1661,13 @@ export default function CheckoutPage() {
                     ) : (
                       <AvailabilityCalendar
                         days={calendarDays}
-                        checkIn={checkIn}
-                        checkOut={checkOut}
+                        checkIn={stayDraft?.checkIn ?? checkIn}
+                        checkOut={stayDraft?.checkOut ?? checkOut}
                         minNights={property?.minNights}
-                        onSelectRange={({ checkIn: ci, checkOut: co }) => {
-                          if (ci && co) {
-                            requote(ci, co, guests);
-                            setEditingStay(false);
-                          }
+                        onClose={() => finishStayEdit()}
+                        onSelectRange={({ checkIn: ci, checkOut: co, done }) => {
+                          setStayDraft({ checkIn: ci, checkOut: co });
+                          if (done) finishStayEdit({ checkIn: ci, checkOut: co });
                         }}
                       />
                     )}
@@ -1732,11 +1754,16 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={submitEmail}
-                  disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
+                  disabled={!isValidEmail(email) || quoteStale || datesUnavailable || captureLead.isPending}
                   className="hidden lg:inline-flex btn-primary w-full disabled:opacity-40"
                 >
                   {t("booking.continue", "Continue")}
                 </button>
+                {contactSaveError && (
+                  <p className="caption text-red-600" role="alert">
+                    {t("payment.errors.saveFailed")}
+                  </p>
+                )}
                 {/* L2: o botão desativado sem dica era um toque morto */}
                 {!isValidEmail(email) && !quoteStale && !datesUnavailable && (
                   <p className="caption text-pa-stone-aa" role="status">
@@ -2006,11 +2033,14 @@ export default function CheckoutPage() {
                   </div>
                 )}
                 {/* Cancellation policy repeated in human text next to the pay button (spec §7) */}
-                {effective?.cancellationPolicy?.[0] && (
-                  <p className="caption text-pa-stone-aa text-center leading-snug">
-                    {cancellationPolicyText(effective.cancellationPolicy[0], checkIn, t, lang)}
-                  </p>
-                )}
+                {selectedPolicyCode || effective?.cancellationPolicy?.length ? (
+                  <CancellationPolicyLine
+                    code={selectedPolicyCode}
+                    checkIn={checkIn}
+                    lang={lang}
+                    className="caption text-pa-stone-aa text-center leading-snug"
+                  />
+                ) : null}
                 <p className="flex items-center justify-center gap-1.5 caption text-pa-stone-aa">
                   <Lock className="w-3 h-3" /> {t("checkout.secureNote", "Encrypted, secure payment")}
                 </p>
@@ -2077,7 +2107,7 @@ export default function CheckoutPage() {
             <button
               type="button"
               onClick={submitEmail}
-              disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
+              disabled={!isValidEmail(email) || quoteStale || datesUnavailable || captureLead.isPending}
               className="btn-primary flex-1 max-w-[220px] disabled:opacity-40"
             >
               {t("booking.continue", "Continue")}

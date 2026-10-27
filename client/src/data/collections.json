@@ -8,13 +8,13 @@
     "excludeApartments": true,
     "en": {
       "title": "Villas with Pools in Portugal",
-      "intro": "Homes with a swimming pool listed in their amenities. Check the individual home for pool privacy, heating, opening dates and any additional costs.",
-      "metaDescription": "Villas with Pools in Portugal. Homes with a swimming pool listed in their amenities. Check the individual home for pool privacy, heating, opening dates and any additional costs."
+      "intro": "Slow mornings by the pool, long lunches outside and space to spend the day together. Find a villa with a pool, then choose the setting, bedrooms and outdoor space that fit your holiday. Pool privacy and heating vary by home.",
+      "metaDescription": "Explore villas with pools in Portugal. Compare homes, locations and outdoor space, check your dates and plan your stay with our local team."
     },
     "pt": {
-      "title": "Villas com Piscina em Portugal",
-      "intro": "Casas com piscina indicada nas comodidades. Consulte cada casa para confirmar privacidade, aquecimento, época de funcionamento e eventuais custos adicionais.",
-      "metaDescription": "Villas em Portugal com piscina indicada nas comodidades. Confirme em cada casa a privacidade, o aquecimento, a época e eventuais custos."
+      "title": "Casas e Villas com Piscina em Portugal",
+      "intro": "Manhãs junto à piscina, almoços ao ar livre e tempo para estar em família. Encontre uma casa com piscina e escolha o cenário, os quartos e o espaço exterior para as suas férias. A privacidade e o aquecimento da piscina variam por casa.",
+      "metaDescription": "Descubra casas e villas com piscina em Portugal. Compare localizações e espaços, consulte as suas datas e planeie a estadia com a nossa equipa."
     },
     "es": {
       "title": "Estancias con piscina · Portugal",
@@ -59,14 +59,14 @@
       "pattern": "sea view|ocean view|beach view|beach front"
     },
     "en": {
-      "title": "Homes with Sea Views in Portugal",
-      "intro": "Homes with sea or ocean views listed in their amenities. Check each property for beach access, location and the views from individual rooms.",
-      "metaDescription": "Homes with Sea Views in Portugal. Homes with sea or ocean views listed in their amenities. Check each property for beach access, location and the views from individual rooms."
+      "title": "Sea-View Holiday Homes in Portugal",
+      "intro": "Wake up to the Atlantic and return from a day out to a view worth slowing down for. Compare homes with sea or ocean views, from coastal apartments to villas. Check each listing for the outlook and route to the beach.",
+      "metaDescription": "Find sea-view holiday homes in Portugal. Compare villas and apartments, explore the coast and check availability for your dates."
     },
     "pt": {
-      "title": "Casas com Vista Mar em Portugal",
-      "intro": "Casas com vista mar indicada nas comodidades. Consulte cada propriedade para confirmar acesso à praia, localização e vistas de cada divisão.",
-      "metaDescription": "Casas em Portugal com vista mar indicada nas comodidades. Confirme em cada casa o acesso à praia, a localização e as vistas de cada divisão."
+      "title": "Casas de Férias com Vista Mar em Portugal",
+      "intro": "Acordar com o Atlântico e regressar de um passeio a uma vista que convida a ficar. Compare apartamentos e villas com vista mar e escolha a sua base na costa. Confirme em cada anúncio a vista e o acesso à praia.",
+      "metaDescription": "Encontre casas de férias com vista mar em Portugal. Compare villas e apartamentos na costa e consulte a disponibilidade para as suas datas."
     },
     "es": {
       "title": "Junto al mar · Portugal",
@@ -111,14 +111,14 @@
       "min": 12
     },
     "en": {
-      "title": "Homes for 12+ Guests in Portugal",
-      "intro": "Homes with capacity for at least twelve guests. Compare bedrooms and sleeping arrangements before choosing. Events and additional visitors require separate confirmation.",
-      "metaDescription": "Homes for 12+ Guests in Portugal. Homes with capacity for at least twelve guests. Compare bedrooms and sleeping arrangements before choosing. Events and additional visitors require separate confirmation."
+      "title": "Large Holiday Homes in Portugal for 12+ Guests",
+      "intro": "Bring the people you love together for shared meals, long conversations and days at your own pace. These homes accommodate at least twelve guests. Compare bedroom layouts and shared spaces to find the right fit for your group.",
+      "metaDescription": "Holiday homes in Portugal for 12 or more guests. Compare bedrooms and spaces, check dates and ask our team to help plan your group stay."
     },
     "pt": {
-      "title": "Casas para 12+ Hóspedes em Portugal",
-      "intro": "Casas com capacidade para pelo menos doze hóspedes. Compare quartos e camas antes de escolher. Eventos e visitantes adicionais precisam de confirmação separada.",
-      "metaDescription": "Casas para 12+ Hóspedes em Portugal. Casas com capacidade para pelo menos doze hóspedes. Compare quartos e camas antes de escolher. Eventos e visitantes adicionais precisam de confirmação separada."
+      "title": "Casas de Férias para Grupos em Portugal, 12+ Hóspedes",
+      "intro": "Junte as pessoas de quem gosta para refeições demoradas, conversas e dias ao vosso ritmo. Estas casas têm capacidade para pelo menos doze hóspedes. Compare a distribuição dos quartos e os espaços de convívio para encontrar a opção certa.",
+      "metaDescription": "Casas de férias em Portugal para 12 ou mais hóspedes. Compare quartos e espaços, consulte as datas e planeie a estadia do grupo com a nossa equipa."
     },
     "es": {
       "title": "Juntos, 12+ huéspedes · Portugal",
@@ -163,14 +163,14 @@
       "pattern": "pets allowed|pet friendly"
     },
     "en": {
-      "title": "Pet-Friendly Homes in Portugal",
-      "intro": "Homes whose published policy allows pets. Tell our concierge about your pet before booking to confirm any limits and additional charges.",
-      "metaDescription": "Pet-Friendly Homes in Portugal. Homes whose published policy allows pets. Tell our concierge about your pet before booking to confirm any limits and additional charges."
+      "title": "Pet-Friendly Holiday Homes in Portugal",
+      "intro": "Make room for every member of the family. Explore homes whose published policy allows pets, with space for a holiday together. Tell our team about your pet so we can confirm the house rules and any extra charges.",
+      "metaDescription": "Discover pet-friendly holiday homes in Portugal. Compare houses, check dates and confirm the pet policy with our local team before booking."
     },
     "pt": {
-      "title": "Casas que Aceitam Animais em Portugal",
-      "intro": "Casas cuja política publicada permite animais. Indique ao concierge o seu animal antes de reservar para confirmar limites e eventuais custos adicionais.",
-      "metaDescription": "Casas em Portugal cuja política publicada aceita animais. Fale com o concierge antes de reservar para confirmar limites e eventuais custos."
+      "title": "Casas de Férias que Aceitam Animais em Portugal",
+      "intro": "Há espaço para todos os membros da família. Explore casas cuja política permite animais e escolha o cenário para uns dias juntos. Conte à equipa que animal leva para confirmar as regras e eventuais custos adicionais.",
+      "metaDescription": "Descubra casas de férias que aceitam animais em Portugal. Compare casas, consulte as datas e confirme as condições com a nossa equipa."
     },
     "es": {
       "title": "Traiga a su perro · Portugal",
@@ -215,14 +215,14 @@
       "pattern": "jacuzzi|hot tub"
     },
     "en": {
-      "title": "Villas with Jacuzzi & Hot Tub in Portugal",
-      "metaDescription": "Private homes with jacuzzi or hot tub in northern Portugal — evenings under the sky, operated as private hotels.",
-      "intro": "For the evenings: villas with a jacuzzi or hot tub of their own, from hilltop estates above the Atlantic to river-valley retreats."
+      "title": "Holiday Homes with a Jacuzzi in Portugal",
+      "metaDescription": "Explore holiday homes with a jacuzzi or hot tub in Portugal. Compare locations, check your dates and plan a relaxing stay with our local team.",
+      "intro": "A long walk, dinner together and time to unwind. Explore homes with a jacuzzi or hot tub listed in their amenities, and choose between a coastal setting and a countryside escape. Confirm privacy, heating and access for your stay."
     },
     "pt": {
-      "title": "Villas com Jacuzzi em Portugal",
-      "metaDescription": "Casas privadas com jacuzzi no norte de Portugal — fins de tarde debaixo do céu, operadas como hotéis privados.",
-      "intro": "Para os fins de tarde: casas com jacuzzi próprio, de quintas no alto sobre o Atlântico a refúgios no vale do rio."
+      "title": "Casas de Férias com Jacuzzi em Portugal",
+      "metaDescription": "Explore casas de férias com jacuzzi em Portugal. Compare localizações, consulte as suas datas e prepare uma estadia tranquila com a nossa equipa.",
+      "intro": "Um passeio demorado, um jantar a dois e tempo para descontrair. Explore casas com jacuzzi nas comodidades e escolha entre um cenário na costa ou um refúgio no campo. Confirme a privacidade, o aquecimento e o acesso para a sua estadia."
     }
   },
   {
@@ -232,14 +232,14 @@
       "pattern": "beach"
     },
     "en": {
-      "title": "Beach Villas & Homes in Northern Portugal",
-      "metaDescription": "Villas minutes from the wild Atlantic beaches of the Minho coast — surf, dunes and space, with concierge included.",
-      "intro": "The Minho coast keeps the Atlantic honest: wild beaches, real surf, pine dunes. These homes put you minutes from the sand."
+      "title": "Beach Villas & Holiday Homes in Portugal",
+      "metaDescription": "Discover beach villas and holiday homes in Portugal. Compare coastal locations, explore Viana and Caminha, and check availability for your dates.",
+      "intro": "Build your holiday around Atlantic beaches, coastal walks and time outdoors. Explore homes with beach amenities, then choose the stretch of coast that suits you. Distance and access to the sand vary by property."
     },
     "pt": {
-      "title": "Casas de Praia no Norte de Portugal",
-      "metaDescription": "Villas a minutos das praias selvagens da costa do Minho — surf, dunas e espaço, com concierge incluído.",
-      "intro": "A costa do Minho mantém o Atlântico honesto: praias selvagens, surf a sério, dunas de pinhal. Estas casas põem-no a minutos da areia."
+      "title": "Casas e Villas de Praia em Portugal",
+      "metaDescription": "Descubra casas e villas de praia em Portugal. Compare localizações na costa, explore Viana e Caminha e consulte as suas datas.",
+      "intro": "Faça das praias atlânticas, dos passeios na costa e do tempo ao ar livre o centro das suas férias. Explore casas com comodidades de praia e escolha a sua zona da costa. A distância e o acesso ao areal variam por propriedade."
     }
   }
 ]

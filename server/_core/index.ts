@@ -662,6 +662,30 @@ ${allUrls.join("\n")}
     console.warn("[Migration] booking_intent_origins:", migErr.message);
   }
 
+  // Sinais da Meta por intent (CAPI): só existem com "Aceitar tudo"; saem 31
+  // dias depois (services/ad-signals-store.ts, limpeza arrancada no listen).
+  try {
+    const { getDb } = await import("../db");
+    const db = await getDb();
+    if (db) {
+      await (db as any).execute(`
+        CREATE TABLE IF NOT EXISTS \`booking_intent_ad_signals\` (
+          \`intent_id\` varchar(36) NOT NULL,
+          \`fbp\` varchar(255) NULL,
+          \`fbc\` varchar(512) NULL,
+          \`user_agent\` varchar(512) NULL,
+          \`client_ip\` varchar(64) NULL,
+          \`updated_at\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          PRIMARY KEY(\`intent_id\`),
+          INDEX \`idx_booking_intent_ad_signals_updated\` (\`updated_at\`)
+        )
+      `);
+      console.info("[Migration] booking_intent_ad_signals table OK");
+    }
+  } catch (migErr: any) {
+    console.warn("[Migration] booking_intent_ad_signals:", migErr.message);
+  }
+
   server.listen(port, () => {
     console.info(`Server running on http://localhost:${port}/`);
 
@@ -698,6 +722,9 @@ ${allUrls.join("\n")}
     import("../services/visit-origin-store")
       .then(({ startIntentOriginPurge }) => startIntentOriginPurge())
       .catch((e) => console.warn("[VisitOrigin] limpeza não arrancou:", e?.message ?? e));
+    import("../services/ad-signals-store")
+      .then(({ startAdSignalsPurge }) => startAdSignalsPurge())
+      .catch((e) => console.warn("[AdSignals] limpeza não arrancou:", e?.message ?? e));
 
     // Spec §14: retry persistente de pagamentos capturados sem reserva criada
     // (o setTimeout do webhook morre num restart; este sweep vive da BD).

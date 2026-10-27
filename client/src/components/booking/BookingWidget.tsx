@@ -6,13 +6,17 @@ import { useLocation } from "wouter";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { visitOriginPayload } from "@/lib/visitOrigin";
+import { adSignalsPayload, newMetaEventId } from "@/lib/adSignals";
 import { cn } from "@/lib/utils";
 import { pushDL, pushEcommerce, pushPurchaseOnce, buildPropertyItem, ADDON_PREFIX } from "@/lib/datalayer";
-import { cancellationPolicyText } from "@/lib/cancellation";
+import { isNonRefundablePlan as isNonRefundableRatePlan, cancellationPolicyPath, planPolicyCode, rateKind } from "@/lib/cancellation";
+import { freeCancellationDays, freeCancellationDeadline } from "@shared/cancellationPolicy";
+import CancellationPolicyLine from "./CancellationPolicyLine";
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { localizeProduct } from "@/lib/localizeProduct";
 import { Calendar, User, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
+import { useDateRangePicker } from "./useDateRangePicker";
 import type { AvailabilityDay } from "./AvailabilityCalendar";
 // Lazy-loaded: pulls in @stripe/stripe-js + js.stripe.com/v3 (~246KB). Split so
 // it loads only when the guest reaches the payment step, not on every PDP view.
@@ -82,6 +86,8 @@ interface RatePlanOption {
   /** Taxes, service fees, and other mandatory charges included in total */
   taxesAndFees?: number;
   cancellationPolicy?: string[];
+  /** Guesty's share charged after the deadline (percent) — 100 on every plan today. */
+  cancellationFee?: string | number | null;
   priceOnRequest?: boolean;
   fallbackMessage?: string;
 }
@@ -144,44 +150,39 @@ function parseBookingError(msg: string): string {
   return msg;
 }
 
-/** Is this a non-refundable / strict rate plan? */
+/** The non-refundable plan: Guesty's code or its "Não-Reembolsável" name
+ *  (shared/cancellationPolicy.ts — the one source for policy rules). */
 function isNonRefundablePlan(o: RatePlanOption): boolean {
-  const n = (o.name || '').toLowerCase();
-  const code = o.cancellationPolicy?.[0];
-  return (
-    (n.includes('non') && n.includes('refund')) ||
-    (n.includes('não') && n.includes('reembols')) ||
-    // Only super_strict is non-refundable — strict still refunds 50%.
-    code === 'super_strict'
-  );
+  return isNonRefundableRatePlan(o);
+}
+
+/** The policy shown for the quote's chosen plan — the same classification as
+ *  its rate card (planPolicyCode), so a plan never reads two ways. */
+function quotePolicyCode(q?: QuoteData | null) {
+  if (!q) return null;
+  const opt = q.ratePlanOptions?.find(o => o.ratePlanId === q.ratePlanId);
+  return planPolicyCode({
+    name: opt?.name,
+    cancellationPolicy: opt?.cancellationPolicy?.length ? opt.cancellationPolicy : q.cancellationPolicy,
+    cancellationFee: opt?.cancellationFee,
+  });
 }
 
 /** Guesty often returns several messy rate plans (duplicate "Flexible",
  *  bespoke names like "Rembolsável Premium High 26"). The PDP must only ever
- *  surface two: one refundable (Flexible) and one Non-Refundable. Collapse to
+ *  surface two: one refundable and one Non-Refundable. Collapse to
  *  a representative of each — cheapest non-refundable, and the best refundable
  *  (one explicitly named flexible/refundable, else cheapest) — ordered
  *  refundable first. Returns ≤2 items. */
-/** Days before check-in until which the policy still refunds something. */
-const POLICY_REFUND_WINDOW_DAYS: Record<string, number> = {
-  flexible: 1,
-  moderate: 14,
-  firm: 30,
-  strict: 60,
-};
 
-/** A refundable plan is only worth paying more for while its refund window is
- *  still open. Inside the window (e.g. strict = 60 days before check-in) both
- *  plans are effectively non-refundable — offering a pricier "flexible" card
- *  then is charging for nothing. Unknown policy codes are kept (benefit of
- *  the doubt). */
+/** A refundable plan is only worth paying more for while its free-cancellation
+ *  period is still open (Guesty: free until 7/14/30/60 days before arrival,
+ *  100 % after). Once it has ended both plans cost the full stay if cancelled —
+ *  offering a pricier refundable card then is charging for nothing. Unknown
+ *  policy codes are kept (benefit of the doubt). */
 function flexStillRefundable(o: RatePlanOption, checkIn?: string): boolean {
-  const code = (o.cancellationPolicy?.[0] || '').toLowerCase();
-  const days = POLICY_REFUND_WINDOW_DAYS[code];
-  if (!days || !checkIn) return true;
-  const deadline = new Date(`${checkIn}T12:00:00`);
-  deadline.setDate(deadline.getDate() - days);
-  return deadline.getTime() > Date.now();
+  if (!checkIn || freeCancellationDays(o.cancellationPolicy) == null) return true;
+  return freeCancellationDeadline(o.cancellationPolicy, checkIn) != null;
 }
 
 function pickTwoRatePlans(options?: RatePlanOption[], checkIn?: string): RatePlanOption[] {
@@ -201,15 +202,6 @@ function pickTwoRatePlans(options?: RatePlanOption[], checkIn?: string): RatePla
   // Every option expired-refundable and none non-refundable → keep cheapest.
   if (!out.length) out.push(cheapest(options));
   return out;
-}
-
-/** Map Guesty policy code to cancellation-policy page anchor, or null if no dedicated section */
-function policyPageAnchor(raw: string): string | null {
-  const map: Record<string, string> = {
-    super_strict: '#non-refundable',
-    firm: '#firm',
-  };
-  return map[raw.toLowerCase()] ?? null;
 }
 
 const UPSELL_ITEMS = (productsData as any[])
@@ -374,8 +366,10 @@ export default function BookingWidget({
 
   const [calendarDays, setCalendarDays] = useState<AvailabilityDay[]>([]);
   const [calendarLoading, setCalendarLoading] = useState(false);
-  // Fechado por defeito: o widget cabe no viewport; clicar nas datas abre (12 jul)
-  const [showCalendar, setShowCalendar] = useState(false);
+  // Fechado por defeito: o widget cabe no viewport; clicar nas datas abre (12 jul).
+  // Cada campo abre o calendário na sua data (Saída → muda só a saída).
+  const datePicker = useDateRangePicker(!!checkIn);
+  const showCalendar = datePicker.open;
 
   const widgetRef = useRef<HTMLDivElement>(null);
 
@@ -704,6 +698,7 @@ export default function BookingWidget({
     setStep("success");
     pushPurchaseOnce(code, {
       event: 'purchase',
+      property_id: guestyId,
       ecommerce: {
         transaction_id: code,
         value: effectiveQuote?.total ?? undefined,
@@ -721,7 +716,7 @@ export default function BookingWidget({
           },
         ],
       },
-    });
+    }, { email: guestEmail, phone: guestPhone });
   }, [effectiveQuote, currency, guestyId, propertyName, nights, checkIn, checkOut, guests]);
 
   const resetDates = () => {
@@ -873,11 +868,12 @@ export default function BookingWidget({
                 </div>
               </div>
               {/* Cancellation policy */}
-              {successQuote.cancellationPolicy?.[0] && (
-                <p className="caption text-black/30 pt-1">
-                  {cancellationPolicyText(successQuote.cancellationPolicy[0], checkIn, t, lang)}
-                </p>
-              )}
+              <CancellationPolicyLine
+                code={quotePolicyCode(successQuote)}
+                checkIn={checkIn}
+                lang={lang}
+                className="caption text-black/30 pt-1"
+              />
             </div>
           )}
 
@@ -968,36 +964,37 @@ export default function BookingWidget({
       </div>
 
       {/* Date selection */}
-      <div className="mx-5">
-        {/* Date display / toggle — clicking either box opens calendar */}
+      <div className="mx-5" ref={datePicker.containerRef}>
+        {/* Two fields: each opens the calendar on the date it shows */}
         <div
-          className={`border overflow-hidden cursor-pointer transition-colors ${
+          className={`border overflow-hidden transition-colors ${
             showCalendar ? "border-black rounded-t-lg" : "border-black/15 hover:border-black/30 rounded-lg"
           }`}
-          role="button"
-          tabIndex={0}
-          aria-label={`${t("bookingWidget.checkInLabel")}: ${checkIn || t("bookingWidget.selectDate")}. ${t("bookingWidget.checkOutLabel")}: ${checkOut || t("bookingWidget.selectDate")}`}
-          aria-expanded={showCalendar}
-          onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setShowCalendar(v => !v); } }}
-          onClick={() => setShowCalendar((v) => !v)}
         >
           <div className="grid grid-cols-2 divide-x divide-black/10">
-            <div className={`px-4 py-3.5 transition-colors ${
-              showCalendar && checkIn && !checkOut ? "bg-black/[0.03]" : "hover:bg-black/[0.02]"
-            }`}>
-              <p className="eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkInLabel")}</p>
-              <p className={`body-sm text-inherit font-normal ${checkIn ? "text-black" : "text-black/30"}`}>
-                {checkIn ? formatBookingDate(checkIn, lang) : t("bookingWidget.selectDate", "Select")}
-              </p>
-            </div>
-            <div className={`px-4 py-3.5 transition-colors ${
-              showCalendar && checkIn && !checkOut ? "hover:bg-black/[0.02]" : showCalendar && !checkIn ? "hover:bg-black/[0.02]" : "hover:bg-black/[0.02]"
-            }`}>
-              <p className="eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkOutLabel")}</p>
-              <p className={`body-sm text-inherit font-normal ${checkOut ? "text-black" : "text-black/30"}`}>
-                {checkOut ? formatBookingDate(checkOut, lang) : t("bookingWidget.selectDate", "Select")}
-              </p>
-            </div>
+            {(["check-in", "check-out"] as const).map((field) => {
+              const value = field === "check-in" ? checkIn : checkOut;
+              const label = t(field === "check-in" ? "bookingWidget.checkInLabel" : "bookingWidget.checkOutLabel");
+              const shown = value ? formatBookingDate(value, lang) : t("bookingWidget.selectDate", "Select");
+              const active = showCalendar && datePicker.phase === field;
+              return (
+                <button
+                  key={field}
+                  type="button"
+                  aria-expanded={showCalendar}
+                  aria-label={`${label}: ${shown}`}
+                  onClick={() => datePicker.openField(field)}
+                  className={`text-left px-4 py-3.5 transition-colors focus-visible:outline-none focus-visible:bg-black/[0.04] ${
+                    active ? "bg-black/[0.04] shadow-[inset_0_-2px_0_#1A1A18]" : "hover:bg-black/[0.02]"
+                  }`}
+                >
+                  <span className="block eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{label}</span>
+                  <span className={`block body-sm text-inherit font-normal ${value ? "text-black" : "text-black/30"}`}>
+                    {shown}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -1059,14 +1056,19 @@ export default function BookingWidget({
                 checkIn={checkIn}
                 checkOut={checkOut}
                 minNights={minNights}
-                onSelectRange={({ checkIn: ci, checkOut: co }) => {
+                phase={datePicker.phase}
+                onPhaseChange={datePicker.setPhase}
+                onClose={datePicker.close}
+                onSelectRange={({ checkIn: ci, checkOut: co, done }) => {
                   setCheckIn(ci);
                   setCheckOut(co);
                   setQuote(null);
                   setError("");
                   setBeQuoteError("");
                   setStep("dates");
-                  if (ci && co) setShowCalendar(false);
+                  // Fecha só quando a saída é escolhida; mudar só a entrada
+                  // deixa o calendário aberto na saída.
+                  if (done) datePicker.close();
                 }}
               />
             )}
@@ -1305,13 +1307,18 @@ export default function BookingWidget({
                     const savings = maxTotal - opt.total;
                     // Plans are collapsed to exactly one refundable + one non-refundable
                     // (pickTwoRatePlans), so the label comes from the bucket — never the
-                    // raw Guesty plan name (F1).
-                    const isNonRefundable = isNonRefundablePlan(opt);
-                    const planLabel = isNonRefundable ? t("booking.nonRefundable") : t("booking.flexibleRate");
-                    const policyAnchor = opt.cancellationPolicy?.[0] ? policyPageAnchor(opt.cancellationPolicy[0]) : null;
-                    const policyLine = opt.cancellationPolicy?.[0]
-                      ? cancellationPolicyText(opt.cancellationPolicy[0], checkIn, t, lang)
-                      : null;
+                    // raw Guesty plan name (F1). "Refundable" only when Guesty says so
+                    // (a known refundable code or its "Reembolsável" name); otherwise
+                    // the neutral "Rate". The sentence under it is the rule of the
+                    // plan's Guesty code, or "the terms of your rate" + link when unknown.
+                    const kind = rateKind(opt);
+                    const isNonRefundable = kind === "non_refundable";
+                    const planLabel =
+                      kind === "non_refundable"
+                        ? t("booking.nonRefundable")
+                        : kind === "refundable"
+                          ? t("booking.flexibleRate")
+                          : t("bookingConfirm.rate");
                     return (
                       <label
                         key={opt.ratePlanId}
@@ -1340,9 +1347,9 @@ export default function BookingWidget({
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            {isNonRefundable && policyAnchor ? (
+                            {isNonRefundable ? (
                               <a
-                                href={`/${lang}/legal/cancellation-policy${policyAnchor}`}
+                                href={cancellationPolicyPath(lang, "non_refundable")}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={e => e.stopPropagation()}
@@ -1358,13 +1365,12 @@ export default function BookingWidget({
                               <span className="eyebrow font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
                             )}
                           </div>
-                          {(isNonRefundable || policyLine) && (
-                            <p className="caption text-inherit mt-0.5 text-black/50">
-                              {isNonRefundable
-                                ? t("bookingWidget.nonRefundableWarning", { defaultValue: "No refund if you cancel or modify" })
-                                : policyLine}
-                            </p>
-                          )}
+                          <CancellationPolicyLine
+                            code={planPolicyCode(opt)}
+                            checkIn={checkIn}
+                            lang={lang}
+                            className="caption text-inherit mt-0.5 text-black/50"
+                          />
                         </div>
                         <div className="text-right shrink-0">
                           <span className="body-sm text-black font-medium whitespace-nowrap tabular-nums">{formatQuotedEur(opt.total, lang)}</span>
@@ -1401,9 +1407,14 @@ export default function BookingWidget({
                 if (reserveClickRef.current) return;
                 reserveClickRef.current = true;
                 window.setTimeout(() => { reserveClickRef.current = false; }, 4_000);
-                // GA4: begin_checkout
+                // GA4: begin_checkout. O event_id é o mesmo que o servidor
+                // usa no InitiateCheckout da CAPI (createIntent), para a Meta
+                // deduplicar o pixel e o servidor.
+                const initiateCheckoutEventId = newMetaEventId('ic');
                 pushEcommerce({
                   event: 'begin_checkout',
+                  event_id: initiateCheckoutEventId,
+                  property_id: guestyId,
                   ecommerce: {
                     currency: quote?.currency || currency,
                     value: effectiveQuote?.total ?? quote?.total,
@@ -1446,6 +1457,9 @@ export default function BookingWidget({
                       // Origem da visita para a nota da reserva (sem
                       // consentimento segue só { consent: false })
                       origin: visitOriginPayload(),
+                      // CAPI da Meta: só com "Aceitar tudo" no site live
+                      adSignals: adSignalsPayload(),
+                      initiateCheckoutEventId,
                       quote: {
                         nightlyRate: base.nightlyRate,
                         totalNights: base.totalNights,
@@ -1669,17 +1683,18 @@ export default function BookingWidget({
         </div>
 
         {/* Política humana com data concreta — sem legalês nem salto para FAQs.
-            Sem política conhecida, não se mostra nada (o passo 1 do checkout
-            mostra a política por tarifa). */}
-        {(() => {
-          const code = effectiveQuote?.cancellationPolicy?.[0];
-          if (!code || String(code).toLowerCase() === "unknown") return null;
-          return (
-            <p className="caption text-black/35 text-center">
-              {cancellationPolicyText(code, checkIn, t, lang)}
-            </p>
-          );
-        })()}
+            Sem tarifa escolhida, não se mostra nada (o passo 1 do checkout
+            mostra a política por tarifa). Mesma classificação do cartão da
+            tarifa (planPolicyCode); código desconhecido: "as condições da sua
+            tarifa" + ligação (nunca uma regra inventada nem o nome interno). */}
+        {effectiveQuote && (quotePolicyCode(effectiveQuote) || effectiveQuote.cancellationPolicy?.length) ? (
+          <CancellationPolicyLine
+            code={quotePolicyCode(effectiveQuote)}
+            checkIn={checkIn}
+            lang={lang}
+            className="caption text-black/35 text-center"
+          />
+        ) : null}
 
         {/* Concierge integrado no cartão (12 jul) — discreto, não compete com o CTA */}
         {conciergeUrl && (

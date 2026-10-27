@@ -141,8 +141,9 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
       style={{
         width: "100%",
         padding: "14px 20px",
-        background: isProcessing ? "#888" : "#17120f",
-        color: "#fff",
+        background: "#FFA8CD",
+        color: "#0B051D",
+        opacity: isProcessing ? 0.65 : 1,
         border: "none",
         borderRadius: "4px",
         fontSize: "15px",

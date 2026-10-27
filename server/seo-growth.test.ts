@@ -7,6 +7,7 @@ import { getPropertiesForDestination } from './services/properties-store';
 import destinations from '../client/src/data/destinations.json';
 import journalLinks from '../client/src/data/destination-journal.json';
 import articles from '../client/src/data/blog.json';
+import { experienceSearchCopy } from '../shared/experienceSearchCopy';
 
 const rental = {
   id: 25, guestyId: 'listing-25', slug: 'villa', name: 'Villa', maxGuests: 8,
@@ -14,6 +15,15 @@ const rental = {
   licenseNumber: '123/AL', images: Array.from({length:12}, (_,i)=>`https://example.com/${i}.jpg`),
   address: { lat: 41.693239, lng: -8.832321 },
 };
+
+describe('reviewed experience search copy', () => {
+  it('uses the same title in the server response and client copy without leaking English into other locales', () => {
+    const copy = experienceSearchCopy('horseback-riding', 'pt-PT')!;
+    expect(__testing.experienceTitle('pt', { name: 'Passeio', seoTitle: copy.seoTitle })).toBe(`${copy.seoTitle} | Portugal Active`);
+    expect(experienceSearchCopy('horseback-riding', 'de')).toBeUndefined();
+    expect(__testing.experienceTitle('de', { name: 'Reiten in Viana do Castelo' })).toBe('Reiten in Viana do Castelo | Portugal Active');
+  });
+});
 
 describe('Google rental fields survive SSR and client navigation', () => {
   it('uses the same required facts on the server and in the browser builder', () => {
@@ -69,9 +79,9 @@ describe('destinations connect useful content to the right homes', () => {
     expect(homes.every(p=>p.locality==='Viana do Castelo')).toBe(true);
   });
   it('lists town spokes by locality, not the whole region', async () => {
-    // Esposende's two homes are kept off the catalogue (CATALOG_HIDDEN_GUESTY_IDS),
-    // so only Caminha is a locality spoke with homes to list.
-    for (const [slug, locality] of [['caminha', 'Caminha']] as const) {
+    // Esposende earns its spoke back now that Shoreline Escape is listed
+    // again (21 Oct 2026); its other home stays off the catalogue.
+    for (const [slug, locality] of [['caminha', 'Caminha'], ['esposende', 'Esposende']] as const) {
       expect(destinationHomesHref({ slug, region: 'minho' })).toBe(`/homes?location=${slug}`);
       const homes = await getPropertiesForDestination(slug);
       expect(homes.length).toBeGreaterThan(0);

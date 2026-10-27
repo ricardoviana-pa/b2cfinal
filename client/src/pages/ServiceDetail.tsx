@@ -4,8 +4,10 @@
 
 import { useTranslation } from 'react-i18next';
 import { serviceProductSlug, serviceRouteSlug } from '@shared/serviceRoutes';
+import { servicePlanning } from '@shared/servicePlanning';
+import { withEditorialTrip } from '@shared/editorialTripContext';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { useRoute, Link } from 'wouter';
+import { useRoute, Link, useSearch } from 'wouter';
 import { Check, Clock, MapPin, ArrowLeft, MessageCircle } from 'lucide-react';
 import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
@@ -19,6 +21,7 @@ const publishedServices = (productsData as any[]).filter(p => p.type === 'servic
 
 export default function ServiceDetail() {
   const { t, i18n } = useTranslation();
+  const search = useSearch();
   const [, params] = useRoute('/services/:slug');
   const [, actParams] = useRoute('/activities/:slug');
   const [, expParams] = useRoute('/experiences/:slug');
@@ -49,9 +52,10 @@ export default function ServiceDetail() {
     }
   }
 
+  const planning = item ? servicePlanning(item.slug, i18n.language) : undefined;
   usePageMeta({
-    title: item ? `${item.name} | Portugal Active` : 'Service Not Found',
-    description: item ? `${item.tagline || item.name}. ${t('serviceDetail.metaSuffix', 'Book this experience with your Portugal Active villa stay.')}`.slice(0, 155) : undefined,
+    title: planning?.seoTitle ?? (item ? `${item.name} | Portugal Active` : 'Service Not Found'),
+    description: planning?.seoDescription ?? (item ? `${item.tagline || item.name}. ${t('serviceDetail.metaSuffix', 'Book this experience with your Portugal Active villa stay.')}`.slice(0, 155) : undefined),
     image: item?.image,
     url: item ? (item.category === 'activity' ? `/experiences/${item.slug}` : `/services/${item.slug}`) : undefined,
   });
@@ -115,6 +119,26 @@ export default function ServiceDetail() {
                 <p className="body-lg mb-4">{t('conversion.extrasNote')}</p>
               </div>
 
+              {planning && <div className="mb-10 space-y-8">
+                <div>
+                  <h2 className="headline-md mb-4 text-[#1A1A18]">{planning.heading}</h2>
+                  <p className="body-lg">{planning.introduction}</p>
+                </div>
+                <ol className="space-y-4">
+                  {planning.steps.map((step, index) => <li key={step.title} className="flex gap-4 rounded-xl bg-[#F5F1EB] p-5">
+                    <span className="font-display text-2xl text-[#8B7355]" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                    <div><h3 className="font-medium text-[#1A1A18] mb-2">{step.title}</h3><p className="body-sm">{step.text}</p></div>
+                  </li>)}
+                </ol>
+                <div className="divide-y divide-[#E8E4DC]">
+                  {planning.questions.map(({ q, a }) => <details key={q} className="py-5 group">
+                    <summary className="cursor-pointer text-[#1A1A18] font-medium leading-relaxed">{q}</summary>
+                    <p className="body-sm mt-3">{a}</p>
+                  </details>)}
+                </div>
+                <Link href={withEditorialTrip('/blog/private-chef-portugal-villa', search)} className="text-sm text-[#756044] underline underline-offset-4">{planning.guideLabel}</Link>
+              </div>}
+
               {item.details && item.details.length > 0 && (
                 <div className="mb-10">
                   <h3 className="text-[11px] font-medium tracking-[0.02em] text-[#8B7355] mb-5">{t('serviceDetail.whatIsIncluded')}</h3>
@@ -177,7 +201,7 @@ export default function ServiceDetail() {
                     <MessageCircle className="w-5 h-5" />
                     {t('serviceDetail.chatOnWhatsApp', 'Chat on WhatsApp')}
                   </a>
-                  <Link href={`/contact?subject=services-enquiry&service=${encodeURIComponent(serviceProductSlug(item.slug))}`} className="btn-ghost w-full mt-3">{t('contact.sendMessage')}</Link>
+                  <Link href={withEditorialTrip(`/contact?subject=services-enquiry&service=${encodeURIComponent(serviceProductSlug(item.slug))}`, search)} className="btn-ghost w-full mt-3">{planning?.requestLabel ?? t('contact.sendMessage')}</Link>
                   <p className="text-[11px] text-[#726D63] mt-4">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
                 </div>
               </div>

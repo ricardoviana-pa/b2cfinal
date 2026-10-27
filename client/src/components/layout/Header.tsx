@@ -56,6 +56,14 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   const [phoneOpen, setPhoneOpen] = useState(false);
   const [propertiesOpen, setPropertiesOpen] = useState(false);
   const [location] = useLocation();
+  // On a home's own page the RESERVE button books THAT home: it used to link
+  // to the catalogue, pulling the guest away from the house they were reading.
+  // PropertyDetail listens for the event and opens its booking sheet/card.
+  const onHomePage = /^\/homes\/[^/]+/.test(location);
+  const reserveHome = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent('pa:reserve'));
+  };
   const phoneRef = useRef<HTMLDivElement>(null);
   const propertiesRef = useRef<HTMLDivElement>(null);
   const propertiesToggleRef = useRef<HTMLButtonElement>(null);
@@ -345,6 +353,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               {/* Desktop: Reserve button */}
               <Link
                 href={withEditorialTrip("/homes",search)}
+                onClick={onHomePage ? reserveHome : undefined}
                 className={`pa-action hidden md:inline-flex items-center px-6 py-2.5 text-[11px] font-medium uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/50 text-white hover:bg-white hover:text-[#1A1A18]'
@@ -358,6 +367,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               {/* Mobile: Reserve button */}
               <Link
                 href={withEditorialTrip("/homes",search)}
+                onClick={onHomePage ? reserveHome : undefined}
                 className={`pa-action md:hidden inline-flex items-center px-4 py-2 min-h-[44px] text-[11px] font-medium uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/50 text-white hover:bg-white hover:text-[#1A1A18]'

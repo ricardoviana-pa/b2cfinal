@@ -34,6 +34,7 @@
     "i18n:check": "node scripts/sync-i18n.mjs && node scripts/i18n-missing.mjs --all",
     "audit:quotes": "node scripts/quote-health.mjs",
     "report:recovery": "tsx scripts/recovery-report.ts",
+    "report:funnel": "tsx scripts/checkout-funnel-report.ts",
     "report:vitals": "tsx scripts/vitals-report.ts"
   },
   "dependencies": {

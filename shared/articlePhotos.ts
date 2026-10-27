@@ -5,7 +5,8 @@
  *    ![Pool of Beach Farm at sunset](https://assets.guesty.com/...)
  *    [Beach Farm](/homes/beach-farm-...), Viana do Castelo
  *
- *  Only real photos of our homes go here (house rule: no AI or stock). */
+ *  Use real photographs from the home and experience catalogue, with captions
+ *  identifying the subject. Do not invent locations or use generated scenes. */
 export const PHOTO_LINE = /^!\[([^\]]*)\]\((\S+?)\)\s*$/;
 
 export type ArticlePhoto = { alt: string; src: string; caption: string };

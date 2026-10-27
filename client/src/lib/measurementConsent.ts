@@ -1,6 +1,10 @@
 import { isLiveSiteHostname } from "@shared/deployment";
 import { VISIT_ORIGIN_STORAGE_KEY } from "@shared/visit-origin";
-/** Basic consent mode: optional measurement only loads after an explicit grant. */
+/** Advanced consent mode (8 Oct 2026, approved by Ricardo): the GTM container
+ *  loads on the live site for every visitor with Google consent defaulting to
+ *  `denied`, so Google tags only send cookieless pings until "Aceitar tudo".
+ *  Meta and Clarity tags are gated inside GTM (container v28: additional consent
+ *  `ad_storage` / `analytics_storage`) and fire on `pa_consent_granted`. */
 export type CookieChoice = 'all' | 'essential';
 export const COOKIE_CHOICE_KEY = 'pa-cookies-consent';
 export const COOKIE_PREFERENCES_EVENT = 'pa:cookie-preferences';
@@ -22,6 +26,9 @@ declare global {
 let initialized = false;
 let choice: CookieChoice | null = null;
 let gtmLoaded = false;
+/** True once Meta/Clarity may have started in this document (GTM loaded with a grant). */
+let vendorsMayBeActive = false;
+export const CONSENT_GRANTED_EVENT = 'pa_consent_granted';
 let preferencesRequested = false;
 
 function storedChoice(): CookieChoice | null {
@@ -78,8 +85,9 @@ function clearMeasurementStorage() {
 }
 
 function loadMeasurement() {
-  if (choice !== 'all' || gtmLoaded || !isLiveSiteHostname(window.location.hostname)) return;
+  if (gtmLoaded || !isLiveSiteHostname(window.location.hostname)) return;
   gtmLoaded = true;
+  if (choice === 'all') vendorsMayBeActive = true;
   window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
   const script = document.createElement('script');
   script.async = true;
@@ -97,12 +105,24 @@ export function getCookieChoice(): CookieChoice | null {
   return typeof window === 'undefined' ? null : choice;
 }
 
+/** Inspeção do dataLayer fora do live (DEV, previews, localhost): com
+ *  `localStorage['pa-dl-debug'] = '1'` os eventos entram no window.dataLayer e
+ *  aparecem na consola. O GTM nunca carrega fora do live, por isso nada sai do
+ *  browser. Serve para rever payloads no preview antes de um deploy. */
+export const DATALAYER_DEBUG_KEY = 'pa-dl-debug';
+export function dataLayerDebugEnabled(): boolean {
+  if (typeof window === 'undefined' || isLiveSiteHostname(window.location.hostname)) return false;
+  try { return window.localStorage.getItem(DATALAYER_DEBUG_KEY) === '1'; } catch { return false; }
+}
+
 export function hasMeasurementConsent(): boolean {
-  return typeof window !== 'undefined' && isLiveSiteHostname(window.location.hostname) && choice === 'all';
+  if (typeof window === 'undefined') return false;
+  if (dataLayerDebugEnabled()) return true;
+  return isLiveSiteHostname(window.location.hostname) && choice === 'all';
 }
 
 export function willReloadForEssential(): boolean {
-  return gtmLoaded;
+  return vendorsMayBeActive;
 }
 
 export function openCookiePreferences(): void {
@@ -117,15 +137,23 @@ export function consumeCookiePreferencesRequest(): boolean {
 }
 
 function applyChoice(value: CookieChoice | null) {
-  const wasLoaded = gtmLoaded;
+  const hadVendors = vendorsMayBeActive;
+  const wasGranted = choice === 'all';
   choice = value;
   updateConsent(value === 'all');
+  if (value === 'all' && !wasGranted && gtmLoaded && isLiveSiteHostname(window.location.hostname)) {
+    // GTM already ran its page-load triggers while consent was denied, so the
+    // gated Meta/Clarity tags need an explicit event to start on this page.
+    vendorsMayBeActive = true;
+    window.dataLayer.push({ event: CONSENT_GRANTED_EVENT });
+  }
   if (value !== 'all') { clearMeasurementCookies(); clearMeasurementStorage(); }
   window.dispatchEvent(new Event(COOKIE_CHOICE_EVENT));
   if (value === 'all') startWhenReady();
   // A loaded recording library cannot be unloaded reliably in an SPA. Revocation
-  // is signalled first, then a fresh document keeps all optional scripts absent.
-  else if (wasLoaded) window.location.reload();
+  // is signalled first, then a fresh document keeps Meta/Clarity absent. GTM
+  // itself stays (Google tags fall back to cookieless pings).
+  else if (hadVendors) window.location.reload();
 }
 
 export function saveCookieChoice(value: CookieChoice): void {

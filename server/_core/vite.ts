@@ -1,4 +1,6 @@
 import { buildDestinationGraph } from '../../shared/destinationSchema';
+import { experienceSearchCopy } from '../../shared/experienceSearchCopy';
+import { servicePlanning } from '../../shared/servicePlanning';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
 import { articlePhotos, stripPhotoLines } from '../../shared/articlePhotos';
 import { reviewedArticleDate } from '../../shared/articleNavigation';
@@ -9,6 +11,7 @@ import express, { type Express } from "express";
 import { HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
 import { serviceRouteSlug } from '@shared/serviceRoutes';
+import { POLICY_LANGS, cancellationPolicyCopy, cancellationPolicyMetaDescription, cancellationPolicySummary } from '@shared/cancellationPolicy';
 import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
@@ -394,48 +397,48 @@ function injectLocaleTags(html: string, opts: { lang: string; pagePath: string; 
 type MetaEntry = { title: string; description: string };
 const PAGE_META: Record<string, Record<string, MetaEntry>> = {
   '/': {
-    en: { title: 'Private Hotels in Portugal | Portugal Active',
-          description: '{{homes}} private hotels across Minho, Porto, Douro, Lisbon, Alentejo and Algarve. The privacy of a home, the service of a hotel: concierge, private chef, housekeeping. Book direct.' },
-    pt: { title: 'Hotéis Privados em Portugal | Portugal Active',
-          description: 'Hotéis privados no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. A privacidade de uma casa, o serviço de um hotel, com concierge e chef privado.' },
-    es: { title: 'Hoteles Privados en Portugal | Portugal Active',
-          description: '{{homes}} hoteles privados en Minho, Oporto, Duero, Lisboa, Alentejo y Algarve. La privacidad de una casa, el servicio de un hotel: concierge, chef privado, limpieza. Reserve directo.' },
-    fr: { title: 'Hôtels Privés au Portugal | Portugal Active',
-          description: '{{homes}} hôtels privés dans le Minho, à Porto, dans le Douro, à Lisbonne, en Alentejo et en Algarve. L\'intimité d\'une maison, le service d\'un hôtel : conciergerie, chef privé, ménage. Réservez en direct.' },
-    de: { title: 'Private Hotels in Portugal | Portugal Active',
-          description: '{{homes}} private Hotels in Minho, Porto, Douro, Lissabon, Alentejo und an der Algarve. Die Privatsphäre eines Hauses, der Service eines Hotels: Concierge, Privatkoch, Reinigung. Direkt buchen.' },
-    it: { title: 'Hotel Privati in Portogallo | Portugal Active',
-          description: '{{homes}} hotel privati tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. La privacy di una casa, il servizio di un hotel: concierge, chef privato, pulizie. Prenota diretto.' },
-    nl: { title: 'Privéhotels in Portugal | Portugal Active',
-          description: '{{homes}} privéhotels in Minho, Porto, Douro, Lissabon, Alentejo en de Algarve. De privacy van een huis, de service van een hotel: conciërge, privékok, schoonmaak. Boek direct.' },
-    fi: { title: 'Yksityishotellit Portugalissa | Portugal Active',
-          description: '{{homes}} yksityishotellia Minhossa, Portossa, Dourossa, Lissabonissa, Alentejossa ja Algarvessa. Kodin yksityisyys, hotellin palvelu: concierge, yksityiskokki, siivous. Varaa suoraan.' },
-    sv: { title: 'Privata Hotell i Portugal | Portugal Active',
-          description: '{{homes}} privata hotell i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Ett hems avskildhet, ett hotells service: concierge, privat kock, städning. Boka direkt.' },
+    en: { title: 'Luxury Villas & Private Homes in Portugal | Portugal Active',
+          description: '{{homes}} luxury villas and private homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. The privacy of a home, the service of a hotel. Book direct.' },
+    pt: { title: 'Casas e Villas de Luxo em Portugal | Portugal Active',
+          description: 'Casas de férias de luxo no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. A privacidade de uma casa, o serviço de um hotel. Reserve direto.' },
+    es: { title: 'Villas y Casas de Lujo en Portugal | Portugal Active',
+          description: '{{homes}} villas y casas de lujo en Minho, Oporto, Duero, Lisboa, Alentejo y Algarve. La privacidad de una casa, el servicio de un hotel. Reserve directo.' },
+    fr: { title: 'Villas et Maisons de Luxe au Portugal | Portugal Active',
+          description: "{{homes}} villas et maisons de luxe au Minho, à Porto, Lisbonne, en Alentejo et en Algarve. L'intimité d'une maison, le service d'un hôtel. Réservez en direct." },
+    de: { title: 'Luxusvillen & Ferienhäuser in Portugal | Portugal Active',
+          description: '{{homes}} Luxusvillen und Ferienhäuser in Minho, Porto, Lissabon, Alentejo und Algarve. Die Privatsphäre eines Hauses, der Service eines Hotels. Direkt buchen.' },
+    it: { title: 'Ville e Case di Lusso in Portogallo | Portugal Active',
+          description: '{{homes}} ville e case di lusso tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. La privacy di una casa, il servizio di un hotel. Prenota diretto.' },
+    nl: { title: "Luxevilla's & Vakantiehuizen in Portugal | Portugal Active",
+          description: "{{homes}} luxevilla's en vakantiehuizen in Minho, Porto, Lissabon, Alentejo en de Algarve. De privacy van een huis, de service van een hotel. Boek direct." },
+    fi: { title: 'Luksushuvilat ja Lomakodit Portugalissa | Portugal Active',
+          description: '{{homes}} luksushuvilaa ja lomakotia Minhossa, Portossa, Lissabonissa, Alentejossa ja Algarvessa. Kodin yksityisyys, hotellin palvelu. Varaa suoraan.' },
+    sv: { title: 'Lyxvillor & Semesterhus i Portugal | Portugal Active',
+          description: '{{homes}} lyxvillor och semesterhus i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Ett hems avskildhet, ett hotells service. Boka direkt.' },
   },
   '/homes': {
-    en: { title: 'Our Private Hotels in Portugal | Portugal Active',
-          description: 'Browse {{homes}} private hotels across Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct for the best rate.' },
-    pt: { title: 'Os Nossos Hotéis Privados em Portugal | Portugal Active',
-          description: 'Descubra {{homes}} hotéis privados no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. Filtre por destino, hóspedes e comodidades. Reserve direto ao melhor preço.' },
-    es: { title: 'Nuestros Hoteles Privados en Portugal | Portugal Active',
-          description: 'Descubra {{homes}} hoteles privados en Minho, Oporto, Duero, Lisboa, Alentejo y Algarve. Filtre por destino, huéspedes y servicios. Reserve directo al mejor precio.' },
-    fr: { title: 'Nos Hôtels Privés au Portugal | Portugal Active',
-          description: 'Découvrez {{homes}} hôtels privés dans le Minho, à Porto, dans le Douro, à Lisbonne, en Alentejo et en Algarve. Filtrez par destination, voyageurs et équipements. Réservez en direct au meilleur tarif.' },
-    de: { title: 'Unsere Privaten Hotels in Portugal | Portugal Active',
-          description: 'Entdecken Sie {{homes}} private Hotels in Minho, Porto, Douro, Lissabon, Alentejo und an der Algarve. Filtern Sie nach Reiseziel, Gästen und Ausstattung. Direkt buchen zum besten Preis.' },
-    it: { title: 'I Nostri Hotel Privati in Portogallo | Portugal Active',
-          description: 'Scopri {{homes}} hotel privati tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. Filtra per destinazione, ospiti e servizi. Prenota diretto al miglior prezzo.' },
-    nl: { title: 'Onze Privéhotels in Portugal | Portugal Active',
-          description: 'Ontdek {{homes}} privéhotels in Minho, Porto, Douro, Lissabon, Alentejo en de Algarve. Filter op bestemming, gasten en voorzieningen. Boek direct voor de beste prijs.' },
-    fi: { title: 'Yksityishotellimme Portugalissa | Portugal Active',
-          description: 'Selaa {{homes}} yksityishotellia Minhossa, Portossa, Dourossa, Lissabonissa, Alentejossa ja Algarvessa. Suodata kohteen, vieraiden ja mukavuuksien mukaan. Varaa suoraan parhaaseen hintaan.' },
-    sv: { title: 'Våra Privata Hotell i Portugal | Portugal Active',
-          description: 'Utforska {{homes}} privata hotell i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Filtrera efter resmål, gäster och bekvämligheter. Boka direkt för bästa pris.' },
+    en: { title: 'Villa Rentals & Holiday Homes in Portugal | Portugal Active',
+          description: 'Browse {{homes}} luxury villas and holiday homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct.' },
+    pt: { title: 'Casas de Férias e Villas em Portugal | Portugal Active',
+          description: 'Descubra {{homes}} casas de férias e villas de luxo no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. Filtre por destino e hóspedes. Reserve direto.' },
+    es: { title: 'Alquiler de Villas y Casas en Portugal | Portugal Active',
+          description: 'Descubra {{homes}} villas y casas de lujo en Minho, Oporto, Duero, Lisboa, Alentejo y Algarve. Filtre por destino, huéspedes y servicios. Reserve directo.' },
+    fr: { title: 'Location de Villas et Maisons au Portugal | Portugal Active',
+          description: 'Découvrez {{homes}} villas et maisons de luxe au Minho, à Porto, Lisbonne, en Alentejo et en Algarve. Filtrez par destination. Réservez en direct.' },
+    de: { title: 'Ferienvillen & Ferienhäuser in Portugal | Portugal Active',
+          description: 'Entdecken Sie {{homes}} Luxusvillen und Ferienhäuser in Minho, Porto, Lissabon, Alentejo und Algarve. Nach Reiseziel und Gästen filtern. Direkt buchen.' },
+    it: { title: 'Ville in Affitto e Case Vacanza in Portogallo | Portugal Active',
+          description: 'Scopri {{homes}} ville e case di lusso tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. Filtra per destinazione, ospiti e servizi. Prenota diretto.' },
+    nl: { title: "Villa's Huren & Vakantiehuizen in Portugal | Portugal Active",
+          description: "Ontdek {{homes}} luxevilla's en vakantiehuizen in Minho, Porto, Lissabon, Alentejo en de Algarve. Filter op bestemming en gasten. Boek direct." },
+    fi: { title: 'Huvilat ja Lomakodit Portugalissa | Portugal Active',
+          description: 'Selaa {{homes}} luksushuvilaa ja lomakotia Minhossa, Portossa, Lissabonissa, Alentejossa ja Algarvessa. Suodata kohteen ja vieraiden mukaan. Varaa suoraan.' },
+    sv: { title: 'Hyra Villa & Semesterhus i Portugal | Portugal Active',
+          description: 'Utforska {{homes}} lyxvillor och semesterhus i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Filtrera efter resmål och gäster. Boka direkt.' },
   },
   '/destinations': {
-    en: { title: "Portugal Destinations & Villa Holidays | Portugal Active", description: "Compare Minho, Porto and Douro, Lisbon, Alentejo and the Algarve. Explore local guides, discover villas and choose the right time for your Portugal stay." },
-    pt: { title: "Destinos em Portugal e Casas de Férias | Portugal Active", description: "Compare Minho, Porto e Douro, Lisboa, Alentejo e Algarve. Explore guias locais, descubra casas e escolha a melhor altura para a sua estadia em Portugal." },
+    en: { title: "Where to Stay in Portugal: Regions & Villas | Portugal Active", description: "Find your place in Portugal: compare beach, nature and wine regions, discover holiday homes and plan your stay with help from our local team." },
+    pt: { title: "Onde Ficar em Portugal: Regiões e Casas | Portugal Active", description: "Encontre o seu lugar em Portugal: compare regiões de praia, natureza e vinho, descubra casas de férias e planeie a estadia com a nossa equipa local." },
     es: { title: "Destinos en Portugal y Casas de Vacaciones | Portugal Active", description: "Compara Minho, Oporto y Duero, Lisboa, Alentejo y Algarve. Consulta guías locales, descubre casas y elige cuándo viajar a Portugal." },
     fr: { title: "Destinations au Portugal et Villas de Vacances | Portugal Active", description: "Comparez Minho, Porto et Douro, Lisbonne, Alentejo et Algarve. Consultez nos guides locaux, découvrez des villas et choisissez quand partir au Portugal." },
     de: { title: "Reiseziele und Ferienhäuser in Portugal | Portugal Active", description: "Vergleichen Sie Minho, Porto und Douro, Lissabon, Alentejo und Algarve. Entdecken Sie lokale Reiseführer, Ferienhäuser und passende Reisezeiten für Portugal." },
@@ -536,24 +539,24 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
           description: 'Arrangera bröllop, företagsretreater och privata firanden i portugisiska lyxvillor. Fullständig eventplanering och concierge.' },
   },
   '/about': {
-    en: { title: 'About Portugal Active | Private Hotels in Portugal',
-          description: 'We operate {{homes}} private hotels across Portugal end to end — bookings, concierge, housekeeping. The privacy of a home, the service of a hotel, since 2017.' },
-    pt: { title: 'Sobre a Portugal Active | Hotéis Privados em Portugal',
-          description: 'Operamos {{homes}} hotéis privados em todo Portugal de ponta a ponta — reservas, concierge, limpeza. A privacidade de uma casa, o serviço de um hotel, desde 2017.' },
-    es: { title: 'Sobre Portugal Active | Hoteles Privados en Portugal',
-          description: 'Operamos {{homes}} hoteles privados en todo Portugal de principio a fin — reservas, concierge, limpieza. La privacidad de una casa, el servicio de un hotel, desde 2017.' },
-    fr: { title: 'À propos de Portugal Active | Hôtels Privés au Portugal',
-          description: 'Nous exploitons {{homes}} hôtels privés à travers le Portugal de A à Z — réservations, conciergerie, ménage. L\'intimité d\'une maison, le service d\'un hôtel, depuis 2017.' },
-    de: { title: 'Über Portugal Active | Private Hotels in Portugal',
-          description: 'Wir betreiben {{homes}} private Hotels in ganz Portugal vollumfänglich — Buchungen, Concierge, Reinigung. Die Privatsphäre eines Hauses, der Service eines Hotels, seit 2017.' },
-    it: { title: 'Chi siamo | Portugal Active | Hotel Privati in Portogallo',
-          description: 'Gestiamo {{homes}} hotel privati in tutto il Portogallo dall\'inizio alla fine — prenotazioni, concierge, pulizie. La privacy di una casa, il servizio di un hotel, dal 2017.' },
-    nl: { title: 'Over Portugal Active | Privéhotels in Portugal',
-          description: 'Wij exploiteren {{homes}} privéhotels in heel Portugal van A tot Z — boekingen, conciërge, schoonmaak. De privacy van een huis, de service van een hotel, sinds 2017.' },
-    fi: { title: 'Tietoa Portugal Activesta | Yksityishotellit Portugalissa',
-          description: 'Operoimme {{homes}} yksityishotellia ympäri Portugalia kokonaisvaltaisesti — varaukset, concierge, siivous. Kodin yksityisyys, hotellin palvelu, vuodesta 2017.' },
-    sv: { title: 'Om Portugal Active | Privata Hotell i Portugal',
-          description: 'Vi driver {{homes}} privata hotell över hela Portugal från A till Ö — bokningar, concierge, städning. Ett hems avskildhet, ett hotells service, sedan 2017.' },
+    en: { title: 'About Portugal Active | Villas Run with the Service of a Hotel',
+          description: 'We run {{homes}} luxury villas and private homes across Portugal: bookings, concierge, housekeeping. The privacy of a home, the service of a hotel, since 2017.' },
+    pt: { title: 'Sobre a Portugal Active | Casas de Luxo com Serviço de Hotel',
+          description: 'Operamos {{homes}} casas de luxo em todo Portugal: reservas, concierge, limpeza. A privacidade de uma casa, o serviço de um hotel, desde 2017.' },
+    es: { title: 'Sobre Portugal Active | Villas con Servicio de Hotel en Portugal',
+          description: 'Operamos {{homes}} villas y casas de lujo en todo Portugal: reservas, concierge, limpieza. La privacidad de una casa, el servicio de un hotel, desde 2017.' },
+    fr: { title: 'À propos de Portugal Active | Villas avec Service Hôtelier au Portugal',
+          description: "Nous gérons {{homes}} villas de luxe au Portugal : réservations, conciergerie, ménage. L'intimité d'une maison, le service d'un hôtel, depuis 2017." },
+    de: { title: 'Über Portugal Active | Villen mit Hotelservice in Portugal',
+          description: 'Wir betreiben {{homes}} Luxusvillen in ganz Portugal: Buchungen, Concierge, Reinigung. Die Privatsphäre eines Hauses, der Service eines Hotels, seit 2017.' },
+    it: { title: 'Chi siamo | Portugal Active | Ville con Servizio Hotel in Portogallo',
+          description: 'Gestiamo {{homes}} ville e case di lusso in tutto il Portogallo: prenotazioni, concierge, pulizie. La privacy di una casa, il servizio di un hotel, dal 2017.' },
+    nl: { title: "Over Portugal Active | Villa's met Hotelservice in Portugal",
+          description: "Wij beheren {{homes}} luxevilla's in heel Portugal: boekingen, conciërge, schoonmaak. De privacy van een huis, de service van een hotel, sinds 2017." },
+    fi: { title: 'Tietoa Portugal Activesta | Huvilat hotellin palvelulla Portugalissa',
+          description: 'Operoimme {{homes}} luksushuvilaa ympäri Portugalia: varaukset, concierge, siivous. Kodin yksityisyys, hotellin palvelu, vuodesta 2017.' },
+    sv: { title: 'Om Portugal Active | Villor med Hotellservice i Portugal',
+          description: 'Vi driver {{homes}} lyxvillor och semesterhus över hela Portugal: bokningar, concierge, städning. Ett hems avskildhet, ett hotells service, sedan 2017.' },
   },
   '/contact': {
     en: { title: 'Contact Portugal Active | Plan Your Stay in Portugal',
@@ -689,44 +692,24 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     fi: { title: 'Parhaan hinnan takuu | Portugal Active',
           description: 'Löydä sama koti, päivämäärät ja ehdot halvemmalla Airbnb:stä tai Booking.comista 24 tunnin kuluessa varauksesta, niin Portugal Active vastaa hintaan. Ehdot selkokielellä.' },
   },
-  '/legal/cancellation-policy': {
-  "en": {
-    "title": "Cancellation Policies | Portugal Active",
-    "description": "We offer multiple rate plans with different cancellation terms. Please review the applicable policy before confirming your booking."
-  },
-  "pt": {
-    "title": "Políticas de Cancelamento | Portugal Active",
-    "description": "Oferecemos vários planos de tarifa com diferentes condições de cancelamento. Por favor, reveja a política aplicável antes de confirmar a sua reserva."
-  },
-  "es": {
-    "title": "Políticas de Cancelación | Portugal Active",
-    "description": "Ofrecemos varios planes tarifarios con diferentes condiciones de cancelación. Por favor, revise la política aplicable antes de confirmar su reserva."
-  },
-  "fr": {
-    "title": "Politiques d'Annulation | Portugal Active",
-    "description": "Nous proposons plusieurs formules tarifaires avec différentes conditions d'annulation. Veuillez consulter la politique applicable avant de confirmer votre "
-  },
-  "de": {
-    "title": "Stornierungsbedingungen | Portugal Active",
-    "description": "Wir bieten verschiedene Tarifpläne mit unterschiedlichen Stornierungsbedingungen an. Bitte lesen Sie die geltende Richtlinie sorgfältig, bevor Sie Ihre Buc"
-  },
-  "it": {
-    "title": "Politiche di Cancellazione | Portugal Active",
-    "description": "Offriamo diversi piani tariffari con diverse condizioni di cancellazione. Si prega di rivedere la politica applicabile prima di confermare la prenotazione."
-  },
-  "nl": {
-    "title": "Annuleringsbeleid | Portugal Active",
-    "description": "We bieden meerdere tariefplannen met verschillende annuleringsvoorwaarden. Bekijk het toepasselijke beleid aandachtig voordat u uw boeking bevestigt."
-  },
-  "sv": {
-    "title": "Avbokningspolicyer | Portugal Active",
-    "description": "Vi erbjuder flera prisplaner med olika avbokningsvillkor. Vänligen granska tillämplig policy innan du bekräftar din bokning."
-  },
-  "fi": {
-    "title": "Peruutuskäytännöt | Portugal Active",
-    "description": "Tarjoamme useita hinnoittelusuunnitelmia erilaisilla peruutusehdoilla. Tarkista sovellettava käytäntö ennen varauksen vahvistamista."
-  }
-},
+  // Titles per language; the description is Guesty's policy summary from
+  // shared/cancellationPolicy.ts (the single source, never restated here).
+  '/legal/cancellation-policy': Object.fromEntries(
+    POLICY_LANGS.map((l) => [l, {
+      title: ({
+        en: 'Cancellation Policies | Portugal Active',
+        pt: 'Políticas de Cancelamento | Portugal Active',
+        es: 'Políticas de Cancelación | Portugal Active',
+        fr: "Politiques d'Annulation | Portugal Active",
+        de: 'Stornierungsbedingungen | Portugal Active',
+        it: 'Politiche di Cancellazione | Portugal Active',
+        nl: 'Annuleringsbeleid | Portugal Active',
+        sv: 'Avbokningspolicyer | Portugal Active',
+        fi: 'Peruutuskäytännöt | Portugal Active',
+      } as Record<string, string>)[l],
+      description: cancellationPolicyMetaDescription(l),
+    }]),
+  ),
   '/legal/cookies': {
     en: { title: 'Cookie Policy | Portugal Active',
           description: 'How Portugal Active uses cookies to improve your browsing experience.' },
@@ -889,6 +872,10 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
   faq.push(pt
     ? { q: 'Qual é a estadia mínima?', a: 'A estadia mínima varia com a época — o calendário mostra o requisito exato para as suas datas. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites.' }
     : { q: 'What is the minimum stay?', a: 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.' });
+  // Same cancellation Q&A as the visible "Good to know" (shared source = Guesty's
+  // codes), in the same pt/en language as the rest of this FAQPage.
+  const faqLang = pt ? 'pt' : 'en';
+  faq.push({ q: cancellationPolicyCopy(faqLang).question, a: cancellationPolicySummary(faqLang) });
   faq.push(pt
     ? { q: 'Porquê reservar diretamente com a Portugal Active?', a: 'Reservar direto garante o melhor preço online sem taxas de serviço de OTAs, concierge dedicado por WhatsApp e uma equipa local que gere a casa de ponta a ponta.' }
     : { q: 'Why book directly with Portugal Active?', a: 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.' });
@@ -1473,7 +1460,8 @@ function esIn(label: string): string {
  *  no Gerês", "…na Serra d'Arga"); adding the destination again produced
  *  "…na Serra d'Arga em Costa do Minho, Portugal" (auditoria set/2026). */
 const NAME_HAS_PLACE = /\s(em|no|na|nos|nas|en|por|in|à|au|im|nel|nella)\s+(?:la\s+|el\s+|the\s+)?[A-ZÁÉÍÓÚÂÊÔ]/;
-function experienceTitle(lang: string, e: { name: string; destination?: string | null }): string {
+function experienceTitle(lang: string, e: { name: string; destination?: string | null; seoTitle?: string }): string {
+  if (e.seoTitle) return `${e.seoTitle.replace(/(?:\s*\|\s*Portugal Active)+$/i, '')} | Portugal Active`;
   if (NAME_HAS_PLACE.test(e.name)) return `${e.name} | Portugal Active`;
   return (EXPERIENCE_TITLE[lang] ?? EXPERIENCE_TITLE.en)(e);
 }
@@ -2093,6 +2081,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
             } catch { /* DB not available, that's OK */ }
           }
           if (svc) {
+            const planning = servicePlanning(svc.slug, lang);
             const titleFn = SERVICE_TITLE[lang] ?? SERVICE_TITLE.en;
             const descFn = SERVICE_DESCRIPTION[lang] ?? SERVICE_DESCRIPTION.en;
             // Resolve relative image to full URL for social sharing
@@ -2101,8 +2090,8 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
               svcImage = `${BOT_BASE_URL}${svcImage.startsWith('/') ? '' : '/'}${svcImage}`;
             }
             dynamicMeta = {
-              title: titleFn({ name: svc.name }),
-              description: truncateWords(descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }), 155),
+              title: planning?.seoTitle ?? titleFn({ name: svc.name }),
+              description: planning?.seoDescription ?? truncateWords(descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }), 155),
               image: svcImage,
               url: `${BOT_BASE_URL}/${lang}/services/${svc.slug}`,
             };
@@ -2125,6 +2114,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
           }
           if (exp) {
             exp = localizeExperienceForMeta(exp, lang);
+            const searchCopy = experienceSearchCopy(exp.slug, lang);
 
             const descFn = EXPERIENCE_DESCRIPTION[lang] ?? EXPERIENCE_DESCRIPTION.en;
             const destination = exp.destination || (Array.isArray(exp.destinations) ? exp.destinations[0] : '');
@@ -2134,8 +2124,8 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
               expImage = `${BOT_BASE_URL}${expImage.startsWith('/') ? '' : '/'}${expImage}`;
             }
             dynamicMeta = {
-              title: experienceTitle(lang, { name: exp.name, destination }),
-              description: truncateWords(exp.seoDescription || descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }), 155),
+              title: experienceTitle(lang, { name: exp.name, destination, seoTitle: searchCopy?.seoTitle }),
+              description: truncateWords(searchCopy?.seoDescription || exp.seoDescription || descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }), 155),
               image: expImage,
               url: `${BOT_BASE_URL}/${lang}${p}`,
               schemaDomId: `sd-experience-${exp.slug}`,

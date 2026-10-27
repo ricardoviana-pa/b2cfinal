@@ -18,7 +18,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
 import { formatQuotedEur } from "@/lib/format";
-import { pushEcommerce } from "@/lib/datalayer";
+import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 
@@ -58,42 +58,11 @@ function GooglePayLogo() {
 }
 
 function PayPalLogo() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        fontWeight: 700,
-        fontStyle: "italic",
-        fontSize: "16px",
-        letterSpacing: "-0.02em",
-        lineHeight: 1,
-      }}
-      aria-label="PayPal"
-    >
-      <span style={{ color: "#003087" }}>Pay</span>
-      <span style={{ color: "#009cde" }}>Pal</span>
-    </span>
-  );
+  return <img src="/payments/marks/paypal-blue.png" alt="PayPal" className="h-auto w-16" />;
 }
 
 function KlarnaLogo() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#ffb3c7",
-        borderRadius: "5px",
-        padding: "3px 8px",
-        lineHeight: 1,
-      }}
-      aria-label="Klarna"
-    >
-      <span style={{ color: "#17120f", fontWeight: 700, fontSize: "12px" }}>Klarna</span>
-    </span>
-  );
+  return <img src="/payments/klarna-badge.svg" alt="Klarna" className="h-6 w-auto" />;
 }
 
 const PAYMENT_METHODS: Array<{ id: PaymentMethodId; label: string; Logo: () => ReactElement }> = [
@@ -183,6 +152,32 @@ function humanPaymentError(e: unknown, t: any): string {
 const isQuoteExpiredError = (e: unknown) =>
   /quote expired|refresh your dates|refresh the price/i.test(String((e as { message?: unknown })?.message ?? ""));
 
+/** Funil (out/2026): as recusas de pagamento só apareciam no ecrã do hóspede.
+ *  Este evento leva para o GA4 o passo e o código do erro (Stripe: type, code,
+ *  decline_code), para sabermos quantas pessoas tentam pagar e são recusadas,
+ *  e porquê. Só códigos técnicos: nunca a mensagem nem dados do hóspede. */
+function trackPaymentFailed(args: {
+  stage: "validation" | "confirm" | "server";
+  method: string;
+  error: unknown;
+  listingId: string;
+  value: number;
+}) {
+  const err = (args.error ?? {}) as { type?: unknown; code?: unknown; decline_code?: unknown };
+  const str = (v: unknown) => (typeof v === "string" && v ? v.slice(0, 60) : undefined);
+  pushDL({
+    event: "payment_failed",
+    payment_stage: args.stage,
+    payment_type: args.method,
+    error_type: str(err.type) ?? (isQuoteExpiredError(args.error) ? "quote_expired" : "unknown"),
+    error_code: str(err.code),
+    decline_code: str(err.decline_code),
+    property_id: args.listingId,
+    value: args.value,
+    currency: "EUR",
+  });
+}
+
 /* ════════════════════════════════════════════════════════════════
    Bloco 3 — Apple Pay / Google Pay via ExpressCheckoutElement.
    SÓ no checkout v2 (intentId presente) e SEMPRE na conta de
@@ -241,6 +236,7 @@ function ExpressWalletInner({
       // Deferred flow: validar o elemento antes de criar o PI (regra Stripe)
       const { error: submitError } = await elements.submit();
       if (submitError) {
+        trackPaymentFailed({ stage: "validation", method: event.expressPaymentType || "wallet", error: submitError, listingId, value: total });
         setError(submitError.message || t("payment.errors.cardValidationFailed"));
         processingRef.current = false;
         return;
@@ -265,6 +261,7 @@ function ExpressWalletInner({
         redirect: "if_required",
       });
       if (confirmErr) {
+        trackPaymentFailed({ stage: "confirm", method: event.expressPaymentType || "wallet", error: confirmErr, listingId, value: total });
         setError(confirmErr.message || t("payment.errors.cardValidationFailed"));
         processingRef.current = false;
         return;
@@ -283,6 +280,7 @@ function ExpressWalletInner({
       } else {
         // Nada foi cobrado: desbloquear para nova tentativa (antes ficava um
         // botão vivo mas inerte — auditoria set/2026, H5)
+        trackPaymentFailed({ stage: "server", method: event.expressPaymentType || "wallet", error: e, listingId, value: total });
         if (isQuoteExpiredError(e)) onQuoteExpired?.();
         setError(humanPaymentError(e, t));
         processingRef.current = false;
@@ -379,6 +377,7 @@ function PaymentFormInner({
     // Step 1: Validate the PaymentElement form (safe to retry — no charge yet)
     const { error: submitError } = await elements.submit();
     if (submitError) {
+      trackPaymentFailed({ stage: "validation", method: "card", error: submitError, listingId, value: total });
       setError(submitError.message || t('payment.errors.cardValidationFailed'));
       setLoading(false);
       submittedRef.current = false; // Safe: no payment method created yet
@@ -415,6 +414,7 @@ function PaymentFormInner({
           redirect: "if_required",
         });
         if (confirmErr) {
+          trackPaymentFailed({ stage: "confirm", method: "card", error: confirmErr, listingId, value: total });
           setError(confirmErr.message || t("payment.errors.cardValidationFailed"));
           setLoading(false);
           submittedRef.current = false;
@@ -435,6 +435,7 @@ function PaymentFormInner({
         } else {
           // Nada foi cobrado: desbloquear para nova tentativa (antes ficava
           // um botão vivo mas inerte — auditoria set/2026, H5)
+          trackPaymentFailed({ stage: "server", method: "card", error: e, listingId, value: total });
           if (isQuoteExpiredError(e)) onQuoteExpired?.();
           setError(humanPaymentError(e, t));
           setLoading(false);
@@ -457,6 +458,7 @@ function PaymentFormInner({
       });
 
       if (stripeError) {
+        trackPaymentFailed({ stage: "validation", method: "card_legacy", error: stripeError, listingId, value: total });
         setError(stripeError.message || t('payment.errors.cardValidationFailed'));
         setLoading(false);
         submittedRef.current = false;
@@ -507,6 +509,7 @@ function PaymentFormInner({
       ]);
       onSuccess(response.confirmationCode, (response as any).reservationId || undefined);
     } catch (err: any) {
+      trackPaymentFailed({ stage: "server", method: "card_legacy", error: err, listingId, value: total });
       const message = parseApiError(err?.message || t('payment.errors.defaultError'), t);
       const rawMsg = String(err?.message || "").toLowerCase();
 

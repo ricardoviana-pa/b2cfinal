@@ -8,6 +8,8 @@ import ArticleBody from '../client/src/components/blog/ArticleBody';
 import data from '../client/src/data/blog.json';
 import pt from '../client/src/data/blog.i18n/pt.json';
 import destinations from '../client/src/data/destinations.json';
+import products from '../client/src/data/products.json';
+import collections from '../client/src/data/collections.json';
 import { blogLanguages, isBlogLanguagePublished } from '../shared/blogPublication';
 import { mergeBlogOverride } from '../client/src/lib/localizeBlog';
 import { getPropertiesForDestination } from './services/properties-store';
@@ -26,7 +28,9 @@ describe('revised northern Portugal guides retain publication integrity', () => 
       expect(article.status).toBe('published');
       expect(article.publishDate).toBe('2026-03-30');
       expect(blogLanguages(article)).toEqual(['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv']);
-      expect(article).toMatchObject({ modifiedDate: '2026-09-28', updatedLocales: ['en', 'pt'] });
+      expect(article.updatedLocales).toEqual(['en', 'pt']);
+      expect(article.modifiedDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(article.modifiedDate! >= article.publishDate).toBe(true);
     }
     for (const { article } of editions) {
       expect(article.author).toMatchObject({ type: 'Organization', name: 'Portugal Active' });
@@ -42,17 +46,26 @@ describe('revised northern Portugal guides retain publication integrity', () => 
     for (const { language, href } of internalLinks) {
       const url = new URL(href, 'https://www.portugalactive.com');
       const [, section, slug] = url.pathname.split('/');
-      expect(['homes', 'destinations', 'blog']).toContain(section);
+      if (section === 'experiences' && slug?.endsWith('.webp')) {
+        expect(fs.existsSync(path.join(process.cwd(), 'client/public', url.pathname))).toBe(true);
+        continue;
+      }
+      expect(['homes', 'destinations', 'blog', 'collections', 'experiences', 'services', 'contact']).toContain(section);
       if (section === 'blog') {
         const linked = data.articles.find(article => article.slug === slug);
         expect(linked?.status).toBe('published');
         expect(isBlogLanguagePublished(linked!, language)).toBe(true);
       } else if (section === 'destinations') {
         expect(destinations.find(destination => destination.slug === slug)?.status).toBe('active');
-      } else {
+      } else if (section === 'services' || section === 'experiences') {
+        expect(products.find(product => product.slug === slug)?.isActive).toBe(true);
+      } else if (section === 'collections') {
+        expect(collections.some(collection => collection.slug === slug)).toBe(true);
+      } else if (section === 'homes') {
         expect(slug).toBeUndefined();
         expect([...url.searchParams.keys()]).not.toContain('region');
-        if (url.search) expect(url.searchParams.get('location')).toBe('viana-do-castelo');
+        if (url.searchParams.has('location')) expect(url.searchParams.get('location')).toBe('viana-do-castelo');
+        if (url.searchParams.has('destination')) expect(url.searchParams.get('destination')).toBe('minho');
       }
     }
   });

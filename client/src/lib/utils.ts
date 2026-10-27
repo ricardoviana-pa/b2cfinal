@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Property, FilterDestination, SortOption } from "./types";
-import { curatedPosition } from "@/config/propertyOrder";
+import { galleryRank } from "@/config/propertyOrder";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -137,12 +137,13 @@ export function sortProperties(properties: Property[], sort: SortOption): Proper
   switch (sort) {
     case 'recommended': {
       // Curated top + secondary (sortOrder). Lead picks come from
-      // CURATED_PROPERTY_ORDER (an explicit guestyId array). Anything not
-      // in the array falls through to the default sortOrder ranking — stable
-      // and deterministic so the grid doesn't reshuffle between renders.
+      // CURATED_PROPERTY_ORDER (an explicit guestyId array); anything not in
+      // it falls through to the default sortOrder ranking, and the homes in
+      // PINNED_LAST_GUESTY_IDS close the order behind both — stable and
+      // deterministic so the grid doesn't reshuffle between renders.
       const ranked = sorted.sort((a, b) => {
-        const pa = curatedPosition(a.guestyId);
-        const pb = curatedPosition(b.guestyId);
+        const pa = galleryRank(a.guestyId);
+        const pb = galleryRank(b.guestyId);
         if (pa !== pb) return pa - pb; // both curated → array order; one curated → curated first
         return (a.sortOrder ?? 0) - (b.sortOrder ?? 0); // secondary
       });

@@ -4,7 +4,7 @@
    touch-friendly swipe, no rounded corners, mobile-first
    ========================================================================== */
 
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { Link } from 'wouter';
 import { propertyTripHref } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import destinationsData from '@/data/destinations.json';
-import { pushEcommerce } from '@/lib/datalayer';
+import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 
 const destinations = destinationsData as unknown as Destination[];
@@ -87,10 +87,24 @@ export default function PropertyCard({
   // Keep the RAW urls so we can emit a responsive srcSet (see below); the browser
   // then downloads a variant matched to the card's rendered size × DPR instead of
   // one fixed 1080px file on every device.
-  const rawImages = ((property.images && property.images.length > 0
+  const rawImages = useMemo(() => ((property.images && property.images.length > 0
     ? property.images
-    : getPropertyImages(property.slug)) as string[]);
+    : getPropertyImages(property.slug)) as string[]), [property.images, property.slug]);
   const total = rawImages.length;
+
+  // Warm the neighbours once the guest starts swiping: the <img> remounts per
+  // photo, so without this every swipe showed a beige box until the next file
+  // had arrived over mobile data.
+  useEffect(() => {
+    if (currentImage === 0 || total < 2) return;
+    [currentImage + 1, currentImage - 1].forEach((i) => {
+      const raw = rawImages[(i + total) % total];
+      const img = new Image();
+      const srcSet = guestySrcSet(raw, [400, 640, 768, 1080]);
+      if (srcSet) { img.sizes = imageSizes; img.srcset = srcSet; }
+      img.src = optimizeGuestyImage(raw, 1080);
+    });
+  }, [currentImage, total, rawImages, imageSizes]);
 
   const nextImage = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -124,6 +138,10 @@ export default function PropertyCard({
     }
     setTimeout(() => setIsDragging(false), 50);
   };
+  const handleTouchCancel = () => {
+    touchCurrentX.current = touchStartX.current;
+    setIsDragging(false);
+  };
 
   const handleCardClick = () => {
     pushEcommerce({
@@ -133,7 +151,7 @@ export default function PropertyCard({
         item_list_name: listName,
         items: [
           {
-            item_id: `PROP-${property.id}`,
+            item_id: `PROP-${propertyCatalogId(property)}`,
             item_name: property.name,
             item_category: 'villa',
             item_category2: property.locality || property.destination || '',
@@ -172,10 +190,11 @@ export default function PropertyCard({
       {/* Image Carousel â 4:3 aspect */}
       <div
         className="relative overflow-hidden rounded-xl bg-[#E8E4DC] img-fallback"
-        style={{ aspectRatio: '4/3' }}
+        style={{ aspectRatio: '4/3', touchAction: 'pan-y' }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchCancel}
       >
         <img
           key={rawImages[currentImage]}

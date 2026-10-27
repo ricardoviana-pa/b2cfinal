@@ -36,6 +36,7 @@ import ExperienceStickyNav from '@/components/experience/ExperienceStickyNav';
 import ExperienceMobileBookingBar from '@/components/experience/ExperienceMobileBookingBar';
 import ExperienceGuideProfile from '@/components/experience/ExperienceGuideProfile';
 import ExperienceRelatedExperiences from '@/components/experience/ExperienceRelatedExperiences';
+import ExperiencePlanningGuide from '@/components/experience/ExperiencePlanningGuide';
 
 import experienceDetailsData from '@/data/experienceDetails.json';
 import { localizeExperience, useExperienceOverrides } from '@/lib/localizeContent';
@@ -44,6 +45,7 @@ import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
 import type { Destination } from '@/lib/types';
 import { pushEcommerce } from '@/lib/datalayer';
+import { experienceSearchCopy } from '@shared/experienceSearchCopy';
 
 /* ── Types ── */
 
@@ -196,13 +198,14 @@ export default function ExperienceDetail() {
     () => (slug ? localizeExperience(findExperience(slug), expOverrides) : null),
     [slug, expOverrides],
   );
+  const searchCopy = experienceSearchCopy(slug, i18n.language);
 
   usePageMeta({
     title: exp
-      ? `${exp.name} | ${t('experienceDetail.metaTitleSuffix')}`
+      ? searchCopy?.seoTitle || `${exp.name} | ${t('experienceDetail.metaTitleSuffix')}`
       : t('experienceDetail.metaNotFound'),
     description: exp
-      ? (exp as { seoDescription?: string }).seoDescription || `${exp.tagline || exp.name}. ${t('experienceDetail.metaDescriptionSuffix')}`.slice(0, 155)
+      ? searchCopy?.seoDescription || (exp as { seoDescription?: string }).seoDescription || `${exp.tagline || exp.name}. ${t('experienceDetail.metaDescriptionSuffix')}`.slice(0, 155)
       : undefined,
     image: exp?.image,
     url: exp ? `/experiences/${exp.slug}` : undefined,
@@ -779,6 +782,7 @@ export default function ExperienceDetail() {
                 </div>
               </section>
             )}
+            <ExperiencePlanningGuide slug={exp.slug} />
           </div>
 
           {/* ───── RIGHT COLUMN — sticky booking ───── */}

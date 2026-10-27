@@ -49,7 +49,7 @@ async function countPublicHomes() {
 
 function llmsTxt(facts: typeof FACTS & { HOME_COUNT: number; HOME_COUNT_LABEL: string }): string {
   const regions = facts.REGIONS.join(", ");
-  return `# Portugal Active — Private Hotels in Portugal
+  return `# Portugal Active — Luxury Villas & Private Homes in Portugal
 
 > Portugal Active offers a collection of holiday homes and travel experiences in Portugal. The public catalogue combines directly managed homes and partner properties. Location, configuration, included services, availability and booking method vary by listing.
 
@@ -89,11 +89,13 @@ Consult each experience and property page for the pricing unit, included service
 ## Buying, selling and owning a home
 - [Portugal Active Real Estate](https://www.portugalactive.com/realestate/)
 - [Homes for sale](https://www.portugalactive.com/realestate/collection/)
+- [Real estate in Viana do Castelo](https://www.portugalactive.com/realestate/viana-do-castelo/)
+- [Sell a home in Viana do Castelo](https://www.portugalactive.com/realestate/selling-viana-do-castelo/)
 - [Buying a home in Portugal](https://www.portugalactive.com/realestate/buying/)
 - [Selling a home in Portugal](https://www.portugalactive.com/realestate/selling/)
 - [Property investment](https://www.portugalactive.com/realestate/investing/)
 - [Broker partnerships and referrals](https://www.portugalactive.com/realestate/referrals/)
-- Real estate contact: realestate@portugalactive.com · +351 910 917 941
+- Real estate contact: realestate@portugalactive.com · +351 962 681 290
 - [Real estate content index](https://www.portugalactive.com/realestate/llms.txt): English, Portuguese, French and Spanish.
 - [Property management for owners](https://www.portugalactive.com/management/en/)
 - [Management content index](https://www.portugalactive.com/management/llms.txt): Portuguese, English, French, German, Dutch, Spanish, Italian, Hebrew, Arabic and Chinese.

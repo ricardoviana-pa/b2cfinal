@@ -1,37 +1,32 @@
-// Payment marks sit in tight light chips so the brand colours read clearly
-// against the dark footer (a flat monochrome row was nearly invisible). Chips
-// hug each logo (little white margin) and each mark keeps its own optical
-// height. Amex is a filled blue badge — a thin tinted glyph was illegible at
-// this size — so it fills its chip instead of sitting on white.
+// One shared card treatment: brand artwork determines only the colour and mark,
+// never the outer dimensions, border or corner radius.
 const PAYMENTS = [
-  { src: '/payments/visa-c.svg', alt: 'Visa', h: 'h-[23px]' },
-  { src: '/payments/mastercard-c.svg', alt: 'Mastercard', h: 'h-[21px]' },
-  { src: '/payments/amex-badge.svg', alt: 'American Express', fill: true },
-  { src: '/payments/apple-pay-c.svg', alt: 'Apple Pay', h: 'h-[26px]' },
-  { src: '/payments/paypal-c.svg', alt: 'PayPal', h: 'h-[16px]' },
-  { src: '/payments/klarna-c.svg', alt: 'Klarna', h: 'h-[15px]' },
+  { src: '/payments/visa-c.svg', alt: 'Visa', logoClass: 'h-11 w-11 sm:h-12 sm:w-12', background: '#ffffff' },
+  { src: '/payments/mastercard-c.svg', alt: 'Mastercard', logoClass: 'h-6 w-auto sm:h-7', background: '#ffffff' },
+  { src: '/payments/marks/amex.svg', alt: 'American Express', logoClass: 'w-[52px] h-auto sm:w-16', background: '#006fcf' },
+  { src: '/payments/marks/apple-pay.svg', alt: 'Apple Pay', logoClass: 'w-full h-auto', background: '#ffffff' },
+  { src: '/payments/marks/google-pay.svg', alt: 'Google Pay', logoClass: 'w-full h-auto', background: '#ffffff' },
+  { src: '/payments/marks/paypal-blue.png', alt: 'PayPal', logoClass: 'w-12 h-auto sm:w-16', background: '#ffffff' },
+  { src: '/payments/marks/klarna.svg', alt: 'Klarna', logoClass: 'w-full h-auto', background: '#ffa8cd' },
 ];
 
 export default function FooterPaymentLogos() {
   return (
-    <div className="flex items-center gap-1.5">
-      {PAYMENTS.map((p) =>
-        p.fill ? (
-          <span
-            key={p.alt}
-            className="inline-flex h-[26px] rounded-[5px] overflow-hidden shadow-sm"
-          >
-            <img src={p.src} alt={p.alt} className="h-[26px] w-auto" loading="lazy" />
-          </span>
-        ) : (
-          <span
-            key={p.alt}
-            className="inline-flex items-center justify-center h-[26px] px-1.5 rounded-[5px] bg-white shadow-sm ring-1 ring-black/5"
-          >
-            <img src={p.src} alt={p.alt} className={`${p.h} w-auto`} loading="lazy" />
-          </span>
-        )
-      )}
+    <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 xl:justify-end xl:pr-12">
+      {PAYMENTS.map((payment) => (
+        <span
+          key={payment.alt}
+          className="inline-flex h-[38px] w-[60px] shrink-0 items-center justify-center overflow-hidden rounded-md ring-1 ring-inset ring-black/10 sm:h-12 sm:w-[76px]"
+          style={{ backgroundColor: payment.background }}
+        >
+          <img
+            src={payment.src}
+            alt={payment.alt}
+            className={`${payment.logoClass} shrink-0 object-contain`}
+            loading="lazy"
+          />
+        </span>
+      ))}
     </div>
   );
 }

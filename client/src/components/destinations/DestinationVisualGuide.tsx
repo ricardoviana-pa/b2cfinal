@@ -1,3 +1,4 @@
+import LocalStaySupport from './LocalStaySupport';
 import { useState } from "react";
 import { Link, useSearch } from "wouter";
 import {
@@ -328,6 +329,13 @@ export function DestinationVisualGuide({
         </div>
       </section>
 
+      {d.slug === 'viana-do-castelo' && <>
+        <WhereToStay destination={d} properties={properties} featured
+          heading={pt ? 'A sua casa em Viana do Castelo' : 'Your home in Viana do Castelo'}
+          intro={pt ? 'Vista mar, tempo em família ou espaço para reunir o grupo. Comece por estas casas e confirme disponibilidade e preço para as suas datas.' : 'Sea views, family time or space to gather your group. Start with these homes and check availability and prices for your dates.'} />
+        <LocalStaySupport destination={d.slug} />
+      </>}
+
       <section id="destination-areas" className="minho-section bg-white">
         <div className="container">
           <div className="minho-section-heading">
@@ -633,7 +641,7 @@ export function DestinationVisualGuide({
         </div>
       </section>
 
-      <WhereToStay
+      {d.slug !== 'viana-do-castelo' && <WhereToStay
         destination={d}
         properties={cityHomes}
         heading={
@@ -649,7 +657,7 @@ export function DestinationVisualGuide({
         }
         intro={tx(e.homes)}
         viewAllHref={d.slug === "porto" ? "/homes?location=porto" : undefined}
-      />
+      />}
       {outsidePorto.length > 0 && (
         <WhereToStay
           destination={d}

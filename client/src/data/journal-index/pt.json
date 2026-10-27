@@ -1,17 +1,10 @@
 {
-  "minho-september-october-harvest-empty-beaches": {
-    "slug": "minho-september-october-harvest-empty-beaches",
-    "title": "Minho em setembro e outubro: vindima, praias vazias e o argumento a favor do outono",
-    "excerpt": "Enquanto a vindima percorre os vales do Lima e do Vez e a costa se esvazia das multidões de verão, o outono torna-se o segredo mais bem guardado do Minho para uma estadia numa vivenda privada.",
-    "coverImage": "https://assets.guesty.com/image/upload/v1784731465/production/6957de4388cba42d9e7a905e/mk4lwv5o2myxcudibmvr.jpg",
-    "publishedAt": "2026-08-24"
-  },
-  "peneda-geres-national-park-autumn-2026-guide": {
-    "slug": "peneda-geres-national-park-autumn-2026-guide",
-    "title": "Peneda-Gerês no outono: onde ficar para caminhadas, cascatas e vinho",
-    "excerpt": "O único parque nacional de Portugal está no seu melhor entre outubro e novembro — trilhos mais frescos, cascatas caudalosas e as vindimas mesmo ali no vale. Eis como escolher bem a sua base.",
-    "coverImage": "https://assets.guesty.com/image/upload/v1786113138/production/6957de4388cba42d9e7a905e/mnnjl3tw3pxedj0oypuw.jpg",
-    "publishedAt": "2026-08-21"
+  "complete-guide-north-portugal": {
+    "slug": "complete-guide-north-portugal",
+    "title": "Norte de Portugal: praias, natureza e onde ficar",
+    "excerpt": "Escolha a base para umas férias no Norte: Viana do Castelo, Caminha ou Esposende, com praias atlânticas, natureza, sugestões de passeios e casas para comparar.",
+    "coverImage": "https://assets.guesty.com/image/upload/v1776950966/production/6957de4388cba42d9e7a905e/gbu3pgilt9l7nmkakdvy.jpg",
+    "publishedAt": "2026-03-30"
   },
   "porto-douro-valley-guide": {
     "slug": "porto-douro-valley-guide",
@@ -22,8 +15,8 @@
   },
   "viana-do-castelo-guide": {
     "slug": "viana-do-castelo-guide",
-    "title": "Viana do Castelo em dois dias: com ou sem carro",
-    "excerpt": "Planeie dois dias em Viana do Castelo: centro histórico, Santa Luzia e Cabedelo, com transportes públicos, descobertas culturais e escolha da zona para ficar.",
+    "title": "O que fazer em Viana do Castelo: dois dias entre a cidade e o mar",
+    "excerpt": "Descubra Viana entre Santa Luzia, o centro histórico, o Cabedelo e experiências locais. Um roteiro de dois dias com zonas para ficar e transportes.",
     "coverImage": "https://images.pexels.com/photos/33812433/pexels-photo-33812433.jpeg?auto=compress&cs=tinysrgb&w=1200",
     "publishedAt": "2026-03-30"
   },
@@ -50,15 +43,15 @@
   },
   "when-to-visit-north-portugal": {
     "slug": "when-to-visit-north-portugal",
-    "title": "Quando visitar o Norte de Portugal: guia mês a mês",
-    "excerpt": "Escolha datas para a costa do Minho, Porto, interior Norte ou Douro. Sugestões mês a mês, alternativas interiores e o que confirmar antes de reservar.",
+    "title": "Quando visitar o Norte de Portugal: uma estadia para cada estação",
+    "excerpt": "Escolha quando visitar o Norte de Portugal para praia, natureza, vinho ou uma escapadinha numa casa especial. Compare épocas e prepare a estadia.",
     "coverImage": "/destinations/minho-coast.webp",
     "publishedAt": "2026-03-30"
   },
   "surfing-minho-coast": {
     "slug": "surfing-minho-coast",
-    "title": "Surf na Costa do Minho: as ondas mais bem guardadas do norte de Portugal",
-    "excerpt": "Faça surf na Costa do Minho: Cabedelo, Moledo, Afife e Esposende. Guia de picos, melhor época, onde ficar e como reservar aulas no norte de Portugal.",
+    "title": "Surf no Norte de Portugal: prepare uma estadia na costa do Minho",
+    "excerpt": "Prepare férias de surf no Minho: escolha a base, compare aulas, organize a primeira sessão e descubra o que fazer entre idas ao mar.",
     "coverImage": "/experiences/surf-lessons/cover.webp",
     "publishedAt": "2026-03-30"
   },
@@ -71,8 +64,8 @@
   },
   "private-chef-portugal-villa": {
     "slug": "private-chef-portugal-villa",
-    "title": "O que significa ter um chef privado durante as suas férias em Portugal",
-    "excerpt": "Um chef privado na sua villa em Portugal: como funciona, quanto custa, ementas sazonais e por que motivo transforma umas férias de boas em extraordinárias.",
+    "title": "Chef privado na sua casa de férias: ementa, preço e preparação",
+    "excerpt": "Prepare uma refeição com chef privado nas suas férias: escolha a ocasião, compare propostas e confirme ementa, inclusões e condições da casa.",
     "coverImage": "/experiences/private-chef-dinner.webp",
     "publishedAt": "2026-03-30"
   }

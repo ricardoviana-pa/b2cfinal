@@ -158,8 +158,9 @@ export default function Footer() {
               {t('footer.destinationsTitle')}
             </h4>
             <ul className="flex flex-col gap-3">
-              {footerLinks(t('footer.minhoCoast'), '/destinations/minho')}
-              {footerLinks(t('footer.portoDouro'), '/destinations/porto')}
+              {footerLinks(t('destinations.minho'), '/destinations/minho')}
+              {footerLinks(t('footer.porto'), '/destinations/porto')}
+              {footerLinks(t('footer.douro'), '/destinations/douro')}
               {footerLinks(t('footer.lisbon'), '/destinations/lisbon')}
               {footerLinks(t('footer.alentejo'), '/destinations/alentejo')}
               {footerLinks(t('footer.algarve'), '/destinations/algarve')}
@@ -206,7 +207,7 @@ export default function Footer() {
         <div className="container py-7">
 
           {/* Row 1: social + payments */}
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col items-center gap-6 xl:flex-row xl:justify-between">
             {/* Social */}
             <div className="flex items-center justify-center gap-0.5 md:justify-start">
               {[
@@ -223,8 +224,8 @@ export default function Footer() {
             </div>
 
             {/* Payments */}
-            <div className="flex items-center justify-center gap-4 md:justify-end">
-              <span className="hidden lg:inline text-[10px] uppercase tracking-[0.16em] text-white/65" style={{ fontFamily: 'var(--font-body)' }}>
+            <div className="flex min-w-0 flex-col items-center gap-3 xl:items-end">
+              <span className="text-[10px] uppercase tracking-[0.16em] text-white/65 xl:pr-12" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('footer.paymentSecure', 'Secure payment')}
               </span>
               <FooterPaymentLogos />

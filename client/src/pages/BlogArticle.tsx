@@ -98,6 +98,7 @@ export default function BlogArticle() {
   const article = useMemo(() => mergeBlogOverride(rawArticle, blogOverrides), [rawArticle, blogOverrides]);
   const redirect = rawArticle ? blogLanguageRedirect(rawArticle, i18n.language) : null;
   const reviewed = article ? reviewedArticleDate(article,i18n.language) : undefined;
+  const editorialCta = reviewed ? article?.cta : undefined;
   useEffect(() => { if (redirect) window.location.replace(redirect + window.location.search); }, [redirect]);
   usePageMeta({
     title: article?.seoTitle || article?.title,
@@ -153,7 +154,7 @@ export default function BlogArticle() {
   }
 
   const relatedArticles = articles
-    .filter(a => a.id !== article.id && a.status === 'published' && a.category === article.category && isBlogLanguagePublished(a, i18n.language))
+    .filter(a => a.id !== article.id && a.status === 'published' && a.category === article.category && (a.commercialIntent === 'corporate') === (article.commercialIntent === 'corporate') && isBlogLanguagePublished(a, i18n.language))
     .slice(0, 3).map(a => mergeBlogOverride(a, blogOverrides)!);
 
   return (
@@ -237,7 +238,7 @@ export default function BlogArticle() {
       {/* Article Content */}
       <section className="pb-16">
         <div className="container max-w-3xl mx-auto">
-          {reviewed && <nav aria-label={t('planning.inThisGuide')} className="bg-pa-warm border-y border-pa-sand p-6 mb-10"><h2 className="text-base font-medium mb-3">{t('planning.inThisGuide')}</h2><ol className="grid sm:grid-cols-2 gap-x-7 gap-y-1">{articleHeadings(article.content).map(h=><li key={h.id}><a href={`#${h.id}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4" onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:h.id,action:'chapter'})}>{h.title}</a></li>)}</ol></nav>}
+          {reviewed && <nav aria-label={t('planning.inThisGuide')} className="bg-pa-warm border-y border-pa-sand p-6 mb-10"><h2 className="text-base font-medium mb-3">{t('planning.inThisGuide')}</h2><ol className="grid sm:grid-cols-2 gap-x-7 gap-y-1">{articleHeadings(article.content).filter(h=>h.level===2).map(h=><li key={h.id}><a href={`#${h.id}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4" onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:h.id,action:'chapter'})}>{h.title}</a></li>)}</ol></nav>}
           <ArticleBody content={article.content} onLink={action=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'body',action})} />
         </div>
       </section>
@@ -266,19 +267,25 @@ export default function BlogArticle() {
         <div className="container max-w-2xl mx-auto text-center">
           <p className="eyebrow mb-3" style={{ color: '#C4A87C' }}>{t('blogArticle.ctaSubtitle')}</p>
           <h3 className="headline-md mb-4" style={{ color: '#FAFAF7' }}>
-            {article.commercialIntent === 'corporate' ? t('corporate.title') : t('blogArticle.ctaTitle')}
+            {editorialCta?.title ?? (article.commercialIntent === 'corporate' ? t('corporate.title') : t('blogArticle.ctaTitle'))}
           </h3>
-          <p className="body-md mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {article.commercialIntent === 'corporate' ? t('corporate.brief') : t('blogArticle.ctaBody')}
+          <p className="body-md mb-6" style={{ color: 'rgba(255,255,255,0.8)' }}>
+            {editorialCta?.body ?? (article.commercialIntent === 'corporate' ? t('corporate.brief') : t('blogArticle.ctaBody'))}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href={withEditorialTrip(article.commercialIntent === 'corporate' ? '/contact?subject=events&intent=corporate' : article.slug === 'viana-do-castelo-guide' ? '/homes?location=viana-do-castelo' : article.destinationTag === 'minho-coast' ? '/homes?destination=minho' : '/homes', search)} onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'cta',action:'homes'})} className="btn-white inline-flex items-center gap-2">
-              {article.commercialIntent === 'corporate' ? t('destinationGrowth.corporateCta') : t('blogArticle.ctaExplore')} <ArrowRight size={14} />
+            <Link href={withEditorialTrip(editorialCta?.href ?? (article.commercialIntent === 'corporate' ? '/contact?subject=events&intent=corporate' : article.slug === 'viana-do-castelo-guide' ? '/homes?location=viana-do-castelo' : article.destinationTag === 'minho-coast' ? '/homes?destination=minho' : '/homes'), search)} onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'cta',action:editorialCta?.action ?? 'homes'})} className="btn-white inline-flex items-center gap-2">
+              {editorialCta?.label ?? (article.commercialIntent === 'corporate' ? t('destinationGrowth.corporateCta') : t('blogArticle.ctaExplore'))} <ArrowRight size={14} />
             </Link>
             <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost-light inline-flex items-center gap-2">
               {t('blogArticle.ctaConcierge')}
             </a>
           </div>
+          {article.commercialIntent !== 'corporate' && (article.slug === 'viana-do-castelo-guide' || article.destinationTag === 'minho-coast') && <Link
+            href={withEditorialTrip(`/destinations/${article.slug === 'viana-do-castelo-guide' ? 'viana-do-castelo' : 'minho'}`, search)}
+            onClick={() => pushDL({event:'destination_planning',destination:article.slug === 'viana-do-castelo-guide' ? 'viana-do-castelo' : 'minho',language:i18n.language.split('-')[0],section:'journal',action:'guide'})}
+            className="inline-flex min-h-11 items-center gap-2 mt-5 text-sm text-white underline underline-offset-4">
+            {t('destinationGrowth.guide')} · {article.slug === 'viana-do-castelo-guide' ? 'Viana do Castelo' : t('destinations.minho')}<ArrowRight size={14} />
+          </Link>}
         </div>
       </section>
 

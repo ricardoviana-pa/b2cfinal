@@ -25,7 +25,7 @@ export interface BookingQuoteResponse {
     name: string;
     type: "flexible" | "non_refundable" | "other";
     cancellationPolicy?: string[];
-    cancellationFee?: string | null;
+    cancellationFee?: string | number | null;
     total: number;
     baseRent: number;
     cleaningFee: number;
@@ -60,6 +60,9 @@ export interface ThankYouStash {
   guestEmail?: string;
   guestPhone?: string;
   totalCents: number | null;
+  /** Só a estadia (sem extras, receção nem Flex): valor do purchase no
+   *  GA4/Google Ads/Meta. Sem ele usa-se totalCents − purchaseItems. */
+  stayTotalCents?: number | null;
   currency: string;
   /** Promo code applied to the quote — carried into the GA4 purchase event */
   couponCode?: string;
@@ -70,6 +73,8 @@ export interface ThankYouStash {
   /** M12: preço/noites do item da casa no purchase (sem isto o item ia vazio) */
   nightlyRateCents?: number;
   nights?: number;
+  /** Policy of the rate paid, classified like its rate card (planPolicyCode). */
+  cancellationPolicy?: string[];
 }
 
 const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;
@@ -131,7 +136,7 @@ export function fetchRatePlans(listingId: string): Promise<{
     name: string;
     type: "flexible" | "non_refundable" | "other";
     cancellationPolicy?: string[];
-    cancellationFee?: string | null;
+    cancellationFee?: string | number | null;
   }>;
 }> {
   return fetchJson(`/api/listings/${listingId}/rate-plans`);
@@ -180,7 +185,10 @@ export function fetchReservation(reservationId: string) {
     nights?: number | null;
     cleaningFeeCents?: number | null;
     currency: string;
+    /** Policy of the reservation's rate plan, read from Guesty and classified
+     *  (planPolicyCode); [] when unknown. */
     cancellationPolicy: string[];
+    ratePlanId?: string | null;
     checkInInstructions: string;
     googleCalendarUrl: string;
     icsFileName: string;

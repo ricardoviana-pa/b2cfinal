@@ -14,7 +14,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CalendarClock, Check, ChevronRight, RefreshCw, Shield, Wallet } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { formatEur, formatBookingDate } from "@/lib/format";
 import { pushDL } from "@/lib/datalayer";
@@ -215,9 +215,9 @@ export default function FlexBlock({
         <DialogContent className="max-w-[480px] bg-white">
           <div className="space-y-4">
             <div>
-              <p className="font-display text-[20px] text-pa-dark">
+              <DialogTitle className="font-display text-[20px] font-normal leading-normal text-pa-dark">
                 {t("checkout.flex.title", "Flex — guaranteed rebooking")}
-              </p>
+              </DialogTitle>
               <p className="body-sm text-pa-earth mt-1">
                 {formatEur(config.price, lang)} · {t("checkout.flex.perBooking", "one-time, per booking")}
               </p>

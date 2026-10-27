@@ -6,11 +6,11 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { fetchReservation, readThankYou } from "@/lib/booking-api";
-import { pushPurchaseOnce } from "@/lib/datalayer";
+import { pushPurchaseOnce, stayValue } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
 import { optimizeGuestyImage } from "@/lib/images";
 import propertiesData from "@/data/properties.json";
-import { cancellationPolicyText } from "@/lib/cancellation";
+import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
 
 const CONCIERGE_EMAIL = "info@portugalactive.com";
 
@@ -28,42 +28,11 @@ function CardLogo() {
 }
 
 function PayPalLogo() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        fontWeight: 700,
-        fontStyle: "italic",
-        fontSize: "16px",
-        letterSpacing: "-0.02em",
-        lineHeight: 1,
-      }}
-      aria-label="PayPal"
-    >
-      <span style={{ color: "#003087" }}>Pay</span>
-      <span style={{ color: "#009cde" }}>Pal</span>
-    </span>
-  );
+  return <img src="/payments/marks/paypal-blue.png" alt="PayPal" className="h-auto w-16" />;
 }
 
 function KlarnaLogo() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#ffb3c7",
-        borderRadius: "6px",
-        padding: "4px 8px",
-        lineHeight: 1,
-      }}
-      aria-label="Klarna"
-    >
-      <span style={{ color: "#17120f", fontWeight: 700, fontSize: "13px" }}>Klarna</span>
-    </span>
-  );
+  return <img src="/payments/klarna-badge.svg" alt="Klarna" className="h-6 w-auto" />;
 }
 
 export default function PaymentThankYouPage() {
@@ -93,12 +62,34 @@ export default function PaymentThankYouPage() {
     (methodParam === "klarna" ? "klarna" : methodParam === "card" ? "card" : "paypal");
 
   useEffect(() => {
-    if (stash) {
-      setData(stash);
-      setLoading(false);
-      return;
-    }
     let active = true;
+    if (stash) {
+      // Return pages (PayPal/Klarna) do not carry the rate's policy: read it
+      // from the reservation's rate plan in Guesty, without blocking the page.
+      // Until it answers the policy row stays hidden (no fallback sentence
+      // that then swaps for the real one); on failure the fallback shows.
+      const needsPolicy = !stash.cancellationPolicy?.length;
+      setData(needsPolicy ? { ...stash, policyPending: true } : stash);
+      setLoading(false);
+      if (needsPolicy) {
+        fetchReservation(id)
+          .then((r) => {
+            if (!active) return;
+            setData((prev: any) => ({
+              ...prev,
+              cancellationPolicy: r?.cancellationPolicy?.length ? r.cancellationPolicy : prev?.cancellationPolicy,
+              policyPending: false,
+            }));
+          })
+          .catch(() => {
+            // the fallback sentence + terms link shows
+            if (active) setData((prev: any) => ({ ...prev, policyPending: false }));
+          });
+      }
+      return () => {
+        active = false;
+      };
+    }
     fetchReservation(id)
       .then((response) => {
         if (active) setData(response);
@@ -120,11 +111,16 @@ export default function PaymentThankYouPage() {
     // Reopening an email receipt on another device is not a new purchase.
     if (!data || !stash || purchaseFiredRef.current) return;
     purchaseFiredRef.current = true;
+    // Decisão 10/10/2026: o purchase leva só a estadia; extras, receção e
+    // Flex seguem num purchase_extras à parte (pushPurchaseOnce).
+    const extras = Array.isArray(data.purchaseItems) ? data.purchaseItems : [];
+    const value = stayValue(data.stayTotalCents, data.totalCents, extras);
     pushPurchaseOnce(data.confirmationCode, {
       event: "purchase",
+      ...(data.listingId ? { property_id: data.listingId } : {}),
       ecommerce: {
         transaction_id: data.confirmationCode,
-        value: data.totalCents != null ? data.totalCents / 100 : undefined,
+        value,
         currency: data.currency || "EUR",
         ...(data.couponCode ? { coupon: data.couponCode } : {}),
         items: [
@@ -138,12 +134,9 @@ export default function PaymentThankYouPage() {
             checkout_date: data.checkOut ?? undefined,
             guests_adults: data.guestsCount ?? undefined,
           },
-          // Bloco 6: serviços comprados (extras, receção, Flex) — o cartão e
-          // as wallets reportam o purchase aqui, com o carrinho completo
-          ...(Array.isArray(data.purchaseItems) ? data.purchaseItems : []),
         ],
       },
-    });
+    }, { email: data.guestEmail, phone: data.guestPhone }, extras);
   }, [data]);
 
   return (
@@ -295,7 +288,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                 {data.cleaningFeeCents != null ? (
                   <div className="mb-2.5 flex items-baseline justify-between text-[13.5px] text-pa-earth">
                     <span>
-                      {t("paymentThankYou.cleaning", { defaultValue: "Home preparation service" })}
+                      {t("paymentThankYou.cleaning", { defaultValue: "Final cleaning" })}
                     </span>
                     <span className="tabular-nums">
                       {formatEurCents(data.cleaningFeeCents, lang)}
@@ -310,18 +303,26 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                     {formatEurCents(totalPaidCents, lang, t("bookingConfirmation.toConfirm"))}
                   </span>
                 </div>
-                {data.cancellationPolicy?.length ? (
+                {/* Policy of the booking's rate plan (Guesty code → rule, classified
+                    server-side like its rate card); unknown code → "the terms of
+                    your rate" + a link. Hidden while it is still being read. */}
+                {!data.policyPending && (
                   <div className="mt-[11px] flex items-center gap-1.5 text-[11.5px] text-pa-earth">
                     <Clock className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
-                    {cancellationPolicyText(data.cancellationPolicy[0], data.checkIn, t, lang)}
+                    <CancellationPolicyLine
+                      as="span"
+                      code={data.cancellationPolicy}
+                      checkIn={data.checkIn}
+                      lang={lang}
+                    />
                   </div>
-                ) : null}
+                )}
               </div>
 
               {/* Paid row */}
               {fullyPaid ? (
               <div className="mt-[22px] flex items-center gap-3 rounded-lg border border-pa-sand px-4 py-3.5">
-                <div className="flex w-[46px] shrink-0 items-center justify-center">
+                <div className="flex w-16 shrink-0 items-center justify-center">
                   {method === "klarna" ? <KlarnaLogo /> : method === "card" ? <CardLogo /> : <PayPalLogo />}
                 </div>
                 <div className="min-w-0 flex-1">

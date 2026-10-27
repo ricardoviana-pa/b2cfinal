@@ -14,7 +14,7 @@
 
    COPY RULES:
    - No em/en dashes Ã¢ÂÂ use periods, commas, colons
-   - Never "vacation rental" / "holiday home" Ã¢ÂÂ always "private hotel" / "operated home"
+   - The product is a villa / home. "Hotel" only as the comparison ("the service of a hotel", "hotel standards"), never as the noun for what we rent (no "private hotels")
    - Services delivered by "our in house team" / "PA trained professionals"
    - Housekeeping is an add on, never "included"
    - CTA buttons: UPPERCASE, letter-spacing 1.5px
@@ -42,7 +42,7 @@ import { localizeDestination, useDestinationOverrides } from '@/lib/localizeCont
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 import { getUniqueLocalities } from '@/lib/utils';
-import { pushDL, pushEcommerce } from '@/lib/datalayer';
+import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
 import { HOME_FEATURED_ORDER, HOME_FEATURED_COUNT, catalogKey, curatedPosition } from '@/config/propertyOrder';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { isChildUnit } from '@/config/propertyGroups';
@@ -106,8 +106,8 @@ export default function Home() {
   usePageMeta({
     // Must match the server-side PAGE_META '/' entry in server/_core/vite.ts —
     // usePageMeta appends " | Portugal Active", so pass the title without it.
-    title: 'Luxury Private Villas in Portugal',
-    description: '5-star hotel experience in private holiday homes. Professionally managed villas in Algarve, Lisbon, Alentejo, Minho. Full-service concierge, private chefs, curated adventures. Book direct.',
+    title: 'Luxury Villas & Private Homes in Portugal',
+    description: `${HOME_COUNT_LABEL} luxury villas and private homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. The privacy of a home, the service of a hotel. Book direct.`,
     url: '/',
   });
   // FAQPage schema only — the Organization schema is global (index.html),
@@ -331,7 +331,7 @@ export default function Home() {
         item_list_id: 'featured_homes',
         item_list_name: "Editor's Picks",
         items: featured.map((property, index) => ({
-          item_id: `PROP-${property.id}`,
+          item_id: `PROP-${propertyCatalogId(property)}`,
           item_name: property.name,
           item_category: 'villa',
           item_category2: property.locality || property.destination || '',
@@ -423,7 +423,7 @@ export default function Home() {
             {/* Proof strip — above CTAs so it never collides with booking bar */}
             <div className="hidden lg:flex hero-proof-strip flex-wrap items-center gap-x-5 gap-y-1 mb-4">
               <span className="body-sm text-white/60 font-medium font-body" >
-                {t('home.proofHotels', { homes: HOME_COUNT_LABEL, defaultValue: '{{homes}} private hotels' })}
+                {t('home.proofHotels', { homes: HOME_COUNT_LABEL, defaultValue: '{{homes}} villas and private homes' })}
               </span>
               <span className="text-white/25">·</span>
               <span className="body-sm text-white/60 font-medium font-body" >
@@ -431,7 +431,7 @@ export default function Home() {
               </span>
               <span className="text-white/25">·</span>
               <span className="body-sm text-white/60 font-medium font-body" >
-                {t('home.proofManaged', 'Hotel-managed stays')}
+                {t('home.proofManaged', 'Run by our own team')}
               </span>
             </div>
 
