@@ -1,4 +1,4 @@
-import { guestyClient } from "../lib/guesty";
+import { guestyClient, isAmbiguousGuestyFailure } from "../lib/guesty";
 
 export interface CreateReservationInput {
   listingId: string;
@@ -105,7 +105,55 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
  * brief "Reservation not found" eventual-consistency window right after creation via the
  * guestyClient's built-in 500-retry.
  */
-async function fetchReservationBalanceDue(reservationId: string): Promise<number | null> {
+/** Um pagamento tal como o Guesty o devolve em `money.payments[]`. */
+export interface GuestyReservationPayment {
+  id: string | null;
+  amount: number | null;
+  status: string | null;
+  note: string;
+  /** O objeto tal como veio, para procurar o id do PaymentIntent em qualquer campo. */
+  raw: unknown;
+}
+
+/** Estado financeiro de uma reserva, já com o folio precificado. */
+export interface ReservationSettlementState {
+  balanceDue: number;
+  /** 0 quando o Guesty não manda o campo (reserva sem pagamentos). */
+  totalPaid: number;
+  payments: GuestyReservationPayment[];
+}
+
+function toPayment(p: any): GuestyReservationPayment {
+  const num = (v: any) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+  return {
+    id: typeof p?._id === "string" ? p._id : typeof p?.id === "string" ? p.id : null,
+    amount: num(p?.amount),
+    status: typeof p?.status === "string" ? p.status : null,
+    note: String(p?.note ?? p?.notes ?? p?.description ?? ""),
+    raw: p,
+  };
+}
+
+const VOID_PAYMENT_STATUS = /fail|cancel|void|declin|revers/i;
+
+/**
+ * Este pagamento é o registo deste PaymentIntent? O nosso registo leva sempre
+ * o id do PI na nota; procura-se em qualquer campo do objeto porque o nome do
+ * campo da nota no GET não está documentado. Pagamentos anulados não contam:
+ * se alguém anulou o registo no Guesty, voltar a registar é o certo.
+ */
+export function paymentRecordsIntent(p: GuestyReservationPayment, paymentIntentId: string): boolean {
+  if (!paymentIntentId) return false;
+  if (p.status && VOID_PAYMENT_STATUS.test(p.status)) return false;
+  if (p.note.includes(paymentIntentId)) return true;
+  try {
+    return JSON.stringify(p.raw ?? {}).includes(paymentIntentId);
+  } catch {
+    return false;
+  }
+}
+
+async function readSettlementState(reservationId: string): Promise<ReservationSettlementState | null> {
   // A freshly created reservation 404s on GET for a few seconds (Guesty eventual
   // consistency) — and the client's 500-retry does not cover 404s. Retry here:
   // recording a payment without the real balanceDue is how payments get rejected
@@ -121,8 +169,14 @@ async function fetchReservationBalanceDue(reservationId: string): Promise<number
       const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
         query: { fields: "money status" },
       });
-      const balanceDue = data?.money?.balanceDue;
-      if (typeof balanceDue === "number") return balanceDue;
+      const m = data?.money ?? {};
+      if (typeof m.balanceDue === "number") {
+        return {
+          balanceDue: m.balanceDue,
+          totalPaid: typeof m.totalPaid === "number" && Number.isFinite(m.totalPaid) ? m.totalPaid : 0,
+          payments: Array.isArray(m.payments) ? m.payments.map(toPayment) : [],
+        };
+      }
       if (attempt === MAX_ATTEMPTS) {
         console.warn(`[Guesty] balanceDue still not priced for ${reservationId} after ${attempt} reads`);
         return null;
@@ -138,11 +192,16 @@ async function fetchReservationBalanceDue(reservationId: string): Promise<number
   return null;
 }
 
+/** Estado financeiro da reserva (saldo, total pago, pagamentos), com retries
+ *  para a janela de eventual consistency pós-criação. null = ilegível. */
+export async function getReservationSettlementState(reservationId: string): Promise<ReservationSettlementState | null> {
+  return readSettlementState(reservationId);
+}
+
 /** Balance due (major units) de uma reserva, com retries para a janela de
- *  eventual consistency pós-criação. Exportado para o settle medir o delta
- *  entre o cobrado no site e o re-preço do Guesty. */
+ *  eventual consistency pós-criação. */
 export async function getReservationBalanceDue(reservationId: string): Promise<number | null> {
-  return fetchReservationBalanceDue(reservationId);
+  return (await readSettlementState(reservationId))?.balanceDue ?? null;
 }
 
 /**
@@ -152,11 +211,19 @@ export async function getReservationBalanceDue(reservationId: string): Promise<n
  * owners — tal como a cleaning fee — e o Hostkit fatura o total certo.
  * Fail-soft: em erro, o comportamento anterior (registo capado) mantém-se.
  */
+export type ServiceFeeOutcome =
+  /** O Guesty confirmou o invoice item. */
+  | "added"
+  /** O Guesty recusou (4xx): não ficou gravado. */
+  | "refused"
+  /** 5xx, timeout ou rede: pode ou não ter ficado gravado. Quem chamou relê o saldo. */
+  | "unknown";
+
 export async function addReservationServiceFee(
   reservationId: string,
   amount: number,
   title = "Service fee",
-): Promise<boolean> {
+): Promise<ServiceFeeOutcome> {
   try {
     await guestyClient.request<any>("POST", `/v1/invoice-items/reservation/${reservationId}`, {
       body: {
@@ -166,12 +233,16 @@ export async function addReservationServiceFee(
         secondIdentifier: process.env.GUESTY_SERVICE_FEE_CATEGORY || "SERVICE",
         description: "Taxa de servico do checkout do site (portugalactive.com)",
       },
+      // Um 5xx repetido lançava a mesma fee duas vezes e inflacionava o saldo
+      // (era isso que deixava passar o 2.º registo no GY-Huf4Lp8L).
+      nonIdempotent: true,
     });
     console.info(`[Guesty] invoice item "${title}" ${amount} adicionado a ${reservationId} — total do site reposto`);
-    return true;
+    return "added";
   } catch (err: any) {
-    console.warn(`[Guesty] invoice item falhou para ${reservationId} (${amount}): ${err?.message}`);
-    return false;
+    const outcome: ServiceFeeOutcome = isAmbiguousGuestyFailure(err) ? "unknown" : "refused";
+    console.warn(`[Guesty] invoice item ${outcome === "unknown" ? "com resultado desconhecido" : "falhou"} para ${reservationId} (${amount}): ${err?.message}`);
+    return outcome;
   }
 }
 
@@ -267,22 +338,40 @@ export async function attachGuestPaymentMethod(input: {
   }
 }
 
+export type RecordExternalPaymentOutcome =
+  /** POST feito agora. */
+  | "recorded"
+  /** Já existe um registo com este PaymentIntent na nota: nada a fazer. */
+  | "already-recorded"
+  /** Saldo a zero, sem registo deste PI: alguém liquidou a reserva por outra via. */
+  | "settled";
+
 export async function recordExternalPayment(
   reservationId: string,
   amount: number,
   currency: string,
   paymentIntentId: string
-): Promise<void> {
+): Promise<RecordExternalPaymentOutcome> {
   // Record against Guesty's ACTUAL balance due, not the charged amount. The reservation is
   // priced by a different engine than the checkout quote, so paying the charged amount can
   // exceed the balance ("Payment amount can't be greater than balance due") and be rejected
-  // entirely — leaving the reservation unpaid. Capping at balanceDue also makes this
-  // idempotent: a second path (webhook vs. return page) sees balanceDue=0 and skips cleanly.
-  const balanceDue = await fetchReservationBalanceDue(reservationId);
+  // entirely — leaving the reservation unpaid.
+  const state = await readSettlementState(reservationId);
 
+  // Idempotência a sério: o nosso registo leva o id do PI na nota. Antes disto
+  // a única defesa era o saldo chegar a zero, o que deixa de ser verdade quando
+  // há mais do que um pagamento por reserva (pagamento em duas partes) ou
+  // quando o Guesty preça acima do site (o 2.º passe do GY-Huf4Lp8L registou
+  // os mesmos 2.524,07 EUR outra vez porque sobrava saldo).
+  if (state && state.payments.some((p) => paymentRecordsIntent(p, paymentIntentId))) {
+    console.info(`[Guesty] PI ${paymentIntentId} already recorded on ${reservationId} — skipping.`);
+    return "already-recorded";
+  }
+
+  const balanceDue = state?.balanceDue ?? null;
   if (balanceDue !== null && balanceDue <= 0) {
     console.info(`[Guesty] Reservation ${reservationId} already settled (balanceDue=0) — skipping payment record for PI ${paymentIntentId}.`);
-    return;
+    return "settled";
   }
 
   // Never post the charged amount blind: Guesty re-prices the reservation, and an
@@ -296,16 +385,39 @@ export async function recordExternalPayment(
     console.warn(`[Guesty] Charged ${amount} ${currency} but reservation ${reservationId} balanceDue is ${balanceDue}; recording ${amountToRecord} (PI ${paymentIntentId}). Reconcile the difference manually.`);
   }
 
-  await guestyClient.request<any>("POST", `/v1/reservations/${reservationId}/payments`, {
-    body: {
-      paymentMethod: { method: "OTHER" },
-      amount: amountToRecord,
-      // `paidAt` records the funds as ALREADY COLLECTED (external processor) rather than
-      // scheduled/owed — without it Guesty leaves the reservation balance unsettled.
-      paidAt: new Date().toISOString(),
-      note: `Stripe external payment (${currency}) — PaymentIntent: ${paymentIntentId}`,
-    },
-  });
+  const body = {
+    paymentMethod: { method: "OTHER" },
+    amount: amountToRecord,
+    // `paidAt` records the funds as ALREADY COLLECTED (external processor) rather than
+    // scheduled/owed — without it Guesty leaves the reservation balance unsettled.
+    paidAt: new Date().toISOString(),
+    note: `Stripe external payment (${currency}) — PaymentIntent: ${paymentIntentId}`,
+  };
+  // Um 5xx depois de o Guesty gravar não pode virar dois registos, por isso o
+  // cliente não repete este POST (nonIdempotent). A repetição faz-se aqui, da
+  // forma segura: reler os pagamentos e só voltar a enviar se o registo deste
+  // PI não lá estiver. Devolve aos fluxos Klarna e PayPal a recuperação rápida
+  // que tinham quando o cliente repetia tudo às cegas.
+  const MAX_POSTS = 3;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await guestyClient.request<any>("POST", `/v1/reservations/${reservationId}/payments`, {
+        body,
+        nonIdempotent: true,
+      });
+      return "recorded";
+    } catch (err) {
+      if (!isAmbiguousGuestyFailure(err) || attempt >= MAX_POSTS) throw err;
+      await new Promise((r) => setTimeout(r, 1000 * attempt));
+      const after = await readSettlementState(reservationId);
+      if (after && after.payments.some((p) => paymentRecordsIntent(p, paymentIntentId))) {
+        console.info(`[Guesty] PI ${paymentIntentId}: o POST ambiguo ficou gravado em ${reservationId} — sem segundo registo.`);
+        return "recorded";
+      }
+      if (!after) throw err;
+      console.warn(`[Guesty] PI ${paymentIntentId}: POST ambiguo nao gravou em ${reservationId} — nova tentativa ${attempt + 1}/${MAX_POSTS}.`);
+    }
+  }
 }
 
 /**
@@ -317,7 +429,7 @@ export async function recordExternalPayment(
 export async function fetchReservationPaymentState(reservationId: string): Promise<{
   totalPaid: number | null;
   balanceDue: number | null;
-  payments: Array<{ status?: string; amount?: number; scheduledFor?: string }>;
+  payments: Array<{ id?: string; status?: string; amount?: number; scheduledFor?: string; note?: string }>;
 } | null> {
   try {
     const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
@@ -329,9 +441,11 @@ export async function fetchReservationPaymentState(reservationId: string): Promi
       totalPaid: typeof m.totalPaid === "number" ? m.totalPaid : null,
       balanceDue: typeof m.balanceDue === "number" ? m.balanceDue : null,
       payments: payments.map((p: any) => ({
+        id: typeof p?._id === "string" ? p._id : undefined,
         status: p?.status,
         amount: p?.amount,
         scheduledFor: p?.shouldBePaidAt ?? p?.paidAt ?? undefined,
+        note: typeof p?.note === "string" ? p.note : undefined,
       })),
     };
   } catch (err: any) {

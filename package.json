@@ -35,6 +35,7 @@
     "audit:quotes": "node scripts/quote-health.mjs",
     "report:recovery": "tsx scripts/recovery-report.ts",
     "report:funnel": "tsx scripts/checkout-funnel-report.ts",
+    "report:leadtime": "tsx scripts/lead-time-report.ts",
     "report:vitals": "tsx scripts/vitals-report.ts"
   },
   "dependencies": {

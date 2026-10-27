@@ -495,13 +495,34 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
   return { Authorization: `Bearer ${token}` };
 }
 
+export interface GuestyRequestOptions {
+  body?: unknown;
+  query?: Record<string, string | number | boolean | undefined>;
+  /**
+   * Pedido com efeito financeiro que o Guesty NÃO deduplica: registar um
+   * pagamento, lançar um invoice item, ajustar o folio. Uma falha de rede, um
+   * timeout ou um 5xx não dizem se o Guesty gravou ou não, e repetir às cegas
+   * pode gravar duas vezes (com pagamentos parciais, o segundo POST deixa de
+   * ser recusado por exceder o saldo). Com esta flag só se repete o que de
+   * certeza não foi processado (401 com token renovado, 429); o resto sobe
+   * para quem chamou, que relê o estado da reserva antes de tentar outra vez.
+   */
+  nonIdempotent?: boolean;
+}
+
+/** O pedido falhou de forma ambígua: o Guesty pode ou não ter gravado. */
+export function isAmbiguousGuestyFailure(err: unknown): boolean {
+  return err instanceof GuestyClientError && (err.details as any)?.outcome === "unknown";
+}
+
 async function request<T>(
   method: GuestyMethod,
   endpoint: string,
-  options?: { body?: unknown; query?: Record<string, string | number | boolean | undefined> }
+  options?: GuestyRequestOptions
 ): Promise<T> {
   const url = buildUrl(endpoint, options?.query);
   const maxAttempts = 3;
+  const retryAmbiguous = !options?.nonIdempotent;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const startedAt = Date.now();
@@ -518,18 +539,20 @@ async function request<T>(
         body: options?.body !== undefined ? JSON.stringify(options.body) : undefined,
       });
     } catch (error) {
-      if (attempt < maxAttempts - 1) {
+      if (retryAmbiguous && attempt < maxAttempts - 1) {
         const backoffMs = 500 * Math.pow(2, attempt); // 500ms, 1000ms
         console.warn(`[Guesty] Network error on ${method} ${endpoint} — retry #${attempt + 1} in ${backoffMs}ms`);
         await sleep(backoffMs);
         continue;
       }
       throw new GuestyClientError({
-        message: "Guesty request failed (network error)",
+        message: retryAmbiguous
+          ? "Guesty request failed (network error)"
+          : "Guesty request failed (network error, outcome unknown: not retried)",
         status: 503,
         method,
         endpoint,
-        details: String(error),
+        details: retryAmbiguous ? String(error) : { outcome: "unknown", error: String(error) },
       });
     }
     const durationMs = Date.now() - startedAt;
@@ -555,7 +578,8 @@ async function request<T>(
       continue;
     }
 
-    if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts - 1) {
+    const retryableStatus = response.status === 429 || (response.status >= 500 && retryAmbiguous);
+    if (retryableStatus && attempt < maxAttempts - 1) {
       // Exponential backoff per Guesty API Traffic Management recipe:
       // BASE_BACKOFF_MS * 2^attempt → 500ms, 1000ms, 2000ms
       // Respect Retry-After header if present (capped at 30s)
@@ -569,12 +593,15 @@ async function request<T>(
       continue;
     }
 
+    const ambiguous = response.status >= 500 && !retryAmbiguous;
     throw new GuestyClientError({
-      message: `Guesty request failed (${response.status})`,
+      message: ambiguous
+        ? `Guesty request failed (${response.status}, outcome unknown: not retried)`
+        : `Guesty request failed (${response.status})`,
       status: response.status,
       method,
       endpoint,
-      details,
+      details: ambiguous ? { outcome: "unknown", response: details } : details,
     });
   }
 

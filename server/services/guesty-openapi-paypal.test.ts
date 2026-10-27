@@ -181,3 +181,149 @@ describe("recordExternalPayment — espera que o Guesty precifique a reserva", (
     }
   });
 });
+
+describe("recordExternalPayment — idempotente pela nota com o id do PaymentIntent", () => {
+  beforeEach(() => {
+    vi.mocked(guestyClient.request).mockReset();
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+
+  const ourNote = "Stripe external payment (EUR) — PaymentIntent: pi_abc";
+
+  it("não regista de novo quando o folio já tem um pagamento deste PI, mesmo com saldo por pagar", async () => {
+    const { recordExternalPayment } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockResolvedValueOnce({
+      money: { balanceDue: 242.1, totalPaid: 2524.07, payments: [{ _id: "p1", amount: 2524.07, status: "SUCCEEDED", note: ourNote }] },
+    } as any);
+
+    await expect(recordExternalPayment("res-1", 2524.07, "EUR", "pi_abc")).resolves.toBe("already-recorded");
+    expect(vi.mocked(guestyClient.request)).toHaveBeenCalledTimes(1); // só o GET
+  });
+
+  it("encontra o PI noutro campo do pagamento quando o nome do campo da nota muda", async () => {
+    const { recordExternalPayment } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockResolvedValueOnce({
+      money: { balanceDue: 100, totalPaid: 900, payments: [{ _id: "p1", amount: 900, status: "SUCCEEDED", meta: { text: ourNote } }] },
+    } as any);
+    await expect(recordExternalPayment("res-1", 900, "EUR", "pi_abc")).resolves.toBe("already-recorded");
+  });
+
+  it("um registo anulado no Guesty não conta: volta a registar", async () => {
+    const { recordExternalPayment } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request)
+      .mockResolvedValueOnce({
+        money: { balanceDue: 500, totalPaid: 0, payments: [{ _id: "p1", amount: 500, status: "CANCELED", note: ourNote }] },
+      } as any)
+      .mockResolvedValueOnce({} as any);
+    await expect(recordExternalPayment("res-1", 500, "EUR", "pi_abc")).resolves.toBe("recorded");
+  });
+
+  it("o POST do pagamento sai marcado como não repetível", async () => {
+    const { recordExternalPayment } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request)
+      .mockResolvedValueOnce({ money: { balanceDue: 500 } } as any)
+      .mockResolvedValueOnce({} as any);
+    await recordExternalPayment("res-1", 500, "EUR", "pi_abc");
+    const post = vi.mocked(guestyClient.request).mock.calls[1];
+    expect(post[0]).toBe("POST");
+    expect((post[2] as any).nonIdempotent).toBe(true);
+  });
+
+  it("saldo a zero sem registo deste PI: não regista e diz que a reserva já estava liquidada", async () => {
+    const { recordExternalPayment } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockResolvedValueOnce({ money: { balanceDue: 0, totalPaid: 500, payments: [] } } as any);
+    await expect(recordExternalPayment("res-1", 500, "EUR", "pi_abc")).resolves.toBe("settled");
+    expect(vi.mocked(guestyClient.request)).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("addReservationServiceFee — o invoice item não se repete às cegas", () => {
+  beforeEach(() => {
+    vi.mocked(guestyClient.request).mockReset();
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+
+  it("o POST sai marcado como não repetível e devolve 'added'", async () => {
+    vi.mocked(guestyClient.request).mockResolvedValueOnce({} as any);
+    const { addReservationServiceFee } = await import("./guesty-openapi-paypal");
+    expect(await addReservationServiceFee("res-1", 224.07)).toBe("added");
+    expect((vi.mocked(guestyClient.request).mock.calls[0][2] as any).nonIdempotent).toBe(true);
+  });
+
+  it("um 4xx é 'refused' e um 5xx sem repetição é 'unknown'", async () => {
+    const { addReservationServiceFee } = await import("./guesty-openapi-paypal");
+    const { GuestyClientError } = await import("../lib/guesty");
+    vi.mocked(guestyClient.request).mockRejectedValueOnce(
+      new GuestyClientError({ message: "bad", status: 400, method: "POST", endpoint: "/x" }),
+    );
+    expect(await addReservationServiceFee("res-1", 1)).toBe("refused");
+    vi.mocked(guestyClient.request).mockRejectedValueOnce(
+      new GuestyClientError({ message: "boom", status: 502, method: "POST", endpoint: "/x", details: { outcome: "unknown" } }),
+    );
+    expect(await addReservationServiceFee("res-1", 1)).toBe("unknown");
+  });
+});
+
+describe("recordExternalPayment — repetição segura depois de um POST ambíguo", () => {
+  beforeEach(() => {
+    vi.mocked(guestyClient.request).mockReset();
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+
+  async function ambiguous() {
+    const { GuestyClientError } = await import("../lib/guesty");
+    return new GuestyClientError({ message: "502", status: 502, method: "POST", endpoint: "/x", details: { outcome: "unknown" } });
+  }
+
+  it("se o POST ambíguo ficou gravado, relê, encontra a nota e não envia segundo", async () => {
+    vi.useFakeTimers();
+    try {
+      const { recordExternalPayment } = await import("./guesty-openapi-paypal");
+      vi.mocked(guestyClient.request)
+        .mockResolvedValueOnce({ money: { balanceDue: 500, totalPaid: 0, payments: [] } } as any)
+        .mockRejectedValueOnce(await ambiguous())
+        .mockResolvedValueOnce({
+          money: { balanceDue: 0, totalPaid: 500, payments: [{ _id: "p1", amount: 500, status: "SUCCEEDED", note: "PaymentIntent: pi_k" }] },
+        } as any);
+      const run = recordExternalPayment("res-1", 500, "EUR", "pi_k");
+      await vi.runAllTimersAsync();
+      await expect(run).resolves.toBe("recorded");
+      const posts = vi.mocked(guestyClient.request).mock.calls.filter((c) => c[0] === "POST");
+      expect(posts).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("se não ficou gravado, volta a enviar uma vez (Klarna e PayPal recuperam como antes)", async () => {
+    vi.useFakeTimers();
+    try {
+      const { recordExternalPayment } = await import("./guesty-openapi-paypal");
+      vi.mocked(guestyClient.request)
+        .mockResolvedValueOnce({ money: { balanceDue: 500, totalPaid: 0, payments: [] } } as any)
+        .mockRejectedValueOnce(await ambiguous())
+        .mockResolvedValueOnce({ money: { balanceDue: 500, totalPaid: 0, payments: [] } } as any)
+        .mockResolvedValueOnce({} as any);
+      const run = recordExternalPayment("res-1", 500, "EUR", "pi_k");
+      await vi.runAllTimersAsync();
+      await expect(run).resolves.toBe("recorded");
+      const posts = vi.mocked(guestyClient.request).mock.calls.filter((c) => c[0] === "POST");
+      expect(posts).toHaveLength(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("um 4xx não é repetido", async () => {
+    const { recordExternalPayment } = await import("./guesty-openapi-paypal");
+    const { GuestyClientError } = await import("../lib/guesty");
+    vi.mocked(guestyClient.request)
+      .mockResolvedValueOnce({ money: { balanceDue: 500 } } as any)
+      .mockRejectedValueOnce(new GuestyClientError({ message: "exceeds", status: 400, method: "POST", endpoint: "/x" }));
+    await expect(recordExternalPayment("res-1", 500, "EUR", "pi_k")).rejects.toThrow();
+    expect(vi.mocked(guestyClient.request).mock.calls.filter((c) => c[0] === "POST")).toHaveLength(1);
+  });
+});
