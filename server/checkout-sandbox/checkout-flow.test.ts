@@ -37,6 +37,9 @@ vi.mock('../services/guesty-openapi-paypal', () => ({
   createReservationViaOpenApi: fake.reserve, recordExternalPayment: fake.recordPayment,
   appendReservationNote: fake.note, fetchReservationConfirmationCode: vi.fn(async () => 'SYNTHETIC-BOOKING'),
   getReservationBalanceDue: vi.fn(async () => 2147), addReservationServiceFee: vi.fn(async () => true),
+  // Folio por pagar, sem pagamentos: o mesmo estado que o saldo de 2147 acima descrevia.
+  getReservationSettlementState: vi.fn(async () => ({ balanceDue: 2147, totalPaid: 0, payments: [] })),
+  paymentRecordsIntent: vi.fn(() => false),
   fetchPaymentProviderId: vi.fn(), fetchReservationGuestId: vi.fn(), attachGuestPaymentMethod: vi.fn(),
   fetchReservationPaymentState: vi.fn(async () => ({ balanceDue: 0 })),
 }));

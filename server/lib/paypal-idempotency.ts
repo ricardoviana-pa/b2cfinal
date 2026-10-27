@@ -96,7 +96,7 @@ export function getOrCreateReservation(
   stripe: StripeMetadataPort,
   ops: {
     createReservation: () => Promise<ReservationResult>;
-    recordPayment: (reservationId: string) => Promise<void>;
+    recordPayment: (reservationId: string) => Promise<unknown>;
     /** Called when the payment record fails after the reservation was created —
      * the guest paid but Guesty shows the reservation as unpaid. Use it to alert
      * operations; the booking itself still succeeds. */
@@ -118,7 +118,7 @@ async function createAndRecordReservation(
   stripe: StripeMetadataPort,
   ops: {
     createReservation: () => Promise<ReservationResult>;
-    recordPayment: (reservationId: string) => Promise<void>;
+    recordPayment: (reservationId: string) => Promise<unknown>;
     onRecordPaymentFailure?: (reservationId: string, error: unknown) => void;
   }
 ): Promise<ReservationResult> {
@@ -177,7 +177,7 @@ async function recordPaymentOnce(
   piId: string,
   stripe: StripeMetadataPort,
   reservationId: string,
-  recordPayment: (reservationId: string) => Promise<void>,
+  recordPayment: (reservationId: string) => Promise<unknown>,
   onFailure?: (reservationId: string, error: unknown) => void
 ): Promise<void> {
   const attempt = async () => {
