@@ -16,6 +16,7 @@ import { splitTwoParts, twoPartsInstants, twoPartsSchedule } from "./payment-pla
 import { effectiveFlexChoice, intentPaymentPlan, intentPolicyCode } from "./checkout-plan";
 import { flexGiftActive } from "./recovery-funnel";
 import { resolveCleaningRates } from "../config/cleaning-rates";
+import { PETS_ONLY_SKUS } from "../config/checkout-extras";
 import {
   getPaymentIntent,
   updatePaymentIntentMetadata,
@@ -119,6 +120,25 @@ export function breakdownFromIntent(
       return { "daily-cleaning": r.daily, "deep-cleaning": r.deep };
     })(),
   });
+}
+
+/**
+ * O breakdown que o checkout cobra para um intent, com os dados da casa: a
+ * limpeza pela tipologia (número de quartos) e sem extras de animais numa
+ * casa que não os aceita. É o cálculo do createCardCharge. Quem mostra,
+ * valida ou devolve valores (emails, Klarna e PayPal, reembolsos por linha)
+ * tem de usar este: sem os quartos, as 20 casas fora da tabela de limpezas
+ * apareciam com o preço de 3 quartos, diferente do que o ecrã mostrou e do
+ * que o cartão cobrou. Fail-soft como o listingFacts (sem dados da casa,
+ * cai na tabela por omissão).
+ */
+export async function listingBreakdownFromIntent(m: any, opts: { at?: number; flexGift?: boolean } = {}) {
+  const { listingFacts } = await import("../routers/checkout");
+  const facts = await listingFacts(m?.listingId);
+  const safe = facts.pets
+    ? m
+    : { ...m, extras: ((m?.extras ?? []) as any[]).filter((e) => !PETS_ONLY_SKUS.includes(e?.sku)) };
+  return breakdownFromIntent(safe, facts.bedrooms, opts);
 }
 
 /**
@@ -679,7 +699,8 @@ export async function refundCheckoutLine(
   if (!lines.length || !Number.isFinite(receptionCents) || !Number.isFinite(flexCents)) {
     const m = await getBookingIntent(intentId);
     if (m) {
-      const b = breakdownFromIntent(m);
+      // Os mesmos valores que foram cobrados: limpeza pelos quartos da casa.
+      const b = await listingBreakdownFromIntent(m);
       if (!lines.length) lines = b.lines;
       if (!Number.isFinite(receptionCents)) receptionCents = b.receptionCents;
       if (!Number.isFinite(flexCents)) flexCents = b.flexCents;

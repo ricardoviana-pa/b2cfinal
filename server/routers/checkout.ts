@@ -208,11 +208,13 @@ async function sendCapiPurchase(m: any, intentId: string, value: number): Promis
  */
 export async function fireCheckoutPaidEmails(m: any, intentId: string, pricing?: { flexGift?: boolean; at?: number }): Promise<void> {
   try {
-    const { breakdownFromIntent } = await import("../services/checkout-card-charge");
-    const canonical = (() => {
-      try { const b = breakdownFromIntent(m, null, pricing ?? {}); return { lines: b.lines, stayCents: b.stayCents, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
-      catch { return null; }
-    })();
+    // Os valores dos emails e do manifesto são os que o cartão cobrou: limpeza
+    // pelos quartos da casa, sem extras de animais numa casa que não os aceita,
+    // e o Flex como foi cobrado (a oferta pode ter expirado desde o pagamento).
+    const { listingBreakdownFromIntent } = await import("../services/checkout-card-charge");
+    const canonical = await listingBreakdownFromIntent(m, pricing ?? {})
+      .then((b) => ({ lines: b.lines, stayCents: b.stayCents, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }))
+      .catch(() => null);
     // M13 (spec §13): CAPI server-side do Purchase — este é o ponto único por
     // onde TODAS as transições para paid passam (cartão, wallets, PayPal,
     // Klarna, webhook, sweep). event_id = confirmationCode deduplica com o
