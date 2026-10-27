@@ -191,7 +191,14 @@ const SALES_COPY_EMAIL = process.env.SALES_COPY_EMAIL ?? "ricardo.viana@portugal
 
 /** Alerta operacional genérico para a equipa (saúde das quotes, filas, etc.).
  *  Nunca lança: um alerta não pode partir o funil que está a vigiar. */
-export async function sendOpsAlert(subject: string, lines: string[]): Promise<void> {
+/** Devolve true quando o email para booking@ saiu. A cópia à gestão é
+ *  independente: uma falha numa não esconde nem impede a outra. */
+export async function sendOpsAlert(
+  subject: string,
+  lines: string[],
+  opts: { copyToSales?: boolean } = {},
+): Promise<boolean> {
+  let delivered = false;
   try {
     const html = wrapTemplate(`
 <tr><td style="padding:0 0 16px 0;">
@@ -199,10 +206,25 @@ export async function sendOpsAlert(subject: string, lines: string[]): Promise<vo
 </td></tr>
 ${lines.map((l) => `<tr><td style="padding:0 0 10px 0;"><p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.6;margin:0;">${l}</p></td></tr>`).join("")}
 <tr><td style="padding:8px 0 0 0;"><p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0;">Alerta automático · ${new Date().toISOString()}</p></td></tr>`);
-    await sendEmail(BOOKING_ALERT_EMAIL, `[OPS] ${subject}`, html);
+    try {
+      await sendEmail(BOOKING_ALERT_EMAIL, `[OPS] ${subject}`, html);
+      delivered = true;
+    } catch (err: any) {
+      console.error(`[EMAIL] sendOpsAlert falhou: ${err?.message}`);
+    }
+    // Alertas com dinheiro em jogo vão também à gestão: o booking@ sozinho
+    // não chega quando a caixa não é lida (spec duas partes, 3.2).
+    if (opts.copyToSales && SALES_COPY_EMAIL && SALES_COPY_EMAIL !== BOOKING_ALERT_EMAIL) {
+      try {
+        await sendEmail(SALES_COPY_EMAIL, `[OPS] ${subject}`, html);
+      } catch (err: any) {
+        console.error(`[EMAIL] sendOpsAlert (copia a gestao) falhou: ${err?.message}`);
+      }
+    }
   } catch (err: any) {
     console.error(`[EMAIL] sendOpsAlert falhou: ${err?.message}`);
   }
+  return delivered;
 }
 
 export async function sendBookingFailureAlert(data: BookingFailureAlertData): Promise<void> {

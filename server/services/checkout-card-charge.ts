@@ -1,4 +1,5 @@
 import { withCheckoutChargeLock } from "../lib/checkout-charge-attempt";
+import { isPreviewDeployment } from "../lib/preview-isolation";
 import { trustedStayQuote, assertQuotedTotal } from "./trusted-checkout-quote";
 import { completeCheckoutIntent } from "./checkout-confirmation";
 /**
@@ -23,13 +24,64 @@ import {
   recordExternalPayment,
   appendReservationNote,
   fetchReservationConfirmationCode,
-  getReservationBalanceDue,
+  getReservationSettlementState,
+  paymentRecordsIntent,
   addReservationServiceFee,
   fetchPaymentProviderId,
   fetchReservationGuestId,
   attachGuestPaymentMethod,
   fetchReservationPaymentState,
 } from "./guesty-openapi-paypal";
+
+/** O que fazer ao folio do Guesty antes de registar o pagamento da estadia. */
+export type FolioReconciliation =
+  /** O Guesty preça abaixo do site: lançar a diferença como service fee (AFE). */
+  | { action: "add-fee"; delta: number }
+  /** O Guesty preça acima do site: não mexer, anotar (decisão comercial, não de código). */
+  | { action: "price-gap"; gap: number }
+  /** Nada a fazer: os valores batem, ou o folio já tem pagamentos. */
+  | { action: "none"; reason: "matches" | "already-paid" };
+
+/**
+ * Decide o acerto do folio a partir do estado REAL da reserva.
+ *
+ * Regra que fecha o GY-Huf4Lp8L: assim que o folio tem algum pagamento (o
+ * nosso ou outro), o saldo deixa de ser o total da reserva e já não serve para
+ * medir a diferença de preço. Comparar o saldo com a estadia nesse momento foi
+ * o que lançou 2.281,97 EUR de "service fee" fantasma e um 2.º registo de
+ * 2.524,07 EUR. Por isso, com pagamentos no folio, nunca se mexe.
+ */
+export function decideFolioReconciliation(input: {
+  stayEur: number;
+  balanceDue: number;
+  totalPaid: number;
+  ourPaymentRecorded: boolean;
+}): FolioReconciliation {
+  if (input.ourPaymentRecorded || input.totalPaid > 0.005) {
+    return { action: "none", reason: "already-paid" };
+  }
+  const round2 = (n: number) => Math.round(n * 100) / 100;
+  const { stayEur, balanceDue } = input;
+  if (balanceDue > 0 && stayEur - balanceDue > 0.5) {
+    return { action: "add-fee", delta: round2(stayEur - balanceDue) };
+  }
+  if (balanceDue - stayEur > 0.5) {
+    return { action: "price-gap", gap: round2(balanceDue - stayEur) };
+  }
+  return { action: "none", reason: "matches" };
+}
+
+/** Depois de lançar a fee, o saldo do Guesty pode demorar a refletir. Registar
+ *  o pagamento antes disso capava-o no saldo antigo e deixava a fee por pagar
+ *  para sempre (dívida falsa no Guesty). Espera até ~9 s; nunca lança. */
+async function waitForBalanceAtLeast(reservationId: string, targetEur: number): Promise<boolean> {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const state = await fetchReservationPaymentState(reservationId);
+    if (state && typeof state.balanceDue === "number" && state.balanceDue >= targetEur - 0.5) return true;
+    await new Promise((r) => setTimeout(r, 1500));
+  }
+  return false;
+}
 
 /** `bedrooms` alinha o preço de limpeza COBRADO com o MOSTRADO: o getExtras
  *  preça por quartos, e sem este dado uma casa fora da tabela caía no preço
@@ -174,33 +226,81 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
   // 283,10 que o Guesty apresenta como "Pending payment collection". O hóspede
   // pagou o preço contratado e não deve nada — mas o CS vê dívida e o instinto
   // é pedir-lhe o cartão. Ver o priceGap abaixo.
-  let priceGap = 0;
+  // A divergência de um passe anterior sobrevive ao carimbo: sem isto, um
+  // settle retomado escrevia a nota sem o aviso "não é dívida do hóspede".
+  let priceGap = Number(pi.metadata.priceGap ?? 0) || 0;
   if (pi.metadata.feeAdjusted !== "1") {
-    const balance = await getReservationBalanceDue(reservationId);
-    const stayEur = Math.round(b.stayCents) / 100;
-    if (balance !== null && balance > 0 && stayEur - balance > 0.5) {
-      const delta = Math.round((stayEur - balance) * 100) / 100;
-      const ok = await addReservationServiceFee(reservationId, delta);
-      if (ok) await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
-    } else if (balance !== null && balance - stayEur > 0.5) {
-      // Sentido contrário: o Guesty pede mais do que o site cobrou. NÃO se
-      // corrige o folio aqui — baixá-lo tira receita ao proprietário e isso é
-      // decisão comercial, não de código. Mas também não fica calado: o valor
-      // vai para o PI, para o log e para uma nota na própria reserva, para
-      // quem a abrir no Guesty ver que não há nada a cobrar ao hóspede.
-      priceGap = Math.round((balance - stayEur) * 100) / 100;
-      console.error(
-        `[Card2b] PRECO DIVERGENTE reserva=${reservationId}: Guesty pede ${balance} EUR, o site cobrou ${stayEur} EUR ` +
-          `(diferenca ${priceGap}) — o hospede NAO deve nada; nao lhe pedir pagamento`,
-      );
-      await updatePaymentIntentMetadata(paymentIntentId, { priceGap: priceGap.toFixed(2) }).catch(() => {});
-    } else if (balance !== null) {
-      await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
+    const state = await getReservationSettlementState(reservationId);
+    if (!state) {
+      // Sem leitura válida não se decide nada e também não se regista: o
+      // registo faz a sua própria leitura e podia ter sucesso segundos depois,
+      // com o acerto saltado (fee perdida ou nota sem o aviso de divergência).
+      // O settle volta a tentar (webhook, finalize ou sweep).
+      throw new Error(`folio ilegivel reserva=${reservationId} — acerto e registo adiados`);
+    } else {
+      const stayEur = Math.round(b.stayCents) / 100;
+      const decision = decideFolioReconciliation({
+        stayEur,
+        balanceDue: state.balanceDue,
+        totalPaid: state.totalPaid,
+        ourPaymentRecorded: state.payments.some((p) => paymentRecordsIntent(p, paymentIntentId)),
+      });
+      if (decision.action === "add-fee") {
+        const outcome = await addReservationServiceFee(reservationId, decision.delta);
+        if (outcome === "added") {
+          await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
+          if (!(await waitForBalanceAtLeast(reservationId, stayEur))) {
+            console.warn(`[Card2b] saldo ainda sem a fee reserva=${reservationId} — o registo pode ficar capado`);
+          }
+        } else if (outcome === "unknown") {
+          // 5xx, timeout ou rede: a fee pode ter ficado gravada. Só o saldo diz.
+          // Gravada → carimba e segue. Não gravada (ou ainda invisível) → pára
+          // ANTES do registo: o próximo passe relê o folio (sem pagamentos) e
+          // ou vê os valores a bater, ou lança a fee outra vez. Registar já
+          // capava no saldo antigo e a fee perdia-se para sempre.
+          if (await waitForBalanceAtLeast(reservationId, stayEur)) {
+            await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
+          } else {
+            throw new Error(`service fee com resultado desconhecido reserva=${reservationId} — registo adiado`);
+          }
+        }
+        // "refused" (4xx): não se carimba. O registo abaixo capa no saldo do
+        // Guesty e o próximo passe vê pagamentos no folio e já não mexe.
+      } else if (decision.action === "price-gap") {
+        // Sentido contrário: o Guesty pede mais do que o site cobrou. NÃO se
+        // corrige o folio aqui — baixá-lo tira receita ao proprietário e isso é
+        // decisão comercial, não de código. Mas também não fica calado: o valor
+        // vai para o PI, para o log e para uma nota na própria reserva, para
+        // quem a abrir no Guesty ver que não há nada a cobrar ao hóspede.
+        priceGap = decision.gap;
+        console.error(
+          `[Card2b] PRECO DIVERGENTE reserva=${reservationId}: Guesty pede ${state.balanceDue} EUR, o site cobrou ${stayEur} EUR ` +
+            `(diferenca ${priceGap}) — o hospede NAO deve nada; nao lhe pedir pagamento`,
+        );
+        // Carimbado também aqui: era a falta deste carimbo que fazia o 2.º
+        // passe voltar a "acertar" o folio já pago (GY-Huf4Lp8L).
+        await updatePaymentIntentMetadata(paymentIntentId, {
+          feeAdjusted: "1",
+          priceGap: priceGap.toFixed(2),
+        }).catch(() => {});
+      } else {
+        await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
+      }
     }
   }
-  // SÓ a estadia entra no Guesty (EUR) — extras ficam na plataforma. Idempotente:
-  // com balanceDue=0 (já registado) devolve sem fazer nada.
-  await recordExternalPayment(reservationId, b.stayCents / 100, "EUR", paymentIntentId);
+  // SÓ a estadia entra no Guesty (EUR) — extras ficam na plataforma.
+  // Idempotente pelo carimbo no PI e, por baixo, pela nota com o id do PI no
+  // próprio registo do Guesty (recordExternalPayment).
+  if (pi.metadata.guestyPaymentRecorded !== "1") {
+    const outcome = await recordExternalPayment(reservationId, b.stayCents / 100, "EUR", paymentIntentId);
+    if (outcome === "settled") {
+      console.warn(
+        `[Card2b] reserva=${reservationId}: saldo ja a zero sem registo visivel do PI ${paymentIntentId} — ` +
+          `registo anterior sem nota legivel, ou liquidada por outra via`,
+      );
+    }
+    await updatePaymentIntentMetadata(paymentIntentId, { guestyPaymentRecorded: "1" }).catch(() => {});
+  }
   if (pi.metadata.splitNoteAdded !== "1") {
     const noted = await appendReservationNote(
       reservationId,
@@ -447,10 +547,48 @@ export async function refundCheckoutLine(
    fechar a reserva até 48h.
    ================================================================ */
 
+const HOUR_MS = 60 * 60 * 1000;
+/** Rede de último recurso quando a metadata do PI não se lê nem escreve. */
 const settleAlertAt = new Map<string, number>();
 const SETTLE_ALERT_THROTTLE_MS = 30 * 60 * 1000;
 
-/** Alerta ops de um settle falhado. Nunca lança; throttle 30 min por intent. */
+/**
+ * Calendário dos alertas de um mesmo pagamento sem reserva, contado a partir
+ * do primeiro: imediato, +1 h, +6 h, +24 h. Antes era um email a cada 30 min
+ * durante as 48 h da janela do sweep (~96 emails) e depois silêncio: treinava
+ * a caixa booking@ a ignorar [OPS], que é exatamente o canal de exceções.
+ */
+export const SETTLE_ALERT_SCHEDULE_MS = [0, 1 * HOUR_MS, 6 * HOUR_MS, 24 * HOUR_MS] as const;
+/** listUnsettledCardIntents só vê intents com menos de 48 h: o último aviso
+ *  sai na hora antes de o sweep deixar de tentar. */
+export const SETTLE_FINAL_ALERT_AGE_MS = 47 * HOUR_MS;
+
+/** Que alerta mandar agora, dado o que já foi enviado. Pura, testada.
+ *  A idade conta a partir do PAGAMENTO, não da criação do intent: um hóspede
+ *  que paga pelo email de recuperação dos 3 ou 7 dias tem direito ao mesmo
+ *  calendário. Depois do último aviso não sai mais nenhum. */
+export function settleAlertDecision(input: {
+  now: number;
+  /** Momento do 1.º alerta (ms), ou null se ainda não houve nenhum. */
+  firstAt: number | null;
+  sent: number;
+  finalSent: boolean;
+  /** Momento do pagamento (ms), ou null se desconhecido. */
+  paidAt: number | null;
+}): "regular" | "final" | null {
+  if (input.finalSent) return null;
+  if (input.paidAt != null && input.now - input.paidAt >= SETTLE_FINAL_ALERT_AGE_MS) return "final";
+  if (input.sent >= SETTLE_ALERT_SCHEDULE_MS.length) return null;
+  if (input.sent <= 0 || input.firstAt == null) return "regular";
+  return input.now >= input.firstAt + SETTLE_ALERT_SCHEDULE_MS[input.sent] ? "regular" : null;
+}
+
+/**
+ * Alerta ops de um settle falhado. Nunca lança. O estado do calendário vive
+ * na metadata do próprio PI (sobrevive a restarts e é igual em todas as
+ * instâncias) e só avança quando o email saiu de facto; se o Stripe não
+ * responder, fica o throttle em memória.
+ */
 export async function alertFailedSettle(
   intentId: string,
   paymentIntentId: string,
@@ -458,22 +596,110 @@ export async function alertFailedSettle(
   source: string,
 ): Promise<void> {
   try {
+    const now = Date.now();
     const last = settleAlertAt.get(intentId) ?? 0;
-    if (Date.now() - last < SETTLE_ALERT_THROTTLE_MS) return;
-    settleAlertAt.set(intentId, Date.now());
+    if (now - last < SETTLE_ALERT_THROTTLE_MS) return;
+
     const m: any = (await getBookingIntent(intentId)) ?? {};
+    const pi = await getPaymentIntent(paymentIntentId).catch(() => null);
+    // Só há "pago sem reserva" se o dinheiro foi mesmo capturado.
+    if (pi && pi.status !== "succeeded") {
+      console.warn(`[Card2b] alerta de settle ignorado: PI ${paymentIntentId} em ${pi.status}, nao ha dinheiro capturado`);
+      return;
+    }
+    const meta: Record<string, string> | null = pi ? ((pi.metadata ?? {}) as Record<string, string>) : null;
+    const sent = Number(meta?.settleAlerts ?? 0) || 0;
+    const firstAt = Number(meta?.settleAlertFirstAt ?? NaN);
+    const paidAtMs =
+      pi && typeof pi.created === "number"
+        ? pi.created * 1000
+        : m.updatedAt
+          ? new Date(m.updatedAt).getTime()
+          : NaN;
+    const kind = settleAlertDecision({
+      now,
+      firstAt: Number.isFinite(firstAt) ? firstAt : null,
+      sent,
+      finalSent: meta?.settleAlertFinal === "1",
+      paidAt: Number.isFinite(paidAtMs) ? paidAtMs : null,
+    });
+    if (!kind) return;
+    settleAlertAt.set(intentId, now);
+
+    const house = m.propertyName || m.listingId || intentId;
+    const reservationId = meta?.guestyReservationId || m.reservationId || "";
+    const code = meta?.guestyConfirmationCode || m.confirmationCode || "";
+    const step = kind === "final" ? "ÚLTIMO AVISO" : `aviso ${sent + 1} de ${SETTLE_ALERT_SCHEDULE_MS.length}`;
+    const verify = pi ? "" : "VERIFICAR NO STRIPE · ";
+    const guestLine = `Hóspede: ${[m.guestFirstName, m.guestLastName].filter(Boolean).join(" ") || "?"} · ${m.email || "?"} · ${m.guestPhone || "?"}`;
+    const stayLine = `Estadia: ${m.checkIn || "?"} → ${m.checkOut || "?"} · ${m.guests ?? "?"} hóspedes · estadia ${m.quote?.total ?? "?"} EUR`;
+    const unknownPi = pi
+      ? []
+      : [`Não foi possível ler este pagamento no Stripe agora: confirmar no Stripe que está pago antes de fazer o que quer que seja.`];
+
+    const subject = reservationId
+      ? `${verify}RESERVA CRIADA, PAGAMENTO POR FECHAR (${step}) — ${code || reservationId} — ${house}`
+      : `${verify}PAGO SEM RESERVA (${step}) — ${house}`;
+    const lines = reservationId
+      ? [
+          ...unknownPi,
+          `O pagamento por cartão foi capturado e a reserva Guesty ${code || reservationId} JÁ EXISTE; falhou um passo seguinte (via: ${source}).`,
+          `NÃO criar outra reserva, NÃO reembolsar e NÃO voltar a cobrar o hóspede.`,
+          guestLine,
+          stayLine,
+          `Pagamento registado no Guesty: ${meta?.guestyPaymentRecorded === "1" ? "sim" : "não confirmado"} · acerto do folio: ${meta?.feeAdjusted === "1" ? "feito" : "por fazer"}`,
+          `Intent ${intentId} · PI ${paymentIntentId}`,
+          `Erro: ${reason}`,
+          kind === "final"
+            ? `O sweep automático deixa de tentar dentro de 1 hora. Resolver hoje: abrir a reserva no Guesty e, só se não existir um pagamento com "PaymentIntent: ${paymentIntentId}" na nota, registar ${m.quote?.total ?? "a estadia"} EUR como pagamento externo com essa nota.`
+            : `O sweep automático continua a tentar de 10 em 10 minutos; nada a fazer por agora. Próximo aviso só se continuar a falhar.`,
+        ]
+      : [
+          ...unknownPi,
+          `Um pagamento por cartão foi capturado mas a reserva Guesty NÃO ficou criada (via: ${source}).`,
+          `NÃO voltar a cobrar o hóspede: o dinheiro já está na conta Stripe.`,
+          guestLine,
+          stayLine,
+          `Intent ${intentId} · PI ${paymentIntentId}`,
+          `Erro: ${reason}`,
+          kind === "final"
+            ? `O sweep automático deixa de tentar dentro de 1 hora (janela de 48 h). Resolver hoje: criar a reserva à mão no Guesty e registar o pagamento com o id do PI na nota, ou reembolsar no Stripe.`
+            : `O sweep automático continua a tentar de 10 em 10 minutos. Próximo aviso só se continuar a falhar. Se persistir: verificar Stripe e Guesty e criar a reserva à mão ou reembolsar.`,
+        ];
+
     const { sendOpsAlert } = await import("./transactional-email");
-    await sendOpsAlert(`PAGO SEM RESERVA — ${m.propertyName || m.listingId || intentId}`, [
-      `Um pagamento por cartão foi capturado mas a reserva Guesty NÃO ficou criada (via: ${source}).`,
-      `Hóspede: ${[m.guestFirstName, m.guestLastName].filter(Boolean).join(" ") || "?"} · ${m.email || "?"} · ${m.guestPhone || "?"}`,
-      `Estadia: ${m.checkIn || "?"} → ${m.checkOut || "?"} · ${m.guests ?? "?"} hóspedes · total cotado ${m.quote?.total ?? "?"} EUR`,
-      `Intent ${intentId} · PI ${paymentIntentId}`,
-      `Erro: ${reason}`,
-      `O sweep automático continua a tentar fechar a reserva. Se persistir: verificar Stripe e Guesty e criar a reserva manualmente ou reembolsar.`,
-    ]);
+    const delivered = await sendOpsAlert(subject, lines, { copyToSales: true });
+
+    // Um email que não saiu não gasta um passo do calendário (nem o último aviso).
+    if (meta && delivered) {
+      const patch: Record<string, string> =
+        kind === "final"
+          ? { settleAlertFinal: "1" }
+          : { settleAlerts: String(sent + 1), ...(sent === 0 ? { settleAlertFirstAt: String(now) } : {}) };
+      await updatePaymentIntentMetadata(paymentIntentId, patch).catch((e: any) =>
+        console.warn(`[Card2b] calendario de alertas nao gravado no PI ${paymentIntentId}: ${e?.message}`),
+      );
+    }
   } catch (err: any) {
     console.error(`[Card2b] alertFailedSettle falhou: ${err?.message}`);
   }
+}
+
+/**
+ * O sweep só corre no serviço de produção. A BD de intents é partilhada com
+ * o DEV (incidente de 16 set 2026): um DEV com chave Stripe de teste a pegar
+ * em PIs reais falhava todos os retrieves e enchia booking@ de alertas falsos.
+ * CARD_SETTLE_SWEEP=false desliga-o em produção sem deploy de código.
+ */
+export function canRunCardSettleSweep(env: NodeJS.ProcessEnv = process.env): boolean {
+  if (env.CARD_SETTLE_SWEEP === "false") return false;
+  if (env.NODE_ENV !== "production") return false;
+  // Um `npm start` local não tem RENDER_SERVICE_ID; com o .env.local (BD real)
+  // seria um segundo processo a fechar pagamentos reais em paralelo com a
+  // produção. O isPreviewDeployment já recusa qualquer serviço que não seja o
+  // de produção; aqui exige-se que haja um.
+  if (!env.RENDER_SERVICE_ID) return false;
+  return !isPreviewDeployment(env);
 }
 
 let settleSweepStarted = false;
@@ -489,11 +715,19 @@ export async function runCardSettleSweep(): Promise<{ settled: number; checked: 
     for (const intent of candidates) {
       const piId = (intent as any).paymentIntentId as string | null;
       if (!piId) continue;
+      // A leitura do PI fica fora do try do settle: com o Stripe em baixo, a
+      // lista inclui checkouts abandonados e cada um virava um alerta falso.
+      let pi: Awaited<ReturnType<typeof getPaymentIntent>>;
       try {
-        const pi = await getPaymentIntent(piId);
-        // Só interessa o caso dinheiro-capturado; um PI abandonado a meio do
-        // 3DS não é dívida nossa e expira sozinho.
-        if (pi.status !== "succeeded") continue;
+        pi = await getPaymentIntent(piId);
+      } catch (err: any) {
+        console.warn(`[Card2b] sweep nao leu o PI ${piId} (intent ${intent.id}): ${err?.message} — tenta na proxima passagem`);
+        continue;
+      }
+      // Só interessa o caso dinheiro-capturado; um PI abandonado a meio do
+      // 3DS não é dívida nossa e expira sozinho.
+      if (pi.status !== "succeeded") continue;
+      try {
         const r = await settleCardCharge(intent.id, piId);
         await completeCheckoutIntent(intent.id, r.reservationId, r.confirmationCode);
         settled++;
@@ -512,6 +746,10 @@ export async function runCardSettleSweep(): Promise<{ settled: number; checked: 
 /** Sweep de 10 min, arrancado uma vez no boot (fail-soft com BD em baixo). */
 export function startCardSettleSweep(): void {
   if (settleSweepStarted) return;
+  if (!canRunCardSettleSweep()) {
+    console.info("[Card2b] Sweep de settle desligado neste ambiente (so corre no servico de producao)");
+    return;
+  }
   settleSweepStarted = true;
   const timer = setInterval(() => void runCardSettleSweep(), 10 * 60 * 1000);
   timer.unref?.();
