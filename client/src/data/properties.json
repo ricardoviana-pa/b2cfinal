@@ -28036,6 +28036,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Everything went very well during our stay. We had a great experience and left happy. Thank you for hosting us!",
+        "guestDisplayName": "Claritza",
+        "guestName": "Claritza",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-25T10:13:11.041Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Perfect location for some active and nice days at the beach or in the city!",
         "guestDisplayName": "Niklas",
         "guestName": "Niklas",
@@ -28351,7 +28386,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 9,
+    "reviewCount": 10,
     "lastModified": "2026-10-25",
     "contentHash": "72f3d6e6b4ebf2d3536b4e9b9297b30c245ae486"
   },
