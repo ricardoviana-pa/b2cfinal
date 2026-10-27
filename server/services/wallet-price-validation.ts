@@ -24,7 +24,10 @@ export async function trustedWalletPrice(input: WalletSelection) {
     const { listingFacts } = await import('../routers/checkout');
     const facts = await listingFacts(m.listingId);
     const safe = { ...m, quote: trusted.quote, extras: facts.pets ? m.extras : ((m.extras as any[]) || []).filter(e => !PETS_ONLY_SKUS.includes(e.sku)) };
-    amount = breakdownFromIntent(safe).totalCents;
+    // Com os quartos da casa, como o ecrã (getExtras) e o cartão: sem eles, uma
+    // limpeza numa casa fora da tabela valia o preço de 3 quartos e o valor do
+    // browser era recusado como "o preço mudou", sem saída para o hóspede.
+    amount = breakdownFromIntent(safe, facts.bedrooms).totalCents;
     ratePlanId = trusted.ratePlanId;
   } else {
     const quote = await createBEQuote({ listingId: input.listingId, checkIn: input.checkIn, checkOut: input.checkOut, guests });
