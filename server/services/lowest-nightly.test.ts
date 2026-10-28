@@ -136,3 +136,36 @@ describe("getLowestNightlyBatch: leituras à BD (quota do TiDB)", () => {
     expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
   });
 });
+
+describe("computeLowestNightly: casas sem datas nos 90 dias", () => {
+  it("procura até 12 meses: uma casa só livre na primavera também tem preço", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map());
+    h.upsertSetting.mockResolvedValue(undefined);
+    const t = Date.now();
+    const days = Array.from({ length: 366 }, (_, k) => ({
+      date: ymd(new Date(t + k * 86_400_000)),
+      status: k >= 150 && k < 160 ? "available" : "unavailable",
+      minNights: 2,
+    }));
+    h.getCalendar.mockResolvedValue(days);
+    h.quote.mockResolvedValue({ source: "live", pricing: { nightlyRate: 300 }, ratePlanOptions: [] });
+    const { getLowestNightly } = await import("./lowest-nightly");
+    expect(await getLowestNightly("spring")).toMatchObject({ from: 300, source: "calendar" });
+    const [, from, to] = h.getCalendar.mock.calls[0];
+    expect((Date.parse(to) - Date.parse(from)) / 86_400_000).toBeGreaterThanOrEqual(364);
+    expect(h.quote.mock.calls[0][1] >= days[150].date).toBe(true);
+  });
+
+  it("com datas nos 90 dias, as amostras ficam nos 90 dias (o 'desde' não muda de sentido)", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map());
+    h.upsertSetting.mockResolvedValue(undefined);
+    const t = Date.now();
+    const days = Array.from({ length: 366 }, (_, k) => ({ date: ymd(new Date(t + k * 86_400_000)), status: k === 10 || k === 11 || k > 200 ? "available" : "unavailable", minNights: 2 }));
+    h.getCalendar.mockResolvedValue(days);
+    h.quote.mockResolvedValue({ source: "live", pricing: { nightlyRate: 200 }, ratePlanOptions: [] });
+    const { getLowestNightly } = await import("./lowest-nightly");
+    await getLowestNightly("near");
+    expect(h.quote).toHaveBeenCalledTimes(1);
+    expect(h.quote.mock.calls[0][1]).toBe(days[10].date);
+  });
+});

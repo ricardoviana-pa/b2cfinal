@@ -25,6 +25,9 @@ import { getSetting, getSettingsByKeys, upsertSetting } from "../db";
 
 const TTL_MS = 8 * 60 * 60 * 1000; // 8h in-memory cache
 const HORIZON_DAYS = 90;
+/** Sem noites livres nos 90 dias (casa cheia ou fechada até à primavera), o
+ *  "desde" procura até 12 meses: todas as casas reserváveis mostram preço. */
+const EXTENDED_HORIZON_DAYS = 365;
 const MAX_SAMPLES = 14; // quotes per listing on a cache miss
 const SAMPLE_CADENCE_DAYS = 7; // probe ~every week so no seasonal low (a whole cheap month) is missed
 // Orçamento do warm-up. O BE do Guesty dá ~275 quotes/min à conta TODA, e um
@@ -110,7 +113,7 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
 
   const today = new Date();
   const from = ymd(today);
-  const to = ymd(new Date(today.getTime() + HORIZON_DAYS * 86400000));
+  const to = ymd(new Date(today.getTime() + EXTENDED_HORIZON_DAYS * 86400000));
 
   let lowest: number | null = null;
   // Amostra incompleta (o BE entrou em rate limit a meio): o mínimo visto é
@@ -136,25 +139,29 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
     const availSet = new Set<string>(availDates);
     const samples: Array<{ ci: string; co: string }> = [];
     const seen = new Set<string>();
-    for (let offset = 0; offset < HORIZON_DAYS && samples.length < MAX_SAMPLES; offset += SAMPLE_CADENCE_DAYS) {
-      const target = new Date(today.getTime() + offset * 86400000);
-      let ci: string | null = null;
-      for (let k = 0; k < SAMPLE_CADENCE_DAYS; k++) {
-        const cand = ymd(new Date(target.getTime() + k * 86400000));
-        if (availSet.has(cand)) { ci = cand; break; }
+    const sampleRange = (fromDay: number, toDay: number) => {
+      for (let offset = fromDay; offset < toDay && samples.length < MAX_SAMPLES; offset += SAMPLE_CADENCE_DAYS) {
+        const target = new Date(today.getTime() + offset * 86400000);
+        let ci: string | null = null;
+        for (let k = 0; k < SAMPLE_CADENCE_DAYS; k++) {
+          const cand = ymd(new Date(target.getTime() + k * 86400000));
+          if (availSet.has(cand)) { ci = cand; break; }
+        }
+        if (!ci || seen.has(ci)) continue;
+        const mn = Math.max(1, byDate.get(ci)?.minNights ?? 2);
+        const start = new Date(ci + "T00:00:00Z");
+        let ok = true;
+        for (let n = 0; n < mn; n++) {
+          const day = byDate.get(ymd(new Date(start.getTime() + n * 86400000)));
+          if (!day || day.status !== "available") { ok = false; break; }
+        }
+        if (!ok) continue;
+        seen.add(ci);
+        samples.push({ ci, co: ymd(new Date(start.getTime() + mn * 86400000)) });
       }
-      if (!ci || seen.has(ci)) continue;
-      const mn = Math.max(1, byDate.get(ci)?.minNights ?? 2);
-      const start = new Date(ci + "T00:00:00Z");
-      let ok = true;
-      for (let n = 0; n < mn; n++) {
-        const day = byDate.get(ymd(new Date(start.getTime() + n * 86400000)));
-        if (!day || day.status !== "available") { ok = false; break; }
-      }
-      if (!ok) continue;
-      seen.add(ci);
-      samples.push({ ci, co: ymd(new Date(start.getTime() + mn * 86400000)) });
-    }
+    };
+    sampleRange(0, HORIZON_DAYS);
+    if (!samples.length) sampleRange(HORIZON_DAYS, EXTENDED_HORIZON_DAYS);
 
     // Quote every sampled window, but through a GLOBAL concurrency gate so that
     // no matter how many listings warm at once, we never exceed Guesty's rate
