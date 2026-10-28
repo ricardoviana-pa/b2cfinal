@@ -1143,7 +1143,10 @@ export default function PropertyDetail() {
   // Same figure the widget leads with: live lowest nightly first, and only
   // our own homes fall back to the imported rate (a partner home without a
   // live figure says "Price on request" on its panel, so the bar stays quiet).
-  const barNightly = lowestNightly?.from ?? (bookableOnline ? ((property as any).pricePerNight ?? property.priceFrom ?? 0) : 0);
+  // Só o "desde" calculado (a noite mais barata reservável, lowest-nightly.ts).
+  // O pricePerNight/priceFrom importado do Guesty é um valor de referência
+  // errado nos dois sentidos: sem preço calculado, a barra pede as datas.
+  const barNightly = lowestNightly?.from ?? 0;
   const barFromPrice = (bookableOnline || tripwixUid) && barNightly > 0
     ? `${t('property.fromPerNight', { price: Math.round(barNightly).toLocaleString(intlLocale(i18n.language)) })} ${t('partnerBooking.perNight', 'per night')}`
     : null;
@@ -1160,7 +1163,7 @@ export default function PropertyDetail() {
             guestyId={property.guestyId}
             propertyName={displayName}
             propertySlug={property.slug}
-            pricePerNight={lowestNightly?.from ?? (property as any).pricePerNight ?? property.priceFrom ?? 0}
+            pricePerNight={lowestNightly?.from ?? 0}
             maxGuests={property.maxGuests || 10}
             minNights={(property as any).minNights}
             cleaningFee={(property as any).cleaningFee}

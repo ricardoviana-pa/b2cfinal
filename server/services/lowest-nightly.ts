@@ -241,7 +241,18 @@ export async function getLowestNightlyBatch(listingIds: string[]): Promise<Recor
   // Background-warm (fire-and-forget, capped). Listings with no value first, then
   // stale ones — so the whole portfolio self-heals onto the current (accurate)
   // sampling without ever blanking the price already on the page.
-  const toWarm = [...noValue, ...stale].slice(0, WARM_PER_REQUEST);
+  // Só as que não foram tentadas há pouco: uma casa sem resultado (sem datas
+  // livres, calendário vazio no BE) fica 30 min em cache como "none"; sem este
+  // filtro ocupava para sempre os mesmos 4 lugares do topo da lista, e as
+  // casas seguintes (e os preços antigos) nunca eram calculadas. Com a BD em
+  // baixo (28 out 2026: quota do TiDB esgotada) era isto que deixava casas
+  // sem preço.
+  const warmable = (id: string) => {
+    if (IN_FLIGHT.has(id)) return false;
+    const c = CACHE.get(id);
+    return !(c && isFresh(c));
+  };
+  const toWarm = [...noValue, ...stale].filter(warmable).slice(0, WARM_PER_REQUEST);
   for (const id of toWarm) void getLowestNightly(id).catch(() => {});
   return out;
 }

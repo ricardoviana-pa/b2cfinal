@@ -947,12 +947,17 @@ export default function BookingWidget({
         ) : (
           /* Pre-selection / no confirmed live price — advertised "From" nightly rate only, never an estimate */
           <>
-            <div className="flex items-baseline gap-1">
-              <span className="text-[28px] text-pa-dark font-display" >
-                {displayRate > 0 ? t("property.fromPerNight", { price: Math.round(displayRate).toLocaleString(intlLocale(lang)) }) : "---"}
-              </span>
-              <span className="body-sm text-pa-stone">{t("property.perNight")}</span>
-            </div>
+            {displayRate > 0 ? (
+              <div className="flex items-baseline gap-1">
+                <span className="text-[28px] text-pa-dark font-display" >
+                  {t("property.fromPerNight", { price: Math.round(displayRate).toLocaleString(intlLocale(lang)) })}
+                </span>
+                <span className="body-sm text-pa-stone">{t("property.perNight")}</span>
+              </div>
+            ) : (
+              /* Sem "desde" calculado: nunca o valor de referência do Guesty. */
+              <p className="body-md text-pa-dark">{t("property.selectDatesForPrice")}</p>
+            )}
             {effectiveMinNights > 1 && (
               <p className="caption text-black/40 mt-1.5 flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
