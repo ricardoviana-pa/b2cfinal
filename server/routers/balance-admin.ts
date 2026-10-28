@@ -710,10 +710,28 @@ export const balanceAdminRouter = router({
             // nunca um "feito" com a linha a rever.
             // Em revisão, o CS que marca "pago" decidiu manter a estadia: a
             // linha fecha paga pela plataforma (com ou sem o pagamento já
-            // gravado pelo webhook, recordPaymentDuringReview).
-            const marked = row.status === "needs_review"
-              ? (await D.markReviewAsSucceeded(row.id, piId, now)) || (await D.closeReviewAsPaid(row.id, piId))
-              : await D.markScheduledPaymentSucceeded(row.id, piId, now);
+            // gravado pelo webhook, recordPaymentDuringReview), só com o
+            // pagamento inteiro na Stripe (a regra do "Retomar"): um PI
+            // devolvido continua "succeeded" na Stripe. Devolvido por inteiro,
+            // a plataforma já não tem nada e marca-se pago fora; em parte, ou
+            // ilegível, nada se marca.
+            let marked = false;
+            if (row.status === "needs_review") {
+              let held: "intact" | "refunded" | "partial" | "unreadable";
+              try {
+                const pi: any = await S.retrieveBalancePaymentIntent(piId);
+                const charge = pi.latest_charge && typeof pi.latest_charge === "object" ? pi.latest_charge : null;
+                const refunded = Number(charge?.amount_refunded ?? 0);
+                held = refunded === 0 ? "intact" : refunded >= Number(pi.amount_received ?? 0) ? "refunded" : "partial";
+              } catch {
+                held = "unreadable";
+              }
+              if (held === "refunded") continue;
+              if (held !== "intact") return { outcome: "pi_refund_partial" as const, piId, held };
+              marked = (await D.markReviewAsSucceeded(row.id, piId, now)) || (await D.closeReviewAsPaid(row.id, piId));
+            } else {
+              marked = await D.markScheduledPaymentSucceeded(row.id, piId, now);
+            }
             if (marked) return { outcome: "platform_paid" as const, piId };
             const now2 = await freshRow(row.id);
             if (now2?.status === "succeeded") return { outcome: "platform_paid" as const, piId };
@@ -762,6 +780,9 @@ export const balanceAdminRouter = router({
           `Reabrir daqui a uns minutos (o aviso da Stripe regista o pagamento); se continuar assim, falar com a equipa técnica. ` +
           `Se o hóspede também pagou por fora, devolver essa transferência.`,
         pi_open: "NÃO marcada: há um pagamento do saldo em processamento na Stripe. Esperar uns minutos e reabrir.",
+        pi_refund_partial:
+          `NÃO marcada: o pagamento da 2.ª parte na plataforma (PI ${"piId" in result ? result.piId : "?"}) foi devolvido só em parte na Stripe, ` +
+          `ou não foi possível lê-lo agora. Tentar daqui a uns minutos; se continuar, decidir com a gestão.`,
         not_changed: "NÃO marcada: a linha mudou de estado entretanto. Reabrir o detalhe.",
       };
       return {

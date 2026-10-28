@@ -616,11 +616,14 @@ describe("markPaidExternally", () => {
     expect(m.appendReservationNote).not.toHaveBeenCalled();
   });
 
+  const intactPi = (refunded = 0) => ({ id: "pi_guest", status: "succeeded", amount_received: 120_000, latest_charge: { amount_refunded: refunded } });
+
   it("PI já cobrado numa linha em revisão: o CS mantém a estadia → fecha paga pela plataforma, com os efeitos", async () => {
     m.getScheduledPaymentById
       .mockResolvedValueOnce(row({ status: "needs_review", reviewReason: "reserva cancelada no Guesty", guestPaymentIntentId: "pi_guest" }))
       .mockResolvedValue(row({ status: "succeeded", succeededAt: BEFORE_C, balancePaymentIntentId: "pi_guest" }));
     m.cancelOpenPaymentIntent.mockResolvedValue("succeeded");
+    m.retrieveBalancePaymentIntent.mockResolvedValue(intactPi());
     m.markReviewAsSucceeded.mockResolvedValue(true);
     const out = await admin().markPaidExternally(input);
     expect(out).toMatchObject({ ok: false, outcome: "platform_paid", status: "succeeded" });
@@ -636,6 +639,7 @@ describe("markPaidExternally", () => {
       .mockResolvedValueOnce(row({ status: "needs_review", succeededAt: BEFORE_C, balancePaymentIntentId: "pi_guest", guestPaymentIntentId: "pi_guest" }))
       .mockResolvedValue(row({ status: "succeeded", succeededAt: BEFORE_C, balancePaymentIntentId: "pi_guest" }));
     m.cancelOpenPaymentIntent.mockResolvedValue("succeeded");
+    m.retrieveBalancePaymentIntent.mockResolvedValue(intactPi());
     m.markReviewAsSucceeded.mockResolvedValue(false);
     m.closeReviewAsPaid.mockResolvedValue(true);
     const out = await admin().markPaidExternally(input);
@@ -643,9 +647,36 @@ describe("markPaidExternally", () => {
     expect(m.closeReviewAsPaid).toHaveBeenCalledWith("sp-1", "pi_guest");
   });
 
+  it("linha paga durante a revisão com a 2.ª parte já devolvida por inteiro na Stripe → marca paga fora, sem efeitos de 'paga pela plataforma'", async () => {
+    m.getScheduledPaymentById.mockResolvedValue(row({ status: "needs_review", succeededAt: BEFORE_C, balancePaymentIntentId: "pi_guest", guestPaymentIntentId: "pi_guest" }));
+    m.cancelOpenPaymentIntent.mockResolvedValue("succeeded");
+    m.retrieveBalancePaymentIntent.mockResolvedValue(intactPi(120_000));
+    m.markPaidExternally.mockResolvedValue(true);
+    const out = await admin().markPaidExternally(input);
+    expect(out).toMatchObject({ ok: true, outcome: "marked" });
+    expect(m.closeReviewAsPaid).not.toHaveBeenCalled();
+    expect(m.markReviewAsSucceeded).not.toHaveBeenCalled();
+    expect(m.runPostChargeEffects).not.toHaveBeenCalled();
+  });
+
+  it("devolvida só em parte (ou Stripe ilegível) → nada se marca, nem pago fora nem pela plataforma", async () => {
+    m.getScheduledPaymentById.mockResolvedValue(row({ status: "needs_review", succeededAt: BEFORE_C, balancePaymentIntentId: "pi_guest", guestPaymentIntentId: "pi_guest" }));
+    m.cancelOpenPaymentIntent.mockResolvedValue("succeeded");
+    m.retrieveBalancePaymentIntent.mockResolvedValueOnce(intactPi(30_000)).mockRejectedValueOnce(new Error("stripe down"));
+    for (let i = 0; i < 2; i++) {
+      const out = await admin().markPaidExternally(input);
+      expect(out).toMatchObject({ ok: false, outcome: "pi_refund_partial" });
+      expect(out.message).toMatch(/devolvido só em parte/);
+    }
+    expect(m.markPaidExternally).not.toHaveBeenCalled();
+    expect(m.closeReviewAsPaid).not.toHaveBeenCalled();
+    expect(m.runPostChargeEffects).not.toHaveBeenCalled();
+  });
+
   it("PI já cobrado numa linha em revisão que não fica paga: nunca 'feito', aviso claro (C17)", async () => {
     m.getScheduledPaymentById.mockResolvedValue(row({ status: "needs_review", guestPaymentIntentId: "pi_guest" }));
     m.cancelOpenPaymentIntent.mockResolvedValue("succeeded");
+    m.retrieveBalancePaymentIntent.mockResolvedValue(intactPi());
     m.markReviewAsSucceeded.mockResolvedValue(false);
     m.closeReviewAsPaid.mockResolvedValue(false);
     const out = await admin().markPaidExternally(input);

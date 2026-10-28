@@ -916,6 +916,8 @@ function ActionDialog({ kind, detail, onClose }: { kind: ActionKind; detail: Det
       const p = detail.refundPreview;
       const cards = p ? refundCardsText(p.refundCardsLast4) : null;
       const afterD = Date.parse(now) > Date.parse(r.freeCancelDeadlineAt);
+      // Sem leitura da Stripe: o que a linha sabe (1.ª parte e, se já cobrada, a 2.ª).
+      const fullFallback = r.depositCents + (r.succeededAt ? r.balanceCents : 0);
       const flex = p?.policy.flexCents ?? 0;
       const withheld = p?.policy.flexWithheldCents ?? 0;
       body = (
@@ -941,9 +943,9 @@ function ActionDialog({ kind, detail, onClose }: { kind: ActionKind; detail: Det
               text={
                 <>
                   Devolve tudo o que o hóspede pagou pela plataforma, sem retenção:{" "}
-                  <strong>{money(p ? p.full.totalCents : r.depositCents)}</strong>
-                  {p ? <> {cards}</> : <> (1.ª parte: estadia, receção, extras e Flex)</>}. O hóspede recebe o email
-                  "Cancelámos a sua reserva e devolvemos {money(p ? p.full.totalCents : r.depositCents)}{" "}
+                  <strong>{money(p ? p.full.totalCents : fullFallback)}</strong>
+                  {p ? <> {cards}</> : <> (1.ª parte: estadia, receção, extras e Flex{r.succeededAt ? ", e a 2.ª parte já cobrada" : ""})</>}. O hóspede recebe o email
+                  "Cancelámos a sua reserva e devolvemos {money(p ? p.full.totalCents : fullFallback)}{" "}
                   {cards ?? "para o cartão com que pagou"}", sem dizer que foi a pedido dele nem por falta de pagamento.
                   {afterD && <> O cancelamento gratuito já terminou: devolver tudo é uma decisão da gestão.</>}
                   {/por fora/i.test(r.reviewReason ?? "") && (
