@@ -1466,7 +1466,16 @@
     "mailBody": "Hallo,\n\nik heb een vraag over mijn reservering {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
     "trustFees": "Geen boekingskosten",
     "paidCard": "Volledig betaald met kaart",
-    "cardSub": "Veilige kaartbetaling"
+    "cardSub": "Veilige kaartbetaling",
+    "paidCardFirst": "Eerste deel betaald met kaart",
+    "plan": {
+      "title": "Uw betaalplan",
+      "paidToday": "Vandaag betaald",
+      "scheduled": "Op {{date}}",
+      "scheduledSubNoCard": "Automatisch afgeschreven van dezelfde kaart. U hoeft niets te doen.",
+      "reminder": "We herinneren u per e-mail een week van tevoren en de dag ervoor.",
+      "manageInEmail": "Om eerder te betalen, een andere kaart te gebruiken of te annuleren, gebruikt u \"Betaling beheren\" in uw bevestigingsmail."
+    }
   },
   "bedType": {
     "KingBed": "Kingsize bed",

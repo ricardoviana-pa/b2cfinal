@@ -1082,8 +1082,10 @@ export default function CheckoutPage() {
         guestName: `${firstName} ${lastName}`.trim(),
         guestEmail: email,
         guestPhone: phone,
-        // 2b: o cartão v2 cobra o todayTotal (estadia + serviços) num só PI
-        totalCents: Math.round(todayTotal * 100),
+        // 2b: o cartão v2 cobra o que é devido hoje (estadia + serviços; em
+        // duas partes só a 1.ª; com o Flex incluído, sem o Flex)
+        totalCents: Math.round(payTotal * 100),
+        ...(twoParts && offer ? { paymentPlan: { amountLaterCents: offer.balanceCents, chargeAt: offer.chargeAt } } : {}),
         // Valor do purchase nos anúncios: só a estadia (extras à parte)
         stayTotalCents: effective ? Math.round(effective.total * 100) : null,
         // M12 (auditoria set/2026): sem isto o item da casa ia sem preço nem
@@ -1100,7 +1102,7 @@ export default function CheckoutPage() {
       void utils.checkout.getIntent.invalidate({ intentId: intent.id });
       navigate(`/booking/thank-you/${rid}?method=card`);
     },
-    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, effective, selectedPolicyCode, quote?.nights, quote?.couponCode, purchaseItems, syncIntent, navigate],
+    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, payTotal, twoParts, offer, effective, selectedPolicyCode, quote?.nights, quote?.couponCode, purchaseItems, syncIntent, navigate],
   );
 
   // M5 (auditoria set/2026): regresso de um redirect 3DS do banco. O Stripe

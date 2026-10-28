@@ -1466,7 +1466,16 @@
     "mailBody": "Hej,\n\njag har en fråga om min bokning {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
     "trustFees": "Inga bokningsavgifter",
     "paidCard": "Betalat i sin helhet med kort",
-    "cardSub": "Säker kortbetalning"
+    "cardSub": "Säker kortbetalning",
+    "paidCardFirst": "Första delen betald med kort",
+    "plan": {
+      "title": "Din betalningsplan",
+      "paidToday": "Betalt i dag",
+      "scheduled": "Den {{date}}",
+      "scheduledSubNoCard": "Dras automatiskt från samma kort. Du behöver inte göra något.",
+      "reminder": "Vi påminner dig via e-post en vecka innan och dagen före.",
+      "manageInEmail": "För att betala tidigare, byta kort eller avboka, använd \"Hantera betalningen\" i ditt bekräftelsemejl."
+    }
   },
   "bedType": {
     "KingBed": "King-säng",

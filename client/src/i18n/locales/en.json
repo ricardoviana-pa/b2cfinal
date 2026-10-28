@@ -767,7 +767,16 @@
     "mailBody": "Hello,\n\nI have a question about my reservation {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
     "trustFees": "No booking fees",
     "paidCard": "Paid in full by card",
-    "cardSub": "Secure card payment"
+    "cardSub": "Secure card payment",
+    "paidCardFirst": "First part paid by card",
+    "plan": {
+      "title": "Your payment plan",
+      "paidToday": "Paid today",
+      "scheduled": "On {{date}}",
+      "scheduledSubNoCard": "Charged automatically to the same card. Nothing to do.",
+      "reminder": "We will remind you by email a week before and the day before.",
+      "manageInEmail": "To pay earlier, use another card or cancel, use \"Manage payment\" in your confirmation email."
+    }
   },
   "payment": {
     "failed": "Payment failed. Please try again.",

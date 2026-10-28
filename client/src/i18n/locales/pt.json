@@ -1469,7 +1469,16 @@
     "mailBody": "Olá,\n\nTenho uma questão sobre a minha reserva {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
     "trustFees": "Sem taxas de reserva",
     "paidCard": "Pago na totalidade com cartão",
-    "cardSub": "Pagamento seguro com cartão"
+    "cardSub": "Pagamento seguro com cartão",
+    "paidCardFirst": "Primeira parte paga com cartão",
+    "plan": {
+      "title": "O seu plano de pagamento",
+      "paidToday": "Pago hoje",
+      "scheduled": "Em {{date}}",
+      "scheduledSubNoCard": "Cobramos automaticamente no mesmo cartão. Nada a fazer.",
+      "reminder": "Lembramos por email uma semana antes e na véspera.",
+      "manageInEmail": "Para pagar antes, usar outro cartão ou cancelar, use \"Gerir o pagamento\" no email de confirmação."
+    }
   },
   "bedType": {
     "KingBed": "Cama King",

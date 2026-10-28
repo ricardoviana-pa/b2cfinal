@@ -1466,7 +1466,16 @@
     "mailBody": "Hei,\n\nminulla on kysymys varauksestani {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
     "trustFees": "Ei varausmaksuja",
     "paidCard": "Maksettu kokonaan kortilla",
-    "cardSub": "Turvallinen korttimaksu"
+    "cardSub": "Turvallinen korttimaksu",
+    "paidCardFirst": "Ensimmäinen osa maksettu kortilla",
+    "plan": {
+      "title": "Maksusuunnitelmasi",
+      "paidToday": "Maksettu tänään",
+      "scheduled": "{{date}}",
+      "scheduledSubNoCard": "Veloitetaan automaattisesti samalta kortilta. Sinun ei tarvitse tehdä mitään.",
+      "reminder": "Muistutamme sähköpostilla viikkoa ennen ja edellisenä päivänä.",
+      "manageInEmail": "Maksaaksesi aiemmin, vaihtaaksesi korttia tai peruuttaaksesi käytä vahvistussähköpostin painiketta \"Hallinnoi maksua\"."
+    }
   },
   "bedType": {
     "KingBed": "King-sänky",
