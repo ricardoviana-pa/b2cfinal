@@ -397,7 +397,9 @@
     "nextArrivals": "Nästa lediga datum",
     "tryAgain": "Försök igen",
     "requestOnlyTitle": "För dessa datum bokas detta hem på förfrågan.",
-    "requestOnlyBody": "Skicka din förfrågan till vår concierge så bekräftar vi tillgänglighet och pris personligen."
+    "requestOnlyBody": "Skicka din förfrågan till vår concierge så bekräftar vi tillgänglighet och pris personligen.",
+    "twoPartsHint": "Du kan betala i två delar: halva i dag och resten den {{date}}. Eller allt nu, med Flex inkluderat.",
+    "twoPartsHintPlain": "Du kan betala i två delar: halva i dag och resten den {{date}}."
   },
   "common": {
     "loading": "Laddar…",
@@ -1526,7 +1528,8 @@
     "bestRateTeeth": "Bästa pris online — hittar ni dessa datum billigare på Airbnb eller Booking.com matchar vi priset",
     "noServiceFees": "Offerten för dina datum visar totalpriset med obligatoriska avgifter specificerade före betalning.",
     "conciergeWhatsapp": "WhatsApp-concierge före, under och efter er vistelse",
-    "guaranteeTerms": "Så fungerar garantin"
+    "guaranteeTerms": "Så fungerar garantin",
+    "compactLine": "Bästa pris garanterat · inga bokningsavgifter · concierge via WhatsApp."
   },
   "bookingStatus": {
     "confirmed": "Bekräftad",
@@ -1877,6 +1880,10 @@
     "bar": {
       "todayLabel": "I dag {{amountNow}}",
       "laterLabel": "+ {{amountLater}} den {{date}}"
+    },
+    "rate": {
+      "twoPartsLine": "Du kan också betala i två delar: {{amountNow}} i dag och {{amountLater}} den {{date}}.",
+      "twoPartsLinePlain": "Du kan också betala i två delar: {{amountNow}} i dag och {{amountLater}} den {{date}}."
     }
   },
   "host": {

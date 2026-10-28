@@ -257,6 +257,44 @@ export const bookingRouter = router({
       return getLowestNightlyBatch(input.listingIds);
     }),
 
+  /**
+   * Pagamento em duas partes, antes do checkout (spec 4.1, pontos 1 e 2): a
+   * página da casa e o passo 1 dizem logo que a estadia pode ir em duas
+   * partes, com os valores e a data. As mesmas regras do checkout (flag,
+   * tarifa, antecedência, mínimo); sem grupo de controlo, que só existe
+   * depois de haver um checkout. Só a estadia: extras e Flex vão na 1.ª parte.
+   */
+  twoPartsPreview: publicProcedure
+    .input(z.object({
+      checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      policyCode: z.string().max(40),
+      stayCents: z.number().int().min(0).max(100_000_000),
+    }))
+    .query(async ({ input, ctx }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=600");
+      const { computePaymentOffer } = await import("../services/checkout-pricing");
+      const { readTwoPartsConfig } = await import("../services/payment-plan");
+      const { lisbonToday } = await import("@shared/cancellationPolicy");
+      const config = { ...readTwoPartsConfig(), holdout: 0 };
+      const offer = computePaymentOffer({
+        breakdown: { stayCents: input.stayCents, receptionCents: 0, extrasCents: 0, flexCents: 0 },
+        policy: input.policyCode,
+        checkIn: input.checkIn,
+        bookingDate: lisbonToday(new Date()),
+        intentId: "preview",
+        currency: "EUR",
+        config,
+      });
+      if (!offer.available) return { available: false as const };
+      return {
+        available: true as const,
+        amountNowCents: offer.split.depositCents,
+        amountLaterCents: offer.split.balanceCents,
+        chargeAt: offer.instants.chargeAt.toISOString(),
+        incentive: offer.incentive,
+      };
+    }),
+
   /** Why a dated search found nothing, and the nearest dates that work.
    *  Cheap + cached: reads one representative listing's calendar. */
   searchHint: publicProcedure

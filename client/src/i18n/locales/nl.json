@@ -397,7 +397,9 @@
     "nextArrivals": "Eerstvolgende beschikbare data",
     "tryAgain": "Opnieuw proberen",
     "requestOnlyTitle": "Voor deze data wordt dit huis op aanvraag geboekt.",
-    "requestOnlyBody": "Stuur uw aanvraag naar onze concierge en wij bevestigen beschikbaarheid en prijs persoonlijk."
+    "requestOnlyBody": "Stuur uw aanvraag naar onze concierge en wij bevestigen beschikbaarheid en prijs persoonlijk.",
+    "twoPartsHint": "U kunt in twee delen betalen: de helft vandaag, de andere helft op {{date}}. Of alles nu, met Flex inbegrepen.",
+    "twoPartsHintPlain": "U kunt in twee delen betalen: de helft vandaag, de andere helft op {{date}}."
   },
   "common": {
     "loading": "Laden…",
@@ -1526,7 +1528,8 @@
     "bestRateTeeth": "Beste prijs online — vindt u deze data goedkoper op Airbnb of Booking.com, dan passen wij de prijs aan",
     "noServiceFees": "De offerte voor uw datums toont het totaal, met verplichte kosten uitgesplitst vóór betaling.",
     "conciergeWhatsapp": "WhatsApp-concierge vóór, tijdens en na uw verblijf",
-    "guaranteeTerms": "Zo werkt de garantie"
+    "guaranteeTerms": "Zo werkt de garantie",
+    "compactLine": "Beste prijs gegarandeerd · geen boekingskosten · concierge via WhatsApp."
   },
   "bookingStatus": {
     "confirmed": "Bevestigd",
@@ -1877,6 +1880,10 @@
     "bar": {
       "todayLabel": "Vandaag {{amountNow}}",
       "laterLabel": "+ {{amountLater}} op {{date}}"
+    },
+    "rate": {
+      "twoPartsLine": "U kunt ook in twee delen betalen: {{amountNow}} vandaag en {{amountLater}} op {{date}}.",
+      "twoPartsLinePlain": "U kunt ook in twee delen betalen: {{amountNow}} vandaag en {{amountLater}} op {{date}}."
     }
   },
   "host": {

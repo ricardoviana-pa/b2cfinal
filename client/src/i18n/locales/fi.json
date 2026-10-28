@@ -397,7 +397,9 @@
     "nextArrivals": "Seuraavat vapaat päivät",
     "tryAgain": "Yritä uudelleen",
     "requestOnlyTitle": "Näinä päivinä tämä koti varataan pyynnöstä.",
-    "requestOnlyBody": "Lähetä pyyntösi conciergellemme, niin vahvistamme saatavuuden ja hinnan henkilökohtaisesti."
+    "requestOnlyBody": "Lähetä pyyntösi conciergellemme, niin vahvistamme saatavuuden ja hinnan henkilökohtaisesti.",
+    "twoPartsHint": "Voit maksaa kahdessa osassa: puolet tänään ja puolet {{date}}. Tai kaiken nyt, Flex mukaan lukien.",
+    "twoPartsHintPlain": "Voit maksaa kahdessa osassa: puolet tänään ja puolet {{date}}."
   },
   "common": {
     "loading": "Ladataan…",
@@ -1526,7 +1528,8 @@
     "bestRateTeeth": "Paras hinta verkossa — jos löydätte nämä päivät halvemmalla Airbnb:stä tai Booking.comista, vastaamme hintaan",
     "noServiceFees": "Valitsemiesi päivien tarjous näyttää kokonaishinnan ja eritellyt pakolliset maksut ennen maksamista.",
     "conciergeWhatsapp": "WhatsApp-concierge ennen oleskelua, sen aikana ja sen jälkeen",
-    "guaranteeTerms": "Näin takuu toimii"
+    "guaranteeTerms": "Näin takuu toimii",
+    "compactLine": "Paras hinta taattu · ei varauskuluja · concierge WhatsAppissa."
   },
   "bookingStatus": {
     "confirmed": "Vahvistettu",
@@ -1877,6 +1880,10 @@
     "bar": {
       "todayLabel": "Tänään {{amountNow}}",
       "laterLabel": "+ {{amountLater}} {{date}}"
+    },
+    "rate": {
+      "twoPartsLine": "Voit myös maksaa kahdessa osassa: {{amountNow}} tänään ja {{amountLater}} {{date}}.",
+      "twoPartsLinePlain": "Voit myös maksaa kahdessa osassa: {{amountNow}} tänään ja {{amountLater}} {{date}}."
     }
   },
   "host": {
