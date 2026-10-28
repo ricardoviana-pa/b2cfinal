@@ -583,6 +583,26 @@ Critérios: dois ciclos completos em modo de teste com os 4 cartões e H encurta
 Entregas: hint no widget, linha no passo 1, seletor no passo 3 com o desconto de 1% no card "tudo agora" e ECE escondido em duas partes, linha "Desconto por pagamento integral" no resumo, caixa de autorização, bloco pré-contratual para todos os planos, resumo, barra mobile, botão, thank-you, `/account`; chaves novas nos 9 locales (`npm run i18n:check`); CGV novas completas (6.1) sem link ODR e com Livro de Reclamações; política de privacidade (6.4); identificação da empresa no rodapé; vista gravada e notificações no Guesty; fornecedor de SMS configurado; `CHECKOUT_TWO_PARTS=true` e `CHECKOUT_BALANCE=true` em produção com holdout 10%, só cartão, só tarifas reembolsáveis, estadia ≥ 1 000 €.
 Critérios: uma reserva real em duas partes numa listagem de teste em produção (1 €) ponta a ponta, incluindo faturas e NC; digest diário a chegar; dashboard com adesão, conversão vs holdout, lead time, taxa de falha, recuperação, cancelamentos automáticos e pelo hóspede; zero cobranças no Guesty para fontes `website-*` no primeiro mês; teste de mesa do CS repetido com o runbook final e sem erros de dinheiro.
 
+**Estado a 28 de outubro de 2026 (PR #161, dormente).** Em código:
+- o seletor "Quando prefere pagar?" no passo do pagamento;
+- a caixa da autorização, com o texto do servidor tal como vem;
+- em duas partes, só cartão, com botão "Pagar X agora" e "Depois, Y a <data>";
+- o resumo com Total, Hoje e a data, e a barra móvel;
+- "Flex · incluído" com "tudo agora";
+- o plano na página de obrigado;
+- os textos nas 9 línguas;
+- `?twoParts=1` no checkout demo, para QA.
+
+Decisões do Ricardo (28 out):
+- **sem SMS**: os avisos saem só por email, e não se configura Twilio;
+- o monitor externo do `/api/health/balance-scheduler` cria-o o Claude quando o motor for ligado.
+
+Falta:
+- o mandato em FR/ES/IT/DE/NL/SV/FI: hoje cai no EN, e a spec pede revisão nativa em DE, FR e NL;
+- o bloco pré-contratual e as CGV novas, que o André tem de ver;
+- a dica no widget e a linha no passo 1;
+- os ciclos completos em modo de teste da Stripe, antes de `TWO_PARTS_BALANCE_ENGINE_READY`.
+
 **O que a Fase 1 exige do ecrã (escrito a 27 de outubro de 2026, a partir das revisões):**
 - o `createCardCharge` tem de levar sempre `plan` quando o seletor está visível (também no caminho das wallets): sem `plan` não há Flex oferecido;
 - o ecrã mostra os valores e o texto do mandato que o `getIntent` devolve em `paymentPlan`, tal como vêm (o hash registado é desse texto), e envia `mandateAccepted` só com a caixa marcada;

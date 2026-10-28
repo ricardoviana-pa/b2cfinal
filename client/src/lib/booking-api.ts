@@ -75,6 +75,9 @@ export interface ThankYouStash {
   nights?: number;
   /** Policy of the rate paid, classified like its rate card (planPolicyCode). */
   cancellationPolicy?: string[];
+  /** Pagamento em duas partes: o que fica para a data marcada (totalCents é
+   *  então só o que se pagou hoje). */
+  paymentPlan?: { amountLaterCents: number; chargeAt: string };
 }
 
 const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;

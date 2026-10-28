@@ -297,7 +297,9 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                 ) : null}
                 <div className="flex items-baseline justify-between border-t border-pa-sand pt-[13px]">
                   <span className="text-[15px] font-medium text-pa-dark">
-                    {t("paymentThankYou.totalPaid", { defaultValue: "Total paid" })}
+                    {data.paymentPlan
+                      ? t("paymentThankYou.plan.paidToday", { defaultValue: "Paid today" })
+                      : t("paymentThankYou.totalPaid", { defaultValue: "Total paid" })}
                   </span>
                   <span className="text-[19px] font-medium tabular-nums text-pa-dark">
                     {formatEurCents(totalPaidCents, lang, t("bookingConfirmation.toConfirm"))}
@@ -330,7 +332,9 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                     {method === "klarna"
                       ? t("paymentThankYou.paidKlarna", { defaultValue: "Paying with Klarna" })
                       : method === "card"
-                        ? t("paymentThankYou.paidCard", { defaultValue: "Paid in full by card" })
+                        ? data.paymentPlan
+                          ? t("paymentThankYou.paidCardFirst", { defaultValue: "First part paid by card" })
+                          : t("paymentThankYou.paidCard", { defaultValue: "Paid in full by card" })
                         : t("paymentThankYou.paidPaypal", { defaultValue: "Paid in full with PayPal" })}
                   </div>
                   <div className="mt-0.5 text-[11.5px] tabular-nums text-pa-earth">
@@ -346,6 +350,33 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                 </div>
               </div>
               ) : null}
+
+              {/* Pagamento em duas partes: o plano, em claro (spec 4.1, ponto 7) */}
+              {data.paymentPlan && (
+                <div className="mt-[14px] rounded-lg border border-pa-sand bg-pa-warm px-4 py-3.5">
+                  <div className="text-[13.5px] font-medium text-pa-dark">
+                    {t("paymentThankYou.plan.title", { defaultValue: "Your payment plan" })}
+                  </div>
+                  <div className="mt-2 flex items-baseline justify-between text-[13px] text-pa-dark">
+                    <span>{t("paymentThankYou.plan.paidToday", { defaultValue: "Paid today" })}</span>
+                    <span className="tabular-nums">{formatEurCents(totalPaidCents, lang)}</span>
+                  </div>
+                  <div className="mt-1 flex items-baseline justify-between text-[13px] text-pa-dark">
+                    <span>
+                      {t("paymentThankYou.plan.scheduled", {
+                        date: new Intl.DateTimeFormat(lang === "pt" ? "pt-PT" : lang, { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Lisbon" }).format(new Date(data.paymentPlan.chargeAt)),
+                        defaultValue: "On {{date}}",
+                      })}
+                    </span>
+                    <span className="tabular-nums">{formatEurCents(data.paymentPlan.amountLaterCents, lang)}</span>
+                  </div>
+                  <p className="mt-2 text-[11.5px] leading-snug text-pa-earth">
+                    {t("paymentThankYou.plan.scheduledSubNoCard", { defaultValue: "Charged automatically to the same card. Nothing to do." })}{" "}
+                    {t("paymentThankYou.plan.reminder", { defaultValue: "We will remind you by email a week before and the day before." })}{" "}
+                    {t("paymentThankYou.plan.manageInEmail", { defaultValue: "To pay earlier, use another card or cancel, use \"Manage payment\" in your confirmation email." })}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* CTA — full width beneath both columns */}

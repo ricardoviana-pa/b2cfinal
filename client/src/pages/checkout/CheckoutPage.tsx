@@ -53,6 +53,7 @@ import CustomizeStep, {
   type ReceptionChoice,
 } from "./CustomizeStep";
 import FlexBlock, { type FlexConfig } from "./FlexBlock";
+import { PaymentPlanSelector, planDate, type PaymentPlanChoice, type PaymentPlanOffer } from "./PaymentPlanSelector";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
 
@@ -805,7 +806,61 @@ export default function CheckoutPage() {
   }, [flexSelected, flexConfig?.minTotal, effective?.total]);
   // Total de hoje: tudo o que tem preço fixo num só número (§7)
   const todayTotal = (effective?.total ?? 0) + receptionAmt + extrasTotal + flexPrice;
-  const animatedTotal = useCountUp(todayTotal);
+
+  // ── Pagamento em duas partes (Fase 3; spec 4.1, ponto 4) ──
+  // A oferta e os valores vêm do servidor (getIntent.paymentPlan). Sem oferta
+  // (flag desligada, tarifa NR, estadia abaixo do mínimo, datas perto) nada
+  // muda: o checkout de sempre, sem `plan` no createCardCharge.
+  // ?twoParts=1 no checkout demo mostra o seletor com valores de exemplo (QA).
+  const demoOffer = useMemo<PaymentPlanOffer | null>(() => {
+    if (!isDemo || typeof window === "undefined" || !new URLSearchParams(window.location.search).has("twoParts")) return null;
+    const at = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString();
+    return {
+      available: true, policyCode: "moderate", incentive: "flex",
+      fullTodayCents: 273_000, depositCents: 148_000, depositStayCents: 125_000, balanceCents: 125_000,
+      chargeAt: at(40), retryAt: [at(41), at(43)], freeCancelDeadlineAt: at(50), hardStopAt: at(49),
+      mandate: {
+        lang: "en", version: "demo",
+        checkbox: "I authorize Portugal Active to charge the second part on the date shown to the card I am using now.",
+        text: "Demo: the authorization text comes from the server, exactly as recorded.",
+      },
+    };
+  }, [isDemo]);
+  const planData = (intentQuery.data as { paymentPlan?: unknown } | undefined)?.paymentPlan as
+    | (PaymentPlanOffer | { available: false })
+    | null
+    | undefined;
+  const offer: PaymentPlanOffer | null = demoOffer ?? (planData && planData.available ? planData : null);
+  const [plan, setPlan] = useState<PaymentPlanChoice>("full");
+  const [mandateAccepted, setMandateAccepted] = useState(false);
+  // Outra oferta (valores ou datas mudaram, ou deixou de haver): a caixa volta
+  // a desmarcada e, sem oferta, o plano volta a "tudo agora".
+  const offerKey = offer ? `${offer.depositCents}|${offer.balanceCents}|${offer.chargeAt}|${offer.mandate.version}` : "";
+  useEffect(() => {
+    setMandateAccepted(false);
+    if (!offerKey) setPlan("full");
+  }, [offerKey]);
+  const twoParts = !!offer && plan === "two_parts";
+  // Com "tudo agora" e o incentivo Flex, o Flex vai incluído (0 €).
+  const flexIncludedByPlan = !!offer && plan === "full" && offer.incentive === "flex";
+  // O que se cobra hoje: o servidor manda (é ele que cobra).
+  const payTotal = !offer
+    ? todayTotal
+    : twoParts
+      ? offer.depositCents / 100
+      : flexIncludedByPlan
+        ? offer.fullTodayCents / 100
+        : todayTotal;
+  const planLaterDate = offer ? planDate(offer.chargeAt, lang) : "";
+  // Spec (Fase 1 → ecrã): depois de mudar algo, volta a ler a oferta do
+  // servidor; ele pode tê-la retirado ou mudado os valores.
+  useEffect(() => {
+    if (step !== "pay" || isDemo || !intentId) return;
+    const h = setTimeout(() => { void intentQuery.refetch(); }, 1200);
+    return () => clearTimeout(h);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, todayTotal]);
+  const animatedTotal = useCountUp(twoParts ? todayTotal : payTotal);
 
   // Flex contextual copy inputs: which rate family is selected + the concrete
   // free-cancellation date of the CURRENT selection (coherence with the policy)
@@ -1027,8 +1082,10 @@ export default function CheckoutPage() {
         guestName: `${firstName} ${lastName}`.trim(),
         guestEmail: email,
         guestPhone: phone,
-        // 2b: o cartão v2 cobra o todayTotal (estadia + serviços) num só PI
-        totalCents: Math.round(todayTotal * 100),
+        // 2b: o cartão v2 cobra o que é devido hoje (estadia + serviços; em
+        // duas partes só a 1.ª; com o Flex incluído, sem o Flex)
+        totalCents: Math.round(payTotal * 100),
+        ...(twoParts && offer ? { paymentPlan: { amountLaterCents: offer.balanceCents, chargeAt: offer.chargeAt } } : {}),
         // Valor do purchase nos anúncios: só a estadia (extras à parte)
         stayTotalCents: effective ? Math.round(effective.total * 100) : null,
         // M12 (auditoria set/2026): sem isto o item da casa ia sem preço nem
@@ -1045,7 +1102,7 @@ export default function CheckoutPage() {
       void utils.checkout.getIntent.invalidate({ intentId: intent.id });
       navigate(`/booking/thank-you/${rid}?method=card`);
     },
-    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, effective, selectedPolicyCode, quote?.nights, quote?.couponCode, purchaseItems, syncIntent, navigate],
+    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, payTotal, twoParts, offer, effective, selectedPolicyCode, quote?.nights, quote?.couponCode, purchaseItems, syncIntent, navigate],
   );
 
   // M5 (auditoria set/2026): regresso de um redirect 3DS do banco. O Stripe
@@ -1251,17 +1308,38 @@ export default function CheckoutPage() {
             </button>
             <span className="truncate">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
           </span>
-          {flexGifted ? (
-            <span className="tabular-nums shrink-0"><s className="text-pa-stone-aa">{formatQuotedEur(flexUnit, lang)}</s> <span className="text-pa-gold">{t("checkout.flex.gifted", "Offered")}</span></span>
+          {flexGifted || flexIncludedByPlan ? (
+            <span className="tabular-nums shrink-0"><s className="text-pa-stone-aa">{formatQuotedEur(flexUnit, lang)}</s> <span className="text-pa-gold">{flexIncludedByPlan ? t("checkout.summary.flexIncludedShort", "Included") : t("checkout.flex.gifted", "Offered")}</span></span>
           ) : (
             <span className="text-pa-dark tabular-nums shrink-0">{formatQuotedEur(flexUnit, lang)}</span>
           )}
         </div>
       )}
+      {/* Flex incluído por pagar tudo agora, sem o hóspede o ter escolhido */}
+      {flexIncludedByPlan && !flexSelected && flexConfig && (
+        <div className="flex justify-between items-center gap-2 body-sm text-inherit checkout-row-in">
+          <span className="text-pa-gold font-medium truncate">{t("checkout.summary.flexIncluded", "Flex · included")}</span>
+          <span className="text-pa-gold tabular-nums shrink-0">{formatQuotedEur(0, lang)}</span>
+        </div>
+      )}
       <div className="flex justify-between items-baseline border-t border-pa-sand pt-2.5">
-        <span className="body-sm font-medium text-pa-dark">{t("checkout.todayTotal", "Total today")}</span>
+        <span className="body-sm font-medium text-pa-dark">{twoParts ? t("checkout.summary.total", "Total") : t("checkout.todayTotal", "Total today")}</span>
         <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatQuotedEur(animatedTotal, lang)}</span>
       </div>
+      {twoParts && offer && (
+        <div className="space-y-1">
+          <div className="flex justify-between items-baseline body-sm">
+            <span className="font-medium text-pa-dark">{t("checkout.summary.today", "Today")}</span>
+            <span className="text-pa-dark tabular-nums">{formatQuotedEur(offer.depositCents / 100, lang)}</span>
+          </div>
+          <div className="flex justify-between items-baseline body-sm gap-2">
+            <span className="text-pa-earth">
+              {t("checkout.summary.later", { date: planLaterDate })} · {t("checkout.summary.sameCard", "same card")}
+            </span>
+            <span className="text-pa-earth tabular-nums shrink-0">{formatQuotedEur(offer.balanceCents / 100, lang)}</span>
+          </div>
+        </div>
+      )}
 
     </div>
   );
@@ -1967,6 +2045,17 @@ export default function CheckoutPage() {
 
               {/* Direct-booking assurance (audit finding D1) */}
 
+              {offer && !redirectFinalizing && (
+                <PaymentPlanSelector
+                  offer={offer}
+                  plan={plan}
+                  onPlanChange={(p) => { setPlan(p); if (p === "full") setMandateAccepted(false); }}
+                  mandateAccepted={mandateAccepted}
+                  onMandateChange={setMandateAccepted}
+                  lang={lang}
+                />
+              )}
+
 
               {/* Payment */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">
@@ -1987,8 +2076,12 @@ export default function CheckoutPage() {
                     guests={guests}
                     quoteId={quoteId}
                     ratePlanId={effective.ratePlanId ?? selectedRatePlanId ?? ""}
-                    total={todayTotal}
+                    total={payTotal}
                     currency="EUR"
+                    plan={offer ? plan : undefined}
+                    mandateAccepted={mandateAccepted}
+                    payLaterCaption={twoParts && offer ? t("payment.payNowAfter", { amountLater: formatQuotedEur(offer.balanceCents / 100, lang), date: planLaterDate }) : undefined}
+                    otherMethodsTotal={todayTotal}
                     propertyName={intent.propertyName || displayName}
                     destination={intent.destination || undefined}
                     guestName={`${firstName.trim()} ${lastName.trim()}`}
@@ -2095,8 +2188,15 @@ export default function CheckoutPage() {
           >
             <div>
               <p className="body-lg font-medium text-pa-dark tabular-nums leading-tight">
-                {effective ? formatQuotedEur(animatedTotal, lang) : "—"}
+                {!effective ? "—" : twoParts && offer
+                  ? t("checkout.bar.todayLabel", { amountNow: formatQuotedEur(offer.depositCents / 100, lang) })
+                  : formatQuotedEur(animatedTotal, lang)}
               </p>
+              {twoParts && offer && (
+                <p className="caption text-pa-earth tabular-nums leading-tight">
+                  {t("checkout.bar.laterLabel", { amountLater: formatQuotedEur(offer.balanceCents / 100, lang), date: planLaterDate })}
+                </p>
+              )}
               <p className="caption text-pa-stone-aa flex items-center gap-1">
                 {t("checkout.viewDetails", "View details")}
                 {sheetOpen ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}

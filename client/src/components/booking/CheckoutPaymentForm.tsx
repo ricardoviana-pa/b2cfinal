@@ -6,7 +6,7 @@
  * Requires: BE-API + STRIPE_PUBLISHABLE_KEY (from Guesty-connected Stripe account).
  */
 
-import { useState, useMemo, useRef, type ReactElement } from "react";
+import { useEffect, useState, useMemo, useRef, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { loadStripe } from "@/lib/stripeLoader";
 import {
@@ -126,6 +126,16 @@ interface CheckoutPaymentFormProps {
   onBeforePay?: () => Promise<void>;
   /** Servidor recusou por quote expirada — o CheckoutPage acende o banner de refresh */
   onQuoteExpired?: () => void;
+  /** Pagamento em duas partes: o plano escolhido no seletor. Só vem quando o
+   *  seletor está visível; nesse caso vai SEMPRE no createCardCharge (sem
+   *  `plan` o servidor não dá o Flex incluído). */
+  plan?: "full" | "two_parts";
+  /** Caixa da autorização da 2.ª cobrança (só conta em duas partes). */
+  mandateAccepted?: boolean;
+  /** "Depois, 1 250 € a 28 de junho." por baixo do botão, em duas partes. */
+  payLaterCaption?: string;
+  /** Klarna e PayPal cobram sempre tudo e sem o Flex incluído: o total deles. */
+  otherMethodsTotal?: number;
 }
 
 /** H6 (auditoria set/2026): o servidor fala inglês técnico ("PI pi_… not
@@ -194,10 +204,13 @@ function ExpressWalletInner({
   onSuccess,
   onBeforePay,
   onQuoteExpired,
+  withPlan,
 }: {
   intentId: string;
   listingId: string;
   total: number;
+  /** Seletor visível: as wallets pagam sempre tudo, com plan "full". */
+  withPlan?: boolean;
   paymentItems?: Array<Record<string, unknown>>;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onBeforePay?: () => Promise<void>;
@@ -246,7 +259,7 @@ function ExpressWalletInner({
       // PI lazy com o total canónico do servidor — nunca o valor do cliente.
       // wallet:true → PI automatic (a sessão do ECE é automatic; um PI types
       // seria recusado no confirm — visto no 1.º toque real de GPay).
-      const { clientSecret, paymentIntentId, alreadyPaid } = (await createCardCharge.mutateAsync({ intentId, wallet: true })) as any;
+      const { clientSecret, paymentIntentId, alreadyPaid } = (await createCardCharge.mutateAsync({ intentId, wallet: true, ...(withPlan ? { plan: "full" as const } : {}) })) as any;
       if (alreadyPaid) {
         // pagamento já capturado numa tentativa anterior — só falta a reserva
         paymentCaptured = true;
@@ -339,6 +352,9 @@ function PaymentFormInner({
   paymentItems,
   onBeforePay,
   onQuoteExpired,
+  plan,
+  mandateAccepted,
+  payLaterCaption,
 }: Omit<CheckoutPaymentFormProps, "currency">) {
   const { t, i18n } = useTranslation();
   const stripe = useStripe();
@@ -394,7 +410,10 @@ function PaymentFormInner({
       try {
         // Estado pendente (debounces de extras/dados) gravado ANTES da cobrança
         await onBeforePay?.();
-        const { clientSecret, paymentIntentId, alreadyPaid } = await createCardCharge.mutateAsync({ intentId });
+        const { clientSecret, paymentIntentId, alreadyPaid } = await createCardCharge.mutateAsync({
+          intentId,
+          ...(plan ? { plan, ...(plan === "two_parts" ? { mandateAccepted: mandateAccepted === true } : {}) } : {}),
+        });
         if (alreadyPaid) {
           paymentCaptured = true;
           const fin = await finalizeCardCharge.mutateAsync({ intentId, paymentIntentId });
@@ -575,11 +594,20 @@ function PaymentFormInner({
       <div className="flex flex-col gap-3">
         <button
           type="submit"
-          disabled={!stripe || loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()}
+          disabled={!stripe || loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim() || (plan === "two_parts" && !mandateAccepted)}
           className="btn-primary w-full disabled:opacity-50"
         >
-          {loading ? t('payment.processing') : t('payment.payButton', { amount: formatQuotedEur(total, i18n.language) })}
+          {loading
+            ? (plan === "two_parts" ? t('payment.processingFirst', 'Processing the first part…') : t('payment.processing'))
+            : plan === "two_parts"
+              ? t('payment.payNowButton', { amountNow: formatQuotedEur(total, i18n.language) })
+              : t('payment.payButton', { amount: formatQuotedEur(total, i18n.language) })}
         </button>
+        {plan === "two_parts" && (
+          <p className="caption text-pa-earth text-center -mt-1">
+            {mandateAccepted ? payLaterCaption : t('payment.mandateMissing', 'Tick the authorisation above to continue.')}
+          </p>
+        )}
         <button type="button" onClick={onCancel} className="btn-ghost">
           {t('payment.cancelButton')}
         </button>
@@ -594,6 +622,10 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const [hoveredMethod, setHoveredMethod] = useState<PaymentMethodId | null>(null);
   const [paypalError, setPaypalError] = useState("");
   const [klarnaError, setKlarnaError] = useState("");
+  // Em duas partes só há cartão: volta ao cartão se estava noutro método.
+  useEffect(() => {
+    if (props.plan === "two_parts" && paymentMethod !== "card") setPaymentMethod("card");
+  }, [props.plan, paymentMethod]);
   const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery();
   // Per-listing payment provider: fetch the Stripe connected account for this property
   const { data: paymentProvider, isLoading: providerLoading } = trpc.booking.getPaymentProvider.useQuery(
@@ -707,9 +739,10 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     <div className="space-y-4">
       {/* Bloco 3: Apple Pay / Google Pay (Express Checkout, conta de plataforma)
           — só no checkout v2; o legacy nunca monta este bloco */}
-      {props.intentId && (
+      {props.intentId && props.plan !== "two_parts" && (
         <Elements stripe={stripePromise} options={expressElementsOptions}>
           <ExpressWalletInner
+            withPlan={!!props.plan}
             intentId={props.intentId}
             listingId={props.listingId}
             total={props.total}
@@ -721,7 +754,9 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         </Elements>
       )}
 
-      {/* Payment method selector — 3 icon cards (Google Pay hidden) */}
+      {/* Payment method selector — 3 icon cards (Google Pay hidden). Em duas
+          partes só há cartão: Klarna e PayPal cobram tudo hoje. */}
+      {props.plan !== "two_parts" && (
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "9px" }}>
         {PAYMENT_METHODS.filter(({ id }) => id !== "googlepay").map(({ id, label, Logo }) => (
           <button
@@ -770,14 +805,15 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
           </button>
         ))}
       </div>
+      )}
 
-      {paymentMethod !== "paypal" && paymentMethod !== "klarna" && (
-        <Elements key={paymentMethod} stripe={stripePromise} options={elementsOptions}>
+      {(props.plan === "two_parts" || (paymentMethod !== "paypal" && paymentMethod !== "klarna")) && (
+        <Elements key={props.plan === "two_parts" ? "card-two-parts" : paymentMethod} stripe={stripePromise} options={elementsOptions}>
           <PaymentFormInner {...props} />
         </Elements>
       )}
 
-      {paymentMethod === "paypal" && (
+      {paymentMethod === "paypal" && props.plan !== "two_parts" && (
         <div className="space-y-3">
           {paypalError && (
             <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
@@ -786,7 +822,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             </div>
           )}
           <PayPalCheckoutButton
-            amount={props.total}
+            amount={props.otherMethodsTotal ?? props.total}
             currency={props.currency || "eur"}
             listingId={props.listingId}
             checkIn={props.checkIn}
@@ -818,7 +854,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         </div>
       )}
 
-      {paymentMethod === "klarna" && (
+      {paymentMethod === "klarna" && props.plan !== "two_parts" && (
         <div className="space-y-3">
           {klarnaError && (
             <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
@@ -827,7 +863,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             </div>
           )}
           <KlarnaCheckoutButton
-            amount={props.total}
+            amount={props.otherMethodsTotal ?? props.total}
             currency={props.currency || "eur"}
             listingId={props.listingId}
             checkIn={props.checkIn}
