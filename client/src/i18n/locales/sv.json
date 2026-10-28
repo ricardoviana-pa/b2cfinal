@@ -784,7 +784,11 @@
     "preparingKlarna": "Förbereder Klarna-betalning…",
     "preparingPaypal": "Förbereder PayPal-betalning…",
     "redirecting": "Omdirigerar…",
-    "unavailableFallback": "Onlinebetalning är tillfälligt otillgänglig. Försök igen om några minuter, eller kontakta vår concierge så slutför vi din bokning personligen."
+    "unavailableFallback": "Onlinebetalning är tillfälligt otillgänglig. Försök igen om några minuter, eller kontakta vår concierge så slutför vi din bokning personligen.",
+    "payNowButton": "Betala {{amountNow}} nu",
+    "payNowAfter": "Sedan {{amountLater}} den {{date}}.",
+    "processingFirst": "Första delen behandlas…",
+    "mandateMissing": "Kryssa i godkännandet ovan för att fortsätta."
   },
   "contact": {
     "heroAlt": "Kontakta Portugal Active",
@@ -1836,7 +1840,35 @@
       "quote": "ett bekräftat pris (uppdatera ovan)"
     },
     "emailNeededHint": "Ange din e-post ovan för att fortsätta.",
-    "emailInvalidHint": "Den e-postadressen ser inte rätt ut. Kontrollera den för att fortsätta."
+    "emailInvalidHint": "Den e-postadressen ser inte rätt ut. Kontrollera den för att fortsätta.",
+    "payPlan": {
+      "title": "När vill du betala?",
+      "full": {
+        "label": "Betala allt nu",
+        "sub": "{{total}} i dag · Flex ingår: boka om när du vill",
+        "subPlain": "{{total}} i dag",
+        "flexNote": "Det du har betalat går aldrig förlorat. Samma avbokningsregler."
+      },
+      "split": {
+        "label": "Betala i två delar",
+        "sub": "{{amountNow}} i dag · {{amountLater}} den {{date}}, med samma kort",
+        "noFees": "Till det visade priset, utan extra kostnad.",
+        "whatToday": "I dag betalar du halva vistelsen, plus eventuella tillägg och Flex.",
+        "walletNote": "Apple Pay och Google Pay betalar hela vistelsen i dag. För att betala i två delar, använd ditt kort."
+      }
+    },
+    "summary": {
+      "flexIncluded": "Flex · ingår",
+      "flexIncludedShort": "Ingår",
+      "total": "Totalt",
+      "today": "I dag",
+      "later": "Den {{date}}",
+      "sameCard": "samma kort"
+    },
+    "bar": {
+      "todayLabel": "I dag {{amountNow}}",
+      "laterLabel": "+ {{amountLater}} den {{date}}"
+    }
   },
   "host": {
     "hostedBy": "Värdar: Ricardo & Portugal Active-teamet",

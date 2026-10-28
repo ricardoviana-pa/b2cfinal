@@ -784,7 +784,11 @@
     "preparingKlarna": "Klarna-Zahlung wird vorbereitet…",
     "preparingPaypal": "PayPal-Zahlung wird vorbereitet…",
     "redirecting": "Weiterleitung…",
-    "unavailableFallback": "Die Online-Zahlung ist vorübergehend nicht verfügbar. Versuchen Sie es in einigen Minuten erneut oder kontaktieren Sie unseren Concierge."
+    "unavailableFallback": "Die Online-Zahlung ist vorübergehend nicht verfügbar. Versuchen Sie es in einigen Minuten erneut oder kontaktieren Sie unseren Concierge.",
+    "payNowButton": "Jetzt {{amountNow}} bezahlen",
+    "payNowAfter": "Danach {{amountLater}} am {{date}}.",
+    "processingFirst": "Der erste Teil wird verarbeitet…",
+    "mandateMissing": "Bestätigen Sie oben die Autorisierung, um fortzufahren."
   },
   "contact": {
     "heroAlt": "Portugal Active kontaktieren",
@@ -1836,7 +1840,35 @@
       "quote": "ein bestätigter Preis (oben aktualisieren)"
     },
     "emailNeededHint": "Geben Sie oben Ihre E-Mail ein, um fortzufahren.",
-    "emailInvalidHint": "Diese E-Mail scheint nicht korrekt zu sein. Bitte prüfen."
+    "emailInvalidHint": "Diese E-Mail scheint nicht korrekt zu sein. Bitte prüfen.",
+    "payPlan": {
+      "title": "Wann möchten Sie bezahlen?",
+      "full": {
+        "label": "Jetzt alles bezahlen",
+        "sub": "{{total}} heute · Flex inklusive: jederzeit umbuchen",
+        "subPlain": "{{total}} heute",
+        "flexNote": "Was Sie bezahlt haben, geht nie verloren. Gleiche Stornobedingungen."
+      },
+      "split": {
+        "label": "In zwei Teilen bezahlen",
+        "sub": "{{amountNow}} heute · {{amountLater}} am {{date}}, mit derselben Karte",
+        "noFees": "Zum angezeigten Preis, ohne Zusatzkosten.",
+        "whatToday": "Heute zahlen Sie die Hälfte des Aufenthalts, plus Extras und Flex, falls gewählt.",
+        "walletNote": "Apple Pay und Google Pay zahlen den ganzen Aufenthalt heute. Um in zwei Teilen zu zahlen, nutzen Sie Ihre Karte."
+      }
+    },
+    "summary": {
+      "flexIncluded": "Flex · inklusive",
+      "flexIncludedShort": "Inklusive",
+      "total": "Gesamt",
+      "today": "Heute",
+      "later": "Am {{date}}",
+      "sameCard": "dieselbe Karte"
+    },
+    "bar": {
+      "todayLabel": "Heute {{amountNow}}",
+      "laterLabel": "+ {{amountLater}} am {{date}}"
+    }
   },
   "host": {
     "hostedBy": "Ihre Gastgeber: Ricardo & das Portugal-Active-Team",

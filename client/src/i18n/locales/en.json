@@ -810,7 +810,11 @@
     "preparingKlarna": "Preparing Klarna payment…",
     "preparingPaypal": "Preparing PayPal payment…",
     "redirecting": "Redirecting…",
-    "unavailableFallback": "Online payment is temporarily unavailable. Please try again in a few minutes, or contact our concierge and we will complete your booking personally."
+    "unavailableFallback": "Online payment is temporarily unavailable. Please try again in a few minutes, or contact our concierge and we will complete your booking personally.",
+    "payNowButton": "Pay {{amountNow}} now",
+    "payNowAfter": "Then {{amountLater}} on {{date}}.",
+    "processingFirst": "Processing the first part…",
+    "mandateMissing": "Tick the authorisation above to continue."
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1836,7 +1840,35 @@
       "quote": "a confirmed price (refresh above)"
     },
     "emailNeededHint": "Enter your email above to continue.",
-    "emailInvalidHint": "That email doesn't look right. Check it to continue."
+    "emailInvalidHint": "That email doesn't look right. Check it to continue.",
+    "payPlan": {
+      "title": "When would you like to pay?",
+      "full": {
+        "label": "Pay everything now",
+        "sub": "{{total}} today · Flex included: rebook whenever you like",
+        "subPlain": "{{total}} today",
+        "flexNote": "What you paid is never lost. Same cancellation policy."
+      },
+      "split": {
+        "label": "Pay in two parts",
+        "sub": "{{amountNow}} today · {{amountLater}} on {{date}}, same card",
+        "noFees": "At the price shown, no extra cost.",
+        "whatToday": "Today you pay half of the stay, plus any extras and Flex you chose.",
+        "walletNote": "Apple Pay and Google Pay pay the whole stay today. To pay in two parts, use your card."
+      }
+    },
+    "summary": {
+      "flexIncluded": "Flex · included",
+      "flexIncludedShort": "Included",
+      "total": "Total",
+      "today": "Today",
+      "later": "On {{date}}",
+      "sameCard": "same card"
+    },
+    "bar": {
+      "todayLabel": "Today {{amountNow}}",
+      "laterLabel": "+ {{amountLater}} on {{date}}"
+    }
   },
   "host": {
     "hostedBy": "Hosted by Ricardo & the Portugal Active team",

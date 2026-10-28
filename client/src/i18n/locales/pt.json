@@ -784,7 +784,11 @@
     "preparingKlarna": "A preparar pagamento Klarna…",
     "preparingPaypal": "A preparar pagamento PayPal…",
     "redirecting": "A redirecionar…",
-    "unavailableFallback": "O pagamento online está temporariamente indisponível. Tente novamente dentro de minutos, ou contacte o nosso concierge e concluímos a sua reserva pessoalmente."
+    "unavailableFallback": "O pagamento online está temporariamente indisponível. Tente novamente dentro de minutos, ou contacte o nosso concierge e concluímos a sua reserva pessoalmente.",
+    "payNowButton": "Pagar {{amountNow}} agora",
+    "payNowAfter": "Depois, {{amountLater}} a {{date}}.",
+    "processingFirst": "A processar a primeira parte…",
+    "mandateMissing": "Marque a autorização acima para continuar."
   },
   "contact": {
     "heroAlt": "Contactar Portugal Active",
@@ -1839,7 +1843,35 @@
       "quote": "um preço confirmado (atualize acima)"
     },
     "emailNeededHint": "Escreva o seu email acima para continuar.",
-    "emailInvalidHint": "Esse email não parece correto. Verifique-o para continuar."
+    "emailInvalidHint": "Esse email não parece correto. Verifique-o para continuar.",
+    "payPlan": {
+      "title": "Quando prefere pagar?",
+      "full": {
+        "label": "Pagar tudo agora",
+        "sub": "{{total}} hoje · Flex incluído: remarque quando quiser",
+        "subPlain": "{{total}} hoje",
+        "flexNote": "O valor que pagou nunca se perde. Com a mesma política de cancelamento."
+      },
+      "split": {
+        "label": "Pagar em duas partes",
+        "sub": "{{amountNow}} hoje · {{amountLater}} a {{date}}, no mesmo cartão",
+        "noFees": "Ao preço apresentado, sem custos adicionais.",
+        "whatToday": "Hoje paga metade da estadia, mais os extras e o Flex, se os escolheu.",
+        "walletNote": "Apple Pay e Google Pay pagam a estadia toda hoje. Para pagar em duas partes, use o cartão."
+      }
+    },
+    "summary": {
+      "flexIncluded": "Flex · incluído",
+      "flexIncludedShort": "Incluído",
+      "total": "Total",
+      "today": "Hoje",
+      "later": "Em {{date}}",
+      "sameCard": "no mesmo cartão"
+    },
+    "bar": {
+      "todayLabel": "Hoje {{amountNow}}",
+      "laterLabel": "+ {{amountLater}} a {{date}}"
+    }
   },
   "host": {
     "hostedBy": "Anfitriões: Ricardo & a equipa Portugal Active",

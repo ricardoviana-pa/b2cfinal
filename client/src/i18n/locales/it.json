@@ -784,7 +784,11 @@
     "preparingKlarna": "Preparazione del pagamento Klarna…",
     "preparingPaypal": "Preparazione del pagamento PayPal…",
     "redirecting": "Reindirizzamento…",
-    "unavailableFallback": "Il pagamento online è temporaneamente non disponibile. Riprova tra qualche minuto, o contatta il nostro concierge e completeremo la prenotazione personalmente."
+    "unavailableFallback": "Il pagamento online è temporaneamente non disponibile. Riprova tra qualche minuto, o contatta il nostro concierge e completeremo la prenotazione personalmente.",
+    "payNowButton": "Paga {{amountNow}} ora",
+    "payNowAfter": "Poi {{amountLater}} il {{date}}.",
+    "processingFirst": "Elaborazione della prima parte…",
+    "mandateMissing": "Spunti l'autorizzazione qui sopra per continuare."
   },
   "contact": {
     "heroAlt": "Contatta Portugal Active",
@@ -1836,7 +1840,35 @@
       "quote": "un prezzo confermato (aggiorna sopra)"
     },
     "emailNeededHint": "Inserisci la tua email sopra per continuare.",
-    "emailInvalidHint": "Questa email non sembra corretta. Controllala per continuare."
+    "emailInvalidHint": "Questa email non sembra corretta. Controllala per continuare.",
+    "payPlan": {
+      "title": "Quando preferisce pagare?",
+      "full": {
+        "label": "Pagare tutto ora",
+        "sub": "{{total}} oggi · Flex incluso: cambi le date quando vuole",
+        "subPlain": "{{total}} oggi",
+        "flexNote": "Quanto ha pagato non va mai perso. Stessa politica di cancellazione."
+      },
+      "split": {
+        "label": "Pagare in due parti",
+        "sub": "{{amountNow}} oggi · {{amountLater}} il {{date}}, sulla stessa carta",
+        "noFees": "Al prezzo indicato, senza costi aggiuntivi.",
+        "whatToday": "Oggi paga metà del soggiorno, più gli extra e il Flex se li ha scelti.",
+        "walletNote": "Apple Pay e Google Pay pagano tutto il soggiorno oggi. Per pagare in due parti, usi la carta."
+      }
+    },
+    "summary": {
+      "flexIncluded": "Flex · incluso",
+      "flexIncludedShort": "Incluso",
+      "total": "Totale",
+      "today": "Oggi",
+      "later": "Il {{date}}",
+      "sameCard": "stessa carta"
+    },
+    "bar": {
+      "todayLabel": "Oggi {{amountNow}}",
+      "laterLabel": "+ {{amountLater}} il {{date}}"
+    }
   },
   "host": {
     "hostedBy": "I vostri host: Ricardo e il team Portugal Active",
