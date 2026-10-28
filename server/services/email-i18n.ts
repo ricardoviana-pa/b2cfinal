@@ -780,3 +780,936 @@ export const LEGACY_I18N: Record<EmailLang, LegacyStrings> = {
     reviewCta: "Jätä arvostelu", exploreCta: "Tutustu muihin koteihimme",
   },
 };
+
+/* ────────────────────────────────────────────────────────────────
+   Pagamento em duas partes (spec docs/pagamento_duas_partes.md 4.2).
+   PT e EN são as strings da spec, palavra por palavra; as outras 7
+   línguas seguem a voz dos blocos acima (tratamento formal onde a
+   língua o pede, saudação com vírgula e frase seguida, como no email
+   de recuperação). Regras do tradutor, em todas as línguas:
+   - o produto chama-se "Pagar em duas partes" e as partes são
+     "primeira" e "segunda parte": nunca sinal, depósito, prestações,
+     acompte, Anzahlung, caparra, aanbetaling, handpenning, käsiraha;
+   - o Flex nunca é seguro (aqui nem aparece);
+   - lost/stolen/fraudulent nunca dizem a causa: a variante hard é uma
+     recusa genérica com "use outro cartão";
+   - valores, datas e horas chegam já formatados (eur() e Intl no fuso
+     de Lisboa); os prazos levam sempre a hora e "hora de Lisboa";
+   - sem urgência inventada: o único prazo dito é o real.
+   ──────────────────────────────────────────────────────────────── */
+
+export interface PayPlanRemindSlots {
+  greeting: string; date: string; amount: string; last4: string | null;
+  house: string; checkIn: string; checkOut: string;
+}
+export interface PayPlanFailedSlots { greeting: string; amount: string; last4: string | null }
+export interface PayPlanPaidSlots {
+  greeting: string; amount: string; last4: string | null;
+  house: string; checkIn: string; checkOut: string; invoiceLine: string;
+}
+export interface PayPlanCancelledSlots {
+  greeting: string; house: string;
+  /** H com hora; null quando o chamador não o tem (frase sem data). */
+  deadline: string | null;
+  /** Valor devolvido; null ou omitido quando não houve devolução. */
+  refund: string | null;
+  /** Últimos 4 dígitos dos cartões que recebem a devolução, por ordem (o da
+   *  1.ª parte, depois o da 2.ª se foi outro); [] = "o cartão com que pagou". */
+  cards: string[];
+  /** Número da nota de crédito, quando já existe. */
+  creditNote: string | null;
+}
+export interface PayPlanGuestCancelledSlots {
+  greeting: string; house: string; checkIn: string; checkOut: string;
+  refund: string | null; cards: string[]; creditNote: string | null;
+}
+
+export interface PayPlanStrings {
+  /** Nome do produto voltado ao hóspede. */
+  productName: string;
+  /** Saudação que abre o corpo ("Olá Ana." / "Hallo Ana,"). */
+  hello: (name: string | null) => string;
+  /** Prazo completo: dia, hora e fuso de Lisboa. */
+  deadline: (day: string, time: string) => string;
+  amountLabel: string;
+  chargeDateLabel: string;
+  cardLabel: string;
+  payByLabel: string;
+  freeCancelLabel: string;
+  totalPaidLabel: string;
+  refundLabel: string;
+  /* E0, bloco do plano na confirmação */
+  planTitle: string;
+  planToday: (amount: string, last4: string | null) => string;
+  planLater: (date: string, amount: string) => string;
+  planDeadline: (deadline: string) => string;
+  planNote: string;
+  /** Só com o link "Gerir o pagamento" (sem link, a frase seria falsa). */
+  planNoteManage: string;
+  planCta: string;
+  noWithdrawal: string;
+  /* E1 (C−7) e E2 (C−1) */
+  remind7Subject: (house: string) => string;
+  /** E1 que sai fora dos 7 dias exatos (sweep atrasado): sem "daqui a uma semana". */
+  remindSubjectDated: (house: string, date: string) => string;
+  remind7Headline: (date: string, amount: string) => string;
+  remind1Subject: (house: string) => string;
+  remind1Headline: (amount: string) => string;
+  remindBody: (s: PayPlanRemindSlots) => string;
+  cardExpires: (last4: string, date: string) => string;
+  /** A "dica de limite diário" do E1 (spec 2.4). */
+  limitTip: string;
+  /* E3, falha (variantes soft, auth e hard) */
+  failedSubject: string;
+  failedHeadline: string;
+  failedHeadlineAuth: string;
+  failedBody: (s: PayPlanFailedSlots) => string;
+  failedBodyAuth: (s: PayPlanFailedSlots) => string;
+  failedBodyHard: (s: PayPlanFailedSlots) => string;
+  /** Só soft e só com retentativas ainda por fazer antes de H. */
+  deadlineSoft: (deadline: string, retries: string[]) => string;
+  /** Auth, hard, ou soft sem retentativas: nunca promete nova tentativa. */
+  deadlineHard: (deadline: string) => string;
+  consequence: (amountPaid: string | null) => string;
+  failedCta: string;
+  failedCtaHard: string;
+  failedCtaAuth: (last4: string | null) => string;
+  help: string;
+  /* E3b, véspera de H */
+  lastCallSubject: (house: string) => string;
+  lastCallHeadline: string;
+  lastCallBody: (greeting: string, amount: string, deadline: string) => string;
+  /* E4, paga na totalidade */
+  paidSubject: (house: string) => string;
+  paidHeadline: (checkIn: string) => string;
+  paidBody: (s: PayPlanPaidSlots) => string;
+  invoiceAfterStay: string;
+  invoiceSeparate: string;
+  /* E5, cancelada por falta de pagamento */
+  cancelledSubject: (house: string) => string;
+  cancelledHeadline: string;
+  cancelledBody: (s: PayPlanCancelledSlots) => string;
+  rebook: string;
+  /* E7, cancelada a pedido do hóspede */
+  guestCancelledSubject: (house: string) => string;
+  guestCancelledHeadline: string;
+  guestCancelledBody: (s: PayPlanGuestCancelledSlots) => string;
+  /* E5/E7 da equipa ("Devolver tudo" no admin): assunto e título do E5,
+   *  texto neutro (nem "a seu pedido", nem "dentro do prazo", nem falta de
+   *  pagamento). */
+  teamCancelledBody: (s: PayPlanGuestCancelledSlots) => string;
+  /* E6, cartão atualizado */
+  cardUpdatedSubject: string;
+  cardUpdatedBody: (last4: string, date: string) => string;
+}
+
+/** "A e B", "A, B e C" (sem vírgula antes da conjunção, em todas as línguas). */
+function joinList(items: string[], and: string): string {
+  if (items.length < 2) return items.join("");
+  return `${items.slice(0, -1).join(", ")} ${and} ${items[items.length - 1]}`;
+}
+
+/** Junta frases opcionais (as que vêm vazias saem). */
+function sentences(...parts: Array<string | false | null | undefined>): string {
+  return parts.filter(Boolean).join(" ");
+}
+
+/** "às 12:00", mas "à 01:00" (pt) / "a las 12:00", mas "a la 01:00" (es). */
+const ptAt = (t: string) => (t.startsWith("01:") ? "à" : "às");
+const esAt = (t: string) => (t.startsWith("01:") ? "la" : "las");
+
+/* Cartão por extenso, por língua (sem últimos 4 dígitos, "o cartão que usou"). */
+const ptCard = (l: string | null) => (l ? `cartão ••••${l}` : "cartão que usou");
+const enCard = (l: string | null) => (l ? `card ••••${l}` : "the card you used");
+const frCard = (l: string | null) => (l ? `carte ••••${l}` : "carte utilisée");
+const esCard = (l: string | null) => (l ? `tarjeta ••••${l}` : "tarjeta que utilizó");
+const itCard = (l: string | null) => (l ? `carta ••••${l}` : "carta che ha utilizzato");
+/** de: dativo "von Ihrer Karte" e acusativo "auf Ihre Karte". */
+const deFrom = (l: string | null) => (l ? `von Ihrer Karte ••••${l}` : "von der verwendeten Karte");
+const nlCard = (l: string | null) => (l ? `kaart ••••${l}` : "de gebruikte kaart");
+const svCard = (l: string | null) => (l ? `kort ••••${l}` : "kortet du använde");
+/* Para onde vai a devolução (E5, E7 e o da equipa): 0 cartões = sem dígitos
+ * ("o cartão com que pagou"), 1 = "o cartão ••••1234", 2 = "os cartões
+ * ••••1234 e ••••5678". Já com a preposição de cada língua. */
+const refundTo = (none: string, one: (l: string) => string, many: (list: string) => string, and: string) =>
+  (cards: string[]) =>
+    cards.length === 0 ? none : cards.length === 1 ? one(cards[0]) : many(joinList(cards.map((l) => `••••${l}`), and));
+const ptTo = refundTo("ao cartão com que pagou", (l) => `ao cartão ••••${l}`, (x) => `aos cartões ${x}`, "e");
+const enTo = refundTo("to the card used for your payment", (l) => `to card ••••${l}`, (x) => `to cards ${x}`, "and");
+const frTo = refundTo("sur la carte avec laquelle vous avez payé", (l) => `sur la carte ••••${l}`, (x) => `sur les cartes ${x}`, "et");
+const esTo = refundTo("a la tarjeta con la que pagó", (l) => `a la tarjeta ••••${l}`, (x) => `a las tarjetas ${x}`, "y");
+const itTo = refundTo("sulla carta con cui ha pagato", (l) => `sulla carta ••••${l}`, (x) => `sulle carte ${x}`, "e");
+/** de: acusativo "auf Ihre Karte(n)". */
+const deTo = refundTo("auf die für die Zahlung verwendete Karte", (l) => `auf Ihre Karte ••••${l}`, (x) => `auf Ihre Karten ${x}`, "und");
+const nlTo = refundTo("naar de kaart waarmee u betaalde", (l) => `naar kaart ••••${l}`, (x) => `naar de kaarten ${x}`, "en");
+const svTo = refundTo("till kortet du betalade med", (l) => `till kort ••••${l}`, (x) => `till korten ${x}`, "och");
+/** fi: alativo (kortille / korteille). */
+const fiTo = refundTo("maksussa käytetylle kortille", (l) => `kortille ••••${l}`, (x) => `korteille ${x}`, "ja");
+/** it: artigo/preposição + data, com elisão antes de 8 e 11 ("il 15 luglio",
+ *  "l'8 luglio", "dall'11 luglio"); cap = início de frase. */
+const IT_ELIDED = { il: "l'", al: "all'", dal: "dall'", del: "dell'" } as const;
+const itArt = (prep: keyof typeof IT_ELIDED, d: string, cap = false) => {
+  const s = /^(8|11)\b/.test(d) ? `${IT_ELIDED[prep]}${d}` : `${prep} ${d}`;
+  return cap ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+};
+/** fi: ablativo (kortilta) e alativo (kortille). */
+const fiFrom = (l: string | null) => (l ? `kortilta ••••${l}` : "käyttämältäsi kortilta");
+
+export const PAYPLAN_I18N: Record<EmailLang, PayPlanStrings> = {
+  pt: {
+    productName: "Pagar em duas partes",
+    hello: (n) => (n ? `Olá ${n}.` : "Olá."),
+    deadline: (d, t) => `${d} ${ptAt(t)} ${t}, hora de Lisboa`,
+    amountLabel: "Segunda parte", chargeDateLabel: "Data da cobrança", cardLabel: "Cartão",
+    payByLabel: "Pagar até", freeCancelLabel: "Cancelamento gratuito até",
+    totalPaidLabel: "Total pago", refundLabel: "Devolução",
+    planTitle: "O seu plano de pagamento",
+    planToday: (a, l) => (l ? `Hoje, pago: ${a} no cartão ••••${l}` : `Hoje, pago: ${a}`),
+    planLater: (d, a) => `A ${d}: ${a}, cobrado automaticamente no mesmo cartão`,
+    planDeadline: (dl) => `Pode cancelar sem custos até ${dl}.`,
+    planNote: "Nada a fazer até lá. Lembramos uma semana antes e na véspera.",
+    planNoteManage: "Se preferir pagar antes, usar outro cartão ou cancelar, basta um clique.",
+    planCta: "Gerir o pagamento",
+    noWithdrawal: "Reserva de alojamento com datas fixas: não há direito de livre resolução de 14 dias. Aplica-se a política de cancelamento da sua tarifa.",
+    remind7Subject: (h) => `A segunda parte da sua estadia em ${h}, daqui a uma semana`,
+    remindSubjectDated: (h, d) => `A segunda parte da sua estadia em ${h}, a ${d}`,
+    remind7Headline: (d, a) => `A ${d}, ${a}.`,
+    remind1Subject: (h) => `Amanhã cobramos a segunda parte da sua estadia em ${h}`,
+    remind1Headline: (a) => `Amanhã, ${a}.`,
+    remindBody: (s) => `${s.greeting} Tal como combinado, a ${s.date} cobramos ${s.amount} no ${ptCard(s.last4)}, a segunda e última parte da sua estadia em ${s.house}, de ${s.checkIn} a ${s.checkOut}. Não precisa de fazer nada. Se preferir usar outro cartão, ou pagar já, basta um clique.`,
+    cardExpires: (l, d) => `O cartão ••••${l} expira antes de ${d}. Atualize-o num minuto para a cobrança correr sem sobressaltos.`,
+    limitTip: "Se o cartão tiver um limite diário, confirme que cobre este valor nesse dia.",
+    failedSubject: "Não conseguimos cobrar a segunda parte da sua estadia",
+    failedHeadline: "O banco não aceitou a segunda parte.",
+    failedHeadlineAuth: "O seu banco pede uma confirmação.",
+    failedBody: (s) => `${s.greeting} Hoje tentámos cobrar ${s.amount} no ${ptCard(s.last4)} e o banco não aceitou. Acontece com frequência por limite do cartão, validade ou um pedido de confirmação do banco. Pode pagar com o mesmo cartão ou com outro no botão abaixo, sem precisar de iniciar sessão.`,
+    failedBodyAuth: (s) => `${s.greeting} O seu banco pede-lhe uma confirmação para a cobrança de ${s.amount} no ${ptCard(s.last4)}. Basta confirmar com o mesmo cartão no botão abaixo. Demora um minuto.`,
+    failedBodyHard: (s) => `${s.greeting} Hoje tentámos cobrar ${s.amount} no ${ptCard(s.last4)} e o banco não aceitou. Para concluir, use outro cartão no botão abaixo, sem precisar de iniciar sessão.`,
+    deadlineSoft: (dl, r) => `Para manter a reserva, o pagamento tem de estar feito até ${dl}. Vamos também tentar de novo ${joinList(r.map((x) => `a ${x}`), "e")}.`,
+    deadlineHard: (dl) => `Para manter a reserva, o pagamento tem de estar feito até ${dl}. Neste caso só o seu clique resolve: não vamos tentar de novo sozinhos.`,
+    consequence: (p) => p
+      ? `Se até lá não for possível, a reserva é cancelada e devolvemos os ${p} que já pagou, porque ainda está dentro do prazo de cancelamento gratuito.`
+      : "Se até lá não for possível, a reserva é cancelada e devolvemos o que já pagou, porque ainda está dentro do prazo de cancelamento gratuito.",
+    failedCta: "Pagar ou mudar de cartão",
+    failedCtaHard: "Usar outro cartão",
+    failedCtaAuth: (l) => (l ? `Confirmar com o cartão ••••${l}` : "Confirmar com o mesmo cartão"),
+    help: "Se precisar de ajuda, use o botão “Preciso de ajuda” na mesma página. Por segurança, nunca envie dados do cartão por email ou mensagem.",
+    lastCallSubject: (h) => `Amanhã termina o prazo da segunda parte da sua estadia em ${h}`,
+    lastCallHeadline: "O prazo termina amanhã.",
+    lastCallBody: (g, a, dl) => `${g} Ainda não recebemos ${a} e o prazo termina amanhã, ${dl}. Pagar demora dois minutos. Se já não puder vir, não precisa de fazer nada: a reserva é cancelada e devolvemos o que pagou.`,
+    paidSubject: (h) => `A sua estadia em ${h} está paga na totalidade`,
+    paidHeadline: (ci) => `Está tudo pago. Até ${ci}.`,
+    paidBody: (s) => `${s.greeting} Recebemos a segunda parte, ${s.amount}, no ${ptCard(s.last4)}. A sua estadia em ${s.house}, de ${s.checkIn} a ${s.checkOut}, está paga na totalidade. ${s.invoiceLine} Até lá, o seu concierge está a uma mensagem de distância.`,
+    invoiceAfterStay: "A fatura é emitida após a estadia.",
+    invoiceSeparate: "A fatura segue em email separado.",
+    cancelledSubject: (h) => `A sua reserva em ${h} foi cancelada`,
+    cancelledHeadline: "A sua reserva foi cancelada.",
+    cancelledBody: (s) => sentences(
+      `${s.greeting} Não recebemos a segunda parte da sua estadia em ${s.house} ${s.deadline ? `até ${s.deadline}` : "dentro do prazo"}, por isso a reserva foi cancelada, como explicámos.`,
+      s.refund && `Os ${s.refund} que pagou voltam ${ptTo(s.cards)} dentro de 5 a 10 dias úteis, conforme o banco.`,
+      s.creditNote && `Referência da nota de crédito: ${s.creditNote}.`,
+      "Não há mais nada a pagar.",
+    ),
+    rebook: "Se ainda quiser vir, as datas podem continuar livres. Reserve de novo ou fale com o seu concierge.",
+    guestCancelledSubject: (h) => `Cancelamento confirmado: ${h}`,
+    guestCancelledHeadline: "Cancelamento confirmado.",
+    guestCancelledBody: (s) => sentences(
+      `${s.greeting} Cancelámos a sua reserva em ${s.house}, de ${s.checkIn} a ${s.checkOut}, como pediu, dentro do prazo de cancelamento gratuito.`,
+      s.refund && `Devolvemos ${s.refund} ${ptTo(s.cards)} em 5 a 10 dias úteis.`,
+      s.creditNote && `Referência da nota de crédito: ${s.creditNote}.`,
+      "Não há mais nada a pagar e nenhuma outra cobrança será feita.",
+    ),
+    teamCancelledBody: (s) => sentences(
+      s.refund
+        ? `${s.greeting} Cancelámos a sua reserva em ${s.house}, de ${s.checkIn} a ${s.checkOut}, e devolvemos ${s.refund} ${ptTo(s.cards)}, em 5 a 10 dias úteis, conforme o banco.`
+        : `${s.greeting} Cancelámos a sua reserva em ${s.house}, de ${s.checkIn} a ${s.checkOut}.`,
+      s.creditNote && `Referência da nota de crédito: ${s.creditNote}.`,
+      "Não há mais nada a pagar e nenhuma outra cobrança será feita. Se tiver alguma dúvida, fale com o seu concierge.",
+    ),
+    cardUpdatedSubject: "Cartão atualizado para a segunda parte",
+    cardUpdatedBody: (l, d) => `Cartão atualizado. A segunda parte será cobrada no cartão ••••${l} a ${d}.`,
+  },
+  en: {
+    productName: "Pay in two parts",
+    hello: (n) => (n ? `Hello ${n}.` : "Hello."),
+    deadline: (d, t) => `${d} at ${t}, Lisbon time`,
+    amountLabel: "Second part", chargeDateLabel: "Charge date", cardLabel: "Card",
+    payByLabel: "Pay by", freeCancelLabel: "Free cancellation until",
+    totalPaidLabel: "Total paid", refundLabel: "Refund",
+    planTitle: "Your payment plan",
+    planToday: (a, l) => (l ? `Paid today: ${a} on card ••••${l}` : `Paid today: ${a}`),
+    planLater: (d, a) => `On ${d}: ${a}, charged automatically to the same card`,
+    planDeadline: (dl) => `You can cancel at no cost until ${dl}.`,
+    planNote: "Nothing to do until then. We will remind you a week before and the day before.",
+    planNoteManage: "If you would rather pay earlier, use another card or cancel, it takes one click.",
+    planCta: "Manage payment",
+    noWithdrawal: "Accommodation booking with fixed dates: the 14-day right of withdrawal does not apply. Your rate's cancellation policy applies.",
+    remind7Subject: (h) => `The second part of your stay at ${h}, one week from now`,
+    remindSubjectDated: (h, d) => `The second part of your stay at ${h}, on ${d}`,
+    remind7Headline: (d, a) => `On ${d}, ${a}.`,
+    remind1Subject: (h) => `Tomorrow we charge the second part of your stay at ${h}`,
+    remind1Headline: (a) => `Tomorrow, ${a}.`,
+    remindBody: (s) => `${s.greeting} As agreed, on ${s.date} we will charge ${s.amount} to ${enCard(s.last4)}, the second and final part of your stay at ${s.house}, from ${s.checkIn} to ${s.checkOut}. There is nothing you need to do. If you would rather use another card, or pay now, it takes one click.`,
+    cardExpires: (l, d) => `Card ••••${l} expires before ${d}. Update it in a minute so the charge goes through smoothly.`,
+    limitTip: "If your card has a daily limit, check that it covers this amount on that day.",
+    failedSubject: "We could not charge the second part of your stay",
+    failedHeadline: "Your bank did not accept the second part.",
+    failedHeadlineAuth: "Your bank is asking for a confirmation.",
+    failedBody: (s) => `${s.greeting} Today we tried to charge ${s.amount} to ${enCard(s.last4)} and your bank did not accept it. This often happens because of a card limit, an expiry date or a confirmation your bank wants from you. You can pay with the same card or another one using the button below, no sign-in needed.`,
+    failedBodyAuth: (s) => `${s.greeting} Your bank is asking you to confirm the charge of ${s.amount} on ${enCard(s.last4)}. Just confirm with the same card using the button below. It takes a minute.`,
+    failedBodyHard: (s) => `${s.greeting} Today we tried to charge ${s.amount} to ${enCard(s.last4)} and your bank did not accept it. To complete it, use another card with the button below, no sign-in needed.`,
+    deadlineSoft: (dl, r) => `To keep your booking, the payment needs to be made by ${dl}. We will also try again on ${joinList(r, "and")}.`,
+    deadlineHard: (dl) => `To keep your booking, the payment needs to be made by ${dl}. In this case only your click fixes it: we will not retry on our own.`,
+    consequence: (p) => p
+      ? `If it is not possible by then, the booking is cancelled and we refund the ${p} you already paid, because you are still within the free cancellation period.`
+      : "If it is not possible by then, the booking is cancelled and we refund what you already paid, because you are still within the free cancellation period.",
+    failedCta: "Pay or change card",
+    failedCtaHard: "Use another card",
+    failedCtaAuth: (l) => (l ? `Confirm with card ••••${l}` : "Confirm with the same card"),
+    help: "If you need help, use the “I need help” button on the same page. For your safety, never send card details by email or message.",
+    lastCallSubject: (h) => `Tomorrow is the deadline for the second part of your stay at ${h}`,
+    lastCallHeadline: "The deadline is tomorrow.",
+    lastCallBody: (g, a, dl) => `${g} We have not yet received ${a} and the deadline is tomorrow, ${dl}. Paying takes two minutes. If you can no longer come, there is nothing you need to do: the booking is cancelled and we refund what you paid.`,
+    paidSubject: (h) => `Your stay at ${h} is paid in full`,
+    paidHeadline: (ci) => `All paid. See you on ${ci}.`,
+    paidBody: (s) => `${s.greeting} We received the second part, ${s.amount}, on ${enCard(s.last4)}. Your stay at ${s.house}, from ${s.checkIn} to ${s.checkOut}, is paid in full. ${s.invoiceLine} Until then, your concierge is one message away.`,
+    invoiceAfterStay: "The invoice is issued after your stay.",
+    invoiceSeparate: "The invoice follows in a separate email.",
+    cancelledSubject: (h) => `Your booking at ${h} has been cancelled`,
+    cancelledHeadline: "Your booking has been cancelled.",
+    cancelledBody: (s) => sentences(
+      `${s.greeting} We did not receive the second part of your stay at ${s.house} ${s.deadline ? `by ${s.deadline}` : "in time"}, so the booking was cancelled, as we explained.`,
+      s.refund && `The ${s.refund} you paid goes back ${enTo(s.cards)} within 5 to 10 working days, depending on your bank.`,
+      s.creditNote && `Credit note reference: ${s.creditNote}.`,
+      "There is nothing more to pay.",
+    ),
+    rebook: "If you still want to come, the dates may still be free. Book again or talk to your concierge.",
+    guestCancelledSubject: (h) => `Cancellation confirmed: ${h}`,
+    guestCancelledHeadline: "Cancellation confirmed.",
+    guestCancelledBody: (s) => sentences(
+      `${s.greeting} We cancelled your booking at ${s.house}, from ${s.checkIn} to ${s.checkOut}, as requested, within the free cancellation period.`,
+      s.refund && `We are refunding ${s.refund} ${enTo(s.cards)} within 5 to 10 working days.`,
+      s.creditNote && `Credit note reference: ${s.creditNote}.`,
+      "There is nothing more to pay and no further charge will be made.",
+    ),
+    teamCancelledBody: (s) => sentences(
+      s.refund
+        ? `${s.greeting} We have cancelled your booking at ${s.house}, from ${s.checkIn} to ${s.checkOut}, and are refunding ${s.refund} ${enTo(s.cards)} within 5 to 10 working days, depending on your bank.`
+        : `${s.greeting} We have cancelled your booking at ${s.house}, from ${s.checkIn} to ${s.checkOut}.`,
+      s.creditNote && `Credit note reference: ${s.creditNote}.`,
+      "There is nothing more to pay and no further charge will be made. If you have any questions, talk to your concierge.",
+    ),
+    cardUpdatedSubject: "Card updated for the second part",
+    cardUpdatedBody: (l, d) => `Card updated. The second part will be charged to card ••••${l} on ${d}.`,
+  },
+  fr: {
+    productName: "Payer en deux parties",
+    hello: (n) => (n ? `Bonjour ${n},` : "Bonjour,"),
+    deadline: (d, t) => `${d} à ${t}, heure de Lisbonne`,
+    amountLabel: "Seconde partie", chargeDateLabel: "Date du débit", cardLabel: "Carte",
+    payByLabel: "À payer au plus tard le", freeCancelLabel: "Annulation gratuite jusqu'au",
+    totalPaidLabel: "Total payé", refundLabel: "Remboursement",
+    planTitle: "Votre plan de paiement",
+    planToday: (a, l) => (l ? `Payé aujourd'hui : ${a} sur la carte ••••${l}` : `Payé aujourd'hui : ${a}`),
+    planLater: (d, a) => `Le ${d} : ${a}, débités automatiquement sur la même carte`,
+    planDeadline: (dl) => `Vous pouvez annuler sans frais jusqu'au ${dl}.`,
+    planNote: "Rien à faire d'ici là. Nous vous le rappelons une semaine avant et la veille.",
+    planNoteManage: "Si vous préférez payer plus tôt, utiliser une autre carte ou annuler, un clic suffit.",
+    planCta: "Gérer le paiement",
+    noWithdrawal: "Réservation d'hébergement à dates fixes : le droit de rétractation de 14 jours ne s'applique pas. La politique d'annulation de votre tarif s'applique.",
+    remind7Subject: (h) => `La seconde partie de votre séjour à ${h}, dans une semaine`,
+    remindSubjectDated: (h, d) => `La seconde partie de votre séjour à ${h}, le ${d}`,
+    remind7Headline: (d, a) => `Le ${d}, ${a}.`,
+    remind1Subject: (h) => `Demain, nous débitons la seconde partie de votre séjour à ${h}`,
+    remind1Headline: (a) => `Demain, ${a}.`,
+    remindBody: (s) => `${s.greeting} comme convenu, le ${s.date} nous débiterons ${s.amount} sur la ${frCard(s.last4)}, la seconde et dernière partie de votre séjour à ${s.house}, du ${s.checkIn} au ${s.checkOut}. Vous n'avez rien à faire. Si vous préférez utiliser une autre carte, ou payer dès maintenant, un clic suffit.`,
+    cardExpires: (l, d) => `La carte ••••${l} expire avant le ${d}. Mettez-la à jour en une minute pour que le débit se fasse sans souci.`,
+    limitTip: "Si votre carte a un plafond journalier, vérifiez qu'il couvre ce montant ce jour-là.",
+    failedSubject: "Nous n'avons pas pu débiter la seconde partie de votre séjour",
+    failedHeadline: "Votre banque n'a pas accepté la seconde partie.",
+    failedHeadlineAuth: "Votre banque demande une confirmation.",
+    failedBody: (s) => `${s.greeting} aujourd'hui, nous avons tenté de débiter ${s.amount} sur la ${frCard(s.last4)} et votre banque ne l'a pas accepté. Cela arrive souvent à cause d'un plafond de carte, d'une date d'expiration ou d'une confirmation demandée par la banque. Vous pouvez payer avec la même carte ou une autre grâce au bouton ci-dessous, sans vous connecter.`,
+    failedBodyAuth: (s) => `${s.greeting} votre banque vous demande de confirmer le débit de ${s.amount} sur la ${frCard(s.last4)}. Il suffit de confirmer avec la même carte grâce au bouton ci-dessous. Cela prend une minute.`,
+    failedBodyHard: (s) => `${s.greeting} aujourd'hui, nous avons tenté de débiter ${s.amount} sur la ${frCard(s.last4)} et votre banque ne l'a pas accepté. Pour finaliser, utilisez une autre carte grâce au bouton ci-dessous, sans vous connecter.`,
+    deadlineSoft: (dl, r) => `Pour conserver votre réservation, le paiement doit être effectué au plus tard le ${dl}. Nous réessaierons aussi ${joinList(r.map((x) => `le ${x}`), "et")}.`,
+    deadlineHard: (dl) => `Pour conserver votre réservation, le paiement doit être effectué au plus tard le ${dl}. Dans ce cas, seul votre clic règle la situation : nous ne réessaierons pas de nous-mêmes.`,
+    consequence: (p) => p
+      ? `Si ce n'est pas possible d'ici là, la réservation est annulée et nous vous remboursons les ${p} déjà payés, car vous êtes encore dans la période d'annulation gratuite.`
+      : "Si ce n'est pas possible d'ici là, la réservation est annulée et nous vous remboursons ce que vous avez déjà payé, car vous êtes encore dans la période d'annulation gratuite.",
+    failedCta: "Payer ou changer de carte",
+    failedCtaHard: "Utiliser une autre carte",
+    failedCtaAuth: (l) => (l ? `Confirmer avec la carte ••••${l}` : "Confirmer avec la même carte"),
+    help: "Si vous avez besoin d'aide, utilisez le bouton « J'ai besoin d'aide » sur la même page. Pour votre sécurité, n'envoyez jamais les données de votre carte par email ou message.",
+    lastCallSubject: (h) => `Demain, fin du délai pour la seconde partie de votre séjour à ${h}`,
+    lastCallHeadline: "Le délai se termine demain.",
+    lastCallBody: (g, a, dl) => `${g} nous n'avons pas encore reçu ${a} et le délai se termine demain, le ${dl}. Payer prend deux minutes. Si vous ne pouvez plus venir, vous n'avez rien à faire : la réservation est annulée et nous vous remboursons ce que vous avez payé.`,
+    paidSubject: (h) => `Votre séjour à ${h} est entièrement payé`,
+    paidHeadline: (ci) => `Tout est réglé. Rendez-vous le ${ci}.`,
+    paidBody: (s) => `${s.greeting} nous avons reçu la seconde partie, ${s.amount}, sur la ${frCard(s.last4)}. Votre séjour à ${s.house}, du ${s.checkIn} au ${s.checkOut}, est entièrement payé. ${s.invoiceLine} D'ici là, votre concierge est à un message de vous.`,
+    invoiceAfterStay: "La facture est émise après le séjour.",
+    invoiceSeparate: "La facture suit dans un email séparé.",
+    cancelledSubject: (h) => `Votre réservation à ${h} a été annulée`,
+    cancelledHeadline: "Votre réservation a été annulée.",
+    cancelledBody: (s) => sentences(
+      `${s.greeting} nous n'avons pas reçu la seconde partie de votre séjour à ${s.house} ${s.deadline ? `avant le ${s.deadline}` : "dans le délai prévu"}, la réservation a donc été annulée, comme nous l'avions expliqué.`,
+      s.refund && `Les ${s.refund} que vous avez payés reviennent ${frTo(s.cards)} sous 5 à 10 jours ouvrés, selon votre banque.`,
+      s.creditNote && `Référence de l'avoir : ${s.creditNote}.`,
+      "Il n'y a plus rien à payer.",
+    ),
+    rebook: "Si vous souhaitez toujours venir, les dates sont peut-être encore libres. Réservez à nouveau ou parlez à votre concierge.",
+    guestCancelledSubject: (h) => `Annulation confirmée : ${h}`,
+    guestCancelledHeadline: "Annulation confirmée.",
+    guestCancelledBody: (s) => sentences(
+      `${s.greeting} nous avons annulé votre réservation à ${s.house}, du ${s.checkIn} au ${s.checkOut}, comme demandé, dans la période d'annulation gratuite.`,
+      s.refund && `Nous remboursons ${s.refund} ${frTo(s.cards)} sous 5 à 10 jours ouvrés.`,
+      s.creditNote && `Référence de l'avoir : ${s.creditNote}.`,
+      "Il n'y a plus rien à payer et aucun autre débit ne sera effectué.",
+    ),
+    teamCancelledBody: (s) => sentences(
+      s.refund
+        ? `${s.greeting} nous avons annulé votre réservation à ${s.house}, du ${s.checkIn} au ${s.checkOut}, et nous remboursons ${s.refund} ${frTo(s.cards)} sous 5 à 10 jours ouvrés, selon votre banque.`
+        : `${s.greeting} nous avons annulé votre réservation à ${s.house}, du ${s.checkIn} au ${s.checkOut}.`,
+      s.creditNote && `Référence de l'avoir : ${s.creditNote}.`,
+      "Il n'y a plus rien à payer et aucun autre débit ne sera effectué. Pour toute question, parlez à votre concierge.",
+    ),
+    cardUpdatedSubject: "Carte mise à jour pour la seconde partie",
+    cardUpdatedBody: (l, d) => `Carte mise à jour. La seconde partie sera débitée sur la carte ••••${l} le ${d}.`,
+  },
+  es: {
+    productName: "Pagar en dos partes",
+    hello: (n) => (n ? `Hola ${n}:` : "Hola:"),
+    deadline: (d, t) => `${d} a ${esAt(t)} ${t}, hora de Lisboa`,
+    amountLabel: "Segunda parte", chargeDateLabel: "Fecha del cargo", cardLabel: "Tarjeta",
+    payByLabel: "Pagar a más tardar el", freeCancelLabel: "Cancelación gratuita hasta el",
+    totalPaidLabel: "Total pagado", refundLabel: "Reembolso",
+    planTitle: "Su plan de pago",
+    planToday: (a, l) => (l ? `Pagado hoy: ${a} con la tarjeta ••••${l}` : `Pagado hoy: ${a}`),
+    planLater: (d, a) => `El ${d}: ${a}, cargados automáticamente en la misma tarjeta`,
+    planDeadline: (dl) => `Puede cancelar sin coste hasta el ${dl}.`,
+    planNote: "Nada que hacer hasta entonces. Se lo recordamos una semana antes y la víspera.",
+    planNoteManage: "Si prefiere pagar antes, usar otra tarjeta o cancelar, basta un clic.",
+    planCta: "Gestionar el pago",
+    noWithdrawal: "Reserva de alojamiento con fechas fijas: no se aplica el derecho de desistimiento de 14 días. Se aplica la política de cancelación de su tarifa.",
+    remind7Subject: (h) => `La segunda parte de su estancia en ${h}, dentro de una semana`,
+    remindSubjectDated: (h, d) => `La segunda parte de su estancia en ${h}, el ${d}`,
+    remind7Headline: (d, a) => `El ${d}, ${a}.`,
+    remind1Subject: (h) => `Mañana cargamos la segunda parte de su estancia en ${h}`,
+    remind1Headline: (a) => `Mañana, ${a}.`,
+    remindBody: (s) => `${s.greeting} tal como acordamos, el ${s.date} cargaremos ${s.amount} en la ${esCard(s.last4)}, la segunda y última parte de su estancia en ${s.house}, del ${s.checkIn} al ${s.checkOut}. No tiene que hacer nada. Si prefiere usar otra tarjeta, o pagar ya, basta un clic.`,
+    cardExpires: (l, d) => `La tarjeta ••••${l} caduca antes del ${d}. Actualícela en un minuto para que el cargo se haga sin contratiempos.`,
+    limitTip: "Si su tarjeta tiene un límite diario, compruebe que cubre este importe ese día.",
+    failedSubject: "No hemos podido cargar la segunda parte de su estancia",
+    failedHeadline: "Su banco no ha aceptado la segunda parte.",
+    failedHeadlineAuth: "Su banco pide una confirmación.",
+    failedBody: (s) => `${s.greeting} hoy hemos intentado cargar ${s.amount} en la ${esCard(s.last4)} y el banco no lo ha aceptado. Suele ocurrir por el límite de la tarjeta, la fecha de caducidad o una confirmación que pide el banco. Puede pagar con la misma tarjeta o con otra en el botón de abajo, sin necesidad de iniciar sesión.`,
+    failedBodyAuth: (s) => `${s.greeting} su banco le pide una confirmación para el cargo de ${s.amount} en la ${esCard(s.last4)}. Basta con confirmar con la misma tarjeta en el botón de abajo. Tarda un minuto.`,
+    failedBodyHard: (s) => `${s.greeting} hoy hemos intentado cargar ${s.amount} en la ${esCard(s.last4)} y el banco no lo ha aceptado. Para completarlo, use otra tarjeta en el botón de abajo, sin necesidad de iniciar sesión.`,
+    deadlineSoft: (dl, r) => `Para mantener la reserva, el pago debe realizarse a más tardar el ${dl}. También volveremos a intentarlo ${joinList(r.map((x) => `el ${x}`), "y")}.`,
+    deadlineHard: (dl) => `Para mantener la reserva, el pago debe realizarse a más tardar el ${dl}. En este caso solo su clic lo resuelve: no volveremos a intentarlo por nuestra cuenta.`,
+    consequence: (p) => p
+      ? `Si para entonces no es posible, la reserva se cancela y le devolvemos los ${p} que ya pagó, porque todavía está dentro del plazo de cancelación gratuita.`
+      : "Si para entonces no es posible, la reserva se cancela y le devolvemos lo que ya pagó, porque todavía está dentro del plazo de cancelación gratuita.",
+    failedCta: "Pagar o cambiar de tarjeta",
+    failedCtaHard: "Usar otra tarjeta",
+    failedCtaAuth: (l) => (l ? `Confirmar con la tarjeta ••••${l}` : "Confirmar con la misma tarjeta"),
+    help: "Si necesita ayuda, use el botón «Necesito ayuda» en la misma página. Por su seguridad, nunca envíe datos de la tarjeta por email o mensaje.",
+    lastCallSubject: (h) => `Mañana termina el plazo de la segunda parte de su estancia en ${h}`,
+    lastCallHeadline: "El plazo termina mañana.",
+    lastCallBody: (g, a, dl) => `${g} todavía no hemos recibido ${a} y el plazo termina mañana, el ${dl}. Pagar lleva dos minutos. Si ya no puede venir, no tiene que hacer nada: la reserva se cancela y le devolvemos lo que pagó.`,
+    paidSubject: (h) => `Su estancia en ${h} está pagada por completo`,
+    paidHeadline: (ci) => `Todo pagado. Hasta el ${ci}.`,
+    paidBody: (s) => `${s.greeting} hemos recibido la segunda parte, ${s.amount}, en la ${esCard(s.last4)}. Su estancia en ${s.house}, del ${s.checkIn} al ${s.checkOut}, está pagada por completo. ${s.invoiceLine} Hasta entonces, su concierge está a un mensaje de distancia.`,
+    invoiceAfterStay: "La factura se emite después de la estancia.",
+    invoiceSeparate: "La factura le llegará en un email aparte.",
+    cancelledSubject: (h) => `Su reserva en ${h} ha sido cancelada`,
+    cancelledHeadline: "Su reserva ha sido cancelada.",
+    cancelledBody: (s) => sentences(
+      `${s.greeting} no hemos recibido la segunda parte de su estancia en ${s.house} ${s.deadline ? `antes del ${s.deadline}` : "dentro del plazo"}, por lo que la reserva se ha cancelado, como le explicamos.`,
+      s.refund && `Los ${s.refund} que pagó vuelven ${esTo(s.cards)} en un plazo de 5 a 10 días hábiles, según su banco.`,
+      s.creditNote && `Referencia de la factura rectificativa: ${s.creditNote}.`,
+      "No hay nada más que pagar.",
+    ),
+    rebook: "Si todavía quiere venir, puede que las fechas sigan libres. Reserve de nuevo o hable con su concierge.",
+    guestCancelledSubject: (h) => `Cancelación confirmada: ${h}`,
+    guestCancelledHeadline: "Cancelación confirmada.",
+    guestCancelledBody: (s) => sentences(
+      `${s.greeting} hemos cancelado su reserva en ${s.house}, del ${s.checkIn} al ${s.checkOut}, tal como pidió, dentro del plazo de cancelación gratuita.`,
+      s.refund && `Le devolvemos ${s.refund} ${esTo(s.cards)} en un plazo de 5 a 10 días hábiles.`,
+      s.creditNote && `Referencia de la factura rectificativa: ${s.creditNote}.`,
+      "No hay nada más que pagar y no se hará ningún otro cargo.",
+    ),
+    teamCancelledBody: (s) => sentences(
+      s.refund
+        ? `${s.greeting} hemos cancelado su reserva en ${s.house}, del ${s.checkIn} al ${s.checkOut}, y le devolvemos ${s.refund} ${esTo(s.cards)} en un plazo de 5 a 10 días hábiles, según su banco.`
+        : `${s.greeting} hemos cancelado su reserva en ${s.house}, del ${s.checkIn} al ${s.checkOut}.`,
+      s.creditNote && `Referencia de la factura rectificativa: ${s.creditNote}.`,
+      "No hay nada más que pagar y no se hará ningún otro cargo. Si tiene alguna pregunta, hable con su concierge.",
+    ),
+    cardUpdatedSubject: "Tarjeta actualizada para la segunda parte",
+    cardUpdatedBody: (l, d) => `Tarjeta actualizada. La segunda parte se cargará en la tarjeta ••••${l} el ${d}.`,
+  },
+  it: {
+    productName: "Pagare in due parti",
+    hello: (n) => (n ? `Buongiorno ${n},` : "Buongiorno,"),
+    deadline: (d, t) => `${d} alle ${t}, ora di Lisbona`,
+    amountLabel: "Seconda parte", chargeDateLabel: "Data dell'addebito", cardLabel: "Carta",
+    payByLabel: "Termine di pagamento", freeCancelLabel: "Termine della cancellazione gratuita",
+    totalPaidLabel: "Totale pagato", refundLabel: "Rimborso",
+    planTitle: "Il suo piano di pagamento",
+    planToday: (a, l) => (l ? `Pagato oggi: ${a} sulla carta ••••${l}` : `Pagato oggi: ${a}`),
+    planLater: (d, a) => `${itArt("il", d, true)}: ${a}, addebitati automaticamente sulla stessa carta`,
+    planDeadline: (dl) => `Può cancellare senza costi fino ${itArt("al", dl)}.`,
+    planNote: "Niente da fare fino ad allora. Glielo ricordiamo una settimana prima e il giorno prima.",
+    planNoteManage: "Se preferisce pagare prima, usare un'altra carta o cancellare, basta un clic.",
+    planCta: "Gestire il pagamento",
+    noWithdrawal: "Prenotazione di alloggio a date fisse: il diritto di recesso di 14 giorni non si applica. Si applica la politica di cancellazione della sua tariffa.",
+    remind7Subject: (h) => `La seconda parte del suo soggiorno a ${h}, tra una settimana`,
+    remindSubjectDated: (h, d) => `La seconda parte del suo soggiorno a ${h}, ${itArt("il", d)}`,
+    remind7Headline: (d, a) => `${itArt("il", d, true)}, ${a}.`,
+    remind1Subject: (h) => `Domani addebitiamo la seconda parte del suo soggiorno a ${h}`,
+    remind1Headline: (a) => `Domani, ${a}.`,
+    remindBody: (s) => `${s.greeting} come concordato, ${itArt("il", s.date)} addebiteremo ${s.amount} sulla ${itCard(s.last4)}, la seconda e ultima parte del suo soggiorno a ${s.house}, ${itArt("dal", s.checkIn)} ${itArt("al", s.checkOut)}. Non deve fare nulla. Se preferisce usare un'altra carta, o pagare subito, basta un clic.`,
+    cardExpires: (l, d) => `La carta ••••${l} scade prima ${itArt("del", d)}. La aggiorni in un minuto perché l'addebito vada a buon fine senza intoppi.`,
+    limitTip: "Se la sua carta ha un limite giornaliero, verifichi che copra questo importo quel giorno.",
+    failedSubject: "Non siamo riusciti ad addebitare la seconda parte del suo soggiorno",
+    failedHeadline: "La sua banca non ha accettato la seconda parte.",
+    failedHeadlineAuth: "La sua banca chiede una conferma.",
+    failedBody: (s) => `${s.greeting} oggi abbiamo provato ad addebitare ${s.amount} sulla ${itCard(s.last4)} e la banca non l'ha accettato. Succede spesso per il limite della carta, la scadenza o una conferma richiesta dalla banca. Può pagare con la stessa carta o con un'altra dal pulsante qui sotto, senza dover accedere.`,
+    failedBodyAuth: (s) => `${s.greeting} la sua banca le chiede una conferma per l'addebito di ${s.amount} sulla ${itCard(s.last4)}. Basta confermare con la stessa carta dal pulsante qui sotto. Ci vuole un minuto.`,
+    failedBodyHard: (s) => `${s.greeting} oggi abbiamo provato ad addebitare ${s.amount} sulla ${itCard(s.last4)} e la banca non l'ha accettato. Per completare, usi un'altra carta dal pulsante qui sotto, senza dover accedere.`,
+    deadlineSoft: (dl, r) => `Per mantenere la prenotazione, il pagamento deve essere effettuato entro ${itArt("il", dl)}. Proveremo anche di nuovo ${joinList(r.map((x) => itArt("il", x)), "e")}.`,
+    deadlineHard: (dl) => `Per mantenere la prenotazione, il pagamento deve essere effettuato entro ${itArt("il", dl)}. In questo caso solo il suo clic risolve: non riproveremo da soli.`,
+    consequence: (p) => p
+      ? `Se entro allora non sarà possibile, la prenotazione viene cancellata e le rimborsiamo i ${p} già pagati, perché è ancora nel periodo di cancellazione gratuita.`
+      : "Se entro allora non sarà possibile, la prenotazione viene cancellata e le rimborsiamo quanto ha già pagato, perché è ancora nel periodo di cancellazione gratuita.",
+    failedCta: "Pagare o cambiare carta",
+    failedCtaHard: "Usare un'altra carta",
+    failedCtaAuth: (l) => (l ? `Confermare con la carta ••••${l}` : "Confermare con la stessa carta"),
+    help: "Se ha bisogno di aiuto, usi il pulsante «Ho bisogno di aiuto» nella stessa pagina. Per la sua sicurezza, non invii mai i dati della carta via email o messaggio.",
+    lastCallSubject: (h) => `Domani scade il termine per la seconda parte del suo soggiorno a ${h}`,
+    lastCallHeadline: "Il termine scade domani.",
+    lastCallBody: (g, a, dl) => `${g} non abbiamo ancora ricevuto ${a} e il termine scade domani, ${itArt("il", dl)}. Pagare richiede due minuti. Se non può più venire, non deve fare nulla: la prenotazione viene cancellata e le rimborsiamo quanto ha pagato.`,
+    paidSubject: (h) => `Il suo soggiorno a ${h} è interamente pagato`,
+    paidHeadline: (ci) => `Tutto pagato. Ci vediamo ${itArt("il", ci)}.`,
+    paidBody: (s) => `${s.greeting} abbiamo ricevuto la seconda parte, ${s.amount}, sulla ${itCard(s.last4)}. Il suo soggiorno a ${s.house}, ${itArt("dal", s.checkIn)} ${itArt("al", s.checkOut)}, è interamente pagato. ${s.invoiceLine} Fino ad allora, il suo concierge è a un messaggio di distanza.`,
+    invoiceAfterStay: "La fattura viene emessa dopo il soggiorno.",
+    invoiceSeparate: "La fattura arriva in un'email separata.",
+    cancelledSubject: (h) => `La sua prenotazione a ${h} è stata cancellata`,
+    cancelledHeadline: "La sua prenotazione è stata cancellata.",
+    cancelledBody: (s) => sentences(
+      `${s.greeting} non abbiamo ricevuto la seconda parte del suo soggiorno a ${s.house} ${s.deadline ? `entro ${itArt("il", s.deadline)}` : "entro il termine"}, quindi la prenotazione è stata cancellata, come le avevamo spiegato.`,
+      s.refund && `I ${s.refund} che ha pagato tornano ${itTo(s.cards)} entro 5-10 giorni lavorativi, a seconda della banca.`,
+      s.creditNote && `Riferimento della nota di credito: ${s.creditNote}.`,
+      "Non c'è altro da pagare.",
+    ),
+    rebook: "Se desidera ancora venire, le date potrebbero essere ancora libere. Prenoti di nuovo o parli con il suo concierge.",
+    guestCancelledSubject: (h) => `Cancellazione confermata: ${h}`,
+    guestCancelledHeadline: "Cancellazione confermata.",
+    guestCancelledBody: (s) => sentences(
+      `${s.greeting} abbiamo cancellato la sua prenotazione a ${s.house}, ${itArt("dal", s.checkIn)} ${itArt("al", s.checkOut)}, come richiesto, nel periodo di cancellazione gratuita.`,
+      s.refund && `Le rimborsiamo ${s.refund} ${itTo(s.cards)} entro 5-10 giorni lavorativi.`,
+      s.creditNote && `Riferimento della nota di credito: ${s.creditNote}.`,
+      "Non c'è altro da pagare e non verrà effettuato nessun altro addebito.",
+    ),
+    teamCancelledBody: (s) => sentences(
+      s.refund
+        ? `${s.greeting} abbiamo cancellato la sua prenotazione a ${s.house}, ${itArt("dal", s.checkIn)} ${itArt("al", s.checkOut)}, e le rimborsiamo ${s.refund} ${itTo(s.cards)} entro 5-10 giorni lavorativi, a seconda della banca.`
+        : `${s.greeting} abbiamo cancellato la sua prenotazione a ${s.house}, ${itArt("dal", s.checkIn)} ${itArt("al", s.checkOut)}.`,
+      s.creditNote && `Riferimento della nota di credito: ${s.creditNote}.`,
+      "Non c'è altro da pagare e non verrà effettuato nessun altro addebito. Per qualsiasi domanda, parli con il suo concierge.",
+    ),
+    cardUpdatedSubject: "Carta aggiornata per la seconda parte",
+    cardUpdatedBody: (l, d) => `Carta aggiornata. La seconda parte sarà addebitata sulla carta ••••${l} ${itArt("il", d)}.`,
+  },
+  de: {
+    productName: "In zwei Teilen zahlen",
+    hello: (n) => (n ? `Hallo ${n},` : "Hallo,"),
+    deadline: (d, t) => `${d} um ${t} Uhr (Lissabonner Zeit)`,
+    amountLabel: "Zweiter Teil", chargeDateLabel: "Abbuchung am", cardLabel: "Karte",
+    payByLabel: "Zahlen bis zum", freeCancelLabel: "Kostenlose Stornierung bis zum",
+    totalPaidLabel: "Insgesamt bezahlt", refundLabel: "Erstattung",
+    planTitle: "Ihr Zahlungsplan",
+    planToday: (a, l) => (l ? `Heute bezahlt: ${a} mit der Karte ••••${l}` : `Heute bezahlt: ${a}`),
+    planLater: (d, a) => `Am ${d}: ${a}, automatisch von derselben Karte abgebucht`,
+    planDeadline: (dl) => `Sie können bis zum ${dl} kostenlos stornieren.`,
+    planNote: "Bis dahin ist nichts zu tun. Wir erinnern Sie eine Woche vorher und am Vortag.",
+    planNoteManage: "Wenn Sie lieber früher zahlen, eine andere Karte verwenden oder stornieren möchten, genügt ein Klick.",
+    planCta: "Zahlung verwalten",
+    noWithdrawal: "Unterkunftsbuchung mit festen Daten: Das 14-tägige Widerrufsrecht gilt nicht. Es gelten die Stornobedingungen Ihres Tarifs.",
+    remind7Subject: (h) => `Der zweite Teil Ihres Aufenthalts in ${h}, in einer Woche`,
+    remindSubjectDated: (h, d) => `Der zweite Teil Ihres Aufenthalts in ${h}, am ${d}`,
+    remind7Headline: (d, a) => `Am ${d}: ${a}.`,
+    remind1Subject: (h) => `Morgen buchen wir den zweiten Teil Ihres Aufenthalts in ${h} ab`,
+    remind1Headline: (a) => `Morgen: ${a}.`,
+    remindBody: (s) => `${s.greeting} wie vereinbart buchen wir ${s.amount} am ${s.date} ${deFrom(s.last4)} ab, den zweiten und letzten Teil Ihres Aufenthalts in ${s.house} vom ${s.checkIn} bis ${s.checkOut}. Sie müssen nichts tun. Wenn Sie lieber eine andere Karte verwenden oder jetzt schon zahlen möchten, genügt ein Klick.`,
+    cardExpires: (l, d) => `Die Karte ••••${l} läuft vor dem ${d} ab. Aktualisieren Sie sie in einer Minute, damit die Abbuchung reibungslos klappt.`,
+    limitTip: "Falls Ihre Karte ein Tageslimit hat, prüfen Sie bitte, ob es diesen Betrag an diesem Tag abdeckt.",
+    failedSubject: "Wir konnten den zweiten Teil Ihres Aufenthalts nicht abbuchen",
+    failedHeadline: "Ihre Bank hat den zweiten Teil nicht akzeptiert.",
+    failedHeadlineAuth: "Ihre Bank bittet um eine Bestätigung.",
+    failedBody: (s) => `${s.greeting} heute haben wir versucht, ${s.amount} ${deFrom(s.last4)} abzubuchen, und Ihre Bank hat die Zahlung nicht akzeptiert. Das passiert häufig wegen eines Kartenlimits, des Ablaufdatums oder einer Bestätigung, die Ihre Bank verlangt. Sie können über die Schaltfläche unten mit derselben oder einer anderen Karte zahlen, ohne Anmeldung.`,
+    failedBodyAuth: (s) => `${s.greeting} Ihre Bank bittet Sie, die Abbuchung von ${s.amount} ${deFrom(s.last4)} zu bestätigen. Bestätigen Sie einfach über die Schaltfläche unten mit derselben Karte. Das dauert eine Minute.`,
+    failedBodyHard: (s) => `${s.greeting} heute haben wir versucht, ${s.amount} ${deFrom(s.last4)} abzubuchen, und Ihre Bank hat die Zahlung nicht akzeptiert. Um abzuschließen, verwenden Sie bitte über die Schaltfläche unten eine andere Karte, ohne Anmeldung.`,
+    deadlineSoft: (dl, r) => `Damit Ihre Buchung bestehen bleibt, muss die Zahlung bis zum ${dl} erfolgt sein. Wir versuchen es außerdem ${joinList(r.map((x) => `am ${x}`), "und")} erneut.`,
+    deadlineHard: (dl) => `Damit Ihre Buchung bestehen bleibt, muss die Zahlung bis zum ${dl} erfolgt sein. In diesem Fall hilft nur Ihr Klick: Wir versuchen es nicht von selbst erneut.`,
+    consequence: (p) => p
+      ? `Ist das bis dahin nicht möglich, wird die Buchung storniert und wir erstatten Ihnen die bereits bezahlten ${p}, da Sie sich noch im Zeitraum der kostenlosen Stornierung befinden.`
+      : "Ist das bis dahin nicht möglich, wird die Buchung storniert und wir erstatten Ihnen den bereits bezahlten Betrag, da Sie sich noch im Zeitraum der kostenlosen Stornierung befinden.",
+    failedCta: "Zahlen oder Karte wechseln",
+    failedCtaHard: "Andere Karte verwenden",
+    failedCtaAuth: (l) => (l ? `Mit Karte ••••${l} bestätigen` : "Mit derselben Karte bestätigen"),
+    help: "Wenn Sie Hilfe brauchen, nutzen Sie die Schaltfläche „Ich brauche Hilfe“ auf derselben Seite. Senden Sie zu Ihrer Sicherheit niemals Kartendaten per E-Mail oder Nachricht.",
+    lastCallSubject: (h) => `Morgen endet die Frist für den zweiten Teil Ihres Aufenthalts in ${h}`,
+    lastCallHeadline: "Die Frist endet morgen.",
+    lastCallBody: (g, a, dl) => `${g} wir haben ${a} noch nicht erhalten, und die Frist endet morgen, am ${dl}. Die Zahlung dauert zwei Minuten. Wenn Sie nicht mehr kommen können, müssen Sie nichts tun: Die Buchung wird storniert und wir erstatten Ihnen, was Sie bezahlt haben.`,
+    paidSubject: (h) => `Ihr Aufenthalt in ${h} ist vollständig bezahlt`,
+    paidHeadline: (ci) => `Alles bezahlt. Bis zum ${ci}.`,
+    paidBody: (s) => `${s.greeting} wir haben den zweiten Teil in Höhe von ${s.amount} ${deFrom(s.last4)} erhalten. Ihr Aufenthalt in ${s.house} vom ${s.checkIn} bis ${s.checkOut} ist vollständig bezahlt. ${s.invoiceLine} Bis dahin ist Ihr Concierge nur eine Nachricht entfernt.`,
+    invoiceAfterStay: "Die Rechnung wird nach dem Aufenthalt ausgestellt.",
+    invoiceSeparate: "Die Rechnung folgt in einer separaten E-Mail.",
+    cancelledSubject: (h) => `Ihre Buchung in ${h} wurde storniert`,
+    cancelledHeadline: "Ihre Buchung wurde storniert.",
+    cancelledBody: (s) => sentences(
+      `${s.greeting} wir haben den zweiten Teil Ihres Aufenthalts in ${s.house} ${s.deadline ? `nicht bis zum ${s.deadline}` : "nicht fristgerecht"} erhalten, daher wurde die Buchung wie angekündigt storniert.`,
+      s.refund && `Die bezahlten ${s.refund} gehen innerhalb von 5 bis 10 Werktagen, je nach Bank, ${deTo(s.cards)} zurück.`,
+      s.creditNote && `Referenz der Gutschrift: ${s.creditNote}.`,
+      "Es ist nichts mehr zu zahlen.",
+    ),
+    rebook: "Wenn Sie trotzdem kommen möchten, sind die Daten vielleicht noch frei. Buchen Sie erneut oder sprechen Sie mit Ihrem Concierge.",
+    guestCancelledSubject: (h) => `Stornierung bestätigt: ${h}`,
+    guestCancelledHeadline: "Stornierung bestätigt.",
+    guestCancelledBody: (s) => sentences(
+      `${s.greeting} wir haben Ihre Buchung in ${s.house} vom ${s.checkIn} bis ${s.checkOut} wie gewünscht innerhalb der kostenlosen Stornierungsfrist storniert.`,
+      s.refund && `Wir erstatten ${s.refund} innerhalb von 5 bis 10 Werktagen ${deTo(s.cards)}.`,
+      s.creditNote && `Referenz der Gutschrift: ${s.creditNote}.`,
+      "Es ist nichts mehr zu zahlen, und es erfolgt keine weitere Abbuchung.",
+    ),
+    teamCancelledBody: (s) => sentences(
+      s.refund
+        ? `${s.greeting} wir haben Ihre Buchung in ${s.house} vom ${s.checkIn} bis ${s.checkOut} storniert und erstatten ${s.refund} innerhalb von 5 bis 10 Werktagen, je nach Bank, ${deTo(s.cards)}.`
+        : `${s.greeting} wir haben Ihre Buchung in ${s.house} vom ${s.checkIn} bis ${s.checkOut} storniert.`,
+      s.creditNote && `Referenz der Gutschrift: ${s.creditNote}.`,
+      "Es ist nichts mehr zu zahlen, und es erfolgt keine weitere Abbuchung. Bei Fragen sprechen Sie mit Ihrem Concierge.",
+    ),
+    cardUpdatedSubject: "Karte für den zweiten Teil aktualisiert",
+    cardUpdatedBody: (l, d) => `Karte aktualisiert. Der zweite Teil wird am ${d} von der Karte ••••${l} abgebucht.`,
+  },
+  nl: {
+    productName: "Betalen in twee delen",
+    hello: (n) => (n ? `Hallo ${n},` : "Hallo,"),
+    deadline: (d, t) => `${d} om ${t} uur (Lissabonse tijd)`,
+    amountLabel: "Tweede deel", chargeDateLabel: "Datum afschrijving", cardLabel: "Kaart",
+    payByLabel: "Uiterlijk betalen op", freeCancelLabel: "Gratis annuleren tot",
+    totalPaidLabel: "Totaal betaald", refundLabel: "Terugbetaling",
+    planTitle: "Uw betaalplan",
+    planToday: (a, l) => (l ? `Vandaag betaald: ${a} met kaart ••••${l}` : `Vandaag betaald: ${a}`),
+    planLater: (d, a) => `Op ${d}: ${a}, automatisch afgeschreven van dezelfde kaart`,
+    planDeadline: (dl) => `U kunt kosteloos annuleren tot ${dl}.`,
+    planNote: "Tot dan hoeft u niets te doen. We herinneren u een week van tevoren en de dag ervoor.",
+    planNoteManage: "Wilt u liever eerder betalen, een andere kaart gebruiken of annuleren? Eén klik is genoeg.",
+    planCta: "Betaling beheren",
+    noWithdrawal: "Boeking van accommodatie op vaste data: het herroepingsrecht van 14 dagen geldt niet. Het annuleringsbeleid van uw tarief is van toepassing.",
+    remind7Subject: (h) => `Het tweede deel van uw verblijf in ${h}, over een week`,
+    remindSubjectDated: (h, d) => `Het tweede deel van uw verblijf in ${h}, op ${d}`,
+    remind7Headline: (d, a) => `Op ${d}: ${a}.`,
+    remind1Subject: (h) => `Morgen schrijven we het tweede deel van uw verblijf in ${h} af`,
+    remind1Headline: (a) => `Morgen: ${a}.`,
+    remindBody: (s) => `${s.greeting} zoals afgesproken schrijven we ${s.amount} op ${s.date} af van ${nlCard(s.last4)}, het tweede en laatste deel van uw verblijf in ${s.house}, van ${s.checkIn} tot ${s.checkOut}. U hoeft niets te doen. Wilt u liever een andere kaart gebruiken of nu al betalen? Eén klik is genoeg.`,
+    cardExpires: (l, d) => `Kaart ••••${l} verloopt vóór ${d}. Werk hem in een minuut bij, zodat de afschrijving vlot verloopt.`,
+    limitTip: "Heeft uw kaart een daglimiet? Controleer dan of die dit bedrag op die dag dekt.",
+    failedSubject: "We konden het tweede deel van uw verblijf niet afschrijven",
+    failedHeadline: "Uw bank heeft het tweede deel niet geaccepteerd.",
+    failedHeadlineAuth: "Uw bank vraagt om een bevestiging.",
+    failedBody: (s) => `${s.greeting} vandaag probeerden we ${s.amount} af te schrijven van ${nlCard(s.last4)} en uw bank heeft dit niet geaccepteerd. Dat gebeurt vaak door een kaartlimiet, de vervaldatum of een bevestiging die uw bank vraagt. U kunt met dezelfde of een andere kaart betalen via de knop hieronder, zonder in te loggen.`,
+    failedBodyAuth: (s) => `${s.greeting} uw bank vraagt u de afschrijving van ${s.amount} van ${nlCard(s.last4)} te bevestigen. Bevestig gewoon met dezelfde kaart via de knop hieronder. Het duurt een minuut.`,
+    failedBodyHard: (s) => `${s.greeting} vandaag probeerden we ${s.amount} af te schrijven van ${nlCard(s.last4)} en uw bank heeft dit niet geaccepteerd. Gebruik om af te ronden een andere kaart via de knop hieronder, zonder in te loggen.`,
+    deadlineSoft: (dl, r) => `Om uw boeking te behouden, moet de betaling uiterlijk ${dl} gedaan zijn. We proberen het ook opnieuw ${joinList(r.map((x) => `op ${x}`), "en")}.`,
+    deadlineHard: (dl) => `Om uw boeking te behouden, moet de betaling uiterlijk ${dl} gedaan zijn. In dit geval lost alleen uw klik het op: we proberen het niet zelf opnieuw.`,
+    consequence: (p) => p
+      ? `Lukt dat tot dan niet, dan wordt de boeking geannuleerd en betalen we de ${p} die u al betaalde terug, omdat u nog binnen de periode van gratis annuleren valt.`
+      : "Lukt dat tot dan niet, dan wordt de boeking geannuleerd en betalen we terug wat u al betaalde, omdat u nog binnen de periode van gratis annuleren valt.",
+    failedCta: "Betalen of kaart wijzigen",
+    failedCtaHard: "Andere kaart gebruiken",
+    failedCtaAuth: (l) => (l ? `Bevestigen met kaart ••••${l}` : "Bevestigen met dezelfde kaart"),
+    help: "Hulp nodig? Gebruik de knop ‘Ik heb hulp nodig’ op dezelfde pagina. Stuur voor uw veiligheid nooit kaartgegevens per e-mail of bericht.",
+    lastCallSubject: (h) => `Morgen verloopt de deadline voor het tweede deel van uw verblijf in ${h}`,
+    lastCallHeadline: "De deadline is morgen.",
+    lastCallBody: (g, a, dl) => `${g} we hebben ${a} nog niet ontvangen en de deadline is morgen, ${dl}. Betalen duurt twee minuten. Kunt u niet meer komen? Dan hoeft u niets te doen: de boeking wordt geannuleerd en we betalen terug wat u betaalde.`,
+    paidSubject: (h) => `Uw verblijf in ${h} is volledig betaald`,
+    paidHeadline: (ci) => `Alles betaald. Tot ${ci}.`,
+    paidBody: (s) => `${s.greeting} we hebben het tweede deel, ${s.amount}, ontvangen via ${nlCard(s.last4)}. Uw verblijf in ${s.house}, van ${s.checkIn} tot ${s.checkOut}, is volledig betaald. ${s.invoiceLine} Tot dan is uw concierge maar één bericht verwijderd.`,
+    invoiceAfterStay: "De factuur wordt na het verblijf opgemaakt.",
+    invoiceSeparate: "De factuur volgt in een aparte e-mail.",
+    cancelledSubject: (h) => `Uw boeking in ${h} is geannuleerd`,
+    cancelledHeadline: "Uw boeking is geannuleerd.",
+    cancelledBody: (s) => sentences(
+      `${s.greeting} we hebben het tweede deel van uw verblijf in ${s.house} ${s.deadline ? `niet uiterlijk ${s.deadline}` : "niet op tijd"} ontvangen, daarom is de boeking geannuleerd, zoals we hadden uitgelegd.`,
+      s.refund && `De ${s.refund} die u betaalde, gaan binnen 5 tot 10 werkdagen terug ${nlTo(s.cards)}, afhankelijk van uw bank.`,
+      s.creditNote && `Referentie van de creditnota: ${s.creditNote}.`,
+      "Er hoeft niets meer betaald te worden.",
+    ),
+    rebook: "Wilt u toch nog komen? De data zijn misschien nog vrij. Boek opnieuw of praat met uw concierge.",
+    guestCancelledSubject: (h) => `Annulering bevestigd: ${h}`,
+    guestCancelledHeadline: "Annulering bevestigd.",
+    guestCancelledBody: (s) => sentences(
+      `${s.greeting} we hebben uw boeking in ${s.house}, van ${s.checkIn} tot ${s.checkOut}, op uw verzoek geannuleerd, binnen de periode van gratis annuleren.`,
+      s.refund && `We betalen ${s.refund} binnen 5 tot 10 werkdagen terug ${nlTo(s.cards)}.`,
+      s.creditNote && `Referentie van de creditnota: ${s.creditNote}.`,
+      "Er hoeft niets meer betaald te worden en er volgt geen andere afschrijving.",
+    ),
+    teamCancelledBody: (s) => sentences(
+      s.refund
+        ? `${s.greeting} we hebben uw boeking in ${s.house}, van ${s.checkIn} tot ${s.checkOut}, geannuleerd en betalen ${s.refund} binnen 5 tot 10 werkdagen terug ${nlTo(s.cards)}, afhankelijk van uw bank.`
+        : `${s.greeting} we hebben uw boeking in ${s.house}, van ${s.checkIn} tot ${s.checkOut}, geannuleerd.`,
+      s.creditNote && `Referentie van de creditnota: ${s.creditNote}.`,
+      "Er hoeft niets meer betaald te worden en er volgt geen andere afschrijving. Hebt u vragen? Praat met uw concierge.",
+    ),
+    cardUpdatedSubject: "Kaart bijgewerkt voor het tweede deel",
+    cardUpdatedBody: (l, d) => `Kaart bijgewerkt. Het tweede deel wordt op ${d} afgeschreven van kaart ••••${l}.`,
+  },
+  sv: {
+    productName: "Betala i två delar",
+    hello: (n) => (n ? `Hej ${n},` : "Hej,"),
+    deadline: (d, t) => `${d} kl. ${t} (Lissabontid)`,
+    amountLabel: "Andra delen", chargeDateLabel: "Dragningsdatum", cardLabel: "Kort",
+    payByLabel: "Betala senast", freeCancelLabel: "Gratis avbokning fram till",
+    totalPaidLabel: "Totalt betalt", refundLabel: "Återbetalning",
+    planTitle: "Din betalningsplan",
+    planToday: (a, l) => (l ? `Betalt i dag: ${a} med kort ••••${l}` : `Betalt i dag: ${a}`),
+    planLater: (d, a) => `Den ${d}: ${a}, dras automatiskt från samma kort`,
+    planDeadline: (dl) => `Du kan avboka utan kostnad fram till ${dl}.`,
+    planNote: "Inget att göra fram till dess. Vi påminner dig en vecka innan och dagen före.",
+    planNoteManage: "Vill du hellre betala tidigare, använda ett annat kort eller avboka räcker ett klick.",
+    planCta: "Hantera betalningen",
+    noWithdrawal: "Bokning av boende med fasta datum: ångerrätten på 14 dagar gäller inte. Avbokningsvillkoren för ditt pris gäller.",
+    remind7Subject: (h) => `Andra delen av din vistelse på ${h}, om en vecka`,
+    remindSubjectDated: (h, d) => `Andra delen av din vistelse på ${h}, den ${d}`,
+    remind7Headline: (d, a) => `Den ${d}: ${a}.`,
+    remind1Subject: (h) => `I morgon drar vi andra delen av din vistelse på ${h}`,
+    remind1Headline: (a) => `I morgon: ${a}.`,
+    remindBody: (s) => `${s.greeting} som vi kommit överens om drar vi ${s.amount} från ${svCard(s.last4)} den ${s.date}, den andra och sista delen av din vistelse på ${s.house}, från ${s.checkIn} till ${s.checkOut}. Du behöver inte göra något. Vill du hellre använda ett annat kort, eller betala nu, räcker ett klick.`,
+    cardExpires: (l, d) => `Kort ••••${l} går ut före den ${d}. Uppdatera det på en minut så att dragningen går smidigt.`,
+    limitTip: "Om ditt kort har en daglig gräns, kontrollera att den täcker beloppet den dagen.",
+    failedSubject: "Vi kunde inte dra andra delen av din vistelse",
+    failedHeadline: "Din bank godkände inte andra delen.",
+    failedHeadlineAuth: "Din bank ber om en bekräftelse.",
+    failedBody: (s) => `${s.greeting} i dag försökte vi dra ${s.amount} från ${svCard(s.last4)} och banken godkände det inte. Det händer ofta på grund av en kortgräns, ett utgångsdatum eller en bekräftelse som banken vill ha. Du kan betala med samma kort eller ett annat via knappen nedan, utan att logga in.`,
+    failedBodyAuth: (s) => `${s.greeting} din bank ber dig bekräfta dragningen på ${s.amount} från ${svCard(s.last4)}. Bekräfta bara med samma kort via knappen nedan. Det tar en minut.`,
+    failedBodyHard: (s) => `${s.greeting} i dag försökte vi dra ${s.amount} från ${svCard(s.last4)} och banken godkände det inte. Använd ett annat kort via knappen nedan för att slutföra, utan att logga in.`,
+    deadlineSoft: (dl, r) => `För att behålla bokningen måste betalningen vara gjord senast den ${dl}. Vi försöker också igen ${joinList(r.map((x) => `den ${x}`), "och")}.`,
+    deadlineHard: (dl) => `För att behålla bokningen måste betalningen vara gjord senast den ${dl}. I det här fallet är det bara ditt klick som löser det: vi försöker inte igen på egen hand.`,
+    consequence: (p) => p
+      ? `Om det inte går till dess avbokas bokningen och vi betalar tillbaka de ${p} du redan har betalat, eftersom du fortfarande är inom perioden för gratis avbokning.`
+      : "Om det inte går till dess avbokas bokningen och vi betalar tillbaka det du redan har betalat, eftersom du fortfarande är inom perioden för gratis avbokning.",
+    failedCta: "Betala eller byt kort",
+    failedCtaHard: "Använd ett annat kort",
+    failedCtaAuth: (l) => (l ? `Bekräfta med kort ••••${l}` : "Bekräfta med samma kort"),
+    help: "Behöver du hjälp? Använd knappen ”Jag behöver hjälp” på samma sida. Skicka för din säkerhet aldrig kortuppgifter via mejl eller meddelande.",
+    lastCallSubject: (h) => `I morgon går tidsfristen ut för andra delen av din vistelse på ${h}`,
+    lastCallHeadline: "Tidsfristen går ut i morgon.",
+    lastCallBody: (g, a, dl) => `${g} vi har ännu inte fått ${a} och tidsfristen går ut i morgon, den ${dl}. Att betala tar två minuter. Om du inte längre kan komma behöver du inte göra något: bokningen avbokas och vi betalar tillbaka det du har betalat.`,
+    paidSubject: (h) => `Din vistelse på ${h} är fullt betald`,
+    paidHeadline: (ci) => `Allt är betalt. Vi ses den ${ci}.`,
+    paidBody: (s) => `${s.greeting} vi har fått andra delen, ${s.amount}, från ${svCard(s.last4)}. Din vistelse på ${s.house}, från ${s.checkIn} till ${s.checkOut}, är fullt betald. ${s.invoiceLine} Fram till dess är din concierge bara ett meddelande bort.`,
+    invoiceAfterStay: "Fakturan utfärdas efter vistelsen.",
+    invoiceSeparate: "Fakturan kommer i ett separat mejl.",
+    cancelledSubject: (h) => `Din bokning på ${h} har avbokats`,
+    cancelledHeadline: "Din bokning har avbokats.",
+    cancelledBody: (s) => sentences(
+      `${s.greeting} vi fick inte andra delen av din vistelse på ${s.house} ${s.deadline ? `senast den ${s.deadline}` : "i tid"}, så bokningen har avbokats, som vi förklarade.`,
+      s.refund && `De ${s.refund} du betalade går tillbaka ${svTo(s.cards)} inom 5 till 10 bankdagar, beroende på din bank.`,
+      s.creditNote && `Kreditfakturans referens: ${s.creditNote}.`,
+      "Det finns inget mer att betala.",
+    ),
+    rebook: "Om du fortfarande vill komma kan datumen fortfarande vara lediga. Boka igen eller prata med din concierge.",
+    guestCancelledSubject: (h) => `Avbokning bekräftad: ${h}`,
+    guestCancelledHeadline: "Avbokning bekräftad.",
+    guestCancelledBody: (s) => sentences(
+      `${s.greeting} vi har avbokat din bokning på ${s.house}, från ${s.checkIn} till ${s.checkOut}, enligt din begäran, inom perioden för gratis avbokning.`,
+      s.refund && `Vi betalar tillbaka ${s.refund} ${svTo(s.cards)} inom 5 till 10 bankdagar.`,
+      s.creditNote && `Kreditfakturans referens: ${s.creditNote}.`,
+      "Det finns inget mer att betala och ingen ytterligare dragning kommer att göras.",
+    ),
+    teamCancelledBody: (s) => sentences(
+      s.refund
+        ? `${s.greeting} vi har avbokat din bokning på ${s.house}, från ${s.checkIn} till ${s.checkOut}, och betalar tillbaka ${s.refund} ${svTo(s.cards)} inom 5 till 10 bankdagar, beroende på din bank.`
+        : `${s.greeting} vi har avbokat din bokning på ${s.house}, från ${s.checkIn} till ${s.checkOut}.`,
+      s.creditNote && `Kreditfakturans referens: ${s.creditNote}.`,
+      "Det finns inget mer att betala och ingen ytterligare dragning kommer att göras. Har du frågor? Prata med din concierge.",
+    ),
+    cardUpdatedSubject: "Kortet uppdaterat för andra delen",
+    cardUpdatedBody: (l, d) => `Kortet är uppdaterat. Andra delen dras från kort ••••${l} den ${d}.`,
+  },
+  fi: {
+    productName: "Maksa kahdessa osassa",
+    hello: (n) => (n ? `Hei ${n},` : "Hei,"),
+    deadline: (d, t) => `${d} klo ${t} Lissabonin aikaa`,
+    amountLabel: "Toinen osa", chargeDateLabel: "Veloituspäivä", cardLabel: "Kortti",
+    payByLabel: "Maksettava viimeistään", freeCancelLabel: "Maksuton peruutus päättyy",
+    totalPaidLabel: "Maksettu yhteensä", refundLabel: "Hyvitys",
+    planTitle: "Maksusuunnitelmasi",
+    planToday: (a, l) => (l ? `Maksettu tänään: ${a} kortilla ••••${l}` : `Maksettu tänään: ${a}`),
+    planLater: (d, a) => `${d}: ${a}, veloitetaan automaattisesti samalta kortilta`,
+    planDeadline: (dl) => `Voit perua maksutta ${dl} asti.`,
+    planNote: "Siihen asti sinun ei tarvitse tehdä mitään. Muistutamme viikkoa ennen ja edellisenä päivänä.",
+    planNoteManage: "Jos haluat maksaa aiemmin, käyttää toista korttia tai perua, se onnistuu yhdellä klikkauksella.",
+    planCta: "Hallinnoi maksua",
+    noWithdrawal: "Majoitusvaraus kiinteillä päivillä: 14 päivän peruuttamisoikeus ei koske sitä. Hintasi peruutusehdot ovat voimassa.",
+    remind7Subject: (h) => `Majoituksesi toinen osa kohteessa ${h}, viikon kuluttua`,
+    remindSubjectDated: (h, d) => `Majoituksesi toinen osa kohteessa ${h}, ${d}`,
+    remind7Headline: (d, a) => `${d}: ${a}.`,
+    remind1Subject: (h) => `Huomenna veloitamme majoituksesi toisen osan kohteessa ${h}`,
+    remind1Headline: (a) => `Huomenna: ${a}.`,
+    remindBody: (s) => `${s.greeting} kuten sovittiin, ${s.date} veloitamme ${s.amount} ${fiFrom(s.last4)}, majoituksesi toisen ja viimeisen osan kohteessa ${s.house} ajalle ${s.checkIn}–${s.checkOut}. Sinun ei tarvitse tehdä mitään. Jos haluat käyttää toista korttia tai maksaa heti, se onnistuu yhdellä klikkauksella.`,
+    cardExpires: (l, d) => `Kortti ••••${l} vanhenee ennen ${d}. Päivitä se minuutissa, jotta veloitus sujuu ongelmitta.`,
+    limitTip: "Jos kortillasi on päiväraja, tarkista, että se kattaa tämän summan sinä päivänä.",
+    failedSubject: "Emme pystyneet veloittamaan majoituksesi toista osaa",
+    failedHeadline: "Pankkisi ei hyväksynyt toista osaa.",
+    failedHeadlineAuth: "Pankkisi pyytää vahvistusta.",
+    failedBody: (s) => `${s.greeting} yritimme tänään veloittaa ${s.amount} ${fiFrom(s.last4)}, mutta pankkisi ei hyväksynyt sitä. Näin käy usein kortin rajan, voimassaolon tai pankin pyytämän vahvistuksen vuoksi. Voit maksaa samalla tai toisella kortilla alla olevasta painikkeesta ilman kirjautumista.`,
+    failedBodyAuth: (s) => `${s.greeting} pankkisi pyytää sinua vahvistamaan ${s.amount} veloituksen ${fiFrom(s.last4)}. Vahvista vain samalla kortilla alla olevasta painikkeesta. Se vie minuutin.`,
+    failedBodyHard: (s) => `${s.greeting} yritimme tänään veloittaa ${s.amount} ${fiFrom(s.last4)}, mutta pankkisi ei hyväksynyt sitä. Viimeistele maksu toisella kortilla alla olevasta painikkeesta ilman kirjautumista.`,
+    deadlineSoft: (dl, r) => `Jotta varauksesi säilyy, maksun on oltava tehty viimeistään ${dl}. Yritämme myös uudelleen ${joinList(r, "ja")}.`,
+    deadlineHard: (dl) => `Jotta varauksesi säilyy, maksun on oltava tehty viimeistään ${dl}. Tässä tapauksessa vain sinun klikkauksesi ratkaisee asian: emme yritä uudelleen itse.`,
+    consequence: (p) => p
+      ? `Jos se ei onnistu siihen mennessä, varaus perutaan ja palautamme jo maksamasi ${p}, koska olet yhä maksuttoman peruutuksen ajassa.`
+      : "Jos se ei onnistu siihen mennessä, varaus perutaan ja palautamme sen, minkä olet jo maksanut, koska olet yhä maksuttoman peruutuksen ajassa.",
+    failedCta: "Maksa tai vaihda korttia",
+    failedCtaHard: "Käytä toista korttia",
+    failedCtaAuth: (l) => (l ? `Vahvista kortilla ••••${l}` : "Vahvista samalla kortilla"),
+    help: "Jos tarvitset apua, käytä samalla sivulla olevaa ”Tarvitsen apua” -painiketta. Älä turvallisuutesi vuoksi koskaan lähetä korttitietoja sähköpostilla tai viestillä.",
+    lastCallSubject: (h) => `Huomenna päättyy majoituksesi toisen osan määräaika kohteessa ${h}`,
+    lastCallHeadline: "Määräaika päättyy huomenna.",
+    lastCallBody: (g, a, dl) => `${g} emme ole vielä saaneet summaa ${a}, ja määräaika päättyy huomenna, ${dl}. Maksaminen vie kaksi minuuttia. Jos et enää pääse tulemaan, sinun ei tarvitse tehdä mitään: varaus perutaan ja palautamme maksamasi summan.`,
+    paidSubject: (h) => `Majoituksesi kohteessa ${h} on maksettu kokonaan`,
+    paidHeadline: (ci) => `Kaikki on maksettu. Nähdään ${ci}.`,
+    paidBody: (s) => `${s.greeting} saimme toisen osan, ${s.amount}, ${fiFrom(s.last4)}. Majoituksesi kohteessa ${s.house} ajalle ${s.checkIn}–${s.checkOut} on maksettu kokonaan. ${s.invoiceLine} Siihen asti conciergesi on vain viestin päässä.`,
+    invoiceAfterStay: "Lasku laaditaan majoituksen jälkeen.",
+    invoiceSeparate: "Lasku tulee erillisessä sähköpostissa.",
+    cancelledSubject: (h) => `Varauksesi kohteessa ${h} on peruttu`,
+    cancelledHeadline: "Varauksesi on peruttu.",
+    cancelledBody: (s) => sentences(
+      `${s.greeting} emme saaneet majoituksesi toista osaa kohteessa ${s.house} ${s.deadline ? `viimeistään ${s.deadline}` : "määräajassa"}, joten varaus on peruttu, kuten kerroimme.`,
+      s.refund && `Maksamasi ${s.refund} palautetaan ${fiTo(s.cards)} 5–10 pankkipäivän kuluessa pankistasi riippuen.`,
+      s.creditNote && `Hyvityslaskun viite: ${s.creditNote}.`,
+      "Sinun ei tarvitse maksaa enempää.",
+    ),
+    rebook: "Jos haluat yhä tulla, päivät voivat olla vielä vapaina. Varaa uudelleen tai keskustele conciergesi kanssa.",
+    guestCancelledSubject: (h) => `Peruutus vahvistettu: ${h}`,
+    guestCancelledHeadline: "Peruutus vahvistettu.",
+    guestCancelledBody: (s) => sentences(
+      `${s.greeting} perusimme varauksesi kohteessa ${s.house} ajalle ${s.checkIn}–${s.checkOut} pyyntösi mukaisesti maksuttoman peruutuksen aikana.`,
+      s.refund && `Palautamme ${s.refund} ${fiTo(s.cards)} 5–10 pankkipäivän kuluessa.`,
+      s.creditNote && `Hyvityslaskun viite: ${s.creditNote}.`,
+      "Sinun ei tarvitse maksaa enempää, eikä muita veloituksia tehdä.",
+    ),
+    teamCancelledBody: (s) => sentences(
+      s.refund
+        ? `${s.greeting} perusimme varauksesi kohteessa ${s.house} ajalle ${s.checkIn}–${s.checkOut} ja palautamme ${s.refund} ${fiTo(s.cards)} 5–10 pankkipäivän kuluessa pankistasi riippuen.`
+        : `${s.greeting} perusimme varauksesi kohteessa ${s.house} ajalle ${s.checkIn}–${s.checkOut}.`,
+      s.creditNote && `Hyvityslaskun viite: ${s.creditNote}.`,
+      "Sinun ei tarvitse maksaa enempää, eikä muita veloituksia tehdä. Jos sinulla on kysyttävää, keskustele conciergesi kanssa.",
+    ),
+    cardUpdatedSubject: "Kortti päivitetty toista osaa varten",
+    cardUpdatedBody: (l, d) => `Kortti päivitetty. Toinen osa veloitetaan kortilta ••••${l} ${d}.`,
+  },
+};
+
+/** SMS S1 (falha) e S2 (véspera de H). Curtos: o link conta para o tamanho.
+ *  A casa é opcional: sem ela a frase fica "da sua estadia", nunca "em a sua casa". */
+export interface PayPlanSmsStrings {
+  /** Prazo compacto do SMS: dia sem ano, hora e "(Lisboa)". */
+  deadline: (day: string, time: string) => string;
+  failed: (house: string | null, deadline: string, link: string) => string;
+  lastCall: (house: string | null, time: string, link: string) => string;
+}
+
+export const PAYPLAN_SMS_I18N: Record<EmailLang, PayPlanSmsStrings> = {
+  pt: {
+    deadline: (d, t) => `${d} ${ptAt(t)} ${t} (Lisboa)`,
+    failed: (h, dl, l) => `Portugal Active: não conseguimos cobrar a 2.ª parte da sua estadia${h ? ` em ${h}` : ""}. Pague ou mude de cartão até ${dl}: ${l}`,
+    lastCall: (h, t, l) => `Portugal Active: amanhã ${ptAt(t)} ${t} (Lisboa) termina o prazo da 2.ª parte da sua estadia${h ? ` em ${h}` : ""}. Pagar demora 2 minutos: ${l}`,
+  },
+  en: {
+    deadline: (d, t) => `${d} at ${t} (Lisbon)`,
+    failed: (h, dl, l) => `Portugal Active: we could not charge the 2nd part of your stay${h ? ` at ${h}` : ""}. Pay or change card by ${dl}: ${l}`,
+    lastCall: (h, t, l) => `Portugal Active: tomorrow at ${t} (Lisbon) the deadline for the 2nd part of your stay${h ? ` at ${h}` : ""} ends. Paying takes 2 minutes: ${l}`,
+  },
+  fr: {
+    deadline: (d, t) => `${d} à ${t} (Lisbonne)`,
+    failed: (h, dl, l) => `Portugal Active : nous n'avons pas pu débiter la 2e partie de votre séjour${h ? ` à ${h}` : ""}. Payez ou changez de carte au plus tard le ${dl} : ${l}`,
+    lastCall: (h, t, l) => `Portugal Active : demain à ${t} (Lisbonne), le délai pour la 2e partie de votre séjour${h ? ` à ${h}` : ""} se termine. Payer prend 2 minutes : ${l}`,
+  },
+  es: {
+    deadline: (d, t) => `${d} a ${esAt(t)} ${t} (Lisboa)`,
+    failed: (h, dl, l) => `Portugal Active: no hemos podido cargar la 2.ª parte de su estancia${h ? ` en ${h}` : ""}. Pague o cambie de tarjeta a más tardar el ${dl}: ${l}`,
+    lastCall: (h, t, l) => `Portugal Active: mañana a ${esAt(t)} ${t} (Lisboa) termina el plazo de la 2.ª parte de su estancia${h ? ` en ${h}` : ""}. Pagar lleva 2 minutos: ${l}`,
+  },
+  it: {
+    deadline: (d, t) => `${d} alle ${t} (Lisbona)`,
+    failed: (h, dl, l) => `Portugal Active: non siamo riusciti ad addebitare la 2ª parte del suo soggiorno${h ? ` a ${h}` : ""}. Paghi o cambi carta entro ${itArt("il", dl)}: ${l}`,
+    lastCall: (h, t, l) => `Portugal Active: domani alle ${t} (Lisbona) scade il termine per la 2ª parte del suo soggiorno${h ? ` a ${h}` : ""}. Pagare richiede 2 minuti: ${l}`,
+  },
+  de: {
+    deadline: (d, t) => `${d} um ${t} Uhr (Lissabon)`,
+    failed: (h, dl, l) => `Portugal Active: Wir konnten den 2. Teil Ihres Aufenthalts${h ? ` in ${h}` : ""} nicht abbuchen. Bitte zahlen oder Karte wechseln bis zum ${dl}: ${l}`,
+    lastCall: (h, t, l) => `Portugal Active: Morgen um ${t} Uhr (Lissabon) endet die Frist für den 2. Teil Ihres Aufenthalts${h ? ` in ${h}` : ""}. Die Zahlung dauert 2 Minuten: ${l}`,
+  },
+  nl: {
+    deadline: (d, t) => `${d} om ${t} uur (Lissabon)`,
+    failed: (h, dl, l) => `Portugal Active: we konden het 2e deel van uw verblijf${h ? ` in ${h}` : ""} niet afschrijven. Betaal of wijzig uw kaart uiterlijk ${dl}: ${l}`,
+    lastCall: (h, t, l) => `Portugal Active: morgen om ${t} uur (Lissabon) verloopt de deadline voor het 2e deel van uw verblijf${h ? ` in ${h}` : ""}. Betalen duurt 2 minuten: ${l}`,
+  },
+  sv: {
+    deadline: (d, t) => `${d} kl. ${t} (Lissabon)`,
+    failed: (h, dl, l) => `Portugal Active: vi kunde inte dra 2:a delen av din vistelse${h ? ` på ${h}` : ""}. Betala eller byt kort senast den ${dl}: ${l}`,
+    lastCall: (h, t, l) => `Portugal Active: i morgon kl. ${t} (Lissabon) går tidsfristen ut för 2:a delen av din vistelse${h ? ` på ${h}` : ""}. Att betala tar 2 minuter: ${l}`,
+  },
+  fi: {
+    deadline: (d, t) => `${d} klo ${t} (Lissabonin aikaa)`,
+    failed: (h, dl, l) => `Portugal Active: emme pystyneet veloittamaan majoituksesi 2. osaa${h ? ` kohteessa ${h}` : ""}. Maksa tai vaihda korttia viimeistään ${dl}: ${l}`,
+    lastCall: (h, t, l) => `Portugal Active: huomenna klo ${t} (Lissabonin aikaa) päättyy majoituksesi 2. osan määräaika${h ? ` kohteessa ${h}` : ""}. Maksaminen vie 2 minuuttia: ${l}`,
+  },
+};
+
+/* ── Datas no calendário de Lisboa, onde estão todas as casas ──
+   Partilhadas pelos emails (transactional-email.ts) e pelos SMS (sms.ts):
+   o prazo que o SMS diz tem de ser exatamente o do email. */
+
+const LISBON_TZ = "Europe/Lisbon";
+
+/** "28 de junho de 2027" / "28 June 2027" (sem ano: "28 de junho"). O dia 1
+ *  leva o ordinal onde a língua o escreve sempre ("1er juillet", "1º luglio"). */
+export function formatLisbonDay(at: Date, lang: EmailLang, withYear = true): string {
+  const s = new Intl.DateTimeFormat(INTL_TAG[lang] ?? "en-GB", {
+    day: "numeric",
+    month: "long",
+    ...(withYear ? { year: "numeric" as const } : {}),
+    timeZone: LISBON_TZ,
+  }).format(at);
+  if (lang === "fr") return s.replace(/^1(?=[\s\u00a0])/, "1er");
+  if (lang === "it") return s.replace(/^1(?=[\s\u00a0])/, "1º");
+  return s;
+}
+
+/** "12:00" (fi: "12.00"), 24 horas, hora de Lisboa. */
+export function formatLisbonTime(at: Date, lang: EmailLang): string {
+  return new Intl.DateTimeFormat(INTL_TAG[lang] ?? "en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: LISBON_TZ,
+  }).format(at);
+}
+
+/** Data de calendário de Lisboa, YYYY-MM-DD. */
+export function lisbonYmd(at: Date): string {
+  const parts = new Intl.DateTimeFormat("en-GB", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: LISBON_TZ }).formatToParts(at);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
+/** Dias de calendário de Lisboa de `now` até `at` (0 = hoje, 1 = amanhã). */
+export function lisbonDaysUntil(at: Date, now: Date): number {
+  return Math.round((Date.parse(`${lisbonYmd(at)}T12:00:00Z`) - Date.parse(`${lisbonYmd(now)}T12:00:00Z`)) / 86_400_000);
+}

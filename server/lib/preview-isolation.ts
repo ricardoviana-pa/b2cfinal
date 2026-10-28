@@ -24,6 +24,8 @@ export const FORBIDDEN_PREVIEW_KEYS = [
   "STRIPE_CARD_WEBHOOK_SECRET", "STRIPE_KLARNA_WEBHOOK_SECRET", "STRIPE_PAYPAL_WEBHOOK_SECRET",
   "RECOVERY_OPTOUT_SECRET", "CLOUDFLARE_API_TOKEN", "PRERENDER_TOKEN",
   "BUILT_IN_FORGE_API_KEY", "OAUTH_SERVER_URL", "ADMIN_API_KEY", "ADMIN_PASSWORD",
+  // Pagamento em duas partes: links da página do saldo e SMS a hóspedes.
+  "BALANCE_LINK_SECRET", "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN",
 ] as const;
 
 export function assertPreviewIsolation(env: NodeJS.ProcessEnv = process.env): void {

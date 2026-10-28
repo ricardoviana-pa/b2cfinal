@@ -6,6 +6,8 @@ import { propertiesRouter } from "./routers/properties";
 import { blogRouter } from "./routers/blog";
 import { bookingRouter } from "./routers/booking";
 import { checkoutRouter } from "./routers/checkout";
+import { balanceRouter } from "./routers/balance";
+import { balanceAdminRouter } from "./routers/balance-admin";
 import {
   destinationsRouter,
   servicesRouter,
@@ -45,6 +47,9 @@ export const appRouter = router({
   services: servicesRouter,
   booking: bookingRouter,
   checkout: checkoutRouter,
+  balance: balanceRouter,
+  // Ecrã "Saldos" do CS (Fase 2c): só utilizadores admin, ações registadas.
+  balanceAdmin: balanceAdminRouter,
   experiences: experiencesRouter,
   events: eventsRouter,
   blog: blogRouter,

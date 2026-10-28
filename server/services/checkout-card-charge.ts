@@ -501,6 +501,17 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
     }
     await updatePaymentIntentMetadata(paymentIntentId, { guestyPaymentRecorded: "1" }).catch(() => {});
   }
+  if (twoParts) {
+    // A partir daqui o total do folio serve de referência à reconciliação do
+    // motor (antes, o acerto do folio ainda podia mexer nele). Uma falha só
+    // atrasa essa referência; nunca trava o settle.
+    try {
+      const { markGuestyDepositRecordedByIntent } = await import("../db");
+      await markGuestyDepositRecordedByIntent(intentId, new Date());
+    } catch (err: any) {
+      console.warn(`[TwoParts] marca de 1.a parte registada nao gravada intent=${intentId}: ${err?.message}`);
+    }
+  }
   if (pi.metadata.splitNoteAdded !== "1") {
     // Quem abrir a reserva vê "Pending payment collection" e nao tem como
     // saber que o saldo nao e divida do hospede. Fica dito aqui, ao lado.

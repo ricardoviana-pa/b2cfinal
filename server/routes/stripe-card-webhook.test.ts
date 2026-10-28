@@ -10,6 +10,9 @@ const h = vi.hoisted(() => ({
   settle: vi.fn(),
   alert: vi.fn(async () => {}),
   emails: vi.fn(async () => {}),
+  balance: vi.fn(async () => "marked"),
+  markRefundFailed: vi.fn(async (): Promise<"marked" | "unchanged" | "missing" | "conflict"> => "marked"),
+  opsAlert: vi.fn(async () => true),
 }));
 
 vi.mock("stripe", () => ({ default: vi.fn(() => ({ webhooks: { constructEvent: h.constructEvent } })) }));
@@ -19,9 +22,12 @@ vi.mock("../db", () => ({
   markStripeWebhookEventFailed: h.failed,
   getBookingIntent: h.getIntent,
   updateBookingIntent: h.updateIntent,
+  markRefundFailed: h.markRefundFailed,
 }));
+vi.mock("../services/transactional-email", () => ({ sendOpsAlert: h.opsAlert }));
 vi.mock("../services/checkout-card-charge", () => ({ settleCardCharge: h.settle, alertFailedSettle: h.alert }));
 vi.mock("../routers/checkout", () => ({ fireCheckoutPaidEmails: h.emails }));
+vi.mock("../services/checkout-balance", () => ({ handleBalancePaymentSucceeded: h.balance }));
 vi.mock("../services/stripe-card-webhook-setup", () => ({ cardWebhookSecretFromSetup: () => null }));
 
 import { registerStripeCardWebhookRoute } from "./stripe-card-webhook";
@@ -196,6 +202,113 @@ describe("stripe card webhook: eventos fora do settle da 1.ª parte", () => {
   it.each([
     ["saldo (Fase 2)", { flow: "card_v2_balance", part: "balance", intentId }],
     ["part=balance mesmo com flow card_v2", { flow: "card_v2", part: "balance", intentId }],
+  ])("%s: vai ao motor da 2.ª parte, nunca ao settle da reserva", async (_label, metadata) => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    const res = await deliver(succeeded(metadata as Record<string, string>, "evt_balance"));
+    expect(res.body).toEqual({ received: true });
+    expect(h.balance).toHaveBeenCalledWith(expect.objectContaining({ id: "pi_synthetic_1" }));
+    await vi.waitFor(() => expect(h.processed).toHaveBeenCalledWith("evt_balance"));
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(h.settle).not.toHaveBeenCalled();
+  });
+
+  it("saldo: se o motor falhar, responde 500 para a Stripe reentregar e não marca processado", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    h.balance.mockRejectedValueOnce(new Error("db down"));
+    const res = await deliver(succeeded({ flow: "card_v2_balance", part: "balance", intentId }, "evt_balance_fail"));
+    expect(res.statusCode).toBe(500);
+    await vi.waitFor(() => expect(h.failed).toHaveBeenCalledWith("evt_balance_fail", "db down"));
+    expect(h.processed).not.toHaveBeenCalledWith("evt_balance_fail");
+  });
+
+  const dispute = { id: "evt_dispute", type: "charge.dispute.created", livemode: true, data: { object: { id: "dp_1", amount: 50000, reason: "fraudulent", payment_intent: "pi_x" } } };
+  const refundFailed = { id: "evt_rf", type: "refund.failed", livemode: true, data: { object: { id: "re_1", amount: 25000, failure_reason: "expired_or_canceled_card", payment_intent: "pi_dep", metadata: { scheduledPaymentId: "sp-1" } } } };
+
+  it("disputa: o alerta sai antes da resposta e fica processada", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    const res = await deliver(dispute);
+    // Sem esperas: quando a Stripe recebe o 200, o alerta já saiu.
+    expect(h.opsAlert).toHaveBeenCalledTimes(1);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ received: true });
+    await vi.waitFor(() => expect(h.processed).toHaveBeenCalledWith("evt_dispute"));
+    expect(h.failed).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["devolve false", () => h.opsAlert.mockResolvedValueOnce(false)],
+    ["lança", () => h.opsAlert.mockRejectedValueOnce(new Error("resend 429"))],
+  ])("disputa: alerta que não sai (%s) → 500 e failed, para a Stripe reenviar", async (_label, setup) => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    setup();
+    const res = await deliver(dispute);
+    expect(res.statusCode).toBe(500);
+    await vi.waitFor(() => expect(h.failed).toHaveBeenCalledWith("evt_dispute", expect.any(String)));
+    expect(h.processed).not.toHaveBeenCalled();
+  });
+
+  it("reembolso falhado do cancelamento: marca a linha e alerta antes de responder", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    const res = await deliver(refundFailed);
+    expect(h.markRefundFailed).toHaveBeenCalledWith("sp-1", { refundId: "re_1", refundCents: 25000 });
+    expect(h.opsAlert).toHaveBeenCalledTimes(1);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ received: true });
+    await vi.waitFor(() => expect(h.processed).toHaveBeenCalledWith("evt_rf"));
+    expect(h.failed).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["alerta devolve false", () => h.opsAlert.mockResolvedValueOnce(false)],
+    ["alerta lança", () => h.opsAlert.mockRejectedValueOnce(new Error("resend down"))],
+  ])("reembolso falhado: %s → 500 e failed", async (_label, setup) => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    setup();
+    const res = await deliver(refundFailed);
+    expect(res.statusCode).toBe(500);
+    await vi.waitFor(() => expect(h.failed).toHaveBeenCalledWith("evt_rf", expect.stringContaining("alerta")));
+    expect(h.processed).not.toHaveBeenCalled();
+  });
+
+  it("reembolso falhado: markRefundFailed lança → o alerta sai na mesma (a dizer que a linha não ficou marcada), 500 e failed", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    h.markRefundFailed.mockRejectedValueOnce(new Error("db down"));
+    const res = await deliver(refundFailed);
+    expect(res.statusCode).toBe(500);
+    expect(h.opsAlert).toHaveBeenCalledTimes(1);
+    expect(String((h.opsAlert.mock.calls[0] as any[])[1].join(" "))).toContain("NÃO ficou marcada");
+    await vi.waitFor(() => expect(h.failed).toHaveBeenCalledWith("evt_rf", expect.stringContaining("db down")));
+    expect(h.processed).not.toHaveBeenCalled();
+  });
+
+  it("reembolso falhado: a linha mudou durante a escrita (conflict) → 500 e failed, para a Stripe reenviar", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    h.markRefundFailed.mockResolvedValueOnce("conflict");
+    const res = await deliver(refundFailed);
+    expect(res.statusCode).toBe(500);
+    await vi.waitFor(() => expect(h.failed).toHaveBeenCalledWith("evt_rf", expect.stringContaining("mudou")));
+  });
+
+  it("reembolso falhado repetido (unchanged) ou de uma linha que não existe (missing) → 200", async () => {
+    for (const r of ["unchanged", "missing"] as const) {
+      h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+      h.markRefundFailed.mockResolvedValueOnce(r);
+      const res = await deliver(refundFailed);
+      expect(res.statusCode).toBe(200);
+    }
+    expect(h.failed).not.toHaveBeenCalled();
+  });
+
+  it("reembolso falhado de uma 2.ª parte duplicada (-dup): alerta sem tocar no reembolso da linha", async () => {
+    h.record.mockResolvedValueOnce({ fresh: true, processed: false });
+    const res = await deliver({ id: "evt_rf_dup", type: "refund.failed", livemode: true, data: { object: { id: "re_2", amount: 500000, failure_reason: "declined", payment_intent: "pi_dup", metadata: { scheduledPaymentId: "sp-1-dup" } } } });
+    expect(res.body).toEqual({ received: true });
+    expect(h.opsAlert).toHaveBeenCalledTimes(1);
+    expect(h.markRefundFailed).not.toHaveBeenCalled();
+    expect(String((h.opsAlert.mock.calls[0] as any[])[1].join(" "))).toContain("cobrada duas vezes");
+  });
+
+  it.each([
     ["Klarna", { flow: "klarna_v2", intentId }],
     ["card_v2 sem intentId", { flow: "card_v2" }],
   ])("%s: marca processado e nunca agenda o settle", async (_label, metadata) => {

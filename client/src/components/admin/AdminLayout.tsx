@@ -19,6 +19,7 @@ import {
   Menu,
   ExternalLink,
   MapPin,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -33,6 +34,8 @@ const NAV_ITEMS = [
   { href: "/admin/events", label: "Events", icon: CalendarDays },
   { href: "/admin/reviews", label: "Reviews", icon: Star },
   { href: "/admin/leads", label: "Leads", icon: Mail },
+  // Pagamento em duas partes (Fase 2c): o único sítio onde o CS age sobre um saldo.
+  { href: "/admin/balances", label: "Saldos", icon: Wallet },
   { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];

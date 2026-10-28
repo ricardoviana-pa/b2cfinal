@@ -1858,7 +1858,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
 
     // Checkout pages are transactional capability URLs — never indexable.
     // Must happen HERE: several branches below return early (cache hits).
-    if (p.startsWith("/checkout/")) {
+    if (p.startsWith("/checkout/") || p.startsWith("/booking/balance/")) {
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 

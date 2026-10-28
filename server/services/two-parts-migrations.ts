@@ -42,6 +42,18 @@ const INTENT_COLUMNS: ReadonlyArray<readonly [column: string, definition: string
   ["flex_consent_version", "varchar(40) NULL"],
 ];
 
+/** Colunas acrescentadas a checkout_scheduled_payments depois da Fase 1
+ *  (Fase 2, ronda 2). Também estão no CREATE TABLE (instalações novas: aí o
+ *  ALTER dá "duplicate column" e conta como existente); numa tabela já criada
+ *  o ALTER acrescenta-as. Todas nullable: o código anterior lê a linha sem
+ *  elas durante o deploy. */
+const SCHEDULED_COLUMNS: ReadonlyArray<readonly [column: string, definition: string]> = [
+  // Escudo "o hóspede está a pagar" (60 min), só escrito por ações do hóspede.
+  ["guest_active_at", "datetime NULL"],
+  // Estado de onde veio o claim da cobrança: a libertação das presas volta a ele.
+  ["claim_prev_status", "varchar(16) NULL"],
+];
+
 const TABLES: ReadonlyArray<readonly [table: string, ddl: string]> = [
   [
     "checkout_scheduled_payments",
@@ -77,10 +89,12 @@ const TABLES: ReadonlyArray<readonly [table: string, ddl: string]> = [
         \`charge_at\` datetime NOT NULL,
         \`hard_stop_at\` datetime NOT NULL,
         \`next_attempt_at\` datetime NOT NULL,
+        \`claim_prev_status\` varchar(16) NULL,
         \`status\` enum('scheduled','charging','retry','needs_action','succeeded','paid_externally','needs_review','cancelling','cancelled_unpaid','cancelled_by_guest') NOT NULL DEFAULT 'scheduled',
         \`attempts\` tinyint NOT NULL DEFAULT 0,
         \`claimed_at\` datetime NULL,
         \`claim_source\` enum('sweep','guest','webhook','admin') NULL,
+        \`guest_active_at\` datetime NULL,
         \`last_decline_code\` varchar(64) NULL,
         \`last_error\` varchar(500) NULL,
         \`balance_payment_intent_id\` varchar(64) NULL,
@@ -177,6 +191,25 @@ const TABLES: ReadonlyArray<readonly [table: string, ddl: string]> = [
       )
     `,
   ],
+  [
+    // Fase 2c: histórico das ações do CS no ecrã Saldos (quem fez o quê a
+    // que linha). Tabela à parte, só com acrescentos: nunca se atualiza a
+    // linha de saldo para registar uma ação.
+    "checkout_admin_actions",
+    `
+      CREATE TABLE IF NOT EXISTS \`checkout_admin_actions\` (
+        \`id\` varchar(36) NOT NULL,
+        \`scheduled_payment_id\` varchar(36) NOT NULL,
+        \`user_id\` int NULL,
+        \`user_email\` varchar(320) NULL,
+        \`action\` varchar(40) NOT NULL,
+        \`details\` json NULL,
+        \`created_at\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(\`id\`),
+        INDEX \`idx_checkout_admin_actions_schedule\` (\`scheduled_payment_id\`)
+      )
+    `,
+  ],
 ];
 
 /** Texto do erro do driver. O drizzle embrulha o erro do MySQL num
@@ -215,11 +248,13 @@ function tableAlreadyExisted(result: unknown): boolean {
 }
 
 /**
- * Acrescenta as colunas novas de booking_intents e cria as três tabelas do
- * pagamento em duas partes. Idempotente: corre em todos os arranques. Cada
- * passo no seu try, porque uma falha num (lock, permissões) não pode deixar
- * os outros por fazer; o relatório diz o que ficou e o que falhou, e quem
- * decide se o arranque continua é verifyTwoPartsColumns.
+ * Acrescenta as colunas novas de booking_intents, cria as tabelas do
+ * pagamento em duas partes (TABLES) e acrescenta as colunas novas de
+ * checkout_scheduled_payments (SCHEDULED_COLUMNS). Idempotente: corre em
+ * todos os arranques. Cada passo no seu try, porque uma falha num (lock,
+ * permissões) não pode deixar os outros por fazer; o relatório diz o que
+ * ficou e o que falhou, e quem decide se o arranque continua é
+ * verifyTwoPartsColumns.
  */
 export async function runTwoPartsMigrations(execute: Execute): Promise<TwoPartsMigrationReport> {
   const report: TwoPartsMigrationReport = { added: [], existing: [], failed: [] };
@@ -244,6 +279,19 @@ export async function runTwoPartsMigrations(execute: Execute): Promise<TwoPartsM
       // o SQL, que diz IF NOT EXISTS, e o teste por /exists/ das colunas
       // deixava passar uma falha verdadeira (permissões, sintaxe).
       report.failed.push({ step: table, error: errorText(err) });
+    }
+  }
+
+  // Depois das tabelas: numa instalação nova a tabela acabou de nascer com
+  // estas colunas (o ALTER dá "duplicate column" e fica como existente).
+  for (const [column, definition] of SCHEDULED_COLUMNS) {
+    const step = `checkout_scheduled_payments.${column}`;
+    try {
+      await execute(`ALTER TABLE \`checkout_scheduled_payments\` ADD COLUMN \`${column}\` ${definition}`);
+      report.added.push(step);
+    } catch (err) {
+      if (isDuplicateColumnError(err)) report.existing.push(step);
+      else report.failed.push({ step, error: errorText(err) });
     }
   }
 

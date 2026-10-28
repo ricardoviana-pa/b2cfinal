@@ -1,5 +1,5 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
-import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, isNull, gt, lt } from "drizzle-orm";
+import { ne, eq, desc, asc, and, or, like, sql, inArray, notInArray, isNotNull, isNull, gt, gte, lt, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -23,6 +23,7 @@ import {
   checkoutScheduledPayments, CheckoutScheduledPayment, InsertCheckoutScheduledPayment,
   checkoutCardMandates, InsertCheckoutCardMandate,
   stripeWebhookEvents,
+  checkoutAdminActions, CheckoutAdminAction, InsertCheckoutAdminAction,
   webVitals, InsertWebVital,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -1341,6 +1342,1309 @@ export async function markStripeWebhookEventFailed(eventId: string, error: strin
   } catch (err) {
     console.error("[Database] markStripeWebhookEventFailed failed:", err);
   }
+}
+
+/* ================================================================
+   PAGAMENTO EM DUAS PARTES — Fase 2a: motor da 2.ª parte
+   (docs/pagamento_duas_partes.md, 2.4, 2.5, 3.1, 5.2 e 5.3). Usado pelo
+   sweep, pelo link do hóspede, pelo webhook e pelo digest
+   (services/checkout-balance.ts).
+   Regras comuns a tudo o que está abaixo:
+   - Cada mudança de estado é um UPDATE condicional (WHERE status …): com
+     dois sweeps, um restart a meio ou o hóspede a pagar ao mesmo tempo, só
+     um processo ganha. true só com affectedRows > 0. O mysql2 liga
+     FOUND_ROWS por omissão, por isso affectedRows conta as linhas que o
+     WHERE encontrou, mesmo quando o valor gravado já era o mesmo.
+   - As listas filtram sempre por livemode e site_origin (BalanceScope): a
+     BD é partilhada com o DEV e produção nunca pode ver linhas de teste,
+     nem o DEV linhas reais.
+   - Sem BD (preview, DATABASE_URL em falta): listas devolvem [], claims e
+     transições devolvem false, e nada corre.
+   - Erro de BD propaga sempre. false quer dizer só "a linha não estava no
+     estado esperado". Se também quisesse dizer "não sei", quem chama podia
+     concluir que outro processo já tratou a linha e reembolsar, ou cobrar
+     outra vez, por cima de uma falha passageira da BD.
+   - Os instantes vêm de quem chama (now) e passam sempre pelos operadores
+     do drizzle com a coluna, para serem gravados e comparados em UTC: um
+     Date metido em sql`` cru seria formatado pelo mysql2 no fuso do
+     processo.
+   ================================================================ */
+
+/** Ambiente das linhas que um processo pode tocar (regra 3 do motor). */
+export interface BalanceScope { livemode: boolean; siteOrigin: string }
+
+/** Estados da spec 2.5 (o enum `status` de checkout_scheduled_payments). */
+export type ScheduledPaymentStatus =
+  | "scheduled" | "charging" | "retry" | "needs_action" | "succeeded" | "paid_externally"
+  | "needs_review" | "cancelling" | "cancelled_unpaid" | "cancelled_by_guest";
+
+/** Colunas de claim por efeito (claim-then-act, spec 3.1 ponto 2). */
+export type BalanceEffectColumn =
+  | "guestyBalanceClaimedAt" | "noteClaimedAt" | "emailPaidClaimedAt"
+  | "cancelPisClaimedAt" | "guestyCancelClaimedAt" | "refundClaimedAt" | "emailCancelClaimedAt";
+
+/** Quem reclamou a tentativa de cobrança (enum `claim_source`). */
+export type BalanceClaimSource = "sweep" | "guest" | "webhook" | "admin";
+
+/** Fotografia da reserva no Guesty gravada pela reconciliação (spec 5.10). */
+export interface BalanceReconciliationSnapshot {
+  guestyStatus: string | null;
+  guestyCheckIn: string | null;
+  guestyCheckOut: string | null;
+  guestyListingId: string | null;
+  guestyTotalCents: number | null;
+  guestyTotalPaidCents: number | null;
+  guestyPendingForeignCents: number | null;
+  error?: string | null;
+}
+
+/** Tudo o que o digest diário mostra (spec 3.3), por scope. */
+export interface BalanceDigest {
+  counts: Record<ScheduledPaymentStatus, number>;
+  /** Por cobrar nos próximos 7 dias, incluindo as que já deviam ter sido
+   *  cobradas (charge_at no passado e ainda scheduled): atraso visível. */
+  upcoming7d: CheckoutScheduledPayment[];
+  /** retry e needs_action: "A RESOLVER PELO HÓSPEDE". */
+  failing: CheckoutScheduledPayment[];
+  /** needs_review: "A RESOLVER POR NÓS". */
+  review: CheckoutScheduledPayment[];
+  cancelled24h: CheckoutScheduledPayment[];
+  postChargeIncomplete: CheckoutScheduledPayment[];
+  /** charging há mais de 30 min. */
+  stuckCharging: CheckoutScheduledPayment[];
+  /** cancelling sem mexidas há mais de 30 min (a spec 3.3 pede as duas). */
+  stuckCancelling: CheckoutScheduledPayment[];
+  /** Reembolso falhado por resolver (spec 3.1 #13): refund_status fora de
+   *  succeeded/pending/nothing/manual, em qualquer estado e de qualquer data
+   *  (o refund.failed chega muitas vezes dias depois do cancelamento). */
+  refundFailures: CheckoutScheduledPayment[];
+}
+
+// Falha a compilar se o enum do schema ganhar ou perder um valor sem estes
+// tipos acompanharem: um estado esquecido aqui ficava fora do digest.
+type SameUnion<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
+const BALANCE_TYPES_MATCH_SCHEMA: [
+  SameUnion<ScheduledPaymentStatus, CheckoutScheduledPayment["status"]>,
+  SameUnion<BalanceClaimSource, NonNullable<CheckoutScheduledPayment["claimSource"]>>,
+] = [true, true];
+void BALANCE_TYPES_MATCH_SCHEMA;
+
+const sp = checkoutScheduledPayments;
+
+const BALANCE_EFFECT_COLUMNS: readonly BalanceEffectColumn[] = [
+  "guestyBalanceClaimedAt", "noteClaimedAt", "emailPaidClaimedAt",
+  "cancelPisClaimedAt", "guestyCancelClaimedAt", "refundClaimedAt", "emailCancelClaimedAt",
+];
+
+/** Por pagar e ainda vivas: as únicas que o hard stop pode cancelar. */
+const OPEN_UNPAID: ScheduledPaymentStatus[] = ["scheduled", "retry", "needs_action"];
+/** O sweep só cobra o que nada impede (regra 1): needs_action é só do hóspede. */
+const AUTO_CHARGEABLE: ScheduledPaymentStatus[] = ["scheduled", "retry"];
+/** Estados de onde nunca se entra em cancelling: com uma cobrança em curso
+ *  (o caminho de charging preso resolve primeiro, lendo o PI) ou já lá. */
+const NEVER_CANCEL_FROM: ReadonlySet<ScheduledPaymentStatus> = new Set<ScheduledPaymentStatus>([
+  "charging", "cancelling", "cancelled_unpaid", "cancelled_by_guest",
+]);
+/** Uma linha onde o hóspede agiu nesta janela (guest_active_at) está a ser
+ *  paga (3DS a meio) ou a mudar de cartão: o hard stop não lhe toca (spec
+ *  2.4, "nunca por cima de um hóspede que está a pagar"). */
+const GUEST_CLAIM_SHIELD_MS = 60 * 60_000;
+/** Resultados de reembolso que não pedem ninguém: feito, em curso, nada a
+ *  devolver, ou resolvido à mão pelo CS (markRefundManual). */
+const REFUND_SETTLED = ["succeeded", "pending", "nothing", "manual"];
+const STUCK_AFTER_MS = 30 * 60_000;
+
+/** Condições do scope. Um scope mal formado lança em vez de virar "todas
+ *  as linhas": é exatamente o filtro que separa produção de teste. */
+function scopeConditions(scope: BalanceScope) {
+  if (typeof scope?.livemode !== "boolean" || typeof scope?.siteOrigin !== "string" || !scope.siteOrigin.trim()) {
+    throw new Error("BalanceScope inválido: livemode (boolean) e siteOrigin são obrigatórios");
+  }
+  return [eq(sp.livemode, scope.livemode), eq(sp.siteOrigin, scope.siteOrigin)];
+}
+
+/** "Preciso de ajuda" pausa a automação até uma data (spec 2.4). */
+function notHelpPaused(now: Date) {
+  return or(isNull(sp.helpPausedUntil), lte(sp.helpPausedUntil, now));
+}
+
+/** O hóspede não agiu na página na última hora: guest_active_at NULL (sem
+ *  escudo) ou mais antigo do que a janela. Mede-se só por guest_active_at,
+ *  que nenhum claim do sweep ou do admin reescreve (claimed_at e
+ *  claim_source mudam a cada claim e escondiam um hóspede a meio do 3DS). */
+function notRecentGuestClaim(now: Date) {
+  const cutoff = new Date(now.getTime() - GUEST_CLAIM_SHIELD_MS);
+  return or(isNull(sp.guestActiveAt), lte(sp.guestActiveAt, cutoff));
+}
+
+function assertIntegerCents(value: number | null, label: string): void {
+  if (value !== null && (!Number.isInteger(value) || value < 0)) {
+    throw new Error(`${label} tem de ser um inteiro de cêntimos >= 0 (recebido ${value})`);
+  }
+}
+
+/** Valores lidos do Guesty (euros convertidos em cêntimos por quem chama):
+ *  arredonda o resto de vírgula flutuante, mas um NaN ou Infinity é uma
+ *  leitura estragada e lança em vez de ser gravado como fotografia válida. */
+function snapshotCents(value: number | null | undefined, label: string): number | null {
+  if (value == null) return null;
+  if (!Number.isFinite(value)) throw new Error(`${label} inválido na reconciliação: ${value}`);
+  return Math.round(value);
+}
+
+function optionalText(value: string | null | undefined, max: number): string | null {
+  if (value == null) return null;
+  const text = String(value);
+  return text ? truncateChars(text, max) : null;
+}
+
+/** Linhas a cobrar agora pelo sweep: scheduled/retry vencidas, antes de H e
+ *  sem pausa de ajuda, as mais antigas primeiro. */
+export async function listDueScheduledPayments(
+  scope: BalanceScope,
+  now: Date,
+  limit = 50,
+): Promise<CheckoutScheduledPayment[]> {
+  const where = scopeConditions(scope);
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(sp)
+    .where(and(
+      ...where,
+      inArray(sp.status, AUTO_CHARGEABLE),
+      lte(sp.nextAttemptAt, now),
+      gt(sp.hardStopAt, now),
+      notHelpPaused(now),
+    ))
+    .orderBy(asc(sp.nextAttemptAt))
+    .limit(limit);
+}
+
+/**
+ * Claim da tentativa de cobrança, antes de qualquer chamada à Stripe
+ * (regra 2): → charging, com claimed_at, claim_source e attempts+1. Nunca
+ * depois de H (regra 1). O sweep (e o webhook, que nunca devia cobrar)
+ * repete no WHERE o mesmo filtro da listDueScheduledPayments: entre a lista
+ * e o claim o hóspede pode ter tentado e falhado (a linha volta a retry
+ * com a próxima tentativa amanhã, ou a needs_action) e o sweep não pode
+ * cobrar outra vez por cima. O hóspede e o admin, em nome dele, podem
+ * pagar também a partir de needs_action e antes da data marcada.
+ */
+export async function claimScheduledPaymentForCharge(
+  id: string,
+  source: BalanceClaimSource,
+  now: Date,
+): Promise<boolean> {
+  if (!["sweep", "guest", "webhook", "admin"].includes(source)) {
+    throw new Error(`claim_source inválido: ${source}`);
+  }
+  const db = await getDb();
+  if (!db) return false;
+  const automatic = source === "sweep" || source === "webhook";
+  // claim_prev_status = status no mesmo UPDATE: o drizzle escreve o SET pela
+  // ordem do esquema (claim_prev_status antes de status) e o MySQL avalia da
+  // esquerda para a direita, por isso lê o estado de antes do claim.
+  const res = await db
+    .update(sp)
+    .set({ claimPrevStatus: sql`${sp.status}`, status: "charging", claimedAt: now, claimSource: source, attempts: sql`${sp.attempts} + 1` })
+    .where(and(
+      eq(sp.id, id),
+      inArray(sp.status, automatic ? AUTO_CHARGEABLE : OPEN_UNPAID),
+      gt(sp.hardStopAt, now),
+      ...(automatic ? [lte(sp.nextAttemptAt, now), notHelpPaused(now)] : []),
+    ));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Grava o PI criado (passo 1 dos dois: create → gravar → confirm), só
+ *  enquanto a tentativa é nossa. Um crash a seguir deixa o id na linha e
+ *  a recuperação relê-o em vez de criar outro. */
+export async function setBalancePaymentIntentId(
+  id: string,
+  field: "balancePaymentIntentId" | "guestPaymentIntentId",
+  piId: string,
+): Promise<boolean> {
+  if (field !== "balancePaymentIntentId" && field !== "guestPaymentIntentId") {
+    throw new Error(`Campo de PI inválido: ${field}`);
+  }
+  if (!piId) throw new Error("setBalancePaymentIntentId sem id de PI");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set(field === "balancePaymentIntentId" ? { balancePaymentIntentId: piId } : { guestPaymentIntentId: piId })
+    .where(and(eq(sp.id, id), eq(sp.status, "charging")));
+  return affectedRowsOf(res) > 0;
+}
+
+/**
+ * Saldo cobrado: → succeeded. Aceita charging (o caminho normal), retry e
+ * needs_action (webhook atrasado de uma tentativa que a Stripe concluiu
+ * depois de a linha ter saído de charging) e também scheduled, um acrescento
+ * ao contrato: uma tentativa com erro técnico ambíguo devolvida a scheduled
+ * cujo PI afinal sucedeu tem de ficar paga, senão o sweep seguinte cobrava
+ * outra vez. Nunca de needs_review, paid_externally nem estados finais:
+ * aí o dinheiro a mais decide-se fora daqui (reembolso e alerta).
+ */
+export async function markScheduledPaymentSucceeded(id: string, piId: string, now: Date): Promise<boolean> {
+  if (!piId) throw new Error("markScheduledPaymentSucceeded sem id de PI");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "succeeded", succeededAt: now, balancePaymentIntentId: piId })
+    .where(and(eq(sp.id, id), inArray(sp.status, ["scheduled", "charging", "retry", "needs_action"])));
+  return affectedRowsOf(res) > 0;
+}
+
+/**
+ * Saldo pago a meio de um cancelamento (cancelling → succeeded): o PI do
+ * saldo sucedeu quando o cancelamento ia fechá-lo. Só enquanto nada de
+ * irreversível foi reclamado: sem claim nem marca de cancelamento no
+ * Guesty, sem claim nem id de reembolso, sem E5. Depois disso a reserva
+ * já está (ou pode estar) cancelada e marcar "pago" mandava registar o
+ * saldo e enviar o E4 de uma reserva que já não existe; aí devolve false e
+ * o dinheiro decide-se pelo alerta. Limpa cancel_pis_claimed_at para um
+ * cancelamento futuro (o hóspede, dentro do prazo) correr do início.
+ */
+export async function markCancellingAsSucceeded(id: string, piId: string, now: Date): Promise<boolean> {
+  if (!piId) throw new Error("markCancellingAsSucceeded sem id de PI");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "succeeded", succeededAt: now, balancePaymentIntentId: piId, cancelPisClaimedAt: null })
+    .where(and(
+      eq(sp.id, id),
+      eq(sp.status, "cancelling"),
+      // Uma linha já paga a cancelar (o hóspede cancela depois da 2.ª parte)
+      // nunca volta a succeeded por um webhook atrasado: desfazia o pedido
+      // de cancelamento e, com outro PI, escondia um pagamento duplicado.
+      isNull(sp.succeededAt),
+      isNull(sp.guestyCancelClaimedAt),
+      isNull(sp.guestyCancelledAt),
+      isNull(sp.refundClaimedAt),
+      isNull(sp.refundId),
+      isNull(sp.emailCancelClaimedAt),
+    ));
+  return affectedRowsOf(res) > 0;
+}
+
+/**
+ * Pagamento do hóspede (ou de uma tentativa anterior) que sucede com a linha
+ * em revisão: needs_review → succeeded. O dinheiro entrou; deixá-lo de fora
+ * deixava a linha "a rever", sem E4 nem registo no Guesty, e um "Retomar"
+ * voltava a pedir a 2.ª parte. Quem chama confirma que o PI é desta linha
+ * (o PI do hóspede ou do sweep gravado, ou a metadata scheduledPaymentId) e
+ * avisa o ops (o motivo da revisão pode ser um pagamento por fora).
+ */
+export async function markReviewAsSucceeded(id: string, piId: string, now: Date): Promise<boolean> {
+  if (!piId) throw new Error("markReviewAsSucceeded sem id de PI");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "succeeded", succeededAt: now, balancePaymentIntentId: piId })
+    .where(and(eq(sp.id, id), eq(sp.status, "needs_review"), isNull(sp.succeededAt)));
+  return affectedRowsOf(res) > 0;
+}
+
+/**
+ * 2.ª parte paga com a linha a rever por causa do Guesty (reserva cancelada
+ * ou alterada, pagamento por fora): o pagamento fica gravado na linha
+ * (balance_payment_intent_id e succeeded_at), que continua `needs_review`.
+ * Nada corre sozinho (os efeitos só correm em `succeeded`): a equipa decide
+ * manter (closeReviewAsPaid) ou cancelar e devolver (o reembolso inclui a
+ * 2.ª parte, porque a linha já a tem como paga).
+ */
+export async function recordPaymentDuringReview(id: string, piId: string, now: Date): Promise<boolean> {
+  if (!piId) throw new Error("recordPaymentDuringReview sem id de PI");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ balancePaymentIntentId: piId, succeededAt: now })
+    .where(and(eq(sp.id, id), eq(sp.status, "needs_review"), isNull(sp.succeededAt)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** A equipa mantém a estadia de uma linha paga durante a revisão: → succeeded
+ *  com o pagamento já gravado (o mesmo PI); os efeitos correm a seguir. */
+export async function closeReviewAsPaid(id: string, piId: string): Promise<boolean> {
+  if (!piId) throw new Error("closeReviewAsPaid sem id de PI");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "succeeded" })
+    .where(and(eq(sp.id, id), eq(sp.status, "needs_review"), isNotNull(sp.succeededAt), eq(sp.balancePaymentIntentId, piId)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Recusa soft: → retry com a próxima tentativa marcada (spec 2.4). */
+export async function markScheduledPaymentRetry(
+  id: string,
+  p: { declineCode: string | null; error: string | null; nextAttemptAt: Date },
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({
+      status: "retry",
+      lastDeclineCode: optionalText(p.declineCode, 64),
+      lastError: optionalText(p.error, 500),
+      nextAttemptAt: p.nextAttemptAt,
+    })
+    .where(and(eq(sp.id, id), eq(sp.status, "charging")));
+  return affectedRowsOf(res) > 0;
+}
+
+/** 3DS pedido ou recusa hard: → needs_action, só o hóspede resolve pelo
+ *  link; o sweep nunca mais tenta sozinho (spec 2.4). */
+export async function markScheduledPaymentNeedsAction(
+  id: string,
+  p: { declineCode: string | null; error: string | null },
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({
+      status: "needs_action",
+      lastDeclineCode: optionalText(p.declineCode, 64),
+      lastError: optionalText(p.error, 500),
+    })
+    .where(and(eq(sp.id, id), eq(sp.status, "charging")));
+  return affectedRowsOf(res) > 0;
+}
+
+/**
+ * Falha técnica (Stripe ou Guesty em baixo, não uma recusa): devolve a
+ * linha ao estado de onde veio e desconta a tentativa, porque o banco não
+ * chegou a recusar nada e as 3 tentativas da spec são de cobrança, não de
+ * rede. Só depois de quem chama ter relido o PI e confirmado que não há
+ * dinheiro em jogo.
+ */
+export async function releaseChargeClaim(
+  id: string,
+  p: { toStatus: "scheduled" | "retry" | "needs_action"; nextAttemptAt: Date; error: string },
+): Promise<boolean> {
+  if (!OPEN_UNPAID.includes(p.toStatus)) throw new Error(`releaseChargeClaim para estado inválido: ${p.toStatus}`);
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({
+      status: p.toStatus,
+      nextAttemptAt: p.nextAttemptAt,
+      lastError: optionalText(p.error, 500),
+      attempts: sql`GREATEST(${sp.attempts} - 1, 0)`,
+    })
+    .where(and(eq(sp.id, id), eq(sp.status, "charging")));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Tentativas em charging reclamadas antes de claimedBefore (processo que
+ *  morreu a meio). Inclui claimed_at NULL, que nunca devia existir mas, a
+ *  existir, ficava presa para sempre. Quem chama lê o PI antes de mexer. */
+export async function listStuckCharging(scope: BalanceScope, claimedBefore: Date): Promise<CheckoutScheduledPayment[]> {
+  const where = scopeConditions(scope);
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(sp)
+    .where(and(...where, eq(sp.status, "charging"), or(isNull(sp.claimedAt), lt(sp.claimedAt, claimedBefore))))
+    .orderBy(asc(sp.claimedAt));
+}
+
+/** Saldo recebido por outra via (transferência, admin com referência):
+ *  → paid_externally. Nunca a meio de uma cobrança nossa (charging). */
+export async function markPaidExternally(id: string, ref: string): Promise<boolean> {
+  const text = String(ref ?? "").trim();
+  if (!text) throw new Error("markPaidExternally exige uma referência");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "paid_externally", paidExternallyRef: truncateChars(text, 120) })
+    .where(and(eq(sp.id, id), inArray(sp.status, ["scheduled", "retry", "needs_action", "needs_review"])));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Humano tem de decidir, com prazo: → needs_review. Nunca de um estado
+ *  final (spec 2.5); o hard stop nunca cancela uma linha em needs_review. */
+export async function markNeedsReview(id: string, reason: string, dueAt: Date | null): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  // Sem motivo ainda se põe a linha em revisão: é a direção segura.
+  const text = String(reason ?? "").trim() || "sem motivo indicado";
+  const res = await db
+    .update(sp)
+    .set({ status: "needs_review", reviewReason: truncateChars(text, 120), reviewDueAt: dueAt })
+    .where(and(eq(sp.id, id), inArray(sp.status, ["scheduled", "retry", "needs_action", "charging"])));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Candidatas a E1 (C−7) e E2 (C−1): ainda scheduled, C dentro do
+ *  horizonte e com lembretes por enviar. */
+export async function listScheduledForReminders(scope: BalanceScope, horizon: Date): Promise<CheckoutScheduledPayment[]> {
+  const where = scopeConditions(scope);
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(sp)
+    .where(and(...where, eq(sp.status, "scheduled"), lte(sp.chargeAt, horizon), lt(sp.reminderStage, 2)))
+    .orderBy(asc(sp.chargeAt));
+}
+
+/** Claim do lembrete antes de o enviar (molde claimRecoveryStage): uma
+ *  falha de envio perde um email, nunca o repete. */
+export async function claimReminderStage(id: string, from: number, to: number): Promise<boolean> {
+  if (!Number.isInteger(from) || !Number.isInteger(to)) throw new Error("reminder_stage tem de ser inteiro");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ reminderStage: to })
+    .where(and(eq(sp.id, id), eq(sp.reminderStage, from), eq(sp.status, "scheduled")));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Candidatas a E3 (aviso de falha, estágio 0→1) e E3b (véspera de H,
+ *  1→2). */
+export async function listFailureNoticeCandidates(scope: BalanceScope): Promise<CheckoutScheduledPayment[]> {
+  const where = scopeConditions(scope);
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(sp)
+    .where(and(...where, inArray(sp.status, ["retry", "needs_action"]), inArray(sp.failureNoticeStage, [0, 1])))
+    .orderBy(asc(sp.hardStopAt));
+}
+
+/**
+ * Claim do aviso de falha antes de o enviar. No E3 grava, no mesmo UPDATE,
+ * failure_notice_sent_at e o H recalculado: os 7 dias da Visa contam do
+ * aviso escrito, por isso H e o aviso mudam juntos ou não mudam.
+ */
+export async function claimFailureNoticeStage(
+  id: string,
+  from: number,
+  to: number,
+  patch: { failureNoticeSentAt?: Date; hardStopAt?: Date } = {},
+): Promise<boolean> {
+  if (!Number.isInteger(from) || !Number.isInteger(to)) throw new Error("failure_notice_stage tem de ser inteiro");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({
+      failureNoticeStage: to,
+      ...(patch.failureNoticeSentAt ? { failureNoticeSentAt: patch.failureNoticeSentAt } : {}),
+      ...(patch.hardStopAt ? { hardStopAt: patch.hardStopAt } : {}),
+    })
+    .where(and(eq(sp.id, id), eq(sp.failureNoticeStage, from), inArray(sp.status, ["retry", "needs_action"])));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Linhas por pagar cujo H já chegou, exceto aquelas em que o hóspede agiu
+ *  na página na última hora (guest_active_at: está a pagar ou a trocar de
+ *  cartão). Nunca needs_review nem paid_externally. */
+export async function listHardStopDue(scope: BalanceScope, now: Date): Promise<CheckoutScheduledPayment[]> {
+  const where = scopeConditions(scope);
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(sp)
+    .where(and(...where, inArray(sp.status, OPEN_UNPAID), lte(sp.hardStopAt, now), notRecentGuestClaim(now)))
+    .orderBy(asc(sp.hardStopAt));
+}
+
+/**
+ * Claim do cancelamento (hard stop ou hóspede): → cancelling, antes de
+ * cancelar PIs, reserva ou reembolsar. Lança se fromStatuses incluir
+ * charging ou um estado de cancelamento: cancelar por cima de uma cobrança
+ * em curso é um erro de quem chama, não um caso a ignorar.
+ * opts.hardStopNow (acrescento ao contrato, para o caminho do hard stop):
+ * repete no WHERE a condição da listHardStopDue (H já passou, sem ação do
+ * hóspede na última hora), para um hóspede que voltou à página entre a
+ * lista e este claim nunca ver a reserva cancelada debaixo do 3DS.
+ */
+export async function claimScheduledPaymentForCancel(
+  id: string,
+  fromStatuses: ScheduledPaymentStatus[],
+  /** reason: grava em review_reason quem pediu o cancelamento ("cancel:unpaid",
+   *  "cancel:guest"), para uma passagem retomada saber que reembolsos fazer. */
+  opts: { hardStopNow?: Date; reason?: string } = {},
+): Promise<boolean> {
+  const allowed = Array.from(new Set(fromStatuses));
+  if (allowed.length === 0) throw new Error("claimScheduledPaymentForCancel sem estados de origem");
+  const forbidden = allowed.filter((s) => NEVER_CANCEL_FROM.has(s));
+  if (forbidden.length) throw new Error(`Nunca se cancela a partir de ${forbidden.join(", ")}`);
+  const db = await getDb();
+  if (!db) return false;
+  const hardStop = opts.hardStopNow;
+  const res = await db
+    .update(sp)
+    .set({ status: "cancelling", ...(opts.reason ? { reviewReason: opts.reason.slice(0, 120) } : {}) })
+    .where(and(
+      eq(sp.id, id),
+      inArray(sp.status, allowed),
+      ...(hardStop ? [lte(sp.hardStopAt, hardStop), notRecentGuestClaim(hardStop)] : []),
+    ));
+  return affectedRowsOf(res) > 0;
+}
+
+/* ── Fase 2b: ações do hóspede na página do saldo ─────────────────── */
+
+/**
+ * Guarda o PI que o hóspede vai confirmar no browser ("Pagar agora"), também
+ * quando é o mesmo PI reutilizado. A linha não muda de estado (o sweep
+ * continua a vê-la), mas guest_active_at fica com esta hora: a paragem dura
+ * e o sweep esperam 60 min por ele, e o sweep lê este PI antes de cobrar. Só
+ * em linhas por pagar e antes de H.
+ */
+export async function setGuestPaymentIntent(id: string, piId: string, now: Date): Promise<boolean> {
+  if (!piId) throw new Error("setGuestPaymentIntent sem id de PI");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ guestPaymentIntentId: piId, claimSource: "guest", claimedAt: now, guestActiveAt: now })
+    .where(and(eq(sp.id, id), inArray(sp.status, OPEN_UNPAID), gt(sp.hardStopAt, now)));
+  return affectedRowsOf(res) > 0;
+}
+
+/**
+ * O hóspede começou a trocar de cartão ("Usar outro cartão"): refresca o
+ * escudo de 60 min (guest_active_at) sem mexer em mais nada. Só em linhas
+ * por pagar e antes de H, como setGuestPaymentIntent.
+ */
+export async function markGuestActive(id: string, now: Date): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ guestActiveAt: now })
+    .where(and(eq(sp.id, id), inArray(sp.status, OPEN_UNPAID), gt(sp.hardStopAt, now)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** SMS do saldo enviado (1 = S1 com o E3, 2 = S2 na véspera de H). Só sobe:
+ *  um S1 atrasado nunca apaga o registo de um S2 já enviado. */
+export async function setSmsStage(id: string, stage: 1 | 2): Promise<boolean> {
+  if (stage !== 1 && stage !== 2) throw new Error(`sms_stage inválido: ${stage}`);
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ smsStage: stage })
+    .where(and(eq(sp.id, id), lt(sp.smsStage, stage)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Troca do cartão pelo hóspede: só em linhas por pagar. */
+export async function updateScheduledPaymentCard(
+  id: string,
+  card: { paymentMethodId: string; brand: string | null; last4: string | null; expMonth: number | null; expYear: number | null },
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({
+      paymentMethodId: card.paymentMethodId,
+      cardBrand: card.brand?.slice(0, 32) ?? null,
+      cardLast4: card.last4?.slice(0, 4) ?? null,
+      cardExpMonth: card.expMonth,
+      cardExpYear: card.expYear,
+    })
+    .where(and(eq(sp.id, id), inArray(sp.status, OPEN_UNPAID)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** O mandato anterior deixa de valer quando o hóspede autoriza outro cartão. */
+export async function supersedeCardMandates(scheduledPaymentId: string, keepPaymentMethodId: string, now: Date): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .update(checkoutCardMandates)
+    .set({ supersededAt: now })
+    .where(and(
+      eq(checkoutCardMandates.scheduledPaymentId, scheduledPaymentId),
+      isNull(checkoutCardMandates.supersededAt),
+      ne(checkoutCardMandates.paymentMethodId, keepPaymentMethodId),
+    ));
+}
+
+/** "Preciso de ajuda": pausa a automação até uma data e entrega a linha a um humano. */
+export async function pauseForHelp(id: string, until: Date, reason: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "needs_review", helpPausedUntil: until, reviewReason: reason.slice(0, 120), reviewDueAt: until })
+    .where(and(eq(sp.id, id), inArray(sp.status, OPEN_UNPAID)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Cancelamentos em curso (para repetir os passos que faltam). */
+export async function listCancelling(scope: BalanceScope): Promise<CheckoutScheduledPayment[]> {
+  const where = scopeConditions(scope);
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(sp).where(and(...where, eq(sp.status, "cancelling"))).orderBy(asc(sp.updatedAt));
+}
+
+/**
+ * Claim de um efeito externo (registo Guesty, nota, email, cancelar PIs,
+ * reembolso): grava now na coluna se estiver vazia ou se o claim anterior
+ * tiver mais de staleMs (o processo morreu a meio; repete-se). Atenção: o
+ * claim volta a ganhar passado staleMs mesmo que o efeito tenha corrido;
+ * para efeitos sem marca de "feito" (nota, emails) quem chama só reclama
+ * com a coluna a NULL, ou passa staleMs = null (acrescento ao contrato):
+ * uma vez só, nunca repetível.
+ */
+export async function claimEffect(
+  id: string,
+  column: BalanceEffectColumn,
+  now: Date,
+  staleMs: number | null = 30 * 60_000,
+): Promise<boolean> {
+  if (!BALANCE_EFFECT_COLUMNS.includes(column)) throw new Error(`Coluna de efeito inválida: ${column}`);
+  if (staleMs !== null && !(staleMs >= 0)) throw new Error(`staleMs inválido: ${staleMs}`);
+  const db = await getDb();
+  if (!db) return false;
+  const col = sp[column];
+  const repeatable = staleMs !== null && Number.isFinite(staleMs);
+  const res = await db
+    .update(sp)
+    .set({ [column]: now } as Partial<InsertCheckoutScheduledPayment>)
+    .where(and(
+      eq(sp.id, id),
+      repeatable ? or(isNull(col), lt(col, new Date(now.getTime() - (staleMs as number)))) : isNull(col),
+    ));
+  return affectedRowsOf(res) > 0;
+}
+
+/**
+ * Liberta o claim de um efeito que falhou (email não aceite, nota que o
+ * Guesty recusou, reembolso que deu erro): a passagem seguinte tenta outra
+ * vez. Só para efeitos cujo falhanço é certo; um resultado ambíguo fica com o
+ * claim (expira sozinho passados 30 min).
+ */
+export async function releaseEffect(id: string, column: BalanceEffectColumn): Promise<void> {
+  if (!BALANCE_EFFECT_COLUMNS.includes(column)) throw new Error(`Coluna de efeito inválida: ${column}`);
+  const db = await getDb();
+  if (!db) return;
+  await db.update(sp).set({ [column]: null } as Partial<InsertCheckoutScheduledPayment>).where(eq(sp.id, id));
+}
+
+/**
+ * Depois de o hóspede autorizar um cartão novo numa linha que já falhou:
+ * volta à cobrança automática dentro de minutos, no cartão novo (é o que a
+ * autorização dele diz: "cobrar hoje neste novo cartão"). Só antes de H.
+ */
+export async function requeueAfterCardChange(id: string, nextAttemptAt: Date): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "retry", nextAttemptAt, lastDeclineCode: null, lastError: null })
+    .where(and(eq(sp.id, id), inArray(sp.status, ["retry", "needs_action"]), gt(sp.hardStopAt, nextAttemptAt)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Marca de 1.ª parte registada no Guesty (settle): a partir daqui o total do
+ *  folio serve de referência para detetar alterações. */
+export async function markGuestyDepositRecordedByIntent(intentId: string, now: Date): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(sp).set({ guestyDepositRecordedAt: now }).where(and(eq(sp.intentId, intentId), isNull(sp.guestyDepositRecordedAt)));
+}
+
+/** Saldo registado no Guesty. O primeiro registo é o que vale: false quer
+ *  dizer que já estava marcado. */
+export async function markGuestyBalanceRecorded(id: string, now: Date): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ guestyBalanceRecordedAt: now })
+    .where(and(eq(sp.id, id), isNull(sp.guestyBalanceRecordedAt)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Reserva cancelada no Guesty. false quer dizer que já estava marcado. */
+export async function markGuestyCancelled(id: string, now: Date): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ guestyCancelledAt: now })
+    .where(and(eq(sp.id, id), isNull(sp.guestyCancelledAt)));
+  return affectedRowsOf(res) > 0;
+}
+
+/**
+ * Resultado do reembolso. Um resultado sem reembolso (refundId null, o
+ * remanescente já era 0) só se grava se a linha ainda não tiver um: uma
+ * repetição do passo depois de um reembolso verdadeiro não pode apagar o
+ * id nem pôr o valor a 0 (o E5 dizia "devolvemos 0 €"). false nesse caso.
+ */
+export async function markRefund(
+  id: string,
+  p: { refundId: string | null; refundCents: number; refundStatus: string },
+): Promise<boolean> {
+  assertIntegerCents(p.refundCents, "refundCents");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ refundId: p.refundId, refundCents: p.refundCents, refundStatus: optionalText(p.refundStatus, 32) })
+    .where(and(eq(sp.id, id), ...(p.refundId ? [] : [isNull(sp.refundId)])));
+  return affectedRowsOf(res) > 0;
+}
+
+/**
+ * refund.failed da Stripe (spec 3.1 #13). Numa linha com dois reembolsos (1.ª
+ * e 2.ª parte) podem falhar os dois: o valor por resolver é a soma das falhas
+ * e refund_id guarda os ids separados por vírgula. Um evento repetido (a
+ * Stripe reenvia depois de um 500) não muda nada, nem desfaz um "manual" que
+ * o CS já gravou para essa falha; uma falha nova depois do "manual" volta a
+ * abrir a linha só com o valor novo. A escrita é condicional ao que foi lido:
+ * "conflict" quando outra escrita passou entretanto (o webhook responde 500 e
+ * a Stripe reenvia).
+ */
+export async function markRefundFailed(
+  id: string,
+  p: { refundId: string; refundCents: number },
+): Promise<"marked" | "unchanged" | "missing" | "conflict"> {
+  assertIntegerCents(p.refundCents, "refundCents");
+  const db = await getDb();
+  if (!db) throw new Error("BD indisponível");
+  const [row] = await db
+    .select({ refundId: sp.refundId, refundCents: sp.refundCents, refundStatus: sp.refundStatus })
+    .from(sp)
+    .where(eq(sp.id, id))
+    .limit(1);
+  if (!row) return "missing";
+  const known = String(row.refundId ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  if ((row.refundStatus === "failed" || row.refundStatus === "manual") && known.includes(p.refundId)) return "unchanged";
+  const accumulate = row.refundStatus === "failed";
+  const joined = accumulate ? [...known, p.refundId].join(",") : p.refundId;
+  const res = await db
+    .update(sp)
+    .set({
+      refundId: joined.length <= 64 ? joined : p.refundId,
+      refundCents: accumulate ? Number(row.refundCents ?? 0) + p.refundCents : p.refundCents,
+      refundStatus: "failed",
+    })
+    .where(and(
+      eq(sp.id, id),
+      row.refundId == null ? isNull(sp.refundId) : eq(sp.refundId, row.refundId),
+      row.refundStatus == null ? isNull(sp.refundStatus) : eq(sp.refundStatus, row.refundStatus),
+    ));
+  return affectedRowsOf(res) > 0 ? "marked" : "conflict";
+}
+
+/**
+ * Reembolso falhado resolvido à mão pelo CS (transferência, por exemplo;
+ * spec 3.1 #13: sem nova tentativa automática): refund_status de um valor de
+ * falha passa a "manual" e a linha sai de "REEMBOLSOS POR RESOLVER". Só a
+ * partir de uma falha: nunca por cima de um reembolso feito, em curso ou
+ * sem nada a devolver. A referência fica no registo da ação do admin.
+ */
+export async function markRefundManual(id: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ refundStatus: "manual" })
+    .where(and(eq(sp.id, id), isNotNull(sp.refundStatus), notInArray(sp.refundStatus, REFUND_SETTLED)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Fim do hard stop: cancelada pela PA por falta de pagamento. */
+export async function markCancelledUnpaid(id: string, now: Date): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "cancelled_unpaid", cancelledAt: now })
+    .where(and(eq(sp.id, id), eq(sp.status, "cancelling")));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Fim do cancelamento pelo hóspede (link ou Guesty). */
+export async function markCancelledByGuest(id: string, now: Date): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "cancelled_by_guest", cancelledAt: now })
+    .where(and(eq(sp.id, id), eq(sp.status, "cancelling")));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Saldos cobrados com passos de pós-cobrança por fazer (registo Guesty,
+ *  nota, E4): ficam no digest até fecharem. */
+export async function listPostChargeIncomplete(scope: BalanceScope): Promise<CheckoutScheduledPayment[]> {
+  const where = scopeConditions(scope);
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(sp)
+    .where(and(
+      ...where,
+      eq(sp.status, "succeeded"),
+      or(isNull(sp.guestyBalanceRecordedAt), isNull(sp.noteClaimedAt), isNull(sp.emailPaidClaimedAt)),
+    ))
+    .orderBy(asc(sp.succeededAt));
+}
+
+/**
+ * Linhas a reconciliar com o Guesty: as que têm ação (cobrança ou H) até
+ * actionBefore e, uma vez por dia, todas as abertas (nunca reconciliadas
+ * ou reconciliadas antes de staleBefore). Primeiro as reconciliadas há
+ * mais tempo (NULL primeiro no MySQL), para nenhuma ficar sempre de fora
+ * do limite.
+ */
+export async function listForReconciliation(
+  scope: BalanceScope,
+  p: { actionBefore: Date; staleBefore: Date; limit?: number },
+): Promise<CheckoutScheduledPayment[]> {
+  const where = scopeConditions(scope);
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(sp)
+    .where(and(
+      ...where,
+      inArray(sp.status, ["scheduled", "retry", "needs_action", "needs_review"]),
+      or(
+        lte(sp.nextAttemptAt, p.actionBefore),
+        lte(sp.hardStopAt, p.actionBefore),
+        isNull(sp.lastReconciledAt),
+        lt(sp.lastReconciledAt, p.staleBefore),
+      ),
+    ))
+    .orderBy(asc(sp.lastReconciledAt), asc(sp.nextAttemptAt))
+    .limit(p.limit ?? 100);
+}
+
+/**
+ * Grava a leitura do Guesty e last_reconciled_at = now. Com snap.error
+ * preenchido a leitura falhou: guarda só o erro (como markReconcileError) e
+ * deixa a última fotografia válida e last_reconciled_at como estavam.
+ * Gravar NULLs por cima apagava o total de referência com que se detetam
+ * alterações no Guesty, e um last_reconciled_at novo escondia durante um
+ * dia uma reserva que já não se consegue ler (spec 3.1 ponto 4: nunca se
+ * age sem leitura válida e alerta-se ao fim de seis horas).
+ */
+export async function applyReconciliation(
+  id: string,
+  snap: BalanceReconciliationSnapshot,
+  now: Date,
+): Promise<boolean> {
+  if (snap.error != null && String(snap.error).trim()) return markReconcileError(id, String(snap.error));
+  const totalCents = snapshotCents(snap.guestyTotalCents, "guestyTotalCents");
+  const totalPaidCents = snapshotCents(snap.guestyTotalPaidCents, "guestyTotalPaidCents");
+  const pendingForeignCents = snapshotCents(snap.guestyPendingForeignCents, "guestyPendingForeignCents");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({
+      guestyStatus: optionalText(snap.guestyStatus, 32),
+      guestyCheckIn: optionalText(snap.guestyCheckIn, 10),
+      guestyCheckOut: optionalText(snap.guestyCheckOut, 10),
+      guestyListingId: optionalText(snap.guestyListingId, 64),
+      guestyTotalCents: totalCents,
+      guestyTotalPaidCents: totalPaidCents,
+      guestyPendingForeignCents: pendingForeignCents,
+      lastReconciledAt: now,
+      lastReconcileError: null,
+    })
+    .where(eq(sp.id, id));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Leitura do Guesty falhada (acrescento ao contrato): guarda só o erro,
+ *  sem tocar em last_reconciled_at nem na última fotografia válida, para o
+ *  "adia 1 h, alerta ao fim de 6" (spec 3.1 ponto 4) contar desde a última
+ *  leitura boa. */
+export async function markReconcileError(id: string, error: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ lastReconcileError: truncateChars(String(error ?? "") || "erro desconhecido", 500) })
+    .where(eq(sp.id, id));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Linha por id, ou null sem BD ou sem linha. Erro de BD propaga. */
+export async function getScheduledPaymentById(id: string): Promise<CheckoutScheduledPayment | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(sp).where(eq(sp.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+/** Linha dona de um PI de saldo (o do sweep ou o do hóspede). Duas linhas
+ *  com o mesmo PI lança: uma ligação ambígua nunca escolhe um pagamento. */
+export async function getScheduledPaymentByBalancePi(piId: string): Promise<CheckoutScheduledPayment | null> {
+  if (!piId) return null;
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db
+    .select()
+    .from(sp)
+    .where(or(eq(sp.balancePaymentIntentId, piId), eq(sp.guestPaymentIntentId, piId)))
+    .limit(2);
+  if (rows.length > 1) throw new Error(`PI ${piId} ligado a mais de uma linha de saldo`);
+  return rows[0] ?? null;
+}
+
+function emptyBalanceCounts(): Record<ScheduledPaymentStatus, number> {
+  return Object.fromEntries(sp.status.enumValues.map((s) => [s, 0])) as Record<ScheduledPaymentStatus, number>;
+}
+
+/**
+ * Dados do digest diário (spec 3.3) para um scope. Sem limites nas listas:
+ * o digest repete todas as exceções abertas até fecharem, e cortar em
+ * silêncio era esconder uma. Erro de BD propaga, para o digest não sair
+ * a dizer "nada a fazer" quando não conseguiu ler.
+ */
+export async function listBalanceDigest(scope: BalanceScope, now: Date): Promise<BalanceDigest> {
+  const where = scopeConditions(scope);
+  const db = await getDb();
+  const counts = emptyBalanceCounts();
+  if (!db) {
+    return {
+      counts, upcoming7d: [], failing: [], review: [], cancelled24h: [],
+      postChargeIncomplete: [], stuckCharging: [], stuckCancelling: [], refundFailures: [],
+    };
+  }
+  const grouped = await db
+    .select({ status: sp.status, n: sql<number>`count(*)` })
+    .from(sp)
+    .where(and(...where))
+    .groupBy(sp.status);
+  for (const g of grouped) counts[g.status] = Number(g.n);
+
+  const in7d = new Date(now.getTime() + 7 * 24 * 60 * 60_000);
+  const dayAgo = new Date(now.getTime() - 24 * 60 * 60_000);
+  const upcoming7d = await db
+    .select().from(sp)
+    .where(and(...where, eq(sp.status, "scheduled"), lte(sp.chargeAt, in7d)))
+    .orderBy(asc(sp.chargeAt));
+  const failing = await db
+    .select().from(sp)
+    .where(and(...where, inArray(sp.status, ["retry", "needs_action"])))
+    .orderBy(asc(sp.hardStopAt));
+  const review = await db
+    .select().from(sp)
+    .where(and(...where, eq(sp.status, "needs_review")))
+    .orderBy(asc(sp.reviewDueAt));
+  const cancelled24h = await db
+    .select().from(sp)
+    .where(and(...where, inArray(sp.status, ["cancelled_unpaid", "cancelled_by_guest"]), gte(sp.cancelledAt, dayAgo)))
+    .orderBy(desc(sp.cancelledAt));
+  const postChargeIncomplete = await listPostChargeIncomplete(scope);
+  const stuckCharging = await listStuckCharging(scope, new Date(now.getTime() - STUCK_AFTER_MS));
+  // cancelling não grava claimed_at; updated_at muda em cada passo do
+  // cancelamento (ON UPDATE CURRENT_TIMESTAMP). É um timestamp no fuso da
+  // sessão, por isso compara-se com o relógio da própria BD e não com now.
+  const stuckCancelling = await db
+    .select().from(sp)
+    .where(and(...where, eq(sp.status, "cancelling"), sql`${sp.updatedAt} < (CURRENT_TIMESTAMP - INTERVAL 30 MINUTE)`))
+    .orderBy(asc(sp.updatedAt));
+  // Reembolsos falhados por resolver, de qualquer idade e em qualquer estado:
+  // o refund.failed chega muitas vezes dias depois de a linha fechar.
+  const refundFailures = await db
+    .select().from(sp)
+    .where(and(...where, isNotNull(sp.refundStatus), notInArray(sp.refundStatus, REFUND_SETTLED)))
+    .orderBy(asc(sp.cancelledAt));
+  return { counts, upcoming7d, failing, review, cancelled24h, postChargeIncomplete, stuckCharging, stuckCancelling, refundFailures };
+}
+
+/* Heartbeat do sweep (spec 3.1 ponto 8): o GET /api/health/balance-scheduler
+   lê-o e um monitor externo avisa se parar. Vive na app_config, a mesma
+   tabela chave/valor do segredo do webhook (stripe-card-webhook-setup.ts). */
+const BALANCE_HEARTBEAT_KEY = "balance_sweep_last_run_at";
+/** O mesmo DDL de stripe-card-webhook-setup.ts: esse só cria a tabela
+ *  quando auto-regista o webhook, e com o segredo na env nunca a cria. */
+const APP_CONFIG_DDL =
+  "CREATE TABLE IF NOT EXISTS `app_config` (`k` varchar(128) NOT NULL PRIMARY KEY, `v` text NOT NULL, `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)";
+
+/** A BD é partilhada com o DEV: um sweep de teste (scope com livemode
+ *  false) escreve noutra chave e nunca refresca o heartbeat que o monitor
+ *  de produção lê. Sem scope, a chave do contrato. */
+function balanceHeartbeatKey(scope?: BalanceScope): string {
+  return scope && scope.livemode === false ? `${BALANCE_HEARTBEAT_KEY}_test` : BALANCE_HEARTBEAT_KEY;
+}
+
+function isNoSuchTableError(err: any): boolean {
+  const driver = err?.cause ?? err;
+  return driver?.code === "ER_NO_SUCH_TABLE" || driver?.errno === 1146;
+}
+
+/** Fim de uma passagem do sweep. Nunca lança: o sweep já fez o trabalho;
+ *  se a escrita falhar, o monitor externo dá pela falta, que é o que se
+ *  quer. true só se gravou. */
+export async function setBalanceHeartbeat(now: Date, scope?: BalanceScope): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const key = balanceHeartbeatKey(scope);
+  const write = () =>
+    db.execute(sql`INSERT INTO \`app_config\` (\`k\`, \`v\`) VALUES (${key}, ${now.toISOString()}) ON DUPLICATE KEY UPDATE \`v\` = VALUES(\`v\`)`);
+  try {
+    await write();
+    return true;
+  } catch (error) {
+    if (!isNoSuchTableError(error)) {
+      console.error("[Database] setBalanceHeartbeat failed:", error);
+      return false;
+    }
+  }
+  try {
+    await db.execute(sql.raw(APP_CONFIG_DDL));
+    await write();
+    return true;
+  } catch (error) {
+    console.error("[Database] setBalanceHeartbeat failed after creating app_config:", error);
+    return false;
+  }
+}
+
+/** Última passagem do sweep, ou null (nunca correu, sem BD, valor
+ *  ilegível ou erro). Nunca lança: null faz o health check falhar, que é
+ *  a direção segura. */
+export async function getBalanceHeartbeat(scope?: BalanceScope): Promise<Date | null> {
+  const db = await getDb();
+  if (!db) return null;
+  try {
+    const res: any = await db.execute(
+      sql`SELECT \`v\` FROM \`app_config\` WHERE \`k\` = ${balanceHeartbeatKey(scope)} LIMIT 1`,
+    );
+    const rows = Array.isArray(res) ? res[0] : res;
+    const raw = Array.isArray(rows) ? rows[0]?.v : undefined;
+    if (raw == null) return null;
+    const at = new Date(String(raw));
+    return Number.isNaN(at.getTime()) ? null : at;
+  } catch (error) {
+    if (!isNoSuchTableError(error)) console.error("[Database] getBalanceHeartbeat failed:", error);
+    return null;
+  }
+}
+
+/* ── Fase 2c: ecrã "Saldos" do CS (routers/balance-admin.ts) ─────────
+   Spec 3.2, 3.4 e 5.12. As regras da Fase 2a valem aqui também: scope em
+   todas as listas, transições por UPDATE condicional, erro de BD propaga e
+   false quer dizer só "a linha não estava no estado esperado". A exceção é
+   o registo das ações: lança também sem BD, porque o router só age depois
+   de o registo ter ficado gravado (sem registo, a ação não se faz). */
+
+/** Estados de onde o CS pode pausar: os por pagar e uma revisão já aberta
+ *  (para alargar ou encurtar a pausa). Nunca charging: há uma cobrança a
+ *  meio e o caminho das presas resolve-a primeiro, lendo o PI. */
+const ADMIN_PAUSABLE: ScheduledPaymentStatus[] = ["scheduled", "retry", "needs_action", "needs_review"];
+/** A nota de crédito só existe depois de um reembolso, ou seja, de um cancelamento. */
+const CREDIT_NOTE_STATUSES: ScheduledPaymentStatus[] = ["cancelling", "cancelled_unpaid", "cancelled_by_guest"];
+const ADMIN_LIST_DEFAULT = 200;
+const ADMIN_LIST_MAX = 500;
+
+/**
+ * Linhas do ecrã Saldos, do ambiente deste processo (scope). Primeiro as
+ * que esperam por alguém (needs_review e needs_action), depois por data da
+ * 2.ª cobrança: o CS abre o ecrã e vê em cima o que tem de decidir. Um
+ * estado desconhecido no filtro lança em vez de ser ignorado: um filtro
+ * que deixasse de filtrar mostrava tudo como se fosse a resposta pedida.
+ */
+export async function listScheduledPaymentsForAdmin(
+  scope: BalanceScope,
+  opts: { statuses?: readonly string[]; limit?: number } = {},
+): Promise<CheckoutScheduledPayment[]> {
+  const where = scopeConditions(scope);
+  const known = new Set<string>(sp.status.enumValues);
+  const statuses = opts.statuses?.length ? Array.from(new Set(opts.statuses)) : null;
+  const unknown = statuses?.filter((s) => !known.has(s)) ?? [];
+  if (unknown.length) throw new Error(`Estado desconhecido no filtro: ${unknown.join(", ")}`);
+  const requested = Number.isFinite(opts.limit) ? Math.floor(opts.limit as number) : ADMIN_LIST_DEFAULT;
+  const limit = Math.min(Math.max(requested, 1), ADMIN_LIST_MAX);
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(sp)
+    .where(and(...where, ...(statuses ? [inArray(sp.status, statuses as ScheduledPaymentStatus[])] : [])))
+    .orderBy(
+      sql`case when ${sp.status} in ('needs_review', 'needs_action') then 0 else 1 end`,
+      asc(sp.chargeAt),
+    )
+    .limit(limit);
+}
+
+/** Contagem por estado no scope, para os filtros do ecrã (todas as linhas,
+ *  não só as da página, para um número nunca esconder linhas cortadas). */
+export async function countScheduledPaymentsForAdmin(scope: BalanceScope): Promise<Record<ScheduledPaymentStatus, number>> {
+  const where = scopeConditions(scope);
+  const counts = emptyBalanceCounts();
+  const db = await getDb();
+  if (!db) return counts;
+  const grouped = await db
+    .select({ status: sp.status, n: sql<number>`count(*)` })
+    .from(sp)
+    .where(and(...where))
+    .groupBy(sp.status);
+  for (const g of grouped) counts[g.status] = Number(g.n);
+  return counts;
+}
+
+/**
+ * Regista uma ação do CS, antes de a ação correr. Lança sem BD e com
+ * qualquer erro: quem chama não pode avançar sem o registo gravado. O
+ * created_at vai explícito (o mesmo instante UTC que o resto do motor usa):
+ * o DEFAULT do MySQL seria a hora da sessão, lida depois como UTC.
+ */
+export async function insertAdminAction(row: InsertCheckoutAdminAction): Promise<void> {
+  if (!row?.id || !row.scheduledPaymentId) throw new Error("insertAdminAction sem id ou sem linha de saldo");
+  const action = String(row.action ?? "").trim();
+  if (!action || action.length > 40) throw new Error(`Ação inválida no registo: "${action}"`);
+  const db = await getDb();
+  if (!db) throw new Error("Cannot record admin action without database");
+  await db.insert(checkoutAdminActions).values({
+    ...row,
+    action,
+    userEmail: row.userEmail ? truncateChars(String(row.userEmail), 320) : null,
+    createdAt: row.createdAt ?? new Date(),
+  });
+}
+
+/**
+ * Acrescenta o resultado ao registo de uma ação já feita (substitui o
+ * details pelo objeto completo, que quem chama ainda tem em memória). Nunca
+ * lança: a ação já correu e o registo do pedido já existe; um resultado por
+ * gravar não pode fazer o CS julgar que nada aconteceu e repetir. true só
+ * se gravou.
+ */
+export async function setAdminActionResult(id: string, details: Record<string, unknown>): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    const res = await db.update(checkoutAdminActions).set({ details }).where(eq(checkoutAdminActions.id, id));
+    return affectedRowsOf(res) > 0;
+  } catch (error) {
+    console.error("[Database] setAdminActionResult failed:", error);
+    return false;
+  }
+}
+
+/** Histórico de uma linha, o mais recente primeiro. Erro de BD propaga: um
+ *  histórico vazio por falha passava por "ninguém mexeu nesta linha". */
+export async function listAdminActions(scheduledPaymentId: string, limit = 200): Promise<CheckoutAdminAction[]> {
+  if (!scheduledPaymentId) return [];
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(checkoutAdminActions)
+    .where(eq(checkoutAdminActions.scheduledPaymentId, scheduledPaymentId))
+    .orderBy(desc(checkoutAdminActions.createdAt))
+    .limit(Math.min(Math.max(Math.floor(limit), 1), 500));
+}
+
+/**
+ * "Retomar" no ecrã Saldos: needs_review → automação outra vez.
+ * - Antes de C: scheduled, com next_attempt_at = charge_at (cobra na data
+ *   que o hóspede autorizou, nunca antes).
+ * - Entre C e H: `pastChargeStatus` com next_attempt_at = now. O contrato
+ *   diz retry; quem chama passa scheduled quando nunca houve tentativa
+ *   (retry quer dizer "recusa soft" e faria sair o aviso de falha E3 sem
+ *   nenhuma falha; scheduled vencida cobra na passagem seguinte na mesma).
+ * - `holdForGuest` (acrescento ao contrato): a última recusa foi hard ou
+ *   3DS. Volta a needs_action, antes ou depois de C: repetir sozinho um
+ *   cartão recusado de vez é proibido pelas redes, e só o hóspede resolve
+ *   (pagar ou trocar de cartão pelo link). O hard stop continua a valer.
+ * - Em H ou depois: null. Depois de H nunca se cobra; só cancelar e
+ *   devolver, ou marcar pago fora.
+ * Limpa a pausa e o motivo da revisão: um humano decidiu, e uma pausa
+ * futura deixada na linha travava a cobrança em silêncio (notHelpPaused).
+ * O motivo anterior fica no registo da ação. Devolve o estado novo, ou null
+ * se a linha já não estava em needs_review ou se H já passou.
+ */
+export async function adminResume(
+  id: string,
+  now: Date,
+  opts: { pastChargeStatus?: "retry" | "scheduled"; holdForGuest?: boolean } = {},
+): Promise<"scheduled" | "retry" | "needs_action" | null> {
+  const past = opts.pastChargeStatus ?? "retry";
+  if (past !== "retry" && past !== "scheduled") throw new Error(`adminResume para estado inválido: ${past}`);
+  const db = await getDb();
+  if (!db) return null;
+  const cleared = { helpPausedUntil: null, reviewReason: null, reviewDueAt: null };
+  if (opts.holdForGuest) {
+    const held = await db
+      .update(sp)
+      .set({ status: "needs_action", nextAttemptAt: now, ...cleared })
+      .where(and(eq(sp.id, id), eq(sp.status, "needs_review"), gt(sp.hardStopAt, now)));
+    return affectedRowsOf(held) > 0 ? "needs_action" : null;
+  }
+  const before = await db
+    .update(sp)
+    .set({ status: "scheduled", nextAttemptAt: sql`${sp.chargeAt}`, ...cleared })
+    .where(and(eq(sp.id, id), eq(sp.status, "needs_review"), gt(sp.chargeAt, now), gt(sp.hardStopAt, now)));
+  if (affectedRowsOf(before) > 0) return "scheduled";
+  const after = await db
+    .update(sp)
+    .set({ status: past, nextAttemptAt: now, ...cleared })
+    .where(and(eq(sp.id, id), eq(sp.status, "needs_review"), lte(sp.chargeAt, now), gt(sp.hardStopAt, now)));
+  return affectedRowsOf(after) > 0 ? past : null;
+}
+
+/**
+ * "Pausar até data" pelo CS: → needs_review com help_paused_until e prazo
+ * de revisão nessa data. Também a partir de needs_review (alargar ou
+ * encurtar). Em needs_review nada é cobrado nem cancelado sozinho, e no fim
+ * da pausa a linha não volta sozinha: o digest mostra-a até alguém decidir.
+ * O limite da data (nunca depois do fim do cancelamento gratuito) é de
+ * quem chama, que tem o D da linha.
+ */
+export async function adminPause(id: string, until: Date, reason: string): Promise<boolean> {
+  if (!(until instanceof Date) || !Number.isFinite(until.getTime())) throw new Error("adminPause sem data válida");
+  const db = await getDb();
+  if (!db) return false;
+  const text = truncateChars(String(reason ?? "").trim() || "pausa pedida no ecrã Saldos", 120);
+  const res = await db
+    .update(sp)
+    .set({ status: "needs_review", helpPausedUntil: until, reviewReason: text, reviewDueAt: until })
+    .where(and(eq(sp.id, id), inArray(sp.status, ADMIN_PAUSABLE)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** Número da nota de crédito emitida (spec 5.13): só em linhas canceladas
+ *  ou a cancelar, e entra no E5/E7 se o email ainda não saiu. */
+export async function markCreditNote(id: string, ref: string): Promise<boolean> {
+  const text = String(ref ?? "").trim();
+  if (!text) throw new Error("markCreditNote exige o número da nota de crédito");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ creditNoteRef: truncateChars(text, 64), creditNoteDue: false })
+    .where(and(eq(sp.id, id), inArray(sp.status, CREDIT_NOTE_STATUSES)));
+  return affectedRowsOf(res) > 0;
 }
 
 /** Store validated field Core Web Vitals rows (server/routes/vitals.ts). */
