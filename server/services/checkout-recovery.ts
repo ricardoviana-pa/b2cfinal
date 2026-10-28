@@ -295,6 +295,14 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
   try {
     const candidates = await listRecoveryCandidates();
     checked = candidates.length;
+    // Uma leitura de consentimento por email e por passagem (o mesmo hóspede
+    // aparece em vários intents abandonados).
+    const consentByEmail = new Map<string, Promise<boolean>>();
+    const consentFor = (email: string) => {
+      let p = consentByEmail.get(email);
+      if (!p) consentByEmail.set(email, (p = hasNewsletterConsent(email)));
+      return p;
+    };
     for (const intent of candidates) {
       if (!intent.email || (intent as any).recoveryOptout) continue;
       if (!hasEnoughLeadTime(intent.checkIn)) continue;
@@ -305,7 +313,7 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
 
       // O consentimento só importa depois de a cotação expirar (contactos 3/4)
       const needsConsent = !quoteValid || ageMs >= RECOVERY_TIMING.stage3AfterMs;
-      const consent = needsConsent ? await hasNewsletterConsent(intent.email) : false;
+      const consent = needsConsent ? await consentFor(intent.email) : false;
       let target = nextRecoveryStage({ stage, ageMs, quoteValid, consent });
       const holdout = isRecoveryHoldout(intent.id);
       const alertDue = conciergeAlertDue(intent, ageMs);

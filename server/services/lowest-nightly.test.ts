@@ -11,13 +11,14 @@ const h = vi.hoisted(() => ({
   getCalendar: vi.fn(),
   quote: vi.fn(),
   getSetting: vi.fn(),
+  getSettingsByKeys: vi.fn(),
   upsertSetting: vi.fn(),
 }));
 
 vi.mock("../lib/guesty", () => ({ guestyBEClient: { getCalendar: h.getCalendar } }));
 vi.mock("./guesty", () => ({ getBackgroundLiveQuote: h.quote }));
 vi.mock("./guesty-booking", () => ({ beQuotesUnderPressure: () => false }));
-vi.mock("../db", () => ({ getSetting: h.getSetting, upsertSetting: h.upsertSetting }));
+vi.mock("../db", () => ({ getSetting: h.getSetting, getSettingsByKeys: h.getSettingsByKeys, upsertSetting: h.upsertSetting }));
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
 /** Dois dias livres a partir de amanhã (uma só janela de 2 noites, uma cotação). */
@@ -31,6 +32,7 @@ beforeEach(() => {
   for (const fn of Object.values(h)) fn.mockReset();
   // BD em baixo: nenhuma leitura do valor guardado funciona.
   h.getSetting.mockRejectedValue(new Error("usage quota exhausted"));
+  h.getSettingsByKeys.mockRejectedValue(new Error("usage quota exhausted"));
   h.upsertSetting.mockRejectedValue(new Error("usage quota exhausted"));
 });
 
@@ -68,5 +70,56 @@ describe("getLowestNightlyBatch: aquecimento em rotação", () => {
     await getLowestNightlyBatch(["a"]);
     expect(h.getCalendar).toHaveBeenCalledTimes(1);
     release();
+  });
+});
+
+describe("getLowestNightlyBatch: leituras à BD (quota do TiDB)", () => {
+  it("uma só consulta para a página, e o valor guardado serve as visitas seguintes sem voltar à BD", async () => {
+    const fresh = Date.now() - 60_000;
+    h.getSettingsByKeys.mockResolvedValue(new Map([
+      ["lowest_nightly_a", `150@${fresh}`],
+      ["lowest_nightly_b", `90@${fresh}`],
+    ]));
+    h.getCalendar.mockResolvedValue([]);
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["a", "b", "a"])).toEqual({ a: 150, b: 90 });
+    expect(h.getSettingsByKeys).toHaveBeenCalledTimes(1);
+    expect(h.getSettingsByKeys).toHaveBeenCalledWith(["lowest_nightly_a", "lowest_nightly_b"]);
+    expect(await getLowestNightlyBatch(["a", "b"])).toEqual({ a: 150, b: 90 });
+    expect(h.getSettingsByKeys).toHaveBeenCalledTimes(1);
+    expect(h.getSetting).not.toHaveBeenCalled();
+    // Frescos (menos de 8 h): nada a recalcular.
+    expect(h.getCalendar).not.toHaveBeenCalled();
+  });
+
+  it("um valor guardado com mais de 8 h aparece na página e recalcula-se em segundo plano", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map([["lowest_nightly_a", `150@${Date.now() - 9 * 3_600_000}`]]));
+    h.getCalendar.mockResolvedValue([]);
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
+    await vi.waitFor(() => expect(h.getCalendar).toHaveBeenCalledWith("a", expect.any(String), expect.any(String)));
+  });
+
+  it("uma casa tentada há pouco sem resultado não volta a ler a BD em cada visita", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map());
+    h.getCalendar.mockResolvedValue([]);
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["x"])).toEqual({ x: null });
+    await vi.waitFor(() => expect(h.getCalendar).toHaveBeenCalledTimes(1));
+    // Espera o cálculo acabar (fica em memória como "sem preço" 30 min).
+    await vi.waitFor(async () => {
+      h.getSettingsByKeys.mockClear();
+      expect(await getLowestNightlyBatch(["x"])).toEqual({ x: null });
+      expect(h.getSettingsByKeys).not.toHaveBeenCalled();
+    });
+  });
+
+  it("BD em baixo: um preço antigo em memória continua na página", async () => {
+    h.getSettingsByKeys.mockResolvedValueOnce(new Map([["lowest_nightly_a", `150@${Date.now() - 9 * 3_600_000}`]]));
+    h.getCalendar.mockImplementation(() => new Promise(() => {})); // recálculo pendurado
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
+    h.getSettingsByKeys.mockRejectedValue(new Error("usage quota exhausted"));
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
   });
 });

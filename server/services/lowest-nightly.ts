@@ -21,7 +21,7 @@
 import { guestyBEClient } from "../lib/guesty";
 import { getBackgroundLiveQuote } from "./guesty";
 import { beQuotesUnderPressure } from "./guesty-booking";
-import { getSetting, upsertSetting } from "../db";
+import { getSetting, getSettingsByKeys, upsertSetting } from "../db";
 
 const TTL_MS = 8 * 60 * 60 * 1000; // 8h in-memory cache
 const HORIZON_DAYS = 90;
@@ -216,27 +216,52 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
  * so their price appears on a later load rather than blocking this one.
  */
 export async function getLowestNightlyBatch(listingIds: string[]): Promise<Record<string, number | null>> {
+  const ids = Array.from(new Set(listingIds));
   const out: Record<string, number | null> = {};
   const dbReads: string[] = [];
-  for (const id of listingIds) {
+  for (const id of ids) {
     const c = CACHE.get(id);
-    if (c && isFresh(c) && c.value !== null) out[id] = c.value;
+    // Fresco em memória, também um "sem preço" recente: nenhuma leitura à BD.
+    if (c && isFresh(c)) out[id] = c.value;
     else dbReads.push(id);
   }
 
   const noValue: string[] = []; // never computed → warm to get a first value
   const stale: string[] = [];   // has a persisted value but it's old → refresh in background
-  await Promise.all(dbReads.map(async (id) => {
+  if (dbReads.length) {
+    // Uma só consulta para a página inteira (era uma por casa: 73 por visita
+    // ao catálogo, a pesar na quota do TiDB). O valor lido fica em memória com
+    // a hora em que foi calculado, por isso as regras de frescura são as
+    // mesmas (refresca-se ao fim de 8 h) e as visitas seguintes não leem a BD.
+    let stored: Map<string, string | null> | null = null;
     try {
-      const { price, at } = parseStored(await getSetting(`${STORE_CAT}_${id}`));
-      out[id] = price;
-      if (price === null) noValue.push(id);
-      else if (Date.now() - at >= TTL_MS) stale.push(id);
+      stored = await getSettingsByKeys(dbReads.map((id) => `${STORE_CAT}_${id}`));
     } catch {
-      out[id] = null;
-      noValue.push(id);
+      stored = null; // BD em baixo: o que houver em memória, mesmo antigo
     }
-  }));
+    for (const id of dbReads) {
+      if (!stored) {
+        out[id] = CACHE.get(id)?.value ?? null;
+        if (out[id] === null) noValue.push(id);
+        else stale.push(id);
+        continue;
+      }
+      const { price, at } = parseStored(stored.get(`${STORE_CAT}_${id}`));
+      out[id] = price;
+      if (price === null) {
+        noValue.push(id);
+        continue;
+      }
+      if (Date.now() - at < TTL_MS) {
+        CACHE.set(id, { value: price, source: "calendar", at });
+      } else {
+        // Antigo: serve-se na mesma (nunca apagar um preço que já está na
+        // página) e recalcula-se em segundo plano.
+        if (!CACHE.has(id)) CACHE.set(id, { value: price, source: "calendar", at });
+        stale.push(id);
+      }
+    }
+  }
 
   // Background-warm (fire-and-forget, capped). Listings with no value first, then
   // stale ones — so the whole portfolio self-heals onto the current (accurate)

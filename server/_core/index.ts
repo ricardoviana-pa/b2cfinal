@@ -210,8 +210,10 @@ async function startServer() {
       const { getPropertiesForSite } = await import("../services/properties-store");
       const { listBlogPosts, listServices } = await import("../db");
       const properties = await getPropertiesForSite();
-      const blogPosts = await listBlogPosts({ status: "published" });
-      const serviceItems = await listServices({ activeOnly: true });
+      // As duas tabelas estão vazias (o conteúdo vem dos JSON): com a BD em
+      // baixo não podem deitar o sitemap abaixo (500 sem cache na edge).
+      const blogPosts = await listBlogPosts({ status: "published" }).catch(() => []);
+      const serviceItems = await listServices({ activeOnly: true }).catch(() => []);
       const base = "https://www.portugalactive.com";
       const now = new Date().toISOString().split("T")[0];
 
@@ -668,6 +670,16 @@ ${allUrls.join("\n")}
       // o catch abaixo transforma em saída antes do listen.
       twoPartsSchemaVerified = await verifyTwoPartsColumns(executeTwoParts);
       console.info("[Migration] booking_intents table OK");
+      // Índices de leitura (quota do TiDB, 28 out 2026): os crons de 10 min
+      // deixam de ler booking_intents/leads inteiras. Fail-soft.
+      try {
+        const { ensureReadIndexes } = await import("../services/db-indexes");
+        const idx = await ensureReadIndexes(executeTwoParts);
+        console.info(`[Migration] read indexes: added=[${idx.added.join(", ")}] existing=${idx.existing.length} failed=${idx.failed.length}`);
+        for (const f of idx.failed) console.warn(`[Migration] read index ${f.index}:`, f.error);
+      } catch (idxErr: any) {
+        console.warn("[Migration] read indexes:", idxErr?.message);
+      }
     }
   } catch (migErr: any) {
     if (migErr instanceof TwoPartsSchemaError) {

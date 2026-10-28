@@ -1,10 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-const mocks = vi.hoisted(() => ({ calendar: vi.fn(), quote: vi.fn(), get: vi.fn(), save: vi.fn(), pressure: vi.fn() }));
+const mocks = vi.hoisted(() => ({ calendar: vi.fn(), quote: vi.fn(), get: vi.fn(), getMany: vi.fn(), save: vi.fn(), pressure: vi.fn() }));
 vi.mock('./lib/guesty', () => ({ guestyBEClient: { getCalendar: mocks.calendar } }));
 vi.mock('./services/guesty', () => ({ getBackgroundLiveQuote: mocks.quote }));
 vi.mock('./services/guesty-booking', () => ({ beQuotesUnderPressure: mocks.pressure }));
-vi.mock('./db', () => ({ getSetting: mocks.get, upsertSetting: mocks.save }));
-beforeEach(() => { vi.resetModules(); vi.resetAllMocks(); mocks.save.mockResolvedValue(undefined); mocks.pressure.mockReturnValue(false); });
+vi.mock('./db', () => ({ getSetting: mocks.get, getSettingsByKeys: mocks.getMany, upsertSetting: mocks.save }));
+// O lote lê todos os valores numa consulta (getSettingsByKeys); os testes
+// continuam a dizer o valor guardado com mocks.get.
+beforeEach(() => {
+  vi.resetModules(); vi.resetAllMocks(); mocks.save.mockResolvedValue(undefined); mocks.pressure.mockReturnValue(false);
+  mocks.getMany.mockImplementation(async (keys: string[]) => new Map(await Promise.all(keys.map(async (k) => [k, (await mocks.get(k)) ?? null] as [string, string | null]))));
+});
 describe('visible from prices during provider latency', () => {
   it('returns the persisted price without waiting for calendar requests', async () => {
     mocks.get.mockResolvedValue('368@1');
