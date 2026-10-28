@@ -100,18 +100,31 @@ describe("getLowestNightlyBatch: leituras à BD (quota do TiDB)", () => {
     await vi.waitFor(() => expect(h.getCalendar).toHaveBeenCalledWith("a", expect.any(String), expect.any(String)));
   });
 
-  it("uma casa tentada há pouco sem resultado não volta a ler a BD em cada visita", async () => {
+  it("uma casa tentada há pouco sem resultado não é recalculada em cada visita", async () => {
     h.getSettingsByKeys.mockResolvedValue(new Map());
     h.getCalendar.mockResolvedValue([]);
     const { getLowestNightlyBatch } = await import("./lowest-nightly");
     expect(await getLowestNightlyBatch(["x"])).toEqual({ x: null });
     await vi.waitFor(() => expect(h.getCalendar).toHaveBeenCalledTimes(1));
-    // Espera o cálculo acabar (fica em memória como "sem preço" 30 min).
-    await vi.waitFor(async () => {
-      h.getSettingsByKeys.mockClear();
-      expect(await getLowestNightlyBatch(["x"])).toEqual({ x: null });
-      expect(h.getSettingsByKeys).not.toHaveBeenCalled();
-    });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(await getLowestNightlyBatch(["x"])).toEqual({ x: null });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(h.getCalendar).toHaveBeenCalledTimes(1);
+  });
+
+  it("um recálculo que falhou por um soluço da BD não esconde o preço guardado", async () => {
+    // 1.º pedido: preço antigo (9 h) na BD; o recálculo não cota e a leitura
+    // de recurso à BD falha → fica "sem preço" em memória.
+    h.getSettingsByKeys.mockResolvedValueOnce(new Map([["lowest_nightly_a", `150@${Date.now() - 9 * 3_600_000}`]]));
+    h.getCalendar.mockResolvedValue([]);
+    h.getSetting.mockRejectedValue(new Error("connection reset"));
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
+    await vi.waitFor(() => expect(h.getSetting).toHaveBeenCalled());
+    await new Promise((r) => setTimeout(r, 20));
+    // 2.º pedido, BD de volta: o preço guardado continua na página.
+    h.getSettingsByKeys.mockResolvedValueOnce(new Map([["lowest_nightly_a", `150@${Date.now() - 9 * 3_600_000}`]]));
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
   });
 
   it("BD em baixo: um preço antigo em memória continua na página", async () => {

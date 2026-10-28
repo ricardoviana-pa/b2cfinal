@@ -221,8 +221,10 @@ export async function getLowestNightlyBatch(listingIds: string[]): Promise<Recor
   const dbReads: string[] = [];
   for (const id of ids) {
     const c = CACHE.get(id);
-    // Fresco em memória, também um "sem preço" recente: nenhuma leitura à BD.
-    if (c && isFresh(c)) out[id] = c.value;
+    // Preço fresco em memória: nenhuma leitura à BD. Um "sem preço" recente
+    // lê na mesma (na consulta única da página): o recálculo pode ter falhado
+    // só por um soluço da BD, e o preço guardado não pode sumir 30 min.
+    if (c && isFresh(c) && c.value !== null) out[id] = c.value;
     else dbReads.push(id);
   }
 
