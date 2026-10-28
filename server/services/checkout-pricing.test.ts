@@ -42,6 +42,9 @@ const BREAKDOWN = {
 const CONFIG_TESTE: TwoPartsConfig = readTwoPartsConfig({
   CHECKOUT_TWO_PARTS: "true",
   STRIPE_SECRET_KEY: "sk_test_fase1",
+  // O grupo de controlo está desligado por omissão (28 out 2026); aqui liga-se
+  // para os testes continuarem a provar o sorteio.
+  CHECKOUT_TWO_PARTS_HOLDOUT: "0.10",
 });
 
 /**

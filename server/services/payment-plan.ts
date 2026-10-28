@@ -268,11 +268,16 @@ export function readTwoPartsConfig(env: NodeJS.ProcessEnv = process.env): TwoPar
   const key = String(env.STRIPE_SECRET_KEY ?? "");
   const livemode = !/^(sk|rk)_test_/.test(key);
   const holdoutRaw = env.CHECKOUT_TWO_PARTS_HOLDOUT;
-  let holdout = 0.1;
+  // Sem grupo de controlo por omissão (decisão de 28 out 2026): o aviso na
+  // página da casa e no passo 1 vem antes do sorteio, que só existe no
+  // checkout, e o grupo de controlo via "pode pagar em duas partes" e depois
+  // não tinha a opção. Mede-se contra o período anterior. Ligar com
+  // CHECKOUT_TWO_PARTS_HOLDOUT=0.10 se um dia o sorteio for por visitante.
+  let holdout = 0;
   if (holdoutRaw != null && holdoutRaw !== "") {
     const n = Number(holdoutRaw);
     if (Number.isFinite(n) && n >= 0 && n <= 1) holdout = n;
-    else warnings.push(`CHECKOUT_TWO_PARTS_HOLDOUT inválido (${holdoutRaw}); fica 0.10`);
+    else warnings.push(`CHECKOUT_TWO_PARTS_HOLDOUT inválido (${holdoutRaw}); fica 0`);
   }
   const minRaw = env.CHECKOUT_TWO_PARTS_MIN_STAY_CENTS;
   let minStayCents: number = TWO_PARTS_RULES.minStayCents;
