@@ -426,12 +426,12 @@ describe("readTwoPartsConfig — configuração por env (spec 2.1, 2.6, 5.11)", 
     expect(readTwoPartsConfig({}).livemode).toBe(true);
   });
 
-  it("o motor da segunda cobrança não existe na Fase 1, seja qual for o env", () => {
-    // Fio de disparo: só a Fase 2 (checkout-balance.ts a cobrar as metades)
-    // pode passar isto a true, e quem o fizer tem de mudar este teste de
-    // propósito. Com false, nenhum pagamento live pode sair em duas partes.
-    expect(TWO_PARTS_BALANCE_ENGINE_READY).toBe(false);
+  it("em live, duas partes só com o motor ligado (CHECKOUT_BALANCE): desligar o motor tira a opção", () => {
+    // Ligado em produção a 28 out 2026 (decisão do Ricardo).
+    expect(TWO_PARTS_BALANCE_ENGINE_READY).toBe(true);
     expect(readTwoPartsConfig({ CHECKOUT_TWO_PARTS: "true", STRIPE_SECRET_KEY: "sk_live_x" }).engineReady).toBe(false);
+    expect(readTwoPartsConfig({ CHECKOUT_TWO_PARTS: "true", CHECKOUT_BALANCE: "false", STRIPE_SECRET_KEY: "sk_live_x" }).engineReady).toBe(false);
+    expect(readTwoPartsConfig({ CHECKOUT_TWO_PARTS: "true", CHECKOUT_BALANCE: "true", STRIPE_SECRET_KEY: "sk_live_x" }).engineReady).toBe(true);
   });
 
   it("holdout aceita frações de 0 a 1; inválido fica 0 com aviso", () => {

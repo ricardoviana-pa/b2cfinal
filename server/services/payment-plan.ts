@@ -243,12 +243,14 @@ export function inTwoPartsHoldout(intentId: string, fraction: number): boolean {
 export type FullPaymentIncentive = "flex" | "discount" | "none";
 
 /**
- * O motor da segunda cobrança (Fase 2) ainda não existe. Enquanto isto for
- * false, nenhum pagamento real (Stripe live) pode ser feito em duas partes,
- * mesmo com a flag ligada por engano: haveria metades por cobrar sem ninguém
- * para as cobrar. Em modo de teste da Stripe a opção funciona, para os testes.
+ * O motor da segunda cobrança (Fase 2) existe desde 28 out 2026 e foi ligado
+ * em produção nesse dia, por decisão do Ricardo. Em modo live a opção só
+ * aparece se, além disto, o motor estiver ligado no env (CHECKOUT_BALANCE):
+ * desligar o motor tira a opção do site na hora, para nunca haver metades
+ * por cobrar sem ninguém para as cobrar. Em modo de teste da Stripe a opção
+ * funciona sempre, para os testes.
  */
-export const TWO_PARTS_BALANCE_ENGINE_READY = false;
+export const TWO_PARTS_BALANCE_ENGINE_READY = true;
 
 export interface TwoPartsConfig {
   /** CHECKOUT_TWO_PARTS=true */
@@ -302,7 +304,7 @@ export function readTwoPartsConfig(env: NodeJS.ProcessEnv = process.env): TwoPar
   return {
     enabled: env.CHECKOUT_TWO_PARTS === "true",
     livemode,
-    engineReady: TWO_PARTS_BALANCE_ENGINE_READY,
+    engineReady: TWO_PARTS_BALANCE_ENGINE_READY && env.CHECKOUT_BALANCE === "true",
     holdout,
     minStayCents,
     incentive,
