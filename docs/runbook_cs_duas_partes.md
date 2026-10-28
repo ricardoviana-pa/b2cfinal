@@ -38,7 +38,7 @@ Nas reservas diretas elegíveis, o hóspede paga metade da estadia (mais os extr
 - **Cobrar agora**: tenta a 2.ª parte já, no cartão guardado. Só com o acordo do hóspede.
 - **Marcar paga por fora**: quando o hóspede pagou por transferência. Pede referência, valor e data.
 - **Pausar até…**: suspende as cobranças automáticas e põe a reserva "a rever" até à data.
-- **Retomar**: devolve a reserva à cobrança automática (se ainda houver prazo).
+- **Retomar**: devolve a reserva à cobrança automática (se ainda houver prazo). Numa reserva "a rever" em que a 2.ª parte já foi paga (o ecrã diz "A 2.ª parte já foi paga pela plataforma"), Retomar é **manter a estadia**: a linha fecha como paga, o pagamento é registado no Guesty e o hóspede recebe o email de pagamento. Nada é cobrado outra vez.
 - **Cancelar e devolver**: cancela no Guesty e reembolsa. "Devolver tudo" (inclui Flex e extras) é o cancelamento pela equipa, o normal quando a culpa não é do hóspede: o hóspede recebe "Cancelámos a sua reserva e devolvemos…", sem falar de falta de pagamento nem de pedido dele, e a linha fica "Cancelada pela equipa". "Pela política" é como se o hóspede cancelasse (retém o Flex comprado há mais de 14 dias). O diálogo mostra o valor e os cartões que o sistema vai usar. Pede confirmação dupla. Bloqueado enquanto o hóspede está a pagar na página (menos de 1 hora).
 - **Reembolso resolvido à mão**: só aparece quando um reembolso falhou na Stripe (cartão fechado, por exemplo). Depois de devolver por outra via, indicar como (ex.: "transferência 12/11") e escrever RESOLVIDO; a linha sai dos reembolsos por resolver do digest.
 - **Registar nota de crédito**: o número que a Hostkit emitiu.
@@ -56,5 +56,6 @@ Nas reservas diretas elegíveis, o hóspede paga metade da estadia (mais os extr
 - **"decisão humana antes de …" / "não cancela sozinha"**: os 7 dias de aviso escrito não cabem antes do prazo; a reserva NÃO é cancelada automaticamente. Decidir no ecrã Saldos antes do fim do cancelamento gratuito.
 - **"REEMBOLSO FALHOU na Stripe"**: o dinheiro não chegou ao hóspede. Contactar o hóspede, devolver por outra via e marcar **Reembolso resolvido à mão**.
 - **"reserva alterada / cancelada no Guesty"**: alguém mexeu na reserva no Guesty. Decidir no ecrã Saldos.
+- **"2.ª parte paga com a reserva a rever"**: o hóspede acabou de pagar a 2.ª parte numa reserva que estava a rever por causa do Guesty. O pagamento ficou gravado, mas nada foi registado no Guesty nem enviado ao hóspede. Manter a estadia: **Retomar**. Cancelar: **Devolver tudo**, que devolve as duas partes. Não registar o pagamento à mão no Guesty.
 - **"2.ª parte cobrada duas vezes"**: o sistema já devolveu a segunda cobrança; só agir se o alerta disser que o reembolso falhou.
 - **"DISPUTA aberta na Stripe"**: responder no Dashboard da Stripe antes do prazo, com o mandato aceite e os emails enviados.

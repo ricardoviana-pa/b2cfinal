@@ -1651,6 +1651,38 @@ export async function markReviewAsSucceeded(id: string, piId: string, now: Date)
   return affectedRowsOf(res) > 0;
 }
 
+/**
+ * 2.ª parte paga com a linha a rever por causa do Guesty (reserva cancelada
+ * ou alterada, pagamento por fora): o pagamento fica gravado na linha
+ * (balance_payment_intent_id e succeeded_at), que continua `needs_review`.
+ * Nada corre sozinho (os efeitos só correm em `succeeded`): a equipa decide
+ * manter (closeReviewAsPaid) ou cancelar e devolver (o reembolso inclui a
+ * 2.ª parte, porque a linha já a tem como paga).
+ */
+export async function recordPaymentDuringReview(id: string, piId: string, now: Date): Promise<boolean> {
+  if (!piId) throw new Error("recordPaymentDuringReview sem id de PI");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ balancePaymentIntentId: piId, succeededAt: now })
+    .where(and(eq(sp.id, id), eq(sp.status, "needs_review"), isNull(sp.succeededAt)));
+  return affectedRowsOf(res) > 0;
+}
+
+/** A equipa mantém a estadia de uma linha paga durante a revisão: → succeeded
+ *  com o pagamento já gravado (o mesmo PI); os efeitos correm a seguir. */
+export async function closeReviewAsPaid(id: string, piId: string): Promise<boolean> {
+  if (!piId) throw new Error("closeReviewAsPaid sem id de PI");
+  const db = await getDb();
+  if (!db) return false;
+  const res = await db
+    .update(sp)
+    .set({ status: "succeeded" })
+    .where(and(eq(sp.id, id), eq(sp.status, "needs_review"), isNotNull(sp.succeededAt), eq(sp.balancePaymentIntentId, piId)));
+  return affectedRowsOf(res) > 0;
+}
+
 /** Recusa soft: → retry com a próxima tentativa marcada (spec 2.4). */
 export async function markScheduledPaymentRetry(
   id: string,

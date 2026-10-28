@@ -190,20 +190,27 @@ export function balanceAdminAvailability(
     : status === "paid_externally" ? no("Já está marcada como paga fora da plataforma.")
     : no("A reserva está cancelada ou a cancelar."));
 
+  // Paga durante a revisão (succeeded_at gravado): não há cobrança a pausar.
+  const paidDuringReview = status === "needs_review" && !!row.succeededAt;
   const pause = charging ?? guestPaying ?? (!PAYABLE_EXTERNALLY.has(status)
     ? no("Só se pausa uma linha por pagar ou em revisão.")
+    : paidDuringReview ? no("A 2.ª parte já foi paga pela plataforma: não há cobrança a pausar. Decidir: Retomar mantém a estadia, Devolver tudo cancela e devolve.")
     : !withinFreeCancel ? no("O cancelamento gratuito já terminou: a pausa não pode ir além dele.")
     : yes);
 
+  // Uma linha paga durante a revisão não volta a cobrar: "Retomar" fecha-a
+  // como paga, também depois de H.
   const resume = status !== "needs_review"
     ? no("Só se retoma uma linha em revisão.")
+    : paidDuringReview ? yes
     : !beforeH ? no("O prazo H já passou: já não se cobra. Cancelar e devolver, ou marcar pago fora.")
     : yes;
 
-  // "Devolver tudo" é o cancelamento pela equipa: devolve tudo o que foi pago
-  // na 1.ª parte, sem retenção. Numa linha já paga deixaria a 2.ª parte por
-  // devolver. Depois de D também se pode (decisão da gestão).
-  const cancelFull = charging ?? guestPaying ?? (row.succeededAt || status === "succeeded"
+  // "Devolver tudo" é o cancelamento pela equipa: devolve, sem retenção, o
+  // que resta de cada pagamento da plataforma (a 1.ª parte e, numa linha paga
+  // durante a revisão, também a 2.ª). Uma estadia já fechada como paga cancela
+  // pela política. Depois de D também se pode (decisão da gestão).
+  const cancelFull = charging ?? guestPaying ?? (status === "succeeded"
     ? no("A 2.ª parte já foi cobrada: usar \"Cancelar pela política\", que devolve as duas partes.")
     : PAYABLE_EXTERNALLY.has(status) ? yes
     : status === "paid_externally" ? no("Pago fora da plataforma: a devolução dessa parte é manual. Falar com a gestão.")
@@ -701,7 +708,12 @@ export const balanceAdminRouter = router({
             // mudou nada (linha em revisão, por exemplo), só vale como paga se
             // outro caminho (webhook) já a marcou; senão o CS tem de o saber,
             // nunca um "feito" com a linha a rever.
-            const marked = await D.markScheduledPaymentSucceeded(row.id, piId, now);
+            // Em revisão, o CS que marca "pago" decidiu manter a estadia: a
+            // linha fecha paga pela plataforma (com ou sem o pagamento já
+            // gravado pelo webhook, recordPaymentDuringReview).
+            const marked = row.status === "needs_review"
+              ? (await D.markReviewAsSucceeded(row.id, piId, now)) || (await D.closeReviewAsPaid(row.id, piId))
+              : await D.markScheduledPaymentSucceeded(row.id, piId, now);
             if (marked) return { outcome: "platform_paid" as const, piId };
             const now2 = await freshRow(row.id);
             if (now2?.status === "succeeded") return { outcome: "platform_paid" as const, piId };
@@ -743,7 +755,7 @@ export const balanceAdminRouter = router({
       const messages: Record<string, string> = {
         marked: "Marcada como paga fora da plataforma. A plataforma não vai cobrar a 2.ª parte. Nota escrita no Guesty (o pagamento em si não é registado no Guesty por aqui).",
         marked_but_platform_paid: `ATENÇÃO: marcada como paga fora, mas a plataforma também cobrou ou pode ter cobrado (PI ${"piId" in result ? result.piId : "?"}). Verificar na Stripe e devolver uma das duas.`,
-        platform_paid: "NÃO marcada: a plataforma já tinha cobrado a 2.ª parte no cartão. Se o hóspede também pagou por fora, devolver essa transferência.",
+        platform_paid: "NÃO marcada como paga fora: a plataforma já tinha cobrado a 2.ª parte no cartão, e a linha ficou paga pela plataforma (registo no Guesty e email ao hóspede a seguir). Se o hóspede também pagou por fora, devolver essa transferência.",
         platform_paid_unmarked:
           `NÃO marcada, e ATENÇÃO: a plataforma já cobrou a 2.ª parte no cartão (PI ${"piId" in result ? result.piId : "?"}), ` +
           `mas a linha não ficou como paga (continua "${"statusNow" in result ? result.statusNow ?? "?" : "?"}"). Não repetir. ` +
@@ -814,6 +826,40 @@ export const balanceAdminRouter = router({
       const chargesEnabled = E.canRunBalanceEngine();
       const gate = availabilityFor(E, row, now, declineKind).gates.resume;
       if (!gate.allowed) refuse("PRECONDITION_FAILED", gate.reason!);
+      if (row.succeededAt && row.balancePaymentIntentId) {
+        // Paga durante a revisão: manter a estadia é fechá-la como paga pela
+        // plataforma, nunca voltar a cobrar. Só com o pagamento ainda inteiro
+        // na Stripe: um reembolso já feito lá (a equipa começou a devolver)
+        // não pode virar um "paga na totalidade" ao hóspede.
+        const piId = row.balancePaymentIntentId;
+        const log = await logAction(ctx.user, row, "resume", { closeAsPaid: true, piId });
+        let refunded: number | null = null;
+        try {
+          const pi: any = await (await stripe()).retrieveBalancePaymentIntent(piId);
+          const charge = pi.latest_charge && typeof pi.latest_charge === "object" ? pi.latest_charge : null;
+          refunded = pi.status === "succeeded" ? Number(charge?.amount_refunded ?? 0) : -1;
+        } catch {
+          refunded = null;
+        }
+        if (refunded !== 0) {
+          await finishAction(log, { outcome: refunded == null ? "stripe_unreadable" : "refunded_or_not_paid", statusAfter: row.status });
+          refuse("PRECONDITION_FAILED", refunded == null
+            ? "Não foi possível ler o pagamento da 2.ª parte na Stripe. Tentar daqui a uns minutos."
+            : "O pagamento da 2.ª parte já não está inteiro na Stripe (devolvido no todo ou em parte). Não se fecha como paga: cancelar e devolver, ou falar com a gestão.");
+        }
+        const closed = await D.closeReviewAsPaid(row.id, piId);
+        const after = await freshRow(row.id);
+        if (closed && after?.status === "succeeded") await E.runPostChargeEffects(after, now).catch(() => {});
+        const resultLogged = await finishAction(log, { outcome: closed ? "closed_as_paid" : "not_changed", statusAfter: after?.status ?? null });
+        if (!closed) refuse("CONFLICT", "Não foi possível fechar como paga: a linha mudou de estado. Reabrir o detalhe.");
+        return {
+          ok: true as const,
+          status: "succeeded" as const,
+          actionId: log.id,
+          resultLogged,
+          message: "A 2.ª parte já tinha sido paga pela plataforma durante a revisão: a linha fechou como paga. O pagamento é registado no Guesty e o hóspede recebe o email de pagamento.",
+        };
+      }
       // Recusa hard ou 3DS: só o hóspede resolve. Sem nenhuma tentativa: a
       // cobrança vencida faz-se como agendada (sem aviso de falha falso).
       const holdForGuest = declineKind === "hard" || declineKind === "auth";

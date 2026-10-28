@@ -585,6 +585,32 @@ describe("ações do hóspede e marcas novas (ronda 2)", () => {
     await expect(markReviewAsSucceeded("sp-1", "", NOW)).rejects.toThrow();
   });
 
+  it("recordPaymentDuringReview: grava o PI e succeeded_at, a linha continua needs_review; só uma vez", async () => {
+    const { recordPaymentDuringReview } = await import("../db");
+    fake.query.mockResolvedValueOnce(ok(1)).mockResolvedValueOnce(ok(0));
+    expect(await recordPaymentDuringReview("sp-1", "pi_g", NOW)).toBe(true);
+    expect(await recordPaymentDuringReview("sp-1", "pi_g", NOW)).toBe(false);
+    const [u] = calls();
+    expect(u.sql).toBe(
+      `update ${T} set \`balance_payment_intent_id\` = ?, \`succeeded_at\` = ? ` +
+        `where (${c("id")} = ? and ${c("status")} = ? and ${c("succeeded_at")} is null)`,
+    );
+    expect(u.params).toEqual(["pi_g", NOW_SQL, "sp-1", "needs_review"]);
+    await expect(recordPaymentDuringReview("sp-1", "", NOW)).rejects.toThrow();
+  });
+
+  it("closeReviewAsPaid: needs_review com o pagamento gravado (o mesmo PI) → succeeded", async () => {
+    const { closeReviewAsPaid } = await import("../db");
+    fake.query.mockResolvedValueOnce(ok(1));
+    expect(await closeReviewAsPaid("sp-1", "pi_g")).toBe(true);
+    const [u] = calls();
+    expect(u.sql).toBe(
+      `update ${T} set \`status\` = ? where (${c("id")} = ? and ${c("status")} = ? and ${c("succeeded_at")} is not null and ${c("balance_payment_intent_id")} = ?)`,
+    );
+    expect(u.params).toEqual(["succeeded", "sp-1", "needs_review", "pi_g"]);
+    await expect(closeReviewAsPaid("sp-1", "")).rejects.toThrow();
+  });
+
   it("setSmsStage: grava o estágio do SMS enviado e só sobe", async () => {
     const { setSmsStage } = await import("../db");
     fake.query.mockResolvedValueOnce(ok(1));

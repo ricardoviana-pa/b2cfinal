@@ -845,6 +845,14 @@ describe("sendBalanceDigest", () => {
     expect(html).toContain("motor DESLIGADO (CHECKOUT_BALANCE)");
   });
 
+  it("linha a rever com a 2.ª parte já paga: o digest diz o que decidir", async () => {
+    const r = row({ status: "needs_review", reviewReason: "reserva cancelada no Guesty", succeededAt: new Date("2099-06-27T10:00:00Z"), reviewDueAt: new Date("2099-07-01T22:59:00Z") });
+    await email.sendBalanceDigest({ ...empty, now, review: [r] } as any);
+    const html: string = sentTo("cs@checkout.invalid").html;
+    expect(html).toContain("reserva cancelada no Guesty · 2.ª parte JÁ PAGA pela plataforma");
+    expect(html).toContain("manter = Retomar; cancelar = Devolver tudo");
+  });
+
   it("motor desligado: nada promete cobrar nem cancelar sozinho", async () => {
     const H1 = new Date("2099-06-29T11:00:00Z"); // amanhã 12:00 de Lisboa
     const fits = row({ id: "fits", status: "retry", nextAttemptAt: new Date("2099-06-28T09:00:00Z"), hardStopAt: H1, failureNoticeSentAt: new Date("2099-06-20T09:00:00Z"), failureNoticeStage: 1 });

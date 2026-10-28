@@ -28,6 +28,8 @@ const m = vi.hoisted(() => ({
   getBookingIntent: vi.fn(),
   markPaidExternally: vi.fn(),
   markScheduledPaymentSucceeded: vi.fn(),
+  markReviewAsSucceeded: vi.fn(),
+  closeReviewAsPaid: vi.fn(),
   adminPause: vi.fn(),
   adminResume: vi.fn(),
   claimScheduledPaymentForCancel: vi.fn(),
@@ -43,6 +45,7 @@ const m = vi.hoisted(() => ({
   adminRefundPreview: vi.fn(),
   // Stripe e Guesty
   cancelOpenPaymentIntent: vi.fn(),
+  retrieveBalancePaymentIntent: vi.fn(),
   appendReservationNote: vi.fn(),
   // MySQL falso para os helpers verdadeiros
   query: vi.fn(),
@@ -64,6 +67,8 @@ vi.mock("../db", () => ({
   getBookingIntent: m.getBookingIntent,
   markPaidExternally: m.markPaidExternally,
   markScheduledPaymentSucceeded: m.markScheduledPaymentSucceeded,
+  markReviewAsSucceeded: m.markReviewAsSucceeded,
+  closeReviewAsPaid: m.closeReviewAsPaid,
   adminPause: m.adminPause,
   adminResume: m.adminResume,
   claimScheduledPaymentForCancel: m.claimScheduledPaymentForCancel,
@@ -94,7 +99,7 @@ vi.mock("../services/checkout-balance", () => ({
 vi.mock("../services/stripe-balance", async (importOriginal) => {
   // classifyDecline verdadeiro: a regra hard/auth/soft é a do motor.
   const actual = await importOriginal<typeof import("../services/stripe-balance")>();
-  return { ...actual, cancelOpenPaymentIntent: m.cancelOpenPaymentIntent };
+  return { ...actual, cancelOpenPaymentIntent: m.cancelOpenPaymentIntent, retrieveBalancePaymentIntent: m.retrieveBalancePaymentIntent };
 });
 vi.mock("../services/guesty-openapi-paypal", () => ({ appendReservationNote: m.appendReservationNote }));
 
@@ -611,10 +616,38 @@ describe("markPaidExternally", () => {
     expect(m.appendReservationNote).not.toHaveBeenCalled();
   });
 
+  it("PI já cobrado numa linha em revisão: o CS mantém a estadia → fecha paga pela plataforma, com os efeitos", async () => {
+    m.getScheduledPaymentById
+      .mockResolvedValueOnce(row({ status: "needs_review", reviewReason: "reserva cancelada no Guesty", guestPaymentIntentId: "pi_guest" }))
+      .mockResolvedValue(row({ status: "succeeded", succeededAt: BEFORE_C, balancePaymentIntentId: "pi_guest" }));
+    m.cancelOpenPaymentIntent.mockResolvedValue("succeeded");
+    m.markReviewAsSucceeded.mockResolvedValue(true);
+    const out = await admin().markPaidExternally(input);
+    expect(out).toMatchObject({ ok: false, outcome: "platform_paid", status: "succeeded" });
+    expect(out.message).toMatch(/ficou paga pela plataforma/);
+    expect(m.markReviewAsSucceeded).toHaveBeenCalledWith("sp-1", "pi_guest", BEFORE_C);
+    expect(m.markScheduledPaymentSucceeded).not.toHaveBeenCalled();
+    expect(m.runPostChargeEffects).toHaveBeenCalledTimes(1);
+    expect(m.markPaidExternally).not.toHaveBeenCalled();
+  });
+
+  it("linha paga durante a revisão (pagamento já gravado pelo webhook): fecha pelo mesmo PI", async () => {
+    m.getScheduledPaymentById
+      .mockResolvedValueOnce(row({ status: "needs_review", succeededAt: BEFORE_C, balancePaymentIntentId: "pi_guest", guestPaymentIntentId: "pi_guest" }))
+      .mockResolvedValue(row({ status: "succeeded", succeededAt: BEFORE_C, balancePaymentIntentId: "pi_guest" }));
+    m.cancelOpenPaymentIntent.mockResolvedValue("succeeded");
+    m.markReviewAsSucceeded.mockResolvedValue(false);
+    m.closeReviewAsPaid.mockResolvedValue(true);
+    const out = await admin().markPaidExternally(input);
+    expect(out).toMatchObject({ outcome: "platform_paid" });
+    expect(m.closeReviewAsPaid).toHaveBeenCalledWith("sp-1", "pi_guest");
+  });
+
   it("PI já cobrado numa linha em revisão que não fica paga: nunca 'feito', aviso claro (C17)", async () => {
     m.getScheduledPaymentById.mockResolvedValue(row({ status: "needs_review", guestPaymentIntentId: "pi_guest" }));
     m.cancelOpenPaymentIntent.mockResolvedValue("succeeded");
-    m.markScheduledPaymentSucceeded.mockResolvedValue(false);
+    m.markReviewAsSucceeded.mockResolvedValue(false);
+    m.closeReviewAsPaid.mockResolvedValue(false);
     const out = await admin().markPaidExternally(input);
     expect(out).toMatchObject({ ok: false, outcome: "platform_paid_unmarked", status: "needs_review" });
     expect(out.message).toMatch(/não ficou como paga/);
@@ -720,6 +753,52 @@ describe("resume", () => {
     m.adminResume.mockResolvedValue("retry");
     await admin().resume({ id: "sp-1" });
     expect(m.adminResume).toHaveBeenLastCalledWith("sp-1", AFTER_C, { pastChargeStatus: "retry", holdForGuest: false });
+  });
+
+  describe("linha paga durante a revisão (succeeded_at gravado): Retomar = manter a estadia", () => {
+    const paidReview = (over: Partial<Row> = {}) =>
+      row({ status: "needs_review", reviewReason: "reserva cancelada no Guesty", succeededAt: BEFORE_C, balancePaymentIntentId: "pi_g", guestPaymentIntentId: "pi_g", ...over });
+    const stripePi = (refunded: number, status = "succeeded") => ({ id: "pi_g", status, amount_received: 120_000, latest_charge: { amount_refunded: refunded } });
+
+    it("fecha como paga (nunca volta a cobrar), corre os efeitos; também depois de H", async () => {
+      vi.setSystemTime(AFTER_H);
+      m.getScheduledPaymentById
+        .mockResolvedValueOnce(paidReview())
+        .mockResolvedValue(paidReview({ status: "succeeded" }));
+      m.retrieveBalancePaymentIntent.mockResolvedValue(stripePi(0));
+      m.closeReviewAsPaid.mockResolvedValue(true);
+      const out = await admin().resume({ id: "sp-1" });
+      expect(out).toMatchObject({ ok: true, status: "succeeded" });
+      expect(m.closeReviewAsPaid).toHaveBeenCalledWith("sp-1", "pi_g");
+      expect(m.adminResume).not.toHaveBeenCalled();
+      expect(m.runPostChargeEffects).toHaveBeenCalledTimes(1);
+      expect(m.insertAdminAction.mock.calls[0][0]).toMatchObject({ action: "resume", details: { input: { closeAsPaid: true } } });
+    });
+
+    it("um reembolso já feito na Stripe (ou a Stripe ilegível) recusa: nunca um 'paga' ao hóspede com dinheiro devolvido", async () => {
+      m.getScheduledPaymentById.mockResolvedValue(paidReview());
+      m.retrieveBalancePaymentIntent.mockResolvedValueOnce(stripePi(50_000));
+      expect(await codeOf(admin().resume({ id: "sp-1" }))).toBe("PRECONDITION_FAILED");
+      m.retrieveBalancePaymentIntent.mockRejectedValueOnce(new Error("stripe down"));
+      expect(await codeOf(admin().resume({ id: "sp-1" }))).toBe("PRECONDITION_FAILED");
+      expect(m.closeReviewAsPaid).not.toHaveBeenCalled();
+      expect(m.runPostChargeEffects).not.toHaveBeenCalled();
+    });
+
+    it("UPDATE sem efeito → CONFLICT, sem efeitos", async () => {
+      m.getScheduledPaymentById.mockResolvedValue(paidReview());
+      m.retrieveBalancePaymentIntent.mockResolvedValue(stripePi(0));
+      m.closeReviewAsPaid.mockResolvedValue(false);
+      expect(await codeOf(admin().resume({ id: "sp-1" }))).toBe("CONFLICT");
+      expect(m.runPostChargeEffects).not.toHaveBeenCalled();
+    });
+
+    it("'Devolver tudo' fica disponível (devolve as duas partes); numa estadia fechada como paga continua recusado", () => {
+      const av = balanceAdminAvailability(paidReview(), AFTER_H, { chargesEnabled: true, declineKind: null });
+      expect(av.gates).toMatchObject({ resume: { allowed: true }, cancelFull: { allowed: true }, chargeNow: { allowed: false }, pause: { allowed: false } });
+      const paid = balanceAdminAvailability(row({ status: "succeeded", succeededAt: BEFORE_C }), BEFORE_C, { chargesEnabled: true, declineKind: null });
+      expect(paid.gates.cancelFull.allowed).toBe(false);
+    });
   });
 
   it("só em revisão e antes de H; um UPDATE sem efeito é CONFLICT", async () => {

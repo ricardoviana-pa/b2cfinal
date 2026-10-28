@@ -1340,7 +1340,7 @@ export async function handleBalancePaymentSucceeded(
   pi: { id: string; amount: number; metadata?: Record<string, string> | null },
   now = new Date(),
   env: NodeJS.ProcessEnv = process.env,
-): Promise<"marked" | "already" | "orphan" | "terminal" | "duplicate"> {
+): Promise<"marked" | "already" | "orphan" | "terminal" | "duplicate" | "review"> {
   const D = await db();
   // O id gravado na linha muda a cada tentativa: um PI de uma tentativa anterior
   // encontra-se pela metadata (scheduledPaymentId), que só o servidor escreve.
@@ -1376,8 +1376,9 @@ export async function handleBalancePaymentSucceeded(
   // não saiu: o dinheiro entrou e a linha fecha paga. Em revisão pelo Guesty
   // (reserva cancelada ou alterada, pagamento por fora) não: registar a
   // estadia como liquidada e mandar o E4 numa reserva que pode já não existir
-  // está errado; a linha fica a rever e o alerta "terminal" abaixo pede a
-  // decisão (devolver ou manter).
+  // está errado. O pagamento fica gravado na linha, que continua a rever, e a
+  // equipa decide no ecrã Saldos: "Retomar" mantém (fecha paga, com os
+  // efeitos), "Devolver tudo" cancela e devolve também a 2.ª parte.
   const reviewFromGuesty = /guesty|por fora/i.test(row.reviewReason ?? "");
   if (row.status === "needs_review" && !reviewFromGuesty && piBelongsTo(row, pi) && (await D.markReviewAsSucceeded(row.id, pi.id, now))) {
     await opsAlert(`DUAS PARTES: 2.ª parte paga durante a revisão — ${rowLabel(row)}`, [
@@ -1386,6 +1387,19 @@ export async function handleBalancePaymentSucceeded(
     ]);
     await afterMarkedPaid(row, pi, now, env);
     return "marked";
+  }
+  if (row.status === "needs_review" && reviewFromGuesty && piBelongsTo(row, pi) && (await D.recordPaymentDuringReview(row.id, pi.id, now))) {
+    // O outro PI aberto (do sweep) deixa de poder cobrar a mesma metade.
+    const S = await stripe();
+    for (const other of [row.balancePaymentIntentId, row.guestPaymentIntentId].filter((x) => x && x !== pi.id) as string[]) {
+      await S.cancelOpenPaymentIntent(other).catch(() => {});
+    }
+    await opsAlert(`DUAS PARTES: 2.ª parte paga com a reserva a rever — ${rowLabel(row)}`, [
+      `A Stripe confirmou ${eurLabel(pi.amount)} no PI ${pi.id} com a linha "a rever" (${row.reviewReason}). O pagamento ficou gravado na linha, que continua a rever: nada foi registado no Guesty nem enviado ao hóspede.`,
+      `Manter a estadia: "Retomar" no ecrã Saldos fecha a linha como paga pela plataforma (regista no Guesty e envia o email de pagamento). Não registar à mão no Guesty.`,
+      `Cancelar: "Devolver tudo" no ecrã Saldos devolve a 1.ª parte e também esta 2.ª parte.`,
+    ]);
+    return "review";
   }
   // A linha lida pode estar desatualizada (o sweep marcou-a entretanto):
   // relê antes de alarmar.
@@ -1398,11 +1412,8 @@ export async function handleBalancePaymentSucceeded(
   }
   const reason = (fresh ?? row).status === "needs_review" ? (fresh ?? row).reviewReason : null;
   await opsAlert(`DUAS PARTES: 2.ª parte paga numa reserva ${fresh?.status ?? row.status} — ${rowLabel(row)}`, [
-    `A Stripe confirmou ${eurLabel(pi.amount)} no PI ${pi.id}, mas a linha está em "${fresh?.status ?? row.status}"${reason ? ` (${reason})` : ""}.`,
-    ...(reason
-      ? [`A linha continua "a rever": nada foi registado no Guesty nem enviado ao hóspede.`,
-         `Se a reserva foi cancelada ou já estava paga por fora, devolver este valor no Stripe. Se a estadia se mantém, registar o pagamento no Guesty e marcar a linha como paga no ecrã Saldos.`]
-      : [`Se a reserva foi cancelada, este valor tem de ser devolvido ao hóspede no Stripe.`]),
+    `A Stripe confirmou ${eurLabel(pi.amount)} no PI ${pi.id}, mas a linha está em "${fresh?.status ?? row.status}"${reason ? ` (${reason})` : ""} e o pagamento não ficou gravado nela.`,
+    `Se a reserva foi cancelada, este valor tem de ser devolvido ao hóspede no Stripe.`,
   ]);
   return "terminal";
 }
@@ -1419,8 +1430,9 @@ function piBelongsTo(row: CheckoutScheduledPaymentRow, pi: { id: string; metadat
  * ("already"); outro PI é um segundo pagamento, devolvido na hora.
  */
 function alreadyPaidOutcome(row: CheckoutScheduledPaymentRow, pi: { id: string }): "already" | "duplicate" | null {
+  // Também uma linha a rever com o pagamento já gravado (recordPaymentDuringReview).
   const paidRow = row.status === "succeeded" ||
-    (!!row.succeededAt && (row.status === "cancelling" || row.status === "cancelled_by_guest" || row.status === "cancelled_unpaid"));
+    (!!row.succeededAt && (row.status === "cancelling" || row.status === "cancelled_by_guest" || row.status === "cancelled_unpaid" || row.status === "needs_review"));
   if (!paidRow) return null;
   return row.balancePaymentIntentId && row.balancePaymentIntentId !== pi.id ? "duplicate" : "already";
 }

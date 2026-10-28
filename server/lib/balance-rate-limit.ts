@@ -22,16 +22,17 @@ export function isBalanceTrpcPath(path: string | null | undefined): boolean {
   let p = String(path ?? "");
   const q = p.indexOf("?");
   if (q >= 0) p = p.slice(0, q);
+  // A mesma ordem do adaptador Express do tRPC: corta o caminho CRU depois da
+  // última "/" (`/x/balance.help` chama balance.help) e só depois descodifica.
+  // Descodificar primeiro deixava um "%2F" no fim (`balance.view%2C%2F`)
+  // cortar o procedimento fora do texto que o limite vê.
+  p = p.slice(p.lastIndexOf("/") + 1);
   try {
     // A vírgula do batch pode vir codificada (%2C).
     p = decodeURIComponent(p);
   } catch {
     // Codificação inválida: decide com o texto cru.
   }
-  // O adaptador Express do tRPC lê o procedimento só depois da última "/"
-  // (`/x/balance.help` chama balance.help): decide-se pelo mesmo texto, senão
-  // um segmento a mais passava ao lado do limite.
-  p = p.slice(p.lastIndexOf("/") + 1);
   return p
     .split(",")
     .map((s) => s.trim())

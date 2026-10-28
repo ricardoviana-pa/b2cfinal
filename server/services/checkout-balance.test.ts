@@ -220,6 +220,22 @@ const h = vi.hoisted(() => {
       );
     }),
 
+    recordPaymentDuringReview: fake("recordPaymentDuringReview", async (id: string, piId: string, now: Date) => {
+      if (!piId) throw new Error("recordPaymentDuringReview sem id de PI");
+      return update(
+        id,
+        (r) => r.status === "needs_review" && r.succeededAt == null,
+        () => ({ succeededAt: now, balancePaymentIntentId: piId }),
+      );
+    }),
+
+    closeReviewAsPaid: fake("closeReviewAsPaid", async (id: string, piId: string) =>
+      update(
+        id,
+        (r) => r.status === "needs_review" && r.succeededAt != null && r.balancePaymentIntentId === piId,
+        () => ({ status: "succeeded" }),
+      )),
+
     markScheduledPaymentRetry: fake(
       "markScheduledPaymentRetry",
       async (id: string, p: { declineCode: string | null; error: string | null; nextAttemptAt: Date }) =>
@@ -5035,23 +5051,46 @@ describe("Regressão C17: pagamento que sucede com a linha em revisão", () => {
     expect(h.mail.sendBalancePaid).toHaveBeenCalledTimes(1);
   });
 
-  it("em revisão pelo Guesty (reserva cancelada) → não fecha paga: nada no Guesty nem E4, e o alerta pede devolver ou manter", async () => {
-    seed(rowN(1, { status: "needs_review", reviewReason: "reserva cancelada no Guesty", guestPaymentIntentId: "pi_g" }));
-    expect(await handleBalancePaymentSucceeded(event("pi_g"), NOW)).toBe("terminal");
+  it("em revisão pelo Guesty (reserva cancelada) → o pagamento fica gravado, a linha continua a rever; nada no Guesty nem E4", async () => {
+    seed(rowN(1, { status: "needs_review", reviewReason: "reserva cancelada no Guesty", guestPaymentIntentId: "pi_g", balancePaymentIntentId: "pi_b" }));
+    seedPi("pi_b", "requires_payment_method", rowN(1));
+    expect(await handleBalancePaymentSucceeded(event("pi_g"), NOW)).toBe("review");
     expect(h.db.markReviewAsSucceeded).not.toHaveBeenCalled();
-    expect(stored().status).toBe("needs_review");
+    expect(stored()).toMatchObject({ status: "needs_review", balancePaymentIntentId: "pi_g", succeededAt: NOW });
+    expect(piStatus("pi_b")).toBe("canceled");
+    expect(alertSubjects()).toEqual([expect.stringContaining("2.ª parte paga com a reserva a rever — GY-1")]);
     const body = h.mail.sendOpsAlert.mock.calls.at(-1)![1].join(" ");
     expect(body).toContain("reserva cancelada no Guesty");
-    expect(body).toContain("devolver este valor no Stripe");
+    expect(body).toContain("Retomar");
+    expect(body).toContain("Devolver tudo");
     await sweep(plus(NOW, 10 * MIN));
     expect(h.guestyPay.recordExternalPayment).not.toHaveBeenCalled();
     expect(h.mail.sendBalancePaid).not.toHaveBeenCalled();
+    expect(stored().status).toBe("needs_review");
   });
 
-  it("em revisão por pagamento parcial por fora → também não fecha paga sozinha", async () => {
+  it("a mesma entrega repetida → already, sem segundo alerta; outro PI pago → devolvido como duplicado", async () => {
     seed(rowN(1, { status: "needs_review", reviewReason: "pagamento parcial por fora (500,00 €)", guestPaymentIntentId: "pi_g" }));
-    expect(await handleBalancePaymentSucceeded(event("pi_g"), NOW)).toBe("terminal");
-    expect(stored().status).toBe("needs_review");
+    expect(await handleBalancePaymentSucceeded(event("pi_g"), NOW)).toBe("review");
+    expect(await handleBalancePaymentSucceeded(event("pi_g"), NOW)).toBe("already");
+    expect(h.mail.sendOpsAlert).toHaveBeenCalledTimes(1);
+    seedPi("pi_outro", "succeeded", rowN(1));
+    expect(await handleBalancePaymentSucceeded(event("pi_outro"), NOW)).toBe("duplicate");
+    expect(stored()).toMatchObject({ status: "needs_review", balancePaymentIntentId: "pi_g" });
+  });
+
+  it("paga durante a revisão e cancelada pela equipa → devolve a 1.ª e a 2.ª parte", async () => {
+    const r = rowN(1, { status: "needs_review", reviewReason: "reserva cancelada no Guesty", guestPaymentIntentId: "pi_g" });
+    seed(r);
+    seedPi("pi_g", "succeeded", r);
+    expect(await handleBalancePaymentSucceeded(event("pi_g"), NOW)).toBe("review");
+    const row = stored();
+    h.store.get("sp-1")!.status = "cancelling";
+    h.store.get("sp-1")!.reviewReason = "cancel:admin";
+    await runCancellation({ ...row, status: "cancelling", reviewReason: "cancel:admin" }, "admin", plus(NOW, MIN));
+    const refunded = h.stripe.refundRemaining.mock.calls.map((c: any[]) => c[0].paymentIntentId);
+    expect(refunded).toEqual([row.depositPaymentIntentId, "pi_g"]);
+    expect(h.db.markCancellingAsSucceeded).not.toHaveBeenCalled();
   });
 
   it("um PI que não é desta linha → terminal e alerta; a linha fica em revisão", async () => {

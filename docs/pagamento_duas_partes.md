@@ -565,13 +565,13 @@ Segunda revisão adversarial (28 de outubro, 34 achados confirmados, corrigidos 
 - com `CHECKOUT_BALANCE=false` no serviço de produção, um pagamento pela página corre os efeitos (Guesty, nota, E4) no webhook e o digest sai na mesma, a abrir com "MOTOR DESLIGADO";
 - um `refund.failed` fica em "REEMBOLSOS POR RESOLVER" no digest, de qualquer idade, até a equipa o marcar "resolvido à mão" no ecrã Saldos (`refund_status = manual`, sem email automático ao hóspede).
 
-Terceira revisão adversarial (28 de outubro, 9 achados confirmados, corrigidos com testes):
+Terceira e quarta revisões adversariais (28 de outubro, 9 + 3 achados confirmados, corrigidos com testes):
 - depois de uma troca de cartão, um PI do hóspede ainda aberto no cartão antigo não trava a cobrança no cartão novo: o escudo de 60 min só vale para um PI no cartão atual da linha (antes, a reserva podia ser cancelada em H com um cartão válido gravado);
 - as retentativas contam pela data: um "Cobrar agora" do admin não apaga C+1 nem C+3, que o E3 prometeu; só uma retentativa já passada (sweep atrasado) é compensada uma hora depois;
-- um pagamento que chega com a linha a rever por causa do Guesty (reserva cancelada ou alterada, pagamento por fora ou pendente) não fecha a linha como paga, não regista nada no Guesty e não manda o E4: fica a rever, com um alerta a pedir a decisão (devolver ou manter); numa pausa ou num aviso impossível fecha paga;
+- um pagamento que chega com a linha a rever por causa do Guesty (reserva cancelada ou alterada, pagamento por fora ou pendente) não fecha a linha como paga, não regista nada no Guesty e não manda o E4: o pagamento fica gravado na linha (`balance_payment_intent_id`, `succeeded_at`), que continua a rever, com um alerta a pedir a decisão; "Retomar" mantém a estadia (fecha paga, com os efeitos, só com o pagamento ainda inteiro na Stripe) e "Devolver tudo" devolve as duas partes; numa pausa ou num aviso impossível fecha paga logo;
 - `refund.failed` soma as falhas dos dois reembolsos (`refund_id` guarda os dois ids) e um evento repetido não desfaz o "resolvido à mão";
 - com o motor desligado, o digest só sai com linhas abertas, reembolsos por resolver ou cancelamentos do dia (antes do lançamento não há email vazio todos os dias) e não promete cobranças nem cancelamentos automáticos;
-- o limitador da API do saldo lê o procedimento como o adaptador do tRPC (o texto depois da última `/`), e um segmento a mais no caminho já não o contorna.
+- o limitador da API do saldo lê o procedimento como o adaptador do tRPC (corta o caminho cru depois da última `/` e só depois descodifica): nem um segmento a mais nem uma barra codificada (`%2F`) o contornam.
 
 Fica por fazer na Fase 2, com dono: webhooks do Guesty e do Resend (o polling diário cobre a ausência dos do Guesty); "Recalcular datas" e reembolso de uma linha de extra no ecrã Saldos; `report:balances`; o monitor externo do `/api/health/balance-scheduler` (conta num serviço de monitorização, Ricardo); o fornecedor de SMS (conta Twilio e as variáveis `CHECKOUT_SMS_PROVIDER`, `TWILIO_*`, Ricardo; sem elas só há email); os dois ciclos completos em modo de teste da Stripe antes de passar `TWO_PARTS_BALANCE_ENGINE_READY` a true; depósitos sem reserva há mais de 72 h (decisão 13) continuam no alerta de settle existente.
 

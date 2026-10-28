@@ -498,6 +498,12 @@ function BalanceDetail({ id }: { id: string }) {
           <div>
             <p className="font-medium">A rever: {reviewReasonLabel(r.reviewReason) ?? "sem motivo"}</p>
             <p>Decidir até {lisbon(r.reviewDueAt)}. Em revisão nada é cobrado nem cancelado automaticamente.</p>
+            {r.succeededAt && (
+              <p className="mt-1 font-medium">
+                A 2.ª parte ({money(r.balanceCents)}) já foi paga pela plataforma a {lisbon(r.succeededAt)}. Manter a
+                estadia: "Retomar" fecha a linha como paga. Cancelar: "Devolver tudo" devolve também a 2.ª parte.
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -876,8 +882,14 @@ function ActionDialog({ kind, detail, onClose }: { kind: ActionKind; detail: Det
       break;
 
     case "resume":
-      title = "Retomar a automação";
-      body = holdForGuest ? (
+      title = r.succeededAt ? "Manter a estadia (fechar como paga)" : "Retomar a automação";
+      body = r.succeededAt ? (
+        <p>
+          A 2.ª parte ({money(r.balanceCents)}) já foi paga pela plataforma durante a revisão. A linha fecha como{" "}
+          <strong>paga</strong>: o pagamento é registado no Guesty e o hóspede recebe o email de pagamento. Nada é cobrado
+          outra vez. Se a reserva foi cancelada, usar antes "Devolver tudo".
+        </p>
+      ) : holdForGuest ? (
         <p>
           O banco recusou este cartão ({r.lastDeclineKind ? DECLINE_KIND[r.lastDeclineKind] : "recusa"}), por isso a linha
           volta a <strong>"à espera do hóspede"</strong>: não há cobrança automática; o hóspede paga ou troca de cartão

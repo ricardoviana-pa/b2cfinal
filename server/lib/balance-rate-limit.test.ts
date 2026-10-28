@@ -24,6 +24,13 @@ describe("isBalanceTrpcPath", () => {
     expect(isBalanceTrpcPath("/balance.x/checkout.getIntent")).toBe(false);
   });
 
+  it("uma barra codificada (%2F) não esconde o procedimento: corta-se o caminho cru, como o tRPC", () => {
+    expect(isBalanceTrpcPath("/api/trpc/balance.view%2C%2F")).toBe(true);
+    expect(isBalanceTrpcPath("/api/trpc/balance.view%2Cx%2Fy")).toBe(true);
+    expect(isBalanceTrpcPath("/api/trpc/checkout.x%2Cbalance.view%2C%2F")).toBe(true);
+    expect(isBalanceTrpcPath("/api/trpc/x%2Fbalance.help")).toBe(false);
+  });
+
   it("ignora a query string (o batch do tRPC leva ?batch=1&input=…)", () => {
     expect(isBalanceTrpcPath("/api/trpc/balance.view?batch=1")).toBe(true);
     expect(isBalanceTrpcPath("/api/trpc/checkout.x?input=balance.view")).toBe(false);

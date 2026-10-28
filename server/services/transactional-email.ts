@@ -2145,7 +2145,8 @@ export async function sendBalanceDigest(d: BalanceDigestData): Promise<boolean> 
     const ours = [
       ...rowsOf(d.review).map((r) => {
         const age = ageDays(r);
-        return `${ref(r)} · ${esc(r.reviewReason || "sem motivo")}${age != null ? ` · há ${age} dia(s)` : ""} · decidir até ${digestDateTime(r.reviewDueAt)}`;
+        const paid = isValidDate(r.succeededAt) ? ` · 2.ª parte JÁ PAGA pela plataforma (${money(r.balanceCents)}): manter = Retomar; cancelar = Devolver tudo` : "";
+        return `${ref(r)} · ${esc(r.reviewReason || "sem motivo")}${paid}${age != null ? ` · há ${age} dia(s)` : ""} · decidir até ${digestDateTime(r.reviewDueAt)}`;
       }),
       ...refundOpen.map((r) => `${ref(r)} · REEMBOLSO por confirmar (${esc(r.refundStatus || "sem estado")}, ${money(r.refundCents)}, ${esc(r.refundId || "sem id")})`),
       ...rowsOf(d.postChargeIncomplete).map((r) => {
