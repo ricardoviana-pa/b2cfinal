@@ -14,16 +14,16 @@
  * - mudar uma vírgula do texto, em qualquer língua, obriga a nova
  *   TWO_PARTS_MANDATE_VERSION (o teste com o texto fixo apanha a mudança).
  *
- * Línguas: pt-PT (o texto validado pelo André Feiteiro) e inglês. As outras
- * sete caem para inglês até à tradução revista da Fase 3 (revisão nativa
- * obrigatória em DE, FR e NL), porque um mandato mal traduzido é pior do
- * que um mandato em inglês.
+ * Línguas: pt-PT (o texto validado pelo André Feiteiro), inglês e, desde a
+ * v2 (28 out 2026), FR/ES/IT/DE/NL/SV/FI. As sete traduções estão POR REVER
+ * por nativos (obrigatório em DE, FR e NL antes de ligar as duas partes); a
+ * v2 também tirou o "e SMS" (decisão do Ricardo: avisos só por email).
  */
 import { createHash } from "crypto";
 import { TWO_PARTS_RULES } from "./payment-plan";
 
 /** Versão do texto do mandato (caixa + parágrafo, pt e en). */
-export const TWO_PARTS_MANDATE_VERSION = "2026-10-27.v1";
+export const TWO_PARTS_MANDATE_VERSION = "2026-10-28.v2";
 
 /**
  * Versão da declaração de execução imediata do Flex
@@ -36,7 +36,8 @@ export const TWO_PARTS_MANDATE_VERSION = "2026-10-27.v1";
  */
 export const FLEX_IMMEDIATE_CONSENT_VERSION = "2026-10-27.v1";
 
-export type MandateLang = "pt" | "en";
+export type MandateLang = "pt" | "en" | "fr" | "es" | "it" | "de" | "nl" | "sv" | "fi";
+const MANDATE_LANGS: readonly MandateLang[] = ["pt", "en", "fr", "es", "it", "de", "nl", "sv", "fi"];
 
 export interface MandateValues {
   /** A segunda parte, ao cêntimo (TwoPartsSplit.balanceCents). */
@@ -81,7 +82,7 @@ const TEMPLATES: Record<MandateLang, { checkbox: (s: MandateSlots) => string; te
       `a tentar de novo o mesmo valor até ${s.deadline}.`,
     text: (s) =>
       `Ao pagar, autoriza a Portugal Active a cobrar ${s.amountLater} a ${s.date}, no cartão que usar agora, ` +
-      `como segunda e última parte desta estadia. Se a cobrança for recusada, avisamos por email e SMS, ` +
+      `como segunda e última parte desta estadia. Se a cobrança for recusada, avisamos por email, ` +
       `tentamos de novo o mesmo valor em ${s.retries}, e tem ${s.noticeDays} dias, contados do aviso, ` +
       `para pagar por outro meio; caso contrário a reserva é cancelada e devolvemos tudo o que pagou. ` +
       `Pode pagar antes, mudar de cartão ou cancelar a qualquer momento, no link da sua confirmação. ` +
@@ -94,19 +95,113 @@ const TEMPLATES: Record<MandateLang, { checkbox: (s: MandateSlots) => string; te
       `to retry the same amount until ${s.deadline}.`,
     text: (s) =>
       `By paying, you authorise Portugal Active to charge ${s.amountLater} on ${s.date} to the card you are using now, ` +
-      `as the second and final part of this stay. If the charge is declined, we will let you know by email and SMS, ` +
+      `as the second and final part of this stay. If the charge is declined, we will let you know by email, ` +
       `retry the same amount on ${s.retries}, and you will have ${s.noticeDays} days from that notice ` +
       `to pay by another method; otherwise the booking is cancelled and we refund everything you paid. ` +
       `You can pay early, change your card or cancel at any time, using the link in your confirmation. ` +
       `Free cancellation until ${s.deadline}.`,
   },
+  fr: {
+    checkbox: (s) =>
+      `J'autorise Portugal Active à débiter ${s.amountLater} le ${s.date} sur la carte que j'utilise maintenant, ` +
+      `comme deuxième et dernière partie de ce séjour, et, si ce débit est refusé, ` +
+      `à retenter le même montant jusqu'au ${s.deadline}.`,
+    text: (s) =>
+      `En payant, vous autorisez Portugal Active à débiter ${s.amountLater} le ${s.date} sur la carte que vous utilisez maintenant, ` +
+      `comme deuxième et dernière partie de ce séjour. Si le débit est refusé, nous vous prévenons par e-mail, ` +
+      `nous retentons le même montant le ${s.retries}, et vous disposez de ${s.noticeDays} jours à compter de cet avis ` +
+      `pour payer par un autre moyen ; à défaut, la réservation est annulée et nous remboursons tout ce que vous avez payé. ` +
+      `Vous pouvez payer plus tôt, changer de carte ou annuler à tout moment, via le lien de votre confirmation. ` +
+      `Annulation gratuite jusqu'au ${s.deadline}.`,
+  },
+  es: {
+    checkbox: (s) =>
+      `Autorizo a Portugal Active a cobrar ${s.amountLater} el ${s.date} en la tarjeta que uso ahora, ` +
+      `como segunda y última parte de esta estancia y, si ese cobro es rechazado, ` +
+      `a intentar de nuevo el mismo importe hasta el ${s.deadline}.`,
+    text: (s) =>
+      `Al pagar, autoriza a Portugal Active a cobrar ${s.amountLater} el ${s.date} en la tarjeta que usa ahora, ` +
+      `como segunda y última parte de esta estancia. Si el cobro es rechazado, le avisamos por email, ` +
+      `intentamos de nuevo el mismo importe el ${s.retries}, y tiene ${s.noticeDays} días, contados desde el aviso, ` +
+      `para pagar por otro medio; de lo contrario, la reserva se cancela y le devolvemos todo lo que pagó. ` +
+      `Puede pagar antes, cambiar de tarjeta o cancelar en cualquier momento, en el enlace de su confirmación. ` +
+      `Cancelación gratuita hasta el ${s.deadline}.`,
+  },
+  it: {
+    checkbox: (s) =>
+      `Autorizzo Portugal Active ad addebitare ${s.amountLater} il ${s.date} sulla carta che uso ora, ` +
+      `come seconda e ultima parte di questo soggiorno e, se l'addebito viene rifiutato, ` +
+      `a riprovare lo stesso importo fino al giorno ${s.deadline}.`,
+    text: (s) =>
+      `Pagando, autorizza Portugal Active ad addebitare ${s.amountLater} il ${s.date} sulla carta che usa ora, ` +
+      `come seconda e ultima parte di questo soggiorno. Se l'addebito viene rifiutato, la avvisiamo via email, ` +
+      `riproviamo lo stesso importo il ${s.retries}, e ha ${s.noticeDays} giorni dall'avviso ` +
+      `per pagare con un altro metodo; altrimenti la prenotazione viene annullata e le rimborsiamo tutto quanto pagato. ` +
+      `Può pagare prima, cambiare carta o annullare in qualsiasi momento, dal link nella sua conferma. ` +
+      `Cancellazione gratuita fino al giorno ${s.deadline}.`,
+  },
+  de: {
+    checkbox: (s) =>
+      `Ich ermächtige Portugal Active, am ${s.date} ${s.amountLater} von der Karte abzubuchen, die ich jetzt verwende, ` +
+      `als zweiten und letzten Teil dieses Aufenthalts, und, falls diese Abbuchung abgelehnt wird, ` +
+      `denselben Betrag bis ${s.deadline} erneut zu versuchen.`,
+    text: (s) =>
+      `Mit Ihrer Zahlung ermächtigen Sie Portugal Active, am ${s.date} ${s.amountLater} von der Karte abzubuchen, die Sie jetzt verwenden, ` +
+      `als zweiten und letzten Teil dieses Aufenthalts. Wird die Abbuchung abgelehnt, informieren wir Sie per E-Mail, ` +
+      `versuchen denselben Betrag am ${s.retries} erneut, und Sie haben ab dieser Mitteilung ${s.noticeDays} Tage Zeit, ` +
+      `auf anderem Weg zu zahlen; andernfalls wird die Buchung storniert und wir erstatten alles, was Sie gezahlt haben. ` +
+      `Sie können jederzeit früher zahlen, die Karte wechseln oder stornieren, über den Link in Ihrer Bestätigung. ` +
+      `Kostenlose Stornierung bis ${s.deadline}.`,
+  },
+  nl: {
+    checkbox: (s) =>
+      `Ik machtig Portugal Active om op ${s.date} ${s.amountLater} af te schrijven van de kaart die ik nu gebruik, ` +
+      `als tweede en laatste deel van dit verblijf, en, als die afschrijving wordt geweigerd, ` +
+      `hetzelfde bedrag opnieuw te proberen tot ${s.deadline}.`,
+    text: (s) =>
+      `Door te betalen machtigt u Portugal Active om op ${s.date} ${s.amountLater} af te schrijven van de kaart die u nu gebruikt, ` +
+      `als tweede en laatste deel van dit verblijf. Wordt de afschrijving geweigerd, dan laten we het u per e-mail weten, ` +
+      `proberen we hetzelfde bedrag opnieuw op ${s.retries}, en heeft u ${s.noticeDays} dagen vanaf dat bericht ` +
+      `om op een andere manier te betalen; anders wordt de boeking geannuleerd en betalen we alles terug wat u heeft betaald. ` +
+      `U kunt op elk moment eerder betalen, van kaart wisselen of annuleren, via de link in uw bevestiging. ` +
+      `Gratis annuleren tot ${s.deadline}.`,
+  },
+  sv: {
+    checkbox: (s) =>
+      `Jag godkänner att Portugal Active debiterar ${s.amountLater} den ${s.date} på det kort jag använder nu, ` +
+      `som andra och sista delen av denna vistelse, och, om den debiteringen nekas, ` +
+      `försöker igen med samma belopp fram till ${s.deadline}.`,
+    text: (s) =>
+      `Genom att betala godkänner du att Portugal Active debiterar ${s.amountLater} den ${s.date} på det kort du använder nu, ` +
+      `som andra och sista delen av denna vistelse. Om debiteringen nekas meddelar vi dig via e-post, ` +
+      `försöker igen med samma belopp den ${s.retries}, och du har ${s.noticeDays} dagar från meddelandet ` +
+      `att betala på annat sätt; annars avbokas bokningen och vi återbetalar allt du har betalat. ` +
+      `Du kan när som helst betala tidigare, byta kort eller avboka via länken i din bekräftelse. ` +
+      `Kostnadsfri avbokning fram till ${s.deadline}.`,
+  },
+  fi: {
+    checkbox: (s) =>
+      `Valtuutan Portugal Activen veloittamaan ${s.amountLater} ${s.date} kortilta, jota käytän nyt, ` +
+      `tämän majoituksen toisena ja viimeisenä osana, ja jos veloitus hylätään, ` +
+      `yrittämään samaa summaa uudelleen ${s.deadline} asti.`,
+    text: (s) =>
+      `Maksamalla valtuutat Portugal Activen veloittamaan ${s.amountLater} ${s.date} kortilta, jota käytät nyt, ` +
+      `tämän majoituksen toisena ja viimeisenä osana. Jos veloitus hylätään, ilmoitamme sinulle sähköpostitse, ` +
+      `yritämme samaa summaa uudelleen ${s.retries}, ja sinulla on ${s.noticeDays} päivää ilmoituksesta ` +
+      `maksaa muulla tavalla; muuten varaus perutaan ja palautamme kaiken maksamasi. ` +
+      `Voit milloin tahansa maksaa aiemmin, vaihtaa korttia tai peruuttaa vahvistuksesi linkin kautta. ` +
+      `Maksuton peruutus ${s.deadline} asti.`,
+  },
 };
 
-const INTL_TAG: Record<MandateLang, string> = { pt: "pt-PT", en: "en-GB" };
+const INTL_TAG: Record<MandateLang, string> = {
+  pt: "pt-PT", en: "en-GB", fr: "fr-FR", es: "es-ES", it: "it-IT", de: "de-DE", nl: "nl-NL", sv: "sv-SE", fi: "fi-FI",
+};
 
-/** Língua do mandato: pt para qualquer variante de português, inglês para o resto. */
+/** Língua do mandato: a do hóspede, se for uma das 9 do site; senão inglês. */
 function mandateLang(lang: string | null | undefined): MandateLang {
-  return String(lang ?? "").trim().toLowerCase().slice(0, 2) === "pt" ? "pt" : "en";
+  const l = String(lang ?? "").trim().toLowerCase().slice(0, 2) as MandateLang;
+  return MANDATE_LANGS.includes(l) ? l : "en";
 }
 
 /**
@@ -162,14 +257,24 @@ function formatDeadline(at: Date, lang: MandateLang): string {
     timeZone: "Europe/Lisbon",
   }).format(at);
   const day = formatDay(at, lang);
-  if (lang === "pt") return `${day} ${time.startsWith("01:") ? "à" : "às"} ${time} (hora de Lisboa)`;
-  return `${day} at ${time} (Lisbon time)`;
+  switch (lang) {
+    case "pt": return `${day} ${time.startsWith("01:") ? "à" : "às"} ${time} (hora de Lisboa)`;
+    case "fr": return `${day} à ${time} (heure de Lisbonne)`;
+    case "es": return `${day} a las ${time} (hora de Lisboa)`;
+    case "it": return `${day} alle ${time} (ora di Lisbona)`;
+    case "de": return `${day} um ${time} Uhr (Lissabonner Zeit)`;
+    case "nl": return `${day} om ${time} (Lissabonse tijd)`;
+    case "sv": return `${day} kl. ${time} (Lissabontid)`;
+    case "fi": return `${day} klo ${time} (Lissabonin aikaa)`;
+    default: return `${day} at ${time} (Lisbon time)`;
+  }
 }
 
 /** "A e B", "A, B e C" / "A and B" (sem vírgula de Oxford, como no inglês britânico). */
 function joinList(items: string[], lang: MandateLang): string {
   if (items.length < 2) return items.join("");
-  const and = lang === "pt" ? "e" : "and";
+  const AND: Record<MandateLang, string> = { pt: "e", en: "and", fr: "et", es: "y", it: "e", de: "und", nl: "en", sv: "och", fi: "ja" };
+  const and = AND[lang];
   return `${items.slice(0, -1).join(", ")} ${and} ${items[items.length - 1]}`;
 }
 
@@ -226,7 +331,7 @@ export function renderTwoPartsMandate(lang: string | null | undefined, v: Mandat
    texto renderizado aqui, hash do que o hóspede viu, versão própria.
    ════════════════════════════════════════════════════════════════ */
 
-export const CARD_CHANGE_MANDATE_VERSION = "2026-10-28.v1";
+export const CARD_CHANGE_MANDATE_VERSION = "2026-10-28.v2";
 
 const CARD_CHANGE_TEMPLATES: Record<MandateLang, (s: { amountLater: string; date: string; deadline: string }) => string> = {
   pt: (s) =>
@@ -235,6 +340,40 @@ const CARD_CHANGE_TEMPLATES: Record<MandateLang, (s: { amountLater: string; date
   en: (s) =>
     `I authorise Portugal Active to charge ${s.amountLater} ${s.date} to this new card, as the second and final part of this stay, ` +
     `with retries of the same amount until ${s.deadline} if it is declined.`,
+  fr: (s) =>
+    `J'autorise Portugal Active à débiter ${s.amountLater} ${s.date} sur cette nouvelle carte, comme deuxième et dernière partie de ce séjour, ` +
+    `avec de nouvelles tentatives du même montant jusqu'au ${s.deadline} en cas de refus.`,
+  es: (s) =>
+    `Autorizo a Portugal Active a cobrar ${s.amountLater} ${s.date} en esta nueva tarjeta, como segunda y última parte de esta estancia, ` +
+    `con nuevos intentos del mismo importe hasta el ${s.deadline} si es rechazado.`,
+  it: (s) =>
+    `Autorizzo Portugal Active ad addebitare ${s.amountLater} ${s.date} su questa nuova carta, come seconda e ultima parte di questo soggiorno, ` +
+    `con nuovi tentativi dello stesso importo fino al giorno ${s.deadline} se viene rifiutato.`,
+  de: (s) =>
+    `Ich ermächtige Portugal Active, ${s.date} ${s.amountLater} von dieser neuen Karte abzubuchen, als zweiten und letzten Teil dieses Aufenthalts, ` +
+    `mit erneuten Versuchen desselben Betrags bis ${s.deadline}, falls sie abgelehnt wird.`,
+  nl: (s) =>
+    `Ik machtig Portugal Active om ${s.date} ${s.amountLater} af te schrijven van deze nieuwe kaart, als tweede en laatste deel van dit verblijf, ` +
+    `met nieuwe pogingen voor hetzelfde bedrag tot ${s.deadline} als die wordt geweigerd.`,
+  sv: (s) =>
+    `Jag godkänner att Portugal Active debiterar ${s.amountLater} ${s.date} på detta nya kort, som andra och sista delen av denna vistelse, ` +
+    `med nya försök med samma belopp fram till ${s.deadline} om den nekas.`,
+  fi: (s) =>
+    `Valtuutan Portugal Activen veloittamaan ${s.amountLater} ${s.date} tältä uudelta kortilta tämän majoituksen toisena ja viimeisenä osana, ` +
+    `ja yrittämään samaa summaa uudelleen ${s.deadline} asti, jos veloitus hylätään.`,
+};
+
+/** "a 28 de junho" / "hoje" na língua do mandato (cartão novo). */
+const CARD_CHANGE_DATE: Record<MandateLang, { on: (d: string) => string; today: string }> = {
+  pt: { on: (d) => `a ${d}`, today: "hoje" },
+  en: { on: (d) => `on ${d}`, today: "today" },
+  fr: { on: (d) => `le ${d}`, today: "aujourd'hui" },
+  es: { on: (d) => `el ${d}`, today: "hoy" },
+  it: { on: (d) => `il ${d}`, today: "oggi" },
+  de: { on: (d) => `am ${d}`, today: "heute" },
+  nl: { on: (d) => `op ${d}`, today: "vandaag" },
+  sv: { on: (d) => `den ${d}`, today: "i dag" },
+  fi: { on: (d) => d, today: "tänään" },
 };
 
 /**
@@ -253,9 +392,7 @@ export function renderCardChangeMandate(
   const l = mandateLang(lang);
   const now = v.now ?? new Date();
   const future = v.chargeAt.getTime() > now.getTime();
-  const date = future
-    ? (l === "pt" ? `a ${formatDay(v.chargeAt, l)}` : `on ${formatDay(v.chargeAt, l)}`)
-    : (l === "pt" ? "hoje" : "today");
+  const date = future ? CARD_CHANGE_DATE[l].on(formatDay(v.chargeAt, l)) : CARD_CHANGE_DATE[l].today;
   const text = CARD_CHANGE_TEMPLATES[l]({
     amountLater: formatAmount(v.amountLaterCents, l),
     date,
