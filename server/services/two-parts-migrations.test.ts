@@ -687,6 +687,23 @@ describe("scheduleTwoPartsSchemaRetry: arranque com a BD em baixo", () => {
     expect(getExecute.mock.calls.length).toBe(calls);
   });
 
+  it("quando a BD volta e o esquema fica confirmado, corre onConfirmed uma vez (os índices de leitura)", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const db = fakeMysql();
+    let up = false;
+    const onConfirmed = vi.fn(async () => { throw new Error("index failed"); });
+    scheduleTwoPartsSchemaRetry(async () => (up ? db.execute : null), { intervalMs: 1000, maxAttempts: 10, onConfirmed });
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(onConfirmed).not.toHaveBeenCalled();
+    up = true;
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(onConfirmed).toHaveBeenCalledOnce();
+    expect(onConfirmed).toHaveBeenCalledWith(db.execute);
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(onConfirmed).toHaveBeenCalledOnce();
+  });
+
   it("colunas em falta depois de migrar: avisa uma vez e não mata o processo", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     vi.spyOn(console, "info").mockImplementation(() => {});

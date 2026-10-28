@@ -290,10 +290,15 @@ class SDKServer {
       throw ForbiddenError("User not found");
     }
 
-    await db.upsertUser({
-      openId: user.openId,
-      lastSignedIn: signedInAt,
-    });
+    // Uma escrita por pedido autenticado (também nos públicos, como os
+    // preços) pesava na quota da BD: só se grava se a última tem mais de 1 h.
+    const last = user.lastSignedIn ? new Date(user.lastSignedIn).getTime() : 0;
+    if (!Number.isFinite(last) || signedInAt.getTime() - last > 60 * 60 * 1000) {
+      await db.upsertUser({
+        openId: user.openId,
+        lastSignedIn: signedInAt,
+      });
+    }
 
     return user;
   }

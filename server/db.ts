@@ -486,6 +486,20 @@ export async function getSetting(key: string) {
   return result[0]?.settingValue;
 }
 
+/** Vários settings numa só consulta (chave → valor). Lança se a BD falhar. */
+export async function getSettingsByKeys(keys: string[]): Promise<Map<string, string | null>> {
+  const out = new Map<string, string | null>();
+  if (!keys.length) return out;
+  const db = await getDb();
+  if (!db) return out;
+  const rows = await db
+    .select({ key: siteSettings.settingKey, value: siteSettings.settingValue })
+    .from(siteSettings)
+    .where(inArray(siteSettings.settingKey, keys));
+  for (const r of rows) out.set(r.key, r.value ?? null);
+  return out;
+}
+
 export async function upsertSetting(key: string, value: string, category?: string) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -941,6 +955,10 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
         and(
           ...base,
           lt(bookingIntents.createdAt, oneHourAgo),
+          // Sem efeito no resultado (nextRecoveryStage desiste aos 9 dias e o
+          // alerta ao concierge só vale até 48 h), mas com o índice de
+          // createdAt troca uma leitura da tabela inteira por um intervalo.
+          gt(bookingIntents.createdAt, nineDaysAgo),
           or(
             and(lt(bookingIntents.recoveryStage, 2), gt(bookingIntents.expiresAt, new Date(now))),
             and(
@@ -993,14 +1011,16 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
  * primeiro e com folga no limite, para os abandonados com PI não taparem um
  * pagamento real (a mesma classe de falha do PR #147 da recuperação).
  */
-export async function listUnsettledCardIntents(limit = 200): Promise<BookingIntent[]> {
+export async function listUnsettledCardIntents(limit = 200): Promise<Array<{ id: string; paymentIntentId: string | null }>> {
   const db = await getDb();
   if (!db) return [];
   try {
     const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000);
     const twoDaysAgo = new Date(Date.now() - 48 * 60 * 60 * 1000);
+    // Só as duas colunas que o sweep usa: cada linha completa leva a cotação
+    // em JSON, e a BD (TiDB) cobra cada KiB lido.
     return await db
-      .select()
+      .select({ id: bookingIntents.id, paymentIntentId: bookingIntents.paymentIntentId })
       .from(bookingIntents)
       .where(
         and(

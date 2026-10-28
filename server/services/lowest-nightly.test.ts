@@ -11,13 +11,14 @@ const h = vi.hoisted(() => ({
   getCalendar: vi.fn(),
   quote: vi.fn(),
   getSetting: vi.fn(),
+  getSettingsByKeys: vi.fn(),
   upsertSetting: vi.fn(),
 }));
 
 vi.mock("../lib/guesty", () => ({ guestyBEClient: { getCalendar: h.getCalendar } }));
 vi.mock("./guesty", () => ({ getBackgroundLiveQuote: h.quote }));
 vi.mock("./guesty-booking", () => ({ beQuotesUnderPressure: () => false }));
-vi.mock("../db", () => ({ getSetting: h.getSetting, upsertSetting: h.upsertSetting }));
+vi.mock("../db", () => ({ getSetting: h.getSetting, getSettingsByKeys: h.getSettingsByKeys, upsertSetting: h.upsertSetting }));
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
 /** Dois dias livres a partir de amanhã (uma só janela de 2 noites, uma cotação). */
@@ -31,6 +32,7 @@ beforeEach(() => {
   for (const fn of Object.values(h)) fn.mockReset();
   // BD em baixo: nenhuma leitura do valor guardado funciona.
   h.getSetting.mockRejectedValue(new Error("usage quota exhausted"));
+  h.getSettingsByKeys.mockRejectedValue(new Error("usage quota exhausted"));
   h.upsertSetting.mockRejectedValue(new Error("usage quota exhausted"));
 });
 
@@ -68,5 +70,102 @@ describe("getLowestNightlyBatch: aquecimento em rotação", () => {
     await getLowestNightlyBatch(["a"]);
     expect(h.getCalendar).toHaveBeenCalledTimes(1);
     release();
+  });
+});
+
+describe("getLowestNightlyBatch: leituras à BD (quota do TiDB)", () => {
+  it("uma só consulta para a página, e o valor guardado serve as visitas seguintes sem voltar à BD", async () => {
+    const fresh = Date.now() - 60_000;
+    h.getSettingsByKeys.mockResolvedValue(new Map([
+      ["lowest_nightly_a", `150@${fresh}`],
+      ["lowest_nightly_b", `90@${fresh}`],
+    ]));
+    h.getCalendar.mockResolvedValue([]);
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["a", "b", "a"])).toEqual({ a: 150, b: 90 });
+    expect(h.getSettingsByKeys).toHaveBeenCalledTimes(1);
+    expect(h.getSettingsByKeys).toHaveBeenCalledWith(["lowest_nightly_a", "lowest_nightly_b"]);
+    expect(await getLowestNightlyBatch(["a", "b"])).toEqual({ a: 150, b: 90 });
+    expect(h.getSettingsByKeys).toHaveBeenCalledTimes(1);
+    expect(h.getSetting).not.toHaveBeenCalled();
+    // Frescos (menos de 8 h): nada a recalcular.
+    expect(h.getCalendar).not.toHaveBeenCalled();
+  });
+
+  it("um valor guardado com mais de 8 h aparece na página e recalcula-se em segundo plano", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map([["lowest_nightly_a", `150@${Date.now() - 9 * 3_600_000}`]]));
+    h.getCalendar.mockResolvedValue([]);
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
+    await vi.waitFor(() => expect(h.getCalendar).toHaveBeenCalledWith("a", expect.any(String), expect.any(String)));
+  });
+
+  it("uma casa tentada há pouco sem resultado não é recalculada em cada visita", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map());
+    h.getCalendar.mockResolvedValue([]);
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["x"])).toEqual({ x: null });
+    await vi.waitFor(() => expect(h.getCalendar).toHaveBeenCalledTimes(1));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(await getLowestNightlyBatch(["x"])).toEqual({ x: null });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(h.getCalendar).toHaveBeenCalledTimes(1);
+  });
+
+  it("um recálculo que falhou por um soluço da BD não esconde o preço guardado", async () => {
+    // 1.º pedido: preço antigo (9 h) na BD; o recálculo não cota e a leitura
+    // de recurso à BD falha → fica "sem preço" em memória.
+    h.getSettingsByKeys.mockResolvedValueOnce(new Map([["lowest_nightly_a", `150@${Date.now() - 9 * 3_600_000}`]]));
+    h.getCalendar.mockResolvedValue([]);
+    h.getSetting.mockRejectedValue(new Error("connection reset"));
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
+    await vi.waitFor(() => expect(h.getSetting).toHaveBeenCalled());
+    await new Promise((r) => setTimeout(r, 20));
+    // 2.º pedido, BD de volta: o preço guardado continua na página.
+    h.getSettingsByKeys.mockResolvedValueOnce(new Map([["lowest_nightly_a", `150@${Date.now() - 9 * 3_600_000}`]]));
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
+  });
+
+  it("BD em baixo: um preço antigo em memória continua na página", async () => {
+    h.getSettingsByKeys.mockResolvedValueOnce(new Map([["lowest_nightly_a", `150@${Date.now() - 9 * 3_600_000}`]]));
+    h.getCalendar.mockImplementation(() => new Promise(() => {})); // recálculo pendurado
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
+    h.getSettingsByKeys.mockRejectedValue(new Error("usage quota exhausted"));
+    expect(await getLowestNightlyBatch(["a"])).toEqual({ a: 150 });
+  });
+});
+
+describe("computeLowestNightly: casas sem datas nos 90 dias", () => {
+  it("procura até 12 meses: uma casa só livre na primavera também tem preço", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map());
+    h.upsertSetting.mockResolvedValue(undefined);
+    const t = Date.now();
+    const days = Array.from({ length: 366 }, (_, k) => ({
+      date: ymd(new Date(t + k * 86_400_000)),
+      status: k >= 150 && k < 160 ? "available" : "unavailable",
+      minNights: 2,
+    }));
+    h.getCalendar.mockResolvedValue(days);
+    h.quote.mockResolvedValue({ source: "live", pricing: { nightlyRate: 300 }, ratePlanOptions: [] });
+    const { getLowestNightly } = await import("./lowest-nightly");
+    expect(await getLowestNightly("spring")).toMatchObject({ from: 300, source: "calendar" });
+    const [, from, to] = h.getCalendar.mock.calls[0];
+    expect((Date.parse(to) - Date.parse(from)) / 86_400_000).toBeGreaterThanOrEqual(364);
+    expect(h.quote.mock.calls[0][1] >= days[150].date).toBe(true);
+  });
+
+  it("com datas nos 90 dias, as amostras ficam nos 90 dias (o 'desde' não muda de sentido)", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map());
+    h.upsertSetting.mockResolvedValue(undefined);
+    const t = Date.now();
+    const days = Array.from({ length: 366 }, (_, k) => ({ date: ymd(new Date(t + k * 86_400_000)), status: k === 10 || k === 11 || k > 200 ? "available" : "unavailable", minNights: 2 }));
+    h.getCalendar.mockResolvedValue(days);
+    h.quote.mockResolvedValue({ source: "live", pricing: { nightlyRate: 200 }, ratePlanOptions: [] });
+    const { getLowestNightly } = await import("./lowest-nightly");
+    await getLowestNightly("near");
+    expect(h.quote).toHaveBeenCalledTimes(1);
+    expect(h.quote.mock.calls[0][1]).toBe(days[10].date);
   });
 });

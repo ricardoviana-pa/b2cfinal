@@ -107,6 +107,18 @@ describe("funil de 4 contactos", () => {
     await runCheckoutRecoverySweep();
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 1, paymentStep: true }));
   });
+  it("o consentimento lê-se uma vez por email em cada passagem (quota da BD)", async () => {
+    const expired = { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) };
+    mock.candidates.mockResolvedValue([
+      intent(80, { ...expired, id: "11111111-1111-1111-1111-111111111111" }),
+      intent(90, { ...expired, id: "22222222-2222-2222-2222-222222222222" }),
+      intent(80, { ...expired, id: "33333333-3333-3333-3333-333333333333", email: "other@example.test" }),
+    ]);
+    await runCheckoutRecoverySweep();
+    expect(mock.consent.mock.calls.map((c) => c[0]).sort()).toEqual(["guest@example.test", "other@example.test"]);
+    await runCheckoutRecoverySweep();
+    expect(mock.consent).toHaveBeenCalledTimes(4);
+  });
   it("sem consentimento, depois de a cotação expirar não há mais contactos", async () => {
     mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) })]);
     expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });

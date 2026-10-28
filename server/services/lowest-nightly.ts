@@ -21,10 +21,13 @@
 import { guestyBEClient } from "../lib/guesty";
 import { getBackgroundLiveQuote } from "./guesty";
 import { beQuotesUnderPressure } from "./guesty-booking";
-import { getSetting, upsertSetting } from "../db";
+import { getSetting, getSettingsByKeys, upsertSetting } from "../db";
 
 const TTL_MS = 8 * 60 * 60 * 1000; // 8h in-memory cache
 const HORIZON_DAYS = 90;
+/** Sem noites livres nos 90 dias (casa cheia ou fechada até à primavera), o
+ *  "desde" procura até 12 meses: todas as casas reserváveis mostram preço. */
+const EXTENDED_HORIZON_DAYS = 365;
 const MAX_SAMPLES = 14; // quotes per listing on a cache miss
 const SAMPLE_CADENCE_DAYS = 7; // probe ~every week so no seasonal low (a whole cheap month) is missed
 // Orçamento do warm-up. O BE do Guesty dá ~275 quotes/min à conta TODA, e um
@@ -110,7 +113,7 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
 
   const today = new Date();
   const from = ymd(today);
-  const to = ymd(new Date(today.getTime() + HORIZON_DAYS * 86400000));
+  const to = ymd(new Date(today.getTime() + EXTENDED_HORIZON_DAYS * 86400000));
 
   let lowest: number | null = null;
   // Amostra incompleta (o BE entrou em rate limit a meio): o mínimo visto é
@@ -136,25 +139,29 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
     const availSet = new Set<string>(availDates);
     const samples: Array<{ ci: string; co: string }> = [];
     const seen = new Set<string>();
-    for (let offset = 0; offset < HORIZON_DAYS && samples.length < MAX_SAMPLES; offset += SAMPLE_CADENCE_DAYS) {
-      const target = new Date(today.getTime() + offset * 86400000);
-      let ci: string | null = null;
-      for (let k = 0; k < SAMPLE_CADENCE_DAYS; k++) {
-        const cand = ymd(new Date(target.getTime() + k * 86400000));
-        if (availSet.has(cand)) { ci = cand; break; }
+    const sampleRange = (fromDay: number, toDay: number) => {
+      for (let offset = fromDay; offset < toDay && samples.length < MAX_SAMPLES; offset += SAMPLE_CADENCE_DAYS) {
+        const target = new Date(today.getTime() + offset * 86400000);
+        let ci: string | null = null;
+        for (let k = 0; k < SAMPLE_CADENCE_DAYS; k++) {
+          const cand = ymd(new Date(target.getTime() + k * 86400000));
+          if (availSet.has(cand)) { ci = cand; break; }
+        }
+        if (!ci || seen.has(ci)) continue;
+        const mn = Math.max(1, byDate.get(ci)?.minNights ?? 2);
+        const start = new Date(ci + "T00:00:00Z");
+        let ok = true;
+        for (let n = 0; n < mn; n++) {
+          const day = byDate.get(ymd(new Date(start.getTime() + n * 86400000)));
+          if (!day || day.status !== "available") { ok = false; break; }
+        }
+        if (!ok) continue;
+        seen.add(ci);
+        samples.push({ ci, co: ymd(new Date(start.getTime() + mn * 86400000)) });
       }
-      if (!ci || seen.has(ci)) continue;
-      const mn = Math.max(1, byDate.get(ci)?.minNights ?? 2);
-      const start = new Date(ci + "T00:00:00Z");
-      let ok = true;
-      for (let n = 0; n < mn; n++) {
-        const day = byDate.get(ymd(new Date(start.getTime() + n * 86400000)));
-        if (!day || day.status !== "available") { ok = false; break; }
-      }
-      if (!ok) continue;
-      seen.add(ci);
-      samples.push({ ci, co: ymd(new Date(start.getTime() + mn * 86400000)) });
-    }
+    };
+    sampleRange(0, HORIZON_DAYS);
+    if (!samples.length) sampleRange(HORIZON_DAYS, EXTENDED_HORIZON_DAYS);
 
     // Quote every sampled window, but through a GLOBAL concurrency gate so that
     // no matter how many listings warm at once, we never exceed Guesty's rate
@@ -216,27 +223,54 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
  * so their price appears on a later load rather than blocking this one.
  */
 export async function getLowestNightlyBatch(listingIds: string[]): Promise<Record<string, number | null>> {
+  const ids = Array.from(new Set(listingIds));
   const out: Record<string, number | null> = {};
   const dbReads: string[] = [];
-  for (const id of listingIds) {
+  for (const id of ids) {
     const c = CACHE.get(id);
+    // Preço fresco em memória: nenhuma leitura à BD. Um "sem preço" recente
+    // lê na mesma (na consulta única da página): o recálculo pode ter falhado
+    // só por um soluço da BD, e o preço guardado não pode sumir 30 min.
     if (c && isFresh(c) && c.value !== null) out[id] = c.value;
     else dbReads.push(id);
   }
 
   const noValue: string[] = []; // never computed → warm to get a first value
   const stale: string[] = [];   // has a persisted value but it's old → refresh in background
-  await Promise.all(dbReads.map(async (id) => {
+  if (dbReads.length) {
+    // Uma só consulta para a página inteira (era uma por casa: 73 por visita
+    // ao catálogo, a pesar na quota do TiDB). O valor lido fica em memória com
+    // a hora em que foi calculado, por isso as regras de frescura são as
+    // mesmas (refresca-se ao fim de 8 h) e as visitas seguintes não leem a BD.
+    let stored: Map<string, string | null> | null = null;
     try {
-      const { price, at } = parseStored(await getSetting(`${STORE_CAT}_${id}`));
-      out[id] = price;
-      if (price === null) noValue.push(id);
-      else if (Date.now() - at >= TTL_MS) stale.push(id);
+      stored = await getSettingsByKeys(dbReads.map((id) => `${STORE_CAT}_${id}`));
     } catch {
-      out[id] = null;
-      noValue.push(id);
+      stored = null; // BD em baixo: o que houver em memória, mesmo antigo
     }
-  }));
+    for (const id of dbReads) {
+      if (!stored) {
+        out[id] = CACHE.get(id)?.value ?? null;
+        if (out[id] === null) noValue.push(id);
+        else stale.push(id);
+        continue;
+      }
+      const { price, at } = parseStored(stored.get(`${STORE_CAT}_${id}`));
+      out[id] = price;
+      if (price === null) {
+        noValue.push(id);
+        continue;
+      }
+      if (Date.now() - at < TTL_MS) {
+        CACHE.set(id, { value: price, source: "calendar", at });
+      } else {
+        // Antigo: serve-se na mesma (nunca apagar um preço que já está na
+        // página) e recalcula-se em segundo plano.
+        if (!CACHE.has(id)) CACHE.set(id, { value: price, source: "calendar", at });
+        stale.push(id);
+      }
+    }
+  }
 
   // Background-warm (fire-and-forget, capped). Listings with no value first, then
   // stale ones — so the whole portfolio self-heals onto the current (accurate)
