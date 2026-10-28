@@ -21,8 +21,6 @@ import {
   Loader2,
   Lock,
   ShieldCheck,
-  Headphones,
-  BadgeCheck,
   Pencil,
   Minus,
   Plus,
@@ -56,6 +54,7 @@ import FlexBlock, { type FlexConfig } from "./FlexBlock";
 import { PaymentPlanSelector, planDate, type PaymentPlanChoice, type PaymentPlanOffer } from "./PaymentPlanSelector";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
+import TwoPartsHint from "@/components/booking/TwoPartsHint";
 
 type Step = "stay" | "customize" | "pay";
 
@@ -817,7 +816,7 @@ export default function CheckoutPage() {
     const at = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString();
     return {
       available: true, policyCode: "moderate", incentive: "flex",
-      fullTodayCents: 273_000, depositCents: 148_000, depositStayCents: 125_000, balanceCents: 125_000,
+      fullTodayCents: 270_000, depositCents: 135_000, depositStayCents: 135_000, balanceCents: 135_000,
       chargeAt: at(40), retryAt: [at(41), at(43)], freeCancelDeadlineAt: at(50), hardStopAt: at(49),
       mandate: {
         lang: "en", version: "demo",
@@ -842,7 +841,9 @@ export default function CheckoutPage() {
   }, [offerKey]);
   const twoParts = !!offer && plan === "two_parts";
   // Com "tudo agora" e o incentivo Flex, o Flex vai incluído (0 €).
-  const flexIncludedByPlan = !!offer && plan === "full" && offer.incentive === "flex";
+  // Só no passo do pagamento, depois de o hóspede ver a escolha: antes disso a
+  // linha "Flex · incluído" aparecia no resumo sem explicação.
+  const flexIncludedByPlan = !!offer && step === "pay" && plan === "full" && offer.incentive === "flex";
   // O que se cobra hoje: o servidor manda (é ele que cobra).
   const payTotal = !offer
     ? todayTotal
@@ -1446,7 +1447,7 @@ export default function CheckoutPage() {
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
         </div>
         {summaryLines}
-        <p className="caption text-pa-earth leading-relaxed">{t('securityDeposit.notice')}</p>
+        {step === "pay" && <p className="caption text-pa-earth leading-relaxed">{t('securityDeposit.notice')}</p>}
         {couponRow}
         {conciergeRequests}
         {/* Política da tarifa escolhida (planPolicyCode, igual ao cartão);
@@ -1472,26 +1473,17 @@ export default function CheckoutPage() {
   // fixos na coluna de resumo nos três passos: quem chegou de uma OTA ainda
   // tem essa aba aberta na hora de pagar (auditoria set/2026, N5). As chaves
   // trust.* são as do PDP; nada de copy duplicado.
-  const directBlock = (
-    <div className="bg-white border border-pa-sand rounded-lg p-5">
-      <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-3">
-        {t("trust.directHeadline", "Why book direct")}
+  // Uma linha, só no passo 1 (28 out 2026: o bloco de 3 pontos em todos os
+  // passos era ruído). Quem chega de uma OTA decide aqui, não a pagar.
+  const directBlock = step !== "stay" ? null : (
+    <div className="bg-white border border-pa-sand rounded-lg px-5 py-3.5 flex items-start gap-2">
+      <ShieldCheck className="w-3.5 h-3.5 text-pa-gold-aa shrink-0 mt-0.5" />
+      <p className="caption text-pa-dark leading-snug">
+        {t("trust.compactLine", "Best rate guaranteed · no booking fees · WhatsApp concierge")}{" "}
+        <Link href="/best-rate-guarantee" className="text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark whitespace-nowrap">
+          {t("trust.guaranteeTerms", "How the guarantee works")}
+        </Link>
       </p>
-      <ul className="space-y-2.5">
-        {([
-          { icon: ShieldCheck, label: t("trust.bestRateTeeth", "Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price") },
-          { icon: BadgeCheck, label: t("trust.noServiceFees", "No service fees — OTAs add 12–18% at checkout; here the price is the price") },
-          { icon: Headphones, label: t("trust.conciergeWhatsapp", "WhatsApp concierge before, during and after your stay") },
-        ] as const).map((item, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <item.icon className="w-3.5 h-3.5 text-pa-gold-aa shrink-0 mt-0.5" />
-            <span className="caption text-pa-dark leading-snug">{item.label}</span>
-          </li>
-        ))}
-      </ul>
-      <Link href="/best-rate-guarantee" className="inline-flex items-center mt-1 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
-        {t("trust.guaranteeTerms", "How the guarantee works")}
-      </Link>
     </div>
   );
 
@@ -1551,6 +1543,15 @@ export default function CheckoutPage() {
                             lang={lang}
                             className="caption mt-0.5 text-pa-earth"
                           />
+                          {!nonRef && (
+                            <TwoPartsHint
+                              variant="rate"
+                              checkIn={checkIn}
+                              policyCode={planPolicyCode(opt)}
+                              stayTotal={opt.total}
+                              className="caption mt-1 text-pa-dark leading-snug"
+                            />
+                          )}
                         </div>
                         <div className="text-right shrink-0">
                           <span className="body-sm text-pa-dark font-medium tabular-nums">
@@ -1635,9 +1636,11 @@ export default function CheckoutPage() {
           <div className="flex items-center gap-3 shrink-0">
             {/* L1: em mobile o aviso de reconexão era invisível — quando há
                 problema de gravação, mostra-se em todos os tamanhos */}
-            <span className={saveIssue ? "caption text-pa-earth" : "hidden md:inline caption text-pa-stone-aa"}>
-              {saveIssue ? t("checkout.saveIssue", "Reconnecting, changes pending") : t("checkout.autosaved", "Saved automatically")}
-            </span>
+            {/* Só quando há problema: "Guardado automaticamente" sempre à vista
+                era ruído (28 out 2026). */}
+            {saveIssue && (
+              <span className="caption text-pa-earth">{t("checkout.saveIssue", "Reconnecting, changes pending")}</span>
+            )}
             <Link
               href={backHref}
               aria-label={t("checkout.closeAria", "Back to the property")}
@@ -1785,7 +1788,6 @@ export default function CheckoutPage() {
               )}
 
               {rateChoice}
-              <p className="caption text-pa-earth">{t("conversion.totalNote")}</p>
 
               {/* Email capture */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
@@ -1809,9 +1811,6 @@ export default function CheckoutPage() {
                 {emailTouched && email.length > 0 && !isValidEmail(email) && (
                   <p className="caption text-inherit text-red-500">{t("bookingWidget.invalidEmail", "Please enter a valid email address")}</p>
                 )}
-                <p className="caption text-pa-stone-aa leading-relaxed">
-                  {t("checkout.emailSupport", "We hold your reservation for 24 hours and email you the quote.")}
-                </p>
                 {/* Opt-in sóbrio: sem "ofertas"/"newsletter", que leem como
                     spam e travam a entrada no funil logo no passo 1. Lidera
                     pela reserva, mas TEM de nomear o contacto futuro — é isso
@@ -1941,38 +1940,6 @@ export default function CheckoutPage() {
                 <h1 className="headline-md text-pa-dark mb-1">{t("checkout.payTitle", "Payment")}</h1>
                 <p className="body-sm">{t("checkout.paySubtitle", "Your details, then a secure payment.")}</p>
               </div>
-
-              {/* D6: micro-resumo do valor construído, antes do formulário */}
-              {(receptionChoice || paidExtras.length > 0 || flexSelected) && (
-                <div className="bg-white border border-pa-sand rounded-lg px-5 py-4">
-                  <p className="font-display body-lg text-pa-dark leading-snug mb-2">
-                    {t("checkout.tailoredTitle", "Your stay, tailored")}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {receptionChoice && (
-                      <span className="inline-flex items-center gap-1 caption text-pa-earth bg-pa-warm border border-pa-sand rounded-full px-2.5 py-1">
-                        <Check className="w-3 h-3 text-pa-gold" />
-                        {receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")}
-                      </span>
-                    )}
-                    {paidExtras.map(({ item }) => (
-                      <span key={item.sku} className="inline-flex items-center gap-1 caption text-pa-earth bg-pa-warm border border-pa-sand rounded-full px-2.5 py-1">
-                        <Check className="w-3 h-3 text-pa-gold" /> {t(`checkout.extras.${item.sku}.name`)}
-                      </span>
-                    ))}
-                    {flexSelected && flexConfig && (
-                      <span className="inline-flex items-center gap-1 caption text-pa-dark bg-pa-warm border border-pa-gold rounded-full px-2.5 py-1">
-                        <Check className="w-3 h-3 text-pa-gold" /> Flex
-                      </span>
-                    )}
-                    {requestExtras.map(({ item }) => (
-                      <span key={item.sku} className="inline-flex items-center gap-1 caption text-pa-stone-aa border border-dashed border-pa-sand rounded-full px-2.5 py-1">
-                        {t(`checkout.extras.${item.sku}.name`)} · {t("checkout.onRequestShort", "on request")}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
 
               {/* Guest details */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">

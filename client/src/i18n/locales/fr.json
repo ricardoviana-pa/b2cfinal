@@ -397,7 +397,9 @@
     "nextArrivals": "Prochaines dates disponibles",
     "tryAgain": "Réessayer",
     "requestOnlyTitle": "Pour ces dates, cette maison se réserve sur demande.",
-    "requestOnlyBody": "Envoyez votre demande à notre concierge et nous confirmerons personnellement la disponibilité et le prix."
+    "requestOnlyBody": "Envoyez votre demande à notre concierge et nous confirmerons personnellement la disponibilité et le prix.",
+    "twoPartsHint": "Vous pouvez payer en deux fois : la moitié aujourd'hui, l'autre moitié le {{date}}. Ou tout maintenant, avec le Flex inclus.",
+    "twoPartsHintPlain": "Vous pouvez payer en deux fois : la moitié aujourd'hui, l'autre moitié le {{date}}."
   },
   "common": {
     "loading": "Chargement…",
@@ -1526,7 +1528,8 @@
     "bestRateTeeth": "Meilleur tarif en ligne — trouvez ces dates moins chères sur Airbnb ou Booking.com et nous alignons le prix",
     "noServiceFees": "Le devis pour vos dates affiche le total, avec les frais obligatoires détaillés avant le paiement.",
     "conciergeWhatsapp": "Concierge WhatsApp avant, pendant et après votre séjour",
-    "guaranteeTerms": "Comment fonctionne la garantie"
+    "guaranteeTerms": "Comment fonctionne la garantie",
+    "compactLine": "Meilleur prix garanti · sans frais de réservation · concierge sur WhatsApp."
   },
   "bookingStatus": {
     "confirmed": "Confirmée",
@@ -1877,6 +1880,10 @@
     "bar": {
       "todayLabel": "Aujourd'hui {{amountNow}}",
       "laterLabel": "+ {{amountLater}} le {{date}}"
+    },
+    "rate": {
+      "twoPartsLine": "Vous pouvez aussi payer en deux fois : {{amountNow}} aujourd'hui et {{amountLater}} le {{date}}.",
+      "twoPartsLinePlain": "Vous pouvez aussi payer en deux fois : {{amountNow}} aujourd'hui et {{amountLater}} le {{date}}."
     }
   },
   "host": {

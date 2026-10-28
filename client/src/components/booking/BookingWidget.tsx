@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { pushDL, pushEcommerce, pushPurchaseOnce, buildPropertyItem, ADDON_PREFIX } from "@/lib/datalayer";
 import { isNonRefundablePlan as isNonRefundableRatePlan, cancellationPolicyPath, planPolicyCode, rateKind } from "@/lib/cancellation";
 import { freeCancellationDays, freeCancellationDeadline } from "@shared/cancellationPolicy";
+import TwoPartsHint from "./TwoPartsHint";
 import CancellationPolicyLine from "./CancellationPolicyLine";
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { localizeProduct } from "@/lib/localizeProduct";
@@ -1295,6 +1296,21 @@ export default function BookingWidget({
                     + {t("bookingWidget.servicesSelected", { count: selectedUpsells.size })}
                   </p>
                 )}
+                {/* Duas partes: o hóspede sabe-o antes do checkout (só com a
+                    tarifa reembolsável elegível; sem oferta não há nada). */}
+                {(() => {
+                  const refundable = quote?.ratePlanOptions?.find((o) => !isNonRefundablePlan(o) && !o.priceOnRequest);
+                  if (!refundable) return null;
+                  return (
+                    <TwoPartsHint
+                      variant="widget"
+                      checkIn={checkIn}
+                      policyCode={planPolicyCode({ name: refundable.name, cancellationPolicy: refundable.cancellationPolicy, cancellationFee: refundable.cancellationFee })}
+                      stayTotal={refundable.total}
+                      className="caption text-black/60 leading-snug pt-1"
+                    />
+                  );
+                })()}
               </div>
             </div>
 
