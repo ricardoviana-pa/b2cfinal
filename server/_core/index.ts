@@ -5,6 +5,7 @@ import express from "express";
 import compression from "compression";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { BALANCE_RATE_LIMIT_PER_MIN, balanceTrpcLimiter } from "../lib/balance-rate-limit";
 import { createServer } from "http";
 import net from "net";
 import fs from "fs";
@@ -117,6 +118,11 @@ async function startServer() {
   app.use("/api/trpc/leads.create", leadLimiter);
   app.use("/api/trpc/booking", apiLimiter);
   app.use("/api/trpc/checkout", apiLimiter); // checkout_v2 intents + lead capture
+  // Página da 2.ª parte (pagamento em duas partes): os pedidos tRPC chegam
+  // como /api/trpc/balance.view (ou num batch "a.b,balance.help"), que um
+  // app.use("/api/trpc/balance") nunca apanha; o matcher decide pelo nome.
+  const balanceLimiter = rateLimit({ windowMs: 60 * 1000, max: BALANCE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false });
+  app.use("/api/trpc", balanceTrpcLimiter(balanceLimiter));
 
   // Guesty webhook needs raw body for signature validation
   registerGuestyWebhookRoute(app);
@@ -137,6 +143,19 @@ async function startServer() {
   // Bloco 2: opt-out dos lembretes de recuperação (link no rodapé dos emails)
   registerRecoveryOptoutRoute(app);
   registerVitalsRoute(app);
+  // Saúde do motor da 2.ª parte (pagamento em duas partes) para um monitor
+  // externo: 503 se estiver ligado e sem passagem há mais de 30 min. Desligado
+  // responde 200 com enabled:false. Não expõe dados de reservas.
+  app.get("/api/health/balance-scheduler", async (_req, res) => {
+    try {
+      const { balanceHealth } = await import("../services/checkout-balance");
+      const h = await balanceHealth();
+      res.setHeader("Cache-Control", "no-store");
+      res.status(h.ok ? 200 : 503).json(h);
+    } catch (err: any) {
+      res.status(503).json({ ok: false, error: "health check failed" });
+    }
+  });
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   registerDevAuthRoutes(app);
@@ -780,6 +799,25 @@ ${allUrls.join("\n")}
     import("../services/ad-signals-store")
       .then(({ startAdSignalsPurge }) => startAdSignalsPurge())
       .catch((e) => console.warn("[AdSignals] limpeza não arrancou:", e?.message ?? e));
+
+    // Pagamento em duas partes (Fase 2): motor da 2.ª parte e digest diário às
+    // 09:00 de Lisboa. O motor só corre com CHECKOUT_BALANCE=true no serviço
+    // de produção (canRunBalanceEngine). O digest é agendado no serviço de
+    // produção mesmo com o motor desligado (o kill switch): é aí que a equipa
+    // vê as linhas abertas que ninguém está a cobrar nem a cancelar. Quem
+    // decide se sai é sendDailyBalanceDigest.
+    import("../services/checkout-balance")
+      .then(({ startBalanceEngine, isBalanceProductionService, sendDailyBalanceDigest }) => {
+        startBalanceEngine();
+        if (isBalanceProductionService()) {
+          cron.schedule(
+            "0 9 * * *",
+            () => void sendDailyBalanceDigest().catch((e) => console.warn("[Balance] digest falhou:", e?.message)),
+            { timezone: "Europe/Lisbon" },
+          );
+        }
+      })
+      .catch((e) => console.warn("[Balance] motor não arrancou:", e?.message ?? e));
 
     // Spec §14: retry persistente de pagamentos capturados sem reserva criada
     // (o setTimeout do webhook morre num restart; este sweep vive da BD).

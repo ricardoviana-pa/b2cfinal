@@ -577,6 +577,12 @@ export const checkoutScheduledPayments = mysqlTable("checkout_scheduled_payments
   /** H: hard stop; recalcula-se quando o aviso de falha (E3) sai. */
   hardStopAt: datetime("hard_stop_at", { mode: "date" }).notNull(),
   nextAttemptAt: datetime("next_attempt_at", { mode: "date" }).notNull(),
+  /** Estado de onde veio o claim da cobrança (scheduled, retry ou
+   *  needs_action): a libertação de uma tentativa presa volta a ele. Fica
+   *  ANTES de `status` de propósito: o drizzle escreve o SET pela ordem do
+   *  esquema e o MySQL avalia as atribuições da esquerda para a direita, por
+   *  isso `claim_prev_status = status` lê o estado antigo no mesmo UPDATE. */
+  claimPrevStatus: varchar("claim_prev_status", { length: 16 }),
   /** Máquina de estados da spec 2.5. */
   status: mysqlEnum("status", [
     "scheduled",
@@ -596,6 +602,10 @@ export const checkoutScheduledPayments = mysqlTable("checkout_scheduled_payments
   /** Claim da tentativa em curso (estado charging) e quem a fez. */
   claimedAt: datetime("claimed_at", { mode: "date" }),
   claimSource: mysqlEnum("claim_source", ["sweep", "guest", "webhook", "admin"]),
+  /** Última ação do hóspede na página ("Pagar agora", também ao reutilizar o
+   *  PI, e "Usar outro cartão"). É o escudo "o hóspede está a pagar" (60 min):
+   *  nem o sweep nem o admin a escrevem, ao contrário de claimed_at. */
+  guestActiveAt: datetime("guest_active_at", { mode: "date" }),
   lastDeclineCode: varchar("last_decline_code", { length: 64 }),
   lastError: varchar("last_error", { length: 500 }),
   balancePaymentIntentId: varchar("balance_payment_intent_id", { length: 64 }),
@@ -708,6 +718,31 @@ export const stripeWebhookEvents = mysqlTable("stripe_webhook_events", {
 
 export type StripeWebhookEvent = typeof stripeWebhookEvents.$inferSelect;
 export type InsertStripeWebhookEvent = typeof stripeWebhookEvents.$inferInsert;
+
+/** Histórico das ações do CS no ecrã "Saldos" (spec 3.4 e 5.12; Fase 2c):
+ *  quem, quando, o quê e com que dados, uma linha por ação. Grava-se ANTES
+ *  de a ação correr: sem registo a ação não se faz, para nenhum dinheiro
+ *  mexer sem ficar escrito quem o mandou mexer. Sem chave estrangeira de
+ *  propósito (o resto do esquema também não as usa): o histórico sobrevive
+ *  a qualquer limpeza da linha de saldo. */
+export const checkoutAdminActions = mysqlTable("checkout_admin_actions", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  scheduledPaymentId: varchar("scheduled_payment_id", { length: 36 }).notNull(),
+  /** users.id de quem carregou no botão (o admin entra por utilizador,
+   *  nunca pela x-admin-key partilhada). */
+  userId: int("user_id"),
+  userEmail: varchar("user_email", { length: 320 }),
+  action: varchar("action", { length: 40 }).notNull(),
+  /** Entrada, estado de partida e resultado. Nunca ids de customer nem de
+   *  cartão da Stripe: isto é mostrado no browser. */
+  details: json("details").$type<Record<string, unknown>>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (t) => [
+  index("idx_checkout_admin_actions_schedule").on(t.scheduledPaymentId),
+]);
+
+export type CheckoutAdminAction = typeof checkoutAdminActions.$inferSelect;
+export type InsertCheckoutAdminAction = typeof checkoutAdminActions.$inferInsert;
 
 /* ================================================================
    BOOKING INTENT ORIGINS — origem da visita de cada intent (UTM, tipo de

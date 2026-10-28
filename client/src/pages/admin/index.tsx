@@ -15,6 +15,8 @@ const Faqs = lazy(() => import("./Faqs"));
 const Destinations = lazy(() => import("./Destinations"));
 const Customers = lazy(() => import("./Customers"));
 const Settings = lazy(() => import("./Settings"));
+// Ecrã "Saldos" do CS (pagamento em duas partes, Fase 2c).
+const Balances = lazy(() => import("./Balances"));
 
 function AdminLoader() {
   return (
@@ -47,6 +49,12 @@ export default function AdminRouter() {
           <Route path="/admin/leads" component={Leads} />
           <Route path="/admin/faqs" component={Faqs} />
           <Route path="/admin/customers" component={Customers} />
+          <Route path="/admin/balances" component={Balances} />
+          {/* Este Switch vive dentro de <Route path="/admin" nest> (App.tsx): o
+              wouter compara com o caminho relativo a /admin. A navegação pelo
+              menu chega como /admin/balances (o Link junta a base), um link
+              direto (/{lang}/admin/balances, o dos alertas) chega como /balances. */}
+          <Route path="/balances" component={Balances} />
           <Route path="/admin/settings" component={Settings} />
         </Switch>
       </Suspense>

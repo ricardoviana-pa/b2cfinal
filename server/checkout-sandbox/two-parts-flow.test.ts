@@ -29,6 +29,7 @@ vi.mock('../db', () => ({
   setIntentStripeCustomer: fake.setCustomer, insertCardMandate: fake.insertMandate,
   insertScheduledPayment: fake.insertSchedule, getScheduledPaymentByIntent: fake.getSchedule,
   linkCardMandatesToSchedule: fake.linkMandates,
+  markGuestyDepositRecordedByIntent: vi.fn(async () => {}),
 }));
 vi.mock('../services/visit-origin-store', () => ({ saveIntentOrigin: vi.fn(async () => true), getIntentOrigin: vi.fn(async () => null) }));
 vi.mock('../services/properties-store', () => ({ getPropertiesForSite: vi.fn(async () => [

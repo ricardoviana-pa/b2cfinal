@@ -219,3 +219,49 @@ export function renderTwoPartsMandate(lang: string | null | undefined, v: Mandat
   const hash = createHash("sha256").update(`${version}\n${l}\n${checkbox}\n${text}`, "utf8").digest("hex");
   return { lang: l, checkbox, text, version, hash };
 }
+
+/* ════════════════════════════════════════════════════════════════
+   Fase 2b: autorização de um cartão novo (página do saldo, spec 4.2
+   `payPlanPage.changeCardConsent`). Mesmas regras do mandato do checkout:
+   texto renderizado aqui, hash do que o hóspede viu, versão própria.
+   ════════════════════════════════════════════════════════════════ */
+
+export const CARD_CHANGE_MANDATE_VERSION = "2026-10-28.v1";
+
+const CARD_CHANGE_TEMPLATES: Record<MandateLang, (s: { amountLater: string; date: string; deadline: string }) => string> = {
+  pt: (s) =>
+    `Autorizo a Portugal Active a cobrar ${s.amountLater} ${s.date} neste novo cartão, como segunda e última parte desta estadia, ` +
+    `com novas tentativas do mesmo valor até ${s.deadline} se for recusada.`,
+  en: (s) =>
+    `I authorise Portugal Active to charge ${s.amountLater} ${s.date} to this new card, as the second and final part of this stay, ` +
+    `with retries of the same amount until ${s.deadline} if it is declined.`,
+};
+
+/**
+ * Texto da autorização de um cartão novo. Se a data da 2.ª cobrança já
+ * passou (a cobrança falhou e o hóspede troca de cartão para pagar), o texto
+ * diz "hoje" em vez de uma data no passado: a autorização tem de ser verdade.
+ */
+export function renderCardChangeMandate(
+  lang: string | null | undefined,
+  v: { amountLaterCents: number; chargeAt: Date; freeCancelDeadlineAt: Date; now?: Date },
+): { lang: MandateLang; text: string; version: string; hash: string } {
+  if (!Number.isSafeInteger(v.amountLaterCents) || v.amountLaterCents <= 0) {
+    throw new Error(`mandato (cartão novo): montante inválido (${v.amountLaterCents})`);
+  }
+  if (!isValidDate(v.chargeAt) || !isValidDate(v.freeCancelDeadlineAt)) throw new Error("mandato (cartão novo): datas inválidas");
+  const l = mandateLang(lang);
+  const now = v.now ?? new Date();
+  const future = v.chargeAt.getTime() > now.getTime();
+  const date = future
+    ? (l === "pt" ? `a ${formatDay(v.chargeAt, l)}` : `on ${formatDay(v.chargeAt, l)}`)
+    : (l === "pt" ? "hoje" : "today");
+  const text = CARD_CHANGE_TEMPLATES[l]({
+    amountLater: formatAmount(v.amountLaterCents, l),
+    date,
+    deadline: formatDeadline(v.freeCancelDeadlineAt, l),
+  });
+  const version = CARD_CHANGE_MANDATE_VERSION;
+  const hash = createHash("sha256").update(`${version}\n${l}\ncard_change\n${text}`, "utf8").digest("hex");
+  return { lang: l, text, version, hash };
+}

@@ -18,6 +18,7 @@ import { getTableColumns } from "drizzle-orm";
 import { getTableConfig, MySqlDialect, type AnyMySqlColumn, type MySqlTable } from "drizzle-orm/mysql-core";
 import {
   bookingIntents,
+  checkoutAdminActions,
   checkoutCardMandates,
   checkoutScheduledPayments,
   stripeWebhookEvents,
@@ -53,7 +54,10 @@ const NEW_INTENT_COLUMNS = [
   "payment_plan", "stripe_customer_id", "flex_gift_reason", "flex_gift_prev_flex",
   "flex_immediate_consent_at", "flex_consent_version",
 ];
-const NEW_TABLES = ["checkout_scheduled_payments", "checkout_card_mandates", "stripe_webhook_events"];
+const NEW_TABLES = ["checkout_scheduled_payments", "checkout_card_mandates", "stripe_webhook_events", "checkout_admin_actions"];
+/** Colunas acrescentadas a checkout_scheduled_payments depois da Fase 1. */
+const NEW_SCHEDULED_COLUMNS = ["guest_active_at", "claim_prev_status"];
+const SCHEDULED_STEPS = NEW_SCHEDULED_COLUMNS.map((c) => `checkout_scheduled_payments.${c}`);
 
 /** Erro como o drizzle o entrega: "Failed query" com o erro do MySQL em .cause. */
 function driverError(sql: string, message: string) {
@@ -226,21 +230,53 @@ afterEach(() => {
    ════════════════════════════════════════════════════════════════ */
 
 describe("runTwoPartsMigrations", () => {
-  it("1.º arranque: acrescenta as seis colunas a booking_intents e cria as três tabelas", async () => {
+  it("1.º arranque: acrescenta as seis colunas a booking_intents e cria as quatro tabelas", async () => {
     const db = fakeMysql();
     const report = await runTwoPartsMigrations(db.execute);
     expect(report).toEqual({
       added: [...NEW_INTENT_COLUMNS.map((c) => `booking_intents.${c}`), ...NEW_TABLES],
-      existing: [],
+      // A tabela acabou de nascer com as colunas novas: o ALTER dá "duplicate
+      // column" e conta como existente, nunca como falha.
+      existing: SCHEDULED_STEPS,
       failed: [],
     });
     for (const t of NEW_TABLES) expect(db.tables.has(t)).toBe(true);
   });
 
+  it("checkout_scheduled_payments já criada sem as colunas da ronda 2: o ALTER acrescenta-as como o drizzle as declara", async () => {
+    const db = fakeMysql();
+    await runTwoPartsMigrations(db.execute);
+    // A tabela como a Fase 1 a deixou (sem as duas colunas); depois, um arranque novo.
+    const table = db.tables.get("checkout_scheduled_payments")!;
+    for (const c of NEW_SCHEDULED_COLUMNS) table.columns.delete(c);
+    const report = await runTwoPartsMigrations(db.execute);
+    expect(report.failed).toEqual([]);
+    expect(report.added).toEqual(SCHEDULED_STEPS);
+    const expected = expectedTable(checkoutScheduledPayments);
+    for (const c of NEW_SCHEDULED_COLUMNS) {
+      expect(table.columns.get(c), c).toEqual(expected.columns[c]);
+      expect(expected.columns[c].notNull, `${c} tem de ser nullable (linhas antigas)`).toBe(false);
+    }
+    expect(Object.fromEntries(table.columns)).toEqual(expected.columns);
+  });
+
+  it("um ALTER das colunas novas de checkout_scheduled_payments que falha fica no relatório e não trava o resto", async () => {
+    const db = fakeMysql();
+    await runTwoPartsMigrations(db.execute);
+    db.tables.get("checkout_scheduled_payments")!.columns.delete("guest_active_at");
+    const execute = vi.fn(async (sql: string) => {
+      if (sql.includes("ADD COLUMN `guest_active_at`")) throw driverError(sql, "Lock wait timeout exceeded");
+      return db.execute(sql);
+    });
+    const report = await runTwoPartsMigrations(execute);
+    expect(report.failed).toEqual([{ step: "checkout_scheduled_payments.guest_active_at", error: "Lock wait timeout exceeded" }]);
+    expect(report.existing).toContain("checkout_scheduled_payments.claim_prev_status");
+  });
+
   it("o SQL das tabelas novas declara exatamente o que drizzle/schema.ts declara", async () => {
     const db = fakeMysql();
     await runTwoPartsMigrations(db.execute);
-    for (const table of [checkoutScheduledPayments, checkoutCardMandates, stripeWebhookEvents]) {
+    for (const table of [checkoutScheduledPayments, checkoutCardMandates, stripeWebhookEvents, checkoutAdminActions]) {
       const expected = expectedTable(table);
       const actual = db.tables.get(expected.name)!;
       expect(actual, expected.name).toBeDefined();
@@ -248,6 +284,19 @@ describe("runTwoPartsMigrations", () => {
       expect(actual.primaryKey, expected.name).toEqual(expected.primaryKey);
       expect(Object.fromEntries(actual.indexes), expected.name).toEqual(expected.indexes);
     }
+  });
+
+  it("checkout_admin_actions (Fase 2c): o histórico do ecrã Saldos lê-se por linha de saldo", async () => {
+    const db = fakeMysql();
+    await runTwoPartsMigrations(db.execute);
+    const actions = db.tables.get("checkout_admin_actions")!;
+    expect(actions.primaryKey).toEqual(["id"]);
+    // O detalhe de uma linha lista as ações dela: sem índice era um full scan
+    // a cada abertura do detalhe.
+    expect(actions.indexes.get("idx_checkout_admin_actions_schedule")).toEqual({ unique: false, columns: ["scheduled_payment_id"] });
+    expect(actions.columns.get("scheduled_payment_id")).toMatchObject({ type: "varchar(36)", notNull: true });
+    expect(actions.columns.get("details")).toMatchObject({ type: "json", notNull: false });
+    expect(actions.columns.get("user_id")).toMatchObject({ type: "int", notNull: false });
   });
 
   it("as colunas novas de booking_intents batem com o drizzle e nenhuma coluna do drizzle fica por criar", async () => {
@@ -273,7 +322,7 @@ describe("runTwoPartsMigrations", () => {
     const second = await runTwoPartsMigrations(db.execute);
     expect(second.added).toEqual([]);
     expect(second.failed).toEqual([]);
-    expect(second.existing).toEqual([...NEW_INTENT_COLUMNS.map((c) => `booking_intents.${c}`), ...NEW_TABLES]);
+    expect(second.existing).toEqual([...NEW_INTENT_COLUMNS.map((c) => `booking_intents.${c}`), ...NEW_TABLES, ...SCHEDULED_STEPS]);
     expect(db.snapshot()).toEqual(before);
     await expect(verifyTwoPartsColumns(db.execute)).resolves.toBe(true);
   });
@@ -321,7 +370,7 @@ describe("runTwoPartsMigrations", () => {
     const report = await runTwoPartsMigrations(execute);
     expect(report.failed).toEqual([]);
     expect(report.added).toEqual([]);
-    expect(report.existing).toHaveLength(NEW_INTENT_COLUMNS.length + NEW_TABLES.length);
+    expect(report.existing).toHaveLength(NEW_INTENT_COLUMNS.length + NEW_TABLES.length + NEW_SCHEDULED_COLUMNS.length);
   });
 });
 

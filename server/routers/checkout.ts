@@ -228,10 +228,40 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string, pricing?:
       void sendCapiPurchase(m, intentId, purchaseValue).catch(() => {/* marketing nunca parte o funil */});
     }
     const photoPromise = resolveIntentPhoto(m).catch(() => undefined);
+    // Pagamento em duas partes: os emails dizem o que foi pago hoje e o que
+    // fica para a data marcada, a partir da linha da 2.ª parte (congelada no
+    // settle). Sem linha, ou no plano integral, os emails ficam como sempre.
+    const planPromise: Promise<import("../services/transactional-email").CheckoutPlanSummary | null> =
+      m.paymentPlan === "two_parts"
+        ? (async () => {
+            const { getScheduledPaymentByIntent } = await import("../db");
+            const row: any = await getScheduledPaymentByIntent(intentId);
+            if (!row) return null;
+            let manageUrl: string | null = null;
+            try {
+              const { balanceLinkUrl, balanceLinkExpiresAt } = await import("../services/balance-link");
+              manageUrl = balanceLinkUrl(intentId, m.locale, balanceLinkExpiresAt(row));
+            } catch {
+              manageUrl = null; // sem segredo do link: sem botão, nunca um link falso
+            }
+            return {
+              amountTodayCents: Number(row.depositCents),
+              amountLaterCents: Number(row.balanceCents),
+              chargeAt: new Date(row.chargeAt),
+              freeCancelDeadlineAt: new Date(row.freeCancelDeadline),
+              cardLast4: row.cardLast4 ?? null,
+              manageUrl,
+            };
+          })().catch((err: any) => {
+            console.error(`[TwoParts] plano para os emails indisponivel (intent ${intentId}): ${err?.message}`);
+            return null;
+          })
+        : Promise.resolve(null);
     // Origem da visita (UTM, clique, referrer): nota da reserva e email
     // [Venda direta]. Nunca vai para a CAPI, a Stripe nem o dataLayer.
     const originPromise = getIntentOrigin(intentId).catch(() => null);
-    void Promise.all([photoPromise, originPromise]).then(([imageUrl, origin]) => sendCheckoutOpsManifest({
+    void Promise.all([photoPromise, originPromise, planPromise]).then(([imageUrl, origin, plan]) => sendCheckoutOpsManifest({
+      plan,
       canonical,
       imageUrl,
       origin,
@@ -276,9 +306,10 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string, pricing?:
                 )
                 .catch(() => ({ policy: null }))
             : Promise.resolve(null);
-      void Promise.all([photoPromise, cancellationPromise])
-        .then(([imageUrl, cancellation]) =>
+      void Promise.all([photoPromise, cancellationPromise, planPromise])
+        .then(([imageUrl, cancellation, plan]) =>
           sendCheckoutGuestConfirmation({
+            plan,
             canonical,
             email: m.email,
             guestFirstName: m.guestFirstName,
