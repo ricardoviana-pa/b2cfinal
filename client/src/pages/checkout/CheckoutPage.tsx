@@ -814,10 +814,12 @@ export default function CheckoutPage() {
   const demoOffer = useMemo<PaymentPlanOffer | null>(() => {
     if (!isDemo || typeof window === "undefined" || !new URLSearchParams(window.location.search).has("twoParts")) return null;
     const at = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString();
+    // As datas seguem a regra real para o check-in da demo (daqui a 30 dias,
+    // "moderate" = 7 dias): D = +23, C = D−10, retentativas C+1 e C+3, H = D−1.
     return {
-      available: true, policyCode: "moderate", incentive: "flex",
+      available: true, policyCode: "moderate", incentive: "none",
       fullTodayCents: 270_000, depositCents: 135_000, depositStayCents: 135_000, balanceCents: 135_000,
-      chargeAt: at(40), retryAt: [at(41), at(43)], freeCancelDeadlineAt: at(50), hardStopAt: at(49),
+      chargeAt: at(13), retryAt: [at(14), at(16)], freeCancelDeadlineAt: at(23), hardStopAt: at(22),
       mandate: {
         lang: "en", version: "demo",
         checkbox: "I authorize Portugal Active to charge the second part on the date shown to the card I am using now.",

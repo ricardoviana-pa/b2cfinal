@@ -45,6 +45,9 @@ const CONFIG_TESTE: TwoPartsConfig = readTwoPartsConfig({
   // O grupo de controlo está desligado por omissão (28 out 2026); aqui liga-se
   // para os testes continuarem a provar o sorteio.
   CHECKOUT_TWO_PARTS_HOLDOUT: "0.10",
+  // O incentivo está desligado por omissão (28 out 2026); aqui liga-se para os
+  // testes continuarem a provar o Flex oferecido.
+  FULL_PAYMENT_INCENTIVE: "flex",
 });
 
 /**

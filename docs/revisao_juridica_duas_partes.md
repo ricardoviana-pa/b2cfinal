@@ -4,14 +4,14 @@ Portugal Active · 28 de outubro de 2026 · preparado a partir de `docs/pagament
 
 ## O que mudou desde a validação de 25 de outubro
 
-1. **O incentivo a pagar tudo deixou de ser o desconto de 1%.** Quem paga tudo agora recebe o Flex incluído (a proteção de remarcação que já vendemos). Por isso a frase do 1% sai das CGV e entra uma frase sobre o Flex incluído (cláusula A abaixo).
+1. **Não há incentivo a pagar tudo.** O desconto de 1% foi abandonado e a alternativa (o Flex incluído para quem paga tudo) foi desligada a 28 de outubro: o hóspede escolhe só quando paga, sempre ao mesmo preço. A frase do 1% sai das CGV e não entra nenhuma outra (cláusula A abaixo). O Flex continua a ser um extra pago, que o hóspede escolhe.
 2. **Sem SMS.** Os avisos de falha de pagamento são só por email. Tirámos "e SMS" do texto da autorização que validou e da cláusula "Se o segundo pagamento falhar" (cláusulas C e D).
 3. **A autorização existe agora nas 9 línguas do site.** A tradução PT e EN é a validada; FR, ES, IT, DE, NL, SV e FI são traduções nossas, **por rever por nativos** (obrigatório em DE, FR e NL). Estão no anexo, com uma reserva de exemplo.
-4. **O hóspede fica a saber antes do checkout.** Na página da casa e no 1.º passo aparece uma frase como "Pode pagar em duas partes: metade hoje, metade a 7 de dezembro. Ou tudo agora, com o Flex incluído." Não é uma oferta com prazo nem uma promoção: é a modalidade de pagamento disponível para aquela estadia.
+4. **O hóspede fica a saber antes do checkout.** Na página da casa e no 1.º passo aparece uma frase como "Pode pagar em duas partes: metade hoje, metade a 7 de dezembro." Não é uma oferta com prazo nem uma promoção: é a modalidade de pagamento disponível para aquela estadia.
 
 ## O que precisamos que valide
 
-- [ ] Cláusula A (Preço e pagamento), com o Flex em vez do 1%.
+- [ ] Cláusula A (Preço e pagamento), sem a frase do 1%.
 - [ ] Cláusulas B a F (texto validado, com as alterações assinaladas).
 - [ ] O bloco pré-contratual junto ao botão de pagar (secção "Bloco pré-contratual").
 - [ ] A remoção de "e SMS" no texto da autorização (PT e EN).
@@ -21,10 +21,8 @@ Portugal Active · 28 de outubro de 2026 · preparado a partir de `docs/pagament
 
 ## Cláusulas das CGV (pt-PT)
 
-**A. Preço e pagamento** *(alterada: sai o 1%, entra o Flex incluído)*
-"O preço da estadia pode ser pago numa só vez ou em duas partes, conforme a opção escolhida na reserva. Na opção em duas partes, paga metade do valor da estadia e a totalidade dos serviços escolhidos no momento da reserva, e a outra metade da estadia na data indicada no resumo da reserva e no email de confirmação, sempre antes do fim do prazo de cancelamento gratuito. Ambos os pagamentos são pagamentos parciais do preço e não têm natureza de sinal. Quando a estadia é paga na totalidade no momento da reserva com cartão, Apple Pay ou Google Pay, o serviço Flex fica incluído sem custo, nas condições do Flex indicadas antes do pagamento. A opção em duas partes é ao preço apresentado, sem qualquer acréscimo."
-
-> Nota: hoje o Flex incluído não se aplica a Klarna e PayPal. Se quiser uma redação neutra quanto ao método, dizemos-lhe e alinhamos o site.
+**A. Preço e pagamento** *(alterada: sai a frase do 1%)*
+"O preço da estadia pode ser pago numa só vez ou em duas partes, conforme a opção escolhida na reserva. Na opção em duas partes, paga metade do valor da estadia e a totalidade dos serviços escolhidos no momento da reserva, e a outra metade da estadia na data indicada no resumo da reserva e no email de confirmação, sempre antes do fim do prazo de cancelamento gratuito. Ambos os pagamentos são pagamentos parciais do preço e não têm natureza de sinal. A opção em duas partes é ao preço apresentado, sem qualquer acréscimo."
 
 **B. Autorização do segundo pagamento** *(sem alterações)*
 "Ao escolher pagar em duas partes, autoriza a Portugal Active a enviar instruções à instituição emissora do seu cartão para cobrar o segundo pagamento, no valor exato e na data indicados no resumo da reserva, no mesmo cartão usado no primeiro pagamento e, se essa cobrança for recusada, a tentar de novo o mesmo valor nas datas indicadas no aviso, até ao prazo aí fixado. Os dados do cartão ficam guardados pelo nosso prestador de pagamentos (Stripe) apenas para este pagamento; a Portugal Active não tem acesso ao número completo e não usa este cartão para qualquer outra cobrança sem a sua intervenção. Enviamos um aviso por email 7 dias antes da cobrança e um recibo depois. Pode a qualquer momento pagar antecipadamente, trocar de cartão (com nova autorização) ou cancelar a reserva através do link do email de confirmação; se cancelar, aplica-se a política de cancelamento da reserva."
