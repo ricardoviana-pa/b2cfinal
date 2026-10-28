@@ -32,7 +32,7 @@ describe("renderTwoPartsMandate — texto da spec 6.2", () => {
     );
     expect(m.text).toBe(
       `Ao pagar, autoriza a Portugal Active a cobrar 1${NB}262,00${NB}€ a 28 de junho de 2027, no cartão que usar agora, ` +
-        `como segunda e última parte desta estadia. Se a cobrança for recusada, avisamos por email e SMS, ` +
+        `como segunda e última parte desta estadia. Se a cobrança for recusada, avisamos por email, ` +
         `tentamos de novo o mesmo valor em 29 de junho de 2027 e 1 de julho de 2027, e tem 7 dias, contados do aviso, ` +
         `para pagar por outro meio; caso contrário a reserva é cancelada e devolvemos tudo o que pagou. ` +
         `Pode pagar antes, mudar de cartão ou cancelar a qualquer momento, no link da sua confirmação. ` +
@@ -45,7 +45,7 @@ describe("renderTwoPartsMandate — texto da spec 6.2", () => {
     expect(m.lang).toBe("en");
     // Como no pt: se o snapshot falhar, o texto mudou e a versão tem de subir.
     expect(m.checkbox).toMatchInlineSnapshot(`"I authorise Portugal Active to charge €1,262.00 on 28 June 2027 to the card I am using now, as the second and final part of this stay, and, if that charge is declined, to retry the same amount until 8 July 2027 at 23:59 (Lisbon time)."`);
-    expect(m.text).toMatchInlineSnapshot(`"By paying, you authorise Portugal Active to charge €1,262.00 on 28 June 2027 to the card you are using now, as the second and final part of this stay. If the charge is declined, we will let you know by email and SMS, retry the same amount on 29 June 2027 and 1 July 2027, and you will have 7 days from that notice to pay by another method; otherwise the booking is cancelled and we refund everything you paid. You can pay early, change your card or cancel at any time, using the link in your confirmation. Free cancellation until 8 July 2027 at 23:59 (Lisbon time)."`);
+    expect(m.text).toMatchInlineSnapshot(`"By paying, you authorise Portugal Active to charge €1,262.00 on 28 June 2027 to the card you are using now, as the second and final part of this stay. If the charge is declined, we will let you know by email, retry the same amount on 29 June 2027 and 1 July 2027, and you will have 7 days from that notice to pay by another method; otherwise the booking is cancelled and we refund everything you paid. You can pay early, change your card or cancel at any time, using the link in your confirmation. Free cancellation until 8 July 2027 at 23:59 (Lisbon time)."`);
   });
 
   it("o prazo diz a hora de Lisboa, não a UTC (no verão D é 22:59Z)", () => {
@@ -106,16 +106,37 @@ describe("renderTwoPartsMandate — língua", () => {
     expect(renderTwoPartsMandate(l, specExample()).lang).toBe("pt");
   });
 
-  it.each(["en", "en-GB", "de", "fr", "es", "xx", "", null, undefined])("%s → en (até à tradução da Fase 3)", (l) => {
+  it.each(["en", "en-GB", "xx", "", null, undefined])("%s → en", (l) => {
     const m = renderTwoPartsMandate(l, specExample());
     expect(m.lang).toBe("en");
     expect(m).toEqual(renderTwoPartsMandate("en", specExample()));
   });
 
-  it("nunca chama seguro ao que quer que seja", () => {
-    for (const l of ["pt", "en"]) {
+  // v2 (28 out 2026): as 9 línguas do site, com montante, data e prazo de
+  // Lisboa na língua do hóspede. Traduções por rever por nativos.
+  it.each([
+    ["fr", "1\u00a0262,00\u00a0€", "28 juin 2027", "8 juillet 2027 à 23:59 (heure de Lisbonne)"],
+    ["es", "1.262,00\u00a0€", "28 de junio de 2027", "8 de julio de 2027 a las 23:59 (hora de Lisboa)"],
+    ["it", "1.262,00\u00a0€", "28 giugno 2027", "8 luglio 2027 alle 23:59 (ora di Lisbona)"],
+    ["de", "1.262,00\u00a0€", "28. Juni 2027", "8. Juli 2027 um 23:59 Uhr (Lissabonner Zeit)"],
+    ["nl", "€\u00a01.262,00", "28 juni 2027", "8 juli 2027 om 23:59 (Lissabonse tijd)"],
+    ["sv", "1\u00a0262,00\u00a0€", "28 juni 2027", "8 juli 2027 kl. 23:59 (Lissabontid)"],
+    ["fi", "1\u00a0262,00\u00a0€", "28. kesäkuuta 2027", "8. heinäkuuta 2027 klo 23:59 (Lissabonin aikaa)"],
+  ])("%s: texto na língua do hóspede, com os valores do motor", (l, amount, date, deadline) => {
+    const m = renderTwoPartsMandate(l, specExample());
+    expect(m.lang).toBe(l);
+    expect(m.checkbox).toContain(date);
+    expect(m.checkbox).toContain(deadline);
+    expect(`${m.checkbox} ${m.text}`).toMatch(/Portugal Active/);
+    expect(m.text).toContain("7");
+    expect(m.checkbox.replace(/\s/g, " ")).toContain(amount.replace(/\s/g, " "));
+  });
+
+  it("nunca chama seguro ao que quer que seja, nem promete SMS, em nenhuma língua", () => {
+    for (const l of ["pt", "en", "fr", "es", "it", "de", "nl", "sv", "fi"]) {
       const m = renderTwoPartsMandate(l, specExample());
-      expect(`${m.checkbox} ${m.text}`).not.toMatch(/segur|insur|assur/i);
+      expect(`${m.checkbox} ${m.text}`).not.toMatch(/segur|insur|assur|versicher|verzeker|försäkr|vakuut/i);
+      expect(`${m.checkbox} ${m.text}`).not.toMatch(/SMS/);
     }
   });
 });
