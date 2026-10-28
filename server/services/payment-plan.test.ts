@@ -398,12 +398,12 @@ describe("inTwoPartsHoldout — grupo de controlo determinístico (spec 2.1, 2.6
 });
 
 describe("readTwoPartsConfig — configuração por env (spec 2.1, 2.6, 5.11)", () => {
-  it("sem nada no env: desligado, tratado como live, holdout 10%, mínimo 1 000 €, incentivo Flex, sem avisos", () => {
+  it("sem nada no env: desligado, tratado como live, sem grupo de controlo, mínimo 1 000 €, incentivo Flex, sem avisos", () => {
     expect(readTwoPartsConfig({})).toEqual({
       enabled: false,
       livemode: true,
       engineReady: false,
-      holdout: 0.1,
+      holdout: 0,
       minStayCents: 100_000,
       incentive: "flex",
       warnings: [],
@@ -434,14 +434,14 @@ describe("readTwoPartsConfig — configuração por env (spec 2.1, 2.6, 5.11)", 
     expect(readTwoPartsConfig({ CHECKOUT_TWO_PARTS: "true", STRIPE_SECRET_KEY: "sk_live_x" }).engineReady).toBe(false);
   });
 
-  it("holdout aceita frações de 0 a 1; inválido fica 0.10 com aviso", () => {
+  it("holdout aceita frações de 0 a 1; inválido fica 0 com aviso", () => {
     expect(readTwoPartsConfig({ CHECKOUT_TWO_PARTS_HOLDOUT: "0.2" })).toMatchObject({ holdout: 0.2, warnings: [] });
     expect(readTwoPartsConfig({ CHECKOUT_TWO_PARTS_HOLDOUT: "0" })).toMatchObject({ holdout: 0, warnings: [] });
     expect(readTwoPartsConfig({ CHECKOUT_TWO_PARTS_HOLDOUT: "1" })).toMatchObject({ holdout: 1, warnings: [] });
-    expect(readTwoPartsConfig({ CHECKOUT_TWO_PARTS_HOLDOUT: "" })).toMatchObject({ holdout: 0.1, warnings: [] });
+    expect(readTwoPartsConfig({ CHECKOUT_TWO_PARTS_HOLDOUT: "" })).toMatchObject({ holdout: 0, warnings: [] });
     for (const mau of ["abc", "1.5", "-0.1", "10%"]) {
       const c = readTwoPartsConfig({ CHECKOUT_TWO_PARTS_HOLDOUT: mau });
-      expect(c.holdout).toBe(0.1);
+      expect(c.holdout).toBe(0);
       expect(c.warnings).toHaveLength(1);
       expect(c.warnings[0]).toMatch(/CHECKOUT_TWO_PARTS_HOLDOUT/);
     }
@@ -488,6 +488,6 @@ describe("readTwoPartsConfig — configuração por env (spec 2.1, 2.6, 5.11)", 
       FULL_PAYMENT_INCENTIVE: "discount",
     });
     expect(c.warnings).toHaveLength(3);
-    expect(c).toMatchObject({ holdout: 0.1, minStayCents: 100_000, incentive: "none" });
+    expect(c).toMatchObject({ holdout: 0, minStayCents: 100_000, incentive: "none" });
   });
 });
