@@ -541,7 +541,7 @@ Critérios: com as flags ausentes nada muda para nenhum hóspede (sandbox `check
 
 ### Fase 2 · Motor de cobrança, rede de segurança e ecrã Saldos (L + L)
 
-**Estado a 28 de outubro de 2026.** Dividida em três entregas, todas dormentes até `CHECKOUT_BALANCE=true` e até `TWO_PARTS_BALANCE_ENGINE_READY` passar a true:
+**Estado a 28 de outubro de 2026 (PR #158, a entrar em produção dormente).** Dividida em três entregas, todas dormentes até `CHECKOUT_BALANCE=true` e até `TWO_PARTS_BALANCE_ENGINE_READY` passar a true:
 - **2a, motor (branch `feat/two-parts-fase2`)**: `server/services/checkout-balance.ts` com o sweep de 10 min (linhas presas, reconciliação com o Guesty, lembretes E1/E2, cobrança off-session em dois passos com retentativas C+1 e C+3, efeitos com um claim cada, avisos E3/E3b com SMS, paragem dura com cancelamento no Guesty por `PUT /v1/reservations-v3/{id}/status`, reembolso integral e E5), webhook dos PIs do saldo (só estado), digest diário às 09:00, `GET /api/health/balance-scheduler`, emails do plano nas 9 línguas, SMS por Twilio (desligado sem credenciais), linhas do plano na confirmação e no manifesto.
 - **2b, página do saldo** (`/{lang}/booking/balance/{intentId}#t=…`, `client/src/pages/booking/BalancePage.tsx`, router `balance`): pagar agora com o cartão guardado (o browser confirma e só pede 3DS se o banco quiser), outro cartão (SetupIntent da plataforma e nova autorização registada em `checkout_card_mandates` com `source = card_change`), cancelar dentro do prazo com reembolso na hora, "Preciso de ajuda" (pausa e chama um humano), novo link por email; textos `payPlanPage.*` nas 9 línguas.
 - **2c, ecrã Saldos** (admin → Saldos, `server/routers/balance-admin.ts`, só utilizadores com papel admin, cada ação registada em `checkout_admin_actions` antes de correr) e **runbook do CS** (`docs/runbook_cs_duas_partes.md`).
@@ -564,6 +564,14 @@ Segunda revisão adversarial (28 de outubro, 34 achados confirmados, corrigidos 
 - `failure_notice_stage` 3 = véspera fechada sem E3b (véspera perdida, sem email/link, ou aviso de 7 dias que não cabe antes de H): nem E3b ao hóspede nem alerta "cancela amanhã"; o digest separa essas linhas em "DECISÃO HUMANA ANTES DE D";
 - com `CHECKOUT_BALANCE=false` no serviço de produção, um pagamento pela página corre os efeitos (Guesty, nota, E4) no webhook e o digest sai na mesma, a abrir com "MOTOR DESLIGADO";
 - um `refund.failed` fica em "REEMBOLSOS POR RESOLVER" no digest, de qualquer idade, até a equipa o marcar "resolvido à mão" no ecrã Saldos (`refund_status = manual`, sem email automático ao hóspede).
+
+Terceira revisão adversarial (28 de outubro, 9 achados confirmados, corrigidos com testes):
+- depois de uma troca de cartão, um PI do hóspede ainda aberto no cartão antigo não trava a cobrança no cartão novo: o escudo de 60 min só vale para um PI no cartão atual da linha (antes, a reserva podia ser cancelada em H com um cartão válido gravado);
+- as retentativas contam pela data: um "Cobrar agora" do admin não apaga C+1 nem C+3, que o E3 prometeu; só uma retentativa já passada (sweep atrasado) é compensada uma hora depois;
+- um pagamento que chega com a linha a rever por causa do Guesty (reserva cancelada ou alterada, pagamento por fora ou pendente) não fecha a linha como paga, não regista nada no Guesty e não manda o E4: fica a rever, com um alerta a pedir a decisão (devolver ou manter); numa pausa ou num aviso impossível fecha paga;
+- `refund.failed` soma as falhas dos dois reembolsos (`refund_id` guarda os dois ids) e um evento repetido não desfaz o "resolvido à mão";
+- com o motor desligado, o digest só sai com linhas abertas, reembolsos por resolver ou cancelamentos do dia (antes do lançamento não há email vazio todos os dias) e não promete cobranças nem cancelamentos automáticos;
+- o limitador da API do saldo lê o procedimento como o adaptador do tRPC (o texto depois da última `/`), e um segmento a mais no caminho já não o contorna.
 
 Fica por fazer na Fase 2, com dono: webhooks do Guesty e do Resend (o polling diário cobre a ausência dos do Guesty); "Recalcular datas" e reembolso de uma linha de extra no ecrã Saldos; `report:balances`; o monitor externo do `/api/health/balance-scheduler` (conta num serviço de monitorização, Ricardo); o fornecedor de SMS (conta Twilio e as variáveis `CHECKOUT_SMS_PROVIDER`, `TWILIO_*`, Ricardo; sem elas só há email); os dois ciclos completos em modo de teste da Stripe antes de passar `TWO_PARTS_BALANCE_ENGINE_READY` a true; depósitos sem reserva há mais de 72 h (decisão 13) continuam no alerta de settle existente.
 
