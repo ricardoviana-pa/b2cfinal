@@ -341,6 +341,9 @@ export function scheduleTwoPartsSchemaRetry(
     onSchemaMissing?: (err: TwoPartsSchemaError) => void;
     /** Esgotou as tentativas sem confirmar o esquema: alguém tem de olhar. */
     onGiveUp?: (attempts: number) => void;
+    /** O esquema ficou confirmado (a BD voltou): o que mais ficou por fazer
+     *  no arranque (os índices de leitura, por exemplo). Fail-soft. */
+    onConfirmed?: (execute: Execute) => Promise<unknown> | unknown;
   } = {},
 ): () => void {
   const intervalMs = opts.intervalMs ?? 60_000;
@@ -366,7 +369,13 @@ export function scheduleTwoPartsSchemaRetry(
         }
         if (await verifyTwoPartsColumns(execute)) {
           console.info(`[Migration] two-parts: esquema confirmado na tentativa ${attempts}`);
-          return stop();
+          stop();
+          try {
+            await opts.onConfirmed?.(execute);
+          } catch (err) {
+            console.warn("[Migration] two-parts: passo depois da confirmação falhou:", errorText(err));
+          }
+          return;
         }
       }
     } catch (err) {

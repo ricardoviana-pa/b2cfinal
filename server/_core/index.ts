@@ -719,6 +719,12 @@ ${allUrls.join("\n")}
             `O servidor arrancou com a BD em baixo e, ao fim de ${attempts} tentativas, ainda não confirmou as colunas de booking_intents.`,
             `Se a BD já estiver de pé, abrir ou pagar um checkout pode estar a falhar: fazer um novo deploy (ou reiniciar o serviço).`,
           ]),
+          // A BD voltou: os índices de leitura que falharam no arranque.
+          onConfirmed: async (execute: (q: string) => Promise<unknown>) => {
+            const { ensureReadIndexes } = await import("../services/db-indexes");
+            const idx = await ensureReadIndexes(execute);
+            console.info(`[Migration] read indexes (BD de volta): added=[${idx.added.join(", ")}] existing=${idx.existing.length} failed=${idx.failed.length}`);
+          },
         };
       })(),
     );
