@@ -30,6 +30,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
+import { hasSwimmingPool } from '@/lib/homeSearch';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
 import { formatQuotedEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
 import { cancellationPolicyCopy, cancellationPolicySummary } from '@shared/cancellationPolicy';
@@ -187,7 +188,12 @@ function pickFeaturedAmenities(allAmenityItems: string[]): { icon: LucideIcon; l
   const usedLabels = new Set<string>();
   for (const { pattern, icon, label } of AMENITY_HIGHLIGHTS) {
     if (usedLabels.has(label)) continue;
-    if (allAmenityItems.some((it) => pattern.test(it))) {
+    // "Pool table" is a games-room item, not a swimming pool; use the same
+    // rule as the pool filter so the highlight and the PLP agree.
+    const matches = label === 'Private pool'
+      ? hasSwimmingPool(allAmenityItems)
+      : allAmenityItems.some((it) => pattern.test(it));
+    if (matches) {
       out.push({ icon, label });
       usedLabels.add(label);
       if (out.length >= 6) break;
