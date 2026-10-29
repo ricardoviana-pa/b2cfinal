@@ -566,29 +566,41 @@
     position: relative;
   }
   @media (min-width: 1024px) {
+    /* Auditoria 29 out 2026: depois do preço o painel chegava a ~1 550 px e o
+       RESERVE ficava abaixo do ecrã em portáteis de 768-900 px de altura.
+       O painel tem a altura do ecrã e duas partes (PropertyDetail.tsx):
+       - .pa-booking-scroll rola por dentro (preço, datas, tarifas, o resto);
+       - .pa-booking-footer nunca rola: o RESERVE com as marcas e "ainda não
+         é cobrado" (ou o "Pedir estas datas" das casas parceiras) vai para lá
+         (ReserveCtaSlot) e fica sempre à vista e clicável, role-se a página
+         ou o cartão; nada passa por baixo dele, por isso não tapa a tarifa
+         nem os avisos.
+       Antes o botão era sticky dentro do painel que rolava: com ~640 px de
+       conteúdo depois dele, saía pelo topo do cartão em ecrãs até ~850 px
+       de altura (W1) e, preso ao fundo, tapava a tarifa escolhida (W3).
+       O banner dos cookies (z-60, a altura em --cookie-banner-h) encolhe o
+       painel enquanto está aberto, para não tapar o rodapé (W4). */
     .property-sticky-card {
       position: sticky;
       top: 100px;
       align-self: start;
-      /* Auditoria 29 out 2026: depois do preço o painel chegava a ~1 550 px
-         e o RESERVE ficava abaixo do ecrã em portáteis de 768-900 px de
-         altura. O painel passa a rolar por dentro e o botão da reserva fica
-         preso ao fundo enquanto houver conteúdo por baixo dele. */
-      max-height: calc(100vh - 116px);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 116px - var(--cookie-banner-h, 0px));
+    }
+    .property-sticky-card > .pa-booking-scroll {
+      flex: 0 1 auto;
+      min-height: 0;
       overflow-y: auto;
       scrollbar-width: thin;
+      /* o fim do painel não encosta ao rodapé */
+      padding-bottom: 1rem;
     }
-    .property-sticky-card .pa-reserve-cta {
-      position: sticky;
-      bottom: 0;
-      z-index: 1;
-      /* O anel de 2 px tapa a moldura do cartão da tarifa escolhida, que
-         passava pelos lados do bloco quando ele fica por cima. */
-      box-shadow: 0 -14px 14px -4px #fff, 0 0 0 2px #fff;
-      /* Camada própria: sem ela o Chrome pintava as últimas linhas do cartão
-         da tarifa por cima do fundo do bloco (visível com a linha dos meios
-         de pagamento debaixo do Reservar, auditoria do funil de 29 out). */
-      will-change: transform;
+    .property-sticky-card > .pa-booking-footer {
+      flex: none;
+    }
+    .property-sticky-card > .pa-booking-footer:empty {
+      display: none;
     }
   }
 
@@ -630,16 +642,6 @@
    ========================================================================== */
 
 @layer utilities {
-  /* Página da casa, computador: o overflow-hidden do widget fazia dele o
-     contentor do sticky e o RESERVE não se prendia ao fundo do painel
-     (.property-sticky-card, em components). clip recorta da mesma forma sem
-     criar esse contentor. Fica em utilities para ganhar ao overflow-hidden. */
-  @media (min-width: 1024px) {
-    .property-sticky-card .booking-widget {
-      overflow: clip;
-    }
-  }
-
   .font-display {
     font-family: var(--font-display);
   }

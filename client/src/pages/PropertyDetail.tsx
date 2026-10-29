@@ -20,6 +20,7 @@ import { placeKey, placePhrases, placeVars } from '@shared/regionPhrases';
 import { localizeProduct } from '@/lib/localizeProduct';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { PartnerBookingPanel } from '@/components/booking/PartnerBookingPanel';
+import { BookingCardSlotContext } from '@/components/booking/bookingCardSlot';
 import { ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck, Sparkles, Clock, UtensilsCrossed, Headphones, X, AlertTriangle, Wifi, Tv, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain, Monitor, Utensils, Sofa, ArrowRight, ShieldCheck, Bed, ChevronDown, type LucideIcon, PawPrint } from 'lucide-react';;
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
@@ -796,6 +797,14 @@ export default function PropertyDetail() {
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [desktopBooking, setDesktopBooking] = useState(true);
+  // Cartão fixo do computador: a parte que rola e o rodapé onde o widget põe
+  // o RESERVE (bookingCardSlot.tsx). Null no servidor e no primeiro render.
+  const [bookingScroller, setBookingScroller] = useState<HTMLDivElement | null>(null);
+  const [bookingFooter, setBookingFooter] = useState<HTMLDivElement | null>(null);
+  const bookingCardSlot = useMemo(
+    () => (bookingScroller && bookingFooter ? { scroller: bookingScroller, footer: bookingFooter } : null),
+    [bookingScroller, bookingFooter],
+  );
   const [bookingSelection, setBookingSelection] = useState<BookingSelection | null>(null);
   const [showAllServices, setShowAllServices] = useState(false);
   useEffect(() => {
@@ -1840,8 +1849,16 @@ export default function PropertyDetail() {
                 sheet opened from the fixed bar (see below), so the page leads
                 with the home's story, uninterrupted. */}
             <aside id="property-booking" className="hidden lg:block lg:order-2 lg:col-span-1 lg:pt-0">
+              {/* Duas partes (index.css): a de cima rola por dentro; o rodapé
+                  recebe o RESERVE do widget (ReserveCtaSlot), nunca rola e
+                  nada passa por baixo dele. */}
               <div className="property-sticky-card lg:sticky lg:top-[100px]">
-                {desktopBooking && bookingPanel}
+                <div ref={setBookingScroller} className="pa-booking-scroll">
+                  <BookingCardSlotContext.Provider value={bookingCardSlot}>
+                    {desktopBooking && bookingPanel}
+                  </BookingCardSlotContext.Provider>
+                </div>
+                <div ref={setBookingFooter} className="pa-booking-footer space-y-3 border border-black/10 bg-white px-5 py-3 shadow-sm" />
               </div>
             </aside>
           </div>

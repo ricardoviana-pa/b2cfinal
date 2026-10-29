@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Calendar, Check, Loader2, Minus, Plus, User } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
@@ -8,6 +8,8 @@ import { formatQuotedEur, intlLocale, formatBookingDate } from '@/lib/format';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import { useDateRangePicker } from './useDateRangePicker';
 import PhoneInput from './PhoneInput';
+import { ReserveCtaSlot, useBookingCardSlot, useHeaderReserveCount } from './bookingCardSlot';
+import { keepRevealed, rangeOf, whenFooterOnScreen } from '@/lib/bookingCardReveal';
 
 /**
  * Booking panel for partner (Tripwix) homes.
@@ -109,6 +111,26 @@ export function PartnerBookingPanel({
   }, [checkIn, checkOut, guests, isFetching, quote?.available, quote?.total, quote?.feesKnown, onSelectionChange]);
 
   const createLead = trpc.leads.create.useMutation();
+
+  // Computador: o "Pedir estas datas" vai para o rodapé fixo do cartão
+  // (bookingCardSlot.tsx), que nunca tapa nada. Quando a cotação diz que há
+  // noites ocupadas, ou o preço falha, esse aviso fica à vista por cima do
+  // botão (também depois do RESERVE do cabeçalho); rola-se só o cartão,
+  // nunca a página (auditoria 29 out, P3).
+  const bookingCard = useBookingCardSlot();
+  const headerReserves = useHeaderReserveCount(!!bookingCard);
+  const formRef = useRef<HTMLFormElement>(null);
+  const unavailableRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const form = formRef.current;
+    if (!bookingCard || !form || isFetching) return;
+    const notice = () => unavailableRef.current ?? form.querySelector('[role="alert"]');
+    if (!notice()) return;
+    return keepRevealed(bookingCard.scroller, () => {
+      const el = notice();
+      return el ? rangeOf(el) : null;
+    }, { anchor: 'end', watch: [form], ready: whenFooterOnScreen(bookingCard.footer) });
+  }, [bookingCard, quote, isFetching, isError, headerReserves]);
 
   // Every figure below is already VAT-inclusive: the service adds the 6% before
   // anything leaves it, so a partner night and one of our own compare like for
@@ -269,7 +291,7 @@ export function PartnerBookingPanel({
         )}
       </div>
 
-      <form id="partner-home-request" name="partner-home-request" onSubmit={submit}>
+      <form ref={formRef} id="partner-home-request" name="partner-home-request" onSubmit={submit}>
         {/* Dates — the portfolio's own calendar, not a native picker. */}
         <div className="mx-5" ref={datePicker.containerRef}>
           <div
@@ -442,7 +464,7 @@ export function PartnerBookingPanel({
           )}
 
           {quote && !quote.available && (
-            <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
+            <div ref={unavailableRef} className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
               <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
               <p className="text-xs text-amber-800 font-medium leading-snug">
                 {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
@@ -490,6 +512,9 @@ export function PartnerBookingPanel({
             />
           </div>
 
+          {/* No computador o botão, o erro do envio e a nota vão para o rodapé
+              fixo do cartão (fora do <form>: o atributo form liga-os). */}
+          <ReserveCtaSlot>
           {submitError && (
             <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
@@ -499,6 +524,7 @@ export function PartnerBookingPanel({
 
           <button
             type="submit"
+            form={bookingCard ? 'partner-home-request' : undefined}
             disabled={createLead.isPending}
             className="pa-action pa-reserve-cta w-full min-h-[52px] px-8 text-xs font-medium tracking-[0.15em] uppercase bg-black text-white hover:bg-black/85 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
@@ -515,6 +541,7 @@ export function PartnerBookingPanel({
           <p className="text-[11px] text-black/30 text-center leading-relaxed">
             {t('partnerBooking.noCharge', 'No payment now — our concierge confirms availability and the final total first.')}
           </p>
+          </ReserveCtaSlot>
 
           <a
             href={whatsappUrl}
