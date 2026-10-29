@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { COOKIE_CHOICE_EVENT, COOKIE_PREFERENCES_EVENT, consumeCookiePreferencesRequest, getCookieChoice, saveCookieChoice, willReloadForEssential } from '@/lib/measurementConsent';
+import { COOKIE_BANNER_OPEN_ATTR } from '@/lib/fixedBottom';
 
 export default function CookieBanner() {
   const { t } = useTranslation();
@@ -36,21 +37,25 @@ export default function CookieBanner() {
 
   // Publish the banner's real height as --cookie-banner-h so fixed/bottom UI
   // elsewhere (e.g. the checkout bottom bar) can sit above it instead of
-  // being covered by this z-[60] overlay.
+  // being covered by this z-[60] overlay — and mark <html> while it is open,
+  // for what steps aside instead (lib/fixedBottom.ts, COOKIE_BANNER_OPEN_ATTR).
   useEffect(() => {
     const root = document.documentElement;
     if (!visible || !wrapperRef.current) {
       root.style.setProperty('--cookie-banner-h', '0px');
+      root.removeAttribute(COOKIE_BANNER_OPEN_ATTR);
       return;
     }
     const el = wrapperRef.current;
     const update = () => root.style.setProperty('--cookie-banner-h', `${el.offsetHeight}px`);
     update();
+    root.setAttribute(COOKIE_BANNER_OPEN_ATTR, '');
     const observer = new ResizeObserver(update);
     observer.observe(el);
     return () => {
       observer.disconnect();
       root.style.setProperty('--cookie-banner-h', '0px');
+      root.removeAttribute(COOKIE_BANNER_OPEN_ATTR);
     };
   }, [visible]);
 
@@ -71,6 +76,7 @@ export default function CookieBanner() {
       ref={wrapperRef}
       role="region"
       aria-label={t('cookieBanner.title')}
+      data-cookie-banner=""
       className="fixed bottom-0 left-0 right-0 z-[60]"
       style={{
         animation: 'cookieSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)',

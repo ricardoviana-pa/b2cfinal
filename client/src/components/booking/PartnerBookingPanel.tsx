@@ -34,6 +34,12 @@ import { keepRevealed, rangeOf, whenFooterOnScreen } from '@/lib/bookingCardReve
  * at the concierge with a screenshot of it against a quote EUR 1,194 higher.
  *
  * Nothing here reaches the supplier: the enquiry becomes a lead on our side.
+ *
+ * No <form> on purpose: GA4's form tracking and the GTM form_start/form_submit
+ * triggers counted every keystroke and every click on the button as a lead,
+ * failed sends included. The real lead is the generate_lead pushed after the
+ * request is saved. Enter in a text field still sends, and the browser still
+ * checks the required fields (reportValidity), as the <form> did.
  */
 export function PartnerBookingPanel({
   tripwixUid,
@@ -138,7 +144,7 @@ export function PartnerBookingPanel({
   // aviso (data-booking-notice) fica à vista por cima do botão, também depois
   // do RESERVE do cabeçalho e quando o botão recebe o foco do teclado;
   // rola-se só o cartão, nunca a página (auditoria 29 out, P3). Observa o
-  // painel, não o <form> (o PR #181 tira o <form>).
+  // painel inteiro (panelRef).
   const bookingCard = useBookingCardSlot();
   const headerReserves = useHeaderReserveCount(!!bookingCard);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -330,12 +336,8 @@ export function PartnerBookingPanel({
         )}
       </div>
 
-      {/* The button does not depend on this <form> (type="button", see below);
-          PR #181 removes the element. Enter in a text field still sends. */}
-      <form
+      <div
         id="partner-home-request"
-        name="partner-home-request"
-        onSubmit={submit}
         onKeyDown={(e) => {
           if (!isImplicitSubmitKey({ key: e.key, isComposing: e.nativeEvent.isComposing, defaultPrevented: e.isDefaultPrevented(), target: e.target })) return;
           e.preventDefault();
@@ -606,9 +608,7 @@ export function PartnerBookingPanel({
 
           {/* No computador o botão, o erro do envio e a nota ficam no rodapé
               fixo do cartão; no HTML ficam aqui, logo a seguir aos campos (a
-              ordem do Tab e do leitor de ecrã). O botão envia pelo onClick,
-              com a mesma verificação dos campos obrigatórios, sem depender
-              do <form>. */}
+              ordem do Tab e do leitor de ecrã). */}
           <ReserveCtaSlot footerRef={requestFooterRef}>
           {submitError && (
             <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
@@ -647,7 +647,7 @@ export function PartnerBookingPanel({
             {t('property.needHelpConcierge', 'Need help? Talk to concierge')}
           </a>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

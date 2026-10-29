@@ -265,7 +265,7 @@ export default function Contact() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+                <form id="lead-contact" onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
                   {/* Honeypot field - hidden from real users */}
                   <input
                     type="text"

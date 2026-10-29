@@ -6,10 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { legalPageMeta } from '@shared/legalPageMeta';
 
 export default function Privacy() {
-  const { t } = useTranslation();
-  usePageMeta({ title: 'Privacy Policy', description: 'How Portugal Active collects, uses, and protects your personal data. GDPR-compliant privacy practices for all guests and visitors.', url: '/legal/privacy' });
+  const { t, i18n } = useTranslation();
+  // Same title and description as the server's head, in the page language.
+  usePageMeta({ ...legalPageMeta('/legal/privacy', i18n.language), url: '/legal/privacy' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />

@@ -14,6 +14,14 @@
  * - Apple Pay / Google Pay só aparecem com os dados certos e os Termos
  *   aceites (`walletsReady`): a folha abre no toque e já não deixa validar;
  * - uma recusa mostra um só aviso traduzido, com até três saídas.
+ *
+ * Sem <form> (verificação em produção, 29 out 2026): o GA4 (medição avançada,
+ * "interações com formulários") manda form_start ao primeiro campo mexido
+ * dentro de um <form> e form_submit no submit, e o GTM-TRPCDT3 transforma-os
+ * nas conversões 'Start Activity Form' e 'Lead_Site'. Com os Termos dentro do
+ * formulário do cartão, cada caixa marcada e cada clique em Pagar contavam
+ * como lead. O bloco é um <div>: o botão de pagar é type="button" com onClick,
+ * e o resto (ordem do foco, Enter e Espaço no botão, aria) fica igual.
  */
 
 import { useCallback, useEffect, useState, useMemo, useRef, type ReactElement, type ReactNode } from "react";
@@ -31,18 +39,12 @@ import { formatQuotedEur } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
 import { payButtonGate, walletNames } from "@/lib/checkoutPayment";
-import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
-import { expressCheckoutElementsOptions } from "./stripeElementsOptions";
+import { cardElementsOptions, expressCheckoutElementsOptions } from "./stripeElementsOptions";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 import PaymentErrorNotice, { type PaymentErrorView, type TwoPartsSwitch } from "./PaymentErrorNotice";
 
 type PaymentMethodId = "card" | "googlepay" | "paypal" | "klarna";
-
-const STRIPE_METHOD_TYPES: Record<Exclude<PaymentMethodId, "paypal" | "klarna">, string[]> = {
-  card: ["card"],
-  googlepay: ["google_pay"],
-};
 
 function CardLogo() {
   return (
@@ -459,8 +461,8 @@ function PaymentFormInner({
   const gate = payButtonGate({ termsAccepted: termsAccepted ?? true, plan, mandateAccepted });
   const setErrorText = (message: string) => setError(message ? { message } : null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.SyntheticEvent) => {
+    e?.preventDefault();
     if (submittedRef.current) return;
     // Checkout 2.0: nome, email e telefone validam-se aqui. Se faltar algo, o
     // erro fica no campo (que recebe o foco) e nada é criado nem cobrado.
@@ -668,8 +670,9 @@ function PaymentFormInner({
     }
   };
 
+  // Sem <form>: ver o cabeçalho do ficheiro (conversões falsas no GTM).
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" style={visible ? undefined : { display: "none" }}>
+    <div className="space-y-4" style={visible ? undefined : { display: "none" }}>
       <div className="p-4 bg-white border border-[#E8E4DC] rounded">
         <PaymentElement
           options={{
@@ -695,7 +698,8 @@ function PaymentFormInner({
 
       <div className="flex flex-col gap-3">
         <button
-          type="submit"
+          type="button"
+          onClick={handleSubmit}
           disabled={!stripe || loading || !gate.enabled}
           className="btn-primary w-full disabled:opacity-50"
         >
@@ -710,12 +714,13 @@ function PaymentFormInner({
           </button>
         )}
       </div>
-    </form>
+    </div>
   );
 }
 
 /** /checkout/demo: o mesmo bloco, sem Stripe (os campos do cartão são uma
- *  imagem) — para rever o percurso e o aviso de erro sem cobrança possível. */
+ *  imagem) — para rever o percurso e o aviso de erro sem cobrança possível.
+ *  Também sem <form>: a demo não pode disparar nenhum evento nem conversão. */
 function DemoCardForm({
   visible,
   plan,
@@ -740,11 +745,7 @@ function DemoCardForm({
   const { t, i18n } = useTranslation();
   const field = "h-[44px] rounded border border-[#E8E4DC] px-3 flex items-center caption text-pa-stone-aa";
   return (
-    <form
-      onSubmit={(e) => { e.preventDefault(); onPay(); }}
-      className="space-y-4"
-      style={visible ? undefined : { display: "none" }}
-    >
+    <div className="space-y-4" style={visible ? undefined : { display: "none" }}>
       <div className="p-4 bg-white border border-[#E8E4DC] rounded space-y-2" aria-hidden>
         <div className={field}>1234 1234 1234 1234</div>
         <div className="grid grid-cols-2 gap-2">
@@ -755,14 +756,14 @@ function DemoCardForm({
       {error && <PaymentErrorNotice error={error} {...noticeProps} />}
       {visible && consent}
       <div className="flex flex-col gap-3">
-        <button type="submit" disabled={!enabled} className="btn-primary w-full disabled:opacity-50">
+        <button type="button" onClick={onPay} disabled={!enabled} className="btn-primary w-full disabled:opacity-50">
           {cardPayLabel(t, i18n.language, total, plan, false)}
         </button>
         {plan === "two_parts" && payLaterCaption && (
           <p className="caption text-pa-earth text-center -mt-1">{payLaterCaption}</p>
         )}
       </div>
-    </form>
+    </div>
   );
 }
 
@@ -816,42 +817,13 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     [stripeConfig?.publishableKey, stripeAccountId],
   );
 
-  // Deferred intent mode: PaymentElement without a client secret.
-  // We pass mode + amount + currency so Stripe knows the context.
-  // Uma só instância para o cartão (sem key por plano ou método): mudar de
-  // plano atualiza o valor (elements.update) e o cartão escrito fica.
+  // Deferred intent mode: PaymentElement without a client secret
+  // (cardElementsOptions: setupFutureUsage, só cartão e a letra do site, com
+  // `fonts` fixo desde a primeira vez). Uma só instância para o cartão (sem
+  // key por plano ou método): mudar de plano atualiza o valor
+  // (elements.update) e o cartão escrito fica.
   const elementsOptions = useMemo(
-    () => ({
-      mode: "payment" as const,
-      amount: Math.round(props.total * 100), // Stripe expects cents
-      currency: (props.currency || "eur").toLowerCase(),
-      paymentMethodCreation: "manual" as const,
-      locale: i18n.language as any,
-      // Tem de espelhar o setup_future_usage do PaymentIntent (o servidor cria
-      // com off_session para o cartao ficar em carteira no Guesty). Se os dois
-      // divergirem o Stripe recusa o confirm: "The provided setup_future_usage
-      // (off_session) does not match the expected setup_future_usage (null)"
-      // — apanhado no teste em dev, 28 ago 2026.
-      setupFutureUsage: CHECKOUT_SETUP_FUTURE_USAGE,
-      // Card form em sessão types (layout só-cartão, sem o seletor interno do
-      // Stripe); o servidor cria o PI no formato que casa com a sessão: types
-      // para o card form, automatic para o ECE (input wallet no createCardCharge).
-      paymentMethodTypes: STRIPE_METHOD_TYPES.card,
-      appearance: {
-        theme: "stripe" as const,
-        variables: {
-          colorPrimary: "#1A1A18",
-          colorBackground: "#ffffff",
-          colorText: "#1A1A18",
-          fontFamily: "var(--font-body), Arial, sans-serif",
-          borderRadius: "4px",
-        },
-        rules: {
-          // Hide Stripe's built-in payment method tab selector — we use our own selector UI
-          ".p-PaymentMethodSelector": { display: "none" },
-        },
-      },
-    }),
+    () => cardElementsOptions(props.total, props.currency, i18n.language),
     [props.total, props.currency, i18n.language],
   );
 

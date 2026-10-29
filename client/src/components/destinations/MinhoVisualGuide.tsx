@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { withEditorialTrip } from "@shared/editorialTripContext";
 import { cdnResize, cdnSrcSet, IMAGES } from "@/lib/images";
+import { revealFocusedLink } from "@/lib/revealFocusedLink";
 import type { PlanningGuide } from "@/data/destination-planning";
 import type { DestinationPageProps } from "./DestinationPage";
 import {
@@ -283,7 +284,9 @@ export function MinhoVisualGuide({
         aria-label={pt ? "Explorar o Minho" : "Explore the Minho"}
         className="minho-chapters"
       >
-        <div className="container flex flex-wrap gap-x-6 gap-y-0 no-scrollbar">
+        {/* A chapter reached with Tab is scrolled fully into the row
+            (revisão do PR #182, M1). */}
+        <div className="container flex flex-wrap gap-x-6 gap-y-0 no-scrollbar" onFocus={revealFocusedLink}>
           {chapters.map(([id, label]) => (
             <a key={id} href={`#${id}`} onClick={() => track(id)}>
               {label}

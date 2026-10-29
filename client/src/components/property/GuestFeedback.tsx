@@ -11,6 +11,16 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { getDisplayName } from '@/lib/format';
 import { reviewLanguageLabel } from '@/lib/reviewLanguage';
+import { formatSiteDate } from '@shared/siteDate';
+
+// " · juil. 2026": the month in Lisbon time, the same on the server and in
+// every browser zone, and the same as on the property page. In the browser's
+// zone a review written at 21:27 UTC on 31 July read "août 2026" in Tokyo and
+// React threw #418 on /fr (revisão do PR #182, 29 out 2026).
+const reviewMonth = (date: string | null | undefined, lang: string) => {
+  const month = formatSiteDate(date, lang, { month: 'short', year: 'numeric' });
+  return month ? ` · ${month}` : '';
+};
 
 export default forwardRef<HTMLDivElement>(function GuestFeedback(_, ref) {
   const { t, i18n } = useTranslation();
@@ -84,7 +94,7 @@ export default forwardRef<HTMLDivElement>(function GuestFeedback(_, ref) {
           )}
         </p>
         <blockquote lang={r.language ?? undefined} className="body-sm text-pa-earth leading-relaxed line-clamp-6 flex-1">“{r.text}”</blockquote>
-        <p className="caption text-pa-earth mt-4">{r.guestName || t('reviews.verifiedGuest')}{Date.parse(r.date) ? ` · ${new Date(r.date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}` : ''}</p>
+        <p className="caption text-pa-earth mt-4">{r.guestName || t('reviews.verifiedGuest')}{reviewMonth(r.date, i18n.language)}</p>
         <Link href={`/homes/${r.property.slug}#property-reviews`} className="body-sm font-medium text-pa-dark underline underline-offset-4 pt-3 min-h-11">{getDisplayName(r.property)}</Link>
       </article>)}
     </div>

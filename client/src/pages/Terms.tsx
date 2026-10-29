@@ -7,10 +7,12 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { cancellationPolicyCopy, cancellationPolicySummary } from '@shared/cancellationPolicy';
+import { legalPageMeta } from '@shared/legalPageMeta';
 
 export default function Terms() {
   const { t, i18n } = useTranslation();
-  usePageMeta({ title: 'Terms of Service', description: 'Booking terms, cancellation policy, and conditions of use for Portugal Active villa rentals and concierge services.', url: '/legal/terms' });
+  // Same title and description as the server's head, in the page language.
+  usePageMeta({ ...legalPageMeta('/legal/terms', i18n.language), url: '/legal/terms' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />

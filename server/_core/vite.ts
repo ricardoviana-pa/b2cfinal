@@ -12,7 +12,8 @@ import express, { type Express } from "express";
 import { HOME_COUNT_LABEL, OWN_HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
 import { serviceRouteSlug } from '@shared/serviceRoutes';
-import { POLICY_LANGS, cancellationPolicyMetaDescription } from '@shared/cancellationPolicy';
+import { legalPageMetaEntries, pageMetaEntries } from '@shared/legalPageMeta';
+import { cancellationPolicyPageMeta } from '@shared/cancellationPolicy';
 import { PROPERTY_DESCRIPTION, PROPERTY_TITLE, asSentence, propertyPageMeta, propertyPageName, truncateWords } from '@shared/propertyMeta';
 import { mergePropertyOverrides, propertyOverrideFor, propertyOverrideKey } from '@shared/propertyLocalization';
 import { buildPdpFaq, faqPageNode, interpolate, type FaqTranslate } from '@shared/pdpFaq';
@@ -674,14 +675,11 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     sv: { title: 'Lyxiga Concierge-tjänster | Privat Kock, Spa, Transfer | Portugal Active',
           description: 'Lyft din vistelse med privat kock, hemspa, flygplatstransfer och skräddarsydda upplevelser. Boka tillsammans med din villa.' },
   },
-  '/legal/privacy': {
-    en: { title: 'Privacy Policy | Portugal Active',
-          description: 'How Portugal Active collects, uses and protects your personal data. GDPR compliant.' },
-  },
-  '/legal/terms': {
-    en: { title: 'Terms & Conditions | Portugal Active',
-          description: 'Terms and conditions for booking holiday properties and experiences with Portugal Active.' },
-  },
+  // The legal pages come from shared/legalPageMeta.ts, the same strings the
+  // pages pass to usePageMeta: 9 languages, equal before and after hydration
+  // and after a client-side navigation (auditoria 29 out, Regression:P6).
+  '/legal/privacy': legalPageMetaEntries('/legal/privacy'),
+  '/legal/terms': legalPageMetaEntries('/legal/terms'),
   '/best-rate-guarantee': {
     en: { title: 'Best Rate Guarantee | Portugal Active',
           description: 'Find the same home, dates and conditions cheaper on Airbnb or Booking.com no later than 24 hours after booking and Portugal Active matches the price. The terms, in plain words.' },
@@ -702,28 +700,11 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     fi: { title: 'Parhaan hinnan takuu | Portugal Active',
           description: 'Löydä sama koti, päivämäärät ja ehdot halvemmalla Airbnb:stä tai Booking.comista 24 tunnin kuluessa varauksesta, niin Portugal Active vastaa hintaan. Ehdot selkokielellä.' },
   },
-  // Titles per language; the description is Guesty's policy summary from
-  // shared/cancellationPolicy.ts (the single source, never restated here).
-  '/legal/cancellation-policy': Object.fromEntries(
-    POLICY_LANGS.map((l) => [l, {
-      title: ({
-        en: 'Cancellation Policies | Portugal Active',
-        pt: 'Políticas de Cancelamento | Portugal Active',
-        es: 'Políticas de Cancelación | Portugal Active',
-        fr: "Politiques d'Annulation | Portugal Active",
-        de: 'Stornierungsbedingungen | Portugal Active',
-        it: 'Politiche di Cancellazione | Portugal Active',
-        nl: 'Annuleringsbeleid | Portugal Active',
-        sv: 'Avbokningspolicyer | Portugal Active',
-        fi: 'Peruutuskäytännöt | Portugal Active',
-      } as Record<string, string>)[l],
-      description: cancellationPolicyMetaDescription(l),
-    }]),
-  ),
-  '/legal/cookies': {
-    en: { title: 'Cookie Policy | Portugal Active',
-          description: 'How Portugal Active uses cookies to improve your browsing experience.' },
-  },
+  // Title and description from shared/cancellationPolicy.ts, the same strings
+  // the page passes to usePageMeta; the description is Guesty's policy summary
+  // (the single source, never restated here).
+  '/legal/cancellation-policy': pageMetaEntries(cancellationPolicyPageMeta),
+  '/legal/cookies': legalPageMetaEntries('/legal/cookies'),
 };
 
 /** Look up localized meta for a static path with graceful fallback to English. */

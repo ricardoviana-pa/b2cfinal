@@ -2284,7 +2284,7 @@
     "prefill": "Förfrågan om företagsevenemang\nDatum eller önskad månad:\nDeltagare och övernattande gäster:\nBudgetintervall:\nHuvudsyfte:"
   },
   "editorial": {
-    "addDates": "Lägg till datum",
+    "addDates": "Välj datum",
     "searchExperiences": "Sök upplevelser",
     "noExperiences": "Inga upplevelser matchar filtren. Rensa dem för att se alla aktiviteter.",
     "step1Title": "Välj ditt hus",

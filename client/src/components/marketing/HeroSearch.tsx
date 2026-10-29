@@ -39,7 +39,7 @@ export default function HeroSearch({ options, destination, checkin, checkout, gu
         return <label className="hero-search-field hero-search-date" key={kind}
           onClick={e => openDatePickerWithin(e.currentTarget)}>
           <span>{t(kind === 'checkin' ? 'home.searchCheckin' : 'home.searchCheckout')}</span>
-          <span className="hero-search-date-value" aria-hidden="true">{value ? value.split('-').reverse().join('/') : t('editorial.addDates')}</span>
+          <span className={value ? 'hero-search-date-value' : 'hero-search-date-value is-placeholder'} aria-hidden="true">{value ? value.split('-').reverse().join('/') : t('editorial.addDates')}</span>
           <input className="pa-date-hit" name={kind} aria-label={t(kind === 'checkin' ? 'home.searchCheckin' : 'home.searchCheckout')} type="date" value={value} required={Boolean(kind === 'checkin' ? checkout : checkin)}
             min={kind === 'checkout' && checkin ? addSearchDays(checkin, 1) : minDate}
             onInput={e => kind === 'checkin' ? onCheckin(e.currentTarget.value) : onCheckout(e.currentTarget.value)}

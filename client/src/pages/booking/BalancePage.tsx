@@ -24,6 +24,8 @@ import { useTranslation } from "react-i18next";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { Stripe, StripeElementLocale, StripeError } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+// A letra do site no iframe do cartão: a mesma do checkout (fontFamily sem var()).
+import { STRIPE_CARD_APPEARANCE, STRIPE_FONTS } from "@/components/booking/stripeElementsOptions";
 import { ArrowLeft, CalendarClock, Check, Loader2, Lock, Mail, MessageCircle, XCircle } from "lucide-react";
 import type { AppRouter } from "../../../../server/routers";
 import { trpc } from "@/lib/trpc";
@@ -155,17 +157,6 @@ function stripeErrorText(err: StripeError | undefined, t: T, flow: "pay" | "setu
   if (err.type === "validation_error" && err.message) return err.message;
   return t("payPlanPage.errors.generic");
 }
-
-const elementsAppearance = {
-  theme: "stripe" as const,
-  variables: {
-    colorPrimary: "#1A1A18",
-    colorBackground: "#ffffff",
-    colorText: "#1A1A18",
-    fontFamily: "var(--font-body), Arial, sans-serif",
-    borderRadius: "4px",
-  },
-};
 
 /* ════════════════════════════════════════════════════════════════
    Página
@@ -1289,7 +1280,7 @@ function ChangeCardPanel(p: OkStateProps & { amountLater: string }) {
       {ready ? (
         <Elements
           stripe={p.stripePromise}
-          options={{ clientSecret: p.setupSecret!, locale: stripeLocale(lang), appearance: elementsAppearance }}
+          options={{ clientSecret: p.setupSecret!, locale: stripeLocale(lang), appearance: STRIPE_CARD_APPEARANCE, fonts: STRIPE_FONTS }}
         >
           <CardChangeForm
             t={t}

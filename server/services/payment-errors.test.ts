@@ -256,7 +256,9 @@ describe("textos do aviso nas 9 línguas", () => {
   const ALL = [...new Set([...PAYMENT_ERROR_KEYS, ...UI_KEYS])];
   // Flex nunca é "seguro"; as duas partes nunca são sinal/depósito/prestações.
   const BANNED = /sinal|dep[oó]sito|prestaç|deposit|instal+ment|seguro|insurance|assurance|acompte|anzahlung|versicherung|caparra|assicurazion|aanbetaling|verzekering|handpenning|försäkring|käsiraha|vakuutus|financiamento|hotel/i;
-  const placeholders = (s: string) => (s.match(/\{\{\s*\w+\s*\}\}/g) ?? []).map((p) => p.replace(/\s/g, "")).sort();
+  // "{{checkIn, dal}}" (formatador do artigo italiano) é o mesmo marcador {{checkIn}}.
+  const placeholders = (s: string) =>
+    (s.match(/\{\{\s*\w+\s*(?:,[^}]*)?\}\}/g) ?? []).map((p) => p.replace(/\s/g, "").replace(/,[^}]*/, "")).sort();
 
   it.each(Object.keys(LOCALES))("%s: todas as chaves existem, com os mesmos {{marcadores}} do inglês", (lang) => {
     for (const key of ALL) {

@@ -6,10 +6,10 @@
  * Client-only: it renders nothing on the server and in the first client
  * render (no hydration mismatch, nothing a crawler sees), and is fixed-
  * positioned, so appearing moves no content (no layout shift). It sits above
- * the cookie banner (--cookie-banner-h) and, on a phone, above the booking
- * bar of a home or an experience. Once per visit — across tabs — on the first
- * page that exists in the visitor's language (lib/languageSuggestion.ts,
- * SUGGESTION_SHOWN_KEY).
+ * the cookie banner, rising with it by a transform (lib/fixedBottom.ts), and,
+ * on a phone, above the booking bar of a home or an experience. Once per
+ * visit — across tabs — on the first page that exists in the visitor's
+ * language (lib/languageSuggestion.ts, SUGGESTION_SHOWN_KEY).
  *
  * Layer z-[45]: over the page's own floats and bars (z-40: the listing
  * WhatsApp button, the booking bars), under every modal layer — the dialogs,
@@ -22,6 +22,7 @@ import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { pushDL } from '@/lib/datalayer';
+import { LANGUAGE_CARD_ATTR, RISE_ABOVE_COOKIE_BANNER } from '@/lib/fixedBottom';
 import {
   LANGUAGE_CHOICE_KEY, SUGGESTION_COPY, SUGGESTION_DECLINED_KEY, SUGGESTION_SHOWN_KEY,
   hasBottomBookingBar, pageOffersLanguage, pathInLanguage, shownThisVisit, suggestedLanguage, type SuggestedLanguage,
@@ -109,22 +110,36 @@ export default function LanguageSuggestion() {
     };
   }, [location, i18n.language]);
 
+  const aboveBookingBar = hasBottomBookingBar(location);
+  // While shown, <html> says where (LANGUAGE_CARD_ATTR): over a booking bar, on
+  // a phone, the card covers the place of "back to top", which steps aside.
+  useEffect(() => {
+    if (!target) return;
+    const root = document.documentElement;
+    root.setAttribute(LANGUAGE_CARD_ATTR, aboveBookingBar ? 'above-bar' : 'bottom');
+    return () => root.removeAttribute(LANGUAGE_CARD_ATTR);
+  }, [target, aboveBookingBar]);
+
   if (!target) return null;
   const copy = SUGGESTION_COPY[target];
   const href = pathInLanguage(window.location.pathname, window.location.search, window.location.hash, target);
-  const aboveBookingBar = hasBottomBookingBar(location);
 
+  // Above the cookie banner while it is open, rising with it like the bars and
+  // the floats (RISE_ABOVE_COOKIE_BANNER), with the banner's own curve: a
+  // transform, so the banner opening is no layout shift (with `bottom` it was
+  // 0.05–0.08 of CLS on a phone, revisão do PR #178).
   return (
     <div
       role="region"
       aria-label={copy.prompt}
       lang={target}
       data-testid="language-suggestion"
-      className={`fixed z-[45] left-4 right-4 sm:left-6 sm:right-auto sm:max-w-sm flex items-center gap-3 rounded-xl border border-pa-sand bg-white py-3 pl-4 pr-2 shadow-[0_12px_40px_-12px_rgba(26,26,24,0.35)] ${
+      className={`fixed z-[45] left-4 right-4 sm:left-6 sm:right-auto sm:max-w-sm flex items-center gap-3 rounded-xl border border-pa-sand bg-white py-3 pl-4 pr-2 shadow-[0_12px_40px_-12px_rgba(26,26,24,0.35)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         aboveBookingBar
-          ? 'bottom-[calc(var(--cookie-banner-h,0px)+6rem+env(safe-area-inset-bottom,0px))] lg:bottom-[calc(var(--cookie-banner-h,0px)+1.5rem)]'
-          : 'bottom-[calc(var(--cookie-banner-h,0px)+1rem+env(safe-area-inset-bottom,0px))] sm:bottom-[calc(var(--cookie-banner-h,0px)+1.5rem)]'
+          ? 'bottom-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:bottom-6'
+          : 'bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:bottom-6'
       }`}
+      style={{ transform: RISE_ABOVE_COOKIE_BANNER }}
     >
       <p className="min-w-0 flex-1 font-body text-[13px] leading-snug text-pa-dark">
         {copy.prompt}{' '}

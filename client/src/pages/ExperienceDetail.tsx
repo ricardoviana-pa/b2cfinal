@@ -308,16 +308,23 @@ export default function ExperienceDetail() {
   }, [exp?.slug]);
 
   /* ── 404 ── */
+  // The footer comes after the full-height column, not inside it. Its bottom
+  // padding grows by the cookie banner while the banner is open
+  // (FOOTER_BOTTOM_INSET): inside a min-h-screen column that pulled the footer
+  // up on a computer instead of lengthening the page — a layout shift with no
+  // input, and the message slid under the header (revisão do PR #178).
   if (!exp) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#FAFAF7]">
-        <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="headline-lg mb-4 text-[#1A1A18]">{t('experienceDetail.notFound')}</h1>
-            <Link href="/experiences" className="btn-ghost">
-              {t('experienceDetail.backToExperiences')}
-            </Link>
+      <div className="bg-[#FAFAF7]">
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="headline-lg mb-4 text-[#1A1A18]">{t('experienceDetail.notFound')}</h1>
+              <Link href="/experiences" className="btn-ghost">
+                {t('experienceDetail.backToExperiences')}
+              </Link>
+            </div>
           </div>
         </div>
         <Footer />

@@ -37,7 +37,7 @@ import { isImplicitSubmitKey } from "@/lib/implicitSubmit";
  * - R1: o widget voltou a ser um contentor que o foco rolava (overflow
  *   hidden): abrir a lista dos indicativos fazia saltar o formulário ~50 px.
  *   overflow: clip outra vez, e a lista abre para cima dentro do cartão.
- * - O botão das casas parceiras já não depende do <form> (o PR #181 tira-o):
+ * - O botão das casas parceiras não depende de <form> (o PR #181 tirou-o):
  *   type="button", envia pelo onClick com a verificação dos obrigatórios, e
  *   Enter num campo de texto continua a enviar.
  */
@@ -247,13 +247,14 @@ describe("casas parceiras: o pedido, renderizado, no cartão do computador", () 
     expect(html).not.toMatch(/tabindex="[1-9]/);
   });
 
-  it("o botão não depende do <form>: type=\"button\", sem atributo form (o PR #181 tira o <form>)", () => {
+  it("o botão não depende de <form>: type=\"button\", sem atributo form, sem <form> à volta (PR #181)", () => {
     for (const slot of [{ card: {} as HTMLElement, scroller: {} as HTMLElement }, null]) {
       const html = partnerPanel(slot);
       const button = html.match(/<button[^>]*class="[^"]*pa-reserve-cta[^"]*"[^>]*>/)?.[0] ?? "";
       expect(button).toContain('type="button"');
       expect(button).not.toMatch(/\sform="/);
       expect(html).not.toContain('type="submit"');
+      expect(html).not.toMatch(/<form[\s>]/);
       // nome e email continuam obrigatórios
       expect(html).toMatch(/<input[^>]*type="text"[^>]*required/);
       expect(html).toMatch(/<input[^>]*type="email"[^>]*required/);
@@ -272,7 +273,7 @@ describe("casas parceiras: o pedido, renderizado, no cartão do computador", () 
     expect(html).toMatch(new RegExp(`<div data-booking-notice=""[^>]*>[\\s\\S]*?${en.partnerBooking.someUnavailable.slice(0, 30)}`));
   });
 
-  it("envia pelo onClick com a verificação dos obrigatórios; Enter num campo de texto continua a enviar; o aviso observa o painel, não o <form>", () => {
+  it("envia pelo onClick com a verificação dos obrigatórios; Enter num campo de texto continua a enviar; o aviso observa o painel", () => {
     const src = read("client/src/components/booking/PartnerBookingPanel.tsx");
     const button = src.slice(src.indexOf("<button", src.indexOf("<ReserveCtaSlot footerRef={requestFooterRef}>")));
     expect(button).toMatch(/^<button\s+type="button"\s+onClick=\{submit\}/);

@@ -22,6 +22,9 @@ import de from "../../client/src/i18n/locales/de.json";
 import nl from "../../client/src/i18n/locales/nl.json";
 import sv from "../../client/src/i18n/locales/sv.json";
 import fi from "../../client/src/i18n/locales/fi.json";
+import { itArt } from "@shared/italianDates";
+
+export { itArt };
 
 export type EmailLang = "pt" | "en" | "fr" | "es" | "it" | "de" | "nl" | "sv" | "fi";
 
@@ -434,7 +437,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
   it: {
     subject: (h) => `Il suo soggiorno a ${h} è confermato`,
     yourHome: "la sua casa",
-    headline: (h, i, o) => `È confermato. ${h} è sua dal ${i} al ${o}.`,
+    headline: (h, i, o) => `È confermato. ${h} è sua ${itArt("dal", i)} ${itArt("al", o)}.`,
     bodyNamed: (n) => `Buongiorno ${n}. La casa inizia oggi a prepararsi per il suo arrivo, e il suo concierge la accompagna da questo momento — un desiderio, un messaggio, ed è fatto. Il codice qui sotto è il suo riferimento per tutto.`,
     body: "Benvenuto in Portugal Active. Il nostro team sta già preparando la casa per il suo arrivo e il suo concierge la accompagna da questo momento. Conservi il codice qui sotto, è il suo riferimento per qualsiasi richiesta.",
     personOne: "persona", personMany: "persone",
@@ -705,7 +708,7 @@ export const LEGACY_I18N: Record<EmailLang, LegacyStrings> = {
     whatsappMsg: (h, c) => `Salve, ho appena prenotato ${h} (${c}). Non vedo l'ora!`,
     arrivalSubject: (h) => `Il suo soggiorno a ${h} inizia tra 3 giorni`,
     arrivalHeadline: "La sua casa si sta preparando.",
-    arrivalIntro: (n, h, d) => `${n ? `${n}, il` : "Il"} suo soggiorno a ${h} inizia il ${d}. Il nostro team sta preparando tutto per il suo arrivo.`,
+    arrivalIntro: (n, h, d) => `${n ? `${n}, il` : "Il"} suo soggiorno a ${h} inizia ${itArt("il", d)}. Il nostro team sta preparando tutto per il suo arrivo.`,
     addressLabel: "Indirizzo", conciergeLabel: "Concierge",
     arrivalHelp: "Se le serve qualcosa prima di arrivare — la spesa, un transfer dall'aeroporto, un tavolo al ristorante — risponda a questa email o scriva al suo concierge.",
     postSubject: (h) => `Com'è andato il suo soggiorno a ${h}?`,
@@ -956,13 +959,9 @@ const nlTo = refundTo("naar de kaart waarmee u betaalde", (l) => `naar kaart •
 const svTo = refundTo("till kortet du betalade med", (l) => `till kort ••••${l}`, (x) => `till korten ${x}`, "och");
 /** fi: alativo (kortille / korteille). */
 const fiTo = refundTo("maksussa käytetylle kortille", (l) => `kortille ••••${l}`, (x) => `korteille ${x}`, "ja");
-/** it: artigo/preposição + data, com elisão antes de 8 e 11 ("il 15 luglio",
- *  "l'8 luglio", "dall'11 luglio"); cap = início de frase. */
-const IT_ELIDED = { il: "l'", al: "all'", dal: "dall'", del: "dell'" } as const;
-export const itArt = (prep: keyof typeof IT_ELIDED, d: string, cap = false) => {
-  const s = /^(8|11)\b/.test(d) ? `${IT_ELIDED[prep]}${d}` : `${prep} ${d}`;
-  return cap ? s.charAt(0).toUpperCase() + s.slice(1) : s;
-};
+/* it: artigo/preposição + data, com elisão antes de 8 e 11 ("il 15 luglio",
+ * "l'8 luglio", "dall'11 luglio"): itArt, em shared/italianDates.ts, a mesma
+ * regra que o site usa no it.json ("{{date, il}}"). */
 /** fi: ablativo (kortilta) e alativo (kortille). */
 const fiFrom = (l: string | null) => (l ? `kortilta ••••${l}` : "käyttämältäsi kortilta");
 
