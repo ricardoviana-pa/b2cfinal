@@ -1,5 +1,5 @@
 import { accommodationSubtotal } from "@shared/booking-money";
-import { useState, useCallback, useRef, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useCallback, useRef, useEffect, useLayoutEffect, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useMeasurementConsent } from "@/hooks/useMeasurementConsent";
 import { useLocation } from "wouter";
@@ -24,6 +24,8 @@ import type { AvailabilityDay } from "./AvailabilityCalendar";
 const CheckoutPaymentForm = lazy(() => import("./CheckoutPaymentForm"));
 import PhoneInput from "./PhoneInput";
 import PaymentMethodsNote from "./PaymentMethodsNote";
+import { ReserveCtaSlot, useBookingCardSlot, useHeaderReserveCount } from "./bookingCardSlot";
+import { keepRevealed, rangeOf, whenFooterOnScreen } from "@/lib/bookingCardReveal";
 import productsData from "@/data/products.json";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
 import { phoneIssue, phoneIssueMessage } from "@/lib/phone";
@@ -375,6 +377,16 @@ export default function BookingWidget({
   const showCalendar = datePicker.open;
 
   const widgetRef = useRef<HTMLDivElement>(null);
+  // Cartão fixo do computador (null na gaveta do telemóvel): o RESERVE fica
+  // logo a seguir às tarifas e o CSS prende-o ao fundo do cartão; o resto
+  // rola por cima dele (bookingCardSlot.tsx).
+  const bookingCard = useBookingCardSlot();
+  const headerReserves = useHeaderReserveCount(!!bookingCard);
+  const reserveFooterRef = useRef<HTMLDivElement>(null);
+  const breakdownRef = useRef<HTMLDivElement>(null);
+  const ratePlansRef = useRef<HTMLDivElement>(null);
+  const selectedPlanRef = useRef<HTMLLabelElement>(null);
+  const pricingIssueRef = useRef<HTMLDivElement>(null);
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -676,8 +688,40 @@ export default function BookingWidget({
       didInitialStepScrollSkipRef.current = true;
       return;
     }
+    // Computador: traz o cartão fixo inteiro (com o RESERVE no rodapé) para o
+    // ecrã; o que se vê lá dentro é com o efeito de baixo. scrollIntoView no
+    // widget também rolava o cartão por dentro, para o topo do widget.
+    const card = bookingCard?.card;
+    if (card && step === "quote") {
+      card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      return;
+    }
     widgetRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [step]);
+
+  // Computador: quando chega a cotação, muda a tarifa, se usa o RESERVE do
+  // cabeçalho ou o RESERVE recebe o foco do teclado, a tarifa escolhida
+  // (rádio, nome e preço) fica à vista por cima do RESERVE, que está no rodapé
+  // do cartão; sem lista de tarifas, a linha do total; sem preço, o aviso.
+  // Rola-se só o cartão, nunca a página, e só com o RESERVE no ecrã: no topo
+  // da página o cartão continua a abrir no preço (auditoria 29 out, W3;
+  // revisão do PR #179, PDP-STICKY-KBD-1).
+  useLayoutEffect(() => {
+    const root = widgetRef.current;
+    if (!bookingCard || !root || step !== "quote") return;
+    const range = () => {
+      if (!hasLivePrice) return pricingIssueRef.current ? rangeOf(pricingIssueRef.current) : null;
+      if (selectedPlanRef.current && ratePlansRef.current) return rangeOf(selectedPlanRef.current, ratePlansRef.current);
+      return breakdownRef.current ? rangeOf(breakdownRef.current) : null;
+    };
+    return keepRevealed(bookingCard.scroller, range, {
+      // a tarifa (o topo) ou o aviso ganham; sem lista, a linha do total (o fundo)
+      anchor: !hasLivePrice || selectedPlanRef.current ? "start" : "end",
+      watch: [root],
+      ready: whenFooterOnScreen(() => reserveFooterRef.current),
+      focusWithin: reserveFooterRef.current,
+    });
+  }, [bookingCard, step, hasLivePrice, quote?.quoteId, selectedRatePlanId, headerReserves]);
 
 
   // GA4: add_contact_info — fires once when the guest completes valid contact details
@@ -1193,7 +1237,7 @@ export default function BookingWidget({
         {step === "quote" && !hasLivePrice && (
           <>
             {quote?.requestOnly ? (
-              <div className="p-3 bg-pa-warm border border-pa-sand" role="status">
+              <div ref={pricingIssueRef} className="p-3 bg-pa-warm border border-pa-sand" role="status">
                 <p className="caption text-inherit text-pa-dark leading-snug font-medium">
                   {t("bookingWidget.requestOnlyTitle", "This home is booked on request for these dates.")}
                 </p>
@@ -1202,7 +1246,7 @@ export default function BookingWidget({
                 </p>
               </div>
             ) : (
-            <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
+            <div ref={pricingIssueRef} className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium caption text-inherit">!</span>
               <p className="text-red-600 leading-snug caption text-inherit font-medium">
                 {t("bookingWidget.pricingUnavailableMessage", "We couldn't confirm pricing for these dates. Please contact a Concierge.")}
@@ -1264,7 +1308,7 @@ export default function BookingWidget({
         {step === "quote" && hasLivePrice && effectiveQuote && (
           <>
             {/* ── Price Breakdown Card ── */}
-            <div className="bg-black/[0.02] border border-black/10 overflow-hidden">
+            <div ref={breakdownRef} className="bg-black/[0.02] border border-black/10 overflow-hidden">
               <div className="p-5 space-y-3">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
@@ -1322,7 +1366,7 @@ export default function BookingWidget({
             {quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (() => {
               const maxTotal = Math.max(...quote.ratePlanOptions!.map(o => o.total));
               return (
-                <div className="space-y-2">
+                <div ref={ratePlansRef} className="space-y-2">
                   <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.ratePlan")}</p>
                   {quote.ratePlanOptions!.map(opt => {
                     // No explicit pick yet → highlight the quote's default plan
@@ -1345,6 +1389,7 @@ export default function BookingWidget({
                     return (
                       <label
                         key={opt.ratePlanId}
+                        ref={isSelected ? selectedPlanRef : undefined}
                         className={cn(
                           "flex items-center gap-3 p-3.5 border cursor-pointer transition-all",
                           isSelected
@@ -1424,9 +1469,14 @@ export default function BookingWidget({
 
             {/* ── CTA Section — confirmed live price, direct booking ──
                  O botão e a linha dos meios de pagamento vão juntos: no
-                 computador o pa-reserve-cta fica preso ao fundo do painel
-                 (index.css, 29 out) e a linha "ainda não é cobrado" tem de
-                 ficar à vista com ele (auditoria do funil, crítico). */}
+                 computador ficam no rodapé fixo do cartão (ReserveCtaSlot,
+                 index.css), sempre à vista, e a linha "ainda não é cobrado"
+                 tem de ficar à vista com ele (auditoria do funil, crítico).
+                 O erro da cotação expirada vai com eles: aparece depois do
+                 clique no RESERVE. No HTML o bloco fica aqui, logo a seguir
+                 às tarifas: é a ordem do Tab e do leitor de ecrã (revisão do
+                 PR #179). No telemóvel fica tudo no sítio. */}
+            <ReserveCtaSlot footerRef={reserveFooterRef}>
             <div className="pa-reserve-cta bg-white space-y-2.5">
             <button
               onClick={() => {
@@ -1595,6 +1645,7 @@ export default function BookingWidget({
                 {beQuoteError}
               </div>
             )}
+            </ReserveCtaSlot>
 
             <button onClick={resetDates} className="w-full caption text-black/30 hover:text-black transition py-1">
               {t("bookingWidget.changeDates")}

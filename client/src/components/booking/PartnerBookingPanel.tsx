@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Calendar, Check, Loader2, Minus, Plus, User } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
@@ -10,6 +10,8 @@ import { partnerCalendarView, partnerQuoteNotice, partnerRequestQuoteStatus } fr
 import AvailabilityCalendar from './AvailabilityCalendar';
 import { useDateRangePicker } from './useDateRangePicker';
 import PhoneInput from './PhoneInput';
+import { ReserveCtaSlot, useBookingCardSlot, useHeaderReserveCount } from './bookingCardSlot';
+import { keepRevealed, rangeOf, whenFooterOnScreen } from '@/lib/bookingCardReveal';
 
 /**
  * Booking panel for partner (Tripwix) homes.
@@ -136,6 +138,33 @@ export function PartnerBookingPanel({
 
   const createLead = trpc.leads.create.useMutation();
 
+  // Computador: o "Pedir estas datas" fica no rodapé fixo do cartão
+  // (bookingCardSlot.tsx), que nunca tapa nada. Quando a cotação diz que há
+  // noites ocupadas, que as datas são a pedido ou que o preço falhou, esse
+  // aviso (data-booking-notice) fica à vista por cima do botão, também depois
+  // do RESERVE do cabeçalho e quando o botão recebe o foco do teclado;
+  // rola-se só o cartão, nunca a página (auditoria 29 out, P3). Observa o
+  // painel inteiro (panelRef).
+  const bookingCard = useBookingCardSlot();
+  const headerReserves = useHeaderReserveCount(!!bookingCard);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const requestFooterRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!bookingCard || !panel || isFetching) return;
+    const notice = () => panel.querySelector('[data-booking-notice]');
+    if (!notice()) return;
+    return keepRevealed(bookingCard.scroller, () => {
+      const el = notice();
+      return el ? rangeOf(el) : null;
+    }, {
+      anchor: 'end',
+      watch: [panel],
+      ready: whenFooterOnScreen(() => requestFooterRef.current),
+      focusWithin: requestFooterRef.current,
+    });
+  }, [bookingCard, quote, isFetching, isError, quoteNotice, headerReserves]);
+
   // Every figure below is already VAT-inclusive: the service adds the 6% before
   // anything leaves it, so a partner night and one of our own compare like for
   // like instead of one being quoted net.
@@ -255,7 +284,7 @@ export function PartnerBookingPanel({
   }
 
   return (
-    <div className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
+    <div ref={panelRef} className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
       {/* Price header — the widget's three states, same type ramp. */}
       <div className="px-6 pt-6 pb-4">
         {isFetching && datesValid ? (
@@ -452,7 +481,7 @@ export function PartnerBookingPanel({
 
         <div className="px-5 pt-5 pb-6 space-y-3">
           {quoteNotice === 'error' && (
-            <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
+            <div data-booking-notice="" className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
               <p className="text-red-600 leading-snug text-xs">
                 {t('partnerBooking.quoteError', 'We could not price these dates just now. Send the request and the concierge will confirm the total.')}
@@ -464,7 +493,7 @@ export function PartnerBookingPanel({
               not a fault, and not booked — the request goes to the concierge,
               who confirms both. Nothing here claims why the price is missing. */}
           {quoteNotice === 'on-request' && (
-            <div className="flex items-start gap-2.5 p-3 bg-[#F5F1EB] border border-[#E8E4DC]" role="status">
+            <div data-booking-notice="" className="flex items-start gap-2.5 p-3 bg-[#F5F1EB] border border-[#E8E4DC]" role="status">
               <span className="text-[#806A48] text-sm shrink-0 leading-none mt-0.5" aria-hidden="true">i</span>
               <p className="text-xs text-[#1A1A18] leading-snug">
                 {t('partnerBooking.onRequestDates', 'We cannot show a price online for these dates. Send the request and our concierge will confirm availability and the total.')}
@@ -473,7 +502,7 @@ export function PartnerBookingPanel({
           )}
 
           {quoteNotice === 'taken' && (
-            <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
+            <div data-booking-notice="" className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
               <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
               <p className="text-xs text-amber-800 font-medium leading-snug">
                 {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
@@ -527,7 +556,7 @@ export function PartnerBookingPanel({
           )}
 
           {quote && !quote.available && (
-            <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
+            <div data-booking-notice="" className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
               <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
               <p className="text-xs text-amber-800 font-medium leading-snug">
                 {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
@@ -577,6 +606,10 @@ export function PartnerBookingPanel({
             />
           </div>
 
+          {/* No computador o botão, o erro do envio e a nota ficam no rodapé
+              fixo do cartão; no HTML ficam aqui, logo a seguir aos campos (a
+              ordem do Tab e do leitor de ecrã). */}
+          <ReserveCtaSlot footerRef={requestFooterRef}>
           {submitError && (
             <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
@@ -603,6 +636,7 @@ export function PartnerBookingPanel({
           <p className="text-[11px] text-black/30 text-center leading-relaxed">
             {t('partnerBooking.noCharge', 'No payment now — our concierge confirms availability and the final total first.')}
           </p>
+          </ReserveCtaSlot>
 
           <a
             href={whatsappUrl}
