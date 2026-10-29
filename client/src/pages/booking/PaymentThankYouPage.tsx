@@ -223,12 +223,17 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
               {data.guestEmail ? (
                 <div className="mb-[26px] rounded-lg border border-pa-sand bg-pa-warm px-[14px] py-3 text-center text-[12.5px] leading-snug text-pa-earth">
                   {t("paymentThankYou.emailSent", { defaultValue: "Confirmation email sent to" })}{" "}
-                  <a
-                    href={`mailto:${data.guestEmail}`}
-                    className="font-medium text-pa-gold no-underline"
-                  >
-                    {data.guestEmail}
-                  </a>
+                  {/* Numa visita mais tarde o recibo vem do servidor, com o email mascarado. */}
+                  {data.guestEmail.includes("•") ? (
+                    <span className="font-medium text-pa-gold">{data.guestEmail}</span>
+                  ) : (
+                    <a
+                      href={`mailto:${data.guestEmail}`}
+                      className="font-medium text-pa-gold no-underline"
+                    >
+                      {data.guestEmail}
+                    </a>
+                  )}
                 </div>
               ) : null}
 

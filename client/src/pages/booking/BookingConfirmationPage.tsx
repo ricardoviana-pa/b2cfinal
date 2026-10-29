@@ -108,7 +108,7 @@ export default function BookingConfirmationPage() {
 
               <div className="rounded-lg bg-white border border-pa-sand shadow-[0_4px_24px_rgba(26,26,24,0.06)] p-6">
                 <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('bookingConfirmation.checkInInstructions')}</p>
-                <p className="body-md">{data.checkInInstructions || t('bookingConfirmation.checkInDefault')}</p>
+                <p className="body-md">{t('bookingConfirmation.checkInDefault')}</p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
