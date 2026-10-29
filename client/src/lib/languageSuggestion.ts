@@ -54,6 +54,32 @@ export function suggestedLanguage({ pageLang, path, stored, declined, browser }:
   return candidate;
 }
 
+/**
+ * Does this page exist in `lang`? Read from the hreflang alternates in the
+ * document head, which the server writes per page: a blog article only lists
+ * the editions that are published, and /{lang}/blog/<slug> for any other
+ * language 302s back to /en (vite.ts, blogLanguageRedirect). Offering German
+ * there reloaded the English article and stored "de" as the visitor's choice
+ * (revisão do PR #175, R4). Null while the page has written no alternates
+ * yet (a lazily loaded page writes them once its code has arrived).
+ */
+export function pageOffersLanguage(hreflangs: readonly (string | null | undefined)[], lang: SiteLanguage): boolean | null {
+  const offered = hreflangs
+    .filter((tag) => tag && tag.toLowerCase() !== 'x-default')
+    .map((tag) => siteLanguage(tag));
+  return offered.length === 0 ? null : offered.includes(lang);
+}
+
+/**
+ * Pages with their own fixed bar at the bottom of a phone screen: a home's
+ * booking bar and an experience's (ExperienceMobileBookingBar, also on
+ * /activities/:slug). The card sits above the bar there, never on its button.
+ */
+const BOTTOM_BAR_PAGE = /^\/(homes|experiences|activities)\/[^/]+/;
+export function hasBottomBookingBar(path: string): boolean {
+  return BOTTOM_BAR_PAGE.test(path);
+}
+
 /** The same page in another language: /en/homes?x=1#y → /pt/homes?x=1#y. */
 export function pathInLanguage(pathname: string, search: string, hash: string, lang: SiteLanguage): string {
   const segments = pathname.split('/').filter(Boolean);
