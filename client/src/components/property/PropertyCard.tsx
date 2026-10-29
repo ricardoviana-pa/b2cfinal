@@ -11,6 +11,7 @@ import { propertyTripHref } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
 import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
+import { noPriceLabelKey } from '@/lib/partnerAvailability';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import { cardImageLoading } from '@/lib/listingImagePriority';
@@ -394,7 +395,10 @@ export default function PropertyCard({
                     </span>
                   );
                 }
-                return <span className="text-[#726D63] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
+                // A partner home with no "from" (no calendar, or nothing open
+                // in 12 months): picking dates will not price it either, so
+                // "select dates for price" would be a false promise.
+                return <span className="text-[#726D63] text-[0.8125rem]">{t(noPriceLabelKey(isPartner, fromPrice))}</span>;
               })()}
               {hasPartnerPrice && (
                 <p className="text-[0.6875rem] text-[#726D63] mt-1 leading-relaxed">
