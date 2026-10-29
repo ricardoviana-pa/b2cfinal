@@ -31,8 +31,9 @@ describe('checkout funnel events', () => {
   it('every payment failure path reports payment_failed', () => {
     const src = read('client/src/components/booking/CheckoutPaymentForm.tsx');
     const calls = src.match(/trackPaymentFailed\(\{/g) ?? [];
-    // wallet (3), cartão v2 (3), cartão legacy (2)
-    expect(calls.length).toBe(8);
+    // wallet (3), cartão v2 (3), cartão legacy (2), PayPal e Klarna antes do
+    // redirect (1, partilhada; out/2026 — antes estes erros não se mediam)
+    expect(calls.length).toBe(9);
     // nunca a mensagem nem dados do hóspede no evento
     const helper = src.slice(src.indexOf('function trackPaymentFailed'), src.indexOf('function ExpressWalletInner'));
     expect(helper).not.toMatch(/guestEmail|guestName|guestPhone|message:/);

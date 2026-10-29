@@ -34,6 +34,7 @@ import {
   createLead,
   promoteCheckoutLeadToNewsletter,
   demoteCheckoutLeadFromNewsletter,
+  checkoutNewsletterConsent,
 } from "../db";
 import { getPropertiesForSite } from "../services/properties-store";
 import { resolveCleaningRates } from "../config/cleaning-rates";
@@ -547,7 +548,7 @@ export const checkoutRouter = router({
     .input(z.object({ intentId: z.string().uuid() }))
     .query(async ({ input }) => {
       const intent = await getBookingIntent(input.intentId);
-      if (!intent) return { intent: null, expired: false, paymentPlan: null };
+      if (!intent) return { intent: null, expired: false, paymentPlan: null, newsletterOptIn: null };
       const expired =
         intent.status === "expired" ||
         (intent.expiresAt != null && intent.expiresAt.getTime() < Date.now());
@@ -558,7 +559,19 @@ export const checkoutRouter = router({
         console.warn(`[TwoParts] oferta nao calculada intent=${input.intentId}: ${err?.message}`);
         return { available: false as const, reason: null };
       });
-      return { intent: publicIntent(view), expired, paymentPlan };
+      // A caixa de marketing do passo 1 tal como o hóspede a deixou (auditoria
+      // do funil, n.º 2): sem isto vinha sempre desmarcada e um segundo
+      // Continuar retirava o consentimento. null = não se sabe; o checkout
+      // então não a repõe e o captureLead não mexe no que estava.
+      let newsletterOptIn: boolean | null = null;
+      if (intent.email) {
+        try {
+          newsletterOptIn = await checkoutNewsletterConsent(intent.email);
+        } catch {
+          newsletterOptIn = null;
+        }
+      }
+      return { intent: publicIntent(view), expired, paymentPlan, newsletterOptIn };
     }),
 
   updateIntent: publicProcedure
@@ -1049,13 +1062,17 @@ export const checkoutRouter = router({
       z.object({
         intentId: z.string().uuid(),
         email: z.string().email().max(320),
-        consent: z.boolean().default(false),
+        /** O estado da caixa de marketing. Omisso = o hóspede não lhe mexeu e
+         *  o checkout não sabe como estava: o consentimento fica como está. */
+        consent: z.boolean().optional(),
         locale: z.string().max(5).optional(),
       }),
     )
     .mutation(async ({ input }) => {
       const intent = await getBookingIntent(input.intentId);
       if (!intent) return { ok: false };
+      // Um lead novo sem a caixa marcada nunca é marketing (RGPD: opt-in ativo)
+      const consent = input.consent === true;
 
       const alreadyCaptured = intent.status !== "draft" && intent.email === input.email;
       const saved = await updateBookingIntent(input.intentId, {
@@ -1075,26 +1092,29 @@ export const checkoutRouter = router({
             // quem não aceita fica em "checkout" — email usável apenas na
             // recuperação transacional do próprio carrinho, nunca em
             // campanhas (RGPD: sem opt-in não há base para marketing).
-            source: input.consent ? "newsletter-checkout" : "checkout",
+            source: consent ? "newsletter-checkout" : "checkout",
             metadata: {
               intentId: input.intentId,
               listingId: intent.listingId,
               checkIn: intent.checkIn,
               checkOut: intent.checkOut,
-              consent: String(input.consent),
+              consent: String(consent),
               locale: input.locale ?? "",
             },
           });
-        } else if (input.consent) {
+        } else if (input.consent === true) {
           // Voltou atrás e aceitou depois de o lead já existir: promove o
           // registo em vez de criar um duplicado.
           await promoteCheckoutLeadToNewsletter(input.email);
-        } else {
+        } else if (input.consent === false) {
           // ...e desmarcar retira. Sem este ramo o consentimento era
           // write-once: quem aceitava, voltava atrás e desmarcava ficava na
           // mailing list na mesma. Vence sempre o último estado da caixa.
           await demoteCheckoutLeadFromNewsletter(input.email);
         }
+        // consent omisso: a caixa não mudou e o checkout não sabia como
+        // estava (leitura falhada). Antes valia false e retirava o hóspede da
+        // lista sem ele mexer em nada (auditoria do funil, n.º 2).
       } catch (error) {
         // Lead persistence must never block the funnel
         console.error("[Checkout] createLead failed:", error);

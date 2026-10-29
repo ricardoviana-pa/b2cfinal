@@ -1,4 +1,5 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
+import { dbErrorSummary } from "./lib/db-error-log";
 import { ne, eq, desc, asc, and, or, like, sql, inArray, notInArray, isNotNull, isNull, gt, gte, lt, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
@@ -1061,6 +1062,32 @@ export async function hasNewsletterConsent(email: string): Promise<boolean> {
   } catch (error) {
     console.error("[Database] hasNewsletterConsent failed:", error);
     return false;
+  }
+}
+
+/**
+ * A caixa de marketing do passo 1 do checkout, tal como o hóspede a deixou:
+ * o captureLead mantém os leads do checkout deste email em
+ * "newsletter-checkout" enquanto a caixa estiver marcada e passa-os a
+ * "checkout" quando é desmarcada. (Uma subscrição no rodapé não conta: o
+ * checkout nunca lhe mexe.) null = não se sabe (sem BD ou leitura falhada):
+ * quem chama não repõe nada e o captureLead não mexe no consentimento.
+ */
+export async function checkoutNewsletterConsent(email: string): Promise<boolean | null> {
+  if (!email) return null;
+  const db = await getDb();
+  if (!db) return null;
+  try {
+    const rows = await db
+      .select({ id: leads.id })
+      .from(leads)
+      .where(and(eq(leads.email, email), eq(leads.source, "newsletter-checkout")))
+      .limit(1);
+    return rows.length > 0;
+  } catch (error) {
+    // Sem o email do hóspede: o erro do Drizzle traz os parâmetros da query
+    console.error("[Database] checkoutNewsletterConsent failed:", dbErrorSummary(error));
+    return null;
   }
 }
 

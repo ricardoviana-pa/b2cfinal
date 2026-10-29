@@ -10,6 +10,11 @@
  * da tarifa rege o cancelamento com reembolso em dinheiro; o Flex acrescenta o
  * direito de remarcar com crédito para lá dessa janela — e o copy muda com a
  * tarifa selecionada para tornar isso explícito.
+ *
+ * Onde não acrescenta nenhum dia (tarifa moderate: cancelamento gratuito até
+ * 7 dias antes, o mesmo prazo do Flex; ou chegada a menos de 7 dias) o
+ * CheckoutPage não monta este bloco (shared/flexValue.ts, auditoria do funil
+ * de 29 out 2026, n.º 14).
  */
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,6 +26,8 @@ import { pushDL } from "@/lib/datalayer";
 
 export interface FlexConfig {
   price: number;
+  /** % das noites da tarifa escolhida (server/config/checkout-extras.ts FLEX_CONFIG). */
+  pricePercent?: number;
   minTotal: number;
   rescheduleDaysBefore: number;
   creditMonths: number;
@@ -136,6 +143,9 @@ export default function FlexBlock({
           <p className="font-display text-[22px] text-pa-dark leading-snug">
             {t("checkout.flex.title", "Flex — guaranteed rebooking")}
           </p>
+          {/* A frase aprovada na spec §6 (validada pelo André). Uma versão com a
+              condição ("até 7 dias antes da chegada", auditoria do funil, n.º 14 b)
+              espera o OK dele; a condição já está no 1.º benefício, logo abaixo. */}
           <p className="body-sm text-pa-earth mt-0.5">
             {t("checkout.flex.tagline", "Rebook whenever you need. The amount you paid is never lost.")}
           </p>
