@@ -3,15 +3,93 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
 import {
+  EXPRESS_CHECKOUT_CLICK_DETAILS,
+  EXPRESS_CHECKOUT_ELEMENT_OPTIONS,
+  STRIPE_BUSINESS,
   STRIPE_CARD_APPEARANCE,
   STRIPE_FONTS,
   STRIPE_FONT_FAMILY,
   STRIPE_LABEL_FONT_SIZE,
   cardElementsOptions,
   expressCheckoutElementsOptions,
+  paymentElementOptions,
 } from "@/components/booking/stripeElementsOptions";
+import { renderCardChangeMandate, renderTwoPartsMandate } from "./two-parts-mandate";
 
 const ROOT = path.resolve(import.meta.dirname, "../..");
+const readSrc = (p: string) => fs.readFileSync(path.join(ROOT, p), "utf8");
+
+/**
+ * Verificação em produção, 29 out 2026 (CK-STRIPE-MERCHANT-NAME): o texto do
+ * cartão em carteira da Stripe dizia "you allow Ricardo Torres Viana, Lda to
+ * charge your card for future payments", o nome da conta Stripe, que o site
+ * nunca mostra; logo abaixo, a nossa autorização das duas partes diz
+ * "I authorise Portugal Active to charge…". Duas partes diferentes para a
+ * mesma cobrança futura. O nome mostrado passa a ser o da marca, num só sítio.
+ */
+describe("o nome do negócio que a Stripe mostra é o da marca, Portugal Active", () => {
+  const LANGS = ["pt", "en", "fr", "es", "it", "de", "nl", "sv", "fi"];
+  const form = readSrc("client/src/components/booking/CheckoutPaymentForm.tsx");
+  const balance = readSrc("client/src/pages/booking/BalancePage.tsx");
+
+  it("um só nome, o da marca, nunca o da conta", () => {
+    expect(STRIPE_BUSINESS).toEqual({ name: "Portugal Active" });
+    expect(readSrc("client/src/components/booking/stripeElementsOptions.ts")).toMatch(/export const STRIPE_BUSINESS = \{ name: "Portugal Active" \} as const;/);
+  });
+
+  it("o PaymentElement do checkout leva o nome, com o resto das opções como estava", () => {
+    expect(paymentElementOptions({ legacyApplePay: false })).toEqual({
+      layout: "tabs",
+      wallets: { googlePay: "never", applePay: "never" },
+      fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
+      business: { name: "Portugal Active" },
+    });
+    // Legacy (sem intentId): o Apple Pay volta como aba; o Google Pay nunca.
+    expect(paymentElementOptions({ legacyApplePay: true }).wallets).toEqual({ googlePay: "never", applePay: "auto" });
+    expect(paymentElementOptions({ legacyApplePay: true }).business).toBe(STRIPE_BUSINESS);
+  });
+
+  it("o ExpressCheckoutElement (Apple Pay / Google Pay) leva o mesmo nome e continua só com wallets", () => {
+    expect(EXPRESS_CHECKOUT_ELEMENT_OPTIONS.business).toBe(STRIPE_BUSINESS);
+    expect(EXPRESS_CHECKOUT_ELEMENT_OPTIONS.paymentMethods).toEqual({
+      applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never",
+    });
+    expect(EXPRESS_CHECKOUT_ELEMENT_OPTIONS.layout).toEqual({ maxColumns: 2, maxRows: 1 });
+    // O clique na wallet resolve com o mesmo nome (o caminho que o stripe-js 4.10 tipa).
+    expect(EXPRESS_CHECKOUT_CLICK_DETAILS).toEqual({ business: STRIPE_BUSINESS });
+  });
+
+  it("o checkout monta os dois Elements com estas opções (não com literais próprios)", () => {
+    expect(form).toMatch(/const paymentOptions = useMemo\(\(\) => paymentElementOptions\(\{ legacyApplePay: !intentId \}\), \[intentId\]\);/);
+    expect(form).toMatch(/<PaymentElement options=\{paymentOptions\} \/>/);
+    expect(form).toMatch(/<ExpressCheckoutElement\s+options=\{EXPRESS_CHECKOUT_ELEMENT_OPTIONS\}\s+onClick=\{\(event\) => event\.resolve\(EXPRESS_CHECKOUT_CLICK_DETAILS\)\}/);
+    expect(form).not.toMatch(/options=\{\{\s*layout: "tabs"/);
+    expect(form).not.toMatch(/paymentMethods: \{ applePay/);
+  });
+
+  it("o checkout NÃO esconde o texto da Stripe: no plano «tudo agora» é o único aviso de cartão em carteira", () => {
+    expect(form).not.toMatch(/terms:\s*\{\s*card:\s*"never"/);
+  });
+
+  it("o cartão novo da página do saldo leva o mesmo nome", () => {
+    expect(balance).toMatch(/<PaymentElement\s+options=\{\{[\s\S]{0,600}?business: STRIPE_BUSINESS,[\s\S]{0,200}?\}\}/);
+  });
+
+  it("o mandato das duas partes e o do cartão novo nomeiam a mesma parte, nas 9 línguas", () => {
+    const v = {
+      amountLaterCents: 126_200,
+      chargeAt: new Date("2027-07-01T09:00:00.000Z"),
+      retryAt: [new Date("2027-07-02T09:00:00.000Z"), new Date("2027-07-04T09:00:00.000Z")],
+      freeCancelDeadlineAt: new Date("2027-07-08T22:59:00.000Z"),
+    };
+    for (const lang of LANGS) {
+      const m = renderTwoPartsMandate(lang, v);
+      expect(m.checkbox, lang).toContain(STRIPE_BUSINESS.name);
+      expect(m.text, lang).toContain(STRIPE_BUSINESS.name);
+      expect(renderCardChangeMandate(lang, v).text, lang).toContain(STRIPE_BUSINESS.name);
+    }
+  });
+});
 
 describe("Elements das wallets (Apple Pay / Google Pay)", () => {
   // A Stripe recusa o confirm quando o setupFutureUsage do Elements não é o

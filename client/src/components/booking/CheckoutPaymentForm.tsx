@@ -39,7 +39,13 @@ import { formatQuotedEur } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
 import { payButtonGate, walletNames } from "@/lib/checkoutPayment";
-import { cardElementsOptions, expressCheckoutElementsOptions } from "./stripeElementsOptions";
+import {
+  EXPRESS_CHECKOUT_CLICK_DETAILS,
+  EXPRESS_CHECKOUT_ELEMENT_OPTIONS,
+  cardElementsOptions,
+  expressCheckoutElementsOptions,
+  paymentElementOptions,
+} from "./stripeElementsOptions";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 import PaymentErrorNotice, { type PaymentErrorView, type TwoPartsSwitch } from "./PaymentErrorNotice";
@@ -382,12 +388,11 @@ function ExpressWalletInner({
         <p className="caption text-pa-earth leading-snug">{t("payment.walletsHint", { wallets: names })}</p>
       )}
       <div style={{ display: ready ? "block" : "none" }}>
+        {/* Só wallets, com o nome da marca (EXPRESS_CHECKOUT_ELEMENT_OPTIONS); o clique
+            resolve de imediato com o mesmo nome, para a folha da wallet o mostrar */}
         <ExpressCheckoutElement
-          options={{
-            // Só wallets: cartão, PayPal e Klarna já têm caminho próprio em baixo
-            paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
-            layout: { maxColumns: 2, maxRows: 1 } as any,
-          }}
+          options={EXPRESS_CHECKOUT_ELEMENT_OPTIONS}
+          onClick={(event) => event.resolve(EXPRESS_CHECKOUT_CLICK_DETAILS)}
           onReady={({ availablePaymentMethods }) => {
             setAvailable(!!availablePaymentMethods);
             setMethods(availablePaymentMethods ?? null);
@@ -459,6 +464,8 @@ function PaymentFormInner({
   const paymentInfoFiredRef = useRef(false);
   const createReservation = trpc.booking.createBEInstantReservation.useMutation();
   const gate = payButtonGate({ termsAccepted: termsAccepted ?? true, plan, mandateAccepted });
+  // Legacy (sem intentId): o Apple Pay aparece como aba do PaymentElement.
+  const paymentOptions = useMemo(() => paymentElementOptions({ legacyApplePay: !intentId }), [intentId]);
   const setErrorText = (message: string) => setError(message ? { message } : null);
 
   const handleSubmit = async (e?: React.SyntheticEvent) => {
@@ -674,21 +681,10 @@ function PaymentFormInner({
   return (
     <div className="space-y-4" style={visible ? undefined : { display: "none" }}>
       <div className="p-4 bg-white border border-[#E8E4DC] rounded">
-        <PaymentElement
-          options={{
-            layout: "tabs",
-            // Wallets DESLIGADOS aqui: em modo auto o PaymentElement cria abas internas
-            // (Cartao + Google Pay) que duplicam o nosso seletor externo (bug 12 jul).
-            // Apple/Google Pay entram pelo padrao certo (Express Checkout Element
-            // separado, acima do seletor) na Fase 2b.
-            // Legacy (sem intentId): Apple Pay volta a aparecer aqui, como aba do
-            // PaymentElement, porque o legacy não tem o Express Checkout Element
-            // (auditoria set/2026, D4). No v2 fica "never" para não duplicar o
-            // botão do bloco 3. Google Pay continua fora nos dois (bug 12 jul).
-            wallets: { googlePay: "never", applePay: intentId ? "never" : "auto" },
-            fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
-          }}
-        />
+        {/* Opções em paymentElementOptions (stripeElementsOptions.ts): wallets
+            desligadas, só o Apple Pay do legacy (sem intentId), e o nome da marca
+            no texto da Stripe. */}
+        <PaymentElement options={paymentOptions} />
       </div>
 
       {error && <PaymentErrorNotice error={error} {...noticeProps} />}
