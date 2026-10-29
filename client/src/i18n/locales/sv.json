@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exklusivt för våra gäster",
     "office": "Kontor"
   },
+  "promoBar": {
+    "defaultText": "Använd koden {code} i kassan",
+    "copied": "Koden har kopierats",
+    "ariaLabel": "Aktuellt erbjudande",
+    "copyAria": "kopiera koden",
+    "dismiss": "Stäng"
+  },
   "destinations": {
     "minho": "Norra Portugal · Minho",
     "porto": "Porto och Douro",
@@ -1868,6 +1875,8 @@
     "perPersonDay": "per person · dag",
     "allDays": "Varje dag",
     "airport": "Flygplats",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lissabon",
     "confirm24hNote": "Om vi inte kan garantera det återbetalas raden automatiskt.",
     "noChargeNow": "ingen debitering nu",
     "perPersonHour": "per barn · timme",

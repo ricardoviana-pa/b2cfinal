@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusivo para nuestros huéspedes",
     "office": "Oficina"
   },
+  "promoBar": {
+    "defaultText": "Utilice el código {code} al finalizar la reserva",
+    "copied": "Código copiado",
+    "ariaLabel": "Promoción en curso",
+    "copyAria": "copiar el código",
+    "dismiss": "Cerrar"
+  },
   "destinations": {
     "minho": "Norte de Portugal · Miño",
     "porto": "Oporto y Duero",
@@ -1868,6 +1875,8 @@
     "perPersonDay": "por persona · día",
     "allDays": "Todos los días",
     "airport": "Aeropuerto",
+    "airportPorto": "Oporto",
+    "airportLisbon": "Lisboa",
     "confirm24hNote": "Si no podemos garantizarlo, la línea se reembolsa automáticamente.",
     "noChargeNow": "sin cobro ahora",
     "perPersonHour": "por niño · hora",

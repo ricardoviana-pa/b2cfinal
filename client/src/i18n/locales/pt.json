@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusivo para os nossos hóspedes",
     "office": "Escritório"
   },
+  "promoBar": {
+    "defaultText": "Use o código {code} ao finalizar a reserva",
+    "copied": "Código copiado",
+    "ariaLabel": "Promoção em curso",
+    "copyAria": "copiar o código",
+    "dismiss": "Fechar"
+  },
   "destinations": {
     "minho": "Norte de Portugal · Minho",
     "porto": "Porto e Douro",
@@ -1868,6 +1875,8 @@
     "perPersonDay": "por pessoa · dia",
     "allDays": "Todos os dias",
     "airport": "Aeroporto",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lisboa",
     "confirm24hNote": "Se não conseguirmos garantir, devolvemos essa linha automaticamente.",
     "noChargeNow": "sem cobrança agora",
     "perPersonHour": "por criança · hora",

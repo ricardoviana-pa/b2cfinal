@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusief voor onze gasten",
     "office": "Kantoor"
   },
+  "promoBar": {
+    "defaultText": "Gebruik code {code} bij het afrekenen",
+    "copied": "Code gekopieerd",
+    "ariaLabel": "Huidige actie",
+    "copyAria": "code kopiëren",
+    "dismiss": "Sluiten"
+  },
   "destinations": {
     "minho": "Noord-Portugal · Minho",
     "porto": "Porto en Douro",
@@ -1868,6 +1875,8 @@
     "perPersonDay": "per persoon · dag",
     "allDays": "Elke dag",
     "airport": "Luchthaven",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lissabon",
     "confirm24hNote": "Als we het niet kunnen garanderen, wordt de regel automatisch terugbetaald.",
     "noChargeNow": "nu geen kosten",
     "perPersonHour": "per kind · uur",
