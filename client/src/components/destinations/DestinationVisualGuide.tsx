@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { withEditorialTrip } from "@shared/editorialTripContext";
 import { cdnResize, cdnSrcSet } from "@/lib/images";
+import { revealFocusedLink } from "@/lib/revealFocusedLink";
 import {
   editorialSources,
   editorialText,
@@ -196,7 +197,9 @@ export function DestinationVisualGuide({
         className="minho-chapters"
         aria-label={pt ? "Capítulos do destino" : "Destination chapters"}
       >
-        <div className="container flex gap-7">
+        {/* A chapter reached with Tab is scrolled fully into the row
+            (revisão do PR #182, M1). */}
+        <div className="container flex gap-7" onFocus={revealFocusedLink}>
           {chapters.map(([id, label]) => (
             <a key={id} href={`#destination-${id}`} onClick={() => track(id)}>
               {label}

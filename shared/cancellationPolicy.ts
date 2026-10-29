@@ -407,6 +407,31 @@ export function cancellationPolicyMetaDescription(lang?: string | null): string 
   return COPY[l].metaDescription(daysList(l));
 }
 
+/** The page's H1 (cancellationPolicy.pageTitle in the locale files). */
+const PAGE_TITLES: Record<PolicyLang, string> = {
+  en: "Cancellation Policies",
+  pt: "Políticas de Cancelamento",
+  es: "Políticas de Cancelación",
+  fr: "Politiques d'Annulation",
+  de: "Stornierungsbedingungen",
+  it: "Politiche di Cancellazione",
+  nl: "Annuleringsbeleid",
+  sv: "Avbokningspolicyer",
+  fi: "Peruutuskäytännöt",
+};
+
+/**
+ * Title (the H1, without " | Portugal Active") and description of
+ * /legal/cancellation-policy, read by the server's head (PAGE_META) and by
+ * the page's usePageMeta. They live here and not in shared/legalPageMeta.ts
+ * so that the privacy and cookie pages never download this module's copy in
+ * 9 languages (revisão do PR #182, F2).
+ */
+export function cancellationPolicyPageMeta(lang?: string | null): { title: string; description: string } {
+  const l = policyLang(lang);
+  return { title: PAGE_TITLES[l], description: cancellationPolicyMetaDescription(l) };
+}
+
 /** The rule of a known code, without dates — the legal page's sentence. */
 export function policyRuleSentence(code: PolicyCode, lang?: string | null): string {
   const c = COPY[policyLang(lang)];

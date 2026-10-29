@@ -882,7 +882,13 @@
    which a JS-only fix can't do. See client/src/lib/datePicker.ts. */
 .pa-date-hit { position: relative; }
 .pa-date-hit::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: auto; height: auto; margin: 0; padding: 0; background: transparent; color: transparent; opacity: 0; cursor: pointer; }
-.hero-search-date-value { font-size: 15px; padding-right: 20px; white-space: nowrap; line-height: 1.5; }
+.hero-search-date-value { font-size: 15px; padding-right: 16px; white-space: nowrap; line-height: 1.5; }
+/* The empty-state placeholder never runs under the calendar icon (the icon
+   starts 28px from the field's right edge; the text ends 31px from it), in any
+   language or width: copy that still does not fit ends in an ellipsis
+   (auditoria 29 out, Regression:P4). editorial.addDates is kept short enough
+   for 360px. A chosen date (dd/mm/yyyy) is never clipped. */
+.hero-search-date-value.is-placeholder { overflow: hidden; text-overflow: ellipsis; }
 .hero-search-submit { height: 100%; min-height: 64px; padding: 16px 24px; white-space: nowrap; letter-spacing: .04em; }
 
 /* Editorial pages: a shared scale, action hierarchy and catalogue treatment. */
