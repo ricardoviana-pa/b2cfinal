@@ -2237,7 +2237,7 @@
     "prefill": "Yritystapahtumakysely\nPäivämäärät tai toivottu kuukausi:\nOsallistujat ja yöpyjät:\nBudjetti:\nPäätavoite:"
   },
   "editorial": {
-    "addDates": "Lisää päivämäärät",
+    "addDates": "Valitse päivä",
     "searchExperiences": "Hae elämyksiä",
     "noExperiences": "Näillä suodattimilla ei löytynyt elämyksiä. Tyhjennä suodattimet nähdäksesi kaikki aktiviteetit.",
     "step1Title": "Valitse kotisi",

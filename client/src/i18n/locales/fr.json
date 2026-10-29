@@ -2237,7 +2237,7 @@
     "prefill": "Demande d’événement d’entreprise\nDates ou mois souhaité :\nParticipants et personnes à héberger :\nFourchette de budget :\nObjectif principal :"
   },
   "editorial": {
-    "addDates": "Ajouter des dates",
+    "addDates": "Quand ?",
     "searchExperiences": "Rechercher des expériences",
     "noExperiences": "Aucune expérience ne correspond à ces filtres. Effacez-les pour découvrir toutes les activités.",
     "step1Title": "Choisissez votre maison",
