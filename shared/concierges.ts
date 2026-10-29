@@ -1,13 +1,12 @@
 /**
- * Concierges by region — the human face on the property page ("Hosted by")
- * and the signature of the transactional emails.
+ * Concierges by region — the signature of the guest emails once Ricardo
+ * confirms a real person for the region (name, photo).
  *
- * Auditoria set/2026 (N7/N8): every home, own or partner, shows a local
- * host; emails stop signing "your concierge · Portugal Active" and carry a
- * name and a photo. Names, roles and photos per region are values Ricardo
- * still has to confirm — until then every region falls back to the founder
- * and the team, with the region's own base city, so nothing on the page is
- * ever blank or generic.
+ * Until then the emails are signed by the brand, "Portugal Active ·
+ * Concierge": never an invented person (a persona breaks the first time a
+ * guest asks for her). The property page shows the brand too ("Hosted by
+ * Portugal Active"). Ricardo, 29 out 2026: "Portugal Active é Portugal
+ * Active".
  *
  * Photos live in client/public/team/ (served as /team/<file>).
  */
@@ -25,18 +24,18 @@ export interface Concierge {
   photo: string;
   /** City the local team works from ("Local team in {{city}}"). */
   basedIn: string;
-  /** false until Ricardo confirms the person for the region — emails then keep signing as Sara. */
+  /** false until Ricardo confirms the person for the region — emails then sign as the brand. */
   confirmed?: boolean;
 }
 
-/** Who signs guest emails while a region has no confirmed concierge (the CS
- *  voice the checkout v2 emails already used). */
-export const EMAIL_SIGNER_FALLBACK = { name: "Sara", fullName: "Sara", role: "", photo: "" } as const;
+/** Who signs guest emails while a region has no confirmed concierge: the
+ *  brand, with "Concierge" under it (email-i18n conciergeTeam). */
+export const EMAIL_SIGNER_FALLBACK = { name: "Portugal Active", fullName: "Portugal Active", role: "", photo: "", brand: true } as const;
 
-/** Signature for guest emails: the region's concierge when confirmed, else Sara. */
-export function getEmailSigner(destination?: string | null, locality?: string | null): { name: string; fullName: string; photo: string } {
+/** Signature for guest emails: the region's concierge when confirmed, else the brand. */
+export function getEmailSigner(destination?: string | null, locality?: string | null): { name: string; fullName: string; photo: string; brand: boolean } {
   const c = getConcierge(destination, locality);
-  return c.confirmed ? { name: c.name, fullName: c.fullName, photo: c.photo } : { ...EMAIL_SIGNER_FALLBACK };
+  return c.confirmed ? { name: c.name, fullName: c.fullName, photo: c.photo, brand: false } : { ...EMAIL_SIGNER_FALLBACK };
 }
 
 const FOUNDER = {
