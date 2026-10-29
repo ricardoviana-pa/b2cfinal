@@ -1867,7 +1867,17 @@
     },
     "perPersonDay": "per person · day",
     "allDays": "Every day",
-    "airport": "Airport",
+    "airport": {
+      "0": "A",
+      "1": "i",
+      "2": "r",
+      "3": "p",
+      "4": "o",
+      "5": "r",
+      "6": "t",
+      "porto": "Porto",
+      "lisbon": "Lisbon"
+    },
     "confirm24hNote": "If we cannot secure it, the line is refunded automatically.",
     "noChargeNow": "no charge now",
     "perPersonHour": "per child · hour",

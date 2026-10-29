@@ -1279,9 +1279,12 @@ export default function CheckoutPage() {
   ].filter(Boolean).join(" · ");
   const extrasSummary = [
     receptionChoice ? (receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")) : null,
-    selectedExtras.length
-      ? t("checkout.sections.extrasCount", { count: selectedExtras.length })
-      : t("checkout.sections.noExtras", "No extras"),
+    // Até dois extras, os nomes; a partir de três, a contagem
+    selectedExtras.length === 0
+      ? t("checkout.sections.noExtras", "No extras")
+      : selectedExtras.length <= 2
+        ? selectedExtras.map(({ item }) => t(`checkout.extras.${item.sku}.name`)).join(" · ")
+        : t("checkout.sections.extrasCount", { count: selectedExtras.length }),
     flexSelected && flexConfig ? "Flex" : null,
   ].filter(Boolean).join(" · ");
 
@@ -1415,7 +1418,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => toggleExtra(item)}
               aria-label={`${t("checkout.remove", "Remove")}: ${t(`checkout.extras.${item.sku}.name`)}`}
-              className="shrink-0 w-7 h-7 -ml-1.5 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+              className="relative shrink-0 w-7 h-7 -ml-1.5 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors before:absolute before:-inset-2 before:content-['']"
             >
               <X className="w-3 h-3" />
             </button>
@@ -1447,7 +1450,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => { setFlexSelected(false); syncIntent({ flex: false }); }}
               aria-label={`${t("checkout.remove", "Remove")}: ${t("checkout.flex.title", "Flex")}`}
-              className="shrink-0 w-7 h-7 -ml-1.5 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+              className="relative shrink-0 w-7 h-7 -ml-1.5 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors before:absolute before:-inset-2 before:content-['']"
             >
               <X className="w-3 h-3" />
             </button>
@@ -1565,7 +1568,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => toggleExtra(item)}
               aria-label={`${t("checkout.remove", "Remove")}: ${t(`checkout.extras.${item.sku}.name`)}`}
-              className="shrink-0 w-7 h-7 -ml-1.5 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+              className="relative shrink-0 w-7 h-7 -ml-1.5 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors before:absolute before:-inset-2 before:content-['']"
             >
               <X className="w-3 h-3" />
             </button>
@@ -1583,12 +1586,20 @@ export default function CheckoutPage() {
   const summaryCard = (
     <div className="bg-white border border-pa-sand rounded-lg overflow-hidden shadow-[0_4px_24px_rgba(26,26,24,0.06)]">
       {heroImage && (
-        <img src={heroImage} alt={displayName} className="w-full aspect-[3/2] object-cover" width={800} height={533} />
+        // Em ecrãs baixos (portáteis de 13"), com vários extras o cartão fixo
+        // passava a altura da janela e o Total saía do ecrã: aí a foto grande
+        // dá lugar a uma miniatura ao lado do nome.
+        <img src={heroImage} alt={displayName} className="w-full aspect-[3/2] object-cover [@media(max-height:820px)]:hidden" width={800} height={533} />
       )}
       <div className="p-5 space-y-4">
-        <div>
-          <p className="font-display body-lg text-pa-dark leading-snug">{displayName}</p>
-          {intent.destination && <p className="eyebrow tracking-[0.08em] uppercase text-pa-stone-aa mt-1">{intent.destination}</p>}
+        <div className="flex items-start gap-3">
+          {thumbImage ? (
+            <img src={thumbImage} alt="" width={56} height={56} className="hidden [@media(max-height:820px)]:block w-14 h-14 rounded-md object-cover shrink-0 bg-pa-warm" />
+          ) : null}
+          <div className="min-w-0">
+            <p className="font-display body-lg text-pa-dark leading-snug">{displayName}</p>
+            {intent.destination && <p className="eyebrow tracking-[0.08em] uppercase text-pa-stone-aa mt-1">{intent.destination}</p>}
+          </div>
         </div>
         <div className="body-sm text-pa-earth">
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
@@ -1602,6 +1613,19 @@ export default function CheckoutPage() {
         {guaranteeLabel && (
           <p className="flex items-start gap-1.5 caption text-pa-gold leading-snug">
             <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
+          </p>
+        )}
+        {/* Reserva directa como última legenda do cartão, só no passo 1
+            (29 out 2026): era um cartão à parte por baixo do resumo. */}
+        {step === "stay" && (
+          <p className="flex items-start gap-1.5 caption text-pa-earth leading-snug border-t border-pa-sand pt-3">
+            <ShieldCheck className="w-3.5 h-3.5 text-pa-gold-aa shrink-0 mt-0.5" />
+            <span>
+              {t("trust.compactLine", "Best rate guaranteed · no booking fees · WhatsApp concierge")}{" "}
+              <Link href="/best-rate-guarantee" className="text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark whitespace-nowrap">
+                {t("trust.guaranteeTerms", "How the guarantee works")}
+              </Link>
+            </span>
           </p>
         )}
       </div>
@@ -1716,6 +1740,9 @@ export default function CheckoutPage() {
 
   // ── Passo do pagamento: erros nos campos (só depois de um clique em Pagar,
   // ou do hóspede sair do campo), linha do email e aviso suave do NIF ──
+  // A dica do email só depois de um toque em Continuar sem email válido: antes
+  // disso o campo vazio com placeholder chega (29 out 2026, menos texto).
+  const emailHintVisible = emailNudge && !isValidEmail(email) && !quoteStale && !datesUnavailable;
   const firstNameError = showGuestErrors && !firstName.trim();
   const lastNameError = showGuestErrors && !lastName.trim();
   const emailInvalid = !isValidEmail(email);
@@ -2050,7 +2077,7 @@ export default function CheckoutPage() {
                   }}
                   onBlur={() => setEmailTouched(true)}
                   placeholder={t("checkout.emailPh", "name@email.com")}
-                  aria-describedby={isValidEmail(email) ? undefined : "checkout-email-hint"}
+                  aria-describedby={emailHintVisible ? "checkout-email-hint" : undefined}
                   aria-invalid={(emailTouched && email.length > 0 && !isValidEmail(email)) || undefined}
                   className={cn(
                     "w-full h-[48px] border bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none",
@@ -2096,7 +2123,7 @@ export default function CheckoutPage() {
                   </p>
                 )}
                 {/* L2: o botão desativado sem dica era um toque morto */}
-                {!isValidEmail(email) && !quoteStale && !datesUnavailable && (
+                {emailHintVisible && (
                   <p
                     id="checkout-email-hint"
                     className={cn("caption", emailNudge ? "text-pa-dark font-medium" : "text-pa-stone-aa")}
@@ -2179,6 +2206,8 @@ export default function CheckoutPage() {
                   ? t("checkout.continueWithExtras", { count: selectedExtras.length })
                   : t("checkout.continueWithoutExtras", "Continue without extras")}
               </button>
+              {/* Continuar sem escolher a receção assume o self check-in: dizê-lo */}
+              {!receptionChoice && <p className="caption text-pa-earth">{t("conversion.skipNote")}</p>}
             </div>
           </CheckoutSection>
 
@@ -2388,7 +2417,7 @@ export default function CheckoutPage() {
         <div className="lg:hidden mt-8">{directBlock}</div>
 
         {/* ══════════ SUMMARY COLUMN (desktop) ══════════ */}
-        <aside className="hidden lg:block sticky top-[84px] space-y-4">{summaryCard}{directBlock}</aside>
+        <aside className="hidden lg:block sticky top-[84px] space-y-4">{summaryCard}</aside>
       </main>
 
       {/* Keeps in-flow content (desktop Continue CTA) scrollable clear of the

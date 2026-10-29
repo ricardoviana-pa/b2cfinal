@@ -129,7 +129,7 @@ export default function FlexBlock({
         // Areia só quando escolhido (29 out 2026): em repouso é um cartão branco
         // como os outros; o dourado do ícone e do botão continua a distingui-lo.
         "rounded-lg border p-5 transition-all",
-        selected ? "border-pa-gold ring-1 ring-pa-gold bg-pa-warm" : "border-pa-sand bg-white",
+        selected ? "border-pa-gold ring-1 ring-pa-gold bg-pa-warm" : "border-pa-gold/50 bg-white",
       )}
     >
       <div className="flex items-start gap-3">

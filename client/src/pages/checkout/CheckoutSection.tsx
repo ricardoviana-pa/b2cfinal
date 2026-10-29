@@ -45,6 +45,7 @@ export default function CheckoutSection({
       id={id}
       aria-labelledby={`${id}-title`}
       data-state={state}
+      aria-current={open ? "step" : undefined}
       className={cn("bg-white border border-pa-sand rounded-xl scroll-mt-[76px]", className)}
     >
       <div className={cn("flex items-center gap-3 px-4 sm:px-5", open ? "pt-5 pb-4" : "py-4")}>
@@ -78,7 +79,7 @@ export default function CheckoutSection({
             type="button"
             onClick={onEdit}
             aria-label={`${editLabel}: ${title}`}
-            className="shrink-0 caption font-medium text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark transition-colors px-1"
+            className="shrink-0 min-h-[44px] px-2 -mr-2 caption font-medium text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark transition-colors"
           >
             {editLabel}
           </button>

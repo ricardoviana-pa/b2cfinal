@@ -208,7 +208,8 @@ function ToggleButton({ selected, label, onClick }: { selected: boolean; label: 
       aria-pressed={selected}
       aria-label={label}
       className={cn(
-        "shrink-0 flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-full border transition-colors",
+        // Alvo de toque de 44 px mesmo com o círculo de 36 px no computador
+        "relative shrink-0 flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-full border transition-colors before:absolute before:-inset-1 before:content-['']",
         selected
           ? "bg-pa-dark border-pa-dark text-white hover:bg-pa-earth hover:border-pa-earth"
           : "bg-white border-pa-sand text-pa-earth hover:border-pa-dark hover:text-pa-dark",
@@ -269,7 +270,7 @@ function OptionRow({
   const hasSteppers = selected && !onRequest && item.pricingModel !== "per_stay";
 
   return (
-    <div className={cn("px-4 py-3.5 sm:px-5 transition-colors", selected && "bg-pa-warm")}>
+    <div className={cn("px-4 py-3.5 sm:px-5 transition-colors", selected && "bg-pa-warm", item.parentSku && "pl-9 sm:pl-10")}>
       <div className="flex items-center gap-3">
         {item.photo ? (
           <img
@@ -585,8 +586,6 @@ export default function CustomizeStep({
 
   return (
     <div className="space-y-6">
-      <p className="body-sm text-pa-earth">{t("conversion.extrasIntro")}</p>
-
       {reception && (
         <Group label={t("checkout.chapter.arrival.title")} hint={t("checkout.reception.prompt")}>
           <ReceptionRows config={reception} choice={receptionChoice} lang={lang} onChoose={onChooseReception} nudge={receptionNudge} />
