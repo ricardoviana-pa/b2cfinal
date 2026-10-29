@@ -21,7 +21,7 @@ import { trpc } from '@/lib/trpc';
 import type { Property, SortOption } from '@/lib/types';
 import { filterProperties } from '@/lib/utils';
 import { isChildUnit } from '@/config/propertyGroups';
-import { hasConfirmedQuote, sortSearchResults } from '@/lib/homeSearch';
+import { hasConfirmedQuote, listingQuoteGuests, listingQuotesKey, sortSearchResults } from '@/lib/homeSearch';
 import { localityLabel, matchesSearchRegion, parseSearchRegion } from '@/lib/destinationSearch';
 import DestinationOptions, { regionLabel, useDestinationOptions } from '@/components/marketing/DestinationOptions';
 import ListingWhatsApp, { trackAttributes } from '@/components/homes/ListingWhatsApp';
@@ -161,7 +161,10 @@ export default function Homes() {
   const [quotesFor, setQuotesFor] = useState('');
   const [showAll, setShowAll] = useState(false);
   const utils = trpc.useUtils();
-  const effectiveGuests = searchGuestsCount > 0 ? searchGuestsCount : bookingGuests;
+  // Quotes, partner prices and the search hint answer the submitted search
+  // (the URL), or 2 guests when it names none. The stepper above is picker
+  // state until Search: a tap must not re-run the Guesty search (R1).
+  const effectiveGuests = listingQuoteGuests(searchGuestsCount);
   // Why an empty dated search came back empty (season rules, party size, length)
   // — so we can answer with the rule and the nearest dates instead of a dead end.
   /** "2027-07-03" → "3 Jul" in the active language. Raw ISO in a call to
@@ -240,7 +243,7 @@ export default function Homes() {
     [baseProperties, facets, searchGuestsCount, facetCtx],
   );
 
-  const partner = usePartnerPrices(candidateProperties, { checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests || 2 });
+  const partner = usePartnerPrices(candidateProperties, { checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests });
   const fromPrices = useMemo(() => ({ ...guestyFromPrices, ...partner.prices }), [guestyFromPrices, partner.prices]);
   const quotes: Record<string, LiveQuote | null> = useMemo(() => ({ ...guestyQuotes, ...partner.quotes }), [guestyQuotes, partner.quotes]);
   const priceCtx = useMemo(() => ({ quotes, fromPrices, nights: searchNights }), [quotes, fromPrices, searchNights]);
@@ -319,7 +322,7 @@ export default function Homes() {
 
   // When dates are set, split into available (with live pricing) and unavailable properties
   const hasDates = searchNights > 0;
-  const quotesKey = `${searchCheckin}|${searchCheckout}|${effectiveGuests || 2}`;
+  const quotesKey = listingQuotesKey(searchCheckin, searchCheckout, effectiveGuests);
   const quotesPending = hasDates && (quotesLoading || quotesFor !== quotesKey);
   const { availableProperties, unavailableProperties } = useMemo(() => {
     if (!hasDates || Object.keys(quotes).length === 0) {
@@ -381,7 +384,7 @@ export default function Homes() {
       .filter(p => p.isActive && p.guestyId)
       .map(p => ({ listingId: p.guestyId!, slug: p.slug }));
 
-    const key = `${searchCheckin}|${searchCheckout}|${effectiveGuests || 2}`;
+    const key = listingQuotesKey(searchCheckin, searchCheckout, effectiveGuests);
     if (listings.length === 0) {
       setQuotes({});
       setQuotesLoading(false);
@@ -399,7 +402,7 @@ export default function Homes() {
 
     utils.booking.getBatchQuotes
       .fetch(
-        { listings, checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests || 2 },
+        { listings, checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests },
       )
       .then((data) => {
         if (controller.signal.aborted) return;

@@ -96,3 +96,24 @@ export function buildHomeSearchPath({ destination, checkin, checkout, guests }: 
   if (guests > 1) params.set('guests', String(guests));
   return `/homes${params.size ? `?${params}` : ''}`;
 }
+
+/** Party size a listing search is priced for when the URL has none. */
+export const DEFAULT_QUOTE_GUESTS = 2;
+
+/**
+ * The party the listing quotes for (Guesty search, partner quotes, search
+ * hint): the one in the URL, i.e. the search the guest submitted, else 2.
+ * Never the picker's unsubmitted value: with no guests in the URL — what a
+ * homepage search now sends by default — each tap on the stepper re-ran all
+ * three requests before the guest pressed Search, while the URL and the
+ * chips stayed the same (revisão do PR #175, R1; ux-home-plp-10).
+ */
+export function listingQuoteGuests(urlGuests: number): number {
+  return Number.isFinite(urlGuests) && urlGuests > 0 ? urlGuests : DEFAULT_QUOTE_GUESTS;
+}
+
+/** The search (dates + quoted party) a set of listing quotes answers.
+ *  `guests` is the URL's party (0 when it names none). */
+export function listingQuotesKey(checkin: string, checkout: string, guests: number): string {
+  return `${checkin}|${checkout}|${listingQuoteGuests(guests)}`;
+}
