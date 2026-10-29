@@ -275,15 +275,59 @@ export function installContactClickTracking(): void {
       const el = (e.target as Element | null)?.closest?.('a[href]');
       if (!el) return;
       const href = el.getAttribute('href') || '';
-      const source =
-        (el.closest('[data-track-source]') as HTMLElement | null)?.dataset.trackSource ||
-        window.location.pathname;
+      const tracked = el.closest('[data-track-source]') as HTMLElement | null;
+      const source = tracked?.dataset.trackSource || window.location.pathname;
       if (href.includes('wa.me/')) {
-        pushDL({ event: 'whatsapp_click', source });
+        pushDL(contactClickEvent('whatsapp_click', source, tracked?.dataset));
       } else if (href.startsWith('tel:')) {
-        pushDL({ event: 'phone_click', source });
+        pushDL(contactClickEvent('phone_click', source, tracked?.dataset));
       }
     },
     true,
   );
+}
+
+/**
+ * The context a contact link can add to its click (data-track-* next to
+ * data-track-source): where it was clicked — the list, its region, its dates.
+ */
+export const CONTACT_CONTEXT_FIELDS = ['item_list_id', 'search_location', 'search_checkin', 'search_checkout'] as const;
+export type ContactContextField = (typeof CONTACT_CONTEXT_FIELDS)[number];
+
+/**
+ * whatsapp_click / phone_click with every context field set: the link's
+ * value, or undefined when it has none. GTM's data model keeps a key until a
+ * later push overwrites it (why pushEcommerce clears `ecommerce` first), so
+ * spreading only the link's own keys let a Data Layer Variable report, on a
+ * later click in the same visit, the listing, region and dates of an earlier
+ * one — or of the last `search` event, which writes the same search_* keys
+ * (revisão 2 do PR #175).
+ */
+export function contactClickEvent(
+  event: 'whatsapp_click' | 'phone_click',
+  source: string,
+  dataset?: Record<string, string | undefined>,
+): Record<string, unknown> {
+  const context = dataset ? trackContextFromDataset(dataset) : {};
+  const fields: Record<string, unknown> = {};
+  for (const key of CONTACT_CONTEXT_FIELDS) fields[key] = context[key];
+  return { event, source, ...fields };
+}
+
+/**
+ * Extra event fields from the data-track-* attributes next to
+ * data-track-source: data-track-item-list-id="search_results" →
+ * item_list_id. Lets a link say where it was clicked (the listing, its
+ * region and dates) without firing its own event next to the delegated one.
+ * Only the CONTACT_CONTEXT_FIELDS (each click resets all of them), never
+ * `event` or `source`; empty values are dropped.
+ */
+export function trackContextFromDataset(dataset: Record<string, string | undefined>): Partial<Record<ContactContextField, string>> {
+  const out: Partial<Record<ContactContextField, string>> = {};
+  for (const [key, value] of Object.entries(dataset)) {
+    if (!value || !/^track[A-Z]/.test(key) || key === 'trackSource') continue;
+    const name = key.slice(5).replace(/^[A-Z]/, (c) => c.toLowerCase()).replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+    if ((CONTACT_CONTEXT_FIELDS as readonly string[]).includes(name)) out[name as ContactContextField] = value;
+  }
+  return out;
 }

@@ -26,6 +26,8 @@ import { cardPriority } from '@/lib/listingImagePriority';
 import { useFromPrices } from '@/hooks/useFromPrices';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import NotFound from '@/pages/NotFound';
+import ListingWhatsApp from '@/components/homes/ListingWhatsApp';
+import { conciergeWhatsAppHref, listingWhatsAppMessage } from '@/lib/whatsappMessage';
 
 interface CollectionDef {
   slug: string;
@@ -93,6 +95,11 @@ export default function Collection() {
   if (!def || !copy) return <NotFound />;
 
   const others = COLLECTIONS.filter(c => c.slug !== slug);
+  // Phone shortcut to the concierge, with the collection and any trip dates
+  // already in the message (ux-home-plp-06).
+  const whatsappHref = conciergeWhatsAppHref(listingWhatsAppMessage(t, lang, {
+    collection: copy.title, checkin: trip.checkin, checkout: trip.checkout, guests: trip.guests,
+  }));
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -129,7 +136,8 @@ export default function Collection() {
         {isLoading && <p className="body-sm text-pa-earth" role="status">{t('bookingWidget.loadingCalendar')}</p>}
         {!isLoading && homes.length === 0 && <p className="body-sm text-pa-earth mb-6">{t('homes.noResults')}</p>}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {/* data-listing-results: the WhatsApp float waits until its first card has scrolled away. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-listing-results="">
           {homes.map((property, idx) => (
             <PropertyCard
               key={property.id}
@@ -170,6 +178,10 @@ export default function Collection() {
         </div>
       </section>
       <Footer />
+      <ListingWhatsApp
+        href={whatsappHref}
+        context={{ 'item-list-id': `collection_${slug}`, 'search-checkin': trip.checkin, 'search-checkout': trip.checkout }}
+      />
     </div>
   );
 }

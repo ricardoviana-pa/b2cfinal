@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect, useRef } from "react";
+import { useMemo, useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -9,7 +9,10 @@ import {
   buildRangeRules,
   dayRole,
   effectivePhase,
+  isBlocked as isBlockedDay,
+  isUnknown as isUnknownDay,
   minNightsFor,
+  UNKNOWN_STATUS,
   type SelectionPhase,
 } from "@/lib/dateRangeSelection";
 
@@ -45,6 +48,16 @@ interface AvailabilityCalendarProps {
   onPhaseChange?: (phase: SelectionPhase) => void;
   /** The guest dismissed the picker (phone dialog closed, Confirm pressed). */
   onClose?: () => void;
+  /** How to read a date absent from `days`: free (default — Guesty sends
+   *  every day) or "unknown" (partner homes: the supplier has not published
+   *  it, so it is drawn and chosen as "on request", never as free). */
+  missingStatus?: typeof UNKNOWN_STATUS;
+  /** Last date `missingStatus` applies to; an absent date after it is free
+   *  (a partner calendar that runs to the end of the window it was read for). */
+  missingUntil?: string;
+  /** The line under the grid when the months in view have dates on request
+   *  (the partner panel's, which knows why). Default: the general note. */
+  unknownNote?: ReactNode;
 }
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -122,6 +135,9 @@ export default function AvailabilityCalendar({
   phase: phaseProp,
   onPhaseChange,
   onClose,
+  missingStatus,
+  missingUntil,
+  unknownNote,
 }: AvailabilityCalendarProps) {
   const { t, i18n } = useTranslation();
   const isMobile = useIsMobile();
@@ -143,7 +159,10 @@ export default function AvailabilityCalendar({
   const todayStr = toIso(now);
   const todayMs = startOfDay(todayStr);
 
-  const rules = useMemo(() => buildRangeRules(days, minNights, todayStr), [days, minNights, todayStr]);
+  const rules = useMemo(
+    () => buildRangeRules(days, minNights, todayStr, { missing: missingStatus, missingUntil }),
+    [days, minNights, todayStr, missingStatus, missingUntil],
+  );
   const dayMap = rules.dayMap;
 
   // Which date the next click sets. Controlled by the parent when it passes
@@ -190,11 +209,9 @@ export default function AvailabilityCalendar({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phaseProp]);
 
-  /** Check if a date string is blocked/unavailable */
-  const isBlocked = useCallback((dateStr: string) => {
-    const status = dayMap.get(dateStr)?.status;
-    return status !== undefined && status !== "available";
-  }, [dayMap]);
+  /** Check if a date string is blocked/unavailable (an unknown day is not: it is on request) */
+  const isBlocked = useCallback((dateStr: string) => isBlockedDay(rules, dateStr), [rules]);
+  const isUnknown = useCallback((dateStr: string) => isUnknownDay(rules, dateStr), [rules]);
 
   /** Minimum stay required for the currently selected check-in (1 if none chosen) */
   const requiredMinNights = checkIn ? minNightsFor(rules, checkIn) : 1;
@@ -280,6 +297,9 @@ export default function AvailabilityCalendar({
             const dateStr = toIso(date);
             const dateMs = startOfDay(dateStr);
             const blocked = isBlocked(dateStr);
+            // Not published by the supplier: on request — chosen like a free
+            // day, drawn apart from free (bronze, dotted) and from booked (struck).
+            const unknown = dateMs >= todayMs && isUnknown(dateStr);
             const role = dayRole(rules, selection, dateStr);
             const isDisabled = role === "disabled";
             // The turnover day is booked but a valid departure — don't strike it.
@@ -331,16 +351,26 @@ export default function AvailabilityCalendar({
                         ? "text-black/15 cursor-not-allowed"
                         : "text-black/20 cursor-not-allowed"
                       : "",
-                    // Normal available day
+                    // Normal available (or on-request) day
                     !isEndpoint && !isDisabled && !isHoverEnd
-                      ? "text-black hover:bg-black/[0.06] rounded-full cursor-pointer font-normal"
+                      ? `${unknown ? "text-pa-gold-aa" : "text-black"} hover:bg-black/[0.06] rounded-full cursor-pointer font-normal`
                       : "",
                     // Today indicator
                     isToday && !isEndpoint ? "font-semibold" : "",
                   ].filter(Boolean).join(" ")}
-                  aria-label={dateStr}
+                  aria-label={unknown ? `${dateStr}, ${t("bookingWidget.onRequestLabel", "On request")}` : dateStr}
+                  title={unknown ? t("bookingWidget.onRequestLabel", "On request") : undefined}
+                  data-day-status={unknown ? "unknown" : blocked ? "blocked" : undefined}
                 >
-                  <span className={blocked && !isTurnoverCheckout ? "line-through decoration-black/20 decoration-1" : ""}>
+                  <span
+                    className={
+                      blocked && !isTurnoverCheckout
+                        ? "line-through decoration-black/20 decoration-1"
+                        : unknown && !isEndpoint
+                          ? "underline decoration-dotted decoration-pa-gold-aa decoration-1 underline-offset-[3px]"
+                          : ""
+                    }
+                  >
                     {date.getDate()}
                   </span>
                 </button>
@@ -355,6 +385,18 @@ export default function AvailabilityCalendar({
   // Second month for desktop view
   const secondMonth = viewMonth === 11 ? 0 : viewMonth + 1;
   const secondYear = viewMonth === 11 ? viewYear + 1 : viewYear;
+
+  /** Does a month in view have a future day on request? (≤ 31 lookups) */
+  const monthHasUnknown = (year: number, month: number) => {
+    const last = new Date(year, month + 1, 0).getDate();
+    for (let d = 1; d <= last; d++) {
+      const iso = toIso(new Date(year, month, d));
+      if (iso >= todayStr && isUnknown(iso)) return true;
+    }
+    return false;
+  };
+  const showsUnknown = monthHasUnknown(viewYear, viewMonth)
+    || (!isMobile && !singleMonth && monthHasUnknown(secondYear, secondMonth));
 
   /**
    * Booking rules for the month being viewed, stated UP FRONT.
@@ -492,17 +534,23 @@ export default function AvailabilityCalendar({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-5 px-4 pb-4 pt-1 border-t border-black/[0.04]">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-4 pb-4 pt-1 border-t border-black/[0.04]">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black" />
-          <span className="text-[10px] text-black/40 tracking-wide">{t("bookingWidget.availableLabel")}</span>
+          <span className="text-[10px] text-pa-stone-aa tracking-wide">{t("bookingWidget.availableLabel")}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black/10 flex items-center justify-center">
             <span className="block w-1.5 h-px bg-black/25" />
           </span>
-          <span className="text-[10px] text-black/40 tracking-wide">{t("bookingWidget.unavailableLabel")}</span>
+          <span className="text-[10px] text-pa-stone-aa tracking-wide">{t("bookingWidget.unavailableLabel")}</span>
         </div>
+        {showsUnknown && (
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full border border-dashed border-pa-gold-aa" aria-hidden="true" />
+            <span className="text-[10px] text-pa-stone-aa tracking-wide">{t("bookingWidget.onRequestLabel", "On request")}</span>
+          </div>
+        )}
         {/* After changing only the check-in the calendar stays open on the
             check-out; this closes it keeping the stay as shown. */}
         {!isMobile && onClose && checkIn && checkOut && (
@@ -515,6 +563,16 @@ export default function AvailabilityCalendar({
           </button>
         )}
       </div>
+      {/* What "on request" means, under the grid: a line here never moves the
+          days under the pointer between two clicks (the notice slot above is
+          fixed-height for that reason). It says what the page can show, never
+          a fact about the home: an unpublished date and one the page failed
+          to load look the same here (revisão do PR #180, R1/R2). */}
+      {showsUnknown && (
+        <p className="px-4 pb-4 -mt-2 text-[11px] leading-snug text-pa-stone-aa" role="note">
+          {unknownNote ?? t("bookingWidget.onRequestNote", "We cannot show availability or a price online for dates on request. You can still ask for them: our concierge confirms availability and the price.")}
+        </p>
+      )}
     </div>
   );
 

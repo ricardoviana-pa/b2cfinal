@@ -13,7 +13,7 @@ import { describe, expect, it, vi } from 'vitest';
 // @ts-ignore — módulo .mjs dos scripts, sem tipos
 import { checkPages, fetchLowestNightly, median, metaPrice, priceBand, skipReason, unpricedGuard } from '../scripts/lib/meta-catalog-prices.mjs';
 // @ts-ignore — módulo .mjs dos scripts, sem tipos
-import { calendarStayVerdict, classifyOwnQuote, classifyPartnerQuote, isPartnerHome, isPublicHome, isQuotableOwnHome, stayNights } from '../scripts/lib/quote-health.mjs';
+import { calendarStayVerdict, classifyOwnQuote, classifyPartnerQuote, isPartnerHome, isPublicHome, isQuotableOwnHome, partnerCalendarHorizon, stayNights } from '../scripts/lib/quote-health.mjs';
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
 
@@ -142,5 +142,19 @@ describe('quote-health rules', () => {
     expect(classifyPartnerQuote({ available: true, total: 15654.08, nights: 5 }, 4)).toEqual({ bucket: 'live', total: 15654.08 });
     expect(classifyPartnerQuote({ available: false, unavailable: ['2027-01-12'], nights: 5 }, 2).detail).toContain('1 noite(s) ocupada(s)');
     expect(classifyPartnerQuote({ available: false, unavailable: [], nights: 5 }, 7).detail).toContain('estadia mínima de 7');
+  });
+
+  it('flags a partner calendar that stops months before the year (Tripwix P1, 29 out 2026), from either server shape', () => {
+    const day = (i: number) => new Date(Date.parse('2026-10-29T00:00:00Z') + i * 86400000).toISOString().slice(0, 10);
+    const known = Array.from({ length: 127 }, (_, i) => ({ date: day(i), status: 'available', price: 1203.1 }));
+    const filled = [...known, ...Array.from({ length: 239 }, (_, i) => ({ date: day(127 + i), status: 'unknown' }))];
+    // Novo servidor: os dias seguintes vêm "unknown"; servidor antigo: não vêm.
+    for (const days of [filled, known]) {
+      expect(partnerCalendarHorizon(days, '2026-10-29')).toMatchObject({ status: 'short', lastKnown: '2027-03-04', firstUnknown: '2027-03-05' });
+    }
+    const year = Array.from({ length: 366 }, (_, i) => ({ date: day(i), status: i % 9 ? 'available' : 'unavailable' }));
+    expect(partnerCalendarHorizon(year, '2026-10-29')).toEqual({ status: 'full' });
+    expect(partnerCalendarHorizon(null, '2026-10-29').status).toBe('none');
+    expect(partnerCalendarHorizon(filled.map((d) => ({ date: d.date, status: 'unknown' })), '2026-10-29').status).toBe('none');
   });
 });
