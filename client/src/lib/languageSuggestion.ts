@@ -18,8 +18,25 @@ export type SuggestedLanguage = Exclude<SiteLanguage, 'en'>;
 export const LANGUAGE_CHOICE_KEY = 'i18nextLng';
 /** The language the visitor said no to; not offered again on this device. */
 export const SUGGESTION_DECLINED_KEY = 'pa-lang-suggestion-declined';
-/** Shown once per visit, on the page the visitor arrived on. */
-export const SUGGESTION_SESSION_KEY = 'pa-lang-suggestion-shown';
+/**
+ * Shown once per visit, on the first page that exists in the visitor's
+ * language — across tabs. The marker used to live in sessionStorage, which
+ * every new tab starts empty: a visitor opening homes from the listing in new
+ * tabs got the card again in each one (revisão 2 do PR #175). It is now in
+ * localStorage with the time of the visit's latest page; a visit ends after
+ * SUGGESTION_VISIT_MS without one, like an analytics session.
+ */
+export const SUGGESTION_SHOWN_KEY = 'pa-lang-suggestion-shown';
+export const SUGGESTION_VISIT_MS = 30 * 60 * 1000;
+
+/** Was the card already shown in this visit? `stored` is SUGGESTION_SHOWN_KEY's value (ms). */
+export function shownThisVisit(stored: string | null | undefined, now: number): boolean {
+  const at = Number(stored);
+  if (!stored || !Number.isFinite(at) || at <= 0) return false;
+  const age = now - at;
+  // A clock set back a little still counts as this visit; a stray far-future value does not.
+  return age < SUGGESTION_VISIT_MS && age > -SUGGESTION_VISIT_MS;
+}
 
 /** Booking, payment and account pages: a reload to switch language there could lose the form. */
 const QUIET_PATHS = /^\/(checkout|booking|account|login|admin|owners-portal)(\/|$)/;

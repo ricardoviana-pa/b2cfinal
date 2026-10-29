@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
-import { hasBottomBookingBar, pageOffersLanguage, pathInLanguage, SITE_LANGUAGES, siteLanguage, suggestedLanguage, SUGGESTION_COPY, type SuggestedLanguage } from '@/lib/languageSuggestion';
+import { hasBottomBookingBar, pageOffersLanguage, pathInLanguage, shownThisVisit, SITE_LANGUAGES, siteLanguage, suggestedLanguage, SUGGESTION_COPY, SUGGESTION_SHOWN_KEY, SUGGESTION_VISIT_MS, type SuggestedLanguage } from '@/lib/languageSuggestion';
 import { blogLanguageRedirect, blogLanguages } from '@shared/blogPublication';
 import blogData from '../client/src/data/blog.json';
 
@@ -56,6 +56,40 @@ describe('the suggested page', () => {
     expect(SUGGESTION_COPY.pt.action).toBe('Ver em português');
     expect(siteLanguage('PT_br')).toBe('pt');
     expect(siteLanguage('xx')).toBeNull();
+  });
+});
+
+// Revisão 2 do PR #175: «once per visit» was once per tab. The marker lived in
+// sessionStorage, which every new tab starts empty: a de-DE visitor who
+// opened three homes from /en/homes in new tabs got the card in all three.
+describe('once per visit, across tabs', () => {
+  const now = Date.UTC(2026, 9, 29, 12, 0, 0);
+  const card = fs.readFileSync(new URL('../client/src/components/layout/LanguageSuggestion.tsx', import.meta.url), 'utf8');
+
+  it('a page in the same visit — any tab — finds the card already shown', () => {
+    expect(SUGGESTION_SHOWN_KEY).toBe('pa-lang-suggestion-shown');
+    expect(shownThisVisit(String(now - 1000), now)).toBe(true);
+    expect(shownThisVisit(String(now - 29 * 60_000), now)).toBe(true);
+    // a clock set back a little is still this visit
+    expect(shownThisVisit(String(now + 60_000), now)).toBe(true);
+  });
+
+  it('a visit ends after 30 minutes without a page; nothing stored (or garbage) is no visit', () => {
+    expect(SUGGESTION_VISIT_MS).toBe(30 * 60_000);
+    expect(shownThisVisit(String(now - SUGGESTION_VISIT_MS), now)).toBe(false);
+    expect(shownThisVisit(String(now - 3 * 3600_000), now)).toBe(false);
+    for (const stored of [null, undefined, '', '1', 'yes', '-5', String(now + 2 * SUGGESTION_VISIT_MS)]) {
+      expect(shownThisVisit(stored, now), String(stored)).toBe(false);
+    }
+  });
+
+  it('the marker lives in localStorage (shared by the tabs), never in sessionStorage', () => {
+    expect(card).not.toMatch(/sessionStorage/);
+    expect(card).toMatch(/const keepVisit = \(\) => write\(\(\) => localStorage, SUGGESTION_SHOWN_KEY, String\(Date\.now\(\)\)\);/);
+    expect(card).toMatch(/if \(shownThisVisit\(read\(\(\) => localStorage, SUGGESTION_SHOWN_KEY\), Date\.now\(\)\)\) \{\s*keepVisit\(\);\s*return;\s*\}/);
+    // written when the card appears, and refreshed by every later page of the visit (its own tab too)
+    expect(card).toMatch(/shownOn\.current = location;\s*keepVisit\(\);/);
+    expect(card).toMatch(/if \(shownOn\.current !== location\) setTarget\(null\);\s*keepVisit\(\);\s*return;/);
   });
 });
 
@@ -121,7 +155,7 @@ describe('only a language the page exists in', () => {
     const decide = card.slice(card.indexOf('const decide = () => {'), card.indexOf('const first = window.setTimeout(decide, 0);'));
     expect(decide).toMatch(/if \(!ownAlternates \|\| answered\.current\) return;/);
     expect(decide).toMatch(/const offered = pageOffersLanguage\(pageAlternates\(\), next\);\s*if \(offered === null\) return;/);
-    expect(decide.indexOf('if (offered === null) return;')).toBeLessThan(decide.indexOf('SUGGESTION_SESSION_KEY'));
+    expect(decide.indexOf('if (offered === null) return;')).toBeLessThan(decide.indexOf('keepVisit();'));
     expect(decide).toMatch(/setTarget\(offered \? next : null\);/);
     // decided after this render and again whenever the head changes, for a few seconds
     expect(card).toMatch(/const first = window\.setTimeout\(decide, 0\);/);

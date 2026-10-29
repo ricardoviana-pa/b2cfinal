@@ -7,8 +7,9 @@
  * render (no hydration mismatch, nothing a crawler sees), and is fixed-
  * positioned, so appearing moves no content (no layout shift). It sits above
  * the cookie banner (--cookie-banner-h) and, on a phone, above the booking
- * bar of a home or an experience. Once per visit, on the first page that
- * exists in the visitor's language.
+ * bar of a home or an experience. Once per visit — across tabs — on the first
+ * page that exists in the visitor's language (lib/languageSuggestion.ts,
+ * SUGGESTION_SHOWN_KEY).
  *
  * Layer z-[45]: over the page's own floats and bars (z-40: the listing
  * WhatsApp button, the booking bars), under every modal layer — the dialogs,
@@ -22,8 +23,8 @@ import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { pushDL } from '@/lib/datalayer';
 import {
-  LANGUAGE_CHOICE_KEY, SUGGESTION_COPY, SUGGESTION_DECLINED_KEY, SUGGESTION_SESSION_KEY,
-  hasBottomBookingBar, pageOffersLanguage, pathInLanguage, suggestedLanguage, type SuggestedLanguage,
+  LANGUAGE_CHOICE_KEY, SUGGESTION_COPY, SUGGESTION_DECLINED_KEY, SUGGESTION_SHOWN_KEY,
+  hasBottomBookingBar, pageOffersLanguage, pathInLanguage, shownThisVisit, suggestedLanguage, type SuggestedLanguage,
 } from '@/lib/languageSuggestion';
 
 function read(storage: () => Storage, key: string): string | null {
@@ -56,12 +57,19 @@ export default function LanguageSuggestion() {
 
   useEffect(() => {
     if (location !== landingPage.current) leftLandingPage.current = true;
-    // Once per visit: leaving the page it appeared on without answering hides it.
+    // Once per visit, in every tab (localStorage): each page of the visit
+    // keeps the marker fresh, so a tab opened later in the visit stays quiet.
+    const keepVisit = () => write(() => localStorage, SUGGESTION_SHOWN_KEY, String(Date.now()));
+    // Leaving the page it appeared on without answering hides it.
     if (shownOn.current !== null) {
       if (shownOn.current !== location) setTarget(null);
+      keepVisit();
       return;
     }
-    if (read(() => sessionStorage, SUGGESTION_SESSION_KEY)) return;
+    if (shownThisVisit(read(() => localStorage, SUGGESTION_SHOWN_KEY), Date.now())) {
+      keepVisit();
+      return;
+    }
     const next = suggestedLanguage({
       pageLang: i18n.language || 'en',
       path: location,
@@ -83,7 +91,7 @@ export default function LanguageSuggestion() {
       if (offered === null) return;
       if (offered && shownOn.current === null) {
         shownOn.current = location;
-        write(() => sessionStorage, SUGGESTION_SESSION_KEY, '1');
+        keepVisit();
       }
       setTarget(offered ? next : null);
     };
