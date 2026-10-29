@@ -28,6 +28,21 @@ export const STRIPE_FONTS: Array<{ cssSrc: string }> = [
 /** Nunca uma var(): o valor é aplicado dentro do iframe da Stripe. */
 export const STRIPE_FONT_FAMILY = '"DM Sans", system-ui, sans-serif';
 
+/**
+ * Etiquetas dos campos do cartão a 12 px, o `caption` com que o próprio
+ * checkout escreve as suas etiquetas (revisão do #181, B1). A Stripe só põe a
+ * validade e o código de segurança lado a lado quando o que está escrito cabe
+ * em cada coluna; com a DM Sans aos 14,88 px dela (mais larga do que o Times
+ * de antes) deixava de caber nos telemóveis e os dois campos empilhavam-se: o
+ * cartão crescia até 99 px e empurrava os Termos e o Pagar (pt, es, de e nl a
+ * 390 px; pt, es e it a 375; sv a 360; de e fi a 414). Uma vez empilhado, não
+ * volta atrás. Medido no checkout real, nas 9 línguas: a 12 px nenhuma
+ * empilha onde o Times as deixava lado a lado (a 13 px ainda empilhava pt a
+ * 375). O texto escrito nos campos fica nos 16 px da Stripe: abaixo disso o
+ * iPhone faz zoom ao tocar no campo.
+ */
+export const STRIPE_LABEL_FONT_SIZE = "12px";
+
 /** Aparência dos campos do cartão (checkout e página do saldo). */
 export const STRIPE_CARD_APPEARANCE = {
   theme: "stripe" as const,
@@ -37,6 +52,9 @@ export const STRIPE_CARD_APPEARANCE = {
     colorText: "#1A1A18",
     fontFamily: STRIPE_FONT_FAMILY,
     borderRadius: "4px",
+  },
+  rules: {
+    ".Label": { fontSize: STRIPE_LABEL_FONT_SIZE },
   },
 };
 
@@ -67,6 +85,7 @@ export function cardElementsOptions(total: number, currency: string | undefined,
     appearance: {
       ...STRIPE_CARD_APPEARANCE,
       rules: {
+        ...STRIPE_CARD_APPEARANCE.rules,
         // Hide Stripe's built-in payment method tab selector — we use our own selector UI
         ".p-PaymentMethodSelector": { display: "none" },
       },
