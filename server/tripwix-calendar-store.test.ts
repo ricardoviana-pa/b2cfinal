@@ -1,9 +1,10 @@
 /**
  * Calendários das casas parceiras (auditoria 29 out 2026,
- * prices-availability-01/04/06): os pedidos dos hóspedes nunca chamam a
- * Tripwix; um job lê uma casa de cada vez (≤ 35/h), recua nas casas que
- * falham, pára num 429, guarda na BD só o que muda e, depois de um restart,
- * serve o que guardou sem rajada de leituras.
+ * prices-availability-01/04/06, e revisão do PR #173): os pedidos dos
+ * hóspedes nunca chamam a Tripwix; um job lê uma casa de cada vez (≤ 35/h),
+ * recua nas casas que falham, pára num 429, guarda na BD a hora de cada
+ * leitura e o recuo e, depois de um restart, retoma onde o processo anterior
+ * ia: serve o que guardou, sem rajada e sem reler as mesmas casas.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -181,9 +182,10 @@ describe('the background job', () => {
     const { refreshNextTripwixCalendar, readTripwixCalendar } = await load();
     const homes = [{ uid: 'a' }, { uid: 'b' }];
     expect(await refreshNextTripwixCalendar(homes)).toMatchObject({ action: 'throttled' });
-    at(T0 + 60_000);
+    at(T0 + 100_000);
     expect(await refreshNextTripwixCalendar(homes)).toMatchObject({ action: 'throttled' });
-    // Nem as leituras pontuais (estadias daqui a 2 anos) furam a pausa.
+    // Nem as leituras pontuais (estadias daqui a 2 anos) furam a pausa (já
+    // passaram os 90 s do arranque: é mesmo o 429 que as trava).
     expect(await readTripwixCalendar('b', '2028-07-01', '2028-07-08')).toBeNull();
     expect(fetcher).toHaveBeenCalledTimes(1);
     at(T0 + 121_000);
@@ -195,7 +197,7 @@ describe('the background job', () => {
 });
 
 describe('persistence (TiDB: one read per process, writes only on change)', () => {
-  it('writes a compact calendar once, and again only when it changes or every 6 hours', async () => {
+  it('writes a compact calendar, again when it changes, and whenever the stored copy is an hour old', async () => {
     const fetcher = vi.fn(async () => ok(calendar(1000)));
     vi.stubGlobal('fetch', fetcher);
     const { refreshTripwixCalendar } = await load();
@@ -205,17 +207,69 @@ describe('persistence (TiDB: one read per process, writes only on change)', () =
     expect(key).toBe('tripwix_calendar_a');
     expect(category).toBe('tripwix_calendar');
     expect(value.length).toBeLessThan(300); // um ano com um só preço e estado: um "run"
-    at(T0 + 61 * MIN);
+    at(T0 + 30 * MIN);
     await refreshTripwixCalendar('a');
     await new Promise((r) => setTimeout(r, 5));
-    expect(h.save).toHaveBeenCalledTimes(1); // igual: não se escreve
-    at(T0 + 122 * MIN);
+    expect(h.save).toHaveBeenCalledTimes(1); // igual e a cópia tem 30 min: não se escreve
+    at(T0 + 40 * MIN);
     fetcher.mockImplementation(async () => ok(calendar(1100)));
     await refreshTripwixCalendar('a');
     await vi.waitFor(() => expect(h.save).toHaveBeenCalledTimes(2)); // mudou o preço
-    at(T0 + 122 * MIN + 6 * 60 * MIN);
+    // Igual, mas a cópia guardada tem 61 min: escreve-se, para que um restart
+    // saiba desta leitura (com 6 h relia sempre as mesmas casas: P173-R1).
+    at(T0 + 101 * MIN);
     await refreshTripwixCalendar('a');
-    await vi.waitFor(() => expect(h.save).toHaveBeenCalledTimes(3)); // batimento de 6 h
+    await vi.waitFor(() => expect(h.save).toHaveBeenCalledTimes(3));
+    expect(JSON.parse(store.get('tripwix_calendar_a')!).at).toBe(T0 + 101 * MIN);
+  });
+
+  it('after a restart, the job does not re-read the homes the previous process just read (P173-R1)', async () => {
+    const fetcher = vi.fn(async () => ok(calendar(700)));
+    vi.stubGlobal('fetch', fetcher);
+    const homes = [{ uid: 'a' }, { uid: 'b' }, { uid: 'c' }];
+    let mod = await load();
+    for (const x of homes) await mod.refreshTripwixCalendar(x.uid);
+    await vi.waitFor(() => expect(store.size).toBe(3));
+    // Cinco deploys, de 20 em 20 min a partir de +61 min; um passo do job em cada processo.
+    const picked: string[] = [];
+    for (let k = 0; k < 5; k++) {
+      at(T0 + (61 + 20 * k) * MIN);
+      vi.resetModules();
+      mod = await load();
+      await mod.hydrateTripwixCalendars(homes.map((x) => x.uid));
+      const before = fetcher.mock.calls.length;
+      await mod.refreshNextTripwixCalendar(homes);
+      if (fetcher.mock.calls.length > before) picked.push(uidOf(String(fetcher.mock.calls.at(-1)![0]))!);
+      await vi.waitFor(() => expect(h.save).toHaveBeenCalledTimes(3 + picked.length));
+    }
+    // Antes: ['a', 'a', 'a', 'a', 'a'] e a "c" servida com a leitura de há 2 h 21 min.
+    expect(picked).toEqual(['a', 'b', 'c', 'a', 'b']);
+    const snap = await mod.readTripwixCalendar('c', '2026-11-10', '2026-11-12');
+    expect(Math.round((Date.now() - snap!.fetchedAt) / MIN)).toBe(40);
+  });
+
+  it("a failing home's backoff survives a restart: the next process does not spend its first read on it", async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const fetcher = vi.fn(async (url: string) => (uidOf(url) === 'bad' ? new Response('{"detail":"Not found."}', { status: 404 }) : ok(calendar())));
+    vi.stubGlobal('fetch', fetcher);
+    const homes = [{ uid: 'bad', name: 'Villa Trevo' }, { uid: 'good' }];
+    let mod = await load();
+    await mod.refreshTripwixCalendar('good');
+    expect(await mod.refreshTripwixCalendar('bad', 'Villa Trevo')).toMatchObject({ action: 'failed', status: 404 });
+    await vi.waitFor(() => expect(store.has('tripwix_calendar_bad')).toBe(true));
+    // Restart 5 min depois: a "bad" recua até +15 min, a "good" é de há 5 min.
+    at(T0 + 5 * MIN);
+    vi.resetModules();
+    mod = await load();
+    await mod.hydrateTripwixCalendars(homes.map((x) => x.uid));
+    expect(await mod.refreshNextTripwixCalendar(homes)).toEqual({ action: 'idle' });
+    expect(fetcher).toHaveBeenCalledTimes(2);
+    expect(mod.tripwixCalendarSummary(homes).failing[0]).toContain('Villa Trevo (HTTP 404');
+    // Depois do recuo volta a tentar, e a escada continua (30 min), não recomeça nos 15.
+    at(T0 + 16 * MIN);
+    await mod.refreshNextTripwixCalendar(homes);
+    expect(uidOf(String(fetcher.mock.calls.at(-1)![0]))).toBe('bad');
+    expect(warn.mock.calls.map((c) => String(c[0])).at(-1)).toContain('falha 2 seguida, próxima tentativa daqui a 30 min');
   });
 
   it('after a restart serves the stored calendars at once, with one DB query and no partner calls', async () => {
@@ -262,6 +316,36 @@ describe('persistence (TiDB: one read per process, writes only on change)', () =
     expect(h.getMany).toHaveBeenCalledTimes(3);
   });
 
+  it('a DB query that never answers holds partner requests for 3 s at most; the job carries on; a late answer is still used (P173-R4)', async () => {
+    vi.useRealTimers();
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(T0));
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const fetcher = vi.fn(async () => ok(calendar()));
+    vi.stubGlobal('fetch', fetcher);
+    // Consultas que nunca respondem (ligação meio aberta; o mysql2 não tem timeout).
+    const pending = new Map<string, (rows: Map<string, string>) => void>();
+    h.getMany.mockImplementation((keys: string[]) => new Promise((r) => { for (const k of keys) pending.set(k, r); }));
+    h.homes = [{ source: 'tripwix', isActive: true, supplierUid: 'b', name: 'Casa B' }];
+    const mod = await load();
+    const { runTripwixRefreshTick } = await import('./services/tripwix-refresh');
+    const settled = { guest: false, tick: false };
+    const guest = mod.readTripwixCalendar('a', '2026-11-10', '2026-11-12').then((v) => { settled.guest = true; return v; });
+    const tick = runTripwixRefreshTick().then((v) => { settled.tick = true; return v; });
+    await vi.advanceTimersByTimeAsync(2_900);
+    expect(settled).toEqual({ guest: false, tick: false });
+    await vi.advanceTimersByTimeAsync(200);
+    expect(await guest).toBeNull(); // sem BD, sem dados — e o pedido não lê a Tripwix
+    // O job não fica preso em "busy": segue sem os dados guardados.
+    expect(await tick).toMatchObject({ action: 'refreshed', uid: 'b' });
+    // A resposta que chega tarde continua a servir.
+    const row = mod.encodeStoredCalendar({ at: T0 - 10 * MIN, start: '2026-10-29', end: '2027-10-29', days: calendar(900) });
+    pending.get('tripwix_calendar_a')!(new Map([['tripwix_calendar_a', row]]));
+    await vi.advanceTimersByTimeAsync(0);
+    expect((await mod.readTripwixCalendar('a', '2026-11-10', '2026-11-12'))?.days).toHaveLength(3);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
   it('stops serving a calendar 48 h after the last good read', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     const fetcher = vi.fn(async () => ok(calendar(1000)));
@@ -276,63 +360,171 @@ describe('persistence (TiDB: one read per process, writes only on change)', () =
     expect(await getPartnerQuote('a', '2026-12-01', '2026-12-05')).toBeNull();
   });
 
-  it('round-trips the stored format and rejects anything malformed', async () => {
-    const { encodeStoredCalendar, decodeStoredCalendar } = await load();
+  it('round-trips the stored format (calendar and backoff) and rejects anything malformed', async () => {
+    const { encodeStoredCalendar, decodeStoredCalendar, encodeStoredEntry, decodeStoredEntry } = await load();
     const days = [
       { date: '2026-11-01', status: 'available', price: 100 },
       { date: '2026-11-02', status: 'available', price: 100 },
       { date: '2026-11-04', status: 'booked', price: 120.5 }, // 3 nov em falta
       { date: '2026-11-05', status: 'available', price: null },
     ];
-    const raw = encodeStoredCalendar({ at: T0, start: '2026-11-01', end: '2027-11-01', days });
-    expect(decodeStoredCalendar(raw)).toEqual({ at: T0, start: '2026-11-01', end: '2027-11-01', days });
-    for (const bad of ['', 'nope', '{"v":2}', JSON.stringify({ v: 1, at: T0, w: ['2026-11-01', '2027-11-01'], s: '2026-11-01', r: [['available', 1, 0]] })]) {
+    const calendarPart = { at: T0, start: '2026-11-01', end: '2027-11-01', days };
+    const raw = encodeStoredCalendar(calendarPart);
+    expect(decodeStoredCalendar(raw)).toEqual(calendarPart);
+    const backoff = { failures: 3, nextAttemptAt: T0 + 60 * MIN, lastError: 'HTTP 404: {"detail":"Not found."}' };
+    expect(decodeStoredEntry(encodeStoredEntry({ calendar: calendarPart, backoff }))).toEqual({ calendar: calendarPart, backoff });
+    // Uma casa que nunca foi lida bem guarda só o recuo.
+    const onlyBackoff = encodeStoredEntry({ calendar: null, backoff });
+    expect(decodeStoredEntry(onlyBackoff)).toEqual({ calendar: null, backoff });
+    expect(decodeStoredCalendar(onlyBackoff)).toBeNull();
+    for (const bad of [
+      '', 'nope', '{"v":2}', '{"v":1}',
+      JSON.stringify({ v: 1, at: T0, w: ['2026-11-01', '2027-11-01'], s: '2026-11-01', r: [['available', 1, 0]] }),
+      '{"v":1,"f":[0,1,null]}', '{"v":1,"f":[2,"x",null]}', '{"v":1,"f":[2,5]}', '{"v":1,"f":[2,5,7]}',
+    ]) {
+      expect(decodeStoredEntry(bad)).toBeNull();
       expect(decodeStoredCalendar(bad)).toBeNull();
     }
   });
 });
 
+const farFetcher = () => vi.fn(async (url: string) => {
+  const start = /start_date=([\d-]+)/.exec(url)![1];
+  return ok(Array.from({ length: 30 }, (_, i) => ({ date: new Date(Date.parse(start) + i * 86400_000).toISOString().slice(0, 10), status: 'available', price: '900' })));
+});
+
 describe('stays beyond the stored year', () => {
-  it('are read on demand, reused for nearby dates, and capped at 10 reads per hour', async () => {
+  it('are read on demand and reused for nearby dates; never in the first 90 s, one every ~103 s, at most 10 per hour', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const fetcher = vi.fn(async (url: string) => {
-      const start = /start_date=([\d-]+)/.exec(url)![1];
-      return ok(Array.from({ length: 30 }, (_, i) => ({ date: new Date(Date.parse(start) + i * 86400_000).toISOString().slice(0, 10), status: 'available', price: '900' })));
-    });
+    const fetcher = farFetcher();
     vi.stubGlobal('fetch', fetcher);
     const { getPartnerQuote } = await import('./services/tripwix');
+    // Logo a seguir ao arranque, nada: um restart nunca faz rajada.
+    expect(await getPartnerQuote('far', '2028-07-01', '2028-07-08')).toBeNull();
+    expect(fetcher).not.toHaveBeenCalled();
+    at(T0 + 91_000);
     expect(await getPartnerQuote('far', '2028-07-01', '2028-07-08')).toMatchObject({ available: true, nights: 7, source: 'live' });
     expect(String(fetcher.mock.calls[0][0])).toContain('start_date=2028-07-01');
     expect(await getPartnerQuote('far', '2028-07-02', '2028-07-06')).toMatchObject({ available: true, source: 'cached' });
+    // Outra casa logo a seguir espera pelo ritmo (~103 s).
+    expect(await getPartnerQuote('far0', '2028-07-01', '2028-07-08')).toBeNull();
     expect(fetcher).toHaveBeenCalledTimes(1);
-    for (let i = 0; i < 15; i++) await getPartnerQuote(`far${i}`, '2028-07-01', '2028-07-08');
+    for (let i = 1; i <= 15; i++) {
+      at(T0 + 91_000 + i * 103_000);
+      await getPartnerQuote(`far${i}`, '2028-07-01', '2028-07-08');
+    }
     expect(fetcher).toHaveBeenCalledTimes(10);
+  });
+
+  it('restarts do not multiply them: a crash loop every 3 min stays at one read per process (P173-R3)', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const fetcher = farFetcher();
+    vi.stubGlobal('fetch', fetcher);
+    let n = 0;
+    // Uma hora: um processo novo a cada 3 min e uma cotação a 2 anos a cada 30 s, sempre para outra casa.
+    for (let boot = 0; boot < 20; boot++) {
+      at(T0 + boot * 3 * MIN);
+      vi.resetModules();
+      const { getPartnerQuote } = await import('./services/tripwix');
+      for (let s = 0; s < 6; s++) {
+        at(T0 + boot * 3 * MIN + s * 30_000);
+        await getPartnerQuote(`far${n++}`, '2028-07-01', '2028-07-08');
+      }
+    }
+    // Antes: até 10 por processo (a revisão mediu 121 leituras numa hora).
+    expect(fetcher.mock.calls.length).toBeLessThanOrEqual(20);
   });
 });
 
+/** Leituras à Tripwix na janela de 60 min mais cheia. */
+function maxPerRollingHour(times: number[]): number {
+  let best = 0;
+  for (let i = 0, j = 0; i < times.length; i++) {
+    while (times[i] - times[j] >= 60 * MIN) j++;
+    best = Math.max(best, i - j + 1);
+  }
+  return best;
+}
+
 describe('job start-up (restart / deploy: no burst)', () => {
-  it('reads nothing at boot, the first home after 90 s and then one every ~103 s', async () => {
+  const startJob = async (fetcher: ReturnType<typeof vi.fn>) => {
     vi.useRealTimers();
     vi.useFakeTimers();
     vi.setSystemTime(new Date(T0));
     vi.spyOn(console, 'info').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
     h.homes = Array.from({ length: 35 }, (_, i) => ({ source: 'tripwix', isActive: true, supplierUid: `u${i}`, name: `Casa ${i}` }));
-    const fetcher = vi.fn(async () => ok(calendar()));
+    const times: number[] = [];
+    fetcher.mockImplementation(async () => { times.push(Date.now()); return ok(calendar()); });
     vi.stubGlobal('fetch', fetcher);
-    const { startTripwixRefresh, TRIPWIX_TICK_MS } = await import('./services/tripwix-refresh');
+    const refresh = await import('./services/tripwix-refresh');
+    expect(refresh.startTripwixRefresh({ TRIPWIX_API_KEY: 'test-only', NODE_ENV: 'production' } as any)).toBe(true);
+    return { ...refresh, times };
+  };
+
+  it('empty DB (first deploy): nothing at boot, the first home at 90 s, then one every ~34 s until each home has a calendar, then ~103 s', async () => {
+    const fetcher = vi.fn();
+    const { TRIPWIX_TICK_MS, TRIPWIX_WAKE_MS, times } = await startJob(fetcher);
     expect(TRIPWIX_TICK_MS).toBe(102858);
-    expect(startTripwixRefresh({ TRIPWIX_API_KEY: 'test-only', NODE_ENV: 'production' } as any)).toBe(true);
+    expect(TRIPWIX_WAKE_MS).toBe(34286);
     await vi.advanceTimersByTimeAsync(89_000);
     expect(fetcher).not.toHaveBeenCalled();
     expect(h.getMany).toHaveBeenCalledTimes(1); // o arranque lê a BD, uma vez
     await vi.advanceTimersByTimeAsync(2_000);
     expect(fetcher).toHaveBeenCalledTimes(1);
-    await vi.advanceTimersByTimeAsync(TRIPWIX_TICK_MS);
+    await vi.advanceTimersByTimeAsync(TRIPWIX_WAKE_MS);
     expect(fetcher).toHaveBeenCalledTimes(2);
-    // Uma hora inteira: 35 leituras no máximo.
-    await vi.advanceTimersByTimeAsync(60 * MIN);
-    expect(fetcher.mock.calls.length).toBeLessThanOrEqual(37);
-    expect(fetcher.mock.calls.length).toBeGreaterThanOrEqual(35);
+    // As 35 casas com calendário em ~21 min (antes: ~60 min), cada uma uma vez, todas guardadas.
+    await vi.advanceTimersByTimeAsync(33 * TRIPWIX_WAKE_MS);
+    expect(fetcher).toHaveBeenCalledTimes(35);
+    expect(new Set(fetcher.mock.calls.map((c: any) => uidOf(String(c[0])))).size).toBe(35);
+    expect(store.size).toBe(35);
+    expect((times[34] - T0) / MIN).toBeLessThan(21);
+    // Depois, o ritmo base; nunca mais de 35 numa hora.
+    await vi.advanceTimersByTimeAsync(3 * 60 * MIN);
+    expect(maxPerRollingHour(times)).toBeLessThanOrEqual(35);
+    const lastHalfHour = times.filter((t) => t > T0 + 2.5 * 60 * MIN && t <= T0 + 3 * 60 * MIN);
+    expect(lastHalfHour.length).toBeGreaterThanOrEqual(17); // 30 min a ~103 s
+    expect(lastHalfHour.length).toBeLessThanOrEqual(18);
+    for (let i = 1; i < lastHalfHour.length; i++) expect(lastHalfHour[i] - lastHalfHour[i - 1]).toBeGreaterThanOrEqual(TRIPWIX_TICK_MS - 2_000);
+  });
+
+  it('calendars already stored: no fast fill, one read every ~103 s', async () => {
+    const { encodeStoredCalendar } = await load();
+    for (let i = 0; i < 35; i++) store.set(`tripwix_calendar_u${i}`, encodeStoredCalendar({ at: T0 - 61 * MIN, start: '2026-10-29', end: '2027-10-29', days: calendar() }));
+    vi.resetModules();
+    const fetcher = vi.fn();
+    const { TRIPWIX_TICK_MS } = await startJob(fetcher);
+    await vi.advanceTimersByTimeAsync(91_000);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(TRIPWIX_TICK_MS - 3_000);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(3_000);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
+  it('DB down at boot: no fast fill (nothing proves what the previous process read)', async () => {
+    h.getMany.mockRejectedValue(new Error('usage quota exhausted'));
+    const fetcher = vi.fn();
+    const { TRIPWIX_TICK_MS } = await startJob(fetcher);
+    await vi.advanceTimersByTimeAsync(91_000);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(TRIPWIX_TICK_MS - 3_000);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(3_000);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
+  it('a DB write fails: the fast fill stops and the job goes back to ~103 s', async () => {
+    h.save.mockRejectedValue(new Error('usage quota exhausted'));
+    const fetcher = vi.fn();
+    const { TRIPWIX_TICK_MS } = await startJob(fetcher);
+    await vi.advanceTimersByTimeAsync(91_000);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(TRIPWIX_TICK_MS - 3_000);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(3_000);
+    expect(fetcher).toHaveBeenCalledTimes(2);
   });
 
   it('does not start without the partner key, with the inventory off, or on a preview', async () => {
