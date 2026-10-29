@@ -2,8 +2,8 @@
  * Um só aviso de pagamento falhado para cartão, Apple Pay / Google Pay,
  * PayPal e Klarna (auditoria do funil, out/2026, n.º 4): a mensagem humana e
  * até três saídas.
- *   (a) "Pagar em duas partes (X hoje)": só com a oferta do servidor e o
- *       hóspede em "tudo agora";
+ *   (a) "Pagar em duas partes (X hoje)": só numa recusa pelo limite do
+ *       cartão, com a oferta do servidor e o hóspede em "tudo agora";
  *   (b) "Usar outro cartão ou método";
  *   (c) "Falar com o concierge": WhatsApp com a casa e as datas escritas
  *       (nunca dados do cartão). O clique conta como whatsapp_click pelo

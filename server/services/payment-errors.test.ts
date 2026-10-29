@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import fs from "node:fs";
 import i18next from "i18next";
 import en from "../../client/src/i18n/locales/en.json";
 import pt from "../../client/src/i18n/locales/pt.json";
@@ -10,10 +11,12 @@ import nl from "../../client/src/i18n/locales/nl.json";
 import sv from "../../client/src/i18n/locales/sv.json";
 import fi from "../../client/src/i18n/locales/fi.json";
 import {
+  LIMIT_DECLINE_CODES,
   NO_RETRY_DECLINE_CODES,
   PAYMENT_ERROR_KEYS,
   classifyPaymentError,
   humanPaymentError,
+  needsPriceRefresh,
   paymentErrorActions,
 } from "@/lib/paymentErrors";
 
@@ -25,6 +28,7 @@ import {
  */
 
 const LOCALES: Record<string, Record<string, unknown>> = { en, pt, fr, es, it: it_, de, nl, sv, fi };
+const read = (p: string) => fs.readFileSync(new URL(`../../${p}`, import.meta.url), "utf8");
 const get = (o: unknown, k: string): unknown =>
   k.split(".").reduce<unknown>((a, p) => (a && typeof a === "object" ? (a as Record<string, unknown>)[p] : undefined), o);
 
@@ -32,10 +36,17 @@ const card = (decline_code?: string, code = "card_declined") => ({ type: "card_e
 const server = (message: string) => new Error(message);
 
 describe("classifyPaymentError: códigos da Stripe", () => {
-  it("limite do cartão: recusa, sem repetir o mesmo cartão", () => {
-    for (const c of ["insufficient_funds", "card_velocity_exceeded", "withdrawal_count_limit_exceeded"]) {
-      expect(classifyPaymentError(card(c))).toEqual({ key: "payment.errors.declinedLimit", kind: "decline", retrySameCard: false });
+  it("limite do cartão: recusa pelo valor (a única que pode oferecer as duas partes), sem repetir o mesmo cartão", () => {
+    for (const c of ["insufficient_funds", "card_velocity_exceeded", "withdrawal_count_limit_exceeded", "invalid_amount"]) {
+      expect(classifyPaymentError(card(c))).toEqual({ key: "payment.errors.declinedLimit", kind: "decline_limit", retrySameCard: false });
     }
+  });
+
+  it("transação duplicada: ver se já há um pagamento, nunca outro método (revisão do PR #176)", () => {
+    expect(classifyPaymentError(card("duplicate_transaction"))).toEqual({
+      key: "payment.errors.duplicateTransaction", kind: "blocked", retrySameCard: false,
+    });
+    expect(NO_RETRY_DECLINE_CODES as readonly string[]).not.toContain("duplicate_transaction");
   });
 
   it.each(["fraudulent", "do_not_honor", "stolen_card", "lost_card", "pickup_card", "generic_decline"])(
@@ -105,6 +116,8 @@ describe("classifyPaymentError: mensagens do servidor (inglês técnico)", () =>
     ["quote expired; refresh the price before paying", "payment.errors.quoteExpired", "stale"],
     ["Please refresh your dates and price before continuing.", "payment.errors.quoteExpired", "stale"],
     ["dates no longer available", "payment.errors.datesGone", "stale"],
+    // PayPal/Klarna (wallet-price-validation.ts): antes caía no genérico "tente novamente"
+    ["The price or booking details have changed. Please refresh before paying.", "payment.errors.priceChanged", "stale"],
     ["payment is still processing; do not pay again", "payment.errors.stillProcessing", "blocked"],
     ["already paid", "payment.errors.alreadyPaidShort", "blocked"],
     ["payment could not be prepared; retry the same checkout", "payment.errors.prepareFailed", "retry"],
@@ -120,6 +133,23 @@ describe("classifyPaymentError: mensagens do servidor (inglês técnico)", () =>
     expect(info.kind).toBe(kind);
   });
 
+  it("a mensagem real do servidor para PayPal/Klarna acende o 'Atualizar preço'", () => {
+    const src = read("server/services/wallet-price-validation.ts");
+    const message = /const changed = \(\) => new Error\('([^']+)'\)/.exec(src)?.[1];
+    expect(message).toBeTruthy();
+    const info = classifyPaymentError(server(message!));
+    expect(info).toEqual({ key: "payment.errors.priceChanged", kind: "stale", retrySameCard: false });
+    expect(needsPriceRefresh(info)).toBe(true);
+    expect(needsPriceRefresh(classifyPaymentError(server("quote expired; refresh the price before paying")))).toBe(true);
+    expect(needsPriceRefresh(classifyPaymentError(server("dates no longer available")))).toBe(false);
+    expect(needsPriceRefresh(classifyPaymentError(card("insufficient_funds")))).toBe(false);
+    expect(needsPriceRefresh(null)).toBe(false);
+    // e o formulário usa-a no erro do PayPal/Klarna
+    expect(read("client/src/components/booking/CheckoutPaymentForm.tsx")).toMatch(
+      /if \(isQuoteExpiredError\(err\) \|\| needsPriceRefresh\(view\.info\)\) props\.onQuoteExpired\?\.\(\);/,
+    );
+  });
+
   it("um erro sem nada conhecido cai na mensagem genérica", () => {
     expect(classifyPaymentError(undefined).key).toBe("payment.errors.genericRetry");
     expect(classifyPaymentError(null).key).toBe("payment.errors.genericRetry");
@@ -132,6 +162,33 @@ describe("paymentErrorActions: até três saídas, nunca uma dupla cobrança", (
 
   it("recusa em 'tudo agora' com a oferta do servidor: duas partes, outro método e concierge", () => {
     expect(paymentErrorActions(decline, { twoPartsOffered: true, plan: "full" })).toEqual({ twoParts: true, otherMethod: true, concierge: true });
+  });
+
+  it("duas partes só nas recusas pelo limite do cartão (o cartão escrito fica no formulário)", () => {
+    for (const c of LIMIT_DECLINE_CODES) {
+      expect(paymentErrorActions(classifyPaymentError(card(c)), { twoPartsOffered: true, plan: "full" }).twoParts, c).toBe(true);
+    }
+  });
+
+  it.each([
+    "fraudulent", "lost_card", "stolen_card", "pickup_card", "restricted_card", "security_violation", "do_not_honor",
+    "expired_card", "card_not_supported", "currency_not_supported", "generic_decline", "card_declined", "do_not_try_again",
+  ])("%s: nunca 'pagar em duas partes' (seria repetir o mesmo cartão), mas outro método e concierge", (code) => {
+    expect(paymentErrorActions(classifyPaymentError(card(code)), { twoPartsOffered: true, plan: "full" })).toEqual({
+      twoParts: false, otherMethod: true, concierge: true,
+    });
+  });
+
+  it("todas as recusas sem nova tentativa: nunca duas partes", () => {
+    for (const code of NO_RETRY_DECLINE_CODES) {
+      expect(paymentErrorActions(classifyPaymentError(card(code)), { twoPartsOffered: true, plan: "full" }).twoParts, code).toBe(false);
+    }
+  });
+
+  it("transação duplicada: só o concierge (nem outro método nem duas partes)", () => {
+    expect(paymentErrorActions(classifyPaymentError(card("duplicate_transaction")), { twoPartsOffered: true, plan: "full" })).toEqual({
+      twoParts: false, otherMethod: false, concierge: true,
+    });
   });
 
   it("sem oferta, ou já em duas partes: sem a opção das duas partes", () => {
@@ -149,8 +206,8 @@ describe("paymentErrorActions: até três saídas, nunca uma dupla cobrança", (
     expect(paymentErrorActions({ kind: "blocked" }, { twoPartsOffered: true, plan: "full" }).otherMethod).toBe(false);
   });
 
-  it("preço expirado, datas ocupadas, duas partes retiradas: só o concierge", () => {
-    for (const message of ["quote expired", "dates no longer available", "two-part payment is not available"]) {
+  it("preço expirado ou mudado, datas ocupadas, duas partes retiradas: só o concierge", () => {
+    for (const message of ["quote expired", "dates no longer available", "two-part payment is not available", "The price or booking details have changed. Please refresh before paying."]) {
       expect(paymentErrorActions(classifyPaymentError(server(message)), { twoPartsOffered: true, plan: "full" })).toEqual({
         twoParts: false, otherMethod: false, concierge: true,
       });
@@ -217,6 +274,7 @@ describe("textos do aviso nas 9 línguas", () => {
       "payment.errors.cardNotSupported", "payment.errors.incorrectCvc", "payment.errors.incorrectNumber",
       "payment.errors.cardDetails", "payment.errors.bankUnavailable", "payment.errors.authenticationFailed",
       "payment.errors.twoPartsUnavailable", "payment.errors.prepareFailed",
+      "payment.errors.priceChanged", "payment.errors.duplicateTransaction",
     ];
     for (const key of fresh) expect(get(LOCALES[lang], key), `${lang}.${key}`).not.toMatch(BANNED);
   });
@@ -228,7 +286,7 @@ describe("textos do aviso nas 9 línguas", () => {
   };
   it.each(Object.keys(LOCALES))("%s: recusas por fraude, perda, roubo ou limite nunca dizem 'tente de novo'", (lang) => {
     const keys = new Set(
-      [...NO_RETRY_DECLINE_CODES, "insufficient_funds", "expired_card", "card_not_supported"].map((c) => classifyPaymentError(card(c)).key as string),
+      [...NO_RETRY_DECLINE_CODES, "insufficient_funds", "expired_card", "card_not_supported", "duplicate_transaction"].map((c) => classifyPaymentError(card(c)).key as string),
     );
     for (const key of keys) expect(get(LOCALES[lang], key), `${lang}.${key}`).not.toMatch(RETRY[lang]);
   });

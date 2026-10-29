@@ -10,15 +10,21 @@
  * Regras:
  * - recusas por fraude, cartão perdido/roubado ou do_not_honor nunca sugerem
  *   tentar de novo o mesmo cartão (e não revelam o motivo, como a Stripe pede);
- * - "já pago" / "ainda a processar" nunca oferecem outro método nem as duas
- *   partes: pagar outra vez seria uma dupla cobrança;
- * - as duas partes só se oferecem depois de uma recusa, com a oferta do
- *   servidor e o hóspede em "tudo agora".
+ * - "já pago" / "ainda a processar" / "transação duplicada" nunca oferecem
+ *   outro método nem as duas partes: pagar outra vez seria uma dupla cobrança;
+ * - as duas partes só se oferecem depois de uma recusa por LIMITE do cartão
+ *   (insufficient_funds e afins), com a oferta do servidor e o hóspede em
+ *   "tudo agora". O cartão escrito fica no formulário ao mudar de plano, por
+ *   isso a ação é uma nova tentativa com o mesmo cartão e um valor menor: só
+ *   faz sentido quando o motivo foi o valor. Nunca depois de fraude, perda,
+ *   roubo, do_not_honor, cartão expirado ou não aceite (revisão do PR #176).
  */
 
 export type PaymentErrorKind =
-  /** O banco ou o fornecedor recusou: outro cartão ou método (ou duas partes). */
+  /** O banco ou o fornecedor recusou: outro cartão ou método. */
   | "decline"
+  /** Recusa pelo limite do cartão para este valor: também as duas partes. */
+  | "decline_limit"
   /** Dados do cartão por corrigir (CVC, número, validade): corrigir e repetir. */
   | "card_details"
   /** Falha passageira (banco, rede, gravação): repetir é seguro, nada foi cobrado. */
@@ -41,7 +47,9 @@ export interface PaymentErrorInfo {
   retrySameCard: boolean;
 }
 
-const LIMIT = new Set(["insufficient_funds", "card_velocity_exceeded", "withdrawal_count_limit_exceeded", "invalid_amount"]);
+/** Recusas pelo valor: as únicas em que pagar menos hoje, com o mesmo cartão, pode resultar. */
+export const LIMIT_DECLINE_CODES = ["insufficient_funds", "card_velocity_exceeded", "withdrawal_count_limit_exceeded", "invalid_amount"] as const;
+const LIMIT = new Set<string>(LIMIT_DECLINE_CODES);
 const EXPIRED = new Set(["expired_card"]);
 const NOT_SUPPORTED = new Set(["card_not_supported", "currency_not_supported"]);
 const INCORRECT_CVC = new Set(["incorrect_cvc", "invalid_cvc"]);
@@ -55,6 +63,9 @@ const BANK_UNAVAILABLE = new Set(["processing_error", "try_again_later", "issuer
 const AUTHENTICATION = new Set(["authentication_required", "payment_intent_authentication_failure", "setup_intent_authentication_failure"]);
 /** O PI já está noutro estado (pago ou em curso): nunca convidar a pagar de novo. */
 const IN_FLIGHT = new Set(["payment_intent_unexpected_state"]);
+/** A Stripe: "verifique se já existe um pagamento recente" — nunca outro método
+ *  nem duas partes (pode haver um pagamento noutra janela para a mesma estadia). */
+const DUPLICATE = new Set(["duplicate_transaction"]);
 /** Sem motivo revelado e sem "tente de novo" (a Stripe pede que fraude,
  *  perda e roubo pareçam uma recusa genérica). */
 export const NO_RETRY_DECLINE_CODES = [
@@ -62,7 +73,7 @@ export const NO_RETRY_DECLINE_CODES = [
   "merchant_blacklist", "do_not_honor", "do_not_try_again", "revocation_of_all_authorizations",
   "revocation_of_authorization", "stop_payment_order", "not_permitted", "transaction_not_allowed",
   "invalid_account", "new_account_information_available", "no_action_taken", "call_issuer",
-  "generic_decline", "card_declined", "service_not_allowed", "testmode_decline", "duplicate_transaction",
+  "generic_decline", "card_declined", "service_not_allowed", "testmode_decline",
   "invalid_pin", "incorrect_pin", "pin_try_exceeded", "offline_pin_required", "online_or_offline_pin_required",
   "payment_method_provider_decline",
 ] as const;
@@ -72,6 +83,8 @@ const NO_RETRY = new Set<string>(NO_RETRY_DECLINE_CODES);
  *  PayPal/Klarna). A primeira que casa ganha. */
 const SERVER_MESSAGES: Array<[RegExp, PaymentErrorInfo]> = [
   [/quote expired|refresh your dates|refresh the price/i, { key: "payment.errors.quoteExpired", kind: "stale", retrySameCard: true }],
+  // PayPal/Klarna (wallet-price-validation.ts): preço, tarifa ou intent mudaram desde o ecrã
+  [/details have changed|refresh before paying/i, { key: "payment.errors.priceChanged", kind: "stale", retrySameCard: false }],
   [/dates no longer available/i, { key: "payment.errors.datesGone", kind: "stale", retrySameCard: false }],
   [/still processing/i, { key: "payment.errors.stillProcessing", kind: "blocked", retrySameCard: false }],
   [/already paid/i, { key: "payment.errors.alreadyPaidShort", kind: "blocked", retrySameCard: false }],
@@ -90,6 +103,7 @@ const DECLINED: PaymentErrorInfo = { key: "payment.errors.declinedGeneric", kind
 export const PAYMENT_ERROR_KEYS = [
   "payment.errors.declinedLimit",
   "payment.errors.declinedGeneric",
+  "payment.errors.duplicateTransaction",
   "payment.errors.cardExpired",
   "payment.errors.cardNotSupported",
   "payment.errors.incorrectCvc",
@@ -104,7 +118,7 @@ export const PAYMENT_ERROR_KEYS = [
 const str = (v: unknown): string | undefined => (typeof v === "string" && v ? v : undefined);
 
 function fromStripeCode(c: string): PaymentErrorInfo | null {
-  if (LIMIT.has(c)) return { key: "payment.errors.declinedLimit", kind: "decline", retrySameCard: false };
+  if (LIMIT.has(c)) return { key: "payment.errors.declinedLimit", kind: "decline_limit", retrySameCard: false };
   if (EXPIRED.has(c)) return { key: "payment.errors.cardExpired", kind: "decline", retrySameCard: false };
   if (NOT_SUPPORTED.has(c)) return { key: "payment.errors.cardNotSupported", kind: "decline", retrySameCard: false };
   if (INCORRECT_CVC.has(c)) return { key: "payment.errors.incorrectCvc", kind: "card_details", retrySameCard: true };
@@ -113,6 +127,7 @@ function fromStripeCode(c: string): PaymentErrorInfo | null {
   if (BANK_UNAVAILABLE.has(c)) return { key: "payment.errors.bankUnavailable", kind: "retry", retrySameCard: true };
   if (AUTHENTICATION.has(c)) return { key: "payment.errors.authenticationFailed", kind: "retry", retrySameCard: true };
   if (IN_FLIGHT.has(c)) return { key: "payment.errors.stillProcessing", kind: "blocked", retrySameCard: false };
+  if (DUPLICATE.has(c)) return { key: "payment.errors.duplicateTransaction", kind: "blocked", retrySameCard: false };
   if (NO_RETRY.has(c)) return DECLINED;
   return null;
 }
@@ -141,6 +156,11 @@ export function classifyPaymentError(e: unknown): PaymentErrorInfo {
 
 export type Translate = (key: string, options?: Record<string, unknown>) => string;
 
+/** O preço tem de ser refeito antes de pagar: o checkout mostra "Atualizar preço". */
+export function needsPriceRefresh(info: Pick<PaymentErrorInfo, "key"> | null | undefined): boolean {
+  return info?.key === "payment.errors.quoteExpired" || info?.key === "payment.errors.priceChanged";
+}
+
 export function humanPaymentError(e: unknown, t: Translate): string {
   const info = classifyPaymentError(e);
   if (info.key === null) {
@@ -165,8 +185,10 @@ export function paymentErrorActions(
   ctx: { twoPartsOffered: boolean; plan?: "full" | "two_parts" },
 ): PaymentErrorActions {
   switch (info.kind) {
-    case "decline":
+    case "decline_limit":
       return { twoParts: ctx.twoPartsOffered && ctx.plan !== "two_parts", otherMethod: true, concierge: true };
+    case "decline":
+      return { twoParts: false, otherMethod: true, concierge: true };
     case "retry":
     case "generic":
       return { twoParts: false, otherMethod: true, concierge: true };

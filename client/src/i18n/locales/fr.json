@@ -794,7 +794,9 @@
       "bankUnavailable": "La banque n'a pas pu traiter le paiement pour le moment. Rien n'a été débité. Réessayez dans un instant.",
       "authenticationFailed": "La confirmation auprès de votre banque n'a pas abouti, rien n'a donc été débité. Réessayez et confirmez dans l'application de votre banque.",
       "twoPartsUnavailable": "Le paiement en deux fois n'est plus disponible pour cette réservation. Rien n'a été débité : vous pouvez payer le montant total maintenant.",
-      "prepareFailed": "Nous n'avons pas pu préparer le paiement. Rien n'a été débité. Veuillez réessayer."
+      "prepareFailed": "Nous n'avons pas pu préparer le paiement. Rien n'a été débité. Veuillez réessayer.",
+      "priceChanged": "Le prix ou les détails de cette réservation ont changé entre-temps. Actualisez le prix pour continuer.",
+      "duplicateTransaction": "Un paiement avec cette carte et ce montant vient d'être effectué. Consultez votre email et votre application bancaire avant de payer à nouveau."
     },
     "payButton": "Payer {{amount}}",
     "cancelButton": "Annuler",

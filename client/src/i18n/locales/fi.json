@@ -794,7 +794,9 @@
       "bankUnavailable": "Pankki ei voinut käsitellä maksua juuri nyt. Mitään ei veloitettu. Yritä hetken päästä uudelleen.",
       "authenticationFailed": "Vahvistus pankkisi kanssa jäi kesken, joten mitään ei veloitettu. Yritä uudelleen ja vahvista pankkisi sovelluksessa.",
       "twoPartsUnavailable": "Maksu kahdessa osassa ei ole enää käytettävissä tälle varaukselle. Mitään ei veloitettu: voit maksaa koko summan nyt.",
-      "prepareFailed": "Emme voineet valmistella maksua. Mitään ei veloitettu. Yritä uudelleen."
+      "prepareFailed": "Emme voineet valmistella maksua. Mitään ei veloitettu. Yritä uudelleen.",
+      "priceChanged": "Tämän varauksen hinta tai tiedot ovat muuttuneet sillä välin. Päivitä hinta jatkaaksesi.",
+      "duplicateTransaction": "Tällä kortilla maksettiin juuri sama summa. Tarkista sähköpostisi ja pankkisovelluksesi ennen uutta maksua."
     },
     "payButton": "Maksa {{amount}}",
     "cancelButton": "Peruuta",

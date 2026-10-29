@@ -29,7 +29,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { formatQuotedEur } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
-import { classifyPaymentError, humanPaymentError } from "@/lib/paymentErrors";
+import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
 import { payButtonGate, walletNames } from "@/lib/checkoutPayment";
 import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
 import { expressCheckoutElementsOptions } from "./stripeElementsOptions";
@@ -166,8 +166,8 @@ interface CheckoutPaymentFormProps {
   walletsReady?: boolean;
   /** Aviso de erro: WhatsApp do concierge com a casa e as datas escritas. */
   conciergeHref?: string;
-  /** Aviso de erro: "Pagar em duas partes (X hoje)", só com a oferta do
-   *  servidor e o plano em "tudo agora". */
+  /** Aviso de erro: "Pagar em duas partes (X hoje)", só numa recusa pelo
+   *  limite do cartão, com a oferta do servidor e o plano em "tudo agora". */
   twoPartsSwitch?: TwoPartsSwitch | null;
   /** O servidor deixou de dar as duas partes: voltar a "tudo agora" e reler a oferta. */
   onTwoPartsUnavailable?: () => void;
@@ -894,11 +894,14 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const gate = payButtonGate({ termsAccepted: props.termsAccepted ?? true, plan: props.plan, mandateAccepted: props.mandateAccepted });
   const otherMethodsAmount = props.otherMethodsTotal ?? props.total;
 
-  /** PayPal/Klarna falharam antes do redirect: o mesmo aviso traduzido do cartão. */
+  /** PayPal/Klarna falharam antes do redirect: o mesmo aviso traduzido do cartão.
+   *  "O preço ou os dados mudaram" (wallet-price-validation.ts) acende, como o
+   *  preço expirado, o "Atualizar preço": tentar outra vez dava o mesmo erro. */
   const onRedirectMethodError = (method: "paypal" | "klarna") => (err: unknown, stage: "server" | "confirm") => {
     trackPaymentFailed({ stage, method, error: err, listingId: props.listingId, value: otherMethodsAmount });
-    if (isQuoteExpiredError(err)) props.onQuoteExpired?.();
-    (method === "paypal" ? setPaypalError : setKlarnaError)(errorView(err, t));
+    const view = errorView(err, t);
+    if (isQuoteExpiredError(err) || needsPriceRefresh(view.info)) props.onQuoteExpired?.();
+    (method === "paypal" ? setPaypalError : setKlarnaError)(view);
   };
 
   /** Demo: o mesmo percurso até ao clique, depois uma recusa simulada ou o aviso de demo. */

@@ -794,7 +794,9 @@
       "bankUnavailable": "O banco não conseguiu processar o pagamento neste momento. Nada foi cobrado. Tente novamente daqui a pouco.",
       "authenticationFailed": "A confirmação com o seu banco não foi concluída, por isso nada foi cobrado. Tente novamente e confirme na app do banco.",
       "twoPartsUnavailable": "O pagamento em duas partes deixou de estar disponível para esta reserva. Nada foi cobrado: pode pagar o valor total agora.",
-      "prepareFailed": "Não conseguimos preparar o pagamento. Nada foi cobrado. Tente novamente."
+      "prepareFailed": "Não conseguimos preparar o pagamento. Nada foi cobrado. Tente novamente.",
+      "priceChanged": "O preço ou os dados desta reserva mudaram entretanto. Atualize o preço para continuar.",
+      "duplicateTransaction": "Foi feito há instantes um pagamento com este cartão e este valor. Verifique o seu email e a app do banco antes de pagar outra vez."
     },
     "payButton": "Pagar {{amount}}",
     "cancelButton": "Cancelar",

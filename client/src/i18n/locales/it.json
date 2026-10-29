@@ -794,7 +794,9 @@
       "bankUnavailable": "La banca non è riuscita a elaborare il pagamento in questo momento. Non è stato addebitato nulla. Riprovi tra poco.",
       "authenticationFailed": "La conferma con la sua banca non è stata completata, quindi non è stato addebitato nulla. Riprovi e confermi nell'app della banca.",
       "twoPartsUnavailable": "Il pagamento in due parti non è più disponibile per questa prenotazione. Non è stato addebitato nulla: può pagare l'importo totale ora.",
-      "prepareFailed": "Non siamo riusciti a preparare il pagamento. Non è stato addebitato nulla. Riprovi."
+      "prepareFailed": "Non siamo riusciti a preparare il pagamento. Non è stato addebitato nulla. Riprovi.",
+      "priceChanged": "Il prezzo o i dati di questa prenotazione sono cambiati nel frattempo. Aggiorni il prezzo per continuare.",
+      "duplicateTransaction": "Poco fa è stato effettuato un pagamento con questa carta e questo importo. Controlli la Sua email e l'app della banca prima di pagare di nuovo."
     },
     "payButton": "Paga {{amount}}",
     "cancelButton": "Annulla",

@@ -829,7 +829,9 @@
       "bankUnavailable": "The bank could not process the payment just now. Nothing was charged. Please try again in a moment.",
       "authenticationFailed": "The confirmation with your bank was not completed, so nothing was charged. Try again and confirm in your banking app.",
       "twoPartsUnavailable": "Paying in two parts is no longer available for this booking. Nothing was charged: you can pay the full amount now.",
-      "prepareFailed": "We could not prepare the payment. Nothing was charged. Please try again."
+      "prepareFailed": "We could not prepare the payment. Nothing was charged. Please try again.",
+      "priceChanged": "The price or the details of this booking changed in the meantime. Refresh the price to continue.",
+      "duplicateTransaction": "A payment with this card and this amount was made a moment ago. Check your email and your banking app before paying again."
     },
     "payButton": "Pay {{amount}}",
     "cancelButton": "Cancel",

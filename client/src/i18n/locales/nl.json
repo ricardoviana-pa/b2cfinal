@@ -794,7 +794,9 @@
       "bankUnavailable": "De bank kon de betaling op dit moment niet verwerken. Er is niets afgeschreven. Probeer het zo meteen opnieuw.",
       "authenticationFailed": "De bevestiging bij uw bank is niet afgerond, dus er is niets afgeschreven. Probeer het opnieuw en bevestig in de app van uw bank.",
       "twoPartsUnavailable": "Betalen in twee delen is niet meer beschikbaar voor deze boeking. Er is niets afgeschreven: u kunt nu het volledige bedrag betalen.",
-      "prepareFailed": "We konden de betaling niet voorbereiden. Er is niets afgeschreven. Probeer het opnieuw."
+      "prepareFailed": "We konden de betaling niet voorbereiden. Er is niets afgeschreven. Probeer het opnieuw.",
+      "priceChanged": "De prijs of de gegevens van deze boeking zijn intussen gewijzigd. Vernieuw de prijs om verder te gaan.",
+      "duplicateTransaction": "Zojuist is er met deze kaart een betaling van dit bedrag gedaan. Controleer uw e-mail en uw bankapp voordat u nog eens betaalt."
     },
     "payButton": "{{amount}} betalen",
     "cancelButton": "Annuleren",

@@ -794,7 +794,9 @@
       "bankUnavailable": "Die Bank konnte die Zahlung gerade nicht verarbeiten. Es wurde nichts abgebucht. Bitte versuchen Sie es gleich noch einmal.",
       "authenticationFailed": "Die Bestätigung bei Ihrer Bank wurde nicht abgeschlossen, daher wurde nichts abgebucht. Versuchen Sie es erneut und bestätigen Sie in Ihrer Banking-App.",
       "twoPartsUnavailable": "Die Zahlung in zwei Teilen ist für diese Buchung nicht mehr verfügbar. Es wurde nichts abgebucht: Sie können jetzt den Gesamtbetrag bezahlen.",
-      "prepareFailed": "Wir konnten die Zahlung nicht vorbereiten. Es wurde nichts abgebucht. Bitte versuchen Sie es erneut."
+      "prepareFailed": "Wir konnten die Zahlung nicht vorbereiten. Es wurde nichts abgebucht. Bitte versuchen Sie es erneut.",
+      "priceChanged": "Der Preis oder die Angaben dieser Buchung haben sich inzwischen geändert. Aktualisieren Sie den Preis, um fortzufahren.",
+      "duplicateTransaction": "Gerade wurde mit dieser Karte eine Zahlung über diesen Betrag ausgeführt. Prüfen Sie Ihre E-Mails und Ihre Banking-App, bevor Sie nochmals zahlen."
     },
     "payButton": "{{amount}} zahlen",
     "cancelButton": "Abbrechen",

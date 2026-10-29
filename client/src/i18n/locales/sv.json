@@ -794,7 +794,9 @@
       "bankUnavailable": "Banken kunde inte behandla betalningen just nu. Ingenting har dragits. Försök igen om en stund.",
       "authenticationFailed": "Bekräftelsen hos din bank slutfördes inte, så ingenting har dragits. Försök igen och bekräfta i bankens app.",
       "twoPartsUnavailable": "Betalning i två delar är inte längre tillgänglig för den här bokningen. Ingenting har dragits: du kan betala hela beloppet nu.",
-      "prepareFailed": "Vi kunde inte förbereda betalningen. Ingenting har dragits. Försök igen."
+      "prepareFailed": "Vi kunde inte förbereda betalningen. Ingenting har dragits. Försök igen.",
+      "priceChanged": "Priset eller uppgifterna för den här bokningen har ändrats under tiden. Uppdatera priset för att fortsätta.",
+      "duplicateTransaction": "Nyss gjordes en betalning med det här kortet och det här beloppet. Kontrollera din e-post och din bankapp innan du betalar igen."
     },
     "payButton": "Betala {{amount}}",
     "cancelButton": "Avbryt",
