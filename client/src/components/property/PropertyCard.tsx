@@ -400,10 +400,11 @@ export default function PropertyCard({
                 // "select dates for price" would be a false promise.
                 return <span className="text-[#726D63] text-[0.8125rem]">{t(noPriceLabelKey(isPartner, fromPrice))}</span>;
               })()}
-              {hasPartnerPrice && (
+              {/* Sem "IVA incluído": as nossas casas não o dizem e as dos
+                  parceiros também não (o Ricardo, 29 out 2026). */}
+              {hasPartnerPrice && (nights === 0 || !liveQuote?.feesKnown) && (
                 <p className="text-[0.6875rem] text-[#726D63] mt-1 leading-relaxed">
-                  {t('partnerBooking.vatIncluded')}{' '}
-                  {(nights === 0 || !liveQuote?.feesKnown) && t('partnerBooking.feesPendingShort')}
+                  {t('partnerBooking.feesPendingShort')}
                 </p>
               )}
             </div>

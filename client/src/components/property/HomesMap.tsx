@@ -76,9 +76,7 @@ export default function HomesMap({ properties, fromPrices, quotes, checkin, chec
         const label = money
           ? hasDates ? `${money} ${t(partial ? 'partnerBooking.accommodationLabel' : 'property.totalLabel')}` : `${t('common.from')} ${money}`
           : '·';
-        const priceNote = isPartner && money
-          ? `${t('partnerBooking.vatIncluded')} ${(!hasDates || partial) ? t('partnerBooking.feesPendingShort') : ''}`
-          : '';
+        const priceNote = isPartner && money && (!hasDates || partial) ? t('partnerBooking.feesPendingShort') : '';
         const pin = document.createElement('span');
         pin.className = 'pa-map-pin-label';
         pin.textContent = label;

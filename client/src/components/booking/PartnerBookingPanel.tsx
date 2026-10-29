@@ -330,7 +330,6 @@ export function PartnerBookingPanel({
               {fromPrice === null || quoteNotice === 'on-request'
                 ? t('partnerBooking.onRequestHint', 'Our concierge confirms availability and the price for your dates')
                 : t('partnerBooking.pickDates', 'Pick your dates for the exact total')}
-              {fromPrice ? ` · ${t('partnerBooking.vatIncluded')}` : ''}
             </p>
           </>
         )}
@@ -540,17 +539,16 @@ export function PartnerBookingPanel({
                   </span>
                 </div>
 
-                <p className="text-[11px] text-black/35 leading-snug">
-                  {t('partnerBooking.vatIncluded', 'VAT included.')}{' '}
-                  {quote.feesKnown
-                    ? quote.securityDeposit > 0
+                {(!quote.feesKnown || quote.securityDeposit > 0) && (
+                  <p className="text-[11px] text-black/35 leading-snug">
+                    {quote.feesKnown
                       ? t('partnerBooking.depositNote', { amount: formatQuotedEur(quote.securityDeposit, lang) })
-                      : ''
-                    : t(
-                        'partnerBooking.feesPending',
-                        'This property may add a cleaning fee and a refundable deposit. The concierge confirms the final total before anything is charged.',
-                      )}
-                </p>
+                      : t(
+                          'partnerBooking.feesPending',
+                          'This property may add a cleaning fee and a refundable deposit. The concierge confirms the final total before anything is charged.',
+                        )}
+                  </p>
+                )}
               </div>
             </div>
           )}

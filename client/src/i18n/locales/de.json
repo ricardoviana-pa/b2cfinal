@@ -2015,7 +2015,6 @@
     "onRequestDates": "Für diese Daten können wir online keinen Preis anzeigen. Senden Sie die Anfrage — unser Concierge bestätigt Verfügbarkeit und Gesamtbetrag.",
     "total": "Gesamt",
     "totalSoFar": "Bisheriger Gesamtbetrag",
-    "vatIncluded": "Inkl. MwSt.",
     "accommodationLabel": "Unterkunft",
     "feesPendingShort": "Weitere Gebühren werden bestätigt.",
     "depositNote": "Das Haus behält eine erstattbare Kaution von {{amount}} ein.",
