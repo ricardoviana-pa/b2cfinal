@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
 import i18n, { LOCALE_MAP } from '@/i18n';
+import { resolvePageMeta, SITE_BASE_URL, type PageMetaOpts } from '@/lib/pageMeta';
 
 const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
-const BASE_TITLE = 'Luxury Villas & Private Homes in Portugal | Portugal Active';
-const BASE_DESC = 'Luxury villas and private homes in Portugal, run end to end by our own in-house team: concierge, private chef and housekeeping. Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Book direct.';
-const BASE_URL = 'https://www.portugalactive.com';
-const BASE_IMAGE = 'https://www.portugalactive.com/hero/home-mirante-tennis-og.jpg';
+const BASE_URL = SITE_BASE_URL;
 
 
 function setMeta(selector: string, attr: string, value: string) {
@@ -38,46 +36,35 @@ function setHreflang(pagePath: string, languages = SUPPORTED_LANGS) {
   head.appendChild(xDefault);
 }
 
-interface PageMetaOpts {
-  title?: string;
-  description?: string;
-  image?: string;
-  /** Page path without locale prefix, e.g. '/homes' or '/homes/villa-x' */
-  url?: string;
-  type?: 'website' | 'article' | 'place';
-  /** Transactional pages (checkout) — sets robots noindex and skips hreflang/canonical */
-  noindex?: boolean;
-  publishedLocales?: string[];
-}
+/** The path whose <head> the server wrote (it marks the document with
+ *  pa-ssr-meta), until the visitor navigates to another path. `undefined`
+ *  until the first run has looked for the marker. */
+let ssrMetaPath: string | null | undefined;
 
-/** True until the first usePageMeta run after hydration has decided whether
- *  the server already injected this document's meta. */
-let firstRunDone = false;
+/** True while the document still shows the page the server rendered.
+ *
+ *  The server injects the localized title, description, Open Graph and
+ *  hreflang for every route it knows. Re-running the client template on that
+ *  same page can only make things worse: on home pages it ran again when the
+ *  translations loaded and put an English title on every non-English page
+ *  (auditoria set/2026 N20/G5, and again out/2026). So the server's head
+ *  stays for as long as the visitor is on the path it was written for — not
+ *  just for the first run. Client-side navigations still run in full. */
+function serverOwnsMeta(): boolean {
+  if (ssrMetaPath === undefined) {
+    const markers = document.querySelectorAll('meta[name="pa-ssr-meta"]');
+    ssrMetaPath = markers.length ? window.location.pathname : null;
+    markers.forEach((m) => m.remove());
+  }
+  if (ssrMetaPath !== null && window.location.pathname !== ssrMetaPath) ssrMetaPath = null;
+  return ssrMetaPath !== null;
+}
 
 export function usePageMeta(opts?: PageMetaOpts) {
   useEffect(() => {
-    // The server injects localized <title>, description, OG and hreflang for
-    // every known route and marks the document. On the first run after
-    // hydration we keep what the server wrote — the strings below are English
-    // and used to overwrite the Portuguese title on /pt/homes (auditoria
-    // set/2026, N20/G5). Client-side navigations still run in full.
-    if (!firstRunDone) {
-      firstRunDone = true;
-      const markers = document.querySelectorAll('meta[name="pa-ssr-meta"]');
-      if (markers.length) {
-        markers.forEach((m) => m.remove());
-        return;
-      }
-    }
+    if (serverOwnsMeta()) return;
     const lang = i18n.language || 'en';
-    const title = opts?.title ? `${opts.title.replace(/(?:\s*\|\s*Portugal Active)+$/i, '')} | Portugal Active` : BASE_TITLE;
-    const description = opts?.description || BASE_DESC;
-    // Ensure og:image is always an absolute URL (crawlers can't resolve relative paths)
-    const rawImage = opts?.image || BASE_IMAGE;
-    const image = rawImage.startsWith('http') ? rawImage : `${BASE_URL}${rawImage}`;
-    const pagePath = opts?.url || '/';
-    const fullUrl = `${BASE_URL}/${lang}${pagePath === '/' ? '' : pagePath}`;
-    const type = opts?.type || 'website';
+    const { title, description, image, url: fullUrl, type, pagePath } = resolvePageMeta(opts, lang);
     const locale = LOCALE_MAP[lang] ?? 'en_GB';
 
     document.title = title;

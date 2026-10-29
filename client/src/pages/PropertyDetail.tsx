@@ -9,7 +9,14 @@ import { getConcierge } from '@shared/concierges';
 import { localizeDuration, localizeRoomName } from '@/lib/duration';
 import { useParams, Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
+import { useQueryClient } from '@tanstack/react-query';
+import { loadPropertyOverrides, mergePropertyOverrides, propertyOverridesQueryKey } from '@/lib/localizeProperty';
+import { SSR_FROM_PRICES_KEY, pickLowestNightly, type SsrFromPrices } from '@/lib/ssrFromPrices';
+import { countVars } from '@/lib/plural';
+import { propertyKindInline } from '@shared/propertyMeta';
+import { propertyPageMetaOpts } from '@/lib/propertyPageMeta';
+import { buildPdpFaq, faqPageNode } from '@shared/pdpFaq';
+import { placeKey, placePhrases, placeVars } from '@shared/regionPhrases';
 import { localizeProduct } from '@/lib/localizeProduct';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { PartnerBookingPanel } from '@/components/booking/PartnerBookingPanel';
@@ -33,7 +40,6 @@ import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { hasSwimmingPool } from '@/lib/homeSearch';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
 import { formatQuotedEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
-import { cancellationPolicyCopy, cancellationPolicySummary } from '@shared/cancellationPolicy';
 import {
   StructuredData,
   buildVacationRentalSchema,
@@ -293,6 +299,15 @@ function cleanDescription(raw: string): string {
 const LIGHTBOX_SLIDE_MS = 300;
 const LIGHTBOX_WIDTHS = [1080, 1600, 2560];
 
+/** The hero photo appears twice in the markup: the phone carousel (slide 1)
+ *  and the desktop grid (big tile). Both are eager + fetchpriority=high, and
+ *  the hidden one is fetched too, so they used different srcsets and every
+ *  visitor downloaded two files of the same photo (auditoria out/2026,
+ *  performance-12-pdp-double-hero). Same srcset + same sizes = the browser
+ *  picks the same URL for both, React writes one preload, one download. */
+const HERO_WIDTHS = [640, 828, 1080, 1440];
+const HERO_SIZES = '(min-width: 1024px) 32vw, 100vw';
+
 function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onClose, t }: {
   images: string[];
   rawImages?: string[];
@@ -467,7 +482,7 @@ function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onC
                 src={images[imgIdx]}
                 srcSet={guestySrcSet(rawImages?.[imgIdx], LIGHTBOX_WIDTHS)}
                 sizes="100vw"
-                alt={pos === 1 ? `${propertyName} – ${destName} – image ${imgIdx + 1} of ${total}` : ''}
+                alt={pos === 1 ? t('seoMeta.photoAltOf', { name: propertyName, place: destName, n: imgIdx + 1, total }) : ''}
                 className="max-w-full max-h-full object-contain select-none"
                 decoding="async"
                 draggable={false}
@@ -641,9 +656,14 @@ export default function PropertyDetail() {
   );
   // Property descriptions come from Guesty in English; overlay per-locale
   // translations (guestyId-keyed) with English fallback. Only the active
-  // language's overrides are fetched (code-split), so we load them async and
-  // fall back to English until they arrive.
-  const [propOverrides, setPropOverrides] = useState<Record<string, any>>({});
+  // language's overrides are fetched (code-split), so we load them async.
+  // Until they arrive, the page uses the one override the server seeded for
+  // this home (propertyOverridesQueryKey): the server HTML is already in the
+  // page's language and the first client render must match it.
+  const queryClient = useQueryClient();
+  const [propOverrides, setPropOverrides] = useState<Record<string, any>>(
+    () => (queryClient.getQueryData(propertyOverridesQueryKey(i18n.language, slug ?? '')) as Record<string, any> | undefined) ?? {},
+  );
   useEffect(() => {
     let alive = true;
     loadPropertyOverrides(i18n.language).then(o => { if (alive) setPropOverrides(o); });
@@ -667,21 +687,14 @@ export default function PropertyDetail() {
     [propertyGroup, property],
   );
 
-  const pdpTitle = useMemo(() => {
-    if (!property) return undefined;
-    const dest = destinations.find(d => d.slug === property.destination);
-    const beds = property.bedrooms ? `${property.bedrooms}-Bed` : '';
-    const loc = dest?.name || property.locality || property.region || '';
-    return `${displayName} — ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
-  }, [property, displayName]);
-  const pdpDesc = useMemo(() => {
-    if (!property) return undefined;
-    const dest = destinations.find(d => d.slug === property.destination);
-    const beds = property.bedrooms ? `${property.bedrooms}-bedroom` : '';
-    const loc = dest?.name || property.locality || property.region || 'Portugal';
-    const tag = property.tagline || '';
-    return `${beds} luxury villa in ${loc}. ${tag} Book direct with Portugal Active.`.replace(/\s+/g, ' ').trim().slice(0, 155);
-  }, [property]);
+  // Title and description from the builder the server uses for the same page
+  // (shared/propertyMeta.ts): localized, and built from facts the overrides
+  // never change, so hydration and the late override load leave them as the
+  // server wrote them.
+  const pdpMeta = useMemo(
+    () => (property ? propertyPageMetaOpts(property, i18n.language) : null),
+    [property, i18n.language],
+  );
   // Partner homes were kept out of the index while they carried the
   // supplier's copy. The rewrite shipped on 31 Aug 2026 (35 original
   // descriptions in nine languages), so they index like every other home
@@ -690,14 +703,7 @@ export default function PropertyDetail() {
   const partnerNoindex = PARTNER_HOMES_NOINDEX && (property as any)?.source === 'tripwix';
   const host = getConcierge((property as any)?.destination, (property as any)?.locality);
 
-  usePageMeta({
-    title: pdpTitle,
-    description: pdpDesc,
-    image: property?.images?.[0],
-    url: property ? `/homes/${property.slug}` : undefined,
-    type: 'place',
-    noindex: partnerNoindex,
-  });
+  usePageMeta({ ...pdpMeta, type: 'place', noindex: partnerNoindex });
 
   // VacationRental + Breadcrumb JSON-LD (bundled via @graph by StructuredData).
   // VacationRental is Google's dedicated subtype for short-term rentals; it
@@ -705,39 +711,20 @@ export default function PropertyDetail() {
   // LocationFeatureSpecification) that AI Overviews quote directly.
   /** Practical Q&A from the home's own data — rendered visibly in "Good to
    *  know" and mirrored into FAQPage JSON-LD (Google requires the answers to
-   *  exist on the page). */
+   *  exist on the page). The server builds its FAQPage with the same function
+   *  (shared/pdpFaq.ts), so the bot HTML says exactly what the page says. */
   const pdpFaq = useMemo(() => {
     if (!property) return [] as Array<{ q: string; a: string }>;
-    const out: Array<{ q: string; a: string }> = [];
-    const name = displayName || property.name;
-    if (property.checkInTime || property.checkOutTime) {
-      out.push({
-        q: t('pdpFaq.qTimes', 'What time are check-in and check-out?'),
-        a: t('pdpFaq.aTimes', 'Check-in from {{checkIn}} and check-out by {{checkOut}}. Flexible times can often be arranged with our concierge.', {
-          checkIn: property.checkInTime || '16:00', checkOut: property.checkOutTime || '11:00',
-        }),
-      });
-    }
-    if ((property as any).petsAllowed) {
-      out.push({
-        q: t('pdpFaq.qPets', 'Can I bring my pet?'),
-        a: t('pdpFaq.aPets', 'Yes — {{name}} welcomes pets. Let us know when you book; a small additional fee may apply.', { name }),
-      });
-    }
-    // No pool question (redundant with the amenities list) and no hardcoded
-    // minimum-night count — the synced terms value drifts from the calendar,
-    // which is the only source that is right for every season.
-    out.push({
-      q: t('pdpFaq.qMin', 'What is the minimum stay?'),
-      a: t('pdpFaq.aMin', 'Minimum stays and arrival days depend on the home and season. Select your dates to check the requirements, or ask our concierge.'),
-    });
-    // Cancellation: Guesty's policies, from the single shared source (the
-    // server mirrors the same Q&A into the bot-facing FAQPage).
-    out.push({
-      q: cancellationPolicyCopy(i18n.language).question,
-      a: cancellationPolicySummary(i18n.language),
-    });
-    return out;
+    return buildPdpFaq(
+      {
+        name: displayName || property.name,
+        checkInTime: property.checkInTime,
+        checkOutTime: property.checkOutTime,
+        petsAllowed: (property as any).petsAllowed,
+      },
+      i18n.language,
+      (key, fallback, vars) => t(key, fallback, vars as Record<string, unknown>) as string,
+    );
   }, [property, displayName, t, i18n.language]);
 
 
@@ -791,15 +778,7 @@ export default function PropertyDetail() {
       ]),
       // Same Q&A the visible "Good to know" section renders.
       ...(pdpFaq.length
-        ? [{
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: pdpFaq.map(f => ({
-              '@type': 'Question',
-              name: f.q,
-              acceptedAnswer: { '@type': 'Answer', text: f.a },
-            })),
-          }]
+        ? [{ '@context': 'https://schema.org', ...faqPageNode(pdpFaq) }]
         : []),
     ];
   }, [property, pdpFaq]);
@@ -909,23 +888,71 @@ export default function PropertyDetail() {
     }
     return null;
   }, [property]);
-  const destName = destObj?.name || property?.locality || property?.region || '';
+  // The region in the page's language, and the phrases that put it in a
+  // sentence ("no Minho", "en Algarve", "an der Algarve") — not the English
+  // name after a fixed preposition (auditoria out/2026, i18n-copy-08).
+  const destSlug = destObj?.slug ?? property?.destination ?? null;
+  const destKnown = !!destSlug && !!placeKey(destSlug);
+  const destName = destKnown
+    ? placePhrases(destSlug, i18n.language).name
+    : (destObj?.name || property?.locality || property?.region || '');
+  const destVars = useMemo(
+    () => (destKnown ? placeVars(destSlug, i18n.language) : placeVars(destName, i18n.language, destName)),
+    [destKnown, destSlug, destName, i18n.language],
+  );
+  // "luxury villa in the Minho" / "casa de luxo no Minho" — photo alt text.
+  const kindInPlace = useMemo(
+    () => (property ? propertyKindInline(i18n.language, { propertyType: (property as any).propertyType, destination: destKnown ? destSlug : destName }) : ''),
+    [property, i18n.language, destKnown, destSlug, destName],
+  );
 
-  const { data: allPropsData } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
+  // The whole catalogue (≈18 KB, 110 KB of JSON) is only needed for the related
+  // homes at the bottom and, on a multi-unit home, for its units near the top.
+  // It used to be fetched right after hydration in the same batched request as
+  // the "from" price below, which then waited for it (auditoria out/2026,
+  // performance-09-from-price-latency). Now: at once on a multi-unit home,
+  // otherwise when the related-homes block comes within ~1.5 screens.
+  const [catalogWanted, setCatalogWanted] = useState(false);
+  const relatedSentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (catalogWanted) return;
+    const el = relatedSentinelRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') { setCatalogWanted(true); return; }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { setCatalogWanted(true); io.disconnect(); }
+    }, { rootMargin: '1200px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [catalogWanted, property?.slug]);
+  const { data: allPropsData } = trpc.properties.catalogForSite.useQuery(undefined, {
+    staleTime: 5 * 60 * 1000,
+    enabled: catalogWanted || !!propertyGroup,
+  });
   // "From €X per night" = lowest REAL bookable nightly (next 90 days), not the
   // Guesty basePrice placeholder. Cached server-side; lazy per viewed listing.
   // Partner (Tripwix) homes have no Guesty listing; they price off the
   // supplier's own calendar instead, through the same procedure.
+  // Starts from the price the server put into the page (lib/ssrFromPrices.ts),
+  // so the booking card and the mobile bar show it in the server HTML.
   const tripwixUid = (property as any)?.source === 'tripwix'
     ? ((property as any)?.supplierUid as string | undefined)
     : undefined;
+  const seededNightly = pickLowestNightly(
+    queryClient.getQueryData<SsrFromPrices>(SSR_FROM_PRICES_KEY),
+    tripwixUid ? undefined : property?.guestyId,
+  );
   const { data: lowestNightly } = trpc.booking.lowestNightly.useQuery(
     {
       listingId: property?.guestyId ?? tripwixUid ?? '',
       basePrice: (property?.priceFrom as number) || undefined,
       tripwixUid,
     },
-    { enabled: !!property?.guestyId || !!tripwixUid, staleTime: 60_000 },
+    {
+      enabled: !!property?.guestyId || !!tripwixUid,
+      staleTime: 60_000,
+      ...(seededNightly ? { initialData: seededNightly.data, initialDataUpdatedAt: seededNightly.updatedAt } : {}),
+    },
   );
 
   // The header's RESERVE button on this page books THIS home (Header.tsx
@@ -1282,7 +1309,7 @@ export default function PropertyDetail() {
             {t('host.hostedByName', { name: host.name, defaultValue: 'Hosted by {{name}} & the Portugal Active team' })}
           </p>
           <p className="caption text-pa-stone leading-tight mt-0.5">
-            {t('host.basedInCity', { city: host.basedIn, defaultValue: 'Local team in {{city}}' })} ·{' '}
+            {t('host.basedInCity', { city: placePhrases(host.basedIn, i18n.language).name, ...placeVars(host.basedIn, i18n.language), defaultValue: 'Local team {{inPlace}}' })} ·{' '}
             <Link href="/about" className="text-pa-gold-aa hover:underline">
               {t('host.meetUs', 'Meet us')}
             </Link>
@@ -1343,7 +1370,7 @@ export default function PropertyDetail() {
             {(images.length ? images : ['']).map((img: string, idx: number) => (
               <div key={idx} className="relative shrink-0 h-full bg-pa-sand img-fallback" style={{ width: `${100 / totalImages}%` }}>
                 {img ? (
-                  <img src={img} srcSet={guestySrcSet(sourceImages[idx], [640, 828, 1080, 1440])} sizes="100vw" alt={`${displayName} – luxury villa in ${destName}, Portugal – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={Math.abs(idx - currentImage) <= (currentImage === 0 ? 1 : 2) ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : Math.abs(idx - currentImage) <= 2 ? { fetchPriority: 'low' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
+                  <img src={img} srcSet={guestySrcSet(sourceImages[idx], idx === 0 ? HERO_WIDTHS : [640, 828, 1080, 1440])} sizes={idx === 0 ? HERO_SIZES : '100vw'} alt={t('seoMeta.photoAlt', { name: displayName, kind: kindInPlace, n: idx + 1 })} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={Math.abs(idx - currentImage) <= (currentImage === 0 ? 1 : 2) ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : Math.abs(idx - currentImage) <= 2 ? { fetchPriority: 'low' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-pa-stone body-sm">{t('propertyDetail.noImage')}</div>
                 )}
@@ -1388,9 +1415,12 @@ export default function PropertyDetail() {
           {/* Key stats — pill badges */}
           <div className="flex flex-wrap items-center gap-3 pb-4 border-b border-pa-sand">
             {[
-              { icon: Users, value: `${property.maxGuests} ${t('property.guests')}` },
-              { icon: BedDouble, value: `${property.bedrooms} ${t('property.bedrooms')}` },
-              { icon: Bath, value: `${property.bathrooms} ${t('property.bathrooms')}` },
+              // Plural-aware, with the language's decimal mark ("1 Chambre",
+              // "7,5 Casas de Banho") — not "1 Chambres" / "7.5" (i18n-copy-08).
+              // countVars: European Portuguese plurals ("1,5 Casas de Banho").
+              { icon: Users, value: t('seoMeta.guestCount', countVars(Number(property.maxGuests) || 0, i18n.language)) },
+              { icon: BedDouble, value: t('seoMeta.bedroomCount', countVars(Number(property.bedrooms) || 0, i18n.language)) },
+              { icon: Bath, value: t('seoMeta.bathroomCount', countVars(Number(property.bathrooms) || 0, i18n.language)) },
               ...(property.areaSquareFeet && property.areaSquareFeet > 0 ? [{ icon: MapPin, value: `${Math.round(property.areaSquareFeet * 0.0929)} m²` }] : []),
               ...((property.checkInTime || property.checkOutTime) ? [{ icon: Clock, value: `${property.checkInTime || '16:00'} / ${property.checkOutTime || '11:00'}` }] : []),
               ...((property as any).petsAllowed ? [{ icon: PawPrint, value: t('property.petFriendly', 'Pet-friendly') }] : []),
@@ -1437,7 +1467,7 @@ export default function PropertyDetail() {
               onClick={() => { setLightboxImage(0); setLightboxOpen(true); }}
             >
               {images[0] && (
-                <img src={images[0]} srcSet={guestySrcSet(sourceImages[0], [768, 1080, 1440])} sizes="(min-width: 1024px) 32vw, 100vw" alt={`${displayName} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchPriority="high" draggable={false} />
+                <img src={images[0]} srcSet={guestySrcSet(sourceImages[0], HERO_WIDTHS)} sizes={HERO_SIZES} alt={t('seoMeta.photoAltHero', { name: displayName, kind: kindInPlace })} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchPriority="high" draggable={false} />
               )}
             </div>
             {/* 4 smaller images — right half */}
@@ -1448,7 +1478,7 @@ export default function PropertyDetail() {
                 onClick={() => { if (images[idx]) { setLightboxImage(idx); setLightboxOpen(true); } }}
               >
                 {images[idx] ? (
-                  <img src={images[idx]} srcSet={guestySrcSet(sourceImages[idx], [400, 640, 828])} sizes="(min-width: 1024px) 16vw, 0px" alt={`${displayName} – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" draggable={false} />
+                  <img src={images[idx]} srcSet={guestySrcSet(sourceImages[idx], [400, 640, 828])} sizes="(min-width: 1024px) 16vw, 0px" alt={t('seoMeta.photoAlt', { name: displayName, kind: kindInPlace, n: idx + 1 })} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" draggable={false} />
                 ) : (
                   <div className="absolute inset-0 bg-pa-warm" />
                 )}
@@ -1744,7 +1774,7 @@ export default function PropertyDetail() {
               {adventures.length > 0 && (
                 <section>
                   <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.adventuresTitle')}</h2>
-                  <p className="body-md text-pa-stone mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
+                  <p className="body-md text-pa-stone mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName, ...destVars })}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                     {adventures.slice(0, 6).map(adventure => {
                       const meta: string[] = [];
@@ -1874,18 +1904,20 @@ export default function PropertyDetail() {
           </Drawer>
         )}
 
-        {/* Related properties from same region */}
+        {/* Related properties from same region. The sentinel asks for the
+            catalogue when this point comes near the screen (catalogWanted). */}
+        <div ref={relatedSentinelRef} aria-hidden="true" />
         {relatedProperties.length > 0 && (
           <section className="section-padding bg-white border-t border-pa-sand">
             <div className="container">
               <div className="flex items-end justify-between mb-8">
                 <div>
-                  <p className="eyebrow font-medium tracking-[0.08em] text-pa-gold mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, defaultValue: `More in ${destName}` })}</p>
+                  <p className="eyebrow font-medium tracking-[0.08em] text-pa-gold mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, ...destVars, defaultValue: `More ${destVars.inPlace}` })}</p>
                   <h2 className="headline-lg text-pa-dark">{t('propertyDetail.relatedHomes', 'Related homes')}</h2>
                 </div>
                 {destObj && (
                   <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors">
-                    {t('propertyDetail.allDestHomes', { destination: destName, defaultValue: `All ${destName} homes` })} <ArrowRight className="w-4 h-4" />
+                    {t('propertyDetail.allDestHomes', { destination: destName, ...destVars, defaultValue: `All ${destName} homes` })} <ArrowRight className="w-4 h-4" />
                   </Link>
                 )}
               </div>

@@ -12,6 +12,14 @@ Cloudflare, que guarda o HTML público (`s-maxage=60`, regra
    (`server/services/cdn-purge.ts`; log `[CDN] purga por host`). O cache de
    render SSR é em memória e nasce limpo com o processo.
    Manual: `npm run cdn:purge`.
+   **Estado a 29 out 2026: não está a correr.** Um bundle antigo
+   (`/assets/index-DY9JtB7m.js`) continuava HIT na edge de Lisboa com
+   `age: 11011`, quatro deploys depois; com a purga ativa teria saído. Por
+   isso o HTML fica com 60 s na edge e sem stale-while-revalidate
+   (`server/lib/htmlCache.ts`): os ficheiros de um build antigo deixam de
+   existir na origem (404) e HTML guardado mais tempo apontaria para eles.
+   Para verificar depois de definir o token: no log de arranque
+   `[CDN] purga agendada…` e, 90 s depois, `[CDN] purga por host (boot)`.
 2. **Smoke pós-deploy** — com o `dist/` acabado de construir localmente
    (`npm run build`), corre:
 

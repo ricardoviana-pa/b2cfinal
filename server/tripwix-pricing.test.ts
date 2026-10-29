@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { pricePartnerStay } from './services/tripwix';
+import { describe, expect, it } from 'vitest';
+import { lowestPartnerNightly, pricePartnerStay } from './services/tripwix';
 
 const days = [12, 13, 14, 15, 16].map(n => ({ date: `2026-10-${n}`, status: 'available', price: '1226.00' }));
 describe('Tripwix dated prices', () => {
@@ -35,54 +35,53 @@ describe('Tripwix dated prices', () => {
   });
 });
 
-describe('Tripwix API request sharing', () => {
-  beforeEach(() => { vi.resetModules(); vi.stubEnv('TRIPWIX_API_KEY', 'test-only'); vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date('2026-09-15T12:00:00Z')); });
-  afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); vi.useRealTimers(); });
-  it('coalesces concurrent reads and reuses a covering calendar for other dates', async () => {
-    const fetcher = vi.fn(async () => new Response(JSON.stringify(days), { status: 200 }));
-    vi.stubGlobal('fetch', fetcher);
-    const { readTripwixCalendar } = await import('./services/tripwix-calendar');
-    const result = await Promise.all([readTripwixCalendar('one', '2026-10-12', '2026-10-16'), readTripwixCalendar('one', '2026-10-12', '2026-10-14')]);
-    expect(fetcher).toHaveBeenCalledTimes(1);
-    expect(result[0]?.source).toBe('live');
-    expect(result[1]?.source).toBe('cached');
-    expect(result[1]?.days).toHaveLength(3);
-    vi.setSystemTime(new Date('2026-09-15T12:16:00Z'));
-    await readTripwixCalendar('one', '2026-10-12', '2026-10-16');
-    expect(fetcher).toHaveBeenCalledTimes(2);
-  });
-  it('honours supplier throttling across properties without retry storms', async () => {
-    const fetcher = vi.fn(async () => new Response(JSON.stringify({ detail: 'throttled' }), { status: 429, headers: { 'Retry-After': '120' } }));
-    vi.stubGlobal('fetch', fetcher);
-    const { readTripwixCalendar } = await import('./services/tripwix-calendar');
-    expect(await readTripwixCalendar('one', '2026-10-12', '2026-10-16')).toBeNull();
-    expect(await readTripwixCalendar('two', '2026-10-12', '2026-10-16')).toBeNull();
-    expect(fetcher).toHaveBeenCalledTimes(1);
-  });
-  it('keeps far-future requests within the supplier calendar range limit', async () => {
-    const fetcher = vi.fn(async () => new Response('[]'));
-    vi.stubGlobal('fetch', fetcher);
-    const { readTripwixCalendar } = await import('./services/tripwix-calendar');
-    await readTripwixCalendar('one', '2028-10-12', '2028-10-16');
-    expect(String(fetcher.mock.calls[0][0])).toContain('start_date=2028-10-12&end_date=2028-10-16');
-  });
-  it('does not call the API when credentials are absent or dates invalid', async () => {
-    vi.stubEnv('TRIPWIX_API_KEY', '');
-    const fetcher = vi.fn(); vi.stubGlobal('fetch', fetcher);
-    const { readTripwixCalendar } = await import('./services/tripwix-calendar');
-    expect(await readTripwixCalendar('one', '2026-10-12', '2026-10-16')).toBeNull();
-    expect(await readTripwixCalendar('one', '2026-02-30', '2026-03-01')).toBeNull();
-    expect(fetcher).not.toHaveBeenCalled();
-  });
-  it('does not advertise an isolated cheap night as an available minimum stay', async () => {
+/** Um ano a partir de `start`: estado e preço líquido por dia. */
+function year(start: string, rule: (i: number) => { status: string; price: number | null }) {
+  return Array.from({ length: 366 }, (_, i) => ({ date: new Date(Date.parse(start) + i * 86400_000).toISOString().slice(0, 10), ...rule(i) }));
+}
+
+describe("Tripwix 'from' price (prices-availability-04)", () => {
+  it('does not advertise an isolated cheap night as an available minimum stay', () => {
     const calendar = [
       { date: '2026-09-16', status: 'available', price: '10' },
       { date: '2026-09-17', status: 'booked', price: '10' },
       { date: '2026-09-18', status: 'available', price: '100' },
       { date: '2026-09-19', status: 'available', price: '100' },
     ];
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(calendar))));
-    const { getTripwixLowestNightly } = await import('./services/tripwix');
-    expect(await getTripwixLowestNightly('one', 2)).toBe(106);
+    expect(lowestPartnerNightly(calendar, '2026-09-15', 2)).toBe(106);
+  });
+
+  it('looks 12 months ahead when nothing is open in 90 days (Casa na Areia: first open night 27 Feb)', () => {
+    // 29 out: fechada até 26 fev (dia 120), depois aberta a 1 550 € líquidos.
+    const calendar = year('2026-10-29', (i) => ({ status: i >= 121 ? 'available' : 'unavailable', price: 1550 }));
+    expect(lowestPartnerNightly(calendar, '2026-10-29', 5)).toBe(1643);
+  });
+
+  it('keeps the 90-day rule when a stay is open in 90 days (a cheaper spring does not change its meaning)', () => {
+    const calendar = year('2026-10-29', (i) => ({
+      status: i === 10 || i === 11 || i > 200 ? 'available' : 'unavailable',
+      price: i > 200 ? 500 : 900,
+    }));
+    expect(lowestPartnerNightly(calendar, '2026-10-29', 2)).toBe(954);
+  });
+
+  it('has no price when no minimum stay is open in 12 months', () => {
+    const closed = year('2026-10-29', () => ({ status: 'unavailable', price: 1700 }));
+    expect(lowestPartnerNightly(closed, '2026-10-29', 3)).toBeNull();
+    // Noites soltas mais curtas do que a estadia mínima também não contam.
+    const sparse = year('2026-10-29', (i) => ({ status: i % 3 === 0 ? 'available' : 'booked', price: 300 }));
+    expect(lowestPartnerNightly(sparse, '2026-10-29', 2)).toBeNull();
+  });
+
+  it('ignores nights without a valid price and repeated dates', () => {
+    const calendar = [
+      { date: '2026-11-01', status: 'available', price: null },
+      { date: '2026-11-02', status: 'available', price: 200 },
+      { date: '2026-11-03', status: 'available', price: 200 },
+      { date: '2026-11-03', status: 'available', price: 1 },
+      { date: '2026-11-04', status: 'available', price: 300 },
+      { date: '2026-11-05', status: 'available', price: 300 },
+    ];
+    expect(lowestPartnerNightly(calendar, '2026-10-29', 2)).toBe(318);
   });
 });

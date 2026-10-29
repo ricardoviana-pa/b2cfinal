@@ -32,8 +32,14 @@ describe('experience titles name the place once, with the right preposition', ()
       .toBe("Caminhada, Mergulho e Almoço na Serra d'Arga | Portugal Active");
   });
   it('adds the destination with the article it needs', () => {
-    expect(experienceTitle('pt', { name: 'E-Bike Wild Tour', destination: 'minho' })).toContain('na Costa do Minho');
-    expect(experienceTitle('es', { name: 'E-Bike Wild Tour', destination: 'minho' })).toContain('en la Costa del Miño');
-    expect(experienceTitle('en', { name: 'Horseback Riding', destination: 'minho' })).toContain('on the Minho Coast');
+    // "Minho", not "Minho Coast": the Minho experiences include Gerês and the
+    // Arga mountains (auditoria out/2026, i18n-copy-08).
+    expect(experienceTitle('pt', { name: 'E-Bike Wild Tour', destination: 'minho' })).toBe('E-Bike Wild Tour no Minho, Portugal | Portugal Active');
+    expect(experienceTitle('es', { name: 'E-Bike Wild Tour', destination: 'minho' })).toBe('E-Bike Wild Tour en el Miño, Portugal | Portugal Active');
+    expect(experienceTitle('en', { name: 'Horseback Riding', destination: 'minho' })).toBe('Horseback Riding in the Minho, Portugal | Portugal Active');
+    expect(experienceTitle('fr', { name: 'E-Bike Wild Tour', destination: 'minho' })).toBe('E-Bike Wild Tour dans le Minho, Portugal | Portugal Active');
+    expect(experienceTitle('de', { name: 'E-Bike Wild Tour', destination: 'algarve' })).toBe('E-Bike Wild Tour an der Algarve, Portugal | Portugal Active');
+    expect(experienceTitle('it', { name: 'E-Bike Wild Tour', destination: 'porto' })).toBe('E-Bike Wild Tour a Porto, Portogallo | Portugal Active');
+    expect(experienceTitle('nl', { name: 'E-Bike Wild Tour', destination: 'algarve' })).toBe('E-Bike Wild Tour in de Algarve, Portugal | Portugal Active');
   });
 });

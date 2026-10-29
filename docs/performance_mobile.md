@@ -44,7 +44,22 @@ o site passou a medir no campo (ver abaixo).
   211×120 (5 KB); foto principal recomprimida a partir do original; medição
   real de Core Web Vitals.
 - **Cache do HTML no Cloudflare** já estava ativo (`cf-cache-status:
-  REVALIDATED`, `s-maxage=60`).
+  REVALIDATED`, `s-maxage=60`). Mas o `s-maxage` implica proxy-revalidate e,
+  com ele, o Cloudflare recusa o `stale-while-revalidate` e o
+  `stale-if-error` (auditoria out/2026). Desde a auditoria de 29 out o HTML
+  leva também `CDN-Cache-Control: public, max-age=60, stale-if-error=86400`
+  (`server/lib/htmlCache.ts`): os mesmos 60 s na edge, e a última cópia boa
+  em vez de 502 quando a origem cai. TTL maior ou stale-while-revalidate só
+  com a purga no deploy a funcionar (ver `docs/deploy.md`).
+- **Auditoria out/2026 (velocidade)**: 1.ª foto do /homes e das coleções
+  com prioridade alta (e preload no HTML); CSS dos destinos no `<head>` e
+  modulepreload da língua, catálogos e página depois de pintada a foto LCP
+  (a partir do manifest do Vite, `server/lib/routeAssets.ts`; no `<head>`
+  atrasavam o LCP 0,3–1,3 s em 4G lento); o inglês deixou de ser
+  descarregado nas outras línguas; preços "desde" já no HTML do servidor;
+  catálogo de propriedades lido do disco uma vez por versão; foto principal
+  do PDP descarregada uma só vez; parâmetros de tracking fora da chave da
+  cache de SSR.
 
 ## Medição real (RUM)
 

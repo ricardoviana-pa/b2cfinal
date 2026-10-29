@@ -4,8 +4,15 @@
    properties.i18n/<lang>.json, keyed by guestyId → fields). Only the ACTIVE
    language's file is fetched (dynamic import → its own code-split chunk), so a
    property page ships ~one language (~450–590 KB) instead of all seven (~4 MB).
+
+   The server seeds the one override the page needs into the react-query cache
+   (propertyOverridesQueryKey), so the server HTML and the first client render
+   are already in the page's language; the full file still loads afterwards for
+   the related-home cards.
    ========================================================================== */
-import { deepMerge } from './deepMerge';
+import { mergePropertyOverrides } from '@shared/propertyLocalization';
+
+export { mergePropertyOverrides };
 
 type Dict = Record<string, any>;
 
@@ -27,6 +34,12 @@ function baseLang(lang: string | undefined): string {
   return (lang || 'en').toLowerCase().split('-')[0];
 }
 
+/** Query-cache key under which SSR seeds the page's own override
+ *  ({ [guestyId|slug]: fields }, the same shape as a loaded language file). */
+export function propertyOverridesQueryKey(lang: string | undefined, slug: string): readonly unknown[] {
+  return ['pa', 'propertyOverrides', baseLang(lang), slug] as const;
+}
+
 /**
  * Load the property-translation overrides (keyed by guestyId) for a language.
  * Returns {} for English or unsupported languages. Cached after first load.
@@ -42,13 +55,4 @@ export async function loadPropertyOverrides(lang: string | undefined): Promise<D
     }
   }
   return cache[code];
-}
-
-/** Merge already-loaded overrides (guestyId-keyed) over a property, EN fallback. */
-export function mergePropertyOverrides<T extends Dict>(prop: T | null | undefined, overrides: Dict): T | null | undefined {
-  if (!prop) return prop;
-  const key = (prop as any).guestyId || (prop as any).slug;
-  const o = key && overrides ? overrides[key] : null;
-  if (!o || typeof o !== 'object') return prop;
-  return deepMerge(prop, o) as T;
 }

@@ -1,3 +1,6 @@
+// Must stay first: starts the content catalogues before ./i18n/index blocks
+// on its language file (lib/bootContent.ts).
+import "./lib/bootContent";
 import i18n from "./i18n/index";
 import { preloadContentOverrides } from "@/lib/localizeContent";
 import { trpc } from "@/lib/trpc";

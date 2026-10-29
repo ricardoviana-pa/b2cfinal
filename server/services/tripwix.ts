@@ -1,5 +1,5 @@
 /** Tripwix rates remain subject to supplier confirmation; fees may be incomplete. */
-import { readTripwixCalendar, validDate, type TripwixDay } from './tripwix-calendar';
+import { addDays, readTripwixCalendar, validDate, type TripwixDay } from './tripwix-calendar';
 
 /** Existing supplier contract treatment; no change to VAT or commission rules. */
 export const PARTNER_VAT_RATE = 0.06;
@@ -53,37 +53,73 @@ export function pricePartnerStay(days: TripwixDay[], checkIn: string, checkOut: 
 
 export async function getPartnerQuote(uid: string, checkIn: string, checkOut: string, fees?: PartnerFees): Promise<PartnerQuote | null> {
   if (!validDate(checkIn) || !validDate(checkOut) || checkOut <= checkIn || Date.parse(checkOut) - Date.parse(checkIn) > 90 * 86400_000) return null;
-  const snapshot = await readTripwixCalendar(uid, checkIn, checkOut);
+  // Só as noites contam (o dia da saída não se cobra).
+  const snapshot = await readTripwixCalendar(uid, checkIn, addDays(checkOut, -1));
   if (!snapshot) return null;
   const quote = pricePartnerStay(snapshot.days, checkIn, checkOut, fees);
   return quote ? { ...quote, source: snapshot.source, fetchedAt: snapshot.fetchedAt } : null;
 }
 
-const fromCache = new Map<string, { value: number | null; at: number }>();
+/** "Desde" das casas parceiras: a mesma regra das nossas (lowest-nightly.ts) —
+ *  a estadia mínima mais barata nos 90 dias; sem nenhuma, até 12 meses
+ *  (auditoria 29 out 2026, prices-availability-04: só via 90 dias, e casas
+ *  abertas a partir de fevereiro ficavam "Price on request"). */
+export const PARTNER_FROM_HORIZON_DAYS = 90;
+export const PARTNER_FROM_EXTENDED_DAYS = 365;
 
-/** The lowest average nightly rate of an available minimum-length stay in 90 days. */
+function lowestInHorizon(days: TripwixDay[], start: string, horizonDays: number, minNights: number): number | null {
+  const end = addDays(start, horizonDays);
+  const nights = Math.max(1, Math.floor(minNights) || 1);
+  // Preço líquido de cada noite livre com preço válido; um dia repetido não se cota.
+  const net = new Map<string, number | null>();
+  for (const d of days) {
+    if (d.date < start || d.date >= end) continue;
+    if (net.has(d.date)) { net.set(d.date, null); continue; }
+    const price = Number(d.price);
+    net.set(d.date, d.status === 'available' && Number.isFinite(price) && price > 0 ? price : null);
+  }
+  const dates: string[] = [];
+  for (let i = 0; i < horizonDays; i++) dates.push(addDays(start, i));
+  let best: number | null = null;
+  for (let i = 0; i + nights <= horizonDays; i++) {
+    let sum = 0;
+    let ok = true;
+    for (let k = 0; k < nights; k++) {
+      const price = net.get(dates[i + k]);
+      if (price == null) { ok = false; break; }
+      sum += price;
+    }
+    if (!ok) continue;
+    const perNight = partnerGuestPrice(sum) / nights;
+    if (perNight > 0 && (best === null || perNight < best)) best = perNight;
+  }
+  return best === null ? null : Math.round(best);
+}
+
+/** A média por noite mais baixa de uma estadia mínima livre: 90 dias, depois 12 meses. */
+export function lowestPartnerNightly(days: TripwixDay[], start: string, minNights = 1): number | null {
+  return lowestInHorizon(days, start, PARTNER_FROM_HORIZON_DAYS, minNights)
+    ?? lowestInHorizon(days, start, PARTNER_FROM_EXTENDED_DAYS, minNights);
+}
+
+const fromMemo = new Map<string, { fetchedAt: number; day: string; value: number | null }>();
+
+/** "Desde €X" de uma casa parceira, calculado sobre o último calendário bom. */
 export async function getTripwixLowestNightly(uid: string, minNights = 1): Promise<number | null> {
-  const cacheKey = `${uid}:${minNights}`;
-  const cached = fromCache.get(cacheKey);
-  if (cached && Date.now() - cached.at < (cached.value === null ? 60_000 : 8 * 3600_000)) return cached.value;
   const start = new Date().toISOString().slice(0, 10);
-  const end = new Date(Date.parse(start) + 90 * 86400_000).toISOString().slice(0, 10);
-  const snapshot = await readTripwixCalendar(uid, start, end);
-  if (!snapshot) { fromCache.set(cacheKey, { value: null, at: Date.now() }); return null; }
-  const prices = snapshot.days.filter(d => d.date < end).map(d => {
-    const checkOut = new Date(Date.parse(d.date) + Math.max(1, minNights) * 86400_000).toISOString().slice(0, 10);
-    if (checkOut > end) return null;
-    const q = pricePartnerStay(snapshot.days, d.date, checkOut);
-    return q?.available ? q.accommodation / q.nights : null;
-  }).filter((v): v is number => v !== null && v > 0);
-  const value = prices.length ? Math.round(Math.min(...prices)) : null;
-  if (fromCache.size >= 120 && !fromCache.has(cacheKey)) fromCache.delete(fromCache.keys().next().value!);
-  fromCache.set(cacheKey, { value, at: Date.now() });
+  const snapshot = await readTripwixCalendar(uid, start, addDays(start, PARTNER_FROM_EXTENDED_DAYS), { partial: true });
+  if (!snapshot) return null;
+  const key = `${uid}:${minNights}`;
+  const memo = fromMemo.get(key);
+  if (memo && memo.fetchedAt === snapshot.fetchedAt && memo.day === start) return memo.value;
+  const value = lowestPartnerNightly(snapshot.days, start, minNights);
+  if (fromMemo.size >= 200 && !fromMemo.has(key)) fromMemo.delete(fromMemo.keys().next().value!);
+  fromMemo.set(key, { fetchedAt: snapshot.fetchedAt, day: start, value });
   return value;
 }
 
 export async function getPartnerCalendar(uid: string, startDate: string, endDate: string) {
-  const snapshot = await readTripwixCalendar(uid, startDate, endDate);
+  const snapshot = await readTripwixCalendar(uid, startDate, endDate, { partial: true });
   return snapshot?.days.map(d => ({ date: d.date,
     status: d.status === 'available' && Number(d.price) > 0 ? 'available' : 'unavailable',
     price: Number(d.price) > 0 ? partnerGuestPrice(Number(d.price)) : undefined,

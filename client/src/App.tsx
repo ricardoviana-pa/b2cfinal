@@ -2,7 +2,7 @@ import PreviewNotice from "./components/PreviewNotice";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch, useLocation } from "wouter";
+import { Redirect, Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import LocaleRouter from "./components/LocaleRouter";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { detectAiReferrer } from "./lib/datalayer";
 import { useMeasurementConsent } from "./hooks/useMeasurementConsent";
 import LanguageSuggestion from "./components/layout/LanguageSuggestion";
+import { managementUrl } from "./lib/siteLinks";
 
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
@@ -50,12 +51,24 @@ const AdminRouter = lazy(() => import("./pages/admin/index"));
 const Login = lazy(() => import("./pages/Login"));
 const Account = lazy(() => import("./pages/Account"));
 
-/* /owners-portal redirects to external management portal */
+/* /owners and /owners-portal → the owner site in the visitor's language
+   (pt → /management/, fr/es/de/it/nl → /management/<lang>/, else English).
+   The server already answers /{lang}/owners with a 301; this covers a
+   client-side navigation. It used to send every language to /management/en/. */
 function OwnersRedirect() {
+  const { i18n } = useTranslation();
   if (typeof window !== 'undefined') {
-    window.location.href = 'https://www.portugalactive.com/management/en/';
+    window.location.replace(managementUrl(i18n.language));
   }
   return null;
+}
+
+/* One concierge hub: the server 301s /{lang}/services to /{lang}/concierge
+   (the browser keeps the #section across a 301). A client-side visit keeps
+   the #section in the URL too: /services#wellness → /concierge#wellness. */
+function ServicesRedirect() {
+  const hash = typeof window === 'undefined' ? '' : window.location.hash;
+  return <Redirect to={`/concierge${hash}`} replace />;
 }
 
 function PageLoader() {
@@ -166,7 +179,7 @@ function Router() {
         <Route path="/collections/:slug" component={Collection} />
         <Route path="/destinations/:slug" component={DestinationDetail} />
         <Route path="/concierge" component={Services} />
-        <Route path="/services" component={Services} />
+        <Route path="/services" component={ServicesRedirect} />
         <Route path="/services/:slug" component={ServiceDetail} />
         <Route path="/experiences" component={Experiences} />
         <Route path="/experiences/:slug" component={ExperienceDetail} />

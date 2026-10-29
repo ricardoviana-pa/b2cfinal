@@ -4,6 +4,9 @@
  * set/2026) tells Google the sitemap is stale. The sitemap handler also drops
  * anything redirectTarget() would redirect, and sitemap-static.test.ts checks
  * this list against it.
+ *
+ * /owners is not here: it 301s to the owner site (/management/…) in the
+ * visitor's language.
  */
 export const STATIC_SITEMAP_PAGES: { loc: string; priority: string; changefreq: string }[] = [
   { loc: "/", priority: "1.0", changefreq: "daily" },
@@ -15,14 +18,15 @@ export const STATIC_SITEMAP_PAGES: { loc: string; priority: string; changefreq: 
   { loc: "/collections/pet-friendly-villas", priority: "0.8", changefreq: "weekly" },
   { loc: "/collections/villas-with-jacuzzi", priority: "0.8", changefreq: "weekly" },
   { loc: "/collections/beach-villas", priority: "0.8", changefreq: "weekly" },
-  { loc: "/services", priority: "0.8", changefreq: "monthly" },
+  // The concierge hub lives at /concierge; /services 301s there (auditoria
+  // out/2026). Detail pages (/services/<slug>) are added by the handler.
+  { loc: "/concierge", priority: "0.8", changefreq: "monthly" },
   { loc: "/experiences", priority: "0.8", changefreq: "monthly" },
   { loc: "/events", priority: "0.8", changefreq: "monthly" },
   { loc: "/corporate-retreats", priority: "0.8", changefreq: "monthly" },
   { loc: "/blog", priority: "0.8", changefreq: "weekly" },
   { loc: "/about", priority: "0.7", changefreq: "monthly" },
   { loc: "/contact", priority: "0.7", changefreq: "monthly" },
-  { loc: "/owners", priority: "0.7", changefreq: "monthly" },
   { loc: "/faq", priority: "0.7", changefreq: "monthly" },
   { loc: "/careers", priority: "0.7", changefreq: "monthly" },
   { loc: "/best-rate-guarantee", priority: "0.5", changefreq: "yearly" },

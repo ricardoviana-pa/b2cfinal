@@ -11,6 +11,7 @@
    ========================================================================== */
 
 import { useTranslation } from "react-i18next";
+import { placeVars } from "@shared/regionPhrases";
 import { getDestinationPlanning } from "@/data/destination-planning";
 import { MinhoVisualGuide } from "./MinhoVisualGuide";
 import { DestinationVisualGuide } from "./DestinationVisualGuide";
@@ -129,7 +130,10 @@ export function DestinationPage({
           <h2 className="headline-lg mb-6">{labels.guide}</h2>
           <details className="site-faq border-y border-pa-sand">
             <summary>
-              {t("destinationDetail.whyTitle", { name: destination.name })}
+              {t("destinationDetail.whyTitle", {
+                name: destination.name,
+                ...placeVars(destination.slug, i18n.language, destination.name),
+              })}
             </summary>
             <WhyThisPlace destination={destination} />
           </details>
@@ -209,6 +213,7 @@ export function DestinationPage({
           <summary>
             {t("destinationDetail.guide.getHereTitleNamed", {
               name: destination.name,
+              ...placeVars(destination.slug, i18n.language, destination.name),
             })}
           </summary>
           <HowToGetHere destination={destination} />
