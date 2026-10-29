@@ -41,10 +41,22 @@ const STORE_CAT = "lowest_nightly";
 const WARM_PER_REQUEST = 4; // how many never-computed listings to warm per PLP batch call
 
 const NULL_TTL_MS = 30 * 60 * 1000; // retry no-value results (rate-limited / no availability) after 30 min, not 8h
+/**
+ * Calendário lido e nenhuma noite reservável em 12 meses (auditoria 29 out
+ * 2026, prices-availability-03: a Gerês Gateway, 365/365 dias fechados,
+ * continuava a anunciar "From €411" porque o recurso era o último valor
+ * guardado, para sempre). Guarda-se "closed@<ms>" no lugar do preço: a
+ * listagem mostra o estado sem preço e o valor antigo não volta depois de um
+ * restart. Volta a verificar-se a cada 30 min (NULL_TTL_MS).
+ */
+const CLOSED_MARK = "closed";
+/** Para concluir "fechada", o calendário tem de cobrir quase todo o ano. */
+const MIN_DAYS_FOR_CLOSED = Math.floor(EXTENDED_HORIZON_DAYS * 0.9);
 
 type Result = { from: number | null; source: "calendar" | "fallback" | "none"; currency: string };
+type CacheSource = Result["source"] | "closed";
 const IN_FLIGHT = new Map<string, Promise<Result>>();
-const CACHE = new Map<string, { value: number | null; source: Result["source"]; at: number }>();
+const CACHE = new Map<string, { value: number | null; source: CacheSource; at: number }>();
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -73,12 +85,14 @@ async function withQuoteSlot<T>(fn: () => Promise<T>): Promise<T> {
 /** Persisted values carry a timestamp ("706@<epochMs>") so the PLP batch can tell
  *  a stale price from a fresh one and refresh it in the background. Legacy plain
  *  numbers parse with at=0 → always treated as stale (refreshed once). */
-function parseStored(raw: string | undefined | null): { price: number | null; at: number } {
-  if (!raw) return { price: null, at: 0 };
+function parseStored(raw: string | undefined | null): { price: number | null; at: number; closed: boolean } {
+  if (!raw) return { price: null, at: 0, closed: false };
   const [pStr, tStr] = String(raw).split("@");
-  const p = Number(pStr);
   const t = Number(tStr);
-  return { price: Number.isFinite(p) && p > 0 ? p : null, at: Number.isFinite(t) ? t : 0 };
+  const at = Number.isFinite(t) ? t : 0;
+  if (pStr === CLOSED_MARK) return { price: null, at, closed: true };
+  const p = Number(pStr);
+  return { price: Number.isFinite(p) && p > 0 ? p : null, at, closed: false };
 }
 const encodeStored = (price: number, at: number) => `${price}@${at}`;
 /** A cached entry is fresh for 8h only when we have a CONFIDENT value — a real
@@ -86,7 +100,7 @@ const encodeStored = (price: number, at: number) => `${price}@${at}`;
  *  `fallback` (quotes failed, we reused a last-known/base price) is retried after
  *  30 min instead, so a transient quote failure never locks in a wrong "from" for
  *  8h. */
-const isFresh = (c: { value: number | null; source: Result["source"]; at: number }) =>
+const isFresh = (c: { value: number | null; source: CacheSource; at: number }) =>
   Date.now() - c.at < (c.value !== null && c.source === "calendar" ? TTL_MS : NULL_TTL_MS);
 
 /** Lowest real nightly rate bookable in the next 90 days, cached. */
@@ -108,7 +122,7 @@ export async function getDisplayedLowestNightly(listingId: string): Promise<Resu
 async function computeLowestNightly(listingId: string, basePriceHint?: number): Promise<Result> {
   const cached = CACHE.get(listingId);
   if (cached && isFresh(cached)) {
-    return { from: cached.value, source: cached.source, currency: "EUR" };
+    return { from: cached.value, source: cached.source === "closed" ? "none" : cached.source, currency: "EUR" };
   }
 
   const today = new Date();
@@ -119,6 +133,8 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
   // Amostra incompleta (o BE entrou em rate limit a meio): o mínimo visto é
   // real mas pode faltar a semana mais barata — não fica 8h como definitivo.
   let partial = false;
+  // Calendário lido, a cobrir o ano, e nenhuma estadia mínima livre nele.
+  let closed = false;
   try {
     // Guesty já a limitar-nos: nem o calendário se pede (também gasta BE).
     if (beQuotesUnderPressure()) throw new Error("BE quotes under rate-limit pressure — warm-up deferred");
@@ -134,34 +150,43 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
     // a shoulder-season pocket (e.g. October). Sampling ~6 evenly-spread windows
     // used to skip whole cheap months and overshoot the real floor by ~40-60%
     // (Carcavelos showed "from €1243" while October genuinely booked at ~€700).
-    // For each weekly target we snap to the first available date on/after it that
-    // has min-nights of consecutive availability so the quote actually succeeds.
+    // For each weekly target we take the first available date on/after it that
+    // has min-nights of consecutive availability so the quote actually succeeds
+    // (not just the first available date: a lone free night at the start of
+    // the week used to hide a bookable stay two days later — and an empty
+    // sample now means "no bookable stay", see `closed`).
     const availSet = new Set<string>(availDates);
     const samples: Array<{ ci: string; co: string }> = [];
     const seen = new Set<string>();
+    const windowFrom = (ci: string): string | null => {
+      const mn = Math.max(1, byDate.get(ci)?.minNights ?? 2);
+      const start = new Date(ci + "T00:00:00Z");
+      for (let n = 0; n < mn; n++) {
+        const day = byDate.get(ymd(new Date(start.getTime() + n * 86400000)));
+        if (!day || day.status !== "available") return null;
+      }
+      return ymd(new Date(start.getTime() + mn * 86400000));
+    };
     const sampleRange = (fromDay: number, toDay: number) => {
       for (let offset = fromDay; offset < toDay && samples.length < MAX_SAMPLES; offset += SAMPLE_CADENCE_DAYS) {
         const target = new Date(today.getTime() + offset * 86400000);
-        let ci: string | null = null;
         for (let k = 0; k < SAMPLE_CADENCE_DAYS; k++) {
           const cand = ymd(new Date(target.getTime() + k * 86400000));
-          if (availSet.has(cand)) { ci = cand; break; }
+          if (!availSet.has(cand) || seen.has(cand)) continue;
+          const co = windowFrom(cand);
+          if (!co) continue;
+          seen.add(cand);
+          samples.push({ ci: cand, co });
+          break;
         }
-        if (!ci || seen.has(ci)) continue;
-        const mn = Math.max(1, byDate.get(ci)?.minNights ?? 2);
-        const start = new Date(ci + "T00:00:00Z");
-        let ok = true;
-        for (let n = 0; n < mn; n++) {
-          const day = byDate.get(ymd(new Date(start.getTime() + n * 86400000)));
-          if (!day || day.status !== "available") { ok = false; break; }
-        }
-        if (!ok) continue;
-        seen.add(ci);
-        samples.push({ ci, co: ymd(new Date(start.getTime() + mn * 86400000)) });
       }
     };
     sampleRange(0, HORIZON_DAYS);
     if (!samples.length) sampleRange(HORIZON_DAYS, EXTENDED_HORIZON_DAYS);
+    if (!samples.length) {
+      const covered = new Set(days.map((d: any) => d?.date).filter((d: any) => typeof d === "string" && d >= from && d <= to));
+      closed = covered.size >= MIN_DAYS_FOR_CLOSED;
+    }
 
     // Quote every sampled window, but through a GLOBAL concurrency gate so that
     // no matter how many listings warm at once, we never exceed Guesty's rate
@@ -205,6 +230,20 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
     return { from: lowest, source: "calendar", currency: "EUR" };
   }
 
+  // Nenhuma noite reservável em 12 meses: sem preço (nunca o último guardado).
+  // A BD só é escrita quando o estado muda (a re-verificação de 30 em 30 min
+  // de uma casa que continua fechada não escreve nada).
+  if (closed) {
+    const at = Date.now();
+    const alreadyClosed = cached?.source === "closed";
+    CACHE.set(listingId, { value: null, source: "closed", at });
+    if (!alreadyClosed) {
+      upsertSetting(`${STORE_CAT}_${listingId}`, `${CLOSED_MARK}@${at}`, STORE_CAT).catch(() => {});
+      console.info(`[lowestNightly] ${listingId}: sem noites reserváveis em ${EXTENDED_HORIZON_DAYS} dias — sem "desde"`);
+    }
+    return { from: null, source: "none", currency: "EUR" };
+  }
+
   // Fallback: min(basePrice, last-known-good). Never higher than the real lowest we've seen.
   let lastKnown: number | null = null;
   try {
@@ -231,7 +270,9 @@ export async function getLowestNightlyBatch(listingIds: string[]): Promise<Recor
     // Preço fresco em memória: nenhuma leitura à BD. Um "sem preço" recente
     // lê na mesma (na consulta única da página): o recálculo pode ter falhado
     // só por um soluço da BD, e o preço guardado não pode sumir 30 min.
+    // Já uma casa vista fechada há pouco não tem preço a recuperar.
     if (c && isFresh(c) && c.value !== null) out[id] = c.value;
+    else if (c && isFresh(c) && c.source === "closed") out[id] = null;
     else dbReads.push(id);
   }
 
@@ -255,7 +296,18 @@ export async function getLowestNightlyBatch(listingIds: string[]): Promise<Recor
         else stale.push(id);
         continue;
       }
-      const { price, at } = parseStored(stored.get(`${STORE_CAT}_${id}`));
+      const { price, at, closed } = parseStored(stored.get(`${STORE_CAT}_${id}`));
+      const memo = CACHE.get(id);
+      // Fechada (na BD, ou em memória depois do preço guardado): sem preço;
+      // só se volta a verificar o calendário quando o registo envelhece.
+      if (closed || (memo?.source === "closed" && memo.at >= at)) {
+        out[id] = null;
+        const seenAt = closed ? at : memo!.at;
+        if (Date.now() - seenAt < NULL_TTL_MS) {
+          if (!memo || !isFresh(memo)) CACHE.set(id, { value: null, source: "closed", at: seenAt });
+        } else stale.push(id);
+        continue;
+      }
       out[id] = price;
       if (price === null) {
         noValue.push(id);

@@ -239,12 +239,22 @@ export const bookingRouter = router({
 
       const prop = await partnerProperty(input.tripwixUid);
       if (!prop) return null;
-      return getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut, partnerFees(prop, input.guests));
+      const quote = await getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut, partnerFees(prop, input.guests));
+      // Sem cotação (casa que o job ainda não leu, por exemplo logo depois de
+      // um deploy): cache curta, para o preço aparecer assim que houver
+      // calendário (revisão do PR #173, P173-R2).
+      if (!quote) ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60");
+      return quote;
     }),
 
   /**
    * Day-by-day availability for a partner home, so its panel can show the same
    * calendar as the rest of the portfolio instead of native date inputs.
+   *
+   * null = availability not known yet (the background job has not read this
+   * home, or its last good read is older than 48 h). It used to be [], which
+   * the calendar draws as every date free (revisão do PR #173, P173-R2); the
+   * panel can now say "availability to be confirmed" instead.
    */
   partnerCalendar: publicProcedure
     .input(z.object({
@@ -256,7 +266,9 @@ export const bookingRouter = router({
       ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=60");
       const { getPartnerCalendar } = await import("../services/tripwix");
       if (!await partnerProperty(input.tripwixUid)) return [];
-      return (await getPartnerCalendar(input.tripwixUid, input.startDate, input.endDate)) ?? [];
+      const days = await getPartnerCalendar(input.tripwixUid, input.startDate, input.endDate);
+      if (!days) ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60");
+      return days;
     }),
 
   /** Public catalogue pricing; published partner IDs only, bounded concurrency. */
@@ -270,9 +282,13 @@ export const bookingRouter = router({
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300');
       const { getPartnerQuote, getTripwixLowestNightly } = await import('../services/tripwix');
+      const { hydrateTripwixCalendars } = await import('../services/tripwix-calendar');
       const { getPropertiesForSite } = await import('../services/properties-store');
       const wanted = new Set(input.uids);
       const properties = (await getPropertiesForSite()).filter((p: any) => p.source === 'tripwix' && p.isActive !== false && wanted.has(p.supplierUid)) as any[];
+      // Calendários em memória (o job refresca-os); a BD é lida numa só consulta
+      // para as casas que este processo ainda não leu, nunca uma por casa.
+      await hydrateTripwixCalendars(properties.map((p) => p.supplierUid));
       const result: Record<string, { from: number | null; quote: Awaited<ReturnType<typeof getPartnerQuote>> }> = {};
       let next = 0;
       await Promise.all(Array.from({ length: Math.min(4, properties.length) }, async () => {

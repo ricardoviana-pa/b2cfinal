@@ -7,7 +7,18 @@
  *   - base_price is Guesty's placeholder, not the real "From €X"
  *   - only 3 images and English-only
  *
- * Outputs (exports/meta-catalog/):
+ * Price: base_price / price is the site's real "From €X" (lowest real
+ * bookable nightly), read from the production public API
+ * (booking.lowestNightlyBatch, GET, one call). Never properties.json's
+ * priceFrom/pricePerNight: that is the Guesty placeholder (audit 29 Oct 2026,
+ * prices-availability-07: median 1.8× the real "from"). Homes with no real
+ * "from" (closed for 12 months, or not computed yet) and pages that do not
+ * answer 200 (404, redirect) are left out of the feed and listed at the end.
+ * When more than 10% of the homes come back without a "from" the run writes
+ * no feed: that is production warming up after a deploy or its DB down, not
+ * closed homes (--max-unpriced <n> lets more through, for known closures).
+ *
+ * Outputs (exports/meta-catalog/, or --out <dir>):
  *   hotels.csv               main feed, English (default catalog language)
  *   hotels-lang-<loc>.csv    language-override supplementary feeds (Meta
  *                            "country & language feeds": hotel_id + override
@@ -16,11 +27,16 @@
  * Coordinates come from properties.json (address.lat/lng). If one is ever
  * missing there, merge a Guesty hotels export into a local cache as fallback:
  *   node scripts/meta-catalog.mjs --guesty-csv ~/Downloads/hotels.csv
+ *
+ * Network (all GET, gentle): sitemap.xml, one lowestNightlyBatch call and one
+ * request per home page (2 at a time). --no-prod-check skips the sitemap and
+ * page checks, never the price.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { checkPages, fetchLowestNightly, median, metaPrice, priceBand, skipReason, unpricedGuard } from './lib/meta-catalog-prices.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DATA = 'client/src/data';
@@ -63,6 +79,16 @@ function parsePropertyGroups() {
   return { parentName, childUnits };
 }
 
+// Homes off the site's catalogue (CATALOG_HIDDEN_GUESTY_IDS in
+// server/services/properties-store.ts): since Sep 2026 they keep a 200 page
+// and a sitemap entry (findable by name), so the sitemap check no longer
+// drops them — but the site lists only the brand portfolio, and so do ads.
+function parseCatalogHidden() {
+  const src = readText('server/services/properties-store.ts') ?? '';
+  const block = src.match(/CATALOG_HIDDEN_GUESTY_IDS\s*=\s*new Set<string>\(\[([\s\S]*?)\]\)/)?.[1] ?? '';
+  return new Set([...block.matchAll(/["']([a-f0-9]{24})["']/g)].map((m) => m[1]));
+}
+
 // Delisted low-tier houses: still present in Guesty and in main's data, but
 // they must never appear in ads. Keyed by guestyId.
 const EXCLUDE = new Set([
@@ -79,7 +105,10 @@ const EXCLUDE = new Set([
   '6965339dbf04fe0013743e2d', // Fountain Retreat (group parent; units are already excluded as children)
   '69b3f4234aafb300134e52a9', // Madorra House (fica fora dos ads por decisão do Ricardo, 2026-07)
 ]);
-const OUT_DIR = path.join(ROOT, 'exports/meta-catalog');
+const OUT_ARG = process.argv.indexOf('--out');
+const OUT_DIR = OUT_ARG !== -1 && process.argv[OUT_ARG + 1]
+  ? path.resolve(process.argv[OUT_ARG + 1])
+  : path.join(ROOT, 'exports/meta-catalog');
 const COORDS_CACHE = path.join(ROOT, 'scripts/meta-catalog.coords.json');
 
 const SITE = 'https://www.portugalactive.com';
@@ -259,9 +288,12 @@ if (!properties) {
   process.exit(1);
 }
 const { parentName, childUnits } = parsePropertyGroups();
+const catalogHidden = parseCatalogHidden();
+if (!catalogHidden.size) console.warn('CATALOG_HIDDEN_GUESTY_IDS not found in properties-store.ts — off-catalogue homes may slip into the feed');
 const live = properties.filter(p =>
   p.isActive !== false && p.guestyId && !/test/i.test(p.name)
   && !EXCLUDE.has(p.guestyId) && !childUnits.has(p.guestyId)
+  && !catalogHidden.has(p.guestyId)
 );
 
 // Same "recommended" order as the site's PLP (CURATED_PROPERTY_ORDER, then
@@ -289,9 +321,49 @@ function siteName(p) {
     ?? p.name.replace(/\s*[|–-]?\s*by Portugal Active/i, '').replace(/\s{2,}/g, ' ').trim();
 }
 
+// The site's real "From €X" per home (one GET; served from the site's cache,
+// no quotes on the request path). No fallback to the placeholder: a run that
+// cannot read the real prices produces no feed.
+let fromPrices;
+try {
+  fromPrices = await fetchLowestNightly(SITE, live.map((p) => p.guestyId));
+} catch (e) {
+  console.error(`could not read the real "From" prices from ${SITE} (${e.message}). No feed written: base_price must never be Guesty's placeholder.`);
+  process.exit(1);
+}
+// lowestNightlyBatch answers null for a home closed for 12 months, but also
+// for one the site has not computed yet (a fresh process) or when its DB is
+// down. Closed homes are few, so many nulls at once mean a degraded run:
+// write nothing rather than silently drop bookable homes from the ads.
+const MAX_UNPRICED_ARG = process.argv.indexOf('--max-unpriced');
+const maxUnpriced = MAX_UNPRICED_ARG !== -1 ? Number(process.argv[MAX_UNPRICED_ARG + 1]) : undefined;
+// Only homes already live in production count (the others are skipped below anyway).
+const guarded = live.filter((p) => !prodSlugs || prodSlugs.has(p.slug));
+const guard = unpricedGuard(fromPrices, guarded.map((p) => p.guestyId), { maxCount: maxUnpriced });
+console.log(`real "From €X": ${guard.total - guard.unpriced.length} of ${guard.total} homes (${guard.unpriced.length} without a value: closed for 12 months, or not computed yet)`);
+if (!guard.ok) {
+  const names = guarded.filter((p) => guard.unpriced.includes(p.guestyId)).map((p) => p.name);
+  console.error(
+    `\n${guard.unpriced.length} of ${guard.total} homes came back without a "From" price (limit ${guard.limit}). ` +
+    `Production is probably still warming up after a deploy, or its database is down. No feed written.\n` +
+    `Re-run in ~30 min (or after opening the listing page once). If these homes really are closed, pass --max-unpriced ${guard.unpriced.length}.\n` +
+    names.map((n) => `  - ${n}`).join('\n'),
+  );
+  process.exit(1);
+}
+// Pages that do not answer 200 (404, redirect to a new slug) never go in an ad.
+const pageStatus = process.argv.includes('--no-prod-check')
+  ? new Map()
+  : await checkPages(live.filter((p) => !prodSlugs || prodSlugs.has(p.slug)).map((p) => `${SITE}/en/homes/${p.slug}`));
+if (pageStatus.size) {
+  const bad = [...pageStatus.values()].filter((s) => s.status !== 200).length;
+  console.log(`page check: ${pageStatus.size} home pages, ${bad} not answering 200`);
+}
+
 const skipped = [];
 const mainRows = [];
 const included = new Set();
+const placeholderRatios = [];
 for (const p of live) {
   const c = (p.address?.lat && p.address?.lng)
     ? { lat: p.address.lat, lng: p.address.lng }
@@ -301,6 +373,11 @@ for (const p of live) {
     skipped.push(`${p.name} — not live in production yet (re-run after deploy)`);
     continue;
   }
+  const from = fromPrices.get(p.guestyId) ?? null;
+  const why = skipReason({ from, page: pageStatus.get(`${SITE}/en/homes/${p.slug}`) });
+  if (why) { skipped.push(`${p.name} — ${why}`); continue; }
+  const placeholder = Number(p.priceFrom || p.pricePerNight);
+  if (placeholder > 0) placeholderRatios.push(placeholder / from);
   included.add(p.guestyId);
   const row = {
     hotel_id: p.guestyId,
@@ -308,8 +385,9 @@ for (const p of live) {
     description: adDescription(p, 'en', null),
     brand: BRAND,
     url: propertyUrl('en', p.slug),
-    // Meta requires "500.00 EUR" — cost with two decimals, space, ISO code
-    base_price: `${Number(p.priceFrom || p.pricePerNight).toFixed(2)} EUR`,
+    // Meta requires "500.00 EUR" — cost with two decimals, space, ISO code.
+    // The real "From €X" the site shows, never Guesty's base price.
+    base_price: metaPrice(from),
     'address.addr1': p.address?.street || '',
     'address.city': p.address?.city || p.locality || '',
     'address.region': p.address?.state || '',
@@ -381,11 +459,7 @@ const PRODUCT_HEADER = [
 ];
 // Tier/segment labels so marketing can build product sets in Commerce
 // Manager (filter: custom_label_N = value) without touching the feed.
-function priceBand(n) {
-  if (n >= 300) return 'premium-300plus';
-  if (n >= 150) return 'mid-150-300';
-  return 'entry-under-150';
-}
+// priceBand (lib/meta-catalog-prices.mjs) bands the real "From €X".
 function capacityBand(n) {
   if (n >= 10) return 'groups-10plus';
   if (n >= 5) return 'family-5-9';
@@ -408,7 +482,7 @@ const productRows = mainRows.map(r => {
     additional_image_link: extra.join(','), // up to 20, comma-separated
     brand: BRAND,
     custom_label_0: r['neighborhood[0]'],                      // locality
-    custom_label_1: priceBand(Number(p.priceFrom || p.pricePerNight)), // price tier
+    custom_label_1: priceBand(fromPrices.get(r.hotel_id)),     // price tier (real "From")
     custom_label_2: (p.propertyType || '').toLowerCase(),      // villa/house/apartment
     custom_label_3: capacityBand(p.maxGuests || 0),            // audience size
   };
@@ -433,6 +507,9 @@ for (const [loc, metaLoc] of Object.entries(PRODUCT_LOCALES)) {
   writeCsv(path.join(OUT_DIR, `products-lang-${loc}.csv`), PRODUCT_LANG_HEADER, rows);
   console.log(`products-lang-${loc}.csv: ${rows.length} overrides`);
 }
+
+const ratio = median(placeholderRatios);
+if (ratio) console.log(`\nbase_price = real "From €X" for ${mainRows.length} homes (Guesty placeholder was a median ${ratio.toFixed(2)}× that)`);
 
 if (skipped.length) {
   console.warn(`\nSkipped ${skipped.length} live properties:`);
