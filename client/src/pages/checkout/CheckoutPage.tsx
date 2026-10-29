@@ -2285,6 +2285,10 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   {/* Teclado de texto: um nº de IVA de outro país tem letras (DE…, ESB…, NL…B01) */}
+                  {/* O placeholder é só o nome do campo e "(opcional)": nos telemóveis o campo
+                      tem 260–290 px de texto a 16 px e a frase inteira ficava cortada nas 9
+                      línguas (verificação em produção, 29 out 2026). O "para quê" fica na nota
+                      por baixo, ligada por aria-describedby. */}
                   <input
                     id="checkout-nif"
                     type="text"
@@ -2293,13 +2297,14 @@ export default function CheckoutPage() {
                     autoCorrect="off"
                     spellCheck={false}
                     maxLength={20}
-                    aria-label={t("checkout.nifPh")}
-                    aria-describedby={nifIssue ? "checkout-nif-hint" : undefined}
+                    aria-label={t("checkout.nifPh", "Tax ID or VAT no. (optional)")}
+                    aria-describedby={nifIssue ? "checkout-nif-note checkout-nif-hint" : "checkout-nif-note"}
                     value={nif}
                     onChange={(e) => setNif(e.target.value)}
-                    placeholder={t("checkout.nifPh", "NIF — optional, for a Portuguese invoice")}
+                    placeholder={t("checkout.nifPh", "Tax ID or VAT no. (optional)")}
                     className={cn(INPUT_CLASS, "border-pa-sand")}
                   />
+                  <p id="checkout-nif-note" className="caption text-pa-stone-aa mt-1 leading-snug">{t("checkout.nifNote", "Only if you want it on your invoice.")}</p>
                   {/* Só um NIF português tem dígito de controlo; o aviso é suave e nunca bloqueia o pagamento */}
                   {nifIssue && (
                     <p id="checkout-nif-hint" className="caption text-pa-earth mt-1 leading-snug" role="status">{t("checkout.nifInvalid")}</p>
