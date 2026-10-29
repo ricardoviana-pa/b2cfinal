@@ -568,7 +568,9 @@
     "showAllAmenitiesCount": "Ver todas as {{count}} comodidades",
     "showAllPhotos": "Ver as {{count}} fotos",
     "bedTotal_one": "{{count}} cama",
-    "bedTotal_other": "{{count}} camas"
+    "bedTotal_other": "{{count}} camas",
+    "availabilityTitle": "Disponibilidade",
+    "availabilityHint": "Escolha as datas de entrada e saída: o preço da estadia aparece no cartão de reserva."
   },
   "priceBreakdown": {
     "title": "Resumo de preço",
@@ -1371,7 +1373,9 @@
     "proofStrip": "4.8/5 em mais de 2.000 avaliações de hóspedes",
     "verifiedNote": "Todas as reviews são de estadias concluídas, recolhidas pelos nossos canais de reserva.",
     "previous": "Avaliações anteriores",
-    "next": "Avaliações seguintes"
+    "next": "Avaliações seguintes",
+    "readAll_one": "Ler a avaliação",
+    "readAll_other": "Ler as {{count}} avaliações"
   },
   "amenity": {
     "outdoorPool": "Exterior e Piscina",
@@ -2034,7 +2038,8 @@
     "submitError": "Não conseguimos enviar o seu pedido. Tente novamente ou fale com o concierge.",
     "sending": "A enviar…",
     "submit": "Pedir estas datas",
-    "noCharge": "Sem pagamento agora — o concierge confirma primeiro a disponibilidade e o total final."
+    "noCharge": "Sem pagamento agora — o concierge confirma primeiro a disponibilidade e o total final.",
+    "pickDatesFirst": "Escolha as datas em cima: depois pedimos os seus dados e enviamos o pedido à casa."
   },
   "login": {
     "benefitTrips": "Gerir as suas viagens",

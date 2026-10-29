@@ -24,6 +24,11 @@ import { BookingCardSlotContext } from '@/components/booking/bookingCardSlot';
 import { ChevronLeft, ChevronRight, MapPin, BadgeCheck, Clock, Headphones, X, AlertTriangle, ArrowRight, ShieldCheck, Bed, ChevronDown, Star } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { amenityIcon, bedLine, bedTypeOf, categorizeAmenities, countBeds, pickKeyAmenities } from '@/lib/amenities';
+import { pickFeaturedReview } from '@/lib/featuredReview';
+import { formatSiteDate } from '@shared/siteDate';
+import { PDP_PHOTO_CURATION, curatedImageOrder, roomPhotoIndex } from '@/config/propertyPhotos';
+import { catalogKey } from '@/config/propertyOrder';
+import AvailabilitySection from '@/components/property/AvailabilitySection';
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
@@ -641,10 +646,25 @@ export default function PropertyDetail() {
     media.addEventListener('change', sync);
     return () => media.removeEventListener('change', sync);
   }, []);
-  useEffect(() => { setBookingSelection(null); setBookingOpen(false); }, [slug]);
-  const onBookingSelection = useCallback((next: BookingSelection) => setBookingSelection(prev =>
-    prev && prev.checkIn === next.checkIn && prev.checkOut === next.checkOut && prev.guests === next.guests && prev.total === next.total && prev.loading === next.loading && prev.isPartial === next.isPartial ? prev : next
-  ), []);
+  // The stay's dates, one source for the page: the URL first, then whatever
+  // the booking card reports, then a stay picked on the availability section
+  // (which the card adopts and prices — BookingWidget's initial-dates effect).
+  const [stayDates, setStayDates] = useState({ checkIn: initialCheckin, checkOut: initialCheckout });
+  useEffect(() => {
+    setBookingSelection(null);
+    setBookingOpen(false);
+    setStayDates({ checkIn: initialCheckin, checkOut: initialCheckout });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug]);
+  const onBookingSelection = useCallback((next: BookingSelection) => {
+    setBookingSelection(prev =>
+      prev && prev.checkIn === next.checkIn && prev.checkOut === next.checkOut && prev.guests === next.guests && prev.total === next.total && prev.loading === next.loading && prev.isPartial === next.isPartial ? prev : next
+    );
+    setStayDates(prev => (prev.checkIn === (next.checkIn || '') && prev.checkOut === (next.checkOut || '') ? prev : { checkIn: next.checkIn || '', checkOut: next.checkOut || '' }));
+  }, []);
+  const onStayPicked = useCallback((next: { checkIn: string; checkOut: string }) => {
+    setStayDates(prev => (prev.checkIn === next.checkIn && prev.checkOut === next.checkOut ? prev : { checkIn: next.checkIn, checkOut: next.checkOut }));
+  }, []);
   const [amenitiesOpen, setAmenitiesOpen] = useState(false);
   const touchStartX = useRef(0);
   const touchDeltaX = useRef(0);
@@ -982,9 +1002,15 @@ export default function PropertyDetail() {
   // for the full-screen lightbox where photos are scrutinised — the Guesty
   // masters are ≥2560px, so this is real detail, not upscaling. Serving 1200px
   // everywhere is what made photos look pixelated full-screen.
-  const sourceImages = property.images?.length ? property.images : getPropertyImages(property.slug);
+  // The catalogue's photos, then the curated order (config/propertyPhotos.ts):
+  // the five the grid shows first, the rest as the catalogue has them. Room
+  // photos are indexed on the catalogue order.
+  const catalogueImages: string[] = property.images?.length ? property.images : getPropertyImages(property.slug);
+  const photoCuration = PDP_PHOTO_CURATION[catalogKey(property)];
+  const sourceImages = curatedImageOrder(catalogueImages, photoCuration?.grid);
   const images = sourceImages.map((img: string) => optimizeGuestyImage(img, 1600));
   const lightboxImages = sourceImages.map((img: string) => optimizeGuestyImage(img, 2560));
+  const featuredReview = pickFeaturedReview((property as any).reviews);
   const totalImages = Math.max(images.length, 1);
   const whatsappUrl = `https://wa.me/351927161771?text=${encodeURIComponent(property.whatsappMessage || `Hi, I am interested in ${property.name}`)}`;
 
@@ -1034,6 +1060,7 @@ export default function PropertyDetail() {
     ['property-about', t('propertyDetail.aboutTitle')],
     ...(property.rooms?.length ? [['property-bedrooms', t('pdpUx.bedrooms')] as [string, string]] : []),
     ['property-amenities', t('propertyDetail.amenitiesTitle')],
+    ...((bookableOnline || tripwixUid) ? [['property-availability', t('propertyDetail.availabilityTitle', 'Availability')] as [string, string]] : []),
     ['property-location', t('propertyDetail.locationTitle')],
     ...(hasReviews ? [['property-reviews', t('reviews.title', 'Guest reviews')] as [string, string]] : []),
     ['property-good-to-know', t('pdpFaq.title')],
@@ -1057,8 +1084,8 @@ export default function PropertyDetail() {
             cleaningFee={(property as any).cleaningFee}
             destination={property.destination}
             conciergeUrl={whatsappUrl}
-            initialCheckIn={bookingSelection?.checkIn ?? initialCheckin}
-            initialCheckOut={bookingSelection?.checkOut ?? initialCheckout}
+            initialCheckIn={stayDates.checkIn}
+            initialCheckOut={stayDates.checkOut}
             initialGuests={bookingSelection?.guests ?? initialGuests}
           />
         </Suspense>
@@ -1070,8 +1097,8 @@ export default function PropertyDetail() {
           fromPrice={lowestNightly?.from}
           maxGuests={property.maxGuests || 20}
           minNights={(property as any).minNights}
-          initialCheckIn={bookingSelection?.checkIn ?? initialCheckin}
-          initialCheckOut={bookingSelection?.checkOut ?? initialCheckout}
+          initialCheckIn={stayDates.checkIn}
+          initialCheckOut={stayDates.checkOut}
           initialGuests={bookingSelection?.guests ?? initialGuests}
           onSelectionChange={onBookingSelection}
           whatsappUrl={whatsappUrl}
@@ -1332,6 +1359,29 @@ export default function PropertyDetail() {
                     ))}
                   </ul>
                 )}
+                {/* One past guest, in the first screens: the reviews section
+                    is ~2 800 px down, after the map. Newest five-star review
+                    with real words (lib/featuredReview.ts), cut to a sentence. */}
+                {featuredReview && (
+                  <figure className="mt-5 pt-5 border-t border-pa-sand">
+                    <div className="flex items-center gap-0.5 mb-2" aria-hidden="true">
+                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={12} className="text-pa-gold-aa fill-current" />)}
+                    </div>
+                    <blockquote className="font-display text-[1.125rem] lg:text-[1.3rem] leading-snug text-pa-dark">
+                      “{featuredReview.text}”
+                    </blockquote>
+                    <figcaption className="caption text-pa-stone mt-2">
+                      {featuredReview.name || t('reviews.verifiedGuest', 'Verified guest')}
+                      {formatSiteDate(featuredReview.date, i18n.language, { month: 'short', year: 'numeric' }) && (
+                        <> · {formatSiteDate(featuredReview.date, i18n.language, { month: 'short', year: 'numeric' })}</>
+                      )}
+                      {' · '}
+                      <a href="#property-reviews" className="text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
+                        {t('reviews.readAll', { count: Number(property.reviewCount) || 1 })}
+                      </a>
+                    </figcaption>
+                  </figure>
+                )}
                 <nav aria-label={t('pdpUx.navigation')} className="mt-5 pt-5 border-t border-pa-sand flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap">
                   {sectionLinks.map(([id, label]) => (
                     <a key={id} href={`#${id}`} className="pa-action shrink-0 inline-flex items-center min-h-11 lg:min-h-9 rounded-full border border-pa-sand px-4 body-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark whitespace-nowrap">{label}</a>
@@ -1384,8 +1434,33 @@ export default function PropertyDetail() {
                   <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-5 px-5 pb-1 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
                     {property.rooms.map((room: any, roomIdx: number) => {
                       const beds: any[] = Array.isArray(room?.beds) ? room.beds : [];
+                      // A curated photo of this bedroom (catalogue index); the
+                      // lightbox opens on that photo wherever it sits in the
+                      // curated order.
+                      const photoIdx = roomPhotoIndex(photoCuration, roomIdx, catalogueImages.length);
+                      const photoSrc = photoIdx != null ? catalogueImages[photoIdx] : null;
+                      const lightboxAt = photoSrc ? sourceImages.indexOf(photoSrc) : -1;
                       return (
-                        <div key={roomIdx} className="snap-start shrink-0 w-[68vw] max-w-[250px] sm:w-auto sm:max-w-none bg-white border border-pa-sand rounded-xl p-5">
+                        <div key={roomIdx} className="snap-start shrink-0 w-[68vw] max-w-[250px] sm:w-auto sm:max-w-none bg-white border border-pa-sand rounded-xl overflow-hidden">
+                          {photoSrc && (
+                              <button
+                                type="button"
+                                onClick={() => { if (lightboxAt >= 0) { setLightboxImage(lightboxAt); setLightboxOpen(true); } }}
+                                className="group block w-full aspect-[4/3] bg-pa-sand overflow-hidden"
+                                aria-label={`${localizeRoomName(room.name, t)} — ${t('propertyDetail.viewAll')}`}
+                              >
+                                <img
+                                  src={optimizeGuestyImage(photoSrc, 640)}
+                                  srcSet={guestySrcSet(photoSrc, [400, 640, 828])}
+                                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 68vw"
+                                  alt={t('seoMeta.photoAlt', { name: displayName, kind: kindInPlace, n: photoIdx! + 1 })}
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                                />
+                              </button>
+                          )}
+                          <div className="p-5">
                           <div className="flex flex-wrap items-center gap-1.5 text-pa-gold mb-4 min-h-[24px]" aria-hidden="true">
                             {beds.flatMap((bed: any, bedIdx: number) => {
                               const BedIcon = bedTypeOf(String(bed?.type || ''))?.icon ?? Bed;
@@ -1398,6 +1473,7 @@ export default function PropertyDetail() {
                           <p className="body-sm text-pa-earth mt-1">
                             {beds.length > 0 ? beds.map((bed: any) => bedLine(bed, t)).join(', ') : t('bedConfig.notAvailable')}
                           </p>
+                          </div>
                         </div>
                       );
                     })}
@@ -1436,6 +1512,21 @@ export default function PropertyDetail() {
                   <p className="body-md text-pa-stone">{t('propertyDetail.amenitiesContact')}</p>
                 )}
               </section>
+
+              {/* 4. Availability — the card's calendar, in the page: two months
+                  on a computer, one on a phone, so a guest sees when the home
+                  is free without touching anything. A stay picked here goes to
+                  the card (stayDates), which prices it. */}
+              {(bookableOnline || tripwixUid) && (
+                <AvailabilitySection
+                  guestyId={tripwixUid ? null : property.guestyId}
+                  tripwixUid={tripwixUid}
+                  minNights={(property as any).minNights}
+                  checkIn={stayDates.checkIn}
+                  checkOut={stayDates.checkOut}
+                  onSelect={onStayPicked}
+                />
+              )}
 
               {/* 6. Location map — approximate pin (3 decimals ≈ 100 m, z=12):
                   the exact address is only shared after booking. */}
@@ -1655,10 +1746,10 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="body-sm text-pa-dark font-medium">
-                {bookingSelection?.total ? formatQuotedEur(bookingSelection.total, i18n.language) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : barFromPrice ?? barNoPrice}
+                {bookingSelection?.total ? formatQuotedEur(bookingSelection.total, i18n.language) : stayDates.checkIn && stayDates.checkOut ? t('conversion.datesSelected') : barFromPrice ?? barNoPrice}
               </p>
               <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
-                {bookingSelection?.total ? (bookingSelection.isPartial ? t('partnerBooking.totalSoFar') : t('conversion.stayTotal')) : (bookingSelection?.checkIn || initialCheckin) ? formatBookingDate(bookingSelection?.checkIn || initialCheckin, i18n.language) : barFromPrice ? t('property.selectDatesForPrice') : t('property.conciergeShort')}
+                {bookingSelection?.total ? (bookingSelection.isPartial ? t('partnerBooking.totalSoFar') : t('conversion.stayTotal')) : stayDates.checkIn ? formatBookingDate(stayDates.checkIn, i18n.language) : barFromPrice ? t('property.selectDatesForPrice') : t('property.conciergeShort')}
               </p>
             </div>
             {/* Partner homes open the same drawer: the request form lives on

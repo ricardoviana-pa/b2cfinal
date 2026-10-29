@@ -568,7 +568,9 @@
     "showAllAmenitiesCount": "Mostra tutti i {{count}} servizi",
     "showAllPhotos": "Mostra tutte le {{count}} foto",
     "bedTotal_one": "{{count}} letto",
-    "bedTotal_other": "{{count}} letti"
+    "bedTotal_other": "{{count}} letti",
+    "availabilityTitle": "Disponibilità",
+    "availabilityHint": "Scegli le date di check-in e check-out: il prezzo del soggiorno compare nel riquadro di prenotazione."
   },
   "priceBreakdown": {
     "title": "Riepilogo prezzo",
@@ -1371,7 +1373,9 @@
     "verifiedGuest": "Ospite verificato",
     "verifiedNote": "Tutte le recensioni provengono da soggiorni conclusi, raccolte tramite i nostri canali di prenotazione.",
     "previous": "Recensioni precedenti",
-    "next": "Recensioni successive"
+    "next": "Recensioni successive",
+    "readAll_one": "Leggi la recensione",
+    "readAll_other": "Leggi tutte le {{count}} recensioni"
   },
   "amenity": {
     "outdoorPool": "Esterno e Piscina",
@@ -2034,7 +2038,8 @@
     "submitError": "Non siamo riusciti a inviare la sua richiesta. Riprovi o scriva al concierge.",
     "sending": "Invio…",
     "submit": "Richiedi queste date",
-    "noCharge": "Nessun pagamento ora — il concierge conferma prima disponibilità e totale finale."
+    "noCharge": "Nessun pagamento ora — il concierge conferma prima disponibilità e totale finale.",
+    "pickDatesFirst": "Scegli le date qui sopra: poi chiediamo i tuoi dati e inviamo la richiesta alla casa."
   },
   "login": {
     "benefitTrips": "Gestisca i suoi viaggi",

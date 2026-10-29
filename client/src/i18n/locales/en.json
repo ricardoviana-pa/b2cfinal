@@ -568,7 +568,9 @@
     "showAllAmenitiesCount": "Show all {{count}} amenities",
     "showAllPhotos": "Show all {{count}} photos",
     "bedTotal_one": "{{count}} bed",
-    "bedTotal_other": "{{count}} beds"
+    "bedTotal_other": "{{count}} beds",
+    "availabilityTitle": "Availability",
+    "availabilityHint": "Choose your check-in and check-out dates: the price of your stay appears in the booking card."
   },
   "priceBreakdown": {
     "title": "Price summary",
@@ -1332,7 +1334,9 @@
     "proofStrip": "4.8/5 across 2,000+ guest reviews",
     "verifiedNote": "All reviews are from completed stays, collected through our booking channels.",
     "previous": "Previous reviews",
-    "next": "Next reviews"
+    "next": "Next reviews",
+    "readAll_one": "Read the review",
+    "readAll_other": "Read all {{count}} reviews"
   },
   "experience": {
     "from": "From",
@@ -2034,7 +2038,8 @@
     "submitError": "We could not send your request. Please try again, or message the concierge.",
     "sending": "Sending…",
     "submit": "Request these dates",
-    "noCharge": "No payment now — our concierge confirms availability and the final total first."
+    "noCharge": "No payment now — our concierge confirms availability and the final total first.",
+    "pickDatesFirst": "Pick your dates above: we then ask for your details and send the request to the home."
   },
   "login": {
     "benefitTrips": "Manage your trips",
