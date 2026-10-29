@@ -7,6 +7,11 @@
  * o hóspede recebia duas. Aqui corre o router a sério (booking e o fecho do
  * checkout), com a Stripe, o Guesty e o email simulados, e conta-se o que o
  * hóspede recebe em cada caminho.
+ *
+ * E a quem: o email corrigido no passo 3 só vai para a metadata do PI (o
+ * PayPal e o Klarna não gravam o intent antes de pagar). A confirmação e o
+ * [CS] têm de ir para esse, o da reserva no Guesty, venha o fecho do regresso
+ * ao site ou do webhook.
  */
 import './setup';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -14,9 +19,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const fake = vi.hoisted(() => ({
   intents: new Map<string, any>(), payments: new Map<string, any>(),
   getIntent: vi.fn(), markPaid: vi.fn(),
-  getPayment: vi.fn(), metadata: vi.fn(),
+  getPayment: vi.fn(), metadata: vi.fn(), webhookEvent: vi.fn(),
   reserve: vi.fn(), recordPayment: vi.fn(), note: vi.fn(),
-  newConfirmation: vi.fn(), oldConfirmation: vi.fn(), opsEmail: vi.fn(), failureAlert: vi.fn(),
+  newConfirmation: vi.fn(), oldConfirmation: vi.fn(), opsEmail: vi.fn(), failureAlert: vi.fn(), opsAlert: vi.fn(),
 }));
 
 vi.mock('../lib/guesty', () => ({ guestyBEClient: { request: vi.fn() }, guestyClient: { request: vi.fn() } }));
@@ -28,10 +33,14 @@ vi.mock('../services/properties-store', () => ({
 }));
 vi.mock('../services/transactional-email', () => ({
   sendCheckoutGuestConfirmation: fake.newConfirmation, sendCheckoutOpsManifest: fake.opsEmail,
-  sendBookingConfirmation: fake.oldConfirmation, sendBookingFailureAlert: fake.failureAlert,
+  sendBookingConfirmation: fake.oldConfirmation, sendBookingFailureAlert: fake.failureAlert, sendOpsAlert: fake.opsAlert,
 }));
-vi.mock('../services/stripe-paypal', () => ({ getPaymentIntent: fake.getPayment, updatePaymentIntentMetadata: fake.metadata }));
-vi.mock('../services/stripe-klarna', () => ({ getPaymentIntent: fake.getPayment, updatePaymentIntentMetadata: fake.metadata }));
+vi.mock('../services/stripe-paypal', () => ({
+  getPaymentIntent: fake.getPayment, updatePaymentIntentMetadata: fake.metadata, constructStripePayPalWebhookEvent: fake.webhookEvent,
+}));
+vi.mock('../services/stripe-klarna', () => ({
+  getPaymentIntent: fake.getPayment, updatePaymentIntentMetadata: fake.metadata, constructStripeKlarnaWebhookEvent: fake.webhookEvent,
+}));
 vi.mock('../services/guesty-openapi-paypal', () => ({
   createReservationViaOpenApi: fake.reserve, recordExternalPayment: fake.recordPayment, appendReservationNote: fake.note,
 }));
@@ -42,6 +51,8 @@ vi.mock('../services/rate-plan-policy', () => ({
 
 import { bookingRouter } from '../routers/booking';
 import { completeCheckoutIntent } from '../services/checkout-confirmation';
+import { registerStripePayPalWebhookRoute } from '../routes/stripe-paypal-webhook';
+import { registerStripeKlarnaWebhookRoute } from '../routes/stripe-klarna-webhook';
 
 const caller = () => bookingRouter.createCaller({ req: { headers: {} }, res: {}, user: null } as any);
 const quote = { nightlyRate: 500, totalNights: 2000, cleaningFee: 120, taxesAndFees: 27, total: 2147, nights: 4,
@@ -49,15 +60,19 @@ const quote = { nightlyRate: 500, totalNights: 2000, cleaningFee: 120, taxesAndF
   ratePlanOptions: [{ ratePlanId: 'synthetic-flex', name: 'Flexible', total: 2147, nightlyRate: 500, cleaningFee: 120, cancellationPolicy: ['MODERATE'] }] };
 
 let seq = 0;
-/** Um checkout 2.0 no passo de pagamento, e o PI pago do PayPal ou do Klarna que lhe pertence. */
-function paidWallet(source: 'website-paypal' | 'website-klarna', opts: { intent?: boolean } = {}) {
+/**
+ * Um checkout 2.0 no passo de pagamento, e o PI pago do PayPal ou do Klarna que lhe pertence.
+ * `intentEmail`: o email que o intent guardou no passo 1, quando o hóspede o
+ * corrigiu no passo 3 (o PI leva sempre guest@checkout.invalid).
+ */
+function paidWallet(source: 'website-paypal' | 'website-klarna', opts: { intent?: boolean; intentEmail?: string } = {}) {
   seq += 1;
   const intentId = `00000000-0000-4000-8000-${String(seq).padStart(12, '0')}`;
   if (opts.intent !== false) {
     fake.intents.set(intentId, {
       id: intentId, listingId: 'synthetic-listing', propertyName: 'Synthetic test home', propertySlug: 'synthetic-home',
       destination: 'minho', checkIn: '2099-11-10', checkOut: '2099-11-14', guests: 4, ratePlanId: 'synthetic-flex',
-      email: 'guest@checkout.invalid', guestFirstName: 'Synthetic', guestLastName: 'Guest', guestPhone: '+000000000',
+      email: opts.intentEmail ?? 'guest@checkout.invalid', guestFirstName: 'Synthetic', guestLastName: 'Guest', guestPhone: '+000000000',
       quote, extras: [], reception: { type: 'self' }, flex: false, status: 'payment_pending', locale: 'fr',
       paymentPlan: 'full', reservationId: null, confirmationCode: null,
     });
@@ -90,14 +105,36 @@ const confirm = (source: 'website-paypal' | 'website-klarna', paymentIntentId: s
 /** Os emails ao hóspede são fire-and-forget: dá-lhes tempo de sair antes de contar. */
 const settle = () => new Promise((resolve) => setTimeout(resolve, 30));
 const guestConfirmations = () => fake.newConfirmation.mock.calls.length + fake.oldConfirmation.mock.calls.length;
+/** Para quem saiu cada confirmação ao hóspede, da nova e da antiga. */
+const confirmationRecipients = () => [
+  ...fake.newConfirmation.mock.calls.map((c) => c[0].email),
+  ...fake.oldConfirmation.mock.calls.map((c) => c[0].guestEmail),
+];
+
+/** O webhook do PayPal ou do Klarna, chamado como o Express o chamaria (sem servidor HTTP). */
+function webhookHandler(source: 'website-paypal' | 'website-klarna') {
+  let handler: any;
+  const app = { post: (_path: string, ...handlers: any[]) => { handler = handlers[handlers.length - 1]; } };
+  if (source === 'website-paypal') registerStripePayPalWebhookRoute(app as any);
+  else registerStripeKlarnaWebhookRoute(app as any);
+  return handler;
+}
+async function deliverWebhook(source: 'website-paypal' | 'website-klarna', pi: any) {
+  fake.webhookEvent.mockReturnValueOnce({ id: `evt_${pi.id}`, type: 'payment_intent.succeeded', data: { object: structuredClone(pi) } });
+  const res: any = { statusCode: 200, status(code: number) { this.statusCode = code; return this; }, json() { return this; } };
+  await webhookHandler(source)({ headers: { 'stripe-signature': 't=1,v1=synthetic' }, body: Buffer.from('{}') }, res);
+  expect(res.statusCode).toBe(200);
+}
 
 beforeEach(() => {
   vi.clearAllMocks();
   fake.intents.clear(); fake.payments.clear();
   fake.getIntent.mockImplementation(async (id: string) => structuredClone(fake.intents.get(id) ?? null));
-  fake.markPaid.mockImplementation(async (id: string, reservationId: string, confirmationCode: string) => {
+  // Como a BD: a transição para pago só acontece uma vez, e o que vier com ela
+  // (o email do pagamento) só o grava quem a ganhar.
+  fake.markPaid.mockImplementation(async (id: string, reservationId: string, confirmationCode: string, extra: { email?: string } = {}) => {
     const m = fake.intents.get(id); if (!m || m.status === 'paid') return false;
-    Object.assign(m, { status: 'paid', reservationId, confirmationCode }); return true;
+    Object.assign(m, { status: 'paid', reservationId, confirmationCode, ...(extra?.email ? { email: extra.email } : {}) }); return true;
   });
   fake.getPayment.mockImplementation(async (id: string) => {
     if (!fake.payments.has(id)) throw new Error('synthetic payment not found');
@@ -109,6 +146,7 @@ beforeEach(() => {
   fake.note.mockResolvedValue(true);
   fake.newConfirmation.mockResolvedValue(undefined); fake.oldConfirmation.mockResolvedValue(undefined);
   fake.opsEmail.mockResolvedValue(undefined); fake.failureAlert.mockResolvedValue(undefined);
+  fake.opsAlert.mockResolvedValue(true);
 });
 
 describe.each(['website-paypal', 'website-klarna'] as const)('%s: one confirmation per booking', (source) => {
@@ -162,5 +200,55 @@ describe.each(['website-paypal', 'website-klarna'] as const)('%s: one confirmati
     await settle();
     expect(fake.newConfirmation).not.toHaveBeenCalled();
     expect(guestConfirmations()).toBe(1);
+  });
+});
+
+describe.each(['website-paypal', 'website-klarna'] as const)('%s: the confirmation goes to the email the guest paid with', (source) => {
+  // Passo 1 com um erro no email, corrigido no passo 3. O PayPal e o Klarna não
+  // gravam o intent antes de pagar: o email certo só está no PI (e na reserva).
+  const typo = 'guest@typo.invalid';
+  const paidWith = 'guest@checkout.invalid';
+
+  it('return page: confirmation and [CS] to the corrected address, never the step-1 one, and the checkout keeps it', async () => {
+    const { intentId, pi } = paidWallet(source, { intentEmail: typo });
+    await confirm(source, pi.id);
+    await vi.waitFor(() => expect(fake.newConfirmation).toHaveBeenCalledOnce());
+    await vi.waitFor(() => expect(fake.opsEmail).toHaveBeenCalledOnce());
+    await settle();
+    expect(confirmationRecipients()).toEqual([paidWith]);
+    expect(fake.opsEmail.mock.calls[0][0]).toMatchObject({ email: paidWith });
+    // A reserva no Guesty foi criada com o mesmo email.
+    expect(fake.reserve.mock.calls[0][0]).toMatchObject({ guestEmail: paidWith });
+    expect(fake.intents.get(intentId)).toMatchObject({ status: 'paid', email: paidWith });
+  });
+
+  it('webhook (the return page never ran): the same, from the payment metadata', async () => {
+    const { intentId, pi } = paidWallet(source, { intentEmail: typo });
+    await deliverWebhook(source, pi);
+    await vi.waitFor(() => expect(fake.newConfirmation).toHaveBeenCalledOnce());
+    await vi.waitFor(() => expect(fake.opsEmail).toHaveBeenCalledOnce());
+    await settle();
+    expect(confirmationRecipients()).toEqual([paidWith]);
+    expect(fake.opsEmail.mock.calls[0][0]).toMatchObject({ email: paidWith });
+    expect(fake.intents.get(intentId)).toMatchObject({ status: 'paid', email: paidWith });
+    expect(fake.opsAlert).not.toHaveBeenCalled();
+  });
+
+  it('webhook first, then the return page: one confirmation, to the corrected address', async () => {
+    const { pi } = paidWallet(source, { intentEmail: typo });
+    await deliverWebhook(source, pi);
+    await vi.waitFor(() => expect(fake.newConfirmation).toHaveBeenCalledOnce());
+    await confirm(source, pi.id);
+    await settle();
+    expect(confirmationRecipients()).toEqual([paidWith]);
+  });
+
+  it('the same email in other capitals is not a correction: nothing is rewritten', async () => {
+    const { intentId, pi } = paidWallet(source, { intentEmail: 'Guest@Checkout.INVALID' });
+    await confirm(source, pi.id);
+    await vi.waitFor(() => expect(fake.newConfirmation).toHaveBeenCalledOnce());
+    await settle();
+    expect(guestConfirmations()).toBe(1);
+    expect(fake.intents.get(intentId)).toMatchObject({ status: 'paid', email: 'Guest@Checkout.INVALID' });
   });
 });

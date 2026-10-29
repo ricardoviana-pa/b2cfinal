@@ -879,12 +879,19 @@ export async function getPaidBookingIntentByReservationId(reservationId: string)
   return rows[0] ?? null;
 }
 
-/** Claim the server-confirmed paid transition once across app instances. */
-export async function markBookingIntentPaid(id: string, reservationId: string, confirmationCode: string): Promise<boolean> {
+/** Claim the server-confirmed paid transition once across app instances.
+ *  `extra.email` (PayPal/Klarna: the email the guest paid with) is written in
+ *  the same claim, so only the caller that wins the transition writes it. */
+export async function markBookingIntentPaid(
+  id: string,
+  reservationId: string,
+  confirmationCode: string,
+  extra: { email?: string } = {},
+): Promise<boolean> {
   const db = await getDb();
   if (!db) throw new Error("Cannot record payment confirmation without database");
   const result: any = await db.update(bookingIntents)
-    .set({ status: "paid", reservationId, confirmationCode })
+    .set({ status: "paid", reservationId, confirmationCode, ...(extra.email ? { email: extra.email } : {}) })
     .where(and(eq(bookingIntents.id, id), ne(bookingIntents.status, "paid")));
   const affected = Array.isArray(result) ? result[0]?.affectedRows : result?.affectedRows;
   return (affected ?? 0) > 0;

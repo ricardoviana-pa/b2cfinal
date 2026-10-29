@@ -45,19 +45,25 @@ async function bookedRateCancellation(listingId?: string | null, ratePlanId?: st
  * A antiga fica para o fluxo sem intent e para quando o checkout não fecha
  * (intent ilegível, BD em baixo, reserva que não bate certo): quem pagou
  * recebe sempre uma confirmação, e o erro continua a subir como antes.
+ *
+ * Vai para o email com que o hóspede pagou (`payment.guestEmail`, a metadata
+ * do PI, já igual à do regresso ao site): o PayPal e o Klarna não gravam no
+ * intent o email corrigido no passo 3, e a confirmação ia para o do passo 1.
  */
 export async function confirmWalletBooking(
-  intentId: string | null | undefined,
+  payment: { intentId?: string | null; guestEmail?: string | null },
   reservation: { reservationId: string; confirmationCode: string },
   sendLegacyConfirmation: () => void,
 ): Promise<void> {
-  if (!intentId) {
+  if (!payment.intentId) {
     sendLegacyConfirmation();
     return;
   }
   const { completeCheckoutIntent } = await import("../services/checkout-confirmation");
   try {
-    await completeCheckoutIntent(intentId, reservation.reservationId, reservation.confirmationCode);
+    await completeCheckoutIntent(payment.intentId, reservation.reservationId, reservation.confirmationCode, undefined, {
+      email: payment.guestEmail,
+    });
   } catch (err) {
     sendLegacyConfirmation();
     throw err;
@@ -932,7 +938,7 @@ export const bookingRouter = router({
       // Uma confirmação por reserva (confirmWalletBooking). A antiga, quando sai,
       // é fire-and-forget: a política da tarifa lê-se primeiro (cache, com
       // limite de tempo) e depois o email segue.
-      await confirmWalletBooking(pi.metadata?.intentId, reservation, () => {
+      await confirmWalletBooking(pi.metadata ?? {}, reservation, () => {
         void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
           guestName: `${input.guestFirstName} ${input.guestLastName}`,
           guestEmail: input.guestEmail,
@@ -1124,7 +1130,7 @@ export const bookingRouter = router({
       });
 
       // Uma confirmação por reserva (confirmWalletBooking), como no PayPal.
-      await confirmWalletBooking(pi.metadata?.intentId, reservation, () => {
+      await confirmWalletBooking(pi.metadata ?? {}, reservation, () => {
         void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
           guestName: `${input.guestFirstName} ${input.guestLastName}`,
           guestEmail: input.guestEmail,
