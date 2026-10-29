@@ -254,7 +254,12 @@ export const bookingRouter = router({
    * null = availability not known yet (the background job has not read this
    * home, or its last good read is older than 48 h). It used to be [], which
    * the calendar draws as every date free (revisão do PR #173, P173-R2); the
-   * panel can now say "availability to be confirmed" instead.
+   * panel now draws every date "on request".
+   *
+   * Otherwise every date of the window, and a date Tripwix did not return
+   * (after the last day it publishes — nine homes stop on 2027-03-04) comes
+   * as status "unknown" with no price: "on request", never free (verificação
+   * de 29 out 2026, Tripwix P1).
    */
   partnerCalendar: publicProcedure
     .input(z.object({
