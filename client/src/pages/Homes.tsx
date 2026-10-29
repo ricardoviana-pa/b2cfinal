@@ -21,7 +21,7 @@ import { trpc } from '@/lib/trpc';
 import type { Property, SortOption } from '@/lib/types';
 import { filterProperties } from '@/lib/utils';
 import { isChildUnit } from '@/config/propertyGroups';
-import { hasConfirmedQuote, listingQuoteGuests, listingQuotesKey, sortSearchResults } from '@/lib/homeSearch';
+import { hasConfirmedQuote, listingQuoteGuests, listingQuotesKey, searchGuestsParam, sortSearchResults } from '@/lib/homeSearch';
 import { localityLabel, matchesSearchRegion, parseSearchRegion } from '@/lib/destinationSearch';
 import DestinationOptions, { regionLabel, useDestinationOptions } from '@/components/marketing/DestinationOptions';
 import ListingWhatsApp, { trackAttributes } from '@/components/homes/ListingWhatsApp';
@@ -461,7 +461,9 @@ export default function Homes() {
     else params.delete('checkin');
     if (bookingCheckout) params.set('checkout', bookingCheckout);
     else params.delete('checkout');
-    if (guestsChosen && bookingGuests > 1) params.set('guests', String(bookingGuests));
+    // A chosen party of 1 too: the quotes follow the URL (2 when it has none).
+    const party = searchGuestsParam(bookingGuests, guestsChosen);
+    if (party) params.set('guests', party);
     else params.delete('guests');
 
     // GA4: search

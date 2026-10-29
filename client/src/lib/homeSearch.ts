@@ -80,6 +80,18 @@ export function addSearchDays(iso: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
+/**
+ * The `guests` a search writes into the listing URL: the party the guest
+ * chose, a party of 1 included; nothing while the picker still shows its
+ * default (`chosen` false, or 0). The listing quotes for the URL's party, or
+ * 2 when it has none (listingQuoteGuests), so dropping a chosen 1 — the old
+ * `guests > 1` — left a solo search quoted for 2 with the stepper reading
+ * «1 guests», and Search did nothing (revisão 2 do PR #175).
+ */
+export function searchGuestsParam(guests: number, chosen = true): string | null {
+  return chosen && Number.isFinite(guests) && guests >= 1 ? String(Math.floor(guests)) : null;
+}
+
 /** Homepage search → listing URL. `destination` is the picker value: a
  *  municipality, or `region:<slug>` for a whole region. `guests` is only
  *  written when the guest chose it (pass 0 otherwise): a default "2" in the
@@ -93,7 +105,8 @@ export function buildHomeSearchPath({ destination, checkin, checkout, guests }: 
   else if (pick.location) params.set('location', pick.location);
   if (checkin) params.set('checkin', checkin);
   if (checkout) params.set('checkout', checkout);
-  if (guests > 1) params.set('guests', String(guests));
+  const party = searchGuestsParam(guests);
+  if (party) params.set('guests', party);
   return `/homes${params.size ? `?${params}` : ''}`;
 }
 

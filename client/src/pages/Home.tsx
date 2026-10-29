@@ -500,7 +500,7 @@ export default function Home() {
                   property={property}
                   checkin={searchCheckin || undefined}
                   checkout={searchCheckout || undefined}
-                  guests={guestsChosen && searchGuests > 1 ? searchGuests : undefined}
+                  guests={guestsChosen ? searchGuests : undefined}
                   nights={searchNights}
                   liveQuote={(property.source === 'tripwix' ? partner.quotes[property.slug] : homeQuotes[property.slug]) || undefined}
                   quoteLoading={property.source === 'tripwix' ? partner.isFetching : homeQuotesLoading}

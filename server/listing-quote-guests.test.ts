@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
-import { buildHomeSearchPath, DEFAULT_QUOTE_GUESTS, listingQuoteGuests, listingQuotesKey } from '@/lib/homeSearch';
+import { buildHomeSearchPath, DEFAULT_QUOTE_GUESTS, listingQuoteGuests, listingQuotesKey, searchGuestsParam } from '@/lib/homeSearch';
 
 // Revisão do PR #175, R1. A homepage search now leaves guests out of the URL
 // until the guest picks a number. The listing then took the party for its
@@ -63,6 +63,40 @@ describe('the stepper is picker state until Search', () => {
     for (const line of lines) {
       expect(line, line.trim()).not.toMatch(/effectiveGuests|getBatchQuotes|searchHint|usePartnerPrices|quotesKey|listingQuote/);
     }
-    expect(homes).toMatch(/if \(guestsChosen && bookingGuests > 1\) params\.set\('guests', String\(bookingGuests\)\);/);
+    expect(homes).toMatch(/const party = searchGuestsParam\(bookingGuests, guestsChosen\);\s*if \(party\) params\.set\('guests', party\);\s*else params\.delete\('guests'\);/);
+  });
+});
+
+// Revisão 2 do PR #175: with the quotes following the URL (2 when it names no
+// party), Search only wrote guests above 1. Choosing 1 and pressing Search
+// left the URL as it was and sent no new quote: the prices stayed quoted for
+// 2 while the stepper read «1 guests», and the no-availability WhatsApp text
+// said «Guests: 2». On main the same steps re-quoted for 1.
+describe('a party of 1 can be searched', () => {
+  it('a chosen 1 goes into the URL, so the quotes are for 1, not the default 2', () => {
+    expect(searchGuestsParam(1, true)).toBe('1');
+    const path = `/homes?checkin=2027-07-10&checkout=2027-07-17&guests=${searchGuestsParam(1, true)}`;
+    expect(listingQuoteGuests(urlGuests(path))).toBe(1);
+    expect(listingQuotesKey('2027-07-10', '2027-07-17', urlGuests(path))).toBe('2027-07-10|2027-07-17|1');
+    expect(listingQuotesKey('2027-07-10', '2027-07-17', urlGuests(path))).not.toBe(listingQuotesKey('2027-07-10', '2027-07-17', 0));
+  });
+
+  it('the picker’s untouched default still writes nothing; any chosen party is written', () => {
+    expect(searchGuestsParam(2, false)).toBeNull();
+    expect(searchGuestsParam(1, false)).toBeNull();
+    for (const [n, out] of [[2, '2'], [5, '5'], [30, '30']] as const) expect(searchGuestsParam(n, true)).toBe(out);
+    for (const bad of [0, -1, Number.NaN]) expect(searchGuestsParam(bad, true), String(bad)).toBeNull();
+  });
+
+  it('the homepage search sends a chosen 1 as well (0 = not chosen)', () => {
+    const path = buildHomeSearchPath({ destination: 'region:algarve', checkin: '2027-07-10', checkout: '2027-07-17', guests: 1 });
+    expect(path).toBe('/homes?destination=algarve&checkin=2027-07-10&checkout=2027-07-17&guests=1');
+    expect(listingQuoteGuests(urlGuests(path))).toBe(1);
+    expect(buildHomeSearchPath({ destination: '', checkin: '', checkout: '', guests: 0 })).toBe('/homes');
+    expect(fs.readFileSync(new URL('../client/src/components/marketing/HeroSearch.tsx', import.meta.url), 'utf8'))
+      .toMatch(/guests: guestsChosen \? guests : 0/);
+    // and the homepage cards carry it to the home page
+    expect(fs.readFileSync(new URL('../client/src/pages/Home.tsx', import.meta.url), 'utf8'))
+      .toMatch(/guests=\{guestsChosen \? searchGuests : undefined\}/);
   });
 });
