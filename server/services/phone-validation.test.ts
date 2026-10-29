@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import fs from "node:fs";
-import { defaultPhoneCountry, phoneIssue, phoneIssueMessage, regionOf } from "@/lib/phone";
+import { defaultPhoneCountry, phoneEntry, phoneIssue, phoneIssueMessage, regionOf } from "@/lib/phone";
 import { isValidPhone } from "@/lib/validation";
 import { guestDetailsIssues } from "@/lib/checkoutPayment";
 
@@ -156,16 +156,105 @@ describe("país por omissão: a região do browser, depois a língua do site; nu
   });
 });
 
+/**
+ * Revisão do PR #176: sem o forceDialCode, a biblioteca lia QUALQUER algarismo
+ * como número internacional, por isso "927161771" escrito num campo apagado
+ * (ou colado, ou preenchido pelo browser) virava +92 716-1771, Paquistão, e
+ * passava a validação. O que entra no campo passa primeiro por phoneEntry.
+ */
+describe("o que entra no campo: algarismos sem '+' são um número nacional do país escolhido", () => {
+  const typed = (raw: string, dialCode = "351", data = raw.slice(-1)) => phoneEntry({ raw, dialCode, inputType: "insertText", data });
+  const pasted = (raw: string, dialCode = "351") => phoneEntry({ raw, dialCode, inputType: "insertFromPaste" });
+  const autofilled = (raw: string, dialCode = "351") => phoneEntry({ raw, dialCode, inputType: undefined });
+
+  it("depois do +351 pré-preenchido, apagar e escrever, colar ou o browser preencher 927161771 ou 213456789 dá +351", () => {
+    expect(typed("9").value).toBe("+351 9");
+    expect(pasted("927161771").value).toBe("+351 927161771");
+    expect(autofilled("927161771").value).toBe("+351 927161771");
+    expect(pasted("213456789").value).toBe("+351 213456789");
+    expect(autofilled("213456789").value).toBe("+351 213456789");
+    expect(autofilled("962 345 678").value).toBe("+351 962 345 678");
+    expect(pasted(" 912 345 678 ").value).toBe("+351 912 345 678");
+    for (const n of ["927161771", "213456789", "962345678", "912345678"]) {
+      expect(phoneIssue(pasted(n).value), n).toBeNull();
+    }
+  });
+
+  it("noutro país escolhido, o número nacional fica nesse país (e o 0 do prefixo nacional explica-se)", () => {
+    expect(pasted("7700 900123", "44").value).toBe("+44 7700 900123");
+    expect(phoneIssue(pasted("07700 900123", "44").value)).toEqual({ kind: "leading_zero", dialCode: "+44" });
+    expect(pasted("(415) 555-0123", "1").value).toBe("+1 (415) 555-0123");
+    expect(phoneIssue(pasted("(415) 555-0123", "1").value)).toBeNull();
+  });
+
+  it("'+…' escrito, colado ou preenchido segue o indicativo (a biblioteca muda a bandeira)", () => {
+    expect(pasted("+44 7700 900123").value).toBe("+44 7700 900123");
+    expect(autofilled("+447700900123").value).toBe("+447700900123");
+    expect(typed("+").value).toBe("+");
+    expect(typed("+4").value).toBe("+4");
+  });
+
+  it("'+' por cima do indicativo pré-preenchido recomeça o número", () => {
+    // cursor no fim de "+351 ": escrever "+" ou colar "+44…"
+    expect(typed("+351 +").value).toBe("+");
+    expect(pasted("+351 +44 7700 900123").value).toBe("+44 7700 900123");
+    expect(pasted("+1 +351 912 345 678", "1").value).toBe("+351 912 345 678");
+    // com algarismos do número já escritos, o "+" fica com a biblioteca (que o recusa)
+    expect(typed("+351 912+").value).toBe("+351 912+");
+  });
+
+  it("'00' é o prefixo internacional, escrito num campo vazio ou logo a seguir ao indicativo", () => {
+    expect(pasted("0044 7700 900123").value).toBe("+44 7700 900123");
+    expect(typed("00").value).toBe("+");
+    expect(typed("+351 00", "351", "0").value).toBe("+");
+    expect(pasted("+351 0044 7700 900123").value).toBe("+447700900123");
+    expect(pasted("+0044 7700 900123").value).toBe("+447700900123");
+    // um só 0 não é prefixo nenhum: fica, e a validação explica-o
+    expect(typed("0").value).toBe("+351 0");
+  });
+
+  it("os algarismos com o indicativo à frente, sem o '+', num país com regra fixa", () => {
+    expect(pasted("351912345678").value).toBe("+351912345678");
+    expect(phoneIssue(pasted("351912345678").value)).toBeNull();
+    expect(pasted("447700900123", "44").value).toBe("+447700900123");
+    expect(pasted("14155550123", "1").value).toBe("+14155550123");
+    // ambíguo ou errado: fica nacional e a validação explica
+    expect(pasted("35191234567").value).toBe("+351 35191234567");
+    expect(phoneIssue(pasted("35191234567").value)).toEqual({ kind: "length", dialCode: "+351", min: 9, max: 9 });
+  });
+
+  it("apagar, desfazer e refazer passam como estão", () => {
+    for (const inputType of ["deleteContentBackward", "deleteContentForward", "deleteByCut", "historyUndo", "historyRedo"]) {
+      expect(phoneEntry({ raw: "351 912", dialCode: "351", inputType })).toEqual({ value: "351 912", inputType });
+    }
+  });
+
+  it("um texto inteiro inserido de uma vez como 'insertText' passa como colagem (a biblioteca recusava-o)", () => {
+    expect(phoneEntry({ raw: "+44 7700 900123", dialCode: "351", inputType: "insertText", data: "+44 7700 900123" })).toEqual({
+      value: "+44 7700 900123", inputType: "insertFromPaste",
+    });
+    expect(phoneEntry({ raw: "+351 9", dialCode: "351", inputType: "insertText", data: "9" })).toEqual({ value: "+351 9", inputType: "insertText" });
+  });
+
+  it("o resto fica como a biblioteca o faria", () => {
+    expect(typed("+351 912").value).toBe("+351 912");
+    expect(phoneEntry({ raw: "", dialCode: "351", inputType: "insertText", data: "" }).value).toBe("");
+  });
+});
+
 describe("o campo partilhado (widget da casa, parceiros, contacto, checkout)", () => {
   const input = read("client/src/components/booking/PhoneInput.tsx");
   const lib = read("client/src/lib/phone.ts");
 
-  it("o país segue o número escrito, colado ou preenchido pelo browser", () => {
-    // nenhuma das duas props no <RIPPhoneInput> (o comentário pode nomeá-las):
-    // com o forceDialCode a biblioteca recusava "+44…" escrito por cima de "+351 "
-    expect(input).not.toMatch(/^\s*disableCountryGuess\b/m);
-    expect(input).not.toMatch(/^\s*forceDialCode\b/m);
-    expect(input).toMatch(/^\s*allowMaskOverflow$/m);
+  it("o país segue o número internacional; os algarismos passam primeiro por phoneEntry", () => {
+    // sem forceDialCode (recusava "+44…" escrito por cima de "+351 ") nem
+    // disableCountryGuess (a bandeira não seguia o número)
+    expect(input).not.toMatch(/forceDialCode:|disableCountryGuess:|^\s*forceDialCode\b|^\s*disableCountryGuess\b/m);
+    expect(input).toMatch(/allowMaskOverflow: true,/);
+    // o <input> é nosso: phoneEntry antes do handlePhoneValueChange da biblioteca
+    expect(input).toMatch(/const entry = phoneEntry\(\{ raw: e\.target\.value, dialCode: country\.dialCode/);
+    expect(input).toMatch(/onChange=\{handleChange\}/);
+    expect(input).not.toMatch(/<RIPPhoneInput/);
   });
 
   it("sem biblioteca de telefones pesada (a página da casa já é lenta no telemóvel)", () => {

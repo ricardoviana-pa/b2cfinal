@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import {
-  PhoneInput as RIPPhoneInput,
+  CountrySelector,
   defaultCountries,
   parseCountry,
-  type PhoneInputRefType,
+  usePhoneInput,
 } from "react-international-phone";
 import { useTranslation } from "react-i18next";
 import "react-international-phone/style.css";
-import { defaultPhoneCountry } from "@/lib/phone";
+import { defaultPhoneCountry, phoneEntry } from "@/lib/phone";
 
 interface PhoneInputProps {
   id?: string;
@@ -41,13 +41,15 @@ function subscribeLanguages(onChange: () => void) {
  * língua do site; nunca +351 só por o site estar em inglês (70% dos
  * checkouts). Regras em lib/phone.ts.
  *
- * O país também segue o número: sem disableCountryGuess nem forceDialCode,
- * escrever, colar ou o browser preencher "+44 7700 900123" muda a bandeira.
- * Com o forceDialCode a biblioteca recusava qualquer tecla que não
- * começasse pelo indicativo atual: "+447700900123" escrito por cima de
- * "+351 " ficava "+351 447700900123", o número errado da auditoria. O
- * indicativo continua preenchido à partida; quem o apagar e escrever um
- * número nacional vê a bandeira mudar e a validação explica (lib/phone.ts).
+ * O país segue o número internacional ("+44 7700 900123" escrito, colado ou
+ * preenchido pelo browser muda a bandeira), mas algarismos sem "+" nem "00"
+ * são sempre um número nacional do país escolhido (phoneEntry): sem isso,
+ * "927161771" escrito num campo apagado virava +92 (Paquistão) e passava a
+ * validação (revisão do PR #176). Por isso o campo é montado aqui com o
+ * usePhoneInput da biblioteca: o <input> passa primeiro por phoneEntry e só
+ * depois pelo handlePhoneValueChange dela. Sem o forceDialCode, que recusava
+ * "+44…" escrito por cima de "+351 " e engolia o 1.º algarismo escrito sobre
+ * o campo selecionado.
  *
  * No servidor não há browser: a primeira pintura usa só a língua do site e,
  * depois da hidratação, o campo ainda vazio passa para o país do browser
@@ -60,50 +62,78 @@ export default function PhoneInput({ id, value, onChange, onBlur, placeholder = 
     () => defaultPhoneCountry({ languages: languages ? languages.split(",") : [], siteLang: i18n.language, supported: isSupported }),
     [languages, i18n.language],
   );
-  const ref = useRef<PhoneInputRefType>(null);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+  const { phone, inputValue, country, setCountry, handlePhoneValueChange, inputRef } = usePhoneInput({
+    defaultCountry,
+    value,
+    // Nunca cortar algarismos em silêncio: "+44 07700 900123" fica inteiro
+    // e a validação explica o 0 a mais (antes o 11.º algarismo desaparecia).
+    allowMaskOverflow: true,
+    onChange: ({ phone: next }) => onChangeRef.current(next),
+  });
+
+  const live = useRef({ phone, dialCode: country.dialCode, setCountry });
+  live.current = { phone, dialCode: country.dialCode, setCountry };
   const appliedDefault = useRef(defaultCountry);
   useEffect(() => {
     if (appliedDefault.current === defaultCountry) return;
     appliedDefault.current = defaultCountry;
-    const field = ref.current;
-    const state = field?.state;
-    if (!field || !state) return;
+    const { phone: current, dialCode, setCountry: apply } = live.current;
     // Só um campo ainda vazio (o indicativo sozinho) muda de país
-    const national = state.phone.replace(/\D/g, "").slice(String(state.country?.dialCode ?? "").length);
-    if (!national) field.setCountry(defaultCountry);
+    const national = current.replace(/\D/g, "").slice(String(dialCode ?? "").length);
+    if (!national) apply(defaultCountry);
   }, [defaultCountry]);
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const native = e.nativeEvent as Partial<InputEvent>;
+      const entry = phoneEntry({ raw: e.target.value, dialCode: country.dialCode, inputType: native?.inputType, data: native?.data });
+      if (entry.value === e.target.value && entry.inputType === native?.inputType) {
+        handlePhoneValueChange(e);
+        return;
+      }
+      // A biblioteca só lê nativeEvent.inputType/data, target.value/selectionStart e preventDefault.
+      handlePhoneValueChange({
+        nativeEvent: { inputType: entry.inputType, data: native?.data ?? null },
+        target: { value: entry.value, selectionStart: entry.value.length },
+        preventDefault: () => e.preventDefault(),
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
+    },
+    [country.dialCode, handlePhoneValueChange],
+  );
 
   return (
     <div className={className}>
-      <RIPPhoneInput
-        ref={ref}
-        defaultCountry={defaultCountry}
-        value={value}
-        onChange={onChange}
-        // Nunca cortar algarismos em silêncio: "+44 07700 900123" fica inteiro
-        // e a validação explica o 0 a mais (antes o 11.º algarismo desaparecia).
-        allowMaskOverflow
-        placeholder={placeholder}
-        inputProps={{
-          id,
-          autoComplete: "tel",
-          inputMode: "tel",
-          "aria-label": placeholder,
-          "aria-describedby": describedBy,
-          "aria-invalid": invalid || undefined,
-          onBlur,
-        }}
-        inputClassName="!w-full !h-full !bg-white !border-0 !border-r-0 !rounded-none !rounded-r-md !text-[16px] !text-[#1A1A18] !px-3 focus:!outline-none focus:!ring-0 !font-[inherit]"
-        countrySelectorStyleProps={{
-          buttonClassName: "!bg-white !border-0 !rounded-none !rounded-l-md !px-3 !h-full hover:!bg-[#F5F1EB] !transition-colors",
-          dropdownStyleProps: {
+      <div
+        className={`react-international-phone-input-container !flex !items-center !w-full !h-[52px] !bg-white !border ${invalid ? "!border-red-400" : "!border-[#E8E4DC]"} !rounded-md focus-within:!border-[#8B7355] focus-within:!ring-2 focus-within:!ring-[#8B7355] !transition`}
+        style={{ height: "52px" }}
+      >
+        <CountrySelector
+          selectedCountry={country.iso2}
+          onSelect={(c) => setCountry(c.iso2, { focusOnInput: true })}
+          buttonClassName="!bg-white !border-0 !rounded-none !rounded-l-md !px-3 !h-full hover:!bg-[#F5F1EB] !transition-colors"
+          dropdownStyleProps={{
             className: "!bg-white !border-[#E8E4DC] !rounded-lg !shadow-lg !z-[100] !max-h-[200px]",
             listItemClassName: "!text-[13px] !text-[#1A1A18] hover:!bg-[#F5F1EB] !px-3 !py-2",
-          },
-        }}
-        className={`!flex !items-center !w-full !h-[52px] !bg-white !border ${invalid ? "!border-red-400" : "!border-[#E8E4DC]"} !rounded-md focus-within:!border-[#8B7355] focus-within:!ring-2 focus-within:!ring-[#8B7355] !transition`}
-        style={{ height: "52px" }}
-      />
+          }}
+        />
+        <input
+          ref={inputRef}
+          id={id}
+          type="tel"
+          value={inputValue}
+          onChange={handleChange}
+          onBlur={onBlur}
+          placeholder={placeholder}
+          autoComplete="tel"
+          inputMode="tel"
+          aria-label={placeholder}
+          aria-describedby={describedBy}
+          aria-invalid={invalid || undefined}
+          className="react-international-phone-input !w-full !h-full !bg-white !border-0 !border-r-0 !rounded-none !rounded-r-md !text-[16px] !text-[#1A1A18] !px-3 focus:!outline-none focus:!ring-0 !font-[inherit]"
+        />
+      </div>
     </div>
   );
 }

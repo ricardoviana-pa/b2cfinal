@@ -15,6 +15,9 @@
  * países só o comprimento E.164 (8 a 15 algarismos com o indicativo), para
  * nunca recusar um número raro mas válido. Cada erro explica-se junto ao
  * campo (phoneIssueMessage).
+ *
+ * Entrada: algarismos sem "+" nem "00" são um número nacional do país
+ * escolhido (phoneEntry), nunca um indicativo adivinhado.
  */
 
 /** Algarismos depois do indicativo, por indicativo. Só regras fixas e seguras. */
@@ -107,6 +110,86 @@ export function phoneIssue(raw: string | null | undefined): PhoneIssue | null {
 
 export function isPlausiblePhone(raw: string | null | undefined): boolean {
   return phoneIssue(raw) == null;
+}
+
+/* ------------------------------------------------------------------ */
+/* O que entra no campo                                                 */
+/* ------------------------------------------------------------------ */
+
+const digitsOf = (s: string) => s.replace(/\D/g, "");
+
+/** O que o PhoneInput entrega ao react-international-phone. */
+export interface PhoneEntry {
+  value: string;
+  inputType?: string;
+}
+
+/**
+ * Como ler o que o hóspede escreveu, colou ou o browser preencheu, ANTES de o
+ * react-international-phone o formatar (revisão do PR #176). A biblioteca lê
+ * todos os algarismos como número internacional: sem o forceDialCode,
+ * "927161771" escrito num campo apagado (ou colado, ou preenchido pelo
+ * browser por cima do "+351 ") virava +92 716-1771, Paquistão, e passava a
+ * validação. Aqui:
+ *  - algarismos sem "+" nem "00" são um número nacional do país escolhido:
+ *    "927161771" com +351 → "+351 927161771" (salvo quando só fazem sentido
+ *    com o indicativo à frente, num país com regra fixa: "351912345678");
+ *  - "00…" é o prefixo internacional: "0044 7700 900123" → "+44 7700 900123";
+ *  - um "+" escrito ou colado depois do indicativo pré-preenchido, antes de
+ *    qualquer algarismo do número, recomeça o número: "+351 +44 7700…" →
+ *    "+44 7700…" (a bandeira passa a seguir o novo indicativo);
+ *  - "00" logo a seguir ao indicativo também: "+351 0044…" → "+44…".
+ * Apagar, desfazer e refazer passam como estão.
+ *
+ * Um texto inteiro inserido de uma vez como "insertText" (preenchimento por
+ * sugestão do teclado) passa como colagem: a biblioteca recusava qualquer
+ * "insertText" com um espaço ou um "+".
+ */
+export function phoneEntry(input: {
+  /** O valor do <input> depois da edição (e.target.value). */
+  raw: string;
+  /** Indicativo do país escolhido, sem "+" ("351"). */
+  dialCode: string;
+  /** InputEvent.inputType; undefined no preenchimento automático do browser. */
+  inputType?: string | null;
+  /** InputEvent.data: o que foi escrito. */
+  data?: string | null;
+}): PhoneEntry {
+  const type = input.inputType || undefined;
+  if (type && /^(delete|history)/.test(type)) return { value: input.raw, inputType: type };
+  const bulk = type === "insertText" && (input.data?.length ?? 0) > 1;
+  return { value: normalizePhoneEntry(input.raw, input.dialCode), inputType: bulk ? "insertFromPaste" : type };
+}
+
+function normalizePhoneEntry(raw: string, dialCode: string): string {
+  const value = raw.trim();
+  if (!value) return raw;
+  if (value.startsWith("00")) return `+${value.slice(2)}`;
+  const plus = value.lastIndexOf("+");
+  if (plus > 0) {
+    // Um "+" depois do que já lá estava: só recomeça se antes dele havia
+    // apenas o indicativo (nenhum algarismo do número).
+    const head = digitsOf(value.slice(0, plus));
+    return head.length <= dialCode.length ? normalizePhoneEntry(value.slice(plus), dialCode) : raw;
+  }
+  const digits = digitsOf(value);
+  if (plus === 0) {
+    if (digits.startsWith("00")) return `+${digits.slice(2)}`;
+    if (dialCode && digits.startsWith(dialCode) && digits.slice(dialCode.length).startsWith("00")) {
+      return `+${digits.slice(dialCode.length + 2)}`;
+    }
+    return raw;
+  }
+  if (!digits || !dialCode) return raw;
+  // Algarismos sem "+": número nacional do país escolhido. Num país com regra
+  // fixa, quando só o número com o indicativo à frente está certo
+  // ("351912345678" com +351), lê-se como internacional sem o "+".
+  if (NATIONAL_DIGITS[dialCode] && digits.startsWith(dialCode)) {
+    const asNational = `+${dialCode} ${digits}`;
+    const asInternational = `+${digits}`;
+    if (phoneIssue(asNational) != null && phoneIssue(asInternational) == null) return asInternational;
+  }
+  return `+${dialCode} ${value}`;
 }
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
