@@ -9,6 +9,7 @@
  *   2 · 20h  Urgência verdadeira: a hora exata a que o preço expira e,
  *            quando for verdade, a escassez real do calendário
  *   3 · 72h  Datas re-verificadas, preço de hoje, e o Flex oferecido 72h
+ *            (só quando acrescenta dias à tarifa: flexExtraDays)
  *   4 · 7d   Alternativas na mesma região, livres nas mesmas datas. Último.
  *
  * Os contactos 1 e 2 falam da cotação que o hóspede pediu e vão para todos.
@@ -21,6 +22,7 @@
  * Tudo aqui é puro (sem I/O) para ficar coberto por testes.
  */
 import { createHash } from "crypto";
+import { FREE_CANCELLATION_DAYS, type PolicyCode } from "@shared/cancellationPolicy";
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -56,6 +58,22 @@ export const KLARNA_MAX_CENTS = 100_000;
 /** O Klarna aceita este total (cêntimos)? Sem total conhecido, não se sugere. */
 export function klarnaCanPay(totalCents: number | null | undefined): boolean {
   return typeof totalCents === "number" && Number.isSafeInteger(totalCents) && totalCents > 0 && totalCents <= KLARNA_MAX_CENTS;
+}
+
+/**
+ * Dias que o Flex acrescenta ao cancelamento gratuito da tarifa. O Flex
+ * deixa remarcar até `rescheduleDaysBefore` dias antes da chegada; uma tarifa
+ * que já cancela de graça até N dias antes só ganha os dias entre N e esse
+ * prazo. Na moderate (7 dias) com o Flex a 7 dias: 0, o Flex não acrescenta
+ * nada. Não reembolsável: tudo (Infinity). Política desconhecida: null, não se
+ * sabe (quem chama decide; o funil mantém a oferta, como antes).
+ */
+export function flexExtraDays(policy: PolicyCode | null | undefined, rescheduleDaysBefore: number): number | null {
+  if (!policy) return null;
+  if (policy === "non_refundable") return Infinity;
+  const free = FREE_CANCELLATION_DAYS[policy];
+  if (typeof free !== "number") return null;
+  return Math.max(0, free - rescheduleDaysBefore);
 }
 
 export type RecoveryStage = 1 | 2 | 3 | 4;

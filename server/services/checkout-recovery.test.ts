@@ -315,3 +315,40 @@ describe("contacto 1 no pagamento: o email depende de ter havido uma tentativa d
     expect(mock.attempt).not.toHaveBeenCalled();
   });
 });
+
+describe("contacto 3: o Flex só é oferecido quando acrescenta dias à tarifa", () => {
+  const requote = (cancellationPolicy?: string[]) => ({
+    quoteId: "q-new", total: 2280, currency: "EUR", nights: 5, ratePlanId: "rp1",
+    pricing: { nightlyRate: 420, totalNights: 2100, cleaningFee: 180, taxesAndFees: 0 },
+    ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2280, nightlyRate: 420, cleaningFee: 180, taxesAndFees: 0,
+      ...(cancellationPolicy ? { cancellationPolicy } : {}) }],
+  });
+  const stage3 = () => intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) });
+  beforeEach(() => mock.consent.mockResolvedValue(true));
+
+  it("moderate (cancela de graça até 7 dias antes, o mesmo prazo do Flex): sem Flex oferecido", async () => {
+    mock.beQuote.mockResolvedValue(requote(["MODERATE"]));
+    mock.candidates.mockResolvedValue([stage3()]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    const patch = mock.update.mock.calls[0][1];
+    expect(patch).toMatchObject({ guestyQuoteId: "q-new" });
+    expect(patch).not.toHaveProperty("flex");
+    expect(patch).not.toHaveProperty("flexGiftUntil");
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: null }));
+  });
+
+  it.each([["FIRM"], ["STRICT"], ["STRICT_60"], ["NON_REFUNDABLE"]])("%s: o Flex acrescenta dias e continua oferecido", async (code) => {
+    mock.beQuote.mockResolvedValue(requote([code]));
+    mock.candidates.mockResolvedValue([stage3()]);
+    await runCheckoutRecoverySweep();
+    expect(mock.update.mock.calls[0][1]).toMatchObject({ flex: true, flexGiftUntil: expect.any(Date), flexGiftReason: "recovery" });
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: expect.objectContaining({ days: 7 }) }));
+  });
+
+  it("política desconhecida: como antes, o Flex é oferecido", async () => {
+    mock.beQuote.mockResolvedValue(requote());
+    mock.candidates.mockResolvedValue([stage3()]);
+    await runCheckoutRecoverySweep();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: expect.objectContaining({ days: 7 }) }));
+  });
+});

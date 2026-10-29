@@ -14,7 +14,7 @@ consoante o passo onde o hóspede parou.
 |---|---|---|---|
 | 1 | 1 hora depois | Todos | A casa: tudo guardado, um clique para continuar, convite a responder (a equipa lê todas as respostas; o Reply-To de todos os contactos é a caixa de reservas `BOOKING_NOTIFICATION_EMAIL`, booking@ por omissão, mesmo que o remetente mude; nunca promete leitura pessoal). Se parou no **pagamento**, conforme tentou ou não pagar (ver "Contacto 1 no pagamento"). |
 | 2 | 20 horas depois | Todos | Urgência verdadeira: a hora exata a que o preço expira e, só quando for verdade, a escassez do calendário ("das 47 noites à volta das suas datas, 29 já não estão disponíveis"). |
-| 3 | 3 dias depois | Só com consentimento de marketing | As datas são re-verificadas no Guesty, o preço é refeito e guardado mais 23 horas, e o **Flex é oferecido durante 72 horas**. Se as datas já não se vendem, salta para o contacto 4. |
+| 3 | 3 dias depois | Só com consentimento de marketing | As datas são re-verificadas no Guesty, o preço é refeito e guardado mais 23 horas, e o **Flex é oferecido durante 72 horas** quando acrescenta alguma coisa à tarifa (ver abaixo). Se as datas já não se vendem, salta para o contacto 4. |
 | 4 | 7 dias depois | Só com consentimento de marketing | Até 3 casas na mesma região, com capacidade e livres nas mesmas datas, com foto, nome, lugar e ligação. **Sem preço no cartão**: o `priceFrom` do catálogo não é o preço daquelas datas e a unidade (noite ou pessoa) não está confirmada. É o último contacto. |
 
 ## Contacto 1 no pagamento
@@ -53,6 +53,11 @@ olhos do hóspede e só custa à Portugal Active se ele remarcar.
   também.
 - Só é oferecido quando a estadia está acima do limiar do Flex
   (`FLEX_CONFIG.minTotal`). Abaixo, o contacto 3 vai sem incentivo.
+- Só é oferecido quando acrescenta dias ao cancelamento gratuito da tarifa
+  (`flexExtraDays`): o Flex remarca até 7 dias antes da chegada, e a tarifa
+  moderate já cancela de graça até 7 dias antes, por isso nela o contacto 3 vai
+  sem incentivo. Firm, strict, strict_60 e não reembolsável continuam a recebê-lo;
+  com política desconhecida, como antes.
 - O Flex nunca se chama "seguro" em nenhuma língua.
 
 ## Regras fixas

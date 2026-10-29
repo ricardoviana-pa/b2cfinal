@@ -35,10 +35,12 @@ import {
   nextRecoveryStage,
   hasEnoughLeadTime,
   calendarScarcity,
+  flexExtraDays,
   klarnaCanPay,
   type RecoveryStage,
 } from "./recovery-funnel";
 import { FLEX_CONFIG, flexPriceFor } from "../config/checkout-extras";
+import { planPolicyCode } from "@shared/cancellationPolicy";
 import { intentPolicyCode, withoutExpiredFullPaymentGift } from "./checkout-plan";
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -181,8 +183,16 @@ async function requoteForStage3(intent: BookingIntent): Promise<
     };
     const expiresAt = new Date(Date.now() + RECOVERY_TIMING.requoteTtlMs);
     // O Flex só existe acima do limiar (decisão de produto); abaixo, o
-    // contacto 3 vai sem incentivo em vez de oferecer algo que não se vende
-    const giftEligible = total >= FLEX_CONFIG.minTotal;
+    // contacto 3 vai sem incentivo em vez de oferecer algo que não se vende.
+    // E só se oferece quando acrescenta dias à tarifa: na moderate (cancela de
+    // graça até 7 dias antes) o Flex remarca até 7 dias antes, a mesma data,
+    // e "oferecê-lo" era oferecer nada. Política desconhecida: como antes.
+    const policy = planPolicyCode(plan ?? { cancellationPolicy: be.cancellationPolicy });
+    const addsNothing = flexExtraDays(policy, FLEX_CONFIG.rescheduleDaysBefore) === 0;
+    if (addsNothing && total >= FLEX_CONFIG.minTotal) {
+      console.info(`[Recovery] Contacto 3 sem Flex oferecido (intent ${intent.id}): a tarifa ${policy} já cancela de graça até ao prazo do Flex`);
+    }
+    const giftEligible = total >= FLEX_CONFIG.minTotal && !addsNothing;
     const flexGift = giftEligible
       ? {
           until: new Date(Date.now() + RECOVERY_TIMING.flexGiftMs),
