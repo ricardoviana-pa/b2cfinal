@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { loadPropertyOverrides, mergePropertyOverrides, propertyOverridesQueryKey } from '@/lib/localizeProperty';
 import { SSR_FROM_PRICES_KEY, pickLowestNightly, type SsrFromPrices } from '@/lib/ssrFromPrices';
+import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import { countVars } from '@/lib/plural';
 import { propertyKindInline } from '@shared/propertyMeta';
 import { propertyPageMetaOpts } from '@/lib/propertyPageMeta';
@@ -1183,6 +1184,9 @@ export default function PropertyDetail() {
   const barFromPrice = (bookableOnline || tripwixUid) && barNightly > 0
     ? `${t('property.fromPerNight', { price: Math.round(barNightly).toLocaleString(intlLocale(i18n.language)) })} ${t('partnerBooking.perNight', 'per night')}`
     : null;
+  // A partner home with no "from" (no calendar yet): "Price on request", not
+  // "Select dates for price" — dates will not price it either.
+  const barNoPrice = t(noPriceLabelKey(!!tripwixUid, lowestNightly?.from));
 
   // Booking panel — shared between the desktop sticky sidebar and the mobile
   // bottom-sheet drawer so the two stay in sync (single source of truth).
@@ -1855,7 +1859,7 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="body-sm text-pa-dark font-medium">
-                {bookingSelection?.total ? formatQuotedEur(bookingSelection.total, i18n.language) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : barFromPrice ?? t('property.selectDatesForPrice')}
+                {bookingSelection?.total ? formatQuotedEur(bookingSelection.total, i18n.language) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : barFromPrice ?? barNoPrice}
               </p>
               <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
                 {bookingSelection?.total ? (bookingSelection.isPartial ? t('partnerBooking.totalSoFar') : t('conversion.stayTotal')) : (bookingSelection?.checkIn || initialCheckin) ? formatBookingDate(bookingSelection?.checkIn || initialCheckin, i18n.language) : barFromPrice ? t('property.selectDatesForPrice') : t('property.conciergeShort')}

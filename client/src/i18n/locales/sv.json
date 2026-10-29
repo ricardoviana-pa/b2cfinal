@@ -390,6 +390,10 @@
     "clearDates": "Rensa",
     "availableLabel": "Tillgänglig",
     "unavailableLabel": "Ej tillgänglig",
+    "onRequestLabel": "På förfrågan",
+    "onRequestNote": "För datum på förfrågan kan vi inte visa tillgänglighet och pris online. Det går ändå att efterfråga dem: vår concierge bekräftar tillgänglighet och pris.",
+    "onRequestAll": "Just nu kan vi inte visa tillgänglighet och priser för det här huset online. Det går att efterfråga vilka datum som helst: vår concierge bekräftar tillgänglighet och pris.",
+    "calendarLoadError": "Vi kunde inte ladda tillgängligheten just nu. Det går ändå att efterfråga vilka datum som helst: vår concierge bekräftar tillgänglighet och pris.",
     "confirmDates": "Bekräfta",
     "tariffInCheckout": "Två priser tillgängliga. Välj ditt i nästa steg.",
     "reserve": "RESERVERA",
@@ -2012,8 +2016,10 @@
     "soFarLabel": "hittills",
     "perNight": "per natt",
     "pickDates": "Välj dina datum för exakt totalsumma",
+    "onRequestHint": "Vår concierge bekräftar tillgänglighet och pris för dina datum",
     "minNights": "Detta hus kräver minst {{min}} nätter.",
     "quoteError": "Vi kunde inte prissätta dessa datum just nu. Skicka förfrågan så bekräftar vår concierge totalen.",
+    "onRequestDates": "Vi kan inte visa något pris online för dessa datum. Skicka förfrågan så bekräftar vår concierge tillgänglighet och totalsumma.",
     "total": "Totalt",
     "totalSoFar": "Totalt hittills",
     "vatIncluded": "Moms ingår.",
@@ -2149,6 +2155,50 @@
     "toConfirm": "{{count}} att bekräfta",
     "results": "{{count}} boenden",
     "sort": "Sortera boenden"
+  },
+  "destinationSearch": {
+    "regions": "Regioner",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Dourodalen",
+      "silver-coast": "Silverkusten"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} boende",
+    "homes_other": "{{count}} boenden",
+    "available_one": "{{count}} tillgänglig",
+    "available_other": "{{count}} tillgängliga",
+    "toConfirm_one": "varav {{count}} att bekräfta",
+    "toConfirm_other": "varav {{count}} att bekräfta",
+    "unavailable_one": "{{count}} inte tillgänglig",
+    "unavailable_other": "{{count}} inte tillgängliga",
+    "showHomes_one": "Visa {{count}} boende",
+    "showHomes_other": "Visa {{count}} boenden"
+  },
+  "listingWhatsApp": {
+    "intro": "Hej! Jag tittar på boenden på Portugal Actives webbplats och skulle gärna vilja ha hjälp att välja.",
+    "introNoMatch": "Hej! Jag hittade inget boende på Portugal Actives webbplats som passar det jag söker. Kan ni hjälpa mig?",
+    "introNoAvailability": "Hej! Jag hittade inget ledigt boende för mina datum på Portugal Actives webbplats. Kan ni hjälpa mig?",
+    "destination": "Resmål: {{place}}",
+    "collection": "Kollektion: {{name}}",
+    "dates": "Datum: {{from}} → {{to}}",
+    "guests": "Gäster: {{count}}",
+    "aria": "Skriv till vår concierge på WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Kostnadsfri avbokning med återbetalningsbara prisalternativ som betalas online, fram till datumet som visas innan du betalar",
+    "whatsapp": "Frågor? Skriv till vår concierge på WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} boende",
+    "kicker_other": "{{name}} · {{count}} boenden",
+    "title": "Välj ditt boende",
+    "viewAll_one": "Se {{count}} boende",
+    "viewAll_other": "Se alla {{count}} boenden"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Skrivet på {{language}}"
   },
   "pdpUx": {
     "navigation": "Utforska boendet",

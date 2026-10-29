@@ -1694,7 +1694,9 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
         return {
           localities,
           catalogForSite,
-          ...(strippedPath === "/" ? { guestFeedback: recentGuestFeedback(properties) } : {}),
+          // Homepage reviews in the page's language first; the input must match
+          // the client's useQuery({ locale }) so the seeded cache hydrates.
+          ...(strippedPath === "/" ? { guestFeedback: { input: { locale: lang }, data: recentGuestFeedback(properties, lang) } } : {}),
           ...(fromPrices ? { fromPrices } : {}),
         };
       } catch {

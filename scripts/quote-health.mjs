@@ -17,12 +17,16 @@
  * - As casas parceiras (Tripwix) são cotadas pelo caminho delas
  *   (booking.partnerQuote): servem o calendário que o job guardou, sem
  *   chamadas à Tripwix.
+ * - Verificação de 29 out 2026 (Tripwix P1): para cada parceira, também até
+ *   onde chega o calendário (booking.partnerCalendar, o ano). Nove casas
+ *   paravam a 2027-03-04 e a quote de teste, a ~7 semanas, não o via.
  *
  * Uso:
  *   node scripts/quote-health.mjs                        # produção
  *   HOST=https://dev.portugalactive.com node scripts/quote-health.mjs
  *   CHECKIN=2027-01-11 CHECKOUT=2027-01-16 node scripts/quote-health.mjs
  *   PARTNERS=0 node scripts/quote-health.mjs             # só as nossas casas
+ *   PARTNER_CALENDARS=0 node scripts/quote-health.mjs    # sem ver até onde vai o calendário das parceiras
  *
  * Casas em "SEM QUOTE LIVE" de forma consistente = provável configuração em
  * falta no Booking Engine (rate plan, listing inativo). Corrigir no Guesty.
@@ -35,6 +39,7 @@ import {
   isPartnerHome,
   isQuotableOwnHome,
   isPublicHome,
+  partnerCalendarHorizon,
   stayNights,
 } from "./lib/quote-health.mjs";
 
@@ -47,6 +52,10 @@ const CHECKIN = process.env.CHECKIN || iso(monday);
 const CHECKOUT = process.env.CHECKOUT || iso(new Date(monday.getTime() + 5 * 86400000));
 const THROTTLE_MS = Number(process.env.THROTTLE_MS || 1500);
 const WITH_PARTNERS = process.env.PARTNERS !== "0";
+// Até onde chega o calendário de cada parceira (um GET a mais por casa).
+const WITH_PARTNER_CALENDARS = WITH_PARTNERS && process.env.PARTNER_CALENDARS !== "0";
+const TODAY = iso(new Date());
+const YEAR_END = iso(new Date(Date.now() + 365 * 86400000));
 
 async function trpc(path, input) {
   const payload = input === undefined ? { 0: { json: null, meta: { values: ["undefined"] } } } : { 0: { json: input } };
@@ -78,7 +87,7 @@ const own = homes.filter(isQuotableOwnHome);
 const partners = WITH_PARTNERS ? homes.filter(isPartnerHome) : [];
 const lastNight = stayNights(CHECKIN, CHECKOUT).at(-1) || CHECKIN;
 
-const rows = { live: [], base: [], unreadable: [], unavailable: [], request: [], noCalendar: [], error: [] };
+const rows = { live: [], base: [], unreadable: [], unavailable: [], request: [], noCalendar: [], shortCalendar: [], error: [] };
 const mark = { live: ".", unavailable: "u", request: "p", fallback: "F", unreadable: "?", "no-calendar": "T", error: "E" };
 console.log(`Quote health · ${HOST} · ${CHECKIN} → ${CHECKOUT} · ${own.length} casas nossas + ${partners.length} parceiras (${origin}) · ${THROTTLE_MS}ms entre pedidos\n`);
 
@@ -134,11 +143,26 @@ for (const p of partners) {
   }
   process.stdout.write(mark[bucket] ?? "?");
   await new Promise((res) => setTimeout(res, THROTTLE_MS));
+  // A quote de teste é daqui a ~7 semanas: um calendário que pára a meio do
+  // ano (nove casas a 2027-03-04, verificação de 29 out 2026) passava por bom.
+  if (!WITH_PARTNER_CALENDARS) continue;
+  try {
+    const cal = await trpc("booking.partnerCalendar", { tripwixUid: p.supplierUid, startDate: TODAY, endDate: YEAR_END });
+    if (cal.status === 200) {
+      const h = partnerCalendarHorizon(cal.data, TODAY);
+      if (h.status === "short") rows.shortCalendar.push({ name, detail: h.detail });
+      else if (h.status === "none" && bucket !== "no-calendar") rows.noCalendar.push({ name, detail: h.detail });
+    }
+  } catch (e) {
+    rows.error.push({ name: `${name} (calendário)`, detail: e?.message });
+  }
+  await new Promise((res) => setTimeout(res, THROTTLE_MS));
 }
 
 console.log(
   `\n\nRESULTADO: live/cached ${rows.live.length} · fallback ${rows.base.length} · calendário ilegível ${rows.unreadable.length}` +
   ` · indisponíveis ${rows.unavailable.length} · por pedido ${rows.request.length} · parceiras sem calendário ${rows.noCalendar.length}` +
+  (WITH_PARTNER_CALENDARS ? ` · parceiras com calendário curto ${rows.shortCalendar.length}` : "") +
   ` · erros ${rows.error.length} (noites ${CHECKIN} → ${lastNight})\n`,
 );
 const list = (title, arr) => {
@@ -150,6 +174,7 @@ const list = (title, arr) => {
 list("SEM QUOTE LIVE com as noites abertas (corrigir no Guesty/BE):", rows.base);
 list("SEM QUOTE LIVE e CALENDÁRIO ILEGÍVEL (o BE pode estar em baixo: ver logs [Booking] getCalendar FAILED e repetir antes de mexer no Guesty):", rows.unreadable);
 list("PARCEIRAS SEM CALENDÁRIO (ver logs [Tripwix] no Render; perguntar à Tripwix se persistir):", rows.noCalendar);
+list("PARCEIRAS COM CALENDÁRIO CURTO (o site mostra os dias seguintes \"a pedido\", sem preço; perguntar à Tripwix):", rows.shortCalendar);
 list("INDISPONÍVEIS nas datas de teste (normal se ocupadas; testar outra janela):", rows.unavailable);
 list("POR PEDIDO nas datas de teste (configuração do Guesty):", rows.request);
 list("ERROS:", rows.error);

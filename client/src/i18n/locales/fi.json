@@ -390,6 +390,10 @@
     "clearDates": "Tyhjennä",
     "availableLabel": "Vapaa",
     "unavailableLabel": "Varattu",
+    "onRequestLabel": "Pyynnöstä",
+    "onRequestNote": "Pyynnöstä merkittyjen päivien saatavuutta ja hintaa emme voi näyttää verkossa. Niitä voi silti pyytää: concierge vahvistaa saatavuuden ja hinnan.",
+    "onRequestAll": "Emme voi tällä hetkellä näyttää tämän talon saatavuutta ja hintoja verkossa. Mitä tahansa päiviä voi pyytää: concierge vahvistaa saatavuuden ja hinnan.",
+    "calendarLoadError": "Saatavuutta ei juuri nyt voitu ladata. Mitä tahansa päiviä voi silti pyytää: concierge vahvistaa saatavuuden ja hinnan.",
     "confirmDates": "Vahvista",
     "tariffInCheckout": "Kaksi hintaa saatavilla. Valitse omasi seuraavassa vaiheessa.",
     "reserve": "VARAA",
@@ -2012,8 +2016,10 @@
     "soFarLabel": "toistaiseksi",
     "perNight": "per yö",
     "pickDates": "Valitse päivät nähdäksesi tarkan kokonaissumman",
+    "onRequestHint": "Concierge vahvistaa saatavuuden ja hinnan valitsemillesi päiville",
     "minNights": "Tämä talo edellyttää vähintään {{min}} yötä.",
     "quoteError": "Emme saaneet hintaa näille päiville juuri nyt. Lähetä pyyntö, niin concierge vahvistaa summan.",
+    "onRequestDates": "Emme voi näyttää näille päiville hintaa verkossa. Lähetä pyyntö, niin concierge vahvistaa saatavuuden ja kokonaissumman.",
     "total": "Yhteensä",
     "totalSoFar": "Yhteensä toistaiseksi",
     "vatIncluded": "Sisältää ALV:n.",
@@ -2149,6 +2155,50 @@
     "toConfirm": "{{count}} vahvistettavaa",
     "results": "{{count}} kohdetta",
     "sort": "Lajittele kohteet"
+  },
+  "destinationSearch": {
+    "regions": "Alueet",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Douron laakso",
+      "silver-coast": "Hopearannikko"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} kohde",
+    "homes_other": "{{count}} kohdetta",
+    "available_one": "{{count}} vapaana",
+    "available_other": "{{count}} vapaana",
+    "toConfirm_one": "joista {{count}} vahvistettavana",
+    "toConfirm_other": "joista {{count}} vahvistettavana",
+    "unavailable_one": "{{count}} ei saatavilla",
+    "unavailable_other": "{{count}} ei saatavilla",
+    "showHomes_one": "Näytä {{count}} kohde",
+    "showHomes_other": "Näytä {{count}} kohdetta"
+  },
+  "listingWhatsApp": {
+    "intro": "Hei! Katselen kohteita Portugal Activen verkkosivuilla ja haluaisin apua valintaan.",
+    "introNoMatch": "Hei! En löytänyt Portugal Activen verkkosivuilta kohdetta, joka vastaisi toiveitani. Voitteko auttaa?",
+    "introNoAvailability": "Hei! En löytänyt Portugal Activen verkkosivuilta vapaata kohdetta päivilleni. Voitteko auttaa?",
+    "destination": "Matkakohde: {{place}}",
+    "collection": "Kokoelma: {{name}}",
+    "dates": "Päivät: {{from}} → {{to}}",
+    "guests": "Vieraat: {{count}}",
+    "aria": "Kirjoita conciergellemme WhatsAppissa"
+  },
+  "listingReassurance": {
+    "cancellation": "Maksuton peruutus verkossa maksetuissa palautettavissa hintavaihtoehdoissa siihen päivään asti, joka näytetään ennen maksamista",
+    "whatsapp": "Kysyttävää? Kirjoita conciergellemme WhatsAppissa"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} kohde",
+    "kicker_other": "{{name}} · {{count}} kohdetta",
+    "title": "Valitse lomakotisi",
+    "viewAll_one": "Katso {{count}} kohde",
+    "viewAll_other": "Katso kaikki {{count}} kohdetta"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Kieli: {{language}}"
   },
   "pdpUx": {
     "navigation": "Tutustu kohteeseen",

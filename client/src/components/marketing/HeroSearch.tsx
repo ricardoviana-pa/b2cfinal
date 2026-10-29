@@ -4,10 +4,12 @@ import { useLocation } from 'wouter';
 import { CalendarDays, ChevronDown, Search } from 'lucide-react';
 import { pushDL } from '@/lib/datalayer';
 import { openDatePickerWithin } from '@/lib/datePicker';
-import { addSearchDays, buildHomeSearchPath } from '@/lib/homeSearch';
+import { addSearchDays, buildHomeSearchPath, parseDestinationSelection } from '@/lib/homeSearch';
 
-export default function HeroSearch({ options, destination, checkin, checkout, guests, onDestination, onCheckin, onCheckout, onGuests }: {
+export default function HeroSearch({ options, destination, checkin, checkout, guests, guestsChosen = true, onDestination, onCheckin, onCheckout, onGuests }: {
   options: ReactNode; destination: string; checkin: string; checkout: string; guests: number;
+  /** False while the guest count is still the default: it then stays out of the URL. */
+  guestsChosen?: boolean;
   onDestination: (value: string) => void; onCheckin: (value: string) => void;
   onCheckout: (value: string) => void; onGuests: (value: number) => void;
 }) {
@@ -18,11 +20,12 @@ export default function HeroSearch({ options, destination, checkin, checkout, gu
   return (
     <form className="hero-search" aria-label={t('homes.searchHomes')} onSubmit={event => {
       event.preventDefault();
-      pushDL({ event: 'search', search_location: destination || 'All Destinations', search_location_type: destination ? 'city' : 'all',
+      const pick = parseDestinationSelection(destination);
+      pushDL({ event: 'search', search_location: pick.destination || pick.location || 'All Destinations', search_location_type: pick.destination ? 'region' : pick.location ? 'city' : 'all',
         search_checkin: checkin || null, search_checkout: checkout || null,
         search_nights: checkin && checkout ? Math.round((Date.parse(checkout) - Date.parse(checkin)) / 86400000) : null,
         search_adults: guests, search_children: 0, search_source: window.matchMedia('(min-width: 1024px)').matches ? 'hero_desktop' : 'hero_mobile' });
-      navigate(buildHomeSearchPath({ destination, checkin, checkout, guests }));
+      navigate(buildHomeSearchPath({ destination, checkin, checkout, guests: guestsChosen ? guests : 0 }));
     }}>
       <label className="hero-search-field hero-search-destination">
         <span>{t('home.searchDestination')}</span>

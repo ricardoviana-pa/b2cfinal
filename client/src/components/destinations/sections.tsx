@@ -1,5 +1,6 @@
 import { RealEstateLocalCTA } from './RealEstateLocalCTA';
-import { discoveryText, featuredDestinationHomes, selectDestinationHomes } from '@/data/destination-discovery';
+import { discoveryText, featuredDestinationHomes } from '@/data/destination-discovery';
+import { visibleDestinationHomes } from '@/lib/destinationHomes';
 /* ==========================================================================
    DESTINATION — 11-SECTION TEMPLATE COMPONENTS
    ========================================================================
@@ -34,7 +35,6 @@ import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import PropertyCard from '@/components/property/PropertyCard';
-import { PROPERTY_GROUPS } from '@/config/propertyGroups';
 
 /* ── 1. HERO EDITORIAL ────────────────────────────────────────────────── */
 
@@ -74,7 +74,7 @@ export function WhyThisPlace({ destination: d }: { destination: Destination }) {
     <section className="section-padding bg-white">
       <div className="container max-w-3xl mx-auto">
         {d.whyOverline && (
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">
+          <p className="text-[11px] font-medium text-pa-gold-aa mb-4 tracking-[0.08em]">
             {d.whyOverline}
           </p>
         )}
@@ -120,12 +120,8 @@ export function WhereToStay({ destination: d, properties, heading, intro, sectio
   const search = useSearch();
   const trip = editorialTripContext(search);
   const regionalAlternatives = d.slug === 'esposende' && !properties.some(p => p.locality?.toLowerCase() === 'esposende');
-  const visibleHomes = useMemo(() => {
-    const present = new Set(properties.map(p=>p.guestyId));
-    const groupedChildren = new Set(PROPERTY_GROUPS.filter(g=>present.has(g.parentGuestyId)).flatMap(g=>g.unitGuestyIds.filter(id=>id!==g.parentGuestyId)));
-    const homes = properties.filter(p=>p.isActive !== false && (!p.guestyId || !groupedChildren.has(p.guestyId)));
-    return featured ? selectDestinationHomes(homes, d.slug) : homes.slice(0,6);
-  }, [properties, featured, d.slug]);
+  // Same selection as the early strip (DestinationHomesStrip): one price query for both.
+  const visibleHomes = useMemo(() => visibleDestinationHomes(properties, { slug: d.slug, featured }), [properties, featured, d.slug]);
   const listingIds = useMemo(() => visibleHomes.filter(p => p.guestyId).map(p => p.guestyId!), [visibleHomes]);
   // Starts from the prices the server put into the page (useFromPrices).
   const { data: fromPrices } = useFromPrices(listingIds);
@@ -226,7 +222,7 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
               </div>
               <div className="min-w-0 flex-1">
               <h3
-                className="text-[16px] font-medium text-[#1A1A18] mb-1.5 group-hover:text-[#8B7355] transition-colors"
+                className="text-[16px] font-medium text-[#1A1A18] mb-1.5 group-hover:text-pa-gold-aa transition-colors"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {a.title}
@@ -380,7 +376,7 @@ export function WhenToVisit({ destination: d }: { destination: Destination }) {
         </div>
         {d.seasons.bestForFirstTime && (
           <div className="mt-10 max-w-3xl mx-auto bg-[#FAFAF7] border border-[#E8E4DC] p-6">
-            <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#8B7355] mb-3">
+            <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-pa-gold-aa mb-3">
               {t('destinationDetail.guide.bestForFirstTime')}
             </p>
             <p className="text-[14px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 300 }}>
@@ -575,7 +571,7 @@ export function EatDrinkExperience({
                     {e.description}
                   </p>
                   {(e.duration || e.season) && (
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-[#8B7355] tracking-[0.02em]">
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-pa-gold-aa tracking-[0.02em]">
                       {e.duration && <span>{localizeDuration(e.duration, t)}</span>}
                       {e.season && <span>· {e.season}</span>}
                     </div>
@@ -628,14 +624,14 @@ export function EatDrinkExperience({
                   </p>
                   <div className="flex items-center justify-between">
                     {(adv.priceFrom ?? 0) > 0 && (
-                      <p className="text-[13px] text-[#8B7355]">
+                      <p className="text-[13px] text-pa-gold-aa">
                         {t('common.from')} {formatEurEditorial(adv.priceFrom ?? 0)}
                       </p>
                     )}
                     {onAddToItinerary && (
                       <button
                         onClick={() => onAddToItinerary(adv)}
-                        className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
+                        className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-pa-gold-aa transition-colors"
                         style={{ minHeight: 'auto', minWidth: 'auto' }}
                       >
                         <Plus className="w-3.5 h-3.5" /> {t('destinationDetail.guide.addToItinerary')}
@@ -683,14 +679,14 @@ export function EventsAndPlanning({ destination: d, compact = false }: { destina
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   {ev.url ? (
-                    <a href={ev.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#8B7355]">
+                    <a href={ev.url} target="_blank" rel="noopener noreferrer" className="hover:text-pa-gold-aa">
                       {ev.name}
                     </a>
                   ) : (
                     ev.name
                   )}
                 </h3>
-                <p className="text-[11px] font-medium tracking-[0.04em] uppercase text-[#8B7355] mb-2">
+                <p className="text-[11px] font-medium tracking-[0.04em] uppercase text-pa-gold-aa mb-2">
                   {ev.dates}
                 </p>
                 <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>

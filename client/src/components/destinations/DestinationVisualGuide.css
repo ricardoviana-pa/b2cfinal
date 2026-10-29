@@ -95,3 +95,50 @@
     display: block;
   }
 }
+
+/* Homes right under the hero (ux-home-plp-04): compact, so the guide still
+   starts within the first screens. Card titles are smaller here than in the
+   full "Homes in …" section at the end. */
+.destination-homes-strip {
+  padding-block: 2.25rem 2rem;
+}
+.destination-homes-strip-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+.minho-editorial .destination-homes-strip .minho-kicker {
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.minho-editorial .destination-homes-strip h2 {
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+}
+.destination-homes-strip-note {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b6860;
+}
+.minho-editorial .destination-homes-strip article h3 {
+  font-size: 1.3rem;
+}
+@media (min-width: 768px) {
+  .destination-homes-strip {
+    padding-block: 3.25rem 3rem;
+  }
+  .destination-homes-strip-head {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 1.75rem;
+  }
+}
+
+/* Kickers on the tinted sections: #806a48 is 4.47:1 on #edf0e8 and 4.37:1 on
+   #f0ece4 (axe, auditoria 29 out); this bronze is 4.9:1 and 4.8:1. */
+.minho-editorial .minho-itinerary .minho-kicker,
+.minho-editorial .minho-taste .minho-kicker {
+  color: #7a6444;
+}

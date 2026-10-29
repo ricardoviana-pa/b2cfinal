@@ -390,6 +390,10 @@
     "clearDates": "Effacer",
     "availableLabel": "Disponible",
     "unavailableLabel": "Indisponible",
+    "onRequestLabel": "Sur demande",
+    "onRequestNote": "Pour les dates sur demande, nous ne pouvons pas afficher en ligne la disponibilité ni le prix. Vous pouvez tout de même les demander : notre concierge confirme la disponibilité et le prix.",
+    "onRequestAll": "Pour le moment, nous ne pouvons pas afficher en ligne la disponibilité ni les prix de cette maison. Vous pouvez demander les dates de votre choix : notre concierge confirme la disponibilité et le prix.",
+    "calendarLoadError": "Nous n’avons pas pu charger les disponibilités pour le moment. Vous pouvez tout de même demander les dates de votre choix : notre concierge confirme la disponibilité et le prix.",
     "confirmDates": "Confirmer",
     "tariffInCheckout": "Deux tarifs disponibles. Choisissez le vôtre à l'étape suivante.",
     "reserve": "RÉSERVER",
@@ -2012,8 +2016,10 @@
     "soFarLabel": "à ce stade",
     "perNight": "par nuit",
     "pickDates": "Choisissez vos dates pour le total exact",
+    "onRequestHint": "Notre concierge confirme la disponibilité et le prix pour vos dates",
     "minNights": "Cette maison exige un minimum de {{min}} nuits.",
     "quoteError": "Nous n’avons pas pu chiffrer ces dates. Envoyez la demande, le concierge confirmera le total.",
+    "onRequestDates": "Nous ne pouvons pas afficher de prix en ligne pour ces dates. Envoyez la demande et notre concierge confirmera la disponibilité et le total.",
     "total": "Total",
     "totalSoFar": "Total à ce stade",
     "vatIncluded": "TVA incluse.",
@@ -2149,6 +2155,50 @@
     "toConfirm": "{{count}} à confirmer",
     "results": "{{count}} logements",
     "sort": "Trier les logements"
+  },
+  "destinationSearch": {
+    "regions": "Régions",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Vallée du Douro",
+      "silver-coast": "Côte d’Argent"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} logement",
+    "homes_other": "{{count}} logements",
+    "available_one": "{{count}} disponible",
+    "available_other": "{{count}} disponibles",
+    "toConfirm_one": "dont {{count}} à confirmer",
+    "toConfirm_other": "dont {{count}} à confirmer",
+    "unavailable_one": "{{count}} indisponible",
+    "unavailable_other": "{{count}} indisponibles",
+    "showHomes_one": "Afficher {{count}} logement",
+    "showHomes_other": "Afficher {{count}} logements"
+  },
+  "listingWhatsApp": {
+    "intro": "Bonjour ! Je regarde les maisons sur le site de Portugal Active et j’aimerais de l’aide pour choisir.",
+    "introNoMatch": "Bonjour ! Je n’ai pas trouvé sur le site de Portugal Active de maison qui corresponde à ce que je cherche. Pouvez-vous m’aider ?",
+    "introNoAvailability": "Bonjour ! Je n’ai pas trouvé sur le site de Portugal Active de maison disponible à mes dates. Pouvez-vous m’aider ?",
+    "destination": "Destination : {{place}}",
+    "collection": "Collection : {{name}}",
+    "dates": "Dates : {{from}} → {{to}}",
+    "guests": "Voyageurs : {{count}}",
+    "aria": "Écrire à notre concierge sur WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Annulation gratuite avec les tarifs remboursables payés en ligne, jusqu’à la date affichée avant le paiement",
+    "whatsapp": "Des questions ? Écrivez à notre concierge sur WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} maison",
+    "kicker_other": "{{name}} · {{count}} maisons",
+    "title": "Choisissez votre maison",
+    "viewAll_one": "Voir {{count}} maison",
+    "viewAll_other": "Voir les {{count}} maisons"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Rédigé en {{language}}"
   },
   "pdpUx": {
     "navigation": "Découvrez ce logement",
