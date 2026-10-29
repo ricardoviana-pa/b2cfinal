@@ -9,6 +9,7 @@ import { isLiveSiteHostname } from "@shared/deployment";
    ========================================================================== */
 
 import { useRef, useEffect, useCallback } from 'react';
+import { installBokunAnalyticsGuard } from '@/lib/bokunAnalyticsGuard';
 
 interface BokunCalendarWidgetProps {
   bokunActivityId: number;
@@ -38,6 +39,10 @@ let bokunLoaderPromise: Promise<void> | null = null;
 function ensureBokunLoader(): Promise<void> {
   if (!isLiveSiteHostname(window.location.hostname)) return Promise.resolve();
   if (bokunLoaderPromise) return bokunLoaderPromise;
+  // Tem de ficar antes do script (os listeners da window correm pela ordem de
+  // registo): os eventos GA4 que o widget reencaminha para esta página não
+  // chegam às tags de conversão das casas (lib/bokunAnalyticsGuard.ts).
+  installBokunAnalyticsGuard();
   bokunLoaderPromise = new Promise((resolve) => {
     if ((window as any).BokunWidgetsLoader) { resolve(); return; }
     const s = document.createElement('script');
