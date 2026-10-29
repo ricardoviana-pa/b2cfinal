@@ -82,6 +82,17 @@ describe('new listing strings', () => {
     expect(homes).not.toMatch(/searchUx\.results/);
   });
 
+  it('the cancellation line speaks of refundable rates paid online, in every language (revisão R3)', () => {
+    // Partner homes take no payment on the site and follow the supplier's
+    // terms: the promise is scoped to the rates a guest pays here.
+    const online: Record<(typeof LANGS)[number], RegExp> = {
+      en: /refundable rates paid online/, pt: /tarifas reembolsáveis pagas online/, fr: /tarifs remboursables payés en ligne/,
+      es: /tarifas reembolsables pagadas en línea/, it: /tariffe rimborsabili pagate online/, de: /online bezahlten erstattbaren Tarifen/,
+      nl: /online betaalde restitueerbare tarieven/, sv: /återbetalningsbara prisalternativ som betalas online/, fi: /verkossa maksetuissa palautettavissa/,
+    };
+    for (const l of LANGS) expect(bundles[l].listingReassurance.cancellation, l).toMatch(online[l]);
+  });
+
   it('never calls Flex insurance, a home a hotel, or promises a reply time', () => {
     for (const l of LANGS) {
       const text = NAMESPACES.map((ns) => JSON.stringify(bundles[l][ns])).join(' ');

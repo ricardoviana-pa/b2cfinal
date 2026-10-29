@@ -26,6 +26,7 @@ import { localityLabel, matchesSearchRegion, parseSearchRegion } from '@/lib/des
 import DestinationOptions, { regionLabel, useDestinationOptions } from '@/components/marketing/DestinationOptions';
 import ListingWhatsApp, { trackAttributes } from '@/components/homes/ListingWhatsApp';
 import ListingReassurance from '@/components/homes/ListingReassurance';
+import { canPromiseFreeCancellation } from '@/lib/listingReassurance';
 import { conciergeWhatsAppHref, listingWhatsAppMessage } from '@/lib/whatsappMessage';
 import { parseHomeFacets, matchesFacets, matchesBudget, nightlyRate, countFacetOptions, activeFacetCount, FACET_PARAM_KEYS, FEATURE_KEYS, type FeatureKey } from '@/lib/homeFacets';
 import HomesFilterRail, { type CatalogueView, type FilterToken } from '@/components/homes/HomesFilterRail';
@@ -830,7 +831,11 @@ export default function Homes() {
             </div>
           )}
           <div className="min-w-0">
-          <ListingReassurance whatsappHref={listingWhatsAppHref} context={trackContext} />
+          <ListingReassurance
+            whatsappHref={listingWhatsAppHref}
+            context={trackContext}
+            showCancellation={canPromiseFreeCancellation({ homes: filtered, checkin: searchCheckin })}
+          />
           {/* All unavailable — nudge user */}
           {hasDates && !quotesPending && availableProperties.length === 0 && unavailableProperties.length > 0 && (
             <div className="text-center py-8 mb-8 bg-pa-warm rounded-lg">
