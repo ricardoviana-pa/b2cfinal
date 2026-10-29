@@ -1,5 +1,6 @@
 /**
- * Title and description of the legal pages, in the 9 site languages.
+ * Title and description of the privacy, terms and cookie pages, in the 9
+ * site languages.
  *
  * One source for the server (PAGE_META in server/_core/vite.ts: direct loads,
  * crawlers, share cards) and for the pages themselves (usePageMeta: the head
@@ -9,21 +10,24 @@
  * client wrote a second, different English string after a footer click
  * (auditoria 29 out 2026, Regression:P6).
  *
- * Titles are the page's H1 (privacy.title, terms.title, cookiesPage.title,
- * cancellationPolicy.pageTitle in the locale files) without the
- * " | Portugal Active" suffix, which the server and usePageMeta both add.
- * Descriptions stay under 155 characters, where the server cuts them.
- * The cancellation-policy description is Guesty's own policy summary and
- * lives in shared/cancellationPolicy.ts.
+ * Titles are the page's H1 (privacy.title, terms.title, cookiesPage.title in
+ * the locale files) without the " | Portugal Active" suffix, which the server
+ * and usePageMeta both add. Descriptions stay under 155 characters, where the
+ * server cuts them.
+ *
+ * The cancellation-policy page's title and description are Guesty's policy
+ * summary and live with it (cancellationPolicyPageMeta in
+ * shared/cancellationPolicy.ts). This module imports nothing, so the privacy
+ * and cookie pages never download the policy copy (revisão do PR #182, F2).
  */
-import { cancellationPolicyMetaDescription } from "./cancellationPolicy";
 
 export const LEGAL_META_LANGS = ["en", "pt", "fr", "es", "it", "de", "nl", "sv", "fi"] as const;
 export type LegalMetaLang = (typeof LEGAL_META_LANGS)[number];
-export type LegalMetaPath = "/legal/privacy" | "/legal/terms" | "/legal/cookies" | "/legal/cancellation-policy";
-export const LEGAL_META_PATHS: readonly LegalMetaPath[] = ["/legal/privacy", "/legal/terms", "/legal/cookies", "/legal/cancellation-policy"];
+export type LegalMetaPath = "/legal/privacy" | "/legal/terms" | "/legal/cookies";
+export const LEGAL_META_PATHS: readonly LegalMetaPath[] = ["/legal/privacy", "/legal/terms", "/legal/cookies"];
 
-type Entry = { title: string; description: string };
+export type PageMetaEntry = { title: string; description: string };
+type Entry = PageMetaEntry;
 type Copy = Record<LegalMetaLang, Entry>;
 
 const PRIVACY: Copy = {
@@ -89,18 +93,6 @@ const COOKIES: Copy = {
         description: "Mitä evästeitä Portugal Active käyttää, mihin niitä tarvitaan ja miten voit muuttaa evästeasetuksiasi milloin tahansa." },
 };
 
-const CANCELLATION_TITLES: Record<LegalMetaLang, string> = {
-  en: "Cancellation Policies",
-  pt: "Políticas de Cancelamento",
-  fr: "Politiques d'Annulation",
-  es: "Políticas de Cancelación",
-  it: "Politiche di Cancellazione",
-  de: "Stornierungsbedingungen",
-  nl: "Annuleringsbeleid",
-  sv: "Avbokningspolicyer",
-  fi: "Peruutuskäytännöt",
-};
-
 function metaLang(lang?: string | null): LegalMetaLang {
   const l = String(lang || "").toLowerCase().slice(0, 2);
   return (LEGAL_META_LANGS as readonly string[]).includes(l) ? (l as LegalMetaLang) : "en";
@@ -109,17 +101,19 @@ function metaLang(lang?: string | null): LegalMetaLang {
 /** Bare title (no " | Portugal Active") and description, in the page language. */
 export function legalPageMeta(path: LegalMetaPath, lang?: string | null): Entry {
   const l = metaLang(lang);
-  if (path === "/legal/cancellation-policy") {
-    return { title: CANCELLATION_TITLES[l], description: cancellationPolicyMetaDescription(l) };
-  }
   const copy = path === "/legal/privacy" ? PRIVACY : path === "/legal/terms" ? TERMS : COOKIES;
   return copy[l];
 }
 
-/** The PAGE_META entries for one legal path: every language, server title form. */
-export function legalPageMetaEntries(path: LegalMetaPath): Record<LegalMetaLang, Entry> {
+/** PAGE_META entries from a page's meta function: every language, server title form. */
+export function pageMetaEntries(meta: (lang: LegalMetaLang) => Entry): Record<LegalMetaLang, Entry> {
   return Object.fromEntries(LEGAL_META_LANGS.map((l) => {
-    const m = legalPageMeta(path, l);
+    const m = meta(l);
     return [l, { title: `${m.title} | Portugal Active`, description: m.description }];
   })) as Record<LegalMetaLang, Entry>;
+}
+
+/** The PAGE_META entries for one legal path: every language, server title form. */
+export function legalPageMetaEntries(path: LegalMetaPath): Record<LegalMetaLang, Entry> {
+  return pageMetaEntries((l) => legalPageMeta(path, l));
 }

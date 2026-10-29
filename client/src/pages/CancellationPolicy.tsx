@@ -14,9 +14,9 @@ import {
   POLICY_ANCHORS,
   POLICY_CODES,
   cancellationPolicyCopy,
+  cancellationPolicyPageMeta,
   policyRuleSentence,
 } from '@shared/cancellationPolicy';
-import { legalPageMeta } from '@shared/legalPageMeta';
 
 export default function CancellationPolicy() {
   const { t, i18n } = useTranslation();
@@ -24,7 +24,7 @@ export default function CancellationPolicy() {
   const copy = cancellationPolicyCopy(lang);
   // Same title and description as the server's head, in the page language
   // (the title was English after a client-side navigation).
-  usePageMeta({ ...legalPageMeta('/legal/cancellation-policy', lang), url: '/legal/cancellation-policy' });
+  usePageMeta({ ...cancellationPolicyPageMeta(lang), url: '/legal/cancellation-policy' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />

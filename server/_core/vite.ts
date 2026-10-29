@@ -12,7 +12,8 @@ import express, { type Express } from "express";
 import { HOME_COUNT_LABEL, OWN_HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
 import { serviceRouteSlug } from '@shared/serviceRoutes';
-import { legalPageMetaEntries } from '@shared/legalPageMeta';
+import { legalPageMetaEntries, pageMetaEntries } from '@shared/legalPageMeta';
+import { cancellationPolicyPageMeta } from '@shared/cancellationPolicy';
 import { PROPERTY_DESCRIPTION, PROPERTY_TITLE, asSentence, propertyPageMeta, propertyPageName, truncateWords } from '@shared/propertyMeta';
 import { mergePropertyOverrides, propertyOverrideFor, propertyOverrideKey } from '@shared/propertyLocalization';
 import { buildPdpFaq, faqPageNode, interpolate, type FaqTranslate } from '@shared/pdpFaq';
@@ -699,9 +700,10 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     fi: { title: 'Parhaan hinnan takuu | Portugal Active',
           description: 'Löydä sama koti, päivämäärät ja ehdot halvemmalla Airbnb:stä tai Booking.comista 24 tunnin kuluessa varauksesta, niin Portugal Active vastaa hintaan. Ehdot selkokielellä.' },
   },
-  // The description is Guesty's policy summary from shared/cancellationPolicy.ts
+  // Title and description from shared/cancellationPolicy.ts, the same strings
+  // the page passes to usePageMeta; the description is Guesty's policy summary
   // (the single source, never restated here).
-  '/legal/cancellation-policy': legalPageMetaEntries('/legal/cancellation-policy'),
+  '/legal/cancellation-policy': pageMetaEntries(cancellationPolicyPageMeta),
   '/legal/cookies': legalPageMetaEntries('/legal/cookies'),
 };
 
