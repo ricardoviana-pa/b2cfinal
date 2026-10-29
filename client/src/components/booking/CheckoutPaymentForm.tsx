@@ -39,18 +39,12 @@ import { formatQuotedEur } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
 import { payButtonGate, walletNames } from "@/lib/checkoutPayment";
-import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
-import { expressCheckoutElementsOptions } from "./stripeElementsOptions";
+import { cardElementsOptions, expressCheckoutElementsOptions } from "./stripeElementsOptions";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 import PaymentErrorNotice, { type PaymentErrorView, type TwoPartsSwitch } from "./PaymentErrorNotice";
 
 type PaymentMethodId = "card" | "googlepay" | "paypal" | "klarna";
-
-const STRIPE_METHOD_TYPES: Record<Exclude<PaymentMethodId, "paypal" | "klarna">, string[]> = {
-  card: ["card"],
-  googlepay: ["google_pay"],
-};
 
 function CardLogo() {
   return (
@@ -823,42 +817,13 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     [stripeConfig?.publishableKey, stripeAccountId],
   );
 
-  // Deferred intent mode: PaymentElement without a client secret.
-  // We pass mode + amount + currency so Stripe knows the context.
-  // Uma só instância para o cartão (sem key por plano ou método): mudar de
-  // plano atualiza o valor (elements.update) e o cartão escrito fica.
+  // Deferred intent mode: PaymentElement without a client secret
+  // (cardElementsOptions: setupFutureUsage, só cartão e a letra do site, com
+  // `fonts` fixo desde a primeira vez). Uma só instância para o cartão (sem
+  // key por plano ou método): mudar de plano atualiza o valor
+  // (elements.update) e o cartão escrito fica.
   const elementsOptions = useMemo(
-    () => ({
-      mode: "payment" as const,
-      amount: Math.round(props.total * 100), // Stripe expects cents
-      currency: (props.currency || "eur").toLowerCase(),
-      paymentMethodCreation: "manual" as const,
-      locale: i18n.language as any,
-      // Tem de espelhar o setup_future_usage do PaymentIntent (o servidor cria
-      // com off_session para o cartao ficar em carteira no Guesty). Se os dois
-      // divergirem o Stripe recusa o confirm: "The provided setup_future_usage
-      // (off_session) does not match the expected setup_future_usage (null)"
-      // — apanhado no teste em dev, 28 ago 2026.
-      setupFutureUsage: CHECKOUT_SETUP_FUTURE_USAGE,
-      // Card form em sessão types (layout só-cartão, sem o seletor interno do
-      // Stripe); o servidor cria o PI no formato que casa com a sessão: types
-      // para o card form, automatic para o ECE (input wallet no createCardCharge).
-      paymentMethodTypes: STRIPE_METHOD_TYPES.card,
-      appearance: {
-        theme: "stripe" as const,
-        variables: {
-          colorPrimary: "#1A1A18",
-          colorBackground: "#ffffff",
-          colorText: "#1A1A18",
-          fontFamily: "var(--font-body), Arial, sans-serif",
-          borderRadius: "4px",
-        },
-        rules: {
-          // Hide Stripe's built-in payment method tab selector — we use our own selector UI
-          ".p-PaymentMethodSelector": { display: "none" },
-        },
-      },
-    }),
+    () => cardElementsOptions(props.total, props.currency, i18n.language),
     [props.total, props.currency, i18n.language],
   );
 
