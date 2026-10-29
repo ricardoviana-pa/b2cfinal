@@ -10,7 +10,9 @@ import type { Property } from '@/lib/types';
 
 export default function NotFound() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Page Not Found (404)', description: 'This page does not exist. Browse our luxury villas or contact our concierge team for help.', url: '/404' });
+  // The server answers 404 + noindex; the page must not flip robots back to
+  // "index, follow" once it renders (auditoria out/2026, soft 404s).
+  usePageMeta({ title: 'Page Not Found (404)', description: 'This page does not exist. Browse our luxury villas or contact our concierge team for help.', url: '/404', noindex: true });
 
   const { data: propsData } = trpc.properties.catalogForSite.useQuery();
   const suggestions = useMemo(() => {

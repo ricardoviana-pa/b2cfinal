@@ -1447,6 +1447,16 @@ const BLOG_SUFFIX: Record<string, string> = {
   sv: ' | Portugal Active-journalen',
 };
 
+// Dynamic content prefixes: if a slug under these paths doesn't match any
+// record in the data source, we return 404 (not 200 = soft 404).
+// Destinations joined in out/2026: "/en/destinations/<anything>" answered
+// 200, "index, follow", with the homepage title (seo-health-soft-404).
+const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/collections/", "/blog/", "/services/", "/experiences/", "/activities/", "/destinations/"];
+
+/** The booking pages the client actually has; any other /booking/… is a 404
+ *  (it answered 200, "index, follow"). All of them are noindex. */
+const BOOKING_ROUTE = /^\/booking\/(?:(?:confirmation|thank-you|balance)\/[^/]+|paypal-return|klarna-return)\/?$/;
+
 export function serveStatic(app: Express) {
   const distPath =
     process.env.NODE_ENV === "development"
@@ -1533,10 +1543,6 @@ export function serveStatic(app: Express) {
     }
     return next();
   });
-
-  // Dynamic content prefixes: if a slug under these paths doesn't match
-  // any record in the data source, we return 404 (not 200 = soft 404).
-  const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/collections/", "/blog/", "/services/", "/experiences/", "/activities/"];
 
   // ── SSR (gated by SSR_ENABLED) ───────────────────────────────────────────
   type SsrRender = (
@@ -1739,6 +1745,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     const isDynamicPrefix = KNOWN_PREFIXES.some(pre => p.startsWith(pre));
     // Initial status — will be refined for dynamic content below
     let status = (isStaticKnown || isDynamicPrefix) ? 200 : 404;
+    if (p.startsWith("/booking/") && !BOOKING_ROUTE.test(p)) status = 404;
     const indexPath = path.resolve(distPath, "index.html");
 
     // Load the shell (cached after first read).
@@ -1772,9 +1779,11 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 
-    // Checkout pages are transactional capability URLs — never indexable.
+    // Checkout and booking pages are transactional capability URLs — never
+    // indexable (confirmation, thank-you, balance, payment returns).
     // Must happen HERE: several branches below return early (cache hits).
-    if (p.startsWith("/checkout/") || p.startsWith("/booking/balance/")) {
+    if (p.startsWith("/checkout/") || p.startsWith("/booking/")) {
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 
@@ -2078,4 +2087,6 @@ export const __testing = {
   buildPropertyPrefetch,
   localizePropertyForLang,
   localeTranslator,
+  DYNAMIC_CONTENT_PREFIXES,
+  BOOKING_ROUTE,
 };

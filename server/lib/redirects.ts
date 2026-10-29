@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
 import { blogLanguages } from "../../shared/blogPublication.js";
+import { managementUrl } from "../../client/src/lib/siteLinks.js";
 
 /**
  * SEO 301 redirects for the 2026 Webflow → React migration.
@@ -13,7 +14,10 @@ import { blogLanguages } from "../../shared/blogPublication.js";
  * 1. Exact map (PROPERTY_REDIRECTS, STATIC_REDIRECTS) — fastest, takes priority.
  * 2. Pattern rules (PATTERN_REDIRECTS) — for parametric paths (/rooms/X, /event/X, ...).
  * 3. Fallback rules (CATCH_ALL) — for legacy noise (.html, /index.php, /category/*, ...).
- * 4. If nothing matches: pass through to the SPA, which renders 404 if route not found.
+ * 4. Single-segment paths: only the WordPress-era slugs and the aliases listed
+ *    below redirect. Anything else passes through and gets the page's real
+ *    404 — it used to 301 to the blog index, which made every mistyped URL a
+ *    soft 404 (auditoria out/2026, seo-health-soft-404-catchall).
  *
  * All redirects are 301 (permanent) so Google transfers ranking signal to the new URL.
  */
@@ -169,7 +173,13 @@ const STATIC_REDIRECTS: Record<string, string> = {
   "/locations": "/en/destinations",
   "/locations/": "/en/destinations",
   "/locations/portugal": "/en/destinations",
-  "/services/": "/en/services",
+  // One concierge hub: /concierge is what the navigation, the brand and the
+  // page's own canonical use; /services served the same page and was the URL
+  // in the sitemap — two indexable copies in nine languages (auditoria
+  // out/2026, seo-health-concierge-services-duplicate). Detail pages stay at
+  // /services/<slug>.
+  "/services": "/en/concierge",
+  "/services/": "/en/concierge",
   "/news/": "/en/blog",
   "/news": "/en/blog",
   "/legal-terms": "/en/legal/terms",
@@ -219,6 +229,83 @@ const STATIC_REDIRECTS: Record<string, string> = {
   // ("Golden Valley Retreat"); renamed 2026-08-06 to match the current name.
   "/homes/golden-valley-retreat-by-portugal-active-013634": "/en/homes/7-suites-pool-geres-gateway-portugal-active-013634",
 };
+
+// === WORDPRESS-ERA SINGLE-SEGMENT URLS =====================================
+// Every single-segment HTML page of the old WordPress site in the Wayback
+// Machine inventory (CDX query, 29 Oct 2026), mapped to where it lives now:
+// the posts were migrated to the journal under new slugs. Only these redirect
+// — an unknown single segment is a 404, not the blog index.
+const LEGACY_SLUG_REDIRECTS: Record<string, string> = {
+  "alto-minho-ativar-ipvc-business-awards-2020": "/en/blog/alto-minho-ativar-business-awards-2020",
+  "best-things-to-do-in-viana-do-castelo": "/en/blog/getaway-best-things-to-do-viana-do-castelo",
+  "family-time-at-paradise": "/en/blog/guest-diary-family-time-in-paradise",
+  "first-episode": "/en/blog/video-fat-bike-wild-experience",
+  "youtuber-for-a-day": "/en/blog/video-fat-bike-wild-experience",
+  "from-barcelona-to-the-portugal-active-lodge": "/en/blog/guest-diary-from-barcelona-to-portugal-active",
+  "neopop-viana-do-castelo-2023": "/en/blog/neopop-viana-do-castelo",
+  "nit-portugal-active-ocean-lodge": "/en/blog/nit-portugal-active-ocean-lodge",
+  "portugal-active-ocean-lodge": "/en/blog/timeout-portugal-active-ocean-lodge",
+  "our-first-time-in-portugal": "/en/blog/guest-diary-first-time-in-portugal",
+  "our-new-hidden-paradise": "/en/blog/video-ocean-lodge-hidden-paradise",
+  "paddle-yoga-and-bike-tours-in-viana-do-castelo": "/en/blog/mens-health-paddle-yoga-bike-tours",
+  "portugal-active-featured-in-grand-tour-portugal-2": "/en/blog/portugal-active-grand-tour-portugal",
+  "portugal-active-takes-kitesurf-to-higher-education": "/en/blog/mens-health-kitesurf-higher-education",
+  "the-guardian-where-to-stay-and-what-to-do-off-the-beaten-track": "/en/blog/the-guardian-hidden-portugal",
+  "there-is-a-dream-mansion-to-rent": "/en/blog/evasoes-dream-mansion-viana-do-castelo",
+  "travel-paradise-away-from-the-crowds-minho-with-portugal-active": "/en/blog/forbes-adventure-travel-paradise-minho",
+  "traveller-review-awards-2020": "/en/blog/booking-traveller-review-awards-2020",
+  "viana-do-castelo-one-of-the-most-welcoming-cities-in-the-world": "/en/blog/viana-do-castelo-most-welcoming-city",
+  "viana-do-castelo-one-of-the-most-welcoming-cities": "/en/blog/viana-do-castelo-most-welcoming-city",
+  "video-portugal-active-connect-with-life": "/en/blog/video-connect-with-life-again",
+  "video-portugal-active-de-norte-a-sagres-viana-do-castelo": "/en/blog/video-de-norte-a-sagres",
+  "video-portugal-active-showcasing-viana-do-castelo-in-collaboration-with-cmvc": "/en/blog/video-showcasing-viana-do-castelo-cmvc",
+  "video-this-is-portugal-active-private-yoga-session": "/en/blog/video-private-yoga-session",
+  "video-this-is-portugal-active-sailing-experience": "/en/blog/video-sailing-experience",
+  "video-this-is-portugal-active-stand-up-paddle-experience": "/en/blog/video-stand-up-paddle-experience",
+  // Posts with no migrated article, and the feed / pagination roots.
+  "natureza-historia-desporto": "/en/blog",
+  "portugal-and-alentejo-my-first-impressions": "/en/blog",
+  "feed": "/en/blog",
+  "page": "/en/blog",
+  // WordPress pages.
+  "bottom-adventure-plp": "/en/experiences",
+  "bottom-lodge-plp": "/en/homes",
+  "bottom-services-plp": "/en/concierge",
+  "getting-here": "/en/contact",
+  "sign-up": "/en",
+};
+
+// Plain words people type, or other sites link, for pages that exist under
+// another path. Matched lower-case, with or without the locale prefix.
+const ALIAS_REDIRECTS: Record<string, string> = {
+  villas: "/en/homes",
+  villa: "/en/homes",
+  houses: "/en/homes",
+  casas: "/en/homes",
+  maisons: "/en/homes",
+  privacy: "/en/legal/privacy",
+  "privacy-policy": "/en/legal/privacy",
+  "politica-de-privacidade": "/en/legal/privacy",
+  privacidade: "/en/legal/privacy",
+  terms: "/en/legal/terms",
+  "terms-and-conditions": "/en/legal/terms",
+  termos: "/en/legal/terms",
+  "termos-e-condicoes": "/en/legal/terms",
+  cookies: "/en/legal/cookies",
+  "cookie-policy": "/en/legal/cookies",
+  // Any capitalisation of the retired hub ("/Services"); "/services" itself
+  // is in STATIC_REDIRECTS.
+  services: "/en/concierge",
+};
+
+// First-class single-segment routes of the SPA. Typed with capitals
+// ("/en/Homes") they 301 to the lower-case URL instead of a 404.
+const FIRST_CLASS_SEGMENTS = new Set([
+  "homes", "blog", "about", "contact", "experiences",
+  "destinations", "events", "corporate-retreats", "careers",
+  "concierge", "faq", "login", "account", "legal",
+  "booking", "activities", "best-rate-guarantee",
+]);
 
 interface PatternRule {
   pattern: RegExp;
@@ -362,7 +449,7 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     resolve: (m) => {
       const slug = m[1];
       const mapped = SERVICE_REDIRECTS[slug];
-      return mapped ? `/en/services/${mapped}` : "/en/services";
+      return mapped ? `/en/services/${mapped}` : "/en/concierge";
     },
   },
 
@@ -439,26 +526,18 @@ const PATTERN_REDIRECTS: PatternRule[] = [
   // Legacy *.html / *.php pages without specific redirect → home
   { pattern: /^\/[^/]+\.(html|php)$/i, resolve: () => "/en" },
 
-  // Old slug-only blog posts (e.g. /viana-do-castelo-one-of-the-most-welcoming-cities/)
-  // These were WP posts. If we have an exact slug match in blog.json, redirect; else /blog.
+  // Single segment: the WordPress-era slugs and the aliases above, matched
+  // lower-case; a first-class route typed with capitals goes to its
+  // lower-case URL. Everything else passes through to the page's 404.
   {
-    pattern: /^\/([a-z0-9-]+)\/?$/i,
+    pattern: /^\/([^/?#.]+)\/?$/,
     resolve: (m) => {
-      const slug = m[1];
-      // Don't catch single-segment paths that are first-class routes in the new SPA
-      const reservedSegments = new Set([
-        "homes", "blog", "about", "contact", "services", "experiences",
-        "adventures", "destinations", "events", "corporate-retreats", "owners", "careers",
-        "concierge", "faq", "login", "account", "admin", "legal",
-        "owners-portal", "404", "booking", "activities", "best-rate-guarantee",
-      ]);
-      // Don't catch locale-only paths (LocaleRouter handles those)
-      const supportedLocales = new Set([
-        "en", "pt", "fr", "es", "it", "fi", "de", "nl", "sv",
-      ]);
-      if (reservedSegments.has(slug)) return null as unknown as string; // pass through
-      if (supportedLocales.has(slug)) return null as unknown as string; // pass through
-      return "/en/blog";
+      const raw = m[1];
+      const slug = raw.toLowerCase();
+      const mapped = LEGACY_SLUG_REDIRECTS[slug] ?? ALIAS_REDIRECTS[slug];
+      if (mapped) return mapped;
+      if (slug !== raw && FIRST_CLASS_SEGMENTS.has(slug)) return `/en/${slug}`;
+      return null as unknown as string; // pass through
     },
   },
 ];
@@ -475,6 +554,12 @@ function resolvePath(path: string): string | null {
   // 1) Exact static match
   if (STATIC_REDIRECTS[path]) return STATIC_REDIRECTS[path];
   if (STATIC_REDIRECTS[normalized]) return STATIC_REDIRECTS[normalized];
+  // Entries recorded with their trailing slash ("/complaint-book/") also
+  // answer without it — they used to fall through to the blog catch-all.
+  // Not when the slash-less path is the live route itself ("/about/" →
+  // "/en/about"): that one passes through.
+  const slashed = STATIC_REDIRECTS[`${normalized}/`];
+  if (slashed && slashed !== `/en${normalized}`) return slashed;
 
   // 2) Pattern rules
   for (const rule of PATTERN_REDIRECTS) {
@@ -504,7 +589,22 @@ const SUPPORTED_LANGS = new Set(["en", "pt", "fr", "es", "it", "fi", "de", "nl",
  * it is served as is. Exported so the sitemap can leave out any URL that
  * redirects — a sitemap must list only final, 200 URLs.
  */
+/** /owners (any locale) → the owner site in that language. It used to be an
+ *  empty page whose JavaScript sent every language, Portuguese owners
+ *  included, to the English site (auditoria out/2026, seo-health-owners-js-
+ *  redirect / i18n-copy-11). Same mapping as the footer (siteLinks.ts):
+ *  pt → /management/, fr/es/de/it/nl → /management/<lang>/, else English. */
+const OWNERS_PATH = /^\/(?:(en|pt|fr|es|it|fi|de|nl|sv)\/)?owners\/?$/i;
+export function ownersRedirectTarget(rawPath: string): string | null {
+  const m = rawPath.match(OWNERS_PATH);
+  if (!m) return null;
+  return new URL(managementUrl((m[1] ?? "en").toLowerCase())).pathname;
+}
+
 export function redirectTarget(rawPath: string): string | null {
+  const owners = ownersRedirectTarget(rawPath);
+  if (owners) return owners;
+
   // Try bare path first (covers most legacy URLs)
   let target = resolvePath(rawPath);
 
@@ -512,14 +612,17 @@ export function redirectTarget(rawPath: string): string | null {
   // This catches locale-prefixed old URLs like /en/properties/slug → /en/homes/new-slug
   if (!target) {
     const segments = rawPath.split("/").filter(Boolean);
-    if (segments.length >= 2 && SUPPORTED_LANGS.has(segments[0].toLowerCase())) {
+    if (segments.length >= 1 && SUPPORTED_LANGS.has(segments[0].toLowerCase())) {
       const lang = segments[0].toLowerCase();
       const barePath = "/" + segments.slice(1).join("/");
-      const bareTarget = resolvePath(barePath);
+      const bareTarget = segments.length >= 2 ? resolvePath(barePath) : null;
       if (bareTarget) {
         // Replace the /en/ prefix in the target with the original locale
         // (legacy targets are hardcoded to /en/... so swap to the current locale)
         target = bareTarget.replace(/^\/en(\/|$)/, `/${lang}$1`);
+      } else if (segments[0] !== lang) {
+        // "/EN/homes" → "/en/homes": one URL per page, lower-case locale.
+        target = `/${lang}${barePath === "/" ? "" : rawPath.slice(rawPath.indexOf("/", 1))}`;
       }
     }
   }
@@ -579,4 +682,6 @@ export const __testing = {
   LOCATION_REDIRECTS,
   STATIC_REDIRECTS,
   PATTERN_REDIRECTS,
+  LEGACY_SLUG_REDIRECTS,
+  ALIAS_REDIRECTS,
 };
