@@ -25,7 +25,11 @@
  * concierge confirms availability and price), it never ends a stay early,
  * and the calendar draws it apart from both. A date missing from `days` is
  * free by default (Guesty sends every day); the partner calendar passes
- * `missing: "unknown"`, so a date it does not have is unknown too.
+ * `missing: "unknown"`, so a date it does not have is unknown too — up to
+ * `missingUntil` when it is given: a later date (past the 12-month window
+ * the panel reads, on a home whose calendar runs to its end) is free again,
+ * as Tripwix publishes it and the stay is priced on demand (revisão do PR
+ * #180, R1/R2).
  */
 
 export type SelectionPhase = "check-in" | "check-out";
@@ -52,6 +56,13 @@ export interface RangeRules {
   minNights: number;
   /** Status of a date absent from dayMap: undefined = free (Guesty), "unknown" = on request (partner homes) */
   missing?: typeof UNKNOWN_STATUS;
+  /** Last date `missing` applies to (inclusive); an absent date after it is free. Undefined: every absent date. */
+  missingUntil?: string;
+}
+
+export interface RangeRuleOptions {
+  missing?: typeof UNKNOWN_STATUS;
+  missingUntil?: string;
 }
 
 export interface RangeSelection {
@@ -73,7 +84,7 @@ export function buildRangeRules(
   days: DayRule[],
   minNights: number | undefined,
   today: string,
-  opts: { missing?: typeof UNKNOWN_STATUS } = {},
+  opts: RangeRuleOptions = {},
 ): RangeRules {
   const dayMap = new Map<string, DayRule>();
   for (const day of days) dayMap.set(day.date, day);
@@ -81,12 +92,22 @@ export function buildRangeRules(
     .filter((d) => d.status !== "available" && d.status !== UNKNOWN_STATUS)
     .map((d) => d.date)
     .sort();
-  return { today, dayMap, blocked, minNights: minNights ?? 1, ...(opts.missing ? { missing: opts.missing } : {}) };
+  return {
+    today, dayMap, blocked, minNights: minNights ?? 1,
+    ...(opts.missing ? { missing: opts.missing } : {}),
+    ...(opts.missing && opts.missingUntil ? { missingUntil: opts.missingUntil } : {}),
+  };
 }
 
-/** The day's status; a date the calendar does not have reads as `rules.missing` (undefined = free). */
+/**
+ * The day's status. A date the calendar does not have reads as
+ * `rules.missing` (undefined = free), or as free after `rules.missingUntil`.
+ */
 export function statusOf(rules: RangeRules, date: string): string | undefined {
-  return rules.dayMap.get(date)?.status ?? rules.missing;
+  const status = rules.dayMap.get(date)?.status;
+  if (status !== undefined) return status;
+  if (rules.missingUntil && date > rules.missingUntil) return undefined;
+  return rules.missing;
 }
 
 export function isBlocked(rules: RangeRules, date: string): boolean {

@@ -12,7 +12,13 @@
  *
  * Agora um dia que a Tripwix não publicou é "a pedido": nem livre nem
  * ocupado, escolhe-se (o painel é por pedido), não tem preço, e o painel diz
- * que essas datas ainda não abriram e que o concierge confirma.
+ * que o concierge confirma a disponibilidade e o preço.
+ *
+ * Revisão do PR #180: os textos já não afirmam nada sobre a casa que o site
+ * não sabe (sem calendário na Tripwix, por carregar no servidor ou pedido
+ * falhado dão o mesmo ao cliente), e as datas depois da janela de 12 meses só
+ * são "a pedido" numa casa cujo calendário não chega ao fim da janela. A
+ * ligação ao painel e ao cartão está em partner-calendar-panel.test.ts.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import fs from "node:fs";
@@ -36,10 +42,11 @@ import {
   isBlocked,
   isUnknown,
   stayNightStatus,
+  statusOf,
   UNKNOWN_STATUS,
   type DayRule,
 } from "../client/src/lib/dateRangeSelection";
-import { partnerQuoteNotice, partnerRequestQuoteStatus } from "../client/src/lib/partnerAvailability";
+import { partnerCalendarView, partnerQuoteNotice, partnerRequestQuoteStatus } from "../client/src/lib/partnerAvailability";
 import { noPriceLabelKey } from "../client/src/lib/partnerPriceLabel";
 
 const DAY = 86_400_000;
@@ -201,17 +208,17 @@ describe("the calendar: an unknown day is on request — chosen like a free day,
 });
 
 describe("the partner panel: what it says when a stay has no price", () => {
-  const base = { checkIn: "2027-07-10", checkOut: "2027-07-17", quote: null, quoteFetching: false, quoteError: false, calendarError: false };
+  const base = { checkIn: "2027-07-10", checkOut: "2027-07-17", quote: null, quoteFetching: false, quoteError: false, calendarError: false, windowEnd: "2027-10-29" };
   const short = partnerDays("2026-10-29", 127).concat(
     Array.from({ length: 239 }, (_, i) => ({ date: ymdFrom("2027-03-05", i), status: UNKNOWN_STATUS })),
   );
 
-  it("dates after the last published day: 'not open yet', not the red pricing error (P1)", () => {
-    expect(partnerQuoteNotice({ ...base, calendar: short })).toBe("not-open");
+  it("dates after the last published day: 'on request', not the red pricing error (P1)", () => {
+    expect(partnerQuoteNotice({ ...base, calendar: short })).toBe("on-request");
   });
-  it("a home with no calendar: 'not open yet' for any dates (P2)", () => {
-    expect(partnerQuoteNotice({ ...base, calendar: null })).toBe("not-open");
-    expect(partnerQuoteNotice({ ...base, quote: undefined, quoteError: true, calendar: null })).toBe("not-open");
+  it("a home with no calendar: 'on request' for any dates (P2)", () => {
+    expect(partnerQuoteNotice({ ...base, calendar: null })).toBe("on-request");
+    expect(partnerQuoteNotice({ ...base, quote: undefined, quoteError: true, calendar: null })).toBe("on-request");
   });
   it("booked nights in a stay that also could not be priced: 'some nights are taken'", () => {
     // A dated search can land here: 1–8 Mar has a booked night and nights not published yet.
@@ -229,12 +236,94 @@ describe("the partner panel: what it says when a stay has no price", () => {
     expect(partnerQuoteNotice({ ...base, quote: undefined, calendar: short })).toBe("none");
     expect(partnerQuoteNotice({ ...base, calendar: undefined })).toBe("pending");
   });
+  it("revisão R1-far: a home whose calendar runs to the window's end, a far stay with no price is the red error, not 'on request'", () => {
+    // Casa de Caiz: Tripwix publishes past our window and the far read prices it;
+    // a null there is our own on-demand limit (≤ 10/h, ~103 s apart), a real "could not price just now".
+    const full = partnerDays("2026-10-29", 366);
+    expect(partnerQuoteNotice({ ...base, checkIn: "2027-11-01", checkOut: "2027-11-08", calendar: full })).toBe("error");
+    expect(partnerQuoteNotice({ ...base, checkIn: "2028-10-01", checkOut: "2028-10-08", calendar: full })).toBe("error");
+    // A stay across the window's end, too.
+    expect(partnerQuoteNotice({ ...base, checkIn: "2027-10-25", checkOut: "2027-11-02", calendar: full })).toBe("error");
+    // The short calendar's tail continues past the window: still on request.
+    expect(partnerQuoteNotice({ ...base, checkIn: "2027-11-01", checkOut: "2027-11-08", calendar: short })).toBe("on-request");
+    expect(partnerQuoteNotice({ ...base, checkIn: "2027-11-01", checkOut: "2027-11-08", calendar: null })).toBe("on-request");
+  });
+
   it("the concierge's request says 'unknown' when there was no price, not 'unavailable'", () => {
     expect(partnerRequestQuoteStatus(null)).toBe("unknown");
     expect(partnerRequestQuoteStatus(undefined)).toBe("unknown");
     expect(partnerRequestQuoteStatus({ available: false, feesKnown: false })).toBe("unavailable");
     expect(partnerRequestQuoteStatus({ available: true, feesKnown: false })).toBe("partial");
     expect(partnerRequestQuoteStatus({ available: true, feesKnown: true })).toBe("complete");
+  });
+});
+
+describe("partnerCalendarView: what the panel's calendar draws, and the line under it (revisão do PR #180)", () => {
+  const WINDOW_END = "2027-10-29";
+  const full = partnerDays("2026-10-29", 366); // Casa de Caiz: the whole window
+  const short = partnerDays("2026-10-29", 127).concat(
+    Array.from({ length: 239 }, (_, i) => ({ date: ymdFrom("2027-03-05", i), status: UNKNOWN_STATUS })),
+  ); // Beachfront Sintra: free to 4 Mar, then nothing published
+  const rulesOf = (v: ReturnType<typeof partnerCalendarView>) =>
+    buildRangeRules(v.days, 1, "2026-10-29", { missing: v.missing, missingUntil: v.missingUntil });
+
+  it("R1-far/R2-far: a calendar that runs to the window's end leaves the dates after it free (priced on demand), not on request", () => {
+    const v = partnerCalendarView({ calendar: full, calendarError: false, windowEnd: WINDOW_END });
+    expect(v.missingUntil).toBe(WINDOW_END);
+    const r = rulesOf(v);
+    for (const date of ["2027-10-30", "2027-10-31", "2027-11-01", "2027-11-30", "2028-10-01"]) {
+      expect(isUnknown(r, date), date).toBe(false);
+      expect(isBlocked(r, date), date).toBe(false);
+    }
+    expect(dayRole(r, sel("", ""), "2027-11-01")).toBe("check-in");
+  });
+
+  it("…also when the server's copy is a day older (its last day comes back unknown): that day only", () => {
+    const lagging = [...partnerDays("2026-10-29", 365), { date: WINDOW_END, status: UNKNOWN_STATUS }];
+    const r = rulesOf(partnerCalendarView({ calendar: lagging, calendarError: false, windowEnd: WINDOW_END }));
+    expect(isUnknown(r, WINDOW_END)).toBe(true);
+    expect(isUnknown(r, "2027-11-01")).toBe(false);
+  });
+
+  it("a short calendar (or none): the dates after the window stay on request, as its tail", () => {
+    const v = partnerCalendarView({ calendar: short, calendarError: false, windowEnd: WINDOW_END });
+    expect(v.missingUntil).toBeUndefined();
+    expect(isUnknown(rulesOf(v), "2027-11-01")).toBe(true);
+    expect(isUnknown(rulesOf(partnerCalendarView({ calendar: null, calendarError: false, windowEnd: WINDOW_END })), "2027-11-01")).toBe(true);
+    // A calendar that stops 31 days early is short; 30 days early still runs to the end (the job's rule).
+    const at = (n: number) => partnerCalendarView({ calendar: partnerDays("2026-10-29", 366 - n), calendarError: false, windowEnd: WINDOW_END }).missingUntil;
+    expect(at(30)).toBe(WINDOW_END);
+    expect(at(31)).toBeUndefined();
+  });
+
+  it("R1/R2: no calendar from the server (none at Tripwix, not loaded, or older than 48 h): every date on request, with the neutral line", () => {
+    const v = partnerCalendarView({ calendar: null, calendarError: false, windowEnd: WINDOW_END });
+    expect(v).toMatchObject({ days: [], missing: UNKNOWN_STATUS, noteKey: "bookingWidget.onRequestAll", retry: false });
+    expect(v.missingUntil).toBeUndefined();
+    // Every day of the window unknown, as the server sends for a home it holds nothing for.
+    const allUnknown = Array.from({ length: 366 }, (_, i) => ({ date: ymdFrom("2026-10-29", i), status: UNKNOWN_STATUS }));
+    expect(partnerCalendarView({ calendar: allUnknown, calendarError: false, windowEnd: WINDOW_END }).noteKey).toBe("bookingWidget.onRequestAll");
+  });
+
+  it("R1/R2: the calendar request failed: dates on request, the load-error line and 'Try again' — not the no-calendar line", () => {
+    const v = partnerCalendarView({ calendar: undefined, calendarError: true, windowEnd: WINDOW_END });
+    expect(v).toMatchObject({ days: [], missing: UNKNOWN_STATUS, noteKey: "bookingWidget.calendarLoadError", retry: true });
+    expect(isUnknown(rulesOf(v), "2026-12-01")).toBe(true);
+    // A failed refetch keeps the days it had: they are still what it draws.
+    expect(partnerCalendarView({ calendar: full, calendarError: true, windowEnd: WINDOW_END })).toMatchObject({ noteKey: "bookingWidget.onRequestNote", retry: false, missingUntil: WINDOW_END });
+  });
+
+  it("some dates on request (a short calendar): the general on-request line", () => {
+    expect(partnerCalendarView({ calendar: short, calendarError: false, windowEnd: WINDOW_END }).noteKey).toBe("bookingWidget.onRequestNote");
+  });
+
+  it("statusOf: missingUntil only applies to absent dates; a day the calendar has keeps its status", () => {
+    const r = buildRangeRules([{ date: "2027-11-02", status: "unavailable" }], 1, "2026-10-29", { missing: UNKNOWN_STATUS, missingUntil: WINDOW_END });
+    expect(statusOf(r, "2027-10-29")).toBe(UNKNOWN_STATUS);
+    expect(statusOf(r, "2027-10-30")).toBeUndefined();
+    expect(statusOf(r, "2027-11-02")).toBe("unavailable");
+    // Without `missing` (our own homes) missingUntil means nothing.
+    expect(buildRangeRules([], 1, "2026-10-29", { missingUntil: WINDOW_END }).missingUntil).toBeUndefined();
   });
 });
 
@@ -252,7 +341,8 @@ describe("the new strings exist in the 9 languages, translated", () => {
   const read = (lang: string) => JSON.parse(fs.readFileSync(path.join(process.cwd(), "client/src/i18n/locales", `${lang}.json`), "utf8"));
   const KEYS = [
     "bookingWidget.onRequestLabel", "bookingWidget.onRequestNote", "bookingWidget.onRequestAll",
-    "partnerBooking.onRequestHint", "partnerBooking.notOpenYet",
+    "bookingWidget.calendarLoadError", "bookingWidget.tryAgain",
+    "partnerBooking.onRequestHint", "partnerBooking.onRequestDates",
   ];
   const get = (o: any, k: string) => k.split(".").reduce((x, p) => x?.[p], o);
   const en = read("en");
@@ -271,4 +361,30 @@ describe("the new strings exist in the 9 languages, translated", () => {
   it("en: present", () => {
     for (const key of KEYS) expect(typeof get(en, key)).toBe("string");
   });
+
+  // Revisão R1/R2: the same lines show for a home with no calendar at Tripwix,
+  // one the server has not loaded, and a failed request — they must hold in
+  // all three, so none says the home "has not opened its calendar" or that
+  // the dates "are not open for booking yet".
+  const CLAIMS: Record<string, RegExp> = {
+    en: /has not opened|not open for booking/i,
+    pt: /ainda não abriu|ainda não estão abertas/i,
+    fr: /pas encore ouvert/i,
+    es: /aún no ha abierto|aún no están abiertas/i,
+    it: /non ha ancora aperto|non sono ancora prenotabili/i,
+    de: /noch nicht geöffnet|noch nicht zur Buchung/i,
+    nl: /nog niet geopend|nog niet te boeken/i,
+    sv: /ännu inte öppnat|går ännu inte att boka/i,
+    fi: /ei ole vielä avannut|ei voi vielä varata/i,
+  };
+  for (const [lang, claim] of Object.entries(CLAIMS)) {
+    it(`${lang}: the on-request lines say what the page can show, not a fact about the home`, () => {
+      const loc = read(lang);
+      for (const key of ["bookingWidget.onRequestNote", "bookingWidget.onRequestAll", "bookingWidget.calendarLoadError", "partnerBooking.onRequestDates"]) {
+        expect(get(loc, key), `${lang} ${key}`).toEqual(expect.any(String));
+        expect(get(loc, key), `${lang} ${key}`).not.toMatch(claim);
+      }
+      expect(get(loc, "partnerBooking.notOpenYet"), `${lang}: the old key is gone`).toBeUndefined();
+    });
+  }
 });

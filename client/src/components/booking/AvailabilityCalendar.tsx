@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect, useRef } from "react";
+import { useMemo, useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -52,6 +52,12 @@ interface AvailabilityCalendarProps {
    *  every day) or "unknown" (partner homes: the supplier has not published
    *  it, so it is drawn and chosen as "on request", never as free). */
   missingStatus?: typeof UNKNOWN_STATUS;
+  /** Last date `missingStatus` applies to; an absent date after it is free
+   *  (a partner calendar that runs to the end of the window it was read for). */
+  missingUntil?: string;
+  /** The line under the grid when the months in view have dates on request
+   *  (the partner panel's, which knows why). Default: the general note. */
+  unknownNote?: ReactNode;
 }
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -130,6 +136,8 @@ export default function AvailabilityCalendar({
   onPhaseChange,
   onClose,
   missingStatus,
+  missingUntil,
+  unknownNote,
 }: AvailabilityCalendarProps) {
   const { t, i18n } = useTranslation();
   const isMobile = useIsMobile();
@@ -152,17 +160,10 @@ export default function AvailabilityCalendar({
   const todayMs = startOfDay(todayStr);
 
   const rules = useMemo(
-    () => buildRangeRules(days, minNights, todayStr, { missing: missingStatus }),
-    [days, minNights, todayStr, missingStatus],
+    () => buildRangeRules(days, minNights, todayStr, { missing: missingStatus, missingUntil }),
+    [days, minNights, todayStr, missingStatus, missingUntil],
   );
   const dayMap = rules.dayMap;
-  // Nothing published from today on (a partner home with no calendar): every
-  // date is on request, and the note under the legend says so plainly. Only
-  // read when the months in view have unknown days.
-  const nothingKnownAhead = useMemo(
-    () => !days.some((d) => d.date >= todayStr && d.status !== UNKNOWN_STATUS),
-    [days, todayStr],
-  );
 
   // Which date the next click sets. Controlled by the parent when it passes
   // `phase` (its Check-in / Check-out fields); otherwise kept here. Opening on a
@@ -366,7 +367,7 @@ export default function AvailabilityCalendar({
                       blocked && !isTurnoverCheckout
                         ? "line-through decoration-black/20 decoration-1"
                         : unknown && !isEndpoint
-                          ? "underline decoration-dotted decoration-[#8B7355] decoration-1 underline-offset-[3px]"
+                          ? "underline decoration-dotted decoration-pa-gold-aa decoration-1 underline-offset-[3px]"
                           : ""
                     }
                   >
@@ -546,7 +547,7 @@ export default function AvailabilityCalendar({
         </div>
         {showsUnknown && (
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full border border-dashed border-[#8B7355]" aria-hidden="true" />
+            <span className="w-2.5 h-2.5 rounded-full border border-dashed border-pa-gold-aa" aria-hidden="true" />
             <span className="text-[10px] text-pa-stone-aa tracking-wide">{t("bookingWidget.onRequestLabel", "On request")}</span>
           </div>
         )}
@@ -564,12 +565,12 @@ export default function AvailabilityCalendar({
       </div>
       {/* What "on request" means, under the grid: a line here never moves the
           days under the pointer between two clicks (the notice slot above is
-          fixed-height for that reason). */}
+          fixed-height for that reason). It says what the page can show, never
+          a fact about the home: an unpublished date and one the page failed
+          to load look the same here (revisão do PR #180, R1/R2). */}
       {showsUnknown && (
         <p className="px-4 pb-4 -mt-2 text-[11px] leading-snug text-pa-stone-aa" role="note">
-          {nothingKnownAhead
-            ? t("bookingWidget.onRequestAll", "This home has not opened its calendar yet. You can ask for any dates: our concierge confirms availability and the price.")
-            : t("bookingWidget.onRequestNote", "Dates on request are not open for booking yet. You can still ask for them: our concierge confirms availability and the price.")}
+          {unknownNote ?? t("bookingWidget.onRequestNote", "We cannot show availability or a price online for dates on request. You can still ask for them: our concierge confirms availability and the price.")}
         </p>
       )}
     </div>

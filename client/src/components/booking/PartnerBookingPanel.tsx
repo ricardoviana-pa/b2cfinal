@@ -5,8 +5,7 @@ import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
 import type { BookingSelection } from './BookingWidget';
 import { formatQuotedEur, intlLocale, formatBookingDate } from '@/lib/format';
-import { UNKNOWN_STATUS } from '@/lib/dateRangeSelection';
-import { partnerQuoteNotice, partnerRequestQuoteStatus } from '@/lib/partnerAvailability';
+import { partnerCalendarView, partnerQuoteNotice, partnerRequestQuoteStatus } from '@/lib/partnerAvailability';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import { useDateRangePicker } from './useDateRangePicker';
 import PhoneInput from './PhoneInput';
@@ -96,10 +95,20 @@ export function PartnerBookingPanel({
   }, []);
 
   // Also read once dates are set (a dated search): when a stay has no price,
-  // the calendar says why — dates the home has not opened yet, or booked.
-  const { data: calendarDays, isLoading: calendarLoading, isError: calendarError } = trpc.booking.partnerCalendar.useQuery(
+  // the calendar says why — dates on request, or booked. One retry: the
+  // answer comes from the server's memory (never Tripwix), and a single
+  // failed read used to stay for the whole visit (15-min cache, no refetch).
+  const {
+    data: calendarDays, isLoading: calendarLoading, isError: calendarError, refetch: refetchCalendar,
+  } = trpc.booking.partnerCalendar.useQuery(
     { tripwixUid, ...calendarRange },
-    { enabled: !!tripwixUid && (showCalendar || datesValid), staleTime: 15 * 60 * 1000, retry: false, refetchOnWindowFocus: false },
+    { enabled: !!tripwixUid && (showCalendar || datesValid), staleTime: 15 * 60 * 1000, retry: 1, refetchOnWindowFocus: false },
+  );
+  // What the calendar draws: a date it does not have is on request, never
+  // free, except after the window on a home whose calendar runs to its end.
+  const calendarView = useMemo(
+    () => partnerCalendarView({ calendar: calendarDays, calendarError, windowEnd: calendarRange.endDate }),
+    [calendarDays, calendarError, calendarRange.endDate],
   );
 
   const { data: quote, isFetching, isError } = trpc.booking.partnerQuote.useQuery(
@@ -107,7 +116,8 @@ export function PartnerBookingPanel({
     { enabled: datesValid, staleTime: 15 * 60 * 1000, retry: false, refetchOnWindowFocus: false },
   );
   const quoteNotice = partnerQuoteNotice({
-    checkIn, checkOut, quote, quoteFetching: isFetching, quoteError: isError, calendar: calendarDays, calendarError,
+    checkIn, checkOut, quote, quoteFetching: isFetching, quoteError: isError,
+    calendar: calendarDays, calendarError, windowEnd: calendarRange.endDate,
   });
 
   useEffect(() => {
@@ -271,9 +281,9 @@ export function PartnerBookingPanel({
             ) : null}
             <p className="text-[11.5px] text-[#806A48] mt-1" style={{ fontWeight: 400 }}>
               {/* No "from" at all (no calendar, or nothing open in 12 months),
-                  or dates chosen that the home has not opened yet: picking
-                  dates will not produce a total, so do not promise one. */}
-              {fromPrice === null || quoteNotice === 'not-open'
+                  or dates chosen that are on request: picking dates will not
+                  produce a total, so do not promise one. */}
+              {fromPrice === null || quoteNotice === 'on-request'
                 ? t('partnerBooking.onRequestHint', 'Our concierge confirms availability and the price for your dates')
                 : t('partnerBooking.pickDates', 'Pick your dates for the exact total')}
               {fromPrice ? ` · ${t('partnerBooking.vatIncluded')}` : ''}
@@ -333,8 +343,24 @@ export function PartnerBookingPanel({
                   singleMonth
                   // A date the home has not published (or every date, with no
                   // calendar) is on request, never free.
-                  missingStatus={UNKNOWN_STATUS}
-                  days={calendarDays ?? []}
+                  days={calendarView.days}
+                  missingStatus={calendarView.missing}
+                  missingUntil={calendarView.missingUntil}
+                  unknownNote={
+                    <>
+                      {t(calendarView.noteKey)}
+                      {/* Its own line: buttons get a 44px touch target. */}
+                      {calendarView.retry && (
+                        <button
+                          type="button"
+                          onClick={() => { void refetchCalendar(); }}
+                          className="flex items-center underline underline-offset-2 text-[#1A1A18] hover:text-black font-medium"
+                        >
+                          {t('bookingWidget.tryAgain', 'Try again')}
+                        </button>
+                      )}
+                    </>
+                  }
                   checkIn={checkIn}
                   checkOut={checkOut}
                   minNights={minNights}
@@ -412,13 +438,14 @@ export function PartnerBookingPanel({
             </div>
           )}
 
-          {/* Dates the home has not opened yet: not a fault, and not booked —
-              the request goes to the concierge, who confirms both. */}
-          {quoteNotice === 'not-open' && (
+          {/* Nights on request (not published, or no calendar on the page):
+              not a fault, and not booked — the request goes to the concierge,
+              who confirms both. Nothing here claims why the price is missing. */}
+          {quoteNotice === 'on-request' && (
             <div className="flex items-start gap-2.5 p-3 bg-[#F5F1EB] border border-[#E8E4DC]" role="status">
               <span className="text-[#806A48] text-sm shrink-0 leading-none mt-0.5" aria-hidden="true">i</span>
               <p className="text-xs text-[#1A1A18] leading-snug">
-                {t('partnerBooking.notOpenYet', 'These dates are not open for booking yet, so there is no price to show. Send the request and our concierge will confirm availability and the total.')}
+                {t('partnerBooking.onRequestDates', 'We cannot show a price online for these dates. Send the request and our concierge will confirm availability and the total.')}
               </p>
             </div>
           )}
