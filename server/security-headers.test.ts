@@ -214,7 +214,11 @@ describe("wiring in the production server", () => {
     expect(txtAt).toBeLessThan(staticAt);
   });
 
-  it("sets the CORP override on both static mounts", () => {
-    expect(vite.match(/setHeaders: setStaticFileHeaders/g)).toHaveLength(2);
+  // /assets, /.well-known (llms.txt, its own mount since the build manifest
+  // stopped being public) and the root.
+  it("sets the CORP override on every static mount", () => {
+    const mounts = vite.match(/express\.static\(/g) ?? [];
+    expect(mounts.length).toBeGreaterThanOrEqual(3);
+    expect(vite.match(/setHeaders: setStaticFileHeaders/g)).toHaveLength(mounts.length);
   });
 });

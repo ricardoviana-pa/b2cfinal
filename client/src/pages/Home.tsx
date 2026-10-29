@@ -765,25 +765,25 @@ export default function Home() {
                 img: IMAGES.expGastronomy,
                 video: '/videos/private-chef.mp4',
                 videoPoster: '/videos/private-chef-poster.webp',
-                href: '/services#gastronomy',
+                href: '/concierge#gastronomy',
               },
               {
                 title: t('home.expWellness'),
                 body: t('home.expWellnessBody'),
                 img: IMAGES.expWellness,
-                href: '/services#wellness',
+                href: '/concierge#wellness',
               },
               {
                 title: t('home.expAdventure'),
                 body: t('home.expAdventureBody'),
                 img: IMAGES.expAdventure,
-                href: '/adventures',
+                href: '/experiences',
               },
               {
                 title: t('home.expMobility'),
                 body: t('home.expMobilityBody'),
                 img: IMAGES.expMobility,
-                href: '/services#mobility',
+                href: '/concierge#mobility',
               },
             ].map((exp, i) => (
               <Link key={i} href={exp.href} className="group block flex-shrink-0 w-[220px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>

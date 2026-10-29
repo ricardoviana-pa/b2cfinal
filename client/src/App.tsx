@@ -62,6 +62,14 @@ function OwnersRedirect() {
   return null;
 }
 
+/* One concierge hub: the server 301s /{lang}/services to /{lang}/concierge
+   (the browser keeps the #section across a 301). A client-side visit keeps
+   the #section in the URL too: /services#wellness → /concierge#wellness. */
+function ServicesRedirect() {
+  const hash = typeof window === 'undefined' ? '' : window.location.hash;
+  return <Redirect to={`/concierge${hash}`} replace />;
+}
+
 function PageLoader() {
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -170,8 +178,7 @@ function Router() {
         <Route path="/collections/:slug" component={Collection} />
         <Route path="/destinations/:slug" component={DestinationDetail} />
         <Route path="/concierge" component={Services} />
-        {/* One concierge hub: the server 301s /services to /concierge. */}
-        <Route path="/services"><Redirect to="/concierge" replace /></Route>
+        <Route path="/services" component={ServicesRedirect} />
         <Route path="/services/:slug" component={ServiceDetail} />
         <Route path="/experiences" component={Experiences} />
         <Route path="/experiences/:slug" component={ExperienceDetail} />

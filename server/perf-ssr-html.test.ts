@@ -38,6 +38,8 @@ beforeAll(async () => {
   // Like client/public/homes/photos: a folder named like a page.
   fs.mkdirSync(path.join(pub, "homes", "photos"), { recursive: true });
   fs.writeFileSync(path.join(pub, "homes", "photos", "x.webp"), "img");
+  fs.mkdirSync(path.join(pub, ".well-known"), { recursive: true });
+  fs.writeFileSync(path.join(pub, ".well-known", "llms.txt"), "# llms");
   const template = fs.readFileSync(path.join(ROOT, "client/index.html"), "utf8")
     .replace('<script type="module" src="/src/main.tsx"></script>', "")
     .replace("</head>", '  <link rel="stylesheet" crossorigin href="/assets/index-E.css">\n  </head>');
@@ -175,6 +177,55 @@ describe("SSR HTML handler", () => {
     const html = await missing.text();
     expect(preloadList(html)).toEqual(["/assets/pt-UI.js"]);
     expect(html).not.toContain("DestinationDetail-D");
+  });
+});
+
+describe("what the static handler must not serve, and repeat 404s", () => {
+  const robots = (html: string) => html.match(/<meta name="robots" content="([^"]*)"/)?.[1];
+
+  it("the build manifest is read from disk but never served", async () => {
+    for (const p of ["/.vite/manifest.json", "/%2Evite/manifest.json", "/%2evite/manifest.json", "//.vite/manifest.json", "/.vite/"]) {
+      const res = await get(p);
+      const body = await res.text();
+      expect(res.status, p).toBe(404);
+      expect(body, p).not.toContain("isDynamicEntry");
+      expect(res.headers.get("content-type"), p).toMatch(/^text\/html/);
+    }
+    // The manifest still puts the route's CSS in the head (read from disk).
+    const html = await (await get("/en/destinations/minho")).text();
+    expect(html).toContain('href="/assets/DestinationDetail-D.css"');
+  });
+
+  it("/.well-known stays public", async () => {
+    const res = await get("/.well-known/llms.txt");
+    expect(res.status).toBe(200);
+    expect(await res.text()).toBe("# llms");
+  });
+
+  it("an unknown URL says noindex on every request, not only the first", async () => {
+    for (const p of ["/en/zz-repeat-404-7731", "/pt/qualquer-coisa-7731", "/fr/zz-repeat/deep-7731"]) {
+      for (let i = 1; i <= 3; i++) {
+        const res = await get(p);
+        expect(res.status, `${p} #${i}`).toBe(404);
+        expect(robots(await res.text()), `${p} #${i}`).toBe("noindex, nofollow");
+      }
+    }
+  });
+
+  it("a missing home says noindex on the repeat too (cached empty record)", async () => {
+    for (let i = 1; i <= 2; i++) {
+      const res = await get("/de/homes/zz-no-such-home-7731");
+      expect(res.status).toBe(404);
+      expect(robots(await res.text())).toBe("noindex, nofollow");
+    }
+  });
+
+  it("a real page keeps index, follow on the repeat", async () => {
+    for (let i = 1; i <= 2; i++) {
+      const res = await get("/en/destinations/minho");
+      expect(res.status).toBe(200);
+      expect(robots(await res.text())).toBe("index, follow");
+    }
   });
 });
 

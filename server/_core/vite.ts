@@ -1460,6 +1460,11 @@ const BLOG_SUFFIX: Record<string, string> = {
 // 200, "index, follow", with the homepage title (seo-health-soft-404).
 const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/collections/", "/blog/", "/services/", "/experiences/", "/activities/", "/destinations/"];
 
+/** The shell's robots meta, rewritten to keep the page out of the index. */
+function forceNoindex(html: string): string {
+  return html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
+}
+
 /** The booking pages the client actually has; any other /booking/… is a 404
  *  (it answered 200, "index, follow"). All of them are noindex. */
 const BOOKING_ROUTE = /^\/booking\/(?:(?:confirmation|thank-you|balance)\/[^/]+|paypal-return|klarna-return)\/?$/;
@@ -1485,9 +1490,23 @@ export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
     setHeaders: setStaticFileHeaders,
   }));
 
+  // /.well-known/ (llms.txt) is public on purpose. Every other dot-path of the
+  // build is not: dist/public/.vite/manifest.json is the map of the source
+  // modules (admin pages included) that server/lib/routeAssets.ts reads from
+  // disk, and send only hides a dot-FILE by default, not a dot-folder (review
+  // of PR #177). dotfiles: "ignore" below lets those paths fall through to the
+  // 404 page; send decodes the path first, so /%2Evite/… is covered too.
+  app.use("/.well-known", express.static(path.join(distPath, ".well-known"), {
+    maxAge: "1h",
+    setHeaders: setStaticFileHeaders,
+    index: false,
+    redirect: false,
+  }));
+
   app.use(express.static(distPath, {
     maxAge: "1h",
     setHeaders: setStaticFileHeaders,
+    dotfiles: "ignore",
     // Do NOT let express.static serve index.html for directory requests.
     // Otherwise "/" is served as the raw shell with a 200 before the
     // bare-path redirect middleware runs — forcing a client-side
@@ -1811,6 +1830,17 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
     if (p.startsWith("/booking/") && !BOOKING_ROUTE.test(p)) status = 404;
     const indexPath = path.resolve(distPath, "index.html");
 
+    /** Every HTML answer leaves through here. A 404 always says noindex: the
+     *  cache-hit branch below used to return before that rewrite, so an
+     *  unknown URL said "index, follow" from its second request on (review
+     *  of PR #177). Reads `status` when called, after the branches refine it. */
+    const sendHtml = (body: string) => {
+      if (status === 404) body = forceNoindex(body);
+      body = withRouteAssets(body, p, lang, status);
+      setHtmlCacheHeaders(res, p, status);
+      return res.status(status).set("Content-Type", "text/html").send(body);
+    };
+
     // Load the shell (cached after first read).
     let html: string;
     try {
@@ -1929,19 +1959,12 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Cached null on a dynamic content route → content doesn't exist → 404
         status = 404;
-        html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
       }
-      html = withRouteAssets(html, p, lang, status);
-      setHtmlCacheHeaders(res, p, status);
-      return res.status(status).set("Content-Type", "text/html").send(html);
+      return sendHtml(html);
     }
 
     // If static route was already handled, no dynamic lookup needed
-    if (localized) {
-      html = withRouteAssets(html, p, lang, status);
-      setHtmlCacheHeaders(res, p, status);
-      return res.status(status).set("Content-Type", "text/html").send(html);
-    }
+    if (localized) return sendHtml(html);
 
     // Dynamic route — look up content, cache result, inject meta
     try {
@@ -2109,20 +2132,13 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Dynamic content route with no matching record → proper 404 (not soft 404)
         status = 404;
-        html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
       }
     } catch (err) {
       console.error("[Meta] Error injecting dynamic meta:", err);
     }
 
-    // For any 404, ensure noindex so Google doesn't index dead pages
-    if (status === 404) {
-      html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
-    }
-
-    html = withRouteAssets(html, p, lang, status);
-    setHtmlCacheHeaders(res, p, status);
-    res.status(status).set("Content-Type", "text/html").send(html);
+    // Any 404 says noindex (sendHtml), so Google doesn't index dead pages.
+    sendHtml(html);
   });
 }
 
