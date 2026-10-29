@@ -71,6 +71,7 @@ export default function CookieBanner() {
       ref={wrapperRef}
       role="region"
       aria-label={t('cookieBanner.title')}
+      data-cookie-banner=""
       className="fixed bottom-0 left-0 right-0 z-[60]"
       style={{
         animation: 'cookieSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)',

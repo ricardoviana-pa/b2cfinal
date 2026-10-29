@@ -7,6 +7,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import LocaleRouter from "./components/LocaleRouter";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ItineraryProvider } from "./contexts/ItineraryContext";
+import { RISE_ABOVE_COOKIE_BANNER } from "./lib/fixedBottom";
 import Home from "./pages/Home";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { WifiOff, ArrowUp } from "lucide-react";
@@ -237,9 +238,12 @@ function BackToTop() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="fixed z-[89] right-4 sm:right-6 md:right-7 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg transition-opacity duration-300"
+      className="fixed z-[89] right-4 sm:right-6 md:right-7 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg transition-[opacity,transform] duration-300"
       style={{
         bottom: 'calc(5rem + 56px + env(safe-area-inset-bottom, 0px))',
+        // Above the cookie banner while it is open, like the bars and the
+        // WhatsApp button under it (lib/fixedBottom.ts).
+        transform: RISE_ABOVE_COOKIE_BANNER,
         backgroundColor: '#8B7355',
         opacity: show ? 1 : 0,
         minHeight: 'auto',

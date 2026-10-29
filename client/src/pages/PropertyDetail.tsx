@@ -40,6 +40,7 @@ import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { hasSwimmingPool } from '@/lib/homeSearch';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
 import { formatQuotedEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
+import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight } from '@/lib/fixedBottom';
 import {
   StructuredData,
   buildVacationRentalSchema,
@@ -1847,10 +1848,14 @@ export default function PropertyDetail() {
           </div>
         </div>
 
-        {/* Mobile: sticky booking bar at bottom */}
+        {/* Mobile: sticky booking bar at bottom. Sits on the cookie banner while
+            it is open (rising with it, same curve as its slide-in) and tells the
+            footer its height, so the legal links scroll clear of it
+            (lib/fixedBottom.ts). */}
         <div
-          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-pa-sand px-4 pt-3 z-40"
-          style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
+          ref={publishBottomBarHeight}
+          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-pa-sand px-4 pt-3 z-40 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))', transform: RISE_ABOVE_COOKIE_BANNER }}
         >
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
@@ -1956,9 +1961,8 @@ export default function PropertyDetail() {
           </section>
         )}
 
-        {/* Bottom spacer for mobile sticky booking bar */}
-        <div className="lg:hidden h-[100px]" />
-
+        {/* No spacer here for the mobile bar: the footer keeps the bar's height
+            free under its last row (FOOTER_BOTTOM_INSET). */}
         <Footer />
       </div>
 

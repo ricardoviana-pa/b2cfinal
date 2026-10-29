@@ -13,6 +13,7 @@ import FooterPaymentLogos from './FooterPaymentLogos';
 import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
 import { COMPLAINTS_BOOK_NAME, COMPLAINTS_BOOK_URL } from '@/lib/legalLinks';
+import { FOOTER_BOTTOM_INSET } from '@/lib/fixedBottom';
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
@@ -57,7 +58,11 @@ export default function Footer() {
   );
 
   return (
-    <footer className="bg-[#1A1A18] text-white" role="contentinfo">
+    // The bottom padding is the page's fixed bar (a home's or an experience's,
+    // on a phone) or the floating buttons' room, whichever is higher, plus the
+    // cookie banner while it is open: scrolled to the end, the last row and
+    // the Livro de Reclamações sit above all of them (lib/fixedBottom.ts).
+    <footer className="bg-[#1A1A18] text-white" role="contentinfo" style={{ paddingBottom: FOOTER_BOTTOM_INSET }}>
 
       {/* Newsletter banner */}
       <details className="border-b border-white/[0.1]">
@@ -255,9 +260,11 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* Row 2: copyright + legal — single baseline, hairline divider */}
+          {/* Row 2: copyright + legal — single baseline, hairline divider.
+              lg:pr-16 keeps the right-aligned links ("Cookie settings" last)
+              out of the WhatsApp button's corner on desktop. */}
           <div
-            className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[11px] leading-none text-white/65 md:flex-row md:items-center md:justify-between"
+            className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[11px] leading-none text-white/65 md:flex-row md:items-center md:justify-between lg:pr-16"
             style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
           >
             <span className="leading-none">

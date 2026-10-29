@@ -753,16 +753,46 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* WhatsApp float — above safe area on mobile, normal on desktop */
+  /* WhatsApp float — above safe area on mobile, normal on desktop. While the
+     cookie banner is open it rises by the banner's height, like every fixed
+     bottom element (lib/fixedBottom.ts, RISE_ABOVE_COOKIE_BANNER): it used to
+     sit on "Accept all" on desktop. A transform, so it is no layout shift. */
   .whatsapp-float {
     bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
     min-height: auto;
     min-width: auto;
+    transform: translateY(calc(-1 * max(0px, var(--cookie-banner-h, 0px) - env(safe-area-inset-bottom, 0px) - 1px)));
   }
   @media (min-width: 1024px) {
     .whatsapp-float {
       bottom: 1.75rem;
     }
+  }
+
+  /* Below lg the floating buttons sit over the footer's right edge at the end
+     of the page ("back to top" up to 5rem + 56px + 40px = 176px from the
+     bottom). The footer keeps this much free under its last row (plus its own
+     1.75rem padding and 4px of air): FOOTER_BOTTOM_INSET in lib/fixedBottom.ts.
+     From lg the last row keeps clear of them sideways (Footer.tsx, lg:pr-16). */
+  :root {
+    --floats-clearance: calc(9.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --floats-clearance: 0px;
+    }
+  }
+
+  /* While a dialog, drawer or sheet holds the page (Radix marks <body> with
+     data-scroll-locked; the page under it takes no taps), or the phone menu
+     is open (its panel loses `inert`), the cookie banner goes under that
+     layer (z-50 and up) instead of covering its buttons: the booking sheet
+     opened from a home's bar, the menu's phone, email and social links. It is
+     back on top, with its buttons, as soon as the layer closes; consent stays
+     denied meanwhile. */
+  body[data-scroll-locked] [data-cookie-banner],
+  body:has(#mobile-menu-panel:not([inert])) [data-cookie-banner] {
+    z-index: 49;
   }
 
   /* Broken image fallback — hides browser icon, shows styled placeholder */
