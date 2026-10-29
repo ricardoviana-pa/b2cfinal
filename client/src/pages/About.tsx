@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { useRef } from 'react';
-import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
+import { HOME_COUNT_LABEL, OWN_HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
 import { ChevronLeft, ChevronRight, ArrowRight, Play } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -111,8 +111,12 @@ const TEAM = [
 /* ── Brand facts ───────────────────────────────────────────────────────────
    The home count comes from shared/brandFacts.ts (derived from the data at
    build time), so the hero, story, answer capsule and metadata can never
-   drift from the rest of the site again. */
+   drift from the rest of the site again. HOME_COUNT is every public listing;
+   OWN_HOME_COUNT the homes our own team runs (the partner homes are run by
+   the supplier), which is the only number a "run by our people" claim may
+   use (auditoria 29 out 2026, ux-home-plp-02). */
 const HOME_COUNT = HOME_COUNT_LABEL;
+const OWN_HOME_COUNT = OWN_HOME_COUNT_LABEL;
 const YOUTUBE_ID = 'OUgTpL2E15U'; // PA Cleaning — the preparation checklist
 
 /* Press — real outlet logos, same treatment as the homepage press bar
@@ -131,7 +135,7 @@ export default function About() {
   const { t } = useTranslation();
   usePageMeta({
     title: t('nav.about') + ' Portugal Active',
-    description: t('about.heroSubtitle', { count: HOME_COUNT }),
+    description: t('about.heroSubtitle', { count: HOME_COUNT, own: OWN_HOME_COUNT }),
     url: '/about',
   });
 
@@ -144,7 +148,7 @@ export default function About() {
       name: 'Ricardo Viana',
       jobTitle: 'CEO & Founder',
       description:
-        `Founder and CEO of Portugal Active. Built the company from his home town of Viana do Castelo, starting in adventure tourism and scaling to ${HOME_COUNT} operated private homes across Portugal.`,
+        `Founder and CEO of Portugal Active. Built the company from his home town of Viana do Castelo, starting in adventure tourism and scaling to ${OWN_HOME_COUNT} homes run by its own team across Portugal.`,
       image: 'https://www.portugalactive.com/team/ricardo-viana.webp',
       url: 'https://www.portugalactive.com/about#ricardo-viana',
       sameAs: [
@@ -177,7 +181,7 @@ export default function About() {
           ═══════════════════════════════════════════════════════════════════ */}
       <EditorialHero image={IMAGES.aboutHero} mobileImage={IMAGES.aboutHeroMobile}
         alt={t('about.heroAlt')} eyebrow={t('about.heroOverline')} title={t('about.heroTitle')}
-        description={t('about.heroSubtitle', { count: HOME_COUNT })}>
+        description={t('about.heroSubtitle', { count: HOME_COUNT, own: OWN_HOME_COUNT })}>
         <Link href="/homes" className="btn-white">{t('siteUx.findStay')} <ArrowRight className="h-4 w-4" /></Link>
         <a href="#our-story" className="hero-text-link">{t('about.storyOverline')} <ArrowRight className="h-4 w-4" /></a>
       </EditorialHero>
@@ -215,7 +219,7 @@ export default function About() {
               {[
                 t('about.storyP1'),
                 t('about.storyP2', { points: CHECKLIST_POINTS }),
-                t('about.storyP3', { count: HOME_COUNT }),
+                t('about.storyP3', { count: HOME_COUNT, own: OWN_HOME_COUNT }),
               ].map((para, i) => (
                 <p
                   key={i}
@@ -361,7 +365,7 @@ export default function About() {
                 className="text-[#6B6860]"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
               >
-                {t('about.behindScenesP2', 'No third-party cleaning crews. No shortcuts. Our team manages every property personally, so the standard never slips.')}
+                {t('about.behindScenesP2', 'No third-party cleaning crews. No shortcuts. Our team looks after every home we manage personally, so the standard never slips.')}
               </p>
             </div>
           </div>

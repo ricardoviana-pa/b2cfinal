@@ -24,6 +24,13 @@ export const HOME_COUNT: number = generated.homeCount;
 export const HOME_COUNT_LABEL: string = generated.homeCountLabel;
 export const OWN_HOME_COUNT: number = generated.ownHomeCount;
 export const PARTNER_HOME_COUNT: number = generated.partnerHomeCount;
+/**
+ * Homes our own team runs end to end (no partner inventory), same rounding:
+ * "70+". Every claim about who runs, prepares or checks the homes uses this
+ * one, never HOME_COUNT_LABEL: the partner homes are run by the supplier
+ * (auditoria 29 out 2026, ux-home-plp-02).
+ */
+export const OWN_HOME_COUNT_LABEL: string = homeCountLabel(OWN_HOME_COUNT);
 
 /** Preparation checklist run before every arrival. */
 export const CHECKLIST_POINTS = 147;

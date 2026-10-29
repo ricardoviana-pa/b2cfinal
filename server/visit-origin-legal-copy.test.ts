@@ -12,11 +12,12 @@ import nl from '../client/src/i18n/locales/nl.json';
 import sv from '../client/src/i18n/locales/sv.json';
 
 // pa-origin on the cookie policy and the visit origin on the privacy policy
-// (PR #124). The PT text goes first to Ricardo's approval; the other eight
-// languages follow. Until then those pages leave the paragraph out instead of
-// showing the raw key, and en.json stays without the keys so sync-i18n passes.
+// (PR #124). PT went first; the other eight languages got the same text on
+// 29 Oct 2026 (auditoria i18n-copy-05), so every page now shows both
+// paragraphs and names the cookie banner's own buttons in its language.
 
-const RESOURCES: Record<string, Record<string, unknown>> = { en, pt, fr, es, it: it_, fi, de, nl, sv };
+const RESOURCES: Record<string, Record<string, any>> = { en, pt, fr, es, it: it_, fi, de, nl, sv };
+const LANGS = Object.keys(RESOURCES);
 const KEYS = ['cookiesPage.originBody', 'privacy.s2OriginBody'];
 
 /** Same set-up as entry-server.tsx: the page language plus English as fallback. */
@@ -33,6 +34,9 @@ async function i18nFor(lng: string) {
   return instance;
 }
 
+/** The banner's buttons in sentence case: "ACEITAR TUDO" → "aceitar tudo". */
+const label = (lng: string, key: string) => String(RESOURCES[lng].cookieBanner[key]).toLowerCase();
+
 describe('visit origin in the legal pages', () => {
   it('PT has both texts, with the key facts', async () => {
     const i18n = await i18nFor('pt');
@@ -44,18 +48,29 @@ describe('visit origin in the legal pages', () => {
     expect(i18n.t('privacy.s2OriginBody')).toContain('Aceitar tudo');
   });
 
-  it('the other eight languages leave the paragraph out until translated', async () => {
-    for (const lng of ['en', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv']) {
-      const i18n = await i18nFor(lng);
-      for (const key of KEYS) expect(i18n.exists(key), `${lng} ${key}`).toBe(false);
+  it.each(LANGS)('%s has both texts in its own language, not the English fallback', (lng) => {
+    for (const key of KEYS) {
+      const own = key.split('.').reduce((o: any, k) => o?.[k], RESOURCES[lng]);
+      expect(typeof own, `${lng} ${key}`).toBe('string');
+      if (lng !== 'en') expect(own).not.toBe(key.split('.').reduce((o: any, k) => o?.[k], RESOURCES.en));
     }
+    const cookie: string = RESOURCES[lng].cookiesPage.originBody;
+    expect(cookie.startsWith('pa-origin.')).toBe(true);
+    expect(cookie).toContain('30');
+    // Names the buttons the visitor actually sees: "Accept all" and the
+    // "Cookie settings" link in the footer.
+    expect(cookie.toLowerCase()).toContain(label(lng, 'acceptAll'));
+    expect(cookie.toLowerCase()).toContain(String(RESOURCES[lng].cookieBanner.managePreferences).toLowerCase());
+    expect(String(RESOURCES[lng].privacy.s2OriginBody).toLowerCase()).toContain(label(lng, 'acceptAll'));
   });
 
-  it('the pages render the paragraphs only when the key exists', () => {
+  it('the pages render the paragraphs in every language', () => {
     const cookies = fs.readFileSync('client/src/pages/Cookies.tsx', 'utf8');
     const privacy = fs.readFileSync('client/src/pages/Privacy.tsx', 'utf8');
-    expect(cookies).toMatch(/i18n\.exists\('cookiesPage\.originBody'\) &&/);
-    expect(privacy).toMatch(/i18n\.exists\('privacy\.s2OriginBody'\) &&/);
+    expect(cookies).toContain("{t('cookiesPage.originBody')}");
+    expect(privacy).toContain("{t('privacy.s2OriginBody')}");
+    expect(cookies).not.toMatch(/i18n\.exists\('cookiesPage\.originBody'\)/);
+    expect(privacy).not.toMatch(/i18n\.exists\('privacy\.s2OriginBody'\)/);
   });
 
   it('PT uses no dashes as punctuation', async () => {
@@ -63,5 +78,22 @@ describe('visit origin in the legal pages', () => {
     for (const key of [...KEYS, 'cookiesPage.lastUpdated']) {
       expect(i18n.t(key), key).not.toMatch(/[–—]| - /);
     }
+  });
+
+  it('the new translations use no dashes as punctuation either', () => {
+    for (const lng of LANGS) {
+      for (const text of [RESOURCES[lng].cookiesPage.originBody, RESOURCES[lng].privacy.s2OriginBody, RESOURCES[lng].privacy.s3AdsBody]) {
+        expect(text, lng).not.toMatch(/[–—]| - /);
+      }
+    }
+  });
+
+  it('dates the change: October 2026 wherever the paragraphs were added', () => {
+    const october: Record<string, RegExp> = {
+      en: /October 2026/, fr: /octobre 2026/, es: /octubre 2026/, it: /ottobre 2026/, de: /Oktober 2026/,
+      nl: /oktober 2026/, sv: /oktober 2026/, fi: /lokakuu 2026/, pt: /outubro de 2026/,
+    };
+    for (const lng of LANGS) expect(RESOURCES[lng].privacy.lastUpdated, lng).toMatch(october[lng]);
+    for (const lng of LANGS.filter((l) => l !== 'pt')) expect(RESOURCES[lng].cookiesPage.lastUpdated, lng).toMatch(october[lng]);
   });
 });

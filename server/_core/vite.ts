@@ -9,7 +9,7 @@ import { corporateSchema } from '../../shared/corporateSchema';
 import { deepMerge } from '../../client/src/lib/deepMerge';
 import { vacationRentalSchema } from '../../shared/vacationRentalSchema';
 import express, { type Express } from "express";
-import { HOME_COUNT_LABEL } from "@shared/brandFacts";
+import { HOME_COUNT_LABEL, OWN_HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
 import { serviceRouteSlug } from '@shared/serviceRoutes';
 import { POLICY_LANGS, cancellationPolicyCopy, cancellationPolicyMetaDescription, cancellationPolicySummary } from '@shared/cancellationPolicy';
@@ -21,6 +21,7 @@ import { pathToFileURL } from "node:url";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 import { isNonIndexableHost } from "../lib/hosts.js";
+import { setStaticFileHeaders } from "../lib/security-headers";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
  *  tested, hydration verified clean); set the Render env var SSR_ENABLED=false to
@@ -541,23 +542,23 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
   },
   '/about': {
     en: { title: 'About Portugal Active | Villas Run with the Service of a Hotel',
-          description: 'We run {{homes}} luxury villas and private homes across Portugal: bookings, concierge, housekeeping. The privacy of a home, the service of a hotel, since 2017.' },
+          description: 'We run {{ownHomes}} luxury villas and private homes across Portugal: bookings, concierge, housekeeping. The privacy of a home, the service of a hotel, since 2017.' },
     pt: { title: 'Sobre a Portugal Active | Casas de Luxo com Serviço de Hotel',
-          description: 'Operamos {{homes}} casas de luxo em todo Portugal: reservas, concierge, limpeza. A privacidade de uma casa, o serviço de um hotel, desde 2017.' },
+          description: 'Operamos {{ownHomes}} casas de luxo em todo Portugal: reservas, concierge, limpeza. A privacidade de uma casa, o serviço de um hotel, desde 2017.' },
     es: { title: 'Sobre Portugal Active | Villas con Servicio de Hotel en Portugal',
-          description: 'Operamos {{homes}} villas y casas de lujo en todo Portugal: reservas, concierge, limpieza. La privacidad de una casa, el servicio de un hotel, desde 2017.' },
+          description: 'Operamos {{ownHomes}} villas y casas de lujo en todo Portugal: reservas, concierge, limpieza. La privacidad de una casa, el servicio de un hotel, desde 2017.' },
     fr: { title: 'À propos de Portugal Active | Villas avec Service Hôtelier au Portugal',
-          description: "Nous gérons {{homes}} villas de luxe au Portugal : réservations, conciergerie, ménage. L'intimité d'une maison, le service d'un hôtel, depuis 2017." },
+          description: "Nous gérons {{ownHomes}} villas de luxe au Portugal : réservations, conciergerie, ménage. L'intimité d'une maison, le service d'un hôtel, depuis 2017." },
     de: { title: 'Über Portugal Active | Villen mit Hotelservice in Portugal',
-          description: 'Wir betreiben {{homes}} Luxusvillen in ganz Portugal: Buchungen, Concierge, Reinigung. Die Privatsphäre eines Hauses, der Service eines Hotels, seit 2017.' },
+          description: 'Wir betreiben {{ownHomes}} Luxusvillen in ganz Portugal: Buchungen, Concierge, Reinigung. Die Privatsphäre eines Hauses, der Service eines Hotels, seit 2017.' },
     it: { title: 'Chi siamo | Portugal Active | Ville con Servizio Hotel in Portogallo',
-          description: 'Gestiamo {{homes}} ville e case di lusso in tutto il Portogallo: prenotazioni, concierge, pulizie. La privacy di una casa, il servizio di un hotel, dal 2017.' },
+          description: 'Gestiamo {{ownHomes}} ville e case di lusso in tutto il Portogallo: prenotazioni, concierge, pulizie. La privacy di una casa, il servizio di un hotel, dal 2017.' },
     nl: { title: "Over Portugal Active | Villa's met Hotelservice in Portugal",
-          description: "Wij beheren {{homes}} luxevilla's in heel Portugal: boekingen, conciërge, schoonmaak. De privacy van een huis, de service van een hotel, sinds 2017." },
+          description: "Wij beheren {{ownHomes}} luxevilla's in heel Portugal: boekingen, conciërge, schoonmaak. De privacy van een huis, de service van een hotel, sinds 2017." },
     fi: { title: 'Tietoa Portugal Activesta | Huvilat hotellin palvelulla Portugalissa',
-          description: 'Operoimme {{homes}} luksushuvilaa ympäri Portugalia: varaukset, concierge, siivous. Kodin yksityisyys, hotellin palvelu, vuodesta 2017.' },
+          description: 'Operoimme {{ownHomes}} luksushuvilaa ympäri Portugalia: varaukset, concierge, siivous. Kodin yksityisyys, hotellin palvelu, vuodesta 2017.' },
     sv: { title: 'Om Portugal Active | Villor med Hotellservice i Portugal',
-          description: 'Vi driver {{homes}} lyxvillor och semesterhus över hela Portugal: bokningar, concierge, städning. Ett hems avskildhet, ett hotells service, sedan 2017.' },
+          description: 'Vi driver {{ownHomes}} lyxvillor och semesterhus över hela Portugal: bokningar, concierge, städning. Ett hems avskildhet, ett hotells service, sedan 2017.' },
   },
   '/contact': {
     en: { title: 'Contact Portugal Active | Plan Your Stay in Portugal',
@@ -718,9 +719,10 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
 };
 
 /** Look up localized meta for a static path with graceful fallback to English. */
-/** Brand numbers inside PAGE_META are tokens ({{homes}}) filled from shared/brandFacts. */
+/** Brand numbers inside PAGE_META are tokens filled from shared/brandFacts: {{homes}} is every
+ *  public listing, {{ownHomes}} the homes our own team runs ("We run …", ux-home-plp-02). */
 function fillBrandTokens(m: MetaEntry): MetaEntry {
-  const fill = (t: string) => t.replace(/\{\{homes\}\}/g, HOME_COUNT_LABEL);
+  const fill = (t: string) => t.replace(/\{\{homes\}\}/g, HOME_COUNT_LABEL).replace(/\{\{ownHomes\}\}/g, OWN_HOME_COUNT_LABEL);
   return { title: fill(m.title), description: fill(m.description) };
 }
 
@@ -1543,13 +1545,18 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // setStaticFileHeaders: imagens, vídeo, fontes, JS e CSS com
+  // Cross-Origin-Resource-Policy: cross-origin (logótipo dos emails, fotos
+  // ligadas de outros sites); o HTML fica same-origin (lib/security-headers.ts).
   app.use("/assets", express.static(path.join(distPath, "assets"), {
     maxAge: "1y",
     immutable: true,
+    setHeaders: setStaticFileHeaders,
   }));
 
   app.use(express.static(distPath, {
     maxAge: "1h",
+    setHeaders: setStaticFileHeaders,
     // Do NOT let express.static serve index.html for directory requests.
     // Otherwise "/" is served as the raw shell with a 200 before the
     // bare-path redirect middleware runs — forcing a client-side
