@@ -1788,14 +1788,20 @@ export default function CheckoutPage() {
       `}</style>
       {/* ── Minimal top bar: logo · stepper · autosave + close ── */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-pa-sand">
-        <div className="max-w-[1100px] mx-auto px-4 h-[60px] flex items-center justify-between gap-4">
+        <div className="max-w-[1100px] mx-auto px-4 h-[60px] flex items-center justify-between gap-3 sm:gap-4">
           <Link href="/" className="shrink-0" aria-label="Portugal Active">
             <img src={IMAGES.logoColor} alt="Portugal Active" className="h-[26px] w-auto" />
           </Link>
-          <nav aria-label={t("checkout.stepsAria", "Checkout steps")} className="flex items-center gap-2 sm:gap-3">
+          {/* O WhatsApp do cabeçalho tira espaço aos passos (revisão do PR
+              #176: o círculo do passo atual chegava a 2 px a 360 px em DE e
+              FI). Os círculos nunca encolhem; as linhas entre eles aparecem a
+              partir de sm e os nomes dos outros passos só no computador (lg);
+              o nome do passo atual passa a duas linhas quando falta largura e
+              sai abaixo de 360 px (o título do passo, logo abaixo, diz-o). */}
+          <nav aria-label={t("checkout.stepsAria", "Checkout steps")} className="flex min-w-0 items-center gap-2 sm:gap-3">
             {steps.map((s, i) => (
-              <div key={s.key} className="flex items-center gap-2 sm:gap-3">
-                {i > 0 && <span className="w-6 sm:w-10 h-px bg-pa-sand" />}
+              <div key={s.key} className={cn("flex items-center gap-2 sm:gap-3", i === stepIndex ? "min-w-0" : "shrink-0")}>
+                {i > 0 && <span aria-hidden className="hidden sm:block w-10 h-px bg-pa-sand" />}
                 <button
                   type="button"
                   disabled={i >= stepIndex}
@@ -1806,11 +1812,11 @@ export default function CheckoutPage() {
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                   }}
-                  className={cn("flex items-center gap-1.5", i < stepIndex && "cursor-pointer")}
+                  className={cn("flex min-w-0 items-center gap-1.5", i < stepIndex && "cursor-pointer")}
                 >
                   <span
                     className={cn(
-                      "w-5 h-5 rounded-full caption text-inherit flex items-center justify-center border",
+                      "w-5 h-5 shrink-0 rounded-full caption text-inherit flex items-center justify-center border",
                       i < stepIndex
                         ? "bg-pa-dark border-pa-dark text-white"
                         : i === stepIndex
@@ -1823,7 +1829,9 @@ export default function CheckoutPage() {
                   <span
                     className={cn(
                       "eyebrow text-inherit tracking-[0.06em] uppercase",
-                      i === stepIndex ? "inline text-pa-dark font-medium" : "hidden sm:inline text-pa-stone-aa",
+                      i === stepIndex
+                        ? "min-w-0 line-clamp-2 leading-[1.15] break-words text-left text-pa-dark font-medium max-[359px]:hidden!"
+                        : "hidden lg:inline text-pa-stone-aa",
                     )}
                   >
                     {s.label}
@@ -2093,7 +2101,7 @@ export default function CheckoutPage() {
                 )}
                 {/* Antes do portão do email: como se pode pagar e que ainda
                     não se cobra nada (auditoria do funil, crítico). */}
-                <PaymentMethodsNote className="border-t border-pa-sand pt-3" />
+                <PaymentMethodsNote className="border-t border-pa-sand pt-3" total={todayTotal} />
               </div>
             </>
           )}

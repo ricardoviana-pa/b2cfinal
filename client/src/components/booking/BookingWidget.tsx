@@ -1587,7 +1587,7 @@ export default function BookingWidget({
                 <>{t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatQuotedEur(effectiveQuote.total, lang)}</>
               )}
             </button>
-            <PaymentMethodsNote align="center" />
+            <PaymentMethodsNote align="center" total={effectiveQuote?.total} />
             </div>
 
             {beQuoteError && (

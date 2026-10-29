@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import fs from "node:fs";
 import { consentChecked, consentToSend, stayContinueAction } from "@/lib/checkoutStay";
-import { PAYMENT_MARKS } from "@/components/booking/PaymentMethodsNote";
+import { KLARNA_MAX_EUR, PAYMENT_MARKS, paymentMarksFor } from "@/components/booking/PaymentMethodsNote";
 
 /**
  * Passo 1 do checkout e o que o rodeia (auditoria do funil, 29 out 2026,
@@ -138,6 +138,19 @@ describe("meios de pagamento e 'ainda não é cobrado' antes do portão do email
     }
   });
 
+  it("a Klarna só aparece quando o total cabe no limite dela (país PT: Pay in 3 até 1 000 €; revisão do PR #176)", () => {
+    const alts = (total: number | null | undefined) => paymentMarksFor(total).map((m) => m.alt);
+    expect(KLARNA_MAX_EUR).toBe(1000);
+    expect(alts(850)).toContain("Klarna");
+    expect(alts(1000)).toContain("Klarna");
+    for (const total of [1000.01, 2700, 12500, 0, null, undefined]) expect(alts(total), String(total)).not.toContain("Klarna");
+    // o resto da linha fica sempre
+    expect(alts(2700)).toEqual(["Visa", "Mastercard", "American Express", "Apple Pay", "Google Pay", "PayPal"]);
+    // o widget e o passo 1 passam o total que a Klarna cobraria
+    expect(read("client/src/components/booking/BookingWidget.tsx")).toMatch(/<PaymentMethodsNote align="center" total=\{effectiveQuote\?\.total\} \/>/);
+    expect(read("client/src/pages/checkout/CheckoutPage.tsx")).toMatch(/<PaymentMethodsNote [^>]*total=\{todayTotal\} \/>/);
+  });
+
   it("debaixo do Reservar do widget (preso com ele no computador) e no passo 1", () => {
     const widget = read("client/src/components/booking/BookingWidget.tsx");
     const cta = widget.indexOf('<div className="pa-reserve-cta bg-white space-y-2.5">');
@@ -156,6 +169,28 @@ describe("meios de pagamento e 'ainda não é cobrado' antes do portão do email
       expect(p.notChargedYet, lang).toBeTruthy();
       expect(p.notChargedYet, lang).not.toMatch(BANNED);
     }
+  });
+});
+
+describe("italiano: os textos novos no registo formal (Lei), como as outras línguas (revisão do PR #176)", () => {
+  const it_ = locale("it");
+  const get = (k: string) => k.split(".").reduce<any>((o, p) => o?.[p], it_) as string;
+  const KEYS = [
+    ...["digits", "digitsRange", "leadingZero", "tooShort", "tooLong", "countryCode"].map((k) => `bookingWidget.phoneErrors.${k}`),
+    ...["declinedLimit", "declinedGeneric", "cardExpired", "cardNotSupported", "incorrectCvc", "incorrectNumber", "cardDetails",
+      "bankUnavailable", "authenticationFailed", "twoPartsUnavailable", "prepareFailed", "priceChanged", "duplicateTransaction",
+    ].map((k) => `payment.errors.${k}`),
+    "payment.termsHint", "payment.walletsHint", "payment.notChargedYet",
+    "checkout.fieldErrors.firstName", "checkout.fieldErrors.lastName", "checkout.nifInvalid",
+    "checkout.emailHoldNote", "checkout.emailReminderNote",
+  ];
+  // "tu": pronomes e imperativos/infinitos com pronome da 2.ª pessoa
+  const TU = /\b(ti|tuo|tua|tuoi|tue)\b|\b(controlla|controllalo|inizia|togli|cambia|usa|indica|riprova|completi ora)\b|inviarti|\bnon ti\b/i;
+
+  it.each(KEYS)("%s", (key) => {
+    const value = get(key);
+    expect(value, key).toBeTruthy();
+    expect(value, key).not.toMatch(TU);
   });
 });
 

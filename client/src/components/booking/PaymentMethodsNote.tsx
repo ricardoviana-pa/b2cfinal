@@ -6,7 +6,7 @@
  * preencher seis campos.
  *
  * As marcas são as oficiais do rodapé (public/payments, ver SOURCES.txt),
- * mais pequenas. <img> com lazy loading em vez de SVG no JS: não pesa no
+ * mais pequenas; a da Klarna só quando o total cabe no limite dela. <img> com lazy loading em vez de SVG no JS: não pesa no
  * bundle da página da casa, onde o telemóvel já é lento.
  */
 import { useTranslation } from "react-i18next";
@@ -23,12 +23,29 @@ export const PAYMENT_MARKS = [
   { src: "/payments/marks/klarna.svg", alt: "Klarna", logoClass: "w-full h-auto", background: "#ffa8cd" },
 ] as const;
 
+/**
+ * A Klarna confirma com o país de faturação PT (KlarnaCheckoutButton), e o
+ * Pay in 3 para clientes portugueses vai até 1 000 € (docs/pagamento_duas_partes.md
+ * §2.1). Acima disso a Klarna recusa quase sempre: a marca só se mostra quando
+ * o total cabe no limite, para não prometer antes do email um método que falha
+ * (revisão do PR #176). Sem total conhecido, não se promete.
+ */
+export const KLARNA_MAX_EUR = 1000;
+
+export function paymentMarksFor(total: number | null | undefined) {
+  const klarna = typeof total === "number" && total > 0 && total <= KLARNA_MAX_EUR;
+  return PAYMENT_MARKS.filter((mark) => mark.alt !== "Klarna" || klarna);
+}
+
 export default function PaymentMethodsNote({
   align = "start",
   className,
+  total,
 }: {
   align?: "start" | "center";
   className?: string;
+  /** O total que a Klarna cobraria (EUR): decide se a marca da Klarna aparece. */
+  total?: number | null;
 }) {
   const { t } = useTranslation();
   return (
@@ -37,7 +54,7 @@ export default function PaymentMethodsNote({
         aria-label={t("payment.methodsAccepted", "Accepted payment methods")}
         className={cn("flex flex-wrap items-center gap-1", align === "center" && "justify-center")}
       >
-        {PAYMENT_MARKS.map((mark) => (
+        {paymentMarksFor(total).map((mark) => (
           <li
             key={mark.alt}
             className="inline-flex h-[20px] w-[32px] shrink-0 items-center justify-center overflow-hidden rounded-[4px] ring-1 ring-inset ring-black/10"
