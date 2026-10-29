@@ -13,6 +13,7 @@ import { WifiOff, ArrowUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { detectAiReferrer } from "./lib/datalayer";
 import { useMeasurementConsent } from "./hooks/useMeasurementConsent";
+import LanguageSuggestion from "./components/layout/LanguageSuggestion";
 
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
@@ -309,6 +310,7 @@ function App({ ssrLocation }: { ssrLocation?: string }) {
               <PreviewNotice />
               <OfflineBanner />
               <BackToTop />
+              <LanguageSuggestion />
               <Suspense fallback={null}><ItineraryDrawer /></Suspense>
               <Suspense fallback={null}><CookieBanner /></Suspense>
               <main id="main-content" role="main" tabIndex={-1}>
