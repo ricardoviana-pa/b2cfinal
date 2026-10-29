@@ -564,7 +564,11 @@
     "allDestHomes": "Toutes les maisons — {{destination}}",
     "ownershipTitle": "Plus qu’un séjour.",
     "ownershipBody": "Cette maison fait également partie de notre collection immobilière. Envisagez son acquisition avec l’équipe qui la connaît.",
-    "ownershipAction": "Découvrir cette maison à vendre"
+    "ownershipAction": "Découvrir cette maison à vendre",
+    "showAllAmenitiesCount": "Voir les {{count}} équipements",
+    "showAllPhotos": "Voir les {{count}} photos",
+    "bedTotal_one": "{{count}} lit",
+    "bedTotal_other": "{{count}} lits"
   },
   "priceBreakdown": {
     "title": "Récapitulatif du prix",
@@ -1382,7 +1386,9 @@
     "bathroom": "Salle de bain",
     "familyFriendly": "Pour les familles",
     "safety": "Sécurité",
-    "other": "Autres"
+    "other": "Autres",
+    "accessibility": "Accessibilité",
+    "nearby": "Activités à proximité"
   },
   "experience": {
     "from": "À partir de",
@@ -2407,5 +2413,54 @@
       "network": "Problème de connexion. Vérifiez votre connexion internet et réessayez.",
       "generic": "L'opération n'a pas pu aboutir. Réessayez ou parlez à votre concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Piscine privée",
+    "swimmingPool": "Piscine",
+    "heatedPool": "Piscine chauffée",
+    "seaView": "Vue mer",
+    "nearOcean": "Proche de l’océan",
+    "mountainView": "Vue montagne",
+    "riverView": "Vue sur la rivière ou le lac",
+    "jacuzzi": "Jacuzzi",
+    "sauna": "Sauna",
+    "fireplace": "Cheminée",
+    "bbq": "Barbecue",
+    "garden": "Jardin",
+    "terrace": "Terrasse",
+    "airConditioning": "Climatisation",
+    "heating": "Chauffage",
+    "wifi": "Wifi",
+    "workspace": "Espace de travail",
+    "kitchen": "Cuisine",
+    "dishwasher": "Lave-vaisselle",
+    "washer": "Lave-linge",
+    "tv": "TV",
+    "crib": "Lit bébé",
+    "gym": "Salle de sport",
+    "evCharging": "Borne de recharge",
+    "parking": "Parking gratuit"
+  },
+  "beds": {
+    "king_one": "{{count}} lit king",
+    "king_other": "{{count}} lits king",
+    "queen_one": "{{count}} lit queen",
+    "queen_other": "{{count}} lits queen",
+    "double_one": "{{count}} lit double",
+    "double_other": "{{count}} lits doubles",
+    "single_one": "{{count}} lit simple",
+    "single_other": "{{count}} lits simples",
+    "sofa_one": "{{count}} canapé-lit",
+    "sofa_other": "{{count}} canapés-lits",
+    "bunk_one": "{{count}} lit superposé",
+    "bunk_other": "{{count}} lits superposés",
+    "air_one": "{{count}} matelas gonflable",
+    "air_other": "{{count}} matelas gonflables",
+    "floor_one": "{{count}} matelas au sol",
+    "floor_other": "{{count}} matelas au sol",
+    "crib_one": "{{count}} lit bébé",
+    "crib_other": "{{count}} lits bébé",
+    "toddler_one": "{{count}} lit enfant",
+    "toddler_other": "{{count}} lits enfant"
   }
 }

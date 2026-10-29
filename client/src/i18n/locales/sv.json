@@ -564,7 +564,11 @@
     "allDestHomes": "Alla hem i {{destination}}",
     "ownershipTitle": "Mer än en vistelse.",
     "ownershipBody": "Det här huset ingår också i vårt fastighetsutbud. Utforska möjligheten att köpa det med teamet som känner det.",
-    "ownershipAction": "Upptäck det här huset till salu"
+    "ownershipAction": "Upptäck det här huset till salu",
+    "showAllAmenitiesCount": "Visa alla {{count}} bekvämligheter",
+    "showAllPhotos": "Visa alla {{count}} foton",
+    "bedTotal_one": "{{count}} säng",
+    "bedTotal_other": "{{count}} sängar"
   },
   "priceBreakdown": {
     "title": "Prissammanfattning",
@@ -1382,7 +1386,9 @@
     "bathroom": "Badrum",
     "familyFriendly": "Barnvänligt",
     "safety": "Säkerhet",
-    "other": "Övrigt"
+    "other": "Övrigt",
+    "accessibility": "Tillgänglighet",
+    "nearby": "Aktiviteter i närheten"
   },
   "experience": {
     "from": "Från",
@@ -2407,5 +2413,54 @@
       "network": "Anslutningsproblem. Kontrollera internetanslutningen och försök igen.",
       "generic": "Det gick inte att slutföra. Försök igen eller prata med din concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Privat pool",
+    "swimmingPool": "Pool",
+    "heatedPool": "Uppvärmd pool",
+    "seaView": "Havsutsikt",
+    "nearOcean": "Nära havet",
+    "mountainView": "Bergsutsikt",
+    "riverView": "Utsikt över flod eller sjö",
+    "jacuzzi": "Jacuzzi",
+    "sauna": "Bastu",
+    "fireplace": "Öppen spis",
+    "bbq": "Grill",
+    "garden": "Trädgård",
+    "terrace": "Terrass",
+    "airConditioning": "Luftkonditionering",
+    "heating": "Uppvärmning",
+    "wifi": "Wifi",
+    "workspace": "Arbetsplats",
+    "kitchen": "Kök",
+    "dishwasher": "Diskmaskin",
+    "washer": "Tvättmaskin",
+    "tv": "TV",
+    "crib": "Spjälsäng",
+    "gym": "Gym",
+    "evCharging": "Elbilsladdning",
+    "parking": "Gratis parkering"
+  },
+  "beds": {
+    "king_one": "{{count}} king-säng",
+    "king_other": "{{count}} king-sängar",
+    "queen_one": "{{count}} queen-säng",
+    "queen_other": "{{count}} queen-sängar",
+    "double_one": "{{count}} dubbelsäng",
+    "double_other": "{{count}} dubbelsängar",
+    "single_one": "{{count}} enkelsäng",
+    "single_other": "{{count}} enkelsängar",
+    "sofa_one": "{{count}} bäddsoffa",
+    "sofa_other": "{{count}} bäddsoffor",
+    "bunk_one": "{{count}} våningssäng",
+    "bunk_other": "{{count}} våningssängar",
+    "air_one": "{{count}} luftmadrass",
+    "air_other": "{{count}} luftmadrasser",
+    "floor_one": "{{count}} golvmadrass",
+    "floor_other": "{{count}} golvmadrasser",
+    "crib_one": "{{count}} spjälsäng",
+    "crib_other": "{{count}} spjälsängar",
+    "toddler_one": "{{count}} juniorsäng",
+    "toddler_other": "{{count}} juniorsängar"
   }
 }

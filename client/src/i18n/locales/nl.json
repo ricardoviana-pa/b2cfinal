@@ -564,7 +564,11 @@
     "allDestHomes": "Alle huizen {{inPlace}}",
     "ownershipTitle": "Meer dan een verblijf.",
     "ownershipBody": "Deze woning maakt ook deel uit van onze vastgoedcollectie. Ontdek de mogelijkheid om haar te kopen met het team dat haar kent.",
-    "ownershipAction": "Bekijk deze woning te koop"
+    "ownershipAction": "Bekijk deze woning te koop",
+    "showAllAmenitiesCount": "Alle {{count}} voorzieningen tonen",
+    "showAllPhotos": "Alle {{count}} foto's tonen",
+    "bedTotal_one": "{{count}} bed",
+    "bedTotal_other": "{{count}} bedden"
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",
@@ -1382,7 +1386,9 @@
     "bathroom": "Badkamer",
     "familyFriendly": "Gezinsvriendelijk",
     "safety": "Veiligheid",
-    "other": "Overig"
+    "other": "Overig",
+    "accessibility": "Toegankelijkheid",
+    "nearby": "Activiteiten in de buurt"
   },
   "experience": {
     "from": "Vanaf",
@@ -2407,5 +2413,54 @@
       "network": "Verbindingsprobleem. Controleer uw internet en probeer het opnieuw.",
       "generic": "Dit is niet gelukt. Probeer het opnieuw of praat met uw concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Privézwembad",
+    "swimmingPool": "Zwembad",
+    "heatedPool": "Verwarmd zwembad",
+    "seaView": "Uitzicht op zee",
+    "nearOcean": "Dicht bij zee",
+    "mountainView": "Uitzicht op de bergen",
+    "riverView": "Uitzicht op rivier of meer",
+    "jacuzzi": "Jacuzzi",
+    "sauna": "Sauna",
+    "fireplace": "Open haard",
+    "bbq": "Barbecue",
+    "garden": "Tuin",
+    "terrace": "Terras",
+    "airConditioning": "Airconditioning",
+    "heating": "Verwarming",
+    "wifi": "Wifi",
+    "workspace": "Werkplek",
+    "kitchen": "Keuken",
+    "dishwasher": "Vaatwasser",
+    "washer": "Wasmachine",
+    "tv": "TV",
+    "crib": "Kinderbed",
+    "gym": "Fitnessruimte",
+    "evCharging": "Laadpunt voor elektrische auto's",
+    "parking": "Gratis parkeren"
+  },
+  "beds": {
+    "king_one": "{{count}} kingsize bed",
+    "king_other": "{{count}} kingsize bedden",
+    "queen_one": "{{count}} queensize bed",
+    "queen_other": "{{count}} queensize bedden",
+    "double_one": "{{count}} tweepersoonsbed",
+    "double_other": "{{count}} tweepersoonsbedden",
+    "single_one": "{{count}} eenpersoonsbed",
+    "single_other": "{{count}} eenpersoonsbedden",
+    "sofa_one": "{{count}} slaapbank",
+    "sofa_other": "{{count}} slaapbanken",
+    "bunk_one": "{{count}} stapelbed",
+    "bunk_other": "{{count}} stapelbedden",
+    "air_one": "{{count}} luchtbed",
+    "air_other": "{{count}} luchtbedden",
+    "floor_one": "{{count}} vloermatras",
+    "floor_other": "{{count}} vloermatrassen",
+    "crib_one": "{{count}} kinderbed",
+    "crib_other": "{{count}} kinderbedden",
+    "toddler_one": "{{count}} peuterbed",
+    "toddler_other": "{{count}} peuterbedden"
   }
 }
