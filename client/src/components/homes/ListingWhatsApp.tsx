@@ -8,14 +8,21 @@
  * interstitial. Same look and position as the site's floating button
  * (.whatsapp-float clears the safe area and sits under "back to top"), but
  * z-40: under the filter sheet and the cookie banner, above the sticky rail.
+ * It shows once the first result has scrolled out of view, and never rests
+ * on a card's photo arrow (listingFloatShown).
  *
  * whatsapp_click is fired by the site-wide delegated listener
  * (installContactClickTracking) with source "listing_float" plus the
  * data-track-* context below — so nothing fires twice.
  */
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { ContactContextField } from '@/lib/datalayer';
 
-export type TrackContext = Record<string, string | undefined>;
+type Kebab<S extends string> = S extends `${infer Head}_${infer Tail}` ? `${Head}-${Kebab<Tail>}` : S;
+/** data-track-* context for a contact link: only the fields every contact
+ *  click sends — and resets when a link has none (CONTACT_CONTEXT_FIELDS). */
+export type TrackContext = Partial<Record<Kebab<ContactContextField>, string | undefined>>;
 
 /** { "item-list-id": "x" } → { "data-track-item-list-id": "x" }, empty values dropped. */
 export function trackAttributes(source: string, context: TrackContext = {}): Record<string, string> {
@@ -34,17 +41,107 @@ export function WhatsAppMark({ className }: { className: string }) {
   );
 }
 
+/** The listing's results: the pages put `data-listing-results` on the block that holds the cards. */
+export const LISTING_FIRST_RESULT = '[data-listing-results] article';
+/** A card's only buttons: the photo arrows, at its right and left edges — where the float sits. */
+export const LISTING_PHOTO_ARROWS = '[data-listing-results] article button';
+/** How long the page must be still to count as at rest. */
+const REST_MS = 200;
+
+/**
+ * When the float may show (revisão 2 do PR #175). Fixed bottom-right from
+ * the first paint, it sat on the first card's «Next image» arrow (390×844:
+ * arrow at y 694–730 under the float at 708–756, in 23 of 24 loads), so a tap
+ * meant for the next photo opened WhatsApp; on a 375×553 screen it sat on the
+ * rail's «All» tab. Now:
+ * - like the homepage's float, held until the hero is scrolled past, it
+ *   waits until the first result has scrolled out of view (a tablet's first
+ *   row goes with it); a page with no result waits for 60 % of a screen;
+ * - after that, a photo arrow is never left under it: it does not appear on
+ *   top of one (on a 390×664 iPhone screen it appeared on card 3's), and it
+ *   steps aside when the page comes to rest with one under it. While the page
+ *   scrolls it keeps its state, so it does not blink as the cards go by.
+ */
+export function listingFloatShown({ firstResultBottom, scrollY, viewportHeight, arrowUnder = false, scrolling = false, wasShown = false }: {
+  /** Bottom edge of the first result card, from the top of the viewport; null when the page has none. */
+  firstResultBottom: number | null;
+  scrollY: number;
+  viewportHeight: number;
+  /** A card's photo arrow overlaps the float's place. */
+  arrowUnder?: boolean;
+  /** The page is scrolling (not yet still for REST_MS). */
+  scrolling?: boolean;
+  wasShown?: boolean;
+}): boolean {
+  const pastFirstResult = firstResultBottom === null ? scrollY > viewportHeight * 0.6 : firstResultBottom <= 0;
+  if (!pastFirstResult) return false;
+  if (!arrowUnder) return true;
+  return scrolling && wasShown;
+}
+
+const overlaps = (a: DOMRect, b: DOMRect) =>
+  a.width > 0 && b.width > 0 && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+
+function useListingFloatShown(float: RefObject<HTMLElement | null>): boolean {
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    let frame = 0;
+    let rest = 0;
+    let scrolling = false;
+    const update = () => {
+      frame = 0;
+      const place = float.current?.getBoundingClientRect();
+      if (!place) return;
+      const first = document.querySelector(LISTING_FIRST_RESULT);
+      const arrowUnder = Array.from(document.querySelectorAll(LISTING_PHOTO_ARROWS)).some((b) => overlaps(b.getBoundingClientRect(), place));
+      setShown((wasShown) => listingFloatShown({
+        firstResultBottom: first ? first.getBoundingClientRect().bottom : null,
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        arrowUnder,
+        scrolling,
+        wasShown,
+      }));
+    };
+    const schedule = () => { if (!frame) frame = window.requestAnimationFrame(update); };
+    const onScroll = () => {
+      scrolling = true;
+      window.clearTimeout(rest);
+      rest = window.setTimeout(() => { scrolling = false; schedule(); }, REST_MS);
+      schedule();
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', schedule);
+      if (frame) window.cancelAnimationFrame(frame);
+      window.clearTimeout(rest);
+    };
+  }, [float]);
+  return shown;
+}
+
 export default function ListingWhatsApp({ href, context }: { href: string; context?: TrackContext }) {
   const { t } = useTranslation();
+  const float = useRef<HTMLAnchorElement>(null);
+  // Laid out but invisible (no tap target, not in the tab order) until it may
+  // show — on the server too —, so its place can be measured.
+  const shown = useListingFloatShown(float);
   return (
     <a
+      ref={float}
       href={href}
       target="_blank"
       rel="noopener noreferrer"
       {...trackAttributes('listing_float', context)}
       aria-label={t('listingWhatsApp.aria')}
       data-testid="listing-whatsapp"
-      className="lg:hidden fixed right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#1A1A18] text-white shadow-lg border border-white/10 transition-transform duration-300 hover:scale-105 hover:bg-[#2a2a27] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pa-gold sm:right-6 sm:h-14 sm:w-14 md:right-7 whatsapp-float"
+      data-shown={shown ? 'true' : 'false'}
+      className={`lg:hidden fixed right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#1A1A18] text-white shadow-lg border border-white/10 transition-[opacity,visibility,transform] duration-200 hover:scale-105 hover:bg-[#2a2a27] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pa-gold sm:right-6 sm:h-14 sm:w-14 md:right-7 whatsapp-float ${
+        shown ? 'visible opacity-100' : 'invisible opacity-0 pointer-events-none'
+      }`}
     >
       <WhatsAppMark className="h-6 w-6 sm:h-7 sm:w-7" />
     </a>

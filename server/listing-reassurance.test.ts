@@ -106,6 +106,6 @@ describe('on the page', () => {
     expect(line).toMatch(/\{showCancellation && \(\s*<li>\s*<Link href="\/legal\/cancellation-policy"/);
     expect(line).toMatch(/<li className="hidden lg:block">\s*<a href=\{whatsappHref\}/);
     // The floating button it would repeat is the phone/tablet one.
-    expect(fs.readFileSync(new URL('../client/src/components/homes/ListingWhatsApp.tsx', import.meta.url), 'utf8')).toMatch(/className="lg:hidden fixed/);
+    expect(fs.readFileSync(new URL('../client/src/components/homes/ListingWhatsApp.tsx', import.meta.url), 'utf8')).toMatch(/className=\{`lg:hidden fixed/);
   });
 });

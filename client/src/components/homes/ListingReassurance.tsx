@@ -10,8 +10,9 @@
  *   and paid here, and the arrival date, if any, leaves every refundable
  *   period open (revisão do PR #175, R3).
  * - The concierge answers on WhatsApp (the number every page uses). No reply
- *   time is promised. From 1024 px only: below that the listing's WhatsApp
- *   button is on screen already (R5).
+ *   time is promised. From 1024 px only: below that the listing has its
+ *   WhatsApp button, which comes up once the first home has scrolled away
+ *   (R5; ListingWhatsApp) — a second line here would push that home down.
  *
  * On a phone that leaves one line, or nothing, above the first home.
  *

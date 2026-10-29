@@ -24,7 +24,7 @@ import { isChildUnit } from '@/config/propertyGroups';
 import { hasConfirmedQuote, listingQuoteGuests, listingQuotesKey, searchGuestsParam, sortSearchResults } from '@/lib/homeSearch';
 import { localityLabel, matchesSearchRegion, parseSearchRegion } from '@/lib/destinationSearch';
 import DestinationOptions, { regionLabel, useDestinationOptions } from '@/components/marketing/DestinationOptions';
-import ListingWhatsApp, { trackAttributes } from '@/components/homes/ListingWhatsApp';
+import ListingWhatsApp, { trackAttributes, type TrackContext } from '@/components/homes/ListingWhatsApp';
 import ListingReassurance from '@/components/homes/ListingReassurance';
 import { canPromiseFreeCancellation } from '@/lib/listingReassurance';
 import { conciergeWhatsAppHref, listingWhatsAppMessage } from '@/lib/whatsappMessage';
@@ -729,7 +729,7 @@ export default function Homes() {
     guests: searchGuestsCount || undefined,
   };
   const listingWhatsAppHref = conciergeWhatsAppHref(listingWhatsAppMessage(t, i18n.language, conciergeContext));
-  const trackContext = {
+  const trackContext: TrackContext = {
     'item-list-id': collection ? `collection_${collection.slug}` : 'search_results',
     'search-location': location !== 'all' ? location : destination !== 'all' ? destination : undefined,
     'search-checkin': searchCheckin || undefined,
@@ -832,7 +832,8 @@ export default function Homes() {
               </Suspense>
             </div>
           )}
-          <div className="min-w-0">
+          {/* data-listing-results: the WhatsApp float waits until its first card has scrolled away. */}
+          <div className="min-w-0" data-listing-results="">
           <ListingReassurance
             whatsappHref={listingWhatsAppHref}
             context={trackContext}
