@@ -1081,7 +1081,10 @@ export async function sendCheckoutGuestConfirmation(d: {
     if (q.nights && q.totalNights != null) {
       priceLines += line(`${q.nights} ${C.nightsLabel}`, eur(q.totalNights, lang));
     }
-    if (q.cleaningFee && q.cleaningFee > 0) priceLines += line("Service fee", eur(q.cleaningFee, lang));
+    // O rótulo do resumo do checkout nessa língua ("Limpeza final"), como na
+    // recuperação: o "Service fee" em inglês, nas 9 línguas, contradizia o
+    // "sem taxas de reserva" que o checkout acabou de prometer.
+    if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(cleaningFeeLabel(lang), eur(q.cleaningFee, lang));
     if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(C.taxesLabel, eur(q.taxesAndFees, lang));
     const receptionAmt = d.receptionAmount ?? 0;
     if (d.reception?.type === "hosted" && receptionAmt > 0) {
@@ -1213,7 +1216,7 @@ export async function sendCheckoutGuestConfirmation(d: {
   ${total > 0 ? `<tr><td style="padding:10px 24px 0 24px;">
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid ${PA.sand};">
       <tr>
-        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">Total</td>
+        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">${LEGACY_I18N[lang].totalLabel}</td>
         <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, lang)}</td>
       </tr>
     </table>
@@ -1255,8 +1258,8 @@ ${ctaBlock}
   ${conciergeSignature(lang, d.destination)}
 </td></tr>
 
-<!-- Footer -->
-${brandFooter(legacyTagline(lang === "pt"))}
+<!-- Footer: a frase da marca na língua do hóspede (a antiga só existia em PT e EN) -->
+${brandFooter(C.footerTagline)}
 
 </table>
 </td></tr>

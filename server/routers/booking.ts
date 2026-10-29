@@ -33,6 +33,37 @@ async function bookedRateCancellation(listingId?: string | null, ratePlanId?: st
   return plan ? { policy: planPolicyCode(plan) } : null;
 }
 
+/**
+ * PayPal e Klarna, depois de a reserva existir: UMA confirmação por reserva.
+ *
+ * Checkout 2.0 (intentId no PI): a confirmação do hóspede é a do checkout
+ * (9 línguas, resumo, política da tarifa), e sai uma só vez do
+ * completeCheckoutIntent, daqui ou do webhook, conforme quem marcar o intent
+ * como pago primeiro. A confirmação antiga (sem língua, sai em inglês) saía
+ * também, sempre: o hóspede recebia duas.
+ *
+ * A antiga fica para o fluxo sem intent e para quando o checkout não fecha
+ * (intent ilegível, BD em baixo, reserva que não bate certo): quem pagou
+ * recebe sempre uma confirmação, e o erro continua a subir como antes.
+ */
+export async function confirmWalletBooking(
+  intentId: string | null | undefined,
+  reservation: { reservationId: string; confirmationCode: string },
+  sendLegacyConfirmation: () => void,
+): Promise<void> {
+  if (!intentId) {
+    sendLegacyConfirmation();
+    return;
+  }
+  const { completeCheckoutIntent } = await import("../services/checkout-confirmation");
+  try {
+    await completeCheckoutIntent(intentId, reservation.reservationId, reservation.confirmationCode);
+  } catch (err) {
+    sendLegacyConfirmation();
+    throw err;
+  }
+}
+
 async function partnerProperty(uid: string) {
   const { getPropertiesForSite } = await import('../services/properties-store');
   return (await getPropertiesForSite()).find((p: any) => p.source === 'tripwix' && p.isActive !== false && p.supplierUid === uid) as any;
@@ -898,26 +929,25 @@ export const bookingRouter = router({
         status: "upcoming",
       });
 
-      // Fire-and-forget: the rate's policy is read first (cached, bounded), then the email goes
-      void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
-        guestName: `${input.guestFirstName} ${input.guestLastName}`,
-        guestEmail: input.guestEmail,
-        propertyName: input.propertyName || "Portugal Active Home",
-        destination: input.destination,
-        checkIn: input.checkIn,
-        checkOut: input.checkOut,
-        guests: input.numberOfAdults + input.numberOfChildren,
-        totalPrice: input.totalAmount,
-        confirmationCode: reservation.confirmationCode,
-        cancellation,
-      })).catch((err: any) => {
-        console.warn(`[PayPal] Confirmation email failed (non-blocking): ${err.message}`);
+      // Uma confirmação por reserva (confirmWalletBooking). A antiga, quando sai,
+      // é fire-and-forget: a política da tarifa lê-se primeiro (cache, com
+      // limite de tempo) e depois o email segue.
+      await confirmWalletBooking(pi.metadata?.intentId, reservation, () => {
+        void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
+          guestName: `${input.guestFirstName} ${input.guestLastName}`,
+          guestEmail: input.guestEmail,
+          propertyName: input.propertyName || "Portugal Active Home",
+          destination: input.destination,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guests: input.numberOfAdults + input.numberOfChildren,
+          totalPrice: input.totalAmount,
+          confirmationCode: reservation.confirmationCode,
+          cancellation,
+        })).catch((err: any) => {
+          console.warn(`[PayPal] Confirmation email failed (non-blocking): ${err.message}`);
+        });
       });
-
-      if (pi.metadata?.intentId) {
-        const { completeCheckoutIntent } = await import('../services/checkout-confirmation');
-        await completeCheckoutIntent(pi.metadata.intentId, reservation.reservationId, reservation.confirmationCode);
-      }
       return {
         reservationId: reservation.reservationId,
         confirmationCode: reservation.confirmationCode,
@@ -1093,26 +1123,23 @@ export const bookingRouter = router({
         status: "upcoming",
       });
 
-      // Fire-and-forget: the rate's policy is read first (cached, bounded), then the email goes
-      void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
-        guestName: `${input.guestFirstName} ${input.guestLastName}`,
-        guestEmail: input.guestEmail,
-        propertyName: input.propertyName || "Portugal Active Home",
-        destination: input.destination,
-        checkIn: input.checkIn,
-        checkOut: input.checkOut,
-        guests: input.numberOfAdults + input.numberOfChildren,
-        totalPrice: input.totalAmount,
-        confirmationCode: reservation.confirmationCode,
-        cancellation,
-      })).catch((err: any) => {
-        console.warn(`[Klarna] Confirmation email failed (non-blocking): ${err.message}`);
+      // Uma confirmação por reserva (confirmWalletBooking), como no PayPal.
+      await confirmWalletBooking(pi.metadata?.intentId, reservation, () => {
+        void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
+          guestName: `${input.guestFirstName} ${input.guestLastName}`,
+          guestEmail: input.guestEmail,
+          propertyName: input.propertyName || "Portugal Active Home",
+          destination: input.destination,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guests: input.numberOfAdults + input.numberOfChildren,
+          totalPrice: input.totalAmount,
+          confirmationCode: reservation.confirmationCode,
+          cancellation,
+        })).catch((err: any) => {
+          console.warn(`[Klarna] Confirmation email failed (non-blocking): ${err.message}`);
+        });
       });
-
-      if (pi.metadata?.intentId) {
-        const { completeCheckoutIntent } = await import('../services/checkout-confirmation');
-        await completeCheckoutIntent(pi.metadata.intentId, reservation.reservationId, reservation.confirmationCode);
-      }
       return {
         reservationId: reservation.reservationId,
         confirmationCode: reservation.confirmationCode,
