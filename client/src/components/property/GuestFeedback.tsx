@@ -10,10 +10,14 @@ import { useTranslation } from 'react-i18next';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { getDisplayName } from '@/lib/format';
+import { reviewLanguageLabel } from '@/lib/reviewLanguage';
 
 export default forwardRef<HTMLDivElement>(function GuestFeedback(_, ref) {
   const { t, i18n } = useTranslation();
-  const { data } = trpc.properties.guestFeedback.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
+  // Reviews in the page language first (then English, then the rest); the
+  // others carry a "Written in …" label (auditoria 29 out, ux-home-plp-07).
+  const pageLang = (i18n.language || 'en').split('-')[0];
+  const { data } = trpc.properties.guestFeedback.useQuery({ locale: pageLang }, { staleTime: 5 * 60 * 1000 });
   const track = useRef<HTMLDivElement>(null);
   const [edge, setEdge] = useState({ start: true, end: false });
 
@@ -73,8 +77,13 @@ export default forwardRef<HTMLDivElement>(function GuestFeedback(_, ref) {
       className="container reviews-track flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory"
     >
       {data.map(r => <article key={r.property.slug} className="snap-start flex flex-col rounded-xl border border-pa-sand bg-pa-cream p-5 w-[82vw] sm:w-[360px] lg:w-[320px] shrink-0">
-        <p className="body-sm text-pa-dark font-medium mb-3">{r.rating}/5</p>
-        <blockquote className="body-sm text-pa-earth leading-relaxed line-clamp-6 flex-1">“{r.text}”</blockquote>
+        <p className="body-sm text-pa-dark font-medium mb-3">
+          {r.rating}/5
+          {r.language && r.language !== pageLang && (
+            <span className="ml-2 font-normal text-pa-stone">· {reviewLanguageLabel(t, pageLang, r.language)}</span>
+          )}
+        </p>
+        <blockquote lang={r.language ?? undefined} className="body-sm text-pa-earth leading-relaxed line-clamp-6 flex-1">“{r.text}”</blockquote>
         <p className="caption text-pa-earth mt-4">{r.guestName || t('reviews.verifiedGuest')}{Date.parse(r.date) ? ` · ${new Date(r.date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}` : ''}</p>
         <Link href={`/homes/${r.property.slug}#property-reviews`} className="body-sm font-medium text-pa-dark underline underline-offset-4 pt-3 min-h-11">{getDisplayName(r.property)}</Link>
       </article>)}

@@ -49,10 +49,13 @@ export const propertiesRouter = router({
     return catalogProperties(await getPropertiesForSite()).map(toCatalogCard);
   }),
 
-  guestFeedback: publicProcedure.query(async ({ ctx }) => {
-    ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
-    return recentGuestFeedback(catalogProperties(await getPropertiesForSite()));
-  }),
+  /** Homepage reviews; with `locale`, the page's language first (ux-home-plp-07). */
+  guestFeedback: publicProcedure
+    .input(z.object({ locale: z.string().regex(/^[a-z]{2}$/) }).optional())
+    .query(async ({ ctx, input }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
+      return recentGuestFeedback(catalogProperties(await getPropertiesForSite()), input?.locale);
+    }),
 
   /** Destination options for the search dropdowns — ~15 entries (<1 KB), so it
    *  can be SSR-prefetched and the picker works on first paint instead of

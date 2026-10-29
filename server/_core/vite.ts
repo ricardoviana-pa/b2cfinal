@@ -1685,7 +1685,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
    *  prefetched — the full 66-property list dehydrates to ~1.3 MB, far too
    *  heavy to embed; the homepage LCP is the static hero (already SSR'd), so
    *  the property carousel / listing grid fill in client-side instead. */
-  async function buildPrefetch(strippedPath: string): Promise<Record<string, unknown> | undefined> {
+  async function buildPrefetch(strippedPath: string, lang = "en"): Promise<Record<string, unknown> | undefined> {
     const m = strippedPath.match(/^\/homes\/([^/]+)$/);
     if (m) {
       return { propertyBySlug: { slug: m[1], data: await getPropertyBySlugCached(m[1]) } };
@@ -1731,7 +1731,9 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
         const { getSiteLocalities, getPropertiesForSite, catalogProperties } = await import("../services/properties-store");
         const { toCatalogCard, recentGuestFeedback } = await import("../services/property-catalog");
         const [localities, properties] = await Promise.all([getSiteLocalities(), getPropertiesForSite().then(catalogProperties)]);
-        return { localities, catalogForSite: properties.map(toCatalogCard), ...(strippedPath === "/" ? { guestFeedback: recentGuestFeedback(properties) } : {}) };
+        // Homepage reviews in the page's language first; the input must match
+        // the client's useQuery({ locale }) so the seeded cache hydrates.
+        return { localities, catalogForSite: properties.map(toCatalogCard), ...(strippedPath === "/" ? { guestFeedback: { input: { locale: lang }, data: recentGuestFeedback(properties, lang) } } : {}) };
       } catch {
         return undefined;
       }
@@ -1791,7 +1793,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
         try {
           let entry = _ssrRenderCache.get(reqPath);
           if (!entry || Date.now() - entry.at >= SSR_RENDER_TTL_MS) {
-            const prefetch = await buildPrefetch(strippedPath);
+            const prefetch = await buildPrefetch(strippedPath, extractLang(reqPath.split("?")[0]));
             const out = await render(reqPath, prefetch ? { prefetch } : undefined);
             entry = { appHtml: out.appHtml, dehydratedState: out.dehydratedState, at: Date.now() };
             // Simple FIFO cap — evict the oldest entry when full.
