@@ -10,6 +10,7 @@
  */
 
 import { guestyBEClient } from "../lib/guesty";
+import { BoundedMap } from "../lib/boundedMap";
 import { isNonRefundablePlan, policyGenerosity } from "@shared/cancellationPolicy";
 import { warnIfFeeDiffers } from "./rate-plan-policy";
 
@@ -23,7 +24,8 @@ const inFlightBookings = new Map<string, Promise<BEInstantReservationResult>>();
 /** Cache BE quote results to avoid redundant API calls (rate limit: 275/min).
  *  BE quotes are valid for 24h; we cache for 8 min so pricing stays fresh. */
 const BE_QUOTE_CACHE_TTL_MS = 8 * 60 * 1000;
-const beQuoteCache = new Map<string, { expiresAt: number; value: BEQuoteResult }>();
+// Chave = casa + datas + hóspedes: sem teto crescia com cada pesquisa.
+const beQuoteCache = new BoundedMap<string, { expiresAt: number; value: BEQuoteResult }>(2000);
 /** In-flight dedup: concurrent requests for the same params share one BE API call. */
 const inFlightBEQuotes = new Map<string, Promise<BEQuoteResult>>();
 /** Cooldown after a 429 on the quotes endpoint — set from Guesty's retryAfterMs. */

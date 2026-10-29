@@ -1,4 +1,5 @@
 import { buildDestinationGraph } from '../../shared/destinationSchema';
+import { BoundedMap } from "../lib/boundedMap";
 import { experienceSearchCopy } from '../../shared/experienceSearchCopy';
 import { servicePlanning } from '../../shared/servicePlanning';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
@@ -1658,7 +1659,13 @@ export function serveStatic(app: Express) {
     return _draftDestinations.has(m[1]);
   }
 
-const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: string; at: number }>();
+// Teto de entradas E de bytes: cada página pesa 100-480 KB (HTML + estado), e
+// 400 páginas num crawl chegavam aos 150-200 MB que faltaram a 28 out.
+const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedState: string; at: number }>(
+  400,
+  40 * 1024 * 1024,
+  (e) => (e.appHtml.length + e.dehydratedState.length) * 2,
+);
   async function getSsrRender(): Promise<SsrRender | null> {
     if (_ssrRender) return _ssrRender;
     if (_ssrUnavailable) return null;
