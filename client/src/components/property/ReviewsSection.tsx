@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
+import { formatSiteDate } from '@shared/siteDate';
 
 // White-label: never surface a quote that names the booking channel, even
 // though the channel is never stored as a field — a guest sometimes writes it
@@ -115,7 +116,7 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
                     {review.guestLocation && <span>{review.guestLocation}</span>}
                     {review.guestLocation && review.date && <span className="text-[#D8D2C6]">·</span>}
                     {review.date && (
-                      <span>{new Date(review.date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}</span>
+                      <span>{formatSiteDate(review.date, i18n.language, { month: 'short', year: 'numeric' })}</span>
                     )}
                   </div>
                 </div>

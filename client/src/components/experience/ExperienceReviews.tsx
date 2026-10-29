@@ -6,6 +6,7 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ExperienceReview, ExperienceAggregateRating } from '@/lib/types';
+import { formatSiteDate } from '@shared/siteDate';
 // Icons removed — no OTA-style badges on our own site
 
 interface ExperienceReviewsProps {
@@ -146,7 +147,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
                   )}
                 </div>
                 <p className="text-[11px] text-[#726D63]">
-                  {new Date(r.date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}
+                  {formatSiteDate(r.date, i18n.language, { month: 'short', year: 'numeric' })}
                 </p>
               </div>
               <span className="text-[13px] italic text-[#8B7355] shrink-0">

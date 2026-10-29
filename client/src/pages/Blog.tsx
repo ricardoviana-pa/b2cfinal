@@ -19,6 +19,13 @@ import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/Structur
 import type { BlogArticle, BlogCategory } from '@/lib/types';
 import blogData from '@/data/blog.json';
 import { isBlogLanguagePublished } from '@shared/blogPublication';
+import { formatSiteDate } from '@shared/siteDate';
+
+// Article dates are calendar days: the same text on the server and in every
+// browser time zone (auditoria 29 out, Regression:P1 — US visitors saw them a
+// day early and React threw #418).
+const articleDate = (date: string, lang: string) =>
+  formatSiteDate(date, lang, { day: 'numeric', month: 'short', year: 'numeric' });
 
 // Newest first. The SSR index used to open on the Video tab (nine posts from
 // 2019-2023) and never sorted, so crawlers and first paint missed the thirty
@@ -184,7 +191,7 @@ export default function Blog() {
                   <div className="flex items-center gap-4 text-[12px] text-[#726D63] mb-6">
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5" />
-                      {new Date(featured.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {articleDate(featured.publishDate, i18n.language)}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" />
@@ -240,7 +247,7 @@ export default function Blog() {
                   {/* One run of text that wraps between items, never inside
                       one ("30 de mar. de" / "2026" on two lines). */}
                   <p className="text-[11px] leading-relaxed text-[#726D63]">
-                    <span className="whitespace-nowrap">{new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <span className="whitespace-nowrap">{articleDate(article.publishDate, i18n.language)}</span>
                     <span aria-hidden="true"> · </span>
                     <span className="whitespace-nowrap">{article.readTime} {t("blog.minRead")}</span>
                     {article.author?.name && (<><span aria-hidden="true"> · </span><span className="whitespace-nowrap">{blogAuthorName(article.author, t)}</span></>)}
