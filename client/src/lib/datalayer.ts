@@ -275,15 +275,33 @@ export function installContactClickTracking(): void {
       const el = (e.target as Element | null)?.closest?.('a[href]');
       if (!el) return;
       const href = el.getAttribute('href') || '';
-      const source =
-        (el.closest('[data-track-source]') as HTMLElement | null)?.dataset.trackSource ||
-        window.location.pathname;
+      const tracked = el.closest('[data-track-source]') as HTMLElement | null;
+      const source = tracked?.dataset.trackSource || window.location.pathname;
+      const context = tracked ? trackContextFromDataset(tracked.dataset) : {};
       if (href.includes('wa.me/')) {
-        pushDL({ event: 'whatsapp_click', source });
+        pushDL({ event: 'whatsapp_click', source, ...context });
       } else if (href.startsWith('tel:')) {
-        pushDL({ event: 'phone_click', source });
+        pushDL({ event: 'phone_click', source, ...context });
       }
     },
     true,
   );
+}
+
+/**
+ * Extra event fields from the data-track-* attributes next to
+ * data-track-source: data-track-item-list-id="search_results" →
+ * item_list_id. Lets a link say where it was clicked (the listing, its
+ * region and dates) without firing its own event next to the delegated one.
+ * `event` and `source` can't be overridden; empty values are dropped.
+ */
+export function trackContextFromDataset(dataset: Record<string, string | undefined>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(dataset)) {
+    if (!value || !/^track[A-Z]/.test(key) || key === 'trackSource') continue;
+    const name = key.slice(5).replace(/^[A-Z]/, (c) => c.toLowerCase()).replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+    if (name === 'event' || name === 'source') continue;
+    out[name] = value;
+  }
+  return out;
 }

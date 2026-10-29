@@ -24,6 +24,8 @@ import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import NotFound from '@/pages/NotFound';
+import ListingWhatsApp from '@/components/homes/ListingWhatsApp';
+import { conciergeWhatsAppHref, listingWhatsAppMessage } from '@/lib/whatsappMessage';
 
 interface CollectionDef {
   slug: string;
@@ -93,6 +95,11 @@ export default function Collection() {
   if (!def || !copy) return <NotFound />;
 
   const others = COLLECTIONS.filter(c => c.slug !== slug);
+  // Phone shortcut to the concierge, with the collection and any trip dates
+  // already in the message (ux-home-plp-06).
+  const whatsappHref = conciergeWhatsAppHref(listingWhatsAppMessage(t, lang, {
+    collection: copy.title, checkin: trip.checkin, checkout: trip.checkout, guests: trip.guests,
+  }));
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -169,6 +176,10 @@ export default function Collection() {
         </div>
       </section>
       <Footer />
+      <ListingWhatsApp
+        href={whatsappHref}
+        context={{ 'item-list-id': `collection_${slug}`, 'search-checkin': trip.checkin, 'search-checkout': trip.checkout }}
+      />
     </div>
   );
 }

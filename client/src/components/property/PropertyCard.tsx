@@ -267,14 +267,14 @@ export default function PropertyCard({
       {/* Content */}
       <div className="pt-3.5">
         {/* Location */}
-        <p className="text-[0.6875rem] font-medium tracking-[0.02em] text-[#8B7355] mb-1">
+        <p className="text-[0.6875rem] font-medium tracking-[0.02em] text-pa-gold-aa mb-1">
           {property.locality}, Portugal
         </p>
 
         {/* Name + specs — the detail icons sit to the right of the name on
             every card (single and multi-unit), so the row reads consistently. */}
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-[1.0625rem] font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors leading-tight flex-1 min-w-0">
+          <h3 className="text-[1.0625rem] font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors leading-tight flex-1 min-w-0">
             {displayName}
           </h3>
           <div className="flex items-center gap-2.5 text-[0.8125rem] text-[#6B6860] shrink-0 pt-1">
