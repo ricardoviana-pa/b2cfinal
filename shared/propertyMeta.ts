@@ -19,8 +19,11 @@
  * The noun comes from the property type, so apartments, the boat and the
  * studios are no longer called "Luxury Villa"; one-bedroom homes get singular
  * forms in every language ("1 chambre", "1 dormitorio", "1 slaapkamer"); and
- * titles shed words (luxury, then the bedroom count, then the place) until
- * they fit ~65 characters (seo-health-pdp-title-template).
+ * titles shed words (luxury, then the long form of the bedroom count, then
+ * the count, then the place) until they fit ~65 characters
+ * (seo-health-pdp-title-template). The compact count ("4-Bed", "Villa 4
+ * dormitorios", "Villa con 4 camere") keeps the number in most EN, ES and IT
+ * titles, which lost it otherwise (review of PR #177).
  */
 import { getDisplayName } from './displayName';
 import { placePhrases, type PlaceLang } from './regionPhrases';
@@ -76,8 +79,9 @@ interface Lexicon {
   noun: Record<PropertyKind, string>;
   /** Noun with "luxury", as it opens a title segment. */
   luxury: Record<PropertyKind, string>;
-  /** Title segment from its parts (any may be empty). */
-  title: (p: { head: string; beds: number | null; place: string }) => string;
+  /** Title segment from its parts (any may be empty). `short` asks for the
+   *  compact bedroom count where the language has one ("4-Bed", "4 camere"). */
+  title: (p: { head: string; beds: number | null; place: string; short?: boolean }) => string;
   /** Description sentence (no tagline): facts + guests. */
   sentence: (p: { kind: PropertyKind; beds: number | null; place: string; guests: number | null }) => string;
   cta: string;
@@ -89,7 +93,7 @@ const LEX: Record<PlaceLang, Lexicon> = {
   en: {
     noun: { villa: 'Villa', house: 'House', apartment: 'Apartment', studio: 'Studio', boat: 'Boat', home: 'Home' },
     luxury: { villa: 'Luxury Villa', house: 'Luxury House', apartment: 'Luxury Apartment', studio: 'Luxury Studio', boat: 'Luxury Boat', home: 'Luxury Home' },
-    title: ({ head, beds, place }) => join(beds ? `${beds}-Bedroom` : '', head, place),
+    title: ({ head, beds, place, short }) => join(beds ? `${beds}-${short ? 'Bed' : 'Bedroom'}` : '', head, place),
     sentence: ({ kind, beds, place, guests }) => {
       const noun = LEX.en.luxury[kind].toLowerCase();
       const s = join(beds ? `${beds}-bedroom` : '', noun, place, guests ? `for up to ${guests} guests` : '');
@@ -108,7 +112,8 @@ const LEX: Record<PlaceLang, Lexicon> = {
   es: {
     noun: { villa: 'Villa', house: 'Casa', apartment: 'Apartamento', studio: 'Estudio', boat: 'Barco', home: 'Casa' },
     luxury: { villa: 'Villa de lujo', house: 'Casa de lujo', apartment: 'Apartamento de lujo', studio: 'Estudio de lujo', boat: 'Barco de lujo', home: 'Casa de lujo' },
-    title: ({ head, beds, place }) => join(head, beds ? `con ${beds} ${beds === 1 ? 'dormitorio' : 'dormitorios'}` : '', place),
+    // Short form, as listings write it: "Villa 4 dormitorios en el Algarve".
+    title: ({ head, beds, place, short }) => join(head, beds ? `${short ? '' : 'con '}${beds} ${beds === 1 ? 'dormitorio' : 'dormitorios'}` : '', place),
     sentence: ({ kind, beds, place, guests }) => `${join(LEX.es.luxury[kind], beds ? `con ${beds} ${beds === 1 ? 'dormitorio' : 'dormitorios'}` : '', place, guests ? `para hasta ${guests} huéspedes` : '')}.`,
     cta: 'Reserve directamente con Portugal Active.',
   },
@@ -133,7 +138,8 @@ const LEX: Record<PlaceLang, Lexicon> = {
   it: {
     noun: { villa: 'Villa', house: 'Casa', apartment: 'Appartamento', studio: 'Monolocale', boat: 'Barca', home: 'Casa' },
     luxury: { villa: 'Villa di lusso', house: 'Casa di lusso', apartment: 'Appartamento di lusso', studio: 'Monolocale di lusso', boat: 'Barca di lusso', home: 'Casa di lusso' },
-    title: ({ head, beds, place }) => join(head, beds ? `con ${beds} ${beds === 1 ? 'camera da letto' : 'camere da letto'}` : '', place),
+    // Short form: "Villa con 4 camere" ("camere" alone means bedrooms in a listing).
+    title: ({ head, beds, place, short }) => join(head, beds ? `con ${beds} ${beds === 1 ? 'camera' : 'camere'}${short ? '' : ' da letto'}` : '', place),
     sentence: ({ kind, beds, place, guests }) => {
       const s = join(LEX.it.luxury[kind], beds ? `con ${beds} ${beds === 1 ? 'camera da letto' : 'camere da letto'}` : '', place);
       return guests ? `${s}, fino a ${guests} ospiti.` : `${s}.`;
@@ -186,14 +192,18 @@ export interface PropertyMetaInput {
 
 const positive = (n: unknown): number | null => (typeof n === 'number' && Number.isFinite(n) && n > 0 ? Math.round(n) : null);
 
+/** Which words a title segment keeps: "luxury", the bedroom count (in full
+ *  or, where the language has one, compact) and the place. */
+export interface TitleVariant { luxury?: boolean; beds?: boolean; shortBeds?: boolean; place?: boolean }
+
 /** "4-Bedroom Luxury Villa in the Algarve" — the segment between name and brand. */
-export function propertyKindPhrase(lang: string | undefined, input: Omit<PropertyMetaInput, 'name' | 'tagline'>, opts: { luxury?: boolean; beds?: boolean; place?: boolean } = {}): string {
+export function propertyKindPhrase(lang: string | undefined, input: Omit<PropertyMetaInput, 'name' | 'tagline'>, opts: TitleVariant = {}): string {
   const { lang: l, lex } = lexFor(lang);
   const kind = propertyKind(input.propertyType);
   const beds = opts.beds === false || !COUNTS_BEDROOMS[kind] ? null : positive(input.bedrooms);
   const place = opts.place === false || !input.destination ? '' : placePhrases(input.destination, l).in;
   const head = opts.luxury === false ? lex.noun[kind] : lex.luxury[kind];
-  return lex.title({ head, beds, place });
+  return lex.title({ head, beds, place, short: opts.shortBeds === true });
 }
 
 /** The luxury noun and place as they read mid-sentence — "luxury villa in
@@ -213,11 +223,15 @@ export function propertyKindInline(lang: string | undefined, input: Pick<Propert
  * as it gets when the name alone is long).
  */
 export function propertyTitle(lang: string | undefined, input: PropertyMetaInput): string {
-  const variants: Array<{ luxury?: boolean; beds?: boolean; place?: boolean } | null> = [
+  // The compact count ("4-Bed", "4 dormitorios", "con 4 camere") is tried
+  // before the count is given up; languages without one repeat the full form.
+  const variants: Array<TitleVariant | null> = [
     {},
     { luxury: false },
+    { luxury: false, shortBeds: true },
     { luxury: false, beds: false },
     { luxury: false, place: false },
+    { luxury: false, shortBeds: true, place: false },
     { luxury: false, beds: false, place: false },
     null,
   ];

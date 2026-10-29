@@ -8,8 +8,9 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { createInstance } from 'i18next';
 import {
-  PROPERTY_TITLE_BUDGET, propertyDescription, propertyKind, propertyKindInline, propertyPageMeta, propertyTitle,
+  PROPERTY_TITLE_BUDGET, propertyDescription, propertyKind, propertyKindInline, propertyKindPhrase, propertyPageMeta, propertyTitle,
 } from '@shared/propertyMeta';
+import { countVars, pluralCount } from '@/lib/plural';
 import { placePhrases, placeVars } from '@shared/regionPhrases';
 import { __testing } from './_core/vite';
 
@@ -104,6 +105,32 @@ describe('title length', () => {
   it('a very long name keeps only the brand', () => {
     const name = 'Estuary View Duplex w/ Garage, 10min Walk to Beach and Town';
     expect(propertyTitle('en', { name, bedrooms: 2, destination: 'minho', propertyType: 'Apartment' })).toBe(`${name} | Portugal Active`);
+  });
+
+  // Review of PR #177: most EN, ES and IT titles had dropped the bedroom count.
+  it('the compact count keeps the number before it is given up', () => {
+    const juliao = { name: 'São Julião Retreat', bedrooms: 4, destination: 'minho', propertyType: 'Villa' };
+    const geres = { name: 'Gerês Gateway', bedrooms: 7, destination: 'minho', propertyType: 'House' };
+    expect(propertyTitle('en', juliao)).toBe('São Julião Retreat | 4-Bed Villa in the Minho | Portugal Active');
+    expect(propertyTitle('it', geres)).toBe('Gerês Gateway | Casa con 7 camere nel Minho | Portugal Active');
+    expect(propertyTitle('es', geres)).toBe('Gerês Gateway | Casa 7 dormitorios en el Miño | Portugal Active');
+    expect(propertyTitle('it', { ...geres, bedrooms: 1 })).toBe('Gerês Gateway | Casa con 1 camera nel Minho | Portugal Active');
+    expect(propertyTitle('es', { ...geres, bedrooms: 1 })).toBe('Gerês Gateway | Casa 1 dormitorio en el Miño | Portugal Active');
+  });
+
+  it('a home loses its bedroom count only when even the compact count does not fit', () => {
+    const counted = /\d+-Bed|\bT\d+\b|\d+ (chambres?|dormitorios?|camer[ae]|slaapkamers?|sovrum|makuuhuoneen)\b|\d+-Schlafzimmer/;
+    for (const h of HOMES) {
+      if (!(h.bedrooms > 0) || ['Studio', 'Boat'].includes(h.propertyType)) continue;
+      for (const lang of LANGS) {
+        const { title } = propertyPageMeta(h, lang);
+        if (counted.test(title.replace(/^[^|]*\|/, ''))) continue;
+        const input = { bedrooms: h.bedrooms, destination: h.destination || h.locality || h.region || null, propertyType: h.propertyType };
+        const name = title.split(' | ')[0];
+        const compact = `${name} | ${propertyKindPhrase(lang, input, { luxury: false, shortBeds: true })} | Portugal Active`;
+        expect(compact.length, `${lang} ${compact}`).toBeGreaterThan(PROPERTY_TITLE_BUDGET);
+      }
+    }
   });
 });
 
@@ -204,6 +231,85 @@ describe('locale strings that place a destination render grammatically', () => {
     expect((await t('pt'))('destinationDetail.whyTitle', vars('algarve', 'pt', 'Algarve'))).toBe('Porquê o Algarve');
     expect((await t('fr'))('destinationDetail.whyTitle', vars('minho', 'fr', 'Minho'))).toBe('Pourquoi le Minho');
     expect((await t('de'))('destinationDetail.whyTitle', vars('algarve', 'de', 'Algarve'))).toBe('Warum Algarve');
+  });
+
+  // Review of PR #177: DestinationPage still called whyTitle with { name }
+  // only, so "Porquê {{thePlace}}" would have shown the placeholder.
+  it('every call site of a string with {{inPlace}}/{{toPlace}}/{{thePlace}} passes the place variables', () => {
+    const placeKeys = new Set<string>();
+    const walk = (o: any, pre: string) => {
+      for (const [k, v] of Object.entries(o)) {
+        const key = pre ? `${pre}.${k}` : k;
+        if (typeof v === 'string') { if (/\{\{(inPlace|toPlace|thePlace)\}\}/.test(v)) placeKeys.add(key.replace(/_(one|other)$/, '')); }
+        else if (v && typeof v === 'object') walk(v, key);
+      }
+    };
+    for (const lang of LANGS) walk(readJson(`client/src/i18n/locales/${lang}.json`), '');
+    expect(placeKeys.size).toBeGreaterThanOrEqual(KEYS.length);
+
+    const files: string[] = [];
+    const list = (dir: string) => {
+      for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+        const p = path.join(dir, e.name);
+        if (e.isDirectory()) { if (!['i18n', 'data'].includes(e.name)) list(p); }
+        else if (/\.tsx?$/.test(e.name)) files.push(p);
+      }
+    };
+    list(path.join(ROOT, 'client/src'));
+
+    let sites = 0;
+    for (const file of files) {
+      const src = fs.readFileSync(file, 'utf8');
+      for (const key of placeKeys) {
+        for (const m of src.matchAll(new RegExp(`['"\`]${key.replace(/\./g, '\\.')}['"\`]`, 'g'))) {
+          // The rest of the enclosing t(...) call, by bracket depth.
+          let depth = 1, i = m.index! + m[0].length;
+          for (; i < src.length && depth > 0; i++) { if (src[i] === '(') depth++; else if (src[i] === ')') depth--; }
+          const args = src.slice(m.index!, i);
+          const line = src.slice(0, m.index).split('\n').length;
+          expect(args, `${path.relative(ROOT, file)}:${line} ${key}`).toMatch(/placeVars\(|destVars/);
+          sites++;
+        }
+      }
+    }
+    expect(sites).toBeGreaterThanOrEqual(15);
+  });
+});
+
+describe('PDP stats pills: the plural of the site\'s own locale', () => {
+  async function t(lang: string) {
+    const i18n = createInstance();
+    await i18n.init({ lng: lang, fallbackLng: 'en', interpolation: { escapeValue: false }, resources: { [lang]: { translation: readJson(`client/src/i18n/locales/${lang}.json`) } } });
+    return i18n.t.bind(i18n);
+  }
+
+  // Bare "pt" is Brazilian for Intl.PluralRules: 1.5 and 0 are singular there.
+  it('European Portuguese: only exactly 1 is singular', async () => {
+    const tr = await t('pt');
+    expect(tr('seoMeta.bathroomCount', countVars(1.5, 'pt'))).toBe('1,5 Casas de Banho');
+    expect(tr('seoMeta.bathroomCount', countVars(1, 'pt'))).toBe('1 Casa de Banho');
+    expect(tr('seoMeta.bathroomCount', countVars(7.5, 'pt'))).toBe('7,5 Casas de Banho');
+    expect(tr('seoMeta.bedroomCount', countVars(0, 'pt'))).toBe('0 Quartos');
+    expect(tr('seoMeta.guestCount', countVars(2, 'pt'))).toBe('2 Hóspedes');
+    expect(pluralCount(1.5, 'pt')).toBe(2);
+    expect(pluralCount(1, 'pt')).toBe(1);
+  });
+
+  it('other languages keep their own rules and decimal mark', async () => {
+    expect((await t('en'))('seoMeta.bathroomCount', countVars(1.5, 'en'))).toBe('1.5 Bathrooms');
+    expect((await t('en'))('seoMeta.bathroomCount', countVars(1, 'en'))).toBe('1 Bathroom');
+    expect((await t('es'))('seoMeta.bathroomCount', countVars(1.5, 'es'))).toBe('1,5 Baños');
+    expect((await t('de'))('seoMeta.bedroomCount', countVars(1, 'de'))).toBe('1 Schlafzimmer');
+    // French takes the singular below 2 ("1,5 salle de bain").
+    expect((await t('fr'))('seoMeta.bathroomCount', countVars(1.5, 'fr'))).toBe('1,5 Salle de bain');
+    for (const lang of LANGS.filter((l) => l !== 'pt')) expect(pluralCount(1.5, lang)).toBe(1.5);
+  });
+
+  it('the page uses it for the three pills', () => {
+    const src = fs.readFileSync(path.join(ROOT, 'client/src/pages/PropertyDetail.tsx'), 'utf8');
+    for (const key of ['guestCount', 'bedroomCount', 'bathroomCount']) {
+      expect(src).toMatch(new RegExp(`t\\('seoMeta\\.${key}', countVars\\(`));
+    }
   });
 });
 

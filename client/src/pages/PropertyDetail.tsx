@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { loadPropertyOverrides, mergePropertyOverrides, propertyOverridesQueryKey } from '@/lib/localizeProperty';
 import { SSR_FROM_PRICES_KEY, pickLowestNightly, type SsrFromPrices } from '@/lib/ssrFromPrices';
+import { countVars } from '@/lib/plural';
 import { propertyKindInline } from '@shared/propertyMeta';
 import { propertyPageMetaOpts } from '@/lib/propertyPageMeta';
 import { buildPdpFaq, faqPageNode } from '@shared/pdpFaq';
@@ -1416,9 +1417,10 @@ export default function PropertyDetail() {
             {[
               // Plural-aware, with the language's decimal mark ("1 Chambre",
               // "7,5 Casas de Banho") — not "1 Chambres" / "7.5" (i18n-copy-08).
-              { icon: Users, value: t('seoMeta.guestCount', { count: Number(property.maxGuests) || 0, num: new Intl.NumberFormat(intlLocale(i18n.language)).format(Number(property.maxGuests) || 0) }) },
-              { icon: BedDouble, value: t('seoMeta.bedroomCount', { count: Number(property.bedrooms) || 0, num: new Intl.NumberFormat(intlLocale(i18n.language)).format(Number(property.bedrooms) || 0) }) },
-              { icon: Bath, value: t('seoMeta.bathroomCount', { count: Number(property.bathrooms) || 0, num: new Intl.NumberFormat(intlLocale(i18n.language)).format(Number(property.bathrooms) || 0) }) },
+              // countVars: European Portuguese plurals ("1,5 Casas de Banho").
+              { icon: Users, value: t('seoMeta.guestCount', countVars(Number(property.maxGuests) || 0, i18n.language)) },
+              { icon: BedDouble, value: t('seoMeta.bedroomCount', countVars(Number(property.bedrooms) || 0, i18n.language)) },
+              { icon: Bath, value: t('seoMeta.bathroomCount', countVars(Number(property.bathrooms) || 0, i18n.language)) },
               ...(property.areaSquareFeet && property.areaSquareFeet > 0 ? [{ icon: MapPin, value: `${Math.round(property.areaSquareFeet * 0.0929)} m²` }] : []),
               ...((property.checkInTime || property.checkOutTime) ? [{ icon: Clock, value: `${property.checkInTime || '16:00'} / ${property.checkOutTime || '11:00'}` }] : []),
               ...((property as any).petsAllowed ? [{ icon: PawPrint, value: t('property.petFriendly', 'Pet-friendly') }] : []),

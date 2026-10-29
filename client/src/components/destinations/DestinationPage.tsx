@@ -130,7 +130,10 @@ export function DestinationPage({
           <h2 className="headline-lg mb-6">{labels.guide}</h2>
           <details className="site-faq border-y border-pa-sand">
             <summary>
-              {t("destinationDetail.whyTitle", { name: destination.name })}
+              {t("destinationDetail.whyTitle", {
+                name: destination.name,
+                ...placeVars(destination.slug, i18n.language, destination.name),
+              })}
             </summary>
             <WhyThisPlace destination={destination} />
           </details>
