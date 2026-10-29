@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
 import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
-import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
+import { getPropertyImages, optimizeGuestyImage, cardSrcSet } from '@/lib/images';
 import { cardImageLoading } from '@/lib/listingImagePriority';
 import destinationsData from '@/data/destinations.json';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
@@ -108,7 +108,7 @@ export default function PropertyCard({
   // into the server HTML by React), while the <img> itself stays lazy so a
   // phone, where they are below the fold, does not fetch them up front.
   if (preloadMedia && !priority) {
-    const srcSet = guestySrcSet(rawImages[0], [400, 640, 768, 1080]);
+    const srcSet = cardSrcSet(rawImages[0]);
     preload(optimizeGuestyImage(rawImages[0], 1080), {
       as: 'image',
       ...(srcSet ? { imageSrcSet: srcSet, imageSizes } : {}),
@@ -125,7 +125,7 @@ export default function PropertyCard({
     [currentImage + 1, currentImage - 1].forEach((i) => {
       const raw = rawImages[(i + total) % total];
       const img = new Image();
-      const srcSet = guestySrcSet(raw, [400, 640, 768, 1080]);
+      const srcSet = cardSrcSet(raw);
       if (srcSet) { img.sizes = imageSizes; img.srcset = srcSet; }
       img.src = optimizeGuestyImage(raw, 1080);
     });
@@ -224,7 +224,7 @@ export default function PropertyCard({
         <img
           key={rawImages[currentImage]}
           src={optimizeGuestyImage(rawImages[currentImage], 1080)}
-          srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}
+          srcSet={cardSrcSet(rawImages[currentImage])}
           alt={t('property.imageAlt', { name: displayName, current: currentImage + 1, total })}
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03]`}
           loading={imgLoading.loading}
