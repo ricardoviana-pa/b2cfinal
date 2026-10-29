@@ -19,6 +19,8 @@ import {
 import { trpc } from "@/lib/trpc";
 import { formatQuotedEur } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
+import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
+import { expressCheckoutElementsOptions } from "./stripeElementsOptions";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 
@@ -664,7 +666,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       // divergirem o Stripe recusa o confirm: "The provided setup_future_usage
       // (off_session) does not match the expected setup_future_usage (null)"
       // — apanhado no teste em dev, 28 ago 2026.
-      setupFutureUsage: "off_session" as const,
+      setupFutureUsage: CHECKOUT_SETUP_FUTURE_USAGE,
       // Card form em sessão types (layout só-cartão, sem o seletor interno do
       // Stripe); o servidor cria o PI no formato que casa com a sessão: types
       // para o card form, automatic para o ECE (input wallet no createCardCharge).
@@ -689,20 +691,11 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     [props.total, props.currency, i18n.language, paymentMethod],
   );
 
-  // Bloco 3: opções do Elements para o ExpressCheckoutElement (wallets).
-  // Instância separada do PaymentElement: sem paymentMethodCreation manual e
-  // sem paymentMethodTypes — o ECE só mostra wallets elegíveis no dispositivo.
+  // Bloco 3: opções do Elements para o ExpressCheckoutElement (wallets), com o
+  // mesmo setupFutureUsage do PaymentIntent (sem ele a Stripe recusava o
+  // confirm das wallets desde 29 ago 2026).
   const expressElementsOptions = useMemo(
-    () => ({
-      mode: "payment" as const,
-      amount: Math.round(props.total * 100),
-      currency: (props.currency || "eur").toLowerCase(),
-      locale: i18n.language as any,
-      appearance: {
-        theme: "stripe" as const,
-        variables: { colorPrimary: "#1A1A18", borderRadius: "4px" },
-      },
-    }),
+    () => expressCheckoutElementsOptions(props.total, props.currency, i18n.language),
     [props.total, props.currency, i18n.language],
   );
 

@@ -9,6 +9,7 @@
  */
 
 import Stripe from "stripe";
+import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
 
 let _stripe: Stripe | null = null;
 
@@ -92,8 +93,9 @@ export async function createCardPaymentIntent(
     // Guarda o cartao com mandato para cobrancas futuras fora de sessao. E o
     // que devolve ao Guesty a carteira que o fluxo antigo (BE instant/ccToken)
     // tinha: caucao, danos, noites extra e saldos. Sem isto o metodo existe
-    // mas nao ha mandato, e a cobranca off-session cai em SCA.
-    setup_future_usage: "off_session",
+    // mas nao ha mandato, e a cobranca off-session cai em SCA. As duas sessoes
+    // Elements do cliente (cartao e wallets) usam a mesma constante.
+    setup_future_usage: CHECKOUT_SETUP_FUTURE_USAGE,
     ...(params.wallet
       ? { automatic_payment_methods: { enabled: true, allow_redirects: "never" as const } }
       : { payment_method_types: ["card"] }),
