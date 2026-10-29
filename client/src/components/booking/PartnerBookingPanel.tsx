@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Calendar, Check, Loader2, Minus, Plus, User } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
+import { isImplicitSubmitKey } from '@/lib/implicitSubmit';
 import type { BookingSelection } from './BookingWidget';
 import { formatQuotedEur, intlLocale, formatBookingDate } from '@/lib/format';
 import AvailabilityCalendar from './AvailabilityCalendar';
@@ -30,6 +31,12 @@ import PhoneInput from './PhoneInput';
  * at the concierge with a screenshot of it against a quote EUR 1,194 higher.
  *
  * Nothing here reaches the supplier: the enquiry becomes a lead on our side.
+ *
+ * No <form> on purpose: GA4's form tracking and the GTM form_start/form_submit
+ * triggers counted every keystroke and every click on the button as a lead,
+ * failed sends included. The real lead is the generate_lead pushed after the
+ * request is saved. Enter in a text field still sends, and the browser still
+ * checks the required fields (reportValidity), as the <form> did.
  */
 export function PartnerBookingPanel({
   tripwixUid,
@@ -83,6 +90,8 @@ export function PartnerBookingPanel({
   const [sent, setSent] = useState(false);
   const submitting = useRef(false);
   const [submitError, setSubmitError] = useState('');
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
 
   const datesValid = !!checkIn && !!checkOut && checkOut > checkIn;
 
@@ -132,9 +141,15 @@ export function PartnerBookingPanel({
     setSubmitError('');
   };
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    if (submitting.current || sent || !name.trim() || !email.trim()) return;
+  async function submit(e?: React.SyntheticEvent) {
+    e?.preventDefault();
+    if (submitting.current || sent) return;
+    // What the <form> did before sending: the browser's own message on the
+    // first required field still missing (or an email it cannot read).
+    for (const field of [nameRef.current, emailRef.current]) {
+      if (field && !field.reportValidity()) return;
+    }
+    if (!name.trim() || !email.trim()) return;
     submitting.current = true;
     pushDL({ event: 'partner_request_attempt', property_id: propertySlug });
     setSubmitError('');
@@ -269,7 +284,14 @@ export function PartnerBookingPanel({
         )}
       </div>
 
-      <form id="partner-home-request" name="partner-home-request" onSubmit={submit}>
+      <div
+        id="partner-home-request"
+        onKeyDown={(e) => {
+          if (!isImplicitSubmitKey({ key: e.key, isComposing: e.nativeEvent.isComposing, defaultPrevented: e.isDefaultPrevented(), target: e.target })) return;
+          e.preventDefault();
+          void submit();
+        }}
+      >
         {/* Dates — the portfolio's own calendar, not a native picker. */}
         <div className="mx-5" ref={datePicker.containerRef}>
           <div
@@ -461,6 +483,7 @@ export function PartnerBookingPanel({
 
           <div className="space-y-2">
             <input
+              ref={nameRef}
               type="text"
               required
               placeholder={t('partnerBooking.name', 'Full name *')}
@@ -469,6 +492,7 @@ export function PartnerBookingPanel({
               className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
             />
             <input
+              ref={emailRef}
               type="email"
               required
               placeholder={t('partnerBooking.email', 'Email *')}
@@ -498,7 +522,8 @@ export function PartnerBookingPanel({
           )}
 
           <button
-            type="submit"
+            type="button"
+            onClick={submit}
             disabled={createLead.isPending}
             className="pa-action pa-reserve-cta w-full min-h-[52px] px-8 text-xs font-medium tracking-[0.15em] uppercase bg-black text-white hover:bg-black/85 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
@@ -525,7 +550,7 @@ export function PartnerBookingPanel({
             {t('property.needHelpConcierge', 'Need help? Talk to concierge')}
           </a>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

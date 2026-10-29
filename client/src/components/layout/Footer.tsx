@@ -82,7 +82,7 @@ export default function Footer() {
                   <Check className="w-3.5 h-3.5" /> {t('footer.welcomeInbox')}
                 </p>
               ) : (
-                <form onSubmit={handleSubscribe} className="flex flex-col gap-1.5">
+                <form id="lead-newsletter" onSubmit={handleSubscribe} className="flex flex-col gap-1.5">
                   <div className="flex">
                     <input
                       type="email"

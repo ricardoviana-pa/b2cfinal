@@ -290,3 +290,51 @@ iframe não carregar o GTM dentro dele. Os nossos eventos não passam por aqui.
 Fora do código (por fazer): desligar o Google Tag Manager/GA4 no canal de reservas da Bókun
 (ou apontá-lo a uma propriedade GA4 separada) e, no GTM, exigir `property_id` nas tags de
 `purchase` e `begin_checkout` (ver PR da auditoria de 29/10).
+
+## 10. Formulários: 'Start Activity Form' e 'Lead_Site' (verificação de 29/10/2026)
+
+O GA4 `G-5DHEE0V85C` tem a medição avançada "interações com formulários" ligada: manda
+`form_start` ao primeiro campo mexido dentro de um `<form>` e `form_submit` em cada submit.
+No contentor (v33), dois acionadores de evento personalizado sem nenhuma condição
+transformam-nos em eventos-chave: `form_start` → tag "Start Activity Form" (tag_id 40) e
+`form_submit` → tag "Lead_Site" (tag_id 61, uma vez por página; também com o evento
+`Lead`). Cada um manda ainda um ping `/measurement/conversion`. Contavam como lead marcar
+os Termos e carregar em Pagar no checkout (e na demo), escrever no pedido das casas
+parceiras, pesquisar na home, mexer na página do saldo e gravar no admin.
+
+**No código (PR de 29/10)**: nenhum passo do funil de reserva tem `<form>` (cartão do
+checkout e do widget antigo, demo, pedido das casas parceiras); o botão é `type="button"`
+com `onClick`, o Enter num campo de texto continua a enviar (`lib/implicitSubmit.ts`) e o
+pedido das parceiras continua a validar nome e email no browser (`reportValidity`). Os
+leads verdadeiros ficam em `<form>` e passam a ter um id estável:
+
+| Form ID | Onde | Evento explícito no sucesso |
+|---|---|---|
+| `lead-contact` | `pages/Contact.tsx` | `generate_lead` (`contact-form`) |
+| `lead-owners` | `pages/Owners.tsx` | — |
+| `lead-newsletter` | `layout/Footer.tsx` | `generate_lead` (`newsletter-footer`) |
+| `lead-availability` | `pages/Homes.tsx` (sem disponibilidade) | `generate_lead` (`search-no-availability`) |
+| `lead-experience` | `itinerary/AddToItineraryModal.tsx` | — |
+
+Ficam também, sem id e sem serem leads: a pesquisa da home (`HeroSearch`), os dois da
+página do saldo (mensagem ao concierge e cartão novo) e os do admin. O pedido das casas
+parceiras deixou de ser `<form>`: conta pelo `generate_lead` depois de gravado. A lista
+está fixada em `server/checkout-funnel-no-form.test.ts`.
+
+**No GTM (o Ricardo)**. Quando o GA4 dispara `form_start`/`form_submit`, o modelo do
+contentor tem `gtm.elementId` e `gtm.elementClasses` do formulário (provado a 29/10 com o
+contentor publicado), ou seja, a variável incorporada **Form ID** (Variáveis → Configurar →
+Formulários → Form ID) funciona nestes acionadores.
+
+1. Tag "Lead_Site": trocar o acionador `form_submit` pelo acionador `generate_lead` que já
+   existe (o da tag GA4 `generate_lead`) e manter o `Lead`. Passa a contar só leads
+   gravados, incluindo o pedido das parceiras, e nunca um pagamento, uma pesquisa ou o
+   admin. Alternativa mínima, se preferir manter o `form_submit`: acionador "Alguns
+   eventos personalizados" com `Form ID` corresponde à regex `^lead-` (aí o pedido das
+   parceiras deixa de contar como Lead_Site e fica só o `generate_lead`).
+2. Tag "Start Activity Form": acionador `form_start` → "Alguns eventos personalizados" com
+   `Form ID` corresponde à regex `^lead-` (ou `^lead-(contact|owners|experience)$`, só os
+   pedidos de contacto e de atividade). Rever no GA4 se deve continuar a ser evento-chave.
+3. Testar em Pré-visualizar: em `/en/checkout/demo`, marcar os Termos e carregar em Pagar
+   não dispara nenhuma das duas; em `/en/contact`, escrever dispara "Start Activity Form"
+   com Form ID `lead-contact` e enviar dispara "Lead_Site".
