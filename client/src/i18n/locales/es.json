@@ -1,8 +1,4 @@
 {
-  "securityDeposit": {
-    "title": "Fianza",
-    "notice": "Es posible que se requiera una fianza para su estancia. Si corresponde, nuestro concierge le informará de todos los detalles antes de su llegada."
-  },
   "nav": {
     "properties": "Casas",
     "destinations": "Destinos",

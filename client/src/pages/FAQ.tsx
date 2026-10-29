@@ -66,7 +66,6 @@ export default function FAQ() {
       q: t('faq.q10'),
       a: t('faq.a10'),
     },
-    { q: t('securityDeposit.title'), a: t('securityDeposit.notice') },
   ], [t, i18n.language]);
 
   const filteredQuestions = FAQ_ITEMS.map((item, index) => ({ item, index })).filter(({ item }) => normalize(`${item.q} ${item.a}`).includes(normalize(query.trim())));

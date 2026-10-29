@@ -1541,7 +1541,6 @@ export default function CheckoutPage() {
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
         </div>
         {summaryLines}
-        {step === "pay" && <p className="caption text-pa-earth leading-relaxed">{t('securityDeposit.notice')}</p>}
         {couponRow}
         {conciergeRequests}
         {/* Sem frase de política no resumo (auditoria do funil, n.º 11): uma
@@ -1786,7 +1785,8 @@ export default function CheckoutPage() {
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-pa-sand">
         <div className="max-w-[1100px] mx-auto px-4 h-[60px] flex items-center justify-between gap-3 sm:gap-4">
           <Link href="/" className="shrink-0" aria-label="Portugal Active">
-            <img src={IMAGES.logoColor} alt="Portugal Active" className="h-[26px] w-auto" />
+            {/* Mesmo tamanho do logótipo do cabeçalho do site (Header.tsx: h-8 md:h-10). */}
+            <img src={IMAGES.logoColor} alt="Portugal Active" className="h-8 md:h-10 w-auto" />
           </Link>
           {/* O WhatsApp do cabeçalho tira espaço aos passos (revisão do PR
               #176: o círculo do passo atual chegava a 2 px a 360 px em DE e

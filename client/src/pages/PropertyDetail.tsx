@@ -32,7 +32,6 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import PropertyUnitsSection from '@/components/property/PropertyUnitsSection';
-import SecurityDepositNotice from '@/components/property/SecurityDepositNotice';
 import ReviewsSection from '@/components/property/ReviewsSection';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@/components/ui/drawer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
@@ -1268,9 +1267,6 @@ export default function PropertyDetail() {
         </div>
       )}
 
-
-      <SecurityDepositNotice />
-
       {/* Why book direct — the guest arrived from an OTA with that tab still
           open. Four generic badges ("best rate guaranteed") carried no weight;
           a claim only converts sceptics when it names its mechanism. Every line
@@ -1656,7 +1652,6 @@ export default function PropertyDetail() {
                 <h2 className="font-display headline-sm font-light text-pa-dark mb-4">
                   {t('pdpFaq.title', 'Good to know')}
                 </h2>
-                <SecurityDepositNotice />
                 <div className="flex flex-col divide-y divide-pa-sand border-y border-pa-sand">
                   {pdpFaq.map((f, i) => (
                     <details key={i} className="group py-3">

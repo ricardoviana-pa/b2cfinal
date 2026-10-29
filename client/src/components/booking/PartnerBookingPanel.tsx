@@ -544,7 +544,7 @@ export function PartnerBookingPanel({
                   {t('partnerBooking.vatIncluded', 'VAT included.')}{' '}
                   {quote.feesKnown
                     ? quote.securityDeposit > 0
-                      ? t('securityDeposit.notice')
+                      ? t('partnerBooking.depositNote', { amount: formatQuotedEur(quote.securityDeposit, lang) })
                       : ''
                     : t(
                         'partnerBooking.feesPending',
