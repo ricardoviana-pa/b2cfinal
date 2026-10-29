@@ -117,6 +117,8 @@ export interface ConfirmationStrings {
   bestPriceLine: string;
   regards: string;
   yourConcierge: string;
+  /** Por baixo de "Portugal Active" na assinatura da marca (sem concierge confirmado). */
+  conciergeTeam: string;
   footerTagline: string;
   preheader: string;
 }
@@ -332,6 +334,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Reservou diretamente com a Portugal Active, com o melhor preço garantido.",
     regards: "Com os melhores cumprimentos,",
     yourConcierge: "a sua concierge",
+    conciergeTeam: "Concierge",
     footerTagline: "Casas de luxo em Portugal. A privacidade de uma casa, o serviço de um hotel.",
     preheader: "A casa já está a ser preparada. O seu concierge acompanha tudo a partir de agora.",
   },
@@ -362,6 +365,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "You booked directly with Portugal Active, with our best price guaranteed.",
     regards: "Warm regards,",
     yourConcierge: "your concierge",
+    conciergeTeam: "Concierge",
     footerTagline: "Luxury villas in Portugal. The privacy of a home, the service of a hotel.",
     preheader: "The house is already being prepared. Your concierge takes it from here.",
   },
@@ -392,6 +396,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Vous avez réservé directement auprès de Portugal Active, au meilleur prix garanti.",
     regards: "Bien cordialement,",
     yourConcierge: "votre concierge",
+    conciergeTeam: "Conciergerie",
     footerTagline: "Villas de luxe au Portugal. L'intimité d'une maison, le service d'un hôtel.",
     preheader: "La maison est déjà en préparation. Votre concierge s'occupe de tout à partir de maintenant.",
   },
@@ -422,6 +427,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Ha reservado directamente con Portugal Active, con el mejor precio garantizado.",
     regards: "Un cordial saludo,",
     yourConcierge: "su concierge",
+    conciergeTeam: "Concierge",
     footerTagline: "Villas de lujo en Portugal. La privacidad de una casa, el servicio de un hotel.",
     preheader: "La casa ya se está preparando. Su concierge se encarga de todo a partir de ahora.",
   },
@@ -452,6 +458,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Ha prenotato direttamente con Portugal Active, con il miglior prezzo garantito.",
     regards: "Cordiali saluti,",
     yourConcierge: "la sua concierge",
+    conciergeTeam: "Concierge",
     footerTagline: "Ville di lusso in Portogallo. La privacy di una casa, il servizio di un hotel.",
     preheader: "La casa è già in preparazione. Il suo concierge si occupa di tutto da questo momento.",
   },
@@ -482,6 +489,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Sie haben direkt bei Portugal Active gebucht, mit garantiert bestem Preis.",
     regards: "Herzliche Grüße,",
     yourConcierge: "Ihre Concierge",
+    conciergeTeam: "Concierge",
     footerTagline: "Luxusvillen in Portugal. Die Privatsphäre eines Hauses, der Service eines Hotels.",
     preheader: "Das Haus wird bereits vorbereitet. Ihr Concierge kümmert sich ab jetzt um alles.",
   },
@@ -512,6 +520,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "U boekte rechtstreeks bij Portugal Active, met de beste prijs gegarandeerd.",
     regards: "Met vriendelijke groet,",
     yourConcierge: "uw concierge",
+    conciergeTeam: "Concierge",
     footerTagline: "Luxevilla's in Portugal. De privacy van een huis, de service van een hotel.",
     preheader: "Het huis wordt al voorbereid. Uw concierge regelt vanaf nu alles.",
   },
@@ -542,6 +551,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Du bokade direkt hos Portugal Active, med bästa pris garanterat.",
     regards: "Varma hälsningar,",
     yourConcierge: "din concierge",
+    conciergeTeam: "Concierge",
     footerTagline: "Lyxvillor i Portugal. Ett hems avskildhet, ett hotells service.",
     preheader: "Huset förbereds redan. Din concierge tar hand om allt från och med nu.",
   },
@@ -572,6 +582,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Varasit suoraan Portugal Activelta, paras hinta taattuna.",
     regards: "Lämpimin terveisin,",
     yourConcierge: "conciergesi",
+    conciergeTeam: "Concierge",
     footerTagline: "Luksushuviloita Portugalissa. Kodin yksityisyys, hotellin palvelu.",
     preheader: "Taloa valmistellaan jo. Conciergesi hoitaa kaiken tästä eteenpäin.",
   },
