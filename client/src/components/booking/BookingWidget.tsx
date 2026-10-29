@@ -377,10 +377,12 @@ export default function BookingWidget({
   const showCalendar = datePicker.open;
 
   const widgetRef = useRef<HTMLDivElement>(null);
-  // Cartão fixo do computador (null na gaveta do telemóvel): o RESERVE vai
-  // para o rodapé do cartão e o resto rola por cima (bookingCardSlot.tsx).
+  // Cartão fixo do computador (null na gaveta do telemóvel): o RESERVE fica
+  // logo a seguir às tarifas e o CSS prende-o ao fundo do cartão; o resto
+  // rola por cima dele (bookingCardSlot.tsx).
   const bookingCard = useBookingCardSlot();
   const headerReserves = useHeaderReserveCount(!!bookingCard);
+  const reserveFooterRef = useRef<HTMLDivElement>(null);
   const breakdownRef = useRef<HTMLDivElement>(null);
   const ratePlansRef = useRef<HTMLDivElement>(null);
   const selectedPlanRef = useRef<HTMLLabelElement>(null);
@@ -689,7 +691,7 @@ export default function BookingWidget({
     // Computador: traz o cartão fixo inteiro (com o RESERVE no rodapé) para o
     // ecrã; o que se vê lá dentro é com o efeito de baixo. scrollIntoView no
     // widget também rolava o cartão por dentro, para o topo do widget.
-    const card = bookingCard?.footer.parentElement;
+    const card = bookingCard?.card;
     if (card && step === "quote") {
       card.scrollIntoView({ behavior: "smooth", block: "nearest" });
       return;
@@ -697,12 +699,13 @@ export default function BookingWidget({
     widgetRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [step]);
 
-  // Computador: quando chega a cotação, muda a tarifa ou se usa o RESERVE do
-  // cabeçalho, a tarifa escolhida (rádio, nome e preço) fica à vista por cima
-  // do RESERVE, que está no rodapé do cartão; sem lista de tarifas, a linha do
-  // total; sem preço, o aviso. Rola-se só o cartão, nunca a página, e só com
-  // o RESERVE no ecrã: no topo da página o cartão continua a abrir no preço
-  // (auditoria 29 out, W3).
+  // Computador: quando chega a cotação, muda a tarifa, se usa o RESERVE do
+  // cabeçalho ou o RESERVE recebe o foco do teclado, a tarifa escolhida
+  // (rádio, nome e preço) fica à vista por cima do RESERVE, que está no rodapé
+  // do cartão; sem lista de tarifas, a linha do total; sem preço, o aviso.
+  // Rola-se só o cartão, nunca a página, e só com o RESERVE no ecrã: no topo
+  // da página o cartão continua a abrir no preço (auditoria 29 out, W3;
+  // revisão do PR #179, PDP-STICKY-KBD-1).
   useLayoutEffect(() => {
     const root = widgetRef.current;
     if (!bookingCard || !root || step !== "quote") return;
@@ -715,7 +718,8 @@ export default function BookingWidget({
       // a tarifa (o topo) ou o aviso ganham; sem lista, a linha do total (o fundo)
       anchor: !hasLivePrice || selectedPlanRef.current ? "start" : "end",
       watch: [root],
-      ready: whenFooterOnScreen(bookingCard.footer),
+      ready: whenFooterOnScreen(() => reserveFooterRef.current),
+      focusWithin: reserveFooterRef.current,
     });
   }, [bookingCard, step, hasLivePrice, quote?.quoteId, selectedRatePlanId, headerReserves]);
 
@@ -1465,12 +1469,14 @@ export default function BookingWidget({
 
             {/* ── CTA Section — confirmed live price, direct booking ──
                  O botão e a linha dos meios de pagamento vão juntos: no
-                 computador vão para o rodapé fixo do cartão (ReserveCtaSlot,
+                 computador ficam no rodapé fixo do cartão (ReserveCtaSlot,
                  index.css), sempre à vista, e a linha "ainda não é cobrado"
                  tem de ficar à vista com ele (auditoria do funil, crítico).
                  O erro da cotação expirada vai com eles: aparece depois do
-                 clique no RESERVE. No telemóvel fica tudo no sítio. */}
-            <ReserveCtaSlot>
+                 clique no RESERVE. No HTML o bloco fica aqui, logo a seguir
+                 às tarifas: é a ordem do Tab e do leitor de ecrã (revisão do
+                 PR #179). No telemóvel fica tudo no sítio. */}
+            <ReserveCtaSlot footerRef={reserveFooterRef}>
             <div className="pa-reserve-cta bg-white space-y-2.5">
             <button
               onClick={() => {

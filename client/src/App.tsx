@@ -247,6 +247,7 @@ function BackToTop() {
         minWidth: 'auto',
       }}
       aria-label="Back to top"
+      data-back-to-top=""
     >
       <ArrowUp className="w-4 h-4 text-white" />
     </button>

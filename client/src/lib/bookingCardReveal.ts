@@ -6,12 +6,15 @@
  * datas, hóspedes, tarifas e o resto do painel); por baixo, um rodapé que
  * nunca rola, com o RESERVE, as marcas de pagamento e "ainda não é cobrado"
  * (ou, nas casas parceiras, o "Pedir estas datas"). Nada rola por baixo do
- * rodapé, por isso o botão não tapa nada e nada o tapa a ele.
+ * rodapé, por isso o botão não tapa nada e nada o tapa a ele. No HTML o
+ * rodapé fica logo a seguir às tarifas (ReserveCtaSlot): é essa a ordem do
+ * Tab e do leitor de ecrã.
  *
  * O que falta é escolher o que se vê na parte que rola quando chega a
- * cotação, muda a tarifa ou aparece um aviso: a tarifa escolhida (rádio, nome
- * e preço) ou o aviso tem de ficar à vista junto do RESERVE. Rola-se só o
- * cartão, nunca a página (auditoria de 29 out 2026, W3 e P3).
+ * cotação, muda a tarifa, aparece um aviso ou o RESERVE recebe o foco do
+ * teclado: a tarifa escolhida (rádio, nome e preço) ou o aviso tem de ficar à
+ * vista junto do RESERVE. Rola-se só o cartão, nunca a página (auditoria de
+ * 29 out 2026, W3 e P3; revisão do PR #179, PDP-STICKY-KBD-1).
  */
 
 export type RevealAnchor = 'start' | 'end';
@@ -92,21 +95,26 @@ export function footerOnScreen(rect: { top: number; bottom: number; height: numb
  * `ready`: só se mexe quando o RESERVE está no ecrã. No topo da página o
  * cartão ainda não está fixo e o rodapé fica abaixo da dobra: o cartão mostra
  * o preço e as datas, como sempre; quando o hóspede desce e o RESERVE aparece,
- * o cartão rola (suave) até à tarifa. Devolve a limpeza.
+ * o cartão rola (suave) até à tarifa.
+ *
+ * `focusWithin`: o rodapé. Quando o RESERVE recebe o foco pelo teclado (Tab,
+ * Shift+Tab), a tarifa escolhida ou o aviso voltam à vista, mesmo depois de o
+ * hóspede ter mexido no cartão: é o que o botão vai reservar ou pedir. Um
+ * clique (foco sem :focus-visible) não mexe em nada. Devolve a limpeza.
  */
 export function keepRevealed(
   scroller: HTMLElement,
   range: () => ScreenRange | null,
-  { pad = REVEAL_PAD, anchor = 'start', watch = [], ready = () => true }: {
-    pad?: number; anchor?: RevealAnchor; watch?: Element[]; ready?: () => boolean;
+  { pad = REVEAL_PAD, anchor = 'start', watch = [], ready = () => true, focusWithin = null }: {
+    pad?: number; anchor?: RevealAnchor; watch?: Element[]; ready?: () => boolean; focusWithin?: Element | null;
   } = {},
 ): () => void {
   let guestTookOver = false;
   let waiting = false;
   let frame = 0;
-  const apply = (behavior: ScrollBehavior = 'instant') => {
-    if (guestTookOver || !scroller.isConnected) return;
-    if (!ready()) { waitForReady(); return; }
+  const apply = (behavior: ScrollBehavior = 'instant', force = false) => {
+    if ((guestTookOver && !force) || !scroller.isConnected) return;
+    if (!ready()) { if (!force) waitForReady(); return; }
     stopWaiting();
     const target = range();
     if (!target) return;
@@ -147,6 +155,10 @@ export function keepRevealed(
   const tookOver = () => { guestTookOver = true; stopWaiting(); };
   const events = ['wheel', 'touchstart', 'pointerdown', 'keydown'] as const;
   for (const name of events) scroller.addEventListener(name, tookOver, { passive: true });
+  const onFocusIn = (e: Event) => {
+    if (revealOnFocus(e.target)) apply('instant', true);
+  };
+  focusWithin?.addEventListener('focusin', onFocusIn);
   const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => apply());
   observer?.observe(scroller);
   for (const el of watch) observer?.observe(el);
@@ -155,10 +167,32 @@ export function keepRevealed(
     stopWaiting();
     if (frame) cancelAnimationFrame(frame);
     for (const name of events) scroller.removeEventListener(name, tookOver);
+    focusWithin?.removeEventListener('focusin', onFocusIn);
   };
 }
 
-/** `ready` para keepRevealed: o rodapé do cartão está no ecrã. */
-export function whenFooterOnScreen(footer: HTMLElement): () => boolean {
-  return () => footerOnScreen(footer.getBoundingClientRect(), window.innerHeight);
+/**
+ * O foco chegou pelo teclado? Só então o cartão volta a mostrar a tarifa ou o
+ * aviso quando o RESERVE recebe o foco: num clique o botão age logo e não se
+ * mexe em nada. Sem suporte de :focus-visible, conta como teclado.
+ */
+export function revealOnFocus(target: EventTarget | null): boolean {
+  const el = target as { matches?: (selector: string) => boolean } | null;
+  if (!el || typeof el.matches !== 'function') return false;
+  try {
+    return el.matches(':focus-visible');
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * `ready` para keepRevealed: o rodapé do cartão está no ecrã. Sem rodapé
+ * (sem RESERVE, por exemplo sem preço) não há botão por que esperar.
+ */
+export function whenFooterOnScreen(footer: () => HTMLElement | null): () => boolean {
+  return () => {
+    const el = footer();
+    return !el || footerOnScreen(el.getBoundingClientRect(), window.innerHeight);
+  };
 }

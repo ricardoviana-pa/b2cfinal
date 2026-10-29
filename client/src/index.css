@@ -570,16 +570,25 @@
        RESERVE ficava abaixo do ecrã em portáteis de 768-900 px de altura.
        O painel tem a altura do ecrã e duas partes (PropertyDetail.tsx):
        - .pa-booking-scroll rola por dentro (preço, datas, tarifas, o resto);
-       - .pa-booking-footer nunca rola: o RESERVE com as marcas e "ainda não
-         é cobrado" (ou o "Pedir estas datas" das casas parceiras) vai para lá
-         (ReserveCtaSlot) e fica sempre à vista e clicável, role-se a página
-         ou o cartão; nada passa por baixo dele, por isso não tapa a tarifa
-         nem os avisos.
+       - em baixo, o rodapé do RESERVE com as marcas e "ainda não é cobrado"
+         (ou o "Pedir estas datas" das casas parceiras): .pa-booking-footer
+         (ReserveCtaSlot, regras em @layer utilities) fica preso ao fundo do
+         cartão, no espaço que o cartão lhe guarda (--pa-booking-footer-h, a
+         altura dele). Nunca rola e fica sempre à vista e clicável, role-se a
+         página ou o cartão; nada passa por baixo dele, por isso não tapa a
+         tarifa nem os avisos.
+       No HTML o rodapé continua logo a seguir às tarifas (ou aos campos do
+       pedido): é essa a ordem do Tab e do leitor de ecrã (revisão do PR #179,
+       PDP-STICKY-KBD-1; num portal no fim do cartão o Tab passava antes por
+       "Alterar datas", o concierge, a garantia e o anfitrião).
        Antes o botão era sticky dentro do painel que rolava: com ~640 px de
        conteúdo depois dele, saía pelo topo do cartão em ecrãs até ~850 px
        de altura (W1) e, preso ao fundo, tapava a tarifa escolhida (W3).
        O banner dos cookies (z-60, a altura em --cookie-banner-h) encolhe o
-       painel enquanto está aberto, para não tapar o rodapé (W4). */
+       painel enquanto está aberto, para não tapar o rodapé (W4).
+       A lista dos indicativos do telefone abre para cima dentro do cartão:
+       por baixo do campo o rodapé deixa pouco espaço e a lista era cortada
+       ou fazia saltar o formulário (revisão do PR #179, R1). */
     .property-sticky-card {
       position: sticky;
       top: 100px;
@@ -587,6 +596,9 @@
       display: flex;
       flex-direction: column;
       max-height: calc(100vh - 116px - var(--cookie-banner-h, 0px));
+      padding-bottom: var(--pa-booking-footer-h, 0px);
+      /* react-international-phone: top da lista (200 px de altura + 4 px de ar) */
+      --react-international-phone-dropdown-top: -204px;
     }
     .property-sticky-card > .pa-booking-scroll {
       flex: 0 1 auto;
@@ -596,11 +608,16 @@
       /* o fim do painel não encosta ao rodapé */
       padding-bottom: 1rem;
     }
-    .property-sticky-card > .pa-booking-footer {
-      flex: none;
-    }
-    .property-sticky-card > .pa-booking-footer:empty {
-      display: none;
+    /* "Voltar ao topo" (App.tsx: fixo, 5rem + 56px acima do fundo, à direita)
+       fica por cima do rodapé do RESERVE, com 0.75rem de ar: o fundo do
+       cartão fixo está 1rem acima do fundo do ecrã e o rodapé mede
+       --pa-booking-footer-h (0 fora da página da casa). Até ~1300 px de
+       largura o botão cai sobre a ponta direita do cartão e, com as marcas de
+       pagamento em duas linhas (Klarna), tapava o RESERVE, com ou sem o
+       banner dos cookies (revisão do PR #179, BTT-1). `translate` soma-se ao
+       transform que o sobe acima do banner (PR #178). */
+    [data-back-to-top] {
+      translate: 0 calc(-1 * max(0px, var(--pa-booking-footer-h, 0px) + 1rem + 0.75rem - (5rem + 56px)));
     }
   }
 
@@ -642,6 +659,29 @@
    ========================================================================== */
 
 @layer utilities {
+  /* Página da casa, computador (.property-sticky-card, em components). Aqui
+     para ganhar aos utilitários do Tailwind (overflow-hidden do widget, as
+     margens do space-y à volta do rodapé). */
+  @media (min-width: 1024px) {
+    /* O rodapé do RESERVE (ReserveCtaSlot) preso ao fundo do cartão, que é o
+       seu bloco de contenção (sticky): nem o widget nem a parte que rola são
+       posicionados, por isso não o cortam nem o levam quando rolam. */
+    .property-sticky-card .pa-booking-footer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: 0;
+    }
+    /* clip, não hidden: recorta os cantos da mesma forma sem fazer do widget
+       um contentor que o foco faz rolar. Com hidden, abrir a lista dos
+       indicativos rolava o widget por dentro e o formulário ficava ~50 px
+       acima (revisão do PR #179, R1). */
+    .property-sticky-card .booking-widget {
+      overflow: clip;
+    }
+  }
+
   .font-display {
     font-family: var(--font-display);
   }

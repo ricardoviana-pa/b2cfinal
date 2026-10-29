@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Calendar, Check, Loader2, Minus, Plus, User } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
+import { isImplicitSubmitKey } from '@/lib/implicitSubmit';
 import type { BookingSelection } from './BookingWidget';
 import { formatQuotedEur, intlLocale, formatBookingDate } from '@/lib/format';
 import { partnerCalendarView, partnerQuoteNotice, partnerRequestQuoteStatus } from '@/lib/partnerAvailability';
@@ -86,6 +87,8 @@ export function PartnerBookingPanel({
   const [sent, setSent] = useState(false);
   const submitting = useRef(false);
   const [submitError, setSubmitError] = useState('');
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
 
   const datesValid = !!checkIn && !!checkOut && checkOut > checkIn;
 
@@ -129,25 +132,32 @@ export function PartnerBookingPanel({
 
   const createLead = trpc.leads.create.useMutation();
 
-  // Computador: o "Pedir estas datas" vai para o rodapé fixo do cartão
+  // Computador: o "Pedir estas datas" fica no rodapé fixo do cartão
   // (bookingCardSlot.tsx), que nunca tapa nada. Quando a cotação diz que há
-  // noites ocupadas, ou o preço falha, esse aviso fica à vista por cima do
-  // botão (também depois do RESERVE do cabeçalho); rola-se só o cartão,
-  // nunca a página (auditoria 29 out, P3).
+  // noites ocupadas, que as datas são a pedido ou que o preço falhou, esse
+  // aviso (data-booking-notice) fica à vista por cima do botão, também depois
+  // do RESERVE do cabeçalho e quando o botão recebe o foco do teclado;
+  // rola-se só o cartão, nunca a página (auditoria 29 out, P3). Observa o
+  // painel, não o <form> (o PR #181 tira o <form>).
   const bookingCard = useBookingCardSlot();
   const headerReserves = useHeaderReserveCount(!!bookingCard);
-  const formRef = useRef<HTMLFormElement>(null);
-  const unavailableRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const requestFooterRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
-    const form = formRef.current;
-    if (!bookingCard || !form || isFetching) return;
-    const notice = () => unavailableRef.current ?? form.querySelector('[role="alert"]');
+    const panel = panelRef.current;
+    if (!bookingCard || !panel || isFetching) return;
+    const notice = () => panel.querySelector('[data-booking-notice]');
     if (!notice()) return;
     return keepRevealed(bookingCard.scroller, () => {
       const el = notice();
       return el ? rangeOf(el) : null;
-    }, { anchor: 'end', watch: [form], ready: whenFooterOnScreen(bookingCard.footer) });
-  }, [bookingCard, quote, isFetching, isError, headerReserves]);
+    }, {
+      anchor: 'end',
+      watch: [panel],
+      ready: whenFooterOnScreen(() => requestFooterRef.current),
+      focusWithin: requestFooterRef.current,
+    });
+  }, [bookingCard, quote, isFetching, isError, quoteNotice, headerReserves]);
 
   // Every figure below is already VAT-inclusive: the service adds the 6% before
   // anything leaves it, so a partner night and one of our own compare like for
@@ -171,9 +181,15 @@ export function PartnerBookingPanel({
     setSubmitError('');
   };
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    if (submitting.current || sent || !name.trim() || !email.trim()) return;
+  async function submit(e?: React.SyntheticEvent) {
+    e?.preventDefault();
+    if (submitting.current || sent) return;
+    // What the <form> did before sending: the browser's own message on the
+    // first required field still missing (or an email it cannot read).
+    for (const field of [nameRef.current, emailRef.current]) {
+      if (field && !field.reportValidity()) return;
+    }
+    if (!name.trim() || !email.trim()) return;
     submitting.current = true;
     pushDL({ event: 'partner_request_attempt', property_id: propertySlug });
     setSubmitError('');
@@ -262,7 +278,7 @@ export function PartnerBookingPanel({
   }
 
   return (
-    <div className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
+    <div ref={panelRef} className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
       {/* Price header — the widget's three states, same type ramp. */}
       <div className="px-6 pt-6 pb-4">
         {isFetching && datesValid ? (
@@ -314,7 +330,18 @@ export function PartnerBookingPanel({
         )}
       </div>
 
-      <form ref={formRef} id="partner-home-request" name="partner-home-request" onSubmit={submit}>
+      {/* The button does not depend on this <form> (type="button", see below);
+          PR #181 removes the element. Enter in a text field still sends. */}
+      <form
+        id="partner-home-request"
+        name="partner-home-request"
+        onSubmit={submit}
+        onKeyDown={(e) => {
+          if (!isImplicitSubmitKey({ key: e.key, isComposing: e.nativeEvent.isComposing, defaultPrevented: e.isDefaultPrevented(), target: e.target })) return;
+          e.preventDefault();
+          void submit();
+        }}
+      >
         {/* Dates — the portfolio's own calendar, not a native picker. */}
         <div className="mx-5" ref={datePicker.containerRef}>
           <div
@@ -452,7 +479,7 @@ export function PartnerBookingPanel({
 
         <div className="px-5 pt-5 pb-6 space-y-3">
           {quoteNotice === 'error' && (
-            <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
+            <div data-booking-notice="" className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
               <p className="text-red-600 leading-snug text-xs">
                 {t('partnerBooking.quoteError', 'We could not price these dates just now. Send the request and the concierge will confirm the total.')}
@@ -464,7 +491,7 @@ export function PartnerBookingPanel({
               not a fault, and not booked — the request goes to the concierge,
               who confirms both. Nothing here claims why the price is missing. */}
           {quoteNotice === 'on-request' && (
-            <div className="flex items-start gap-2.5 p-3 bg-[#F5F1EB] border border-[#E8E4DC]" role="status">
+            <div data-booking-notice="" className="flex items-start gap-2.5 p-3 bg-[#F5F1EB] border border-[#E8E4DC]" role="status">
               <span className="text-[#806A48] text-sm shrink-0 leading-none mt-0.5" aria-hidden="true">i</span>
               <p className="text-xs text-[#1A1A18] leading-snug">
                 {t('partnerBooking.onRequestDates', 'We cannot show a price online for these dates. Send the request and our concierge will confirm availability and the total.')}
@@ -473,7 +500,7 @@ export function PartnerBookingPanel({
           )}
 
           {quoteNotice === 'taken' && (
-            <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
+            <div data-booking-notice="" className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
               <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
               <p className="text-xs text-amber-800 font-medium leading-snug">
                 {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
@@ -527,7 +554,7 @@ export function PartnerBookingPanel({
           )}
 
           {quote && !quote.available && (
-            <div ref={unavailableRef} className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
+            <div data-booking-notice="" className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
               <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
               <p className="text-xs text-amber-800 font-medium leading-snug">
                 {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
@@ -546,6 +573,7 @@ export function PartnerBookingPanel({
 
           <div className="space-y-2">
             <input
+              ref={nameRef}
               type="text"
               required
               placeholder={t('partnerBooking.name', 'Full name *')}
@@ -554,6 +582,7 @@ export function PartnerBookingPanel({
               className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
             />
             <input
+              ref={emailRef}
               type="email"
               required
               placeholder={t('partnerBooking.email', 'Email *')}
@@ -575,9 +604,12 @@ export function PartnerBookingPanel({
             />
           </div>
 
-          {/* No computador o botão, o erro do envio e a nota vão para o rodapé
-              fixo do cartão (fora do <form>: o atributo form liga-os). */}
-          <ReserveCtaSlot>
+          {/* No computador o botão, o erro do envio e a nota ficam no rodapé
+              fixo do cartão; no HTML ficam aqui, logo a seguir aos campos (a
+              ordem do Tab e do leitor de ecrã). O botão envia pelo onClick,
+              com a mesma verificação dos campos obrigatórios, sem depender
+              do <form>. */}
+          <ReserveCtaSlot footerRef={requestFooterRef}>
           {submitError && (
             <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
@@ -586,8 +618,8 @@ export function PartnerBookingPanel({
           )}
 
           <button
-            type="submit"
-            form={bookingCard ? 'partner-home-request' : undefined}
+            type="button"
+            onClick={submit}
             disabled={createLead.isPending}
             className="pa-action pa-reserve-cta w-full min-h-[52px] px-8 text-xs font-medium tracking-[0.15em] uppercase bg-black text-white hover:bg-black/85 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
