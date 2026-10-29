@@ -100,6 +100,9 @@ beforeEach(() => {
   vi.stubEnv('CHECKOUT_TWO_PARTS', 'true');
   vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_synthetic');
   vi.stubEnv('CHECKOUT_TWO_PARTS_HOLDOUT', '0');
+  // O incentivo está desligado por omissão (28 out 2026); aqui liga-se para os
+  // cenários da opção A continuarem a provar o Flex oferecido.
+  vi.stubEnv('FULL_PAYMENT_INCENTIVE', 'flex');
   fake.supplierQuote.mockImplementation(supplierQuote());
   fake.intents.clear(); fake.payments.clear(); fake.keys.clear(); fake.schedules.clear(); fake.mandates = [];
   fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, structuredClone(data)); return data.id; });

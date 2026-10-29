@@ -398,14 +398,14 @@ describe("inTwoPartsHoldout — grupo de controlo determinístico (spec 2.1, 2.6
 });
 
 describe("readTwoPartsConfig — configuração por env (spec 2.1, 2.6, 5.11)", () => {
-  it("sem nada no env: desligado, tratado como live, sem grupo de controlo, mínimo 1 000 €, incentivo Flex, sem avisos", () => {
+  it("sem nada no env: desligado, tratado como live, sem grupo de controlo, mínimo 1 000 €, sem incentivo, sem avisos", () => {
     expect(readTwoPartsConfig({})).toEqual({
       enabled: false,
       livemode: true,
       engineReady: false,
       holdout: 0,
       minStayCents: 100_000,
-      incentive: "flex",
+      incentive: "none",
       warnings: [],
     });
   });
@@ -460,11 +460,12 @@ describe("readTwoPartsConfig — configuração por env (spec 2.1, 2.6, 5.11)", 
     }
   });
 
-  it("incentivo: flex por omissão, none aceite, discount recusado (fica none) e desconhecido fica flex, com aviso", () => {
+  it("incentivo: none por omissão (28 out 2026), flex só pedido, discount recusado (fica none) e desconhecido fica none, com aviso", () => {
     expect(readTwoPartsConfig({ FULL_PAYMENT_INCENTIVE: "flex" })).toMatchObject({ incentive: "flex", warnings: [] });
     expect(readTwoPartsConfig({ FULL_PAYMENT_INCENTIVE: " Flex " })).toMatchObject({ incentive: "flex", warnings: [] });
     expect(readTwoPartsConfig({ FULL_PAYMENT_INCENTIVE: "none" })).toMatchObject({ incentive: "none", warnings: [] });
-    expect(readTwoPartsConfig({ FULL_PAYMENT_INCENTIVE: "" })).toMatchObject({ incentive: "flex", warnings: [] });
+    expect(readTwoPartsConfig({ FULL_PAYMENT_INCENTIVE: "" })).toMatchObject({ incentive: "none", warnings: [] });
+    expect(readTwoPartsConfig({})).toMatchObject({ incentive: "none", warnings: [] });
 
     // Opção B fica fechada até o acerto do folio no Guesty estar provado: cair
     // para none (e não para flex) é a escolha que não muda o preço de ninguém.
@@ -476,7 +477,7 @@ describe("readTwoPartsConfig — configuração por env (spec 2.1, 2.6, 5.11)", 
     }
 
     const d = readTwoPartsConfig({ FULL_PAYMENT_INCENTIVE: "desconto" });
-    expect(d.incentive).toBe("flex");
+    expect(d.incentive).toBe("none");
     expect(d.warnings).toHaveLength(1);
     expect(d.warnings[0]).toMatch(/FULL_PAYMENT_INCENTIVE desconhecido/);
   });

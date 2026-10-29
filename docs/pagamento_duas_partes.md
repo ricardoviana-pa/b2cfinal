@@ -117,7 +117,9 @@ Regra absoluta do motor: **nunca cobrar depois de H.** Se o servidor estiver em 
 
 O estado `manual` da versão 1 desapareceu: era ambíguo face ao hard stop e é exatamente onde caía o caso mais comum do luxo (hóspede que paga por transferência).
 
-### 2.6 Incentivo ao pagamento integral (decisão de 25 de outubro, revista a 26 de outubro)
+### 2.6 Incentivo ao pagamento integral (decisão de 25 de outubro, revista a 26 e a 28 de outubro)
+
+**Estado a 28 de outubro de 2026: opção C, sem incentivo.** O Ricardo desligou o Flex oferecido a quem paga tudo: o Flex é um extra pago, e dá-lo sem o hóspede o pedir tirava-lhe o valor e, quando ele já o tinha escolhido, o total mudava sem se perceber porquê. `FULL_PAYMENT_INCENTIVE` ficou `none` no Render (23:22 UTC) e `none` passou a ser o valor por omissão no código; `flex` volta a ligar a opção A. O funil de recuperação (docs/checkout_recovery.md) continua a oferecer o Flex no 3.º contacto, que é outra decisão.
 
 Objetivo, nas palavras do Ricardo: converter mais no site. A alavanca de conversão é a própria opção de duas partes (quem hoje desiste por ter de pagar 100% passa a poder reservar com metade). Convencer quem pode a pagar tudo já é um objetivo secundário, de tesouraria e de risco, e não pode custar conversão nem complicar o Guesty. Quando a reserva é elegível (2.1), o hóspede escolhe entre **pagar tudo agora** e **pagar em duas partes ao preço apresentado**; o incentivo da primeira opção é configurável (`FULL_PAYMENT_INCENTIVE = flex | discount | none`) e o piloto começa com a opção A.
 

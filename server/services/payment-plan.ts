@@ -289,8 +289,12 @@ export function readTwoPartsConfig(env: NodeJS.ProcessEnv = process.env): TwoPar
     else warnings.push(`CHECKOUT_TWO_PARTS_MIN_STAY_CENTS inválido (${minRaw}); fica ${TWO_PARTS_RULES.minStayCents}`);
   }
   const incRaw = String(env.FULL_PAYMENT_INCENTIVE ?? "").trim().toLowerCase();
-  let incentive: FullPaymentIncentive = "flex";
+  // Sem incentivo por omissão (decisão do Ricardo, 28 out 2026): o Flex é um
+  // extra pago; dá-lo a quem paga tudo tirava-lhe o valor sem o hóspede o
+  // perceber. FULL_PAYMENT_INCENTIVE=flex volta a ligá-lo.
+  let incentive: FullPaymentIncentive = "none";
   if (incRaw === "none") incentive = "none";
+  else if (incRaw === "flex") incentive = "flex";
   else if (incRaw === "discount") {
     // Opção B (1%): a matemática existe e está testada, mas o acerto do folio
     // no Guesty (ajuste negativo ao AF via Price Adjustments) não foi provado
@@ -299,7 +303,7 @@ export function readTwoPartsConfig(env: NodeJS.ProcessEnv = process.env): TwoPar
     incentive = "none";
     warnings.push("FULL_PAYMENT_INCENTIVE=discount ainda não está disponível (acerto do folio Guesty por provar); fica none");
   } else if (incRaw && incRaw !== "flex") {
-    warnings.push(`FULL_PAYMENT_INCENTIVE desconhecido (${incRaw}); fica flex`);
+    warnings.push(`FULL_PAYMENT_INCENTIVE desconhecido (${incRaw}); fica none`);
   }
   return {
     enabled: env.CHECKOUT_TWO_PARTS === "true",
