@@ -564,7 +564,11 @@
     "allDestHomes": "Alle Häuser {{inPlace}}",
     "ownershipTitle": "Mehr als ein Aufenthalt.",
     "ownershipBody": "Dieses Haus gehört auch zu unserem Immobilienportfolio. Entdecken Sie die Möglichkeit, es mit dem Team zu kaufen, das es kennt.",
-    "ownershipAction": "Dieses Haus zum Kauf entdecken"
+    "ownershipAction": "Dieses Haus zum Kauf entdecken",
+    "showAllAmenitiesCount": "Alle {{count}} Ausstattungen anzeigen",
+    "showAllPhotos": "Alle {{count}} Fotos anzeigen",
+    "bedTotal_one": "{{count}} Bett",
+    "bedTotal_other": "{{count}} Betten"
   },
   "priceBreakdown": {
     "title": "Preisübersicht",
@@ -1382,7 +1386,9 @@
     "bathroom": "Badezimmer",
     "familyFriendly": "Familienfreundlich",
     "safety": "Sicherheit",
-    "other": "Sonstiges"
+    "other": "Sonstiges",
+    "accessibility": "Barrierefreiheit",
+    "nearby": "Aktivitäten in der Nähe"
   },
   "experience": {
     "from": "Ab",
@@ -2407,5 +2413,54 @@
       "network": "Verbindungsproblem. Prüfen Sie Ihr Internet und versuchen Sie es erneut.",
       "generic": "Das konnte nicht abgeschlossen werden. Versuchen Sie es erneut oder sprechen Sie mit Ihrem Concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Privater Pool",
+    "swimmingPool": "Pool",
+    "heatedPool": "Beheizter Pool",
+    "seaView": "Meerblick",
+    "nearOcean": "Nah am Meer",
+    "mountainView": "Bergblick",
+    "riverView": "Fluss- oder Seeblick",
+    "jacuzzi": "Whirlpool",
+    "sauna": "Sauna",
+    "fireplace": "Kamin",
+    "bbq": "Grill",
+    "garden": "Garten",
+    "terrace": "Terrasse",
+    "airConditioning": "Klimaanlage",
+    "heating": "Heizung",
+    "wifi": "WLAN",
+    "workspace": "Arbeitsplatz",
+    "kitchen": "Küche",
+    "dishwasher": "Geschirrspüler",
+    "washer": "Waschmaschine",
+    "tv": "TV",
+    "crib": "Kinderbett",
+    "gym": "Fitnessraum",
+    "evCharging": "E-Auto-Ladestation",
+    "parking": "Kostenlose Parkplätze"
+  },
+  "beds": {
+    "king_one": "{{count}} Kingsize-Bett",
+    "king_other": "{{count}} Kingsize-Betten",
+    "queen_one": "{{count}} Queensize-Bett",
+    "queen_other": "{{count}} Queensize-Betten",
+    "double_one": "{{count}} Doppelbett",
+    "double_other": "{{count}} Doppelbetten",
+    "single_one": "{{count}} Einzelbett",
+    "single_other": "{{count}} Einzelbetten",
+    "sofa_one": "{{count}} Schlafsofa",
+    "sofa_other": "{{count}} Schlafsofas",
+    "bunk_one": "{{count}} Etagenbett",
+    "bunk_other": "{{count}} Etagenbetten",
+    "air_one": "{{count}} Luftmatratze",
+    "air_other": "{{count}} Luftmatratzen",
+    "floor_one": "{{count}} Bodenmatratze",
+    "floor_other": "{{count}} Bodenmatratzen",
+    "crib_one": "{{count}} Kinderbett",
+    "crib_other": "{{count}} Kinderbetten",
+    "toddler_one": "{{count}} Kleinkindbett",
+    "toddler_other": "{{count}} Kleinkindbetten"
   }
 }

@@ -564,7 +564,11 @@
     "allDestHomes": "Todas as casas {{inPlace}}",
     "ownershipTitle": "Mais do que uma estadia.",
     "ownershipBody": "Esta casa também faz parte da nossa coleção imobiliária. Explore a possibilidade de a comprar com a equipa que a conhece.",
-    "ownershipAction": "Conheça esta casa à venda"
+    "ownershipAction": "Conheça esta casa à venda",
+    "showAllAmenitiesCount": "Ver todas as {{count}} comodidades",
+    "showAllPhotos": "Ver as {{count}} fotos",
+    "bedTotal_one": "{{count}} cama",
+    "bedTotal_other": "{{count}} camas"
   },
   "priceBreakdown": {
     "title": "Resumo de preço",
@@ -1382,7 +1386,9 @@
     "bathroom": "Casa de Banho",
     "familyFriendly": "Para Famílias",
     "safety": "Segurança",
-    "other": "Outros"
+    "other": "Outros",
+    "accessibility": "Acessibilidade",
+    "nearby": "Atividades por perto"
   },
   "experience": {
     "from": "Desde",
@@ -2410,5 +2416,54 @@
       "network": "Problema de ligação. Verifique a internet e tente de novo.",
       "generic": "Não foi possível concluir. Tente de novo ou fale com o seu concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Piscina privada",
+    "swimmingPool": "Piscina",
+    "heatedPool": "Piscina aquecida",
+    "seaView": "Vista para o mar",
+    "nearOcean": "Perto do mar",
+    "mountainView": "Vista de montanha",
+    "riverView": "Vista de rio ou lago",
+    "jacuzzi": "Jacúzi",
+    "sauna": "Sauna",
+    "fireplace": "Lareira",
+    "bbq": "Churrasqueira",
+    "garden": "Jardim",
+    "terrace": "Terraço",
+    "airConditioning": "Ar condicionado",
+    "heating": "Aquecimento",
+    "wifi": "Wi-Fi",
+    "workspace": "Espaço de trabalho",
+    "kitchen": "Cozinha",
+    "dishwasher": "Máquina de lavar loiça",
+    "washer": "Máquina de lavar roupa",
+    "tv": "TV",
+    "crib": "Berço",
+    "gym": "Ginásio",
+    "evCharging": "Carregador para carros elétricos",
+    "parking": "Estacionamento gratuito"
+  },
+  "beds": {
+    "king_one": "{{count}} cama king",
+    "king_other": "{{count}} camas king",
+    "queen_one": "{{count}} cama queen",
+    "queen_other": "{{count}} camas queen",
+    "double_one": "{{count}} cama de casal",
+    "double_other": "{{count}} camas de casal",
+    "single_one": "{{count}} cama individual",
+    "single_other": "{{count}} camas individuais",
+    "sofa_one": "{{count}} sofá-cama",
+    "sofa_other": "{{count}} sofás-cama",
+    "bunk_one": "{{count}} beliche",
+    "bunk_other": "{{count}} beliches",
+    "air_one": "{{count}} colchão de ar",
+    "air_other": "{{count}} colchões de ar",
+    "floor_one": "{{count}} colchão de chão",
+    "floor_other": "{{count}} colchões de chão",
+    "crib_one": "{{count}} berço",
+    "crib_other": "{{count}} berços",
+    "toddler_one": "{{count}} cama de criança",
+    "toddler_other": "{{count}} camas de criança"
   }
 }

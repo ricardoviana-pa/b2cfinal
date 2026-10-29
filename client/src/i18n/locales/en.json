@@ -564,7 +564,11 @@
     "allDestHomes": "All {{destination}} homes",
     "ownershipTitle": "More than a stay.",
     "ownershipBody": "This home is also in our real estate collection. Explore ownership with the team that knows it.",
-    "ownershipAction": "Explore this home for sale"
+    "ownershipAction": "Explore this home for sale",
+    "showAllAmenitiesCount": "Show all {{count}} amenities",
+    "showAllPhotos": "Show all {{count}} photos",
+    "bedTotal_one": "{{count}} bed",
+    "bedTotal_other": "{{count}} beds"
   },
   "priceBreakdown": {
     "title": "Price summary",
@@ -1293,7 +1297,9 @@
     "bathroom": "Bathroom",
     "familyFriendly": "Family Friendly",
     "safety": "Safety",
-    "other": "Other"
+    "other": "Other",
+    "accessibility": "Accessibility",
+    "nearby": "Nearby activities"
   },
   "bedType": {
     "KingBed": "King Bed",
@@ -2407,5 +2413,54 @@
       "network": "Connection problem. Check your internet and try again.",
       "generic": "This could not be completed. Try again or talk to your concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Private pool",
+    "swimmingPool": "Swimming pool",
+    "heatedPool": "Heated pool",
+    "seaView": "Sea view",
+    "nearOcean": "Near the ocean",
+    "mountainView": "Mountain view",
+    "riverView": "River or lake view",
+    "jacuzzi": "Jacuzzi",
+    "sauna": "Sauna",
+    "fireplace": "Fireplace",
+    "bbq": "BBQ",
+    "garden": "Garden",
+    "terrace": "Terrace",
+    "airConditioning": "Air conditioning",
+    "heating": "Heating",
+    "wifi": "Wifi",
+    "workspace": "Workspace",
+    "kitchen": "Kitchen",
+    "dishwasher": "Dishwasher",
+    "washer": "Washing machine",
+    "tv": "TV",
+    "crib": "Crib",
+    "gym": "Gym",
+    "evCharging": "EV charging",
+    "parking": "Free parking"
+  },
+  "beds": {
+    "king_one": "{{count}} king bed",
+    "king_other": "{{count}} king beds",
+    "queen_one": "{{count}} queen bed",
+    "queen_other": "{{count}} queen beds",
+    "double_one": "{{count}} double bed",
+    "double_other": "{{count}} double beds",
+    "single_one": "{{count}} single bed",
+    "single_other": "{{count}} single beds",
+    "sofa_one": "{{count}} sofa bed",
+    "sofa_other": "{{count}} sofa beds",
+    "bunk_one": "{{count}} bunk bed",
+    "bunk_other": "{{count}} bunk beds",
+    "air_one": "{{count}} air mattress",
+    "air_other": "{{count}} air mattresses",
+    "floor_one": "{{count}} floor mattress",
+    "floor_other": "{{count}} floor mattresses",
+    "crib_one": "{{count}} crib",
+    "crib_other": "{{count}} cribs",
+    "toddler_one": "{{count}} toddler bed",
+    "toddler_other": "{{count}} toddler beds"
   }
 }
