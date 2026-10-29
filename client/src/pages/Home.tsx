@@ -347,8 +347,11 @@ export default function Home() {
       <Header variant="transparent" />
       {/* On mobile the floating button sits exactly over the hero search card's
           Check-out field, so hold it back until the hero is scrolled past.
-          Desktop is unaffected (the card is a centred pill, no collision). */}
-      <div className={pastHero ? undefined : 'hidden lg:block'}>
+          On desktop the card is a centred pill and there is no collision —
+          except while the cookie banner is open: the button then moves above
+          the banner and, at 1024 px, onto "Search homes", so it also waits
+          (index.css, .home-float-at-hero). */}
+      <div className={pastHero ? undefined : 'hidden lg:block home-float-at-hero'}>
         <WhatsAppFloat />
       </div>
 

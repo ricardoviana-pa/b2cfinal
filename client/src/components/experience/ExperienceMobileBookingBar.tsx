@@ -10,6 +10,7 @@ import { X, MessageCircle } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
 import type { BokunOption } from './ExperienceBookingCard';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
+import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight } from '@/lib/fixedBottom';
 
 interface ExperienceMobileBookingBarProps {
   experienceName: string;
@@ -72,12 +73,15 @@ export default function ExperienceMobileBookingBar({
 
   return (
     <>
-      {/* Sticky bottom bar */}
+      {/* Sticky bottom bar. Once shown it sits on the cookie banner while the
+          banner is open; hidden, it stays off the screen. Its height keeps the
+          footer's last row clear of it (lib/fixedBottom.ts). */}
       <div
+        ref={publishBottomBarHeight}
         className={`lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAFAF7] border-t border-[#E8E4DC] transition-transform duration-300 ${
           visible ? 'translate-y-0' : 'translate-y-full'
         }`}
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)', transform: visible ? RISE_ABOVE_COOKIE_BANNER : undefined }}
       >
         <div className="flex items-center justify-between px-5 py-4">
           <div>

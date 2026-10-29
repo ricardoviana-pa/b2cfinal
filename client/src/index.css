@@ -753,15 +753,85 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* WhatsApp float — above safe area on mobile, normal on desktop */
+  /* WhatsApp float — above safe area on mobile, normal on desktop. While the
+     cookie banner is open it moves above it (it used to sit on "Accept all"
+     on desktop), with a transform, so it is no layout shift
+     (lib/fixedBottom.ts):
+     - on a phone it rises with the bars and the language card, which sits on
+       the banner right under it (RISE_ABOVE_COOKIE_BANNER);
+     - from 640 px only as far as it must to stay 0.5rem above the banner
+       (WHATSAPP_RISE_SM / _LG): on a tablet it already clears a 77 px banner
+       and stays put, and on a computer it no longer lands on the page's
+       buttons (revisão do PR #178, R1). */
   .whatsapp-float {
     bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
     min-height: auto;
     min-width: auto;
+    transform: translateY(calc(-1 * max(0px, var(--cookie-banner-h, 0px) - env(safe-area-inset-bottom, 0px) - 1px)));
+  }
+  @media (min-width: 640px) {
+    .whatsapp-float {
+      transform: translateY(calc(-1 * max(0px, var(--cookie-banner-h, 0px) + 0.5rem - (5.5rem + env(safe-area-inset-bottom, 0px)))));
+    }
   }
   @media (min-width: 1024px) {
     .whatsapp-float {
       bottom: 1.75rem;
+      transform: translateY(calc(-1 * max(0px, var(--cookie-banner-h, 0px) + 0.5rem - (1.75rem))));
+    }
+  }
+
+  /* The homepage's WhatsApp button on a computer, while the hero is on screen
+     (Home.tsx): with the banner open, at 1024 px, even 0.5rem above it the
+     button lands on the hero's "Search homes". It waits for the choice or
+     for the hero to scroll by, as it already does on a phone. */
+  html[data-cookie-banner-open] .home-float-at-hero {
+    display: none;
+  }
+
+  /* "Back to top" (App.tsx) on a phone, while the language card sits above a
+     home's or an experience's booking bar (LanguageSuggestion.tsx): the card
+     is full width there and covers its place, so the button sat on the
+     card's × (with or without the banner). It steps aside until the card
+     goes. Elsewhere the card sits under the floats, and from 640 px on the
+     left, away from them. */
+  @media (max-width: 639.98px) {
+    html[data-language-card="above-bar"] .back-to-top {
+      display: none;
+    }
+  }
+
+  /* Below lg the floating buttons sit over the footer's right edge at the end
+     of the page ("back to top" up to 5rem + 56px + 40px = 176px from the
+     bottom). The footer keeps this much free under its last row (plus its own
+     1.75rem padding and 4px of air): FOOTER_BOTTOM_INSET in lib/fixedBottom.ts.
+     From lg the last row keeps clear of them sideways (Footer.tsx, lg:pr-16). */
+  :root {
+    --floats-clearance: calc(9.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --floats-clearance: 0px;
+    }
+  }
+
+  /* While a dialog, drawer or sheet holds the page (Radix marks <body> with
+     data-scroll-locked; the page under it takes no taps), or the phone menu
+     is open (its panel loses `inert`), the cookie banner goes under that
+     layer (z-50 and up) instead of covering its buttons: the booking sheet
+     opened from a home's bar, the menu's phone, email and social links. It is
+     back on top, with its buttons, as soon as the layer closes; consent stays
+     denied meanwhile.
+     Two rules, never one selector list: a browser without :has() (Safari
+     before 15.4, Firefox before 121) drops a whole rule over one selector it
+     cannot read, and would keep the banner over the booking sheet too
+     (revisão do PR #178, R2). There only the menu stays under the banner. */
+  body[data-scroll-locked] [data-cookie-banner] {
+    z-index: 49;
+  }
+  @supports selector(:has(*)) {
+    body:has(#mobile-menu-panel:not([inert])) [data-cookie-banner] {
+      z-index: 49;
     }
   }
 

@@ -102,9 +102,11 @@ describe('no redirect, nothing for crawlers', () => {
     expect(card).toMatch(/useState<SuggestedLanguage \| null>\(null\)/);
     expect(card).toMatch(/useEffect\(/);
     expect(card).toMatch(/navigator\.languages/);
-    // Fixed, so appearing shifts no content; above the cookie banner.
+    // Fixed, so appearing shifts no content; above the cookie banner, rising
+    // with it by a transform, so the banner opening shifts none either
+    // (revisão do PR #178; server/fixed-bottom-layers.test.ts).
     expect(card).toMatch(/className=\{`fixed /);
-    expect(card).toMatch(/var\(--cookie-banner-h,0px\)/);
+    expect(card).toMatch(/style=\{\{ transform: RISE_ABOVE_COOKIE_BANNER \}\}/);
     expect(fs.readFileSync(new URL('../client/src/App.tsx', import.meta.url), 'utf8')).toMatch(/<LanguageSuggestion \/>/);
   });
 });
@@ -201,6 +203,7 @@ describe('the card never covers a booking bar, a sheet or the menu', () => {
     for (const path of ['/', '/homes', '/experiences', '/blog/cycling-minho-portugal-guide', '/destinations/algarve']) {
       expect(hasBottomBookingBar(path), path).toBe(false);
     }
-    expect(card).toMatch(/aboveBookingBar\s*\?\s*'bottom-\[calc\(var\(--cookie-banner-h,0px\)\+6rem\+env\(safe-area-inset-bottom,0px\)\)\]/);
+    // 6rem over the bar; the bar and the card both rise with the open banner.
+    expect(card).toMatch(/aboveBookingBar\s*\?\s*'bottom-\[calc\(6rem\+env\(safe-area-inset-bottom,0px\)\)\]/);
   });
 });
