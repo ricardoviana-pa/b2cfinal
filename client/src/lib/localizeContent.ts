@@ -19,14 +19,16 @@
    client-rendered.
    ========================================================================== */
 import { useEffect, useState } from 'react';
+import { contentKindsForPath, needsBlogOverrides, type ContentKind } from '@shared/contentRoutes';
 import { deepMerge, baseLang } from './deepMerge';
 import { loadBlogOverrides } from './localizeBlog';
 
 export { deepMerge } from './deepMerge';
 export { localizeItem, localizeProduct, localizeService } from './localizeProduct';
+// Shared with the server, which modulepreloads these files (lib/routeAssets.ts).
+export { contentKindsForPath, type ContentKind };
 
 type Dict = Record<string, any>;
-export type ContentKind = 'destinations' | 'experiences' | 'journal';
 
 const LANGS = ['pt', 'fr', 'es', 'it', 'de', 'nl', 'sv', 'fi'] as const;
 
@@ -86,27 +88,19 @@ export function getContentOverrides(kind: ContentKind, lang: string | undefined)
   return cache[kind][baseLang(lang)] || EMPTY;
 }
 
-/** Which catalogues a route needs, so the preload never fetches more than the page uses. */
-export function contentKindsForPath(pathWithoutLocale: string): ContentKind[] {
-  const p = pathWithoutLocale || '/';
-  const kinds: ContentKind[] = [];
-  if (p === '/' || p.startsWith('/destinations')) kinds.push('destinations');
-  if (p.startsWith('/destinations/')) kinds.push('journal');
-  if (p.startsWith('/experiences') || p.startsWith('/activities')) kinds.push('experiences');
-  return kinds;
-}
-
 /**
  * Preload the catalogues a path needs, for `lang`. Called by the server before
- * rendering and by main.tsx before hydrating; no-op for English.
+ * rendering and by main.tsx before hydrating; no-op for English. The blog file
+ * and the content files load in parallel (the server also modulepreloads them
+ * from the <head>, so on a first visit they are usually already here).
  */
 export async function preloadContentOverrides(lang: string | undefined, pathWithoutLocale: string): Promise<void> {
   const code = baseLang(lang);
   if (code === 'en' || !(LANGS as readonly string[]).includes(code)) return;
-  if (pathWithoutLocale === '/blog' || pathWithoutLocale.startsWith('/blog/')) {
-    await loadBlogOverrides(code);
-  }
-  await Promise.all(contentKindsForPath(pathWithoutLocale).map((k) => loadContentOverrides(k, code)));
+  await Promise.all([
+    ...(needsBlogOverrides(pathWithoutLocale) ? [loadBlogOverrides(code)] : []),
+    ...contentKindsForPath(pathWithoutLocale).map((k) => loadContentOverrides(k, code)),
+  ]);
 }
 
 /**

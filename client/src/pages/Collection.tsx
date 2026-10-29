@@ -22,6 +22,8 @@ import collectionsData from '@/data/collections.json';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
+import { cardPriority } from '@/lib/listingImagePriority';
+import { useFromPrices } from '@/hooks/useFromPrices';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import NotFound from '@/pages/NotFound';
 
@@ -54,10 +56,8 @@ export default function Collection() {
   }, [propsData, def]);
 
   const fromIds = useMemo(() => homes.filter(h => h.guestyId).map(h => h.guestyId!), [homes]);
-  const { data: fromPrices } = trpc.booking.lowestNightlyBatch.useQuery(
-    { listingIds: fromIds },
-    { enabled: fromIds.length > 0, staleTime: 5 * 60 * 1000 },
-  );
+  // Starts from the prices the server put into the page (useFromPrices).
+  const { data: fromPrices } = useFromPrices(fromIds);
 
   const partner = usePartnerPrices(homes);
 
@@ -141,6 +141,7 @@ export default function Collection() {
               checkout={trip.checkout}
               guests={trip.guests}
               fromPrice={property.supplierUid ? partner.prices[property.supplierUid] : fromPrices?.[property.guestyId ?? '']}
+              {...cardPriority('collection', idx)}
             />
           ))}
         </div>

@@ -23,6 +23,7 @@ import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { createInstance } from 'i18next';
 import { preloadContentOverrides } from '@/lib/localizeContent';
 import { propertyOverridesQueryKey } from '@/lib/localizeProperty';
+import { SSR_FROM_PRICES_KEY, type SsrFromPrices } from '@/lib/ssrFromPrices';
 import type { ResourceKey } from "i18next";
 import superjson from 'superjson';
 import { trpc } from '@/lib/trpc';
@@ -59,6 +60,8 @@ export interface RenderPrefetch {
   relatedHomes?: { input: { destinationTag: string | null; limit: number }; data: unknown };
   /** Result of trpc.properties.forDestination for a destination page. */
   destinationHomes?: { input: { slug: string }; data: unknown };
+  /** "From €X" the server already has for the page's homes (lib/ssrFromPrices.ts). */
+  fromPrices?: SsrFromPrices;
 }
 
 export interface RenderOptions {
@@ -157,6 +160,11 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
       getQueryKey(trpc.properties.forDestination, pf.destinationHomes.input, 'query'),
       pf.destinationHomes.data,
     );
+  }
+  // The price queries (useFromPrices, the PDP's lowestNightly) start from this,
+  // with the server's timestamp, so the client knows how old it is.
+  if (pf?.fromPrices) {
+    queryClient.setQueryData(SSR_FROM_PRICES_KEY, pf.fromPrices, { updatedAt: pf.fromPrices.at });
   }
 
   return new Promise<RenderResult>((resolve, reject) => {

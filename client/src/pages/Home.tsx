@@ -45,6 +45,7 @@ import { getUniqueLocalities } from '@/lib/utils';
 import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
 import { HOME_FEATURED_ORDER, HOME_FEATURED_COUNT, catalogKey, curatedPosition } from '@/config/propertyOrder';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
+import { useFromPrices } from '@/hooks/useFromPrices';
 import { isChildUnit } from '@/config/propertyGroups';
 
 const destinations = destinationsData as unknown as Destination[];
@@ -238,10 +239,8 @@ export default function Home() {
   }, [properties]);
 
   const fromListingIds = useMemo(() => featured.filter(p => p.guestyId).map(p => p.guestyId!), [featured]);
-  const { data: featuredFromPrices } = trpc.booking.lowestNightlyBatch.useQuery(
-    { listingIds: fromListingIds },
-    { enabled: fromListingIds.length > 0, staleTime: 5 * 60_000 },
-  );
+  // Starts from the prices the server put into the page (useFromPrices).
+  const { data: featuredFromPrices } = useFromPrices(fromListingIds);
   // Partner homes (Tripwix) have no Guesty listing: their "from" price and
   // dated quotes come from the partner calendar, exactly as on the PLP.
   const partner = usePartnerPrices(

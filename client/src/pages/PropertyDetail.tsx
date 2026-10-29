@@ -11,6 +11,7 @@ import { useParams, Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { loadPropertyOverrides, mergePropertyOverrides, propertyOverridesQueryKey } from '@/lib/localizeProperty';
+import { SSR_FROM_PRICES_KEY, pickLowestNightly, type SsrFromPrices } from '@/lib/ssrFromPrices';
 import { propertyKindInline } from '@shared/propertyMeta';
 import { propertyPageMetaOpts } from '@/lib/propertyPageMeta';
 import { buildPdpFaq, faqPageNode } from '@shared/pdpFaq';
@@ -296,6 +297,15 @@ function cleanDescription(raw: string): string {
 
 const LIGHTBOX_SLIDE_MS = 300;
 const LIGHTBOX_WIDTHS = [1080, 1600, 2560];
+
+/** The hero photo appears twice in the markup: the phone carousel (slide 1)
+ *  and the desktop grid (big tile). Both are eager + fetchpriority=high, and
+ *  the hidden one is fetched too, so they used different srcsets and every
+ *  visitor downloaded two files of the same photo (auditoria out/2026,
+ *  performance-12-pdp-double-hero). Same srcset + same sizes = the browser
+ *  picks the same URL for both, React writes one preload, one download. */
+const HERO_WIDTHS = [640, 828, 1080, 1440];
+const HERO_SIZES = '(min-width: 1024px) 32vw, 100vw';
 
 function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onClose, t }: {
   images: string[];
@@ -895,21 +905,53 @@ export default function PropertyDetail() {
     [property, i18n.language, destKnown, destSlug, destName],
   );
 
-  const { data: allPropsData } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
+  // The whole catalogue (≈18 KB, 110 KB of JSON) is only needed for the related
+  // homes at the bottom and, on a multi-unit home, for its units near the top.
+  // It used to be fetched right after hydration in the same batched request as
+  // the "from" price below, which then waited for it (auditoria out/2026,
+  // performance-09-from-price-latency). Now: at once on a multi-unit home,
+  // otherwise when the related-homes block comes within ~1.5 screens.
+  const [catalogWanted, setCatalogWanted] = useState(false);
+  const relatedSentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (catalogWanted) return;
+    const el = relatedSentinelRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') { setCatalogWanted(true); return; }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { setCatalogWanted(true); io.disconnect(); }
+    }, { rootMargin: '1200px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [catalogWanted, property?.slug]);
+  const { data: allPropsData } = trpc.properties.catalogForSite.useQuery(undefined, {
+    staleTime: 5 * 60 * 1000,
+    enabled: catalogWanted || !!propertyGroup,
+  });
   // "From €X per night" = lowest REAL bookable nightly (next 90 days), not the
   // Guesty basePrice placeholder. Cached server-side; lazy per viewed listing.
   // Partner (Tripwix) homes have no Guesty listing; they price off the
   // supplier's own calendar instead, through the same procedure.
+  // Starts from the price the server put into the page (lib/ssrFromPrices.ts),
+  // so the booking card and the mobile bar show it in the server HTML.
   const tripwixUid = (property as any)?.source === 'tripwix'
     ? ((property as any)?.supplierUid as string | undefined)
     : undefined;
+  const seededNightly = pickLowestNightly(
+    queryClient.getQueryData<SsrFromPrices>(SSR_FROM_PRICES_KEY),
+    tripwixUid ? undefined : property?.guestyId,
+  );
   const { data: lowestNightly } = trpc.booking.lowestNightly.useQuery(
     {
       listingId: property?.guestyId ?? tripwixUid ?? '',
       basePrice: (property?.priceFrom as number) || undefined,
       tripwixUid,
     },
-    { enabled: !!property?.guestyId || !!tripwixUid, staleTime: 60_000 },
+    {
+      enabled: !!property?.guestyId || !!tripwixUid,
+      staleTime: 60_000,
+      ...(seededNightly ? { initialData: seededNightly.data, initialDataUpdatedAt: seededNightly.updatedAt } : {}),
+    },
   );
 
   // The header's RESERVE button on this page books THIS home (Header.tsx
@@ -1327,7 +1369,7 @@ export default function PropertyDetail() {
             {(images.length ? images : ['']).map((img: string, idx: number) => (
               <div key={idx} className="relative shrink-0 h-full bg-pa-sand img-fallback" style={{ width: `${100 / totalImages}%` }}>
                 {img ? (
-                  <img src={img} srcSet={guestySrcSet(sourceImages[idx], [640, 828, 1080, 1440])} sizes="100vw" alt={t('seoMeta.photoAlt', { name: displayName, kind: kindInPlace, n: idx + 1 })} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={Math.abs(idx - currentImage) <= (currentImage === 0 ? 1 : 2) ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : Math.abs(idx - currentImage) <= 2 ? { fetchPriority: 'low' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
+                  <img src={img} srcSet={guestySrcSet(sourceImages[idx], idx === 0 ? HERO_WIDTHS : [640, 828, 1080, 1440])} sizes={idx === 0 ? HERO_SIZES : '100vw'} alt={t('seoMeta.photoAlt', { name: displayName, kind: kindInPlace, n: idx + 1 })} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={Math.abs(idx - currentImage) <= (currentImage === 0 ? 1 : 2) ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : Math.abs(idx - currentImage) <= 2 ? { fetchPriority: 'low' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-pa-stone body-sm">{t('propertyDetail.noImage')}</div>
                 )}
@@ -1423,7 +1465,7 @@ export default function PropertyDetail() {
               onClick={() => { setLightboxImage(0); setLightboxOpen(true); }}
             >
               {images[0] && (
-                <img src={images[0]} srcSet={guestySrcSet(sourceImages[0], [768, 1080, 1440])} sizes="(min-width: 1024px) 32vw, 100vw" alt={t('seoMeta.photoAltHero', { name: displayName, kind: kindInPlace })} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchPriority="high" draggable={false} />
+                <img src={images[0]} srcSet={guestySrcSet(sourceImages[0], HERO_WIDTHS)} sizes={HERO_SIZES} alt={t('seoMeta.photoAltHero', { name: displayName, kind: kindInPlace })} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchPriority="high" draggable={false} />
               )}
             </div>
             {/* 4 smaller images — right half */}
@@ -1860,7 +1902,9 @@ export default function PropertyDetail() {
           </Drawer>
         )}
 
-        {/* Related properties from same region */}
+        {/* Related properties from same region. The sentinel asks for the
+            catalogue when this point comes near the screen (catalogWanted). */}
+        <div ref={relatedSentinelRef} aria-hidden="true" />
         {relatedProperties.length > 0 && (
           <section className="section-padding bg-white border-t border-pa-sand">
             <div className="container">

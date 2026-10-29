@@ -5,6 +5,7 @@
    ========================================================================== */
 
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import { preload } from 'react-dom';
 import { Link } from 'wouter';
 import { propertyTripHref } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +13,7 @@ import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint 
 import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
+import { cardImageLoading } from '@/lib/listingImagePriority';
 import destinationsData from '@/data/destinations.json';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
@@ -47,6 +49,13 @@ interface PropertyCardProps {
   /** Lowest real bookable nightly (next 90d) — shown as "From €X" when no dates
    *  are picked. Undefined = not computed yet → neutral "select dates" prompt. */
   fromPrice?: number | null;
+  /** The listing's LCP candidate (first card): its first photo loads eagerly at
+   *  fetchpriority=high, and React preloads it from the server HTML
+   *  (lib/listingImagePriority.ts). */
+  priority?: boolean;
+  /** Preload the first photo when this media query matches (cards that share
+   *  the first row with the LCP card on wider screens); the <img> stays lazy. */
+  preloadMedia?: string;
 }
 
 export default function PropertyCard({
@@ -64,6 +73,8 @@ export default function PropertyCard({
   batchFailed = false,
   hidePrice = false,
   fromPrice,
+  priority,
+  preloadMedia,
 }: PropertyCardProps) {
   const { t, i18n } = useTranslation();
   const isPartner = property.source === 'tripwix';
@@ -91,6 +102,20 @@ export default function PropertyCard({
     ? property.images
     : getPropertyImages(property.slug)) as string[]), [property.images, property.slug]);
   const total = rawImages.length;
+
+  // Cards that share the first row with the LCP card on wider screens: ask for
+  // their first photo early there (a media-gated <link rel=preload>, written
+  // into the server HTML by React), while the <img> itself stays lazy so a
+  // phone, where they are below the fold, does not fetch them up front.
+  if (preloadMedia && !priority) {
+    const srcSet = guestySrcSet(rawImages[0], [400, 640, 768, 1080]);
+    preload(optimizeGuestyImage(rawImages[0], 1080), {
+      as: 'image',
+      ...(srcSet ? { imageSrcSet: srcSet, imageSizes } : {}),
+      media: preloadMedia,
+    });
+  }
+  const imgLoading = cardImageLoading(priority, currentImage === 0);
 
   // Warm the neighbours once the guest starts swiping: the <img> remounts per
   // photo, so without this every swipe showed a beige box until the next file
@@ -202,9 +227,9 @@ export default function PropertyCard({
           srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}
           alt={t('property.imageAlt', { name: displayName, current: currentImage + 1, total })}
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03]`}
-          loading="lazy"
-          decoding="async"
-          fetchPriority="low"
+          loading={imgLoading.loading}
+          decoding={imgLoading.decoding}
+          fetchPriority={imgLoading.fetchPriority}
           sizes={imageSizes}
           width={800} height={600}
           onLoad={e => e.currentTarget.parentElement?.removeAttribute('data-broken')}

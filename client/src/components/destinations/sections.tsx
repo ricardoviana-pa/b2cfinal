@@ -20,8 +20,8 @@ import { discoveryText, featuredDestinationHomes, selectDestinationHomes } from 
 
 import { destinationHomesHref } from '@shared/destinationNavigation';
 import { useMemo } from 'react';
-import { trpc } from '@/lib/trpc';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
+import { useFromPrices } from '@/hooks/useFromPrices';
 import BookingCTA from '@/components/property/BookingCTA';
 import { Link, useSearch } from 'wouter';
 import { editorialTripContext, withEditorialTrip } from '@shared/editorialTripContext';
@@ -127,7 +127,8 @@ export function WhereToStay({ destination: d, properties, heading, intro, sectio
     return featured ? selectDestinationHomes(homes, d.slug) : homes.slice(0,6);
   }, [properties, featured, d.slug]);
   const listingIds = useMemo(() => visibleHomes.filter(p => p.guestyId).map(p => p.guestyId!), [visibleHomes]);
-  const { data: fromPrices } = trpc.booking.lowestNightlyBatch.useQuery({ listingIds }, { enabled: listingIds.length > 0, staleTime: 5 * 60_000 });
+  // Starts from the prices the server put into the page (useFromPrices).
+  const { data: fromPrices } = useFromPrices(listingIds);
   const partner = usePartnerPrices(visibleHomes);
   if (properties.length === 0) {
     if (d.comingSoon) return null;

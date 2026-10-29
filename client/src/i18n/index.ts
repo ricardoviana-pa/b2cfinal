@@ -47,20 +47,22 @@ function detectFromPath(): Lang {
 const loaded = new Set<Lang>();
 const initialLng = detectFromPath();
 
-// Preload the active locale (always) and English as fallback (so missing keys
-// degrade to readable English rather than raw key strings).
+// Only the page's language blocks the first render. English used to be
+// awaited after it as a fallback — a second file, fetched only once the first
+// had arrived, before hydration (auditoria out/2026,
+// performance-08-non-en-hydration-waterfall). It never supplied a string: the
+// build fails when any language lacks a key that en.json has
+// (scripts/sync-i18n.mjs, and server/i18n-locale-completeness.test.ts), so
+// the fallback is never reached. The server page also modulepreloads this
+// file once its LCP photo is painted (server/lib/routeAssets.ts), so on a slow
+// connection it is often here already. Switching to English later still
+// loads it (changeLanguage below).
 const initialBundle = await loaders[initialLng]();
 loaded.add(initialLng);
 
 const resources: Record<string, { translation: Record<string, unknown> }> = {
   [initialLng]: { translation: initialBundle.default },
 };
-
-if (initialLng !== "en") {
-  const enBundle = await loaders.en();
-  resources.en = { translation: enBundle.default };
-  loaded.add("en");
-}
 
 await i18n.use(initReactI18next).init({
   lng: initialLng,

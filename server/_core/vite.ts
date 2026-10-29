@@ -24,6 +24,10 @@ import { pathToFileURL } from "node:url";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 import { isNonIndexableHost } from "../lib/hosts.js";
+import { htmlCacheHeaders, isPrivateHtmlPath } from "../lib/htmlCache";
+import { noStoreIfTracked, ssrRenderUrl } from "../lib/trackingParams";
+import { GUESTY_IMAGE_ORIGIN, injectBeforeBodyEnd, injectIntoHead, needsGuestyPreconnect, routeAssets, routeModulePreloadScript, routeStyleTags, type ViteManifest } from "../lib/routeAssets";
+import { guestyIdsOf, readFromPricesForSsr } from "../lib/ssrFromPrices";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
  *  tested, hydration verified clean); set the Render env var SSR_ENABLED=false to
@@ -1457,11 +1461,12 @@ const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/collections/", "/blog/", "/servic
  *  (it answered 200, "index, follow"). All of them are noindex. */
 const BOOKING_ROUTE = /^\/booking\/(?:(?:confirmation|thank-you|balance)\/[^/]+|paypal-return|klarna-return)\/?$/;
 
-export function serveStatic(app: Express) {
-  const distPath =
+export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
+  // opts.distPath: tests serve a small fixture build (perf-ssr-html.test.ts).
+  const distPath = opts.distPath ?? (
     process.env.NODE_ENV === "development"
       ? path.resolve(import.meta.dirname, "../..", "dist", "public")
-      : path.resolve(import.meta.dirname, "public");
+      : path.resolve(import.meta.dirname, "public"));
   if (!fs.existsSync(distPath)) {
     console.error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`
@@ -1481,6 +1486,12 @@ export function serveStatic(app: Express) {
     // LocaleRouter redirect to /en (a full second app boot, ~4s on mobile).
     // With index:false, "/" falls through to the 301 → /en redirect.
     index: false,
+    // Nor add a slash to a bare page path that happens to match a folder of
+    // client/public (/homes, /destinations, /experiences…): that was an extra
+    // 301 (/homes?gclid=… → /homes/?gclid=… → /en/homes/?gclid=…), with no
+    // Cache-Control, carrying the visitor's click id. The path now falls
+    // through to the bare-path redirect below: one hop, and noStoreIfTracked.
+    redirect: false,
   }));
 
   const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
@@ -1519,6 +1530,7 @@ export function serveStatic(app: Express) {
 
     // Redirect to /en/ prefixed version
     const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+    noStoreIfTracked(res, query);
     return res.redirect(301, `/en${p === '/' ? '' : p}${query}`);
   });
 
@@ -1539,6 +1551,7 @@ export function serveStatic(app: Express) {
       const rest = segments.slice(2).join('/');
       const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
       // Redirect /{lang}/journal/slug → /{lang}/blog/slug
+      noStoreIfTracked(res, query);
       return res.redirect(301, `/${lang}/blog${rest ? `/${rest}` : ''}${query}`);
     }
     return next();
@@ -1554,13 +1567,16 @@ export function serveStatic(app: Express) {
   let _ssrRender: SsrRender | null = null;
   let _ssrUnavailable = false;
 
-  // Memoise the SSR render output per locale-prefixed path. The render is
-  // deterministic per path (live pricing is client-hydrated, so it isn't in this
-  // markup; property data has its own cache) and query strings don't affect it.
-  // Cloudflare serves the HTML as `DYNAMIC` (uncached), so WITHOUT this every
-  // request re-runs the full React render on the origin — the source of the TTFB
-  // tail latency and the per-request server load. With it, repeat views of a URL
-  // skip the render entirely. 5-min TTL keeps content fresh after a Guesty sync.
+  // Memoise the SSR render output per locale-prefixed URL. Keyed by the URL
+  // WITHOUT tracking parameters (utm_*, gclid, fbclid… — lib/trackingParams.ts):
+  // they never change the markup, and keying on them meant every ad click (a
+  // unique gclid each) rendered the page from scratch and evicted a real page
+  // from this FIFO (auditoria out/2026, performance-01-html-edge-cache). The
+  // page is also RENDERED from that clean URL, so no visitor's click id can end
+  // up in markup that is shared. Other parameters (dates, guests, filters) do
+  // change the page and stay in the key. Without this cache every edge miss
+  // re-runs the full React render on the origin. 5-min TTL keeps content fresh
+  // after a Guesty sync.
   const SSR_RENDER_TTL_MS = 5 * 60 * 1000;
   const SSR_RENDER_CACHE_MAX = 400;
   /** Destination slugs whose page must not be indexed: status !== "active" or comingSoon. */
@@ -1610,7 +1626,12 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
   async function buildPrefetch(strippedPath: string, lang: string): Promise<Record<string, unknown> | undefined> {
     const m = strippedPath.match(/^\/homes\/([^/]+)$/);
     if (m) {
-      return buildPropertyPrefetch(m[1], await getPropertyBySlugCached(m[1]), lang);
+      const prop = await getPropertyBySlugCached(m[1]);
+      const out = buildPropertyPrefetch(m[1], prop, lang);
+      // The booking card's "From €X" (lib/ssrFromPrices.ts). Partner homes
+      // price off their own calendar and keep fetching it as before.
+      const fromPrices = prop && prop.source !== "tripwix" ? await readFromPricesForSsr([prop.guestyId]) : undefined;
+      return fromPrices ? { ...out, fromPrices } : out;
     }
     // Blog articles: seed the handful of homes shown under the article, so
     // those links are in the served HTML. This is the whole point of the
@@ -1638,7 +1659,9 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
       try {
         const { getPropertiesForDestination } = await import("../services/properties-store");
         const input = { slug: destMatch[1] };
-        return { destinationHomes: { input, data: await getPropertiesForDestination(input.slug) } };
+        const homes = await getPropertiesForDestination(input.slug);
+        const fromPrices = await readFromPricesForSsr(guestyIdsOf(homes));
+        return { destinationHomes: { input, data: homes }, ...(fromPrices ? { fromPrices } : {}) };
       } catch {
         return undefined;
       }
@@ -1653,7 +1676,15 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
         const { getSiteLocalities, getPropertiesForSite, catalogProperties } = await import("../services/properties-store");
         const { toCatalogCard, recentGuestFeedback } = await import("../services/property-catalog");
         const [localities, properties] = await Promise.all([getSiteLocalities(), getPropertiesForSite().then(catalogProperties)]);
-        return { localities, catalogForSite: properties.map(toCatalogCard), ...(strippedPath === "/" ? { guestFeedback: recentGuestFeedback(properties) } : {}) };
+        const catalogForSite = properties.map(toCatalogCard);
+        // "From €X" on the cards, in the server HTML (lib/ssrFromPrices.ts).
+        const fromPrices = await readFromPricesForSsr(guestyIdsOf(catalogForSite));
+        return {
+          localities,
+          catalogForSite,
+          ...(strippedPath === "/" ? { guestFeedback: recentGuestFeedback(properties) } : {}),
+          ...(fromPrices ? { fromPrices } : {}),
+        };
       } catch {
         return undefined;
       }
@@ -1661,41 +1692,58 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     return undefined;
   }
 
+  /** Vite's build manifest, read once (null when absent: dev, old build). */
+  let _manifest: ViteManifest | null | undefined;
+  function getManifest(): ViteManifest | null {
+    if (_manifest === undefined) {
+      try {
+        _manifest = JSON.parse(fs.readFileSync(path.join(distPath, ".vite", "manifest.json"), "utf-8")) as ViteManifest;
+      } catch {
+        _manifest = null;
+      }
+    }
+    return _manifest;
+  }
+
+  /** What the page needs before it can render and hydrate (lib/routeAssets.ts):
+   *  in the <head>, the route's CSS and a preconnect to Guesty's image CDN
+   *  when the LCP photo is there; at the end of <body>, the script that
+   *  modulepreloads its language, content catalogues and page chunk once the
+   *  LCP photo has loaded. Not on private pages; error pages get the language
+   *  file only. */
+  function withRouteAssets(html: string, strippedPath: string, lang: string, status: number): string {
+    if (isPrivateHtmlPath(strippedPath)) return html;
+    const head: string[] = [];
+    const rootAt = html.indexOf('<div id="root">');
+    if (status === 200 && rootAt !== -1 && needsGuestyPreconnect(html.slice(rootAt, rootAt + 20_000))) {
+      head.push(`<link rel="preconnect" href="${GUESTY_IMAGE_ORIGIN}">`);
+    }
+    const manifest = getManifest();
+    let bodyEnd = "";
+    if (manifest) {
+      const assets = routeAssets(manifest, lang, status === 200 ? strippedPath : "/404");
+      const styles = routeStyleTags(assets);
+      if (styles) head.push(styles);
+      bodyEnd = routeModulePreloadScript(assets);
+    }
+    return injectBeforeBodyEnd(injectIntoHead(html, head.join("\n    ")), bodyEnd);
+  }
+
   /** Embed a string as a safe JS string literal inside a <script> tag. */
   function scriptString(s: string): string {
     return JSON.stringify(s).replace(/</g, "\\u003c");
   }
 
-  /** Routes whose HTML must never be shared between visitors or held at the
-   *  edge — anything behind auth or tied to a single booking/payment. */
-  const NEVER_CACHE_PREFIXES = ["/account", "/login", "/admin", "/owners-portal", "/checkout", "/booking"];
-
   /** Auth-gated routes that must say noindex in their own markup. A subset of
-   *  the list above: /checkout has its own block, and /booking carries real
-   *  confirmation pages that are handled separately. */
+   *  NEVER_CACHE_PREFIXES (lib/htmlCache.ts): /checkout has its own block, and
+   *  /booking carries real confirmation pages that are handled separately. */
   const AUTH_NOINDEX_PREFIXES = ["/login", "/account", "/owners-portal", "/admin"];
 
-  /**
-   * Cache-Control for the HTML document.
-   *
-   * The HTML is identical for every visitor of a given URL (no Set-Cookie, and
-   * per-user state is fetched client-side), so public pages can be held by the
-   * CDN — that's what turns a ~0.3-0.9 s origin round trip into an edge hit and
-   * takes the SSR render off the origin entirely.
-   *
-   * `max-age=0` keeps BROWSERS revalidating, so a visitor never runs stale HTML
-   * that points at asset hashes a deploy has already replaced; only the shared
-   * CDN copy is reused (`s-maxage`). That window is deliberately short for the
-   * same reason — after a deploy, stale HTML referencing deleted /assets/*
-   * hashes would break the page, so we trade a little cache depth for safety.
-   */
+  /** Cache headers for the HTML document — the policy and its reasons live in
+   *  lib/htmlCache.ts (browser Cache-Control unchanged; CDN-Cache-Control gives
+   *  Cloudflare the same 60 s plus stale-if-error). */
   function setHtmlCacheHeaders(res: any, strippedPath: string, status: number) {
-    const isPrivate = NEVER_CACHE_PREFIXES.some(pre => strippedPath.startsWith(pre));
-    if (isPrivate || status !== 200) {
-      res.setHeader("Cache-Control", "private, no-store");
-      return;
-    }
-    res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=120");
+    for (const [name, value] of Object.entries(htmlCacheHeaders(strippedPath, status))) res.setHeader(name, value);
   }
 
   /** Fill <div id="root"> with real SSR markup when SSR is enabled; otherwise
@@ -1711,17 +1759,18 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
       const render = await getSsrRender();
       if (render) {
         try {
-          let entry = _ssrRenderCache.get(reqPath);
+          const renderUrl = ssrRenderUrl(reqPath);
+          let entry = _ssrRenderCache.get(renderUrl);
           if (!entry || Date.now() - entry.at >= SSR_RENDER_TTL_MS) {
-            const prefetch = await buildPrefetch(strippedPath, extractLang(reqPath.split("?")[0]));
-            const out = await render(reqPath, prefetch ? { prefetch } : undefined);
+            const prefetch = await buildPrefetch(strippedPath, extractLang(renderUrl.split("?")[0]));
+            const out = await render(renderUrl, prefetch ? { prefetch } : undefined);
             entry = { appHtml: out.appHtml, dehydratedState: out.dehydratedState, at: Date.now() };
             // Simple FIFO cap — evict the oldest entry when full.
             if (_ssrRenderCache.size >= SSR_RENDER_CACHE_MAX) {
               const oldest = _ssrRenderCache.keys().next().value;
               if (oldest !== undefined) _ssrRenderCache.delete(oldest);
             }
-            _ssrRenderCache.set(reqPath, entry);
+            _ssrRenderCache.set(renderUrl, entry);
           }
           const rqScript = `<script>window.__RQ_STATE__=${scriptString(entry.dehydratedState)}</script>`;
           // Catalogue routes include real cards in SSR; no duplicate hidden link index.
@@ -1766,7 +1815,11 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     const blogPost = blogSlug ? await getBlogArticleBySlugCached(blogSlug, lang) : null;
     if (blogPost?.status === 'published') {
       const redirect = blogLanguageRedirect(blogPost, lang);
-      if (redirect) return res.redirect(302, redirect + (req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : ''));
+      if (redirect) {
+        const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+        noStoreIfTracked(res, query);
+        return res.redirect(302, redirect + query);
+      }
     }
     html = injectLocaleTags(html, { lang, pagePath: p, languages: blogPost ? blogLanguages(blogPost) : undefined });
 
@@ -1864,12 +1917,14 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
         status = 404;
         html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
       }
+      html = withRouteAssets(html, p, lang, status);
       setHtmlCacheHeaders(res, p, status);
       return res.status(status).set("Content-Type", "text/html").send(html);
     }
 
     // If static route was already handled, no dynamic lookup needed
     if (localized) {
+      html = withRouteAssets(html, p, lang, status);
       setHtmlCacheHeaders(res, p, status);
       return res.status(status).set("Content-Type", "text/html").send(html);
     }
@@ -2051,6 +2106,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 
+    html = withRouteAssets(html, p, lang, status);
     setHtmlCacheHeaders(res, p, status);
     res.status(status).set("Content-Type", "text/html").send(html);
   });

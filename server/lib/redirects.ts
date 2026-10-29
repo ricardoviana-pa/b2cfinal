@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { blogLanguages } from "../../shared/blogPublication.js";
 import { managementUrl } from "../../client/src/lib/siteLinks.js";
+import { noStoreIfTracked } from "./trackingParams.js";
 
 /**
  * SEO 301 redirects for the 2026 Webflow → React migration.
@@ -650,6 +651,9 @@ export function legacyRedirects(req: Request, res: Response, next: NextFunction)
   const query = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
   const target = redirectTarget(rawPath);
   if (!target) return next();
+  // The Location carries this visitor's query; never let a shared cache keyed
+  // without tracking parameters hand it to the next one (lib/trackingParams).
+  noStoreIfTracked(res, query);
 
   // An old booking-engine URL whose Guesty id the index doesn't know yet
   // would fall back to the catalogue. Ask the live store once before
