@@ -306,20 +306,26 @@ parceiras, pesquisar na home, mexer na página do saldo e gravar no admin.
 checkout e do widget antigo, demo, pedido das casas parceiras); o botão é `type="button"`
 com `onClick`, o Enter num campo de texto continua a enviar (`lib/implicitSubmit.ts`) e o
 pedido das parceiras continua a validar nome e email no browser (`reportValidity`). Os
-leads verdadeiros ficam em `<form>` e passam a ter um id estável:
+formulários que ficam em `<form>` e aparecem no site passam a ter um id estável:
 
-| Form ID | Onde | Evento explícito no sucesso |
-|---|---|---|
-| `lead-contact` | `pages/Contact.tsx` | `generate_lead` (`contact-form`) |
-| `lead-owners` | `pages/Owners.tsx` | — |
-| `lead-newsletter` | `layout/Footer.tsx` | `generate_lead` (`newsletter-footer`) |
-| `lead-availability` | `pages/Homes.tsx` (sem disponibilidade) | `generate_lead` (`search-no-availability`) |
-| `lead-experience` | `itinerary/AddToItineraryModal.tsx` | — |
+| Form ID | Onde aparece | O que faz | Evento explícito no sucesso |
+|---|---|---|---|
+| `lead-contact` | `/contact` (`pages/Contact.tsx`) | pedido de contacto ou de evento | `generate_lead` (`contact-form`) |
+| `lead-newsletter` | rodapé de todas as páginas (`layout/Footer.tsx`) | subscrição da newsletter | `generate_lead` (`newsletter-footer`) |
+| `lead-availability` | `/homes` com datas sem casas livres (`pages/Homes.tsx`) | pedido para verificarmos as datas | `generate_lead` (`search-no-availability`) |
+| `lead-experience` | serviços da página da casa e experiências do destino (`itinerary/AddToItineraryModal.tsx`) | junta o serviço ao itinerário, só no browser: não envia nada e não é um lead | — |
 
 Ficam também, sem id e sem serem leads: a pesquisa da home (`HeroSearch`), os dois da
 página do saldo (mensagem ao concierge e cartão novo) e os do admin. O pedido das casas
-parceiras deixou de ser `<form>`: conta pelo `generate_lead` depois de gravado. A lista
-está fixada em `server/checkout-funnel-no-form.test.ts`.
+parceiras deixou de ser `<form>`: conta pelo `generate_lead` depois de gravado.
+
+Fora desta lista: `pages/Owners.tsx` ainda tem um `<form>`, mas a página não tem rota
+(nenhum ficheiro a importa e não vai no bundle; `/owners` e `/{lang}/owners` respondem 301
+para o site dos proprietários, `/management/…` na língua da visita), por isso nunca aparece
+e fica sem id. Os pedidos dos proprietários chegam pelo `/management/`, que é outra app
+(repositório `b2b`) com outro contentor (`GTM-55KCJ2CQ`): nada desta secção lhe toca. A lista está fixada em
+`server/checkout-funnel-no-form.test.ts`, que também falha se um id `lead-…` ficar num
+ficheiro que ninguém importa ou se esta secção falar de um id que não existe.
 
 **No GTM (o Ricardo)**. Quando o GA4 dispara `form_start`/`form_submit`, o modelo do
 contentor tem `gtm.elementId` e `gtm.elementClasses` do formulário (provado a 29/10 com o
@@ -328,13 +334,16 @@ Formulários → Form ID) funciona nestes acionadores.
 
 1. Tag "Lead_Site": trocar o acionador `form_submit` pelo acionador `generate_lead` que já
    existe (o da tag GA4 `generate_lead`) e manter o `Lead`. Passa a contar só leads
-   gravados, incluindo o pedido das parceiras, e nunca um pagamento, uma pesquisa ou o
-   admin. Alternativa mínima, se preferir manter o `form_submit`: acionador "Alguns
-   eventos personalizados" com `Form ID` corresponde à regex `^lead-` (aí o pedido das
-   parceiras deixa de contar como Lead_Site e fica só o `generate_lead`).
+   gravados (contacto, newsletter, pedido sem disponibilidade e pedido das parceiras) e
+   nunca um pagamento, uma pesquisa, o itinerário ou o admin. Alternativa mínima, se
+   preferir manter o `form_submit`: acionador "Alguns eventos personalizados" com
+   `Form ID` corresponde à regex `^lead-(contact|newsletter|availability)$`, os três
+   formulários que gravam um lead (não `^lead-`, que apanhava também o `lead-experience`
+   quando o Enter o submete; e o pedido das parceiras fica só com o `generate_lead`).
 2. Tag "Start Activity Form": acionador `form_start` → "Alguns eventos personalizados" com
-   `Form ID` corresponde à regex `^lead-` (ou `^lead-(contact|owners|experience)$`, só os
-   pedidos de contacto e de atividade). Rever no GA4 se deve continuar a ser evento-chave.
+   `Form ID` corresponde à regex `^lead-(contact|newsletter|availability|experience)$` (os
+   quatro da tabela) ou `^lead-(contact|experience)$` (só o contacto e o pedido de um
+   serviço). Rever no GA4 se deve continuar a ser evento-chave.
 3. Testar em Pré-visualizar: em `/en/checkout/demo`, marcar os Termos e carregar em Pagar
    não dispara nenhuma das duas; em `/en/contact`, escrever dispara "Start Activity Form"
    com Form ID `lead-contact` e enviar dispara "Lead_Site".

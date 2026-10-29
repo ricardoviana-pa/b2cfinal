@@ -175,15 +175,20 @@ describe("Enter num campo de texto continua a enviar (isImplicitSubmitKey)", () 
 
 /**
  * Inventário dos <form> do site, com o que cada um é. Os leads verdadeiros
- * ficam (contacto, proprietários, newsletter, pedido sem disponibilidade,
- * experiências) e têm um id "lead-…": é por ele (a variável Form ID do GTM)
- * que os acionadores 'Start Activity Form' e 'Lead_Site' se restringem aos
- * formulários certos. O resto não é lead e não pode ter esse prefixo.
- * Um <form> novo tem de entrar aqui, de propósito.
+ * ficam (contacto, newsletter, pedido sem disponibilidade) e, com eles, o
+ * pedido de um serviço para o itinerário; têm um id "lead-…": é por ele (a
+ * variável Form ID do GTM) que os acionadores 'Start Activity Form' e
+ * 'Lead_Site' se restringem aos formulários certos. O resto não é lead e não
+ * pode ter esse prefixo. Um <form> novo tem de entrar aqui, de propósito.
+ *
+ * pages/Owners.tsx tem um <form>, mas a página não tem rota (revisão do #181):
+ * nenhum ficheiro a importa, não vai no bundle e /owners responde 301 para
+ * /management/, a app dos proprietários (outro repositório, outro contentor
+ * GTM). Fica sem id e fora das instruções do GTM.
  */
 const FORMS_LEFT: Record<string, { ids: Array<string | null>; what: string }> = {
   "client/src/pages/Contact.tsx": { ids: ["lead-contact"], what: "lead: contacto e eventos (generate_lead, contact-form)" },
-  "client/src/pages/Owners.tsx": { ids: ["lead-owners"], what: "lead: proprietários" },
+  "client/src/pages/Owners.tsx": { ids: [null], what: "sem rota: página antiga dos proprietários (nunca aparece; os pedidos entram pelo /management/)" },
   "client/src/components/layout/Footer.tsx": { ids: ["lead-newsletter"], what: "lead: newsletter (generate_lead, newsletter-footer)" },
   "client/src/pages/Homes.tsx": { ids: ["lead-availability"], what: "lead: pedido sem disponibilidade (generate_lead, search-no-availability)" },
   "client/src/components/itinerary/AddToItineraryModal.tsx": { ids: ["lead-experience"], what: "experiências: pedido de um serviço para o itinerário" },
@@ -215,27 +220,87 @@ function formsIn(file: string): Array<string | null> {
   return [...tags, ...created];
 }
 
+/** Os <form> de cada ficheiro do cliente, como estão no código. */
+function formsFound(): Record<string, Array<string | null>> {
+  const found: Record<string, Array<string | null>> = {};
+  const walk = (dir: string) => {
+    for (const e of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {
+      const rel = `${dir}/${e.name}`;
+      if (e.isDirectory()) walk(rel);
+      else if (/\.(tsx|ts)$/.test(e.name)) {
+        const ids = formsIn(rel);
+        if (ids.length) found[rel] = ids;
+      }
+    }
+  };
+  walk("client/src");
+  return found;
+}
+
 describe("os <form> que ficam no site", () => {
   it("o funil de reserva não tem nenhum", () => {
     expect(FUNNEL.filter((f) => formsIn(f).length > 0)).toEqual([]);
   });
 
   it("são exatamente os do inventário, e só os leads têm id lead-…", () => {
-    const found: Record<string, Array<string | null>> = {};
-    const walk = (dir: string) => {
-      for (const e of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {
-        const rel = `${dir}/${e.name}`;
-        if (e.isDirectory()) walk(rel);
-        else if (/\.(tsx|ts)$/.test(e.name)) {
-          const ids = formsIn(rel);
-          if (ids.length) found[rel] = ids;
-        }
-      }
-    };
-    walk("client/src");
+    const found = formsFound();
     expect(found).toEqual(Object.fromEntries(Object.entries(FORMS_LEFT).map(([f, v]) => [f, v.ids])));
     for (const [file, { ids, what }] of Object.entries(FORMS_LEFT)) {
       for (const id of ids) expect(id?.startsWith("lead-") ?? false, `${file} (${what})`).toBe(what.startsWith("lead") || what.startsWith("experiências"));
     }
+  });
+
+  /**
+   * Revisão do #181 (R1): o inventário e as instruções do GTM davam
+   * `lead-owners` (pages/Owners.tsx) como um lead do site, mas a página não
+   * tem rota nem vai no bundle. Um id lead-… só vale num ficheiro que algum
+   * outro importa (import ou lazy import), e o tracking-map só pode mandar o
+   * Ricardo filtrar por ids que existem.
+   */
+  const LEAD_IDS = Object.values(FORMS_LEFT).flatMap((v) => v.ids).filter((id): id is string => !!id?.startsWith("lead-"));
+
+  function importedModules(): Set<string> {
+    const out = new Set<string>();
+    const walk = (dir: string) => {
+      for (const e of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {
+        const rel = `${dir}/${e.name}`;
+        if (e.isDirectory()) { walk(rel); continue; }
+        if (!/\.(tsx|ts)$/.test(e.name)) continue;
+        const src = fs.readFileSync(path.join(ROOT, rel), "utf8");
+        for (const m of src.matchAll(/(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)["']([^"']+)["']/g)) {
+          const spec = m[1];
+          const base = spec.startsWith("@/") ? `client/src/${spec.slice(2)}` : spec.startsWith(".") ? path.posix.join(path.posix.dirname(rel), spec) : null;
+          if (base) out.add(path.posix.normalize(base).replace(/\.(tsx?|jsx?)$/, ""));
+        }
+      }
+    };
+    walk("client/src");
+    return out;
+  }
+
+  it("cada <form> com id lead-… chega ao site: o ficheiro é importado (não é uma página sem rota)", () => {
+    const imported = importedModules();
+    const leadFiles = Object.entries(formsFound()).filter(([, ids]) => ids.some((id) => id?.startsWith("lead-"))).map(([f]) => f);
+    expect(leadFiles.length).toBeGreaterThan(0);
+    expect(leadFiles.filter((f) => !imported.has(f.replace(/\.tsx?$/, "")))).toEqual([]);
+  });
+
+  it("pages/Owners.tsx não tem rota: ninguém a importa e /owners vai para o /management/", () => {
+    expect(importedModules().has("client/src/pages/Owners")).toBe(false);
+    const app = fs.readFileSync(path.join(ROOT, "client/src/App.tsx"), "utf8");
+    expect(app).toMatch(/<Route path="\/owners" component=\{OwnersRedirect\} \/>/);
+  });
+
+  it("o tracking-map (§10) só fala de Form IDs que existem, também dentro das regex", () => {
+    const doc = fs.readFileSync(path.join(ROOT, "docs/tracking-map.md"), "utf8");
+    const s10 = doc.slice(doc.indexOf("## 10."));
+    expect(s10.length).toBeGreaterThan(100);
+    const literal = [...s10.matchAll(/\blead-[a-z]+(?:-[a-z]+)*/g)].map((m) => m[0]);
+    const inRegex = [...s10.matchAll(/\^lead-\(([a-z|]+)\)\$/g)].flatMap((m) => m[1].split("|").map((x) => `lead-${x}`));
+    expect(inRegex.length).toBeGreaterThan(0);
+    const unknown = [...new Set([...literal, ...inRegex])].filter((id) => !LEAD_IDS.includes(id));
+    expect(unknown).toEqual([]);
+    // Lead_Site sem o acionador generate_lead: só os formulários que gravam um lead.
+    expect(s10).toContain("`^lead-(contact|newsletter|availability)$`");
   });
 });
