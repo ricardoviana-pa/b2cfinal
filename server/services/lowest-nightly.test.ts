@@ -169,3 +169,90 @@ describe("computeLowestNightly: casas sem datas nos 90 dias", () => {
     expect(h.quote.mock.calls[0][1]).toBe(days[10].date);
   });
 });
+
+describe("casas sem noites reserváveis em 12 meses (prices-availability-03)", () => {
+  /** O ano inteiro, dia a dia (a Gerês Gateway: 365/365 "unavailable"). */
+  const wholeYear = (status: (k: number) => string) => {
+    const t = Date.now();
+    return Array.from({ length: 366 }, (_, k) => ({ date: ymd(new Date(t + k * 86_400_000)), status: status(k), minNights: 2 }));
+  };
+
+  it("deixa de anunciar o 'desde' guardado: a casa fica sem preço e a BD guarda 'closed'", async () => {
+    let stored = new Map([["lowest_nightly_geres", `411.25@${Date.now() - 9 * 3_600_000}`]]);
+    h.getSettingsByKeys.mockImplementation(async () => stored);
+    h.upsertSetting.mockImplementation(async (key: string, value: string) => { stored = new Map([[key, value]]); });
+    h.getCalendar.mockResolvedValue(wholeYear(() => "unavailable"));
+    const { getLowestNightlyBatch, getDisplayedLowestNightly } = await import("./lowest-nightly");
+    // 1.º pedido: o valor antigo ainda sai enquanto se recalcula em segundo plano (como antes).
+    expect(await getLowestNightlyBatch(["geres"])).toEqual({ geres: 411.25 });
+    await vi.waitFor(() => expect(h.upsertSetting).toHaveBeenCalledWith("lowest_nightly_geres", expect.stringMatching(/^closed@\d+$/), "lowest_nightly"));
+    // A seguir: sem preço, sem voltar à BD nem ao calendário.
+    h.getSettingsByKeys.mockClear();
+    expect(await getLowestNightlyBatch(["geres"])).toEqual({ geres: null });
+    expect(await getDisplayedLowestNightly("geres")).toMatchObject({ from: null, source: "none" });
+    expect(h.getSettingsByKeys).not.toHaveBeenCalled();
+    expect(h.quote).not.toHaveBeenCalled();
+    expect(h.getCalendar).toHaveBeenCalledTimes(1);
+    // 31 min depois volta a ver o calendário; continua fechada → nada se escreve.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    try {
+      vi.setSystemTime(new Date(Date.now() + 31 * 60_000));
+      expect(await getLowestNightlyBatch(["geres"])).toEqual({ geres: null });
+      await vi.waitFor(() => expect(h.getCalendar).toHaveBeenCalledTimes(2));
+      await new Promise((r) => setTimeout(r, 20));
+      expect(h.upsertSetting).toHaveBeenCalledTimes(1);
+      expect(await getLowestNightlyBatch(["geres"])).toEqual({ geres: null });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("depois de um restart, a marca 'closed' na BD não deixa o preço antigo voltar", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map([["lowest_nightly_geres", `closed@${Date.now() - 60_000}`]]));
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["geres"])).toEqual({ geres: null });
+    expect(await getLowestNightlyBatch(["geres"])).toEqual({ geres: null });
+    expect(h.getSettingsByKeys).toHaveBeenCalledTimes(1);
+    expect(h.getCalendar).not.toHaveBeenCalled(); // visto fechado há 1 min: nada a recalcular
+  });
+
+  it("uma marca 'closed' antiga continua sem preço e volta a ver o calendário: se reabriu, o preço volta", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map([["lowest_nightly_geres", `closed@${Date.now() - 31 * 60_000}`]]));
+    h.upsertSetting.mockResolvedValue(undefined);
+    h.getCalendar.mockResolvedValue(wholeYear((k) => (k >= 30 && k < 40 ? "available" : "unavailable")));
+    h.quote.mockResolvedValue({ source: "live", pricing: { nightlyRate: 380 }, ratePlanOptions: [{ nightlyRate: 360 }] });
+    const { getLowestNightlyBatch } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["geres"])).toEqual({ geres: null });
+    // Duas janelas livres = duas cotações, a 1 s uma da outra (ritmo do warm-up).
+    await vi.waitFor(() => expect(h.upsertSetting).toHaveBeenCalledWith("lowest_nightly_geres", expect.stringMatching(/^360@\d+$/), "lowest_nightly"), { timeout: 5_000 });
+    expect(await getLowestNightlyBatch(["geres"])).toEqual({ geres: 360 });
+  });
+
+  it("um calendário que falha, vem vazio ou curto não prova nada: fica o último preço guardado", async () => {
+    const old = `150@${Date.now() - 9 * 3_600_000}`;
+    h.getSettingsByKeys.mockResolvedValue(new Map([["lowest_nightly_a", old], ["lowest_nightly_b", old], ["lowest_nightly_c", old]]));
+    h.getSetting.mockResolvedValue(old);
+    h.upsertSetting.mockResolvedValue(undefined);
+    h.getCalendar.mockImplementation(async (id: string) => {
+      if (id === "a") throw new Error("BE 503");
+      if (id === "b") return [];
+      return wholeYear(() => "unavailable").slice(0, 60); // só 60 dias
+    });
+    const { getLowestNightlyBatch, getLowestNightly } = await import("./lowest-nightly");
+    expect(await getLowestNightlyBatch(["a", "b", "c"])).toEqual({ a: 150, b: 150, c: 150 });
+    for (const id of ["a", "b", "c"]) expect((await getLowestNightly(id)).from).toBe(150);
+    expect(h.upsertSetting).not.toHaveBeenCalledWith(expect.anything(), expect.stringMatching(/^closed/), expect.anything());
+  });
+
+  it("uma noite livre solta no início da semana já não esconde uma estadia reservável dois dias depois", async () => {
+    h.getSettingsByKeys.mockResolvedValue(new Map());
+    h.upsertSetting.mockResolvedValue(undefined);
+    // Dia 1 livre sozinho (mínimo 2), dias 3–4 livres: antes a semana era saltada.
+    h.getCalendar.mockResolvedValue(wholeYear((k) => (k === 1 || k === 3 || k === 4 ? "available" : "unavailable")));
+    h.quote.mockResolvedValue({ source: "live", pricing: { nightlyRate: 140 }, ratePlanOptions: [] });
+    const { getLowestNightly } = await import("./lowest-nightly");
+    expect(await getLowestNightly("sparse")).toMatchObject({ from: 140, source: "calendar" });
+    expect(h.quote).toHaveBeenCalledTimes(1);
+    expect(h.quote.mock.calls[0][1]).toBe(ymd(new Date(Date.now() + 3 * 86_400_000)));
+  });
+});
