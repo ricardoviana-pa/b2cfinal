@@ -16,10 +16,6 @@ const SKIP = [/\/admin\//, /\/pages\/Account\.tsx$/, /\/components\/ui\//];
 const ALLOWED: Record<string, string> = {
   // Price-hold deadline, client-only page, deliberately in the visitor's own clock.
   'client/src/pages/checkout/CheckoutPage.tsx': 'toLocaleTimeString',
-  // Same bug, NOT fixed here: PR #175 rewrites the lines around it (reviews in
-  // the page language). After #175 merges, format r.date with formatSiteDate
-  // and delete this entry.
-  'client/src/components/property/GuestFeedback.tsx': 'toLocaleDateString',
 };
 
 function files(dir: string): string[] {
@@ -69,7 +65,13 @@ describe('dates on public pages are formatted in a fixed zone', () => {
   });
 
   it('the journal and the review lists use the shared formatter', () => {
-    for (const f of ['client/src/pages/Blog.tsx', 'client/src/components/property/ReviewsSection.tsx', 'client/src/components/experience/ExperienceReviews.tsx']) {
+    for (const f of [
+      'client/src/pages/Blog.tsx',
+      'client/src/components/property/ReviewsSection.tsx',
+      'client/src/components/experience/ExperienceReviews.tsx',
+      // Homepage reviews (revisão do PR #182, B1/F1: live #418 after #175).
+      'client/src/components/property/GuestFeedback.tsx',
+    ]) {
       expect(fs.readFileSync(f, 'utf8'), f).toMatch(/formatSiteDate\(/);
     }
   });
