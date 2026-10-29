@@ -5,7 +5,6 @@ export interface BookingListing {
   locality: string;
   maxGuests: number;
   minNights: number;
-  checkInInstructions: string;
 }
 
 export interface BookingQuoteResponse {
@@ -192,7 +191,6 @@ export function fetchReservation(reservationId: string) {
      *  (planPolicyCode); [] when unknown. */
     cancellationPolicy: string[];
     ratePlanId?: string | null;
-    checkInInstructions: string;
     googleCalendarUrl: string;
     icsFileName: string;
   }>(`/api/reservations/${reservationId}`);

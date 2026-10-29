@@ -159,6 +159,19 @@ async function getListingCached(listingId: string): Promise<any> {
   return listing;
 }
 
+/** "ana.silva@gmail.com" → "a•••@gmail.com" (recibo público). */
+export function maskEmail(email: string): string {
+  const at = email.indexOf("@");
+  if (at < 1) return email ? "•••" : "";
+  return `${email[0]}•••${email.slice(at)}`;
+}
+
+/** "+351 912 345 678" → "••• 678" (recibo público). */
+export function maskPhone(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  return digits.length >= 3 ? `••• ${digits.slice(-3)}` : "";
+}
+
 export function registerGuestyWebhookRoute(app: Express): void {
   app.post("/api/webhooks/guesty", express.raw({ type: "*/*" }), (req: Request, res: Response) => {
     const signatureHeader = String(req.header("X-Guesty-Signature") || "");
@@ -308,7 +321,9 @@ export function registerBookingRoutes(app: Express): void {
         locality: listing?.address?.city || listing?.address?.region || fallbackProperty?.locality || "",
         maxGuests: listing?.accommodates || fallbackProperty?.maxGuests || 0,
         minNights: listing?.terms?.minNights ?? listing?.terms?.minNight ?? 1,
-        checkInInstructions: listing?.checkInInstructions || "",
+        // Nunca as instruções de entrada do Guesty: esta rota é pública e
+        // qualquer id de casa está no site; as notas podem ter códigos de
+        // porta e de caixa de chaves (auditoria de 29 out 2026).
       });
     } catch (err) {
       mapGuestyError(err, res);
@@ -469,14 +484,12 @@ export function registerBookingRoutes(app: Express): void {
       const reservation = await guestyClient.getReservation(req.params.id);
       const listingId = reservation?.listingId || reservation?.listing?._id || reservation?.listing?._idStr || "";
       let listingName = "";
-      let checkInInstructions = "";
       let listingAddress: any = reservation?.listing?.address || null;
 
       if (listingId) {
         try {
           const listing = await getListingCached(String(listingId));
           listingName = listing?.title || "";
-          checkInInstructions = listing?.checkInInstructions || "";
           listingAddress = listing?.address || listingAddress;
         } catch {
           /* non-blocking */
@@ -566,9 +579,12 @@ export function registerBookingRoutes(app: Express): void {
         checkIn: checkIn || reservation?.checkInDateLocalized || "",
         checkOut: checkOut || reservation?.checkOutDateLocalized || "",
         guestsCount: reservation?.guestsCount || reservation?.guests || 0,
+        // O recibo abre só com o id da reserva (link do email): os contactos
+        // vão mascarados e as instruções de entrada nunca vão (a equipa
+        // envia-as por email antes da chegada).
         guestName,
-        guestEmail,
-        guestPhone,
+        guestEmail: maskEmail(guestEmail),
+        guestPhone: maskPhone(guestPhone),
         totalCents: reservationTotalCents(money),
         totalPaidCents,
         accommodationCents,
@@ -578,7 +594,6 @@ export function registerBookingRoutes(app: Express): void {
         currency: reservation?.money?.currency || "EUR",
         cancellationPolicy: guestPolicy ? [guestPolicy] : [],
         ratePlanId: ratePlan.ratePlanId,
-        checkInInstructions,
         googleCalendarUrl,
         icsFileName: `portugal-active-booking-${reservation?._id || req.params.id}.ics`,
         icsContent: ics,
