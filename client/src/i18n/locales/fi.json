@@ -775,7 +775,18 @@
       "alreadyPaidShort": "Tämä varaus on jo maksettu. Katso vahvistus sähköpostistasi.",
       "saveFailed": "Emme voineet tallentaa viimeisimpiä muutoksiasi. Tarkista yhteytesi ja yritä uudelleen.",
       "network": "Yhteysongelma. Tarkista internetyhteytesi ja yritä uudelleen.",
-      "genericRetry": "Maksua ei voitu suorittaa. Yritä uudelleen — tai ota yhteyttä, niin viimeistelemme varauksesi henkilökohtaisesti."
+      "genericRetry": "Maksua ei voitu suorittaa. Yritä uudelleen — tai ota yhteyttä, niin viimeistelemme varauksesi henkilökohtaisesti.",
+      "declinedLimit": "Maksu hylättiin, usein kortin tämän summan rajan vuoksi. Käytä toista korttia tai maksutapaa.",
+      "declinedGeneric": "Maksu hylättiin. Käytä toista korttia tai maksutapaa.",
+      "cardExpired": "Kortti on vanhentunut. Käytä toista korttia tai maksutapaa.",
+      "cardNotSupported": "Kortilla ei voi maksaa tätä maksua. Käytä toista korttia tai maksutapaa.",
+      "incorrectCvc": "Turvakoodi (CVC) ei ole oikein. Tarkista se ja yritä uudelleen.",
+      "incorrectNumber": "Kortin numero ei ole oikein. Tarkista se ja yritä uudelleen.",
+      "cardDetails": "Osa kortin tiedoista ei ole oikein. Tarkista numero, voimassaoloaika ja turvakoodi ja yritä uudelleen.",
+      "bankUnavailable": "Pankki ei voinut käsitellä maksua juuri nyt. Mitään ei veloitettu. Yritä hetken päästä uudelleen.",
+      "authenticationFailed": "Vahvistus pankkisi kanssa jäi kesken, joten mitään ei veloitettu. Yritä uudelleen ja vahvista pankkisi sovelluksessa.",
+      "twoPartsUnavailable": "Maksu kahdessa osassa ei ole enää käytettävissä tälle varaukselle. Mitään ei veloitettu: voit maksaa koko summan nyt.",
+      "prepareFailed": "Emme voineet valmistella maksua. Mitään ei veloitettu. Yritä uudelleen."
     },
     "payButton": "Maksa {{amount}}",
     "cancelButton": "Peruuta",
@@ -790,7 +801,16 @@
     "payNowButton": "Maksa {{amountNow}} nyt",
     "payNowAfter": "Sitten {{amountLater}} {{date}}.",
     "processingFirst": "Ensimmäistä osaa käsitellään…",
-    "mandateMissing": "Merkitse yllä oleva valtuutus jatkaaksesi."
+    "mandateMissing": "Merkitse yllä oleva valtuutus jatkaaksesi.",
+    "termsHint": "Merkitse tämä ruutu maksaaksesi.",
+    "walletsHint": "{{wallets}} on käytettävissä, kun tietosi ovat valmiit ja ehtojen ruutu alempana on merkitty.",
+    "errorActions": {
+      "twoParts": "Maksa sen sijaan kahdessa osassa ({{amountNow}} tänään)",
+      "otherMethod": "Käytä toista korttia tai maksutapaa",
+      "otherCard": "Käytä toista korttia",
+      "concierge": "Keskustele conciergen kanssa",
+      "whatsappMessage": "Hei, tarvitsen apua varaukseni kanssa: {{property}}, saapuminen {{checkIn}}, lähtö {{checkOut}}, vieraita: {{guests}}. Maksu ei mennyt läpi."
+    }
   },
   "contact": {
     "heroAlt": "Ota yhteyttä Portugal Activeen",
@@ -1884,7 +1904,14 @@
     "rate": {
       "twoPartsLine": "Voit myös maksaa kahdessa osassa: {{amountNow}} tänään ja {{amountLater}} {{date}}.",
       "twoPartsLinePlain": "Voit myös maksaa kahdessa osassa: {{amountNow}} tänään ja {{amountLater}} {{date}}."
-    }
+    },
+    "emailLineLabel": "Vahvistus osoitteeseen",
+    "emailChange": "muuta",
+    "fieldErrors": {
+      "firstName": "Anna etunimesi.",
+      "lastName": "Anna sukunimesi."
+    },
+    "nifInvalid": "Tämä portugalilainen NIF ei näytä oikealta: tarkista 9 numeroa. Jos kyseessä on toisen maan ALV-tunnus, aloita maatunnuksella (esimerkiksi ES)."
   },
   "host": {
     "hostedBy": "Isäntinänne Ricardo & Portugal Active -tiimi",

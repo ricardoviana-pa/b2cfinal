@@ -39,6 +39,8 @@ import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine"
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
+import { conciergeWhatsAppHref, guestDetailsIssues, walletsUnlocked, type GuestField } from "@/lib/checkoutPayment";
+import { checkTaxId, normalizeTaxId } from "@/lib/taxId";
 import { pushDL, pushEcommerce, buildPropertyItem } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
 import AvailabilityCalendar, { type AvailabilityDay } from "@/components/booking/AvailabilityCalendar";
@@ -51,7 +53,7 @@ import CustomizeStep, {
   type ReceptionChoice,
 } from "./CustomizeStep";
 import FlexBlock, { type FlexConfig } from "./FlexBlock";
-import { PaymentPlanSelector, planDate, type PaymentPlanChoice, type PaymentPlanOffer } from "./PaymentPlanSelector";
+import { MandateConsent, PaymentPlanSelector, planDate, type PaymentPlanChoice, type PaymentPlanOffer } from "./PaymentPlanSelector";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
 import TwoPartsHint from "@/components/booking/TwoPartsHint";
@@ -189,6 +191,25 @@ function isNonRefundableOption(o: { name: string; cancellationPolicy?: string[] 
   return isNonRefundablePlan(o);
 }
 
+/** Campos do passo do pagamento que recebem o foco quando falta algo ao pagar. */
+const GUEST_FIELD_IDS: Record<GuestField, string> = {
+  firstName: "checkout-first-name",
+  lastName: "checkout-last-name",
+  email: "checkout-pay-email",
+  phone: "checkout-phone",
+};
+
+/** Leva o hóspede a um campo ou caixa: scroll até ao meio do ecrã e foco. */
+function focusField(id: string) {
+  const el = typeof document !== "undefined" ? document.getElementById(id) : null;
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  el.focus({ preventScroll: true });
+}
+
+const INPUT_CLASS =
+  "w-full h-[48px] border bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none";
+
 export default function CheckoutPage() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
@@ -257,6 +278,11 @@ export default function CheckoutPage() {
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [nif, setNif] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  // Passo do pagamento (auditoria do funil, n.º 1 e 11): os erros dos dados do
+  // hóspede só aparecem depois de um clique em Pagar; o email do passo 1 é uma
+  // linha "Confirmação para … · alterar" até o hóspede o querer mudar.
+  const [showGuestErrors, setShowGuestErrors] = useState(false);
+  const [emailEditing, setEmailEditing] = useState(false);
   const [editingStay, setEditingStay] = useState(false);
   // Datas a meio de mudar: o calendário precisa de mostrar a nova entrada antes
   // de haver saída (sem isto, escolher uma entrada que não servia a saída antiga
@@ -966,7 +992,7 @@ export default function CheckoutPage() {
             guestFirstName: firstName.trim(),
             guestLastName: lastName.trim(),
             guestPhone: phone,
-            nif: nif.trim(),
+            nif: normalizeTaxId(nif),
           }
         : {}),
     };
@@ -1014,7 +1040,9 @@ export default function CheckoutPage() {
   const detailsSyncedRef = useRef("");
   useEffect(() => {
     if (!intent || !guestDetailsValid) return;
-    const key = `${firstName}|${lastName}|${phone}|${nif}`;
+    // NIF sem espaços nem pontos, em maiúsculas (é o que o CS copia para a fatura)
+    const nifClean = normalizeTaxId(nif);
+    const key = `${firstName}|${lastName}|${phone}|${nifClean}`;
     if (detailsSyncedRef.current === key) return;
     const timer = setTimeout(() => {
       detailsSyncedRef.current = key;
@@ -1022,7 +1050,7 @@ export default function CheckoutPage() {
         guestFirstName: firstName.trim(),
         guestLastName: lastName.trim(),
         guestPhone: phone,
-        nif: nif.trim(),
+        nif: nifClean,
       });
     }, 800);
     return () => clearTimeout(timer);
@@ -1147,6 +1175,34 @@ export default function CheckoutPage() {
     const localYmd = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     return t("checkout.priceGuaranteed", { date: formatBookingDate(localYmd, lang), time });
   }, [intent?.expiresAt, lang, t]);
+
+  // ── Passo do pagamento (auditoria do funil, out/2026, n.º 1, 4 e 11) ──
+  // Nome, email e telefone validam-se no clique em Pagar: o erro fica no campo,
+  // o primeiro em falta recebe o foco e nada é criado nem cobrado.
+  const guestIssues = guestDetailsIssues({ firstName, lastName, email, phone });
+  const walletsReady = walletsUnlocked({ guestIssues, termsAccepted });
+  const validateGuestForPay = useCallback((): boolean => {
+    const issues = guestDetailsIssues({ firstName, lastName, email, phone });
+    if (!issues.length) return true;
+    setShowGuestErrors(true);
+    if (issues.includes("email")) setEmailEditing(true);
+    const id = GUEST_FIELD_IDS[issues[0]];
+    // O campo do email pode só aparecer neste render
+    window.requestAnimationFrame(() => focusField(id));
+    return false;
+  }, [firstName, lastName, email, phone]);
+  // "Pagar em duas partes" depois de uma recusa: muda o plano e leva à autorização.
+  const focusMandateRef = useRef(false);
+  useEffect(() => {
+    if (!twoParts || !focusMandateRef.current) return;
+    focusMandateRef.current = false;
+    window.requestAnimationFrame(() => focusField("checkout-mandate"));
+  }, [twoParts]);
+  // Demo (?declined=insufficient_funds): simula uma recusa para rever o aviso.
+  const demoDecline = useMemo(
+    () => (isDemo && typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("declined") : null),
+    [isDemo],
+  );
 
   const steps: Array<{ key: Step; label: string }> = [
     { key: "stay", label: t("checkout.stepStay", "Your stay") },
@@ -1452,16 +1508,9 @@ export default function CheckoutPage() {
         {step === "pay" && <p className="caption text-pa-earth leading-relaxed">{t('securityDeposit.notice')}</p>}
         {couponRow}
         {conciergeRequests}
-        {/* Política da tarifa escolhida (planPolicyCode, igual ao cartão);
-            código desconhecido → "as condições da sua tarifa" + ligação */}
-        {selectedPolicyCode || effective?.cancellationPolicy?.length ? (
-          <CancellationPolicyLine
-            code={selectedPolicyCode}
-            checkIn={checkIn}
-            lang={lang}
-            className="caption text-pa-stone-aa leading-snug"
-          />
-        ) : null}
+        {/* Sem frase de política no resumo (auditoria do funil, n.º 11): uma
+            só por ecrã, junto à decisão — no cartão da tarifa (passo 1) e
+            mesmo acima do botão de pagar (passo 3, obrigatória). */}
         {guaranteeLabel && (
           <p className="flex items-start gap-1.5 caption text-pa-gold leading-snug">
             <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
@@ -1571,6 +1620,78 @@ export default function CheckoutPage() {
                 </div>
               )
   );
+
+  // ── Passo do pagamento: erros nos campos (só depois de um clique em Pagar,
+  // ou do hóspede sair do campo), linha do email e aviso suave do NIF ──
+  const firstNameError = showGuestErrors && !firstName.trim();
+  const lastNameError = showGuestErrors && !lastName.trim();
+  const emailInvalid = !isValidEmail(email);
+  const showEmailField = emailEditing || emailInvalid;
+  const emailError = emailInvalid && (showGuestErrors || (emailTouched && email.length > 0));
+  const phoneError = !isValidPhone(phone) && (showGuestErrors || (phoneTouched && !!phone));
+  const nifIssue = checkTaxId(nif) === "pt_invalid";
+
+  // Autorização (duas partes), Termos e a frase de política: mesmo acima do
+  // botão final, que só fica ativo com as caixas marcadas (spec 4.1, pontos 4
+  // e 5, validada pelo André). Nenhuma vem pré-marcada; a dica fica junto à
+  // caixa por marcar.
+  const consentBlock = (
+    <div className="space-y-3">
+      {twoParts && offer && (
+        <MandateConsent offer={offer} accepted={mandateAccepted} onChange={setMandateAccepted} />
+      )}
+      <div className="space-y-1">
+        <label className="flex items-start gap-2 cursor-pointer select-none">
+          <input
+            id="checkout-terms"
+            type="checkbox"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            aria-describedby={termsAccepted ? undefined : "checkout-terms-hint"}
+            className="mt-0.5 w-4 h-4 accent-black border-pa-sand rounded"
+          />
+          <span className="caption text-pa-earth leading-snug">
+            {t("bookingWidget.termsAcceptLabel", "I accept the")}{" "}
+            <a href={`/${lang}/legal/terms`} target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold-aa">{t("bookingWidget.termsLink", "Terms & Conditions")}</a>
+            {" "}{t("bookingWidget.termsAnd", "and the")}{" "}
+            <a href={`/${lang}/legal/cancellation-policy`} target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold-aa">{t("bookingWidget.cancellationPolicyLink")}</a>
+          </span>
+        </label>
+        {!termsAccepted && (
+          <p id="checkout-terms-hint" className="caption text-pa-earth leading-snug pl-6">{t("payment.termsHint")}</p>
+        )}
+      </div>
+      {/* Política em texto humano junto ao botão (spec §7, DL 24/2014): a única do passo */}
+      {selectedPolicyCode || effective?.cancellationPolicy?.length ? (
+        <CancellationPolicyLine
+          code={selectedPolicyCode}
+          checkIn={checkIn}
+          lang={lang}
+          className="caption text-pa-earth leading-snug"
+        />
+      ) : null}
+    </div>
+  );
+
+  // Aviso de pagamento falhado: o concierge por WhatsApp, já com a casa e as
+  // datas (nunca dados do cartão), e as duas partes como saída para uma recusa.
+  const conciergeHref = conciergeWhatsAppHref(
+    t("payment.errorActions.whatsappMessage", {
+      property: displayName,
+      checkIn: formatBookingDate(checkIn, lang, true),
+      checkOut: formatBookingDate(checkOut, lang, true),
+      guests,
+    }),
+  );
+  const twoPartsSwitch = offer && plan === "full"
+    ? {
+        amountNow: formatQuotedEur(offer.depositCents / 100, lang),
+        onSelect: () => {
+          focusMandateRef.current = true;
+          setPlan("two_parts");
+        },
+      }
+    : null;
 
   return (
     <div className="checkout-page min-h-screen bg-white pb-28 lg:pb-12">
@@ -1790,6 +1911,16 @@ export default function CheckoutPage() {
               )}
 
               {rateChoice}
+              {/* Uma só tarifa (sem cartões para escolher): a frase da política
+                  fica aqui, a única do ecrã (auditoria do funil, n.º 11). */}
+              {!rateChoice && (selectedPolicyCode || effective?.cancellationPolicy?.length) ? (
+                <CancellationPolicyLine
+                  code={selectedPolicyCode}
+                  checkIn={checkIn}
+                  lang={lang}
+                  className="caption text-pa-earth leading-snug"
+                />
+              ) : null}
 
               {/* Email capture */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
@@ -1867,10 +1998,9 @@ export default function CheckoutPage() {
                   ← {t("checkout.backToStay", "Back to your stay")}
                 </button>
               </div>
-              <details className="rounded-lg border border-pa-sand p-4">
-                <summary className="cursor-pointer body-sm text-pa-dark font-medium">{t('conversion.reviewRate')}</summary>
-                <div className="pt-4">{rateChoice}</div>
-              </details>
+              {/* Sem o painel "Rever tarifa e condições de cancelamento": a
+                  tarifa escolhe-se no passo 1 (← acima) e a política já não se
+                  repete aqui (auditoria do funil, n.º 11). */}
 
               {extrasQuery.isLoading ? (
                 <div className="flex items-center justify-center py-10 gap-2 caption text-pa-stone-aa">
@@ -1949,94 +2079,148 @@ export default function CheckoutPage() {
                   {t("bookingWidget.guestInformation", "Guest information")}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    autoComplete="given-name"
-                    aria-label={t("bookingWidget.firstNamePh")}
-                    placeholder={t("bookingWidget.firstNamePh")}
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
-                  />
-                  <input
-                    type="text"
-                    autoComplete="family-name"
-                    aria-label={t("bookingWidget.lastNamePh")}
-                    placeholder={t("bookingWidget.lastNamePh")}
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
-                  />
+                  <div className="min-w-0">
+                    <input
+                      id={GUEST_FIELD_IDS.firstName}
+                      type="text"
+                      autoComplete="given-name"
+                      aria-label={t("bookingWidget.firstNamePh")}
+                      aria-invalid={firstNameError || undefined}
+                      aria-describedby={firstNameError ? "checkout-first-name-error" : undefined}
+                      placeholder={t("bookingWidget.firstNamePh")}
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className={cn(INPUT_CLASS, firstNameError ? "border-red-400" : "border-pa-sand")}
+                    />
+                    {firstNameError && (
+                      <p id="checkout-first-name-error" className="caption text-red-600 mt-1">{t("checkout.fieldErrors.firstName")}</p>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <input
+                      id={GUEST_FIELD_IDS.lastName}
+                      type="text"
+                      autoComplete="family-name"
+                      aria-label={t("bookingWidget.lastNamePh")}
+                      aria-invalid={lastNameError || undefined}
+                      aria-describedby={lastNameError ? "checkout-last-name-error" : undefined}
+                      placeholder={t("bookingWidget.lastNamePh")}
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className={cn(INPUT_CLASS, lastNameError ? "border-red-400" : "border-pa-sand")}
+                    />
+                    {lastNameError && (
+                      <p id="checkout-last-name-error" className="caption text-red-600 mt-1">{t("checkout.fieldErrors.lastName")}</p>
+                    )}
+                  </div>
                 </div>
-                <input
-                  type="email"
-                  autoComplete="email"
-                  aria-label={t("bookingWidget.emailPh")}
-                  placeholder={t("bookingWidget.emailPh")}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
-                />
-                <PhoneInput
-                  value={phone}
-                  onChange={setPhone}
-                  onBlur={() => setPhoneTouched(true)}
-                  placeholder={t("bookingWidget.phonePh", "Phone number *")}
-                />
-                {phoneTouched && phone && !isValidPhone(phone) && (
-                  <p className="caption text-inherit text-red-500">{t("bookingWidget.invalidPhone", "Please enter a valid phone number")}</p>
+                {/* O email do passo 1 não se pede outra vez: uma linha, e o campo
+                    só abre se o hóspede o quiser mudar (ou se não for válido). */}
+                {showEmailField ? (
+                  <div>
+                    <input
+                      id={GUEST_FIELD_IDS.email}
+                      type="email"
+                      autoComplete="email"
+                      aria-label={t("bookingWidget.emailPh")}
+                      aria-invalid={emailError || undefined}
+                      aria-describedby={emailError ? "checkout-pay-email-error" : undefined}
+                      placeholder={t("bookingWidget.emailPh")}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      onBlur={() => setEmailTouched(true)}
+                      className={cn(INPUT_CLASS, emailError ? "border-red-400" : "border-pa-sand")}
+                    />
+                    {emailError && (
+                      <p id="checkout-pay-email-error" className="caption text-red-600 mt-1">{t("bookingWidget.invalidEmail", "Please enter a valid email address")}</p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 min-w-0 body-sm">
+                    <span className="text-pa-earth shrink-0">{t("checkout.emailLineLabel")}</span>
+                    <span className="text-pa-dark font-medium truncate min-w-0">{email}</span>
+                    <span aria-hidden className="text-pa-stone-aa shrink-0">·</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEmailEditing(true);
+                        window.requestAnimationFrame(() => document.getElementById(GUEST_FIELD_IDS.email)?.focus());
+                      }}
+                      className="shrink-0 inline-flex items-center text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark transition-colors"
+                    >
+                      {t("checkout.emailChange")}
+                    </button>
+                  </div>
                 )}
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={20}
-                  aria-label={t("checkout.nifPh")}
-                  value={nif}
-                  onChange={(e) => setNif(e.target.value)}
-                  placeholder={t("checkout.nifPh", "NIF — optional, for a Portuguese invoice")}
-                  className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
-                />
-                <label className="flex items-start gap-2 cursor-pointer select-none pt-1">
-                  <input
-                    type="checkbox"
-                    checked={termsAccepted}
-                    onChange={(e) => setTermsAccepted(e.target.checked)}
-                    className="mt-0.5 w-4 h-4 accent-black border-pa-sand rounded"
+                <div>
+                  <PhoneInput
+                    id={GUEST_FIELD_IDS.phone}
+                    value={phone}
+                    onChange={setPhone}
+                    onBlur={() => setPhoneTouched(true)}
+                    placeholder={t("bookingWidget.phonePh", "Phone number *")}
                   />
-                  <span className="caption text-pa-earth leading-snug">
-                    {t("bookingWidget.termsAcceptLabel", "I accept the")}{" "}
-                    <a href={`/${lang}/legal/terms`} target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold">{t("bookingWidget.termsLink", "Terms & Conditions")}</a>
-                    {" "}{t("bookingWidget.termsAnd", "and the")}{" "}
-                    <a href={`/${lang}/legal/cancellation-policy`} target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold">{t("bookingWidget.cancellationPolicyLink")}</a>
-                  </span>
-                </label>
+                  {phoneError && (
+                    <p className="caption text-red-600 mt-1" role="alert">{t("bookingWidget.invalidPhone", "Please enter a valid phone number")}</p>
+                  )}
+                </div>
+                <div>
+                  {/* Teclado de texto: um nº de IVA de outro país tem letras (DE…, ESB…, NL…B01) */}
+                  <input
+                    id="checkout-nif"
+                    type="text"
+                    inputMode="text"
+                    autoCapitalize="characters"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    maxLength={20}
+                    aria-label={t("checkout.nifPh")}
+                    aria-describedby={nifIssue ? "checkout-nif-hint" : undefined}
+                    value={nif}
+                    onChange={(e) => setNif(e.target.value)}
+                    placeholder={t("checkout.nifPh", "NIF — optional, for a Portuguese invoice")}
+                    className={cn(INPUT_CLASS, "border-pa-sand")}
+                  />
+                  {/* Só um NIF português tem dígito de controlo; o aviso é suave e nunca bloqueia o pagamento */}
+                  {nifIssue && (
+                    <p id="checkout-nif-hint" className="caption text-pa-earth mt-1 leading-snug" role="status">{t("checkout.nifInvalid")}</p>
+                  )}
+                </div>
               </div>
-
-              {/* Direct-booking assurance (audit finding D1) */}
 
               {offer && !redirectFinalizing && (
                 <PaymentPlanSelector
                   offer={offer}
                   plan={plan}
                   onPlanChange={(p) => { setPlan(p); if (p === "full") setMandateAccepted(false); }}
-                  mandateAccepted={mandateAccepted}
-                  onMandateChange={setMandateAccepted}
                   lang={lang}
                 />
               )}
 
-
-              {/* Payment */}
+              {/* Payment: monta logo que há preço. Os Termos (e a autorização da
+                  2.ª parte) e a frase da política ficam mesmo acima do botão. */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">
                 {redirectFinalizing ? (
                   <div className="flex items-center justify-center gap-3 py-8" role="status">
                     <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
                     <p className="body-sm text-pa-dark">{t("checkout.confirmingPayment", "Payment received — confirming your booking…")}</p>
                   </div>
-                ) : isDemo ? (
-                  <p role="status" className="body-sm text-pa-earth">{t('conversion.demoNotice')}</p>
-                ) : termsAccepted && firstName.trim() && lastName.trim() && isValidEmail(email) && isValidPhone(phone) && quoteId && effective && !quoteStale ? (
+                ) : quoteId && effective && !quoteStale ? (
                   <CheckoutPaymentForm
+                    demo={isDemo}
+                    demoDecline={demoDecline}
+                    termsAccepted={termsAccepted}
+                    consent={consentBlock}
+                    validateGuest={validateGuestForPay}
+                    walletsReady={walletsReady}
+                    conciergeHref={conciergeHref}
+                    twoPartsSwitch={twoPartsSwitch}
+                    onTwoPartsUnavailable={() => {
+                      setPlan("full");
+                      setMandateAccepted(false);
+                      if (!isDemo) void intentQuery.refetch();
+                    }}
+                    onMandateMissing={() => focusField("checkout-mandate")}
                     onBeforePay={flushPendingSaves}
                     onQuoteExpired={() => setQuoteStale(true)}
                     listingId={intent.listingId}
@@ -2066,43 +2250,11 @@ export default function CheckoutPage() {
                       priceFrom: effective.nightlyRate,
                     }, { nights: quote?.nights, checkinDate: checkIn, checkoutDate: checkOut, guests }), ...purchaseItems]}
                     onSuccess={handleCardSuccess}
-                    onCancel={() => setStep("customize")}
                   />
                 ) : (
-                  <div className="space-y-3">
-                    {/* H8 (auditoria set/2026): um botão cinzento sem razão é um
-                        beco — dizer exatamente o que falta para pagar. */}
-                    {quoteStale ? (
-                      <p className="caption text-pa-earth">{t("checkout.refreshBeforePay", "Refresh the price above before paying.")}</p>
-                    ) : (
-                      (() => {
-                        const missing: string[] = [];
-                        if (!firstName.trim() || !lastName.trim()) missing.push(t("checkout.missing.name", "your first and last name"));
-                        if (!isValidEmail(email)) missing.push(t("checkout.missing.email", "a valid email"));
-                        if (!isValidPhone(phone)) missing.push(t("checkout.missing.phone", "a valid phone number"));
-                        if (!termsAccepted) missing.push(t("checkout.missing.terms", "accepting the terms"));
-                        if (!quoteId || !effective) missing.push(t("checkout.missing.quote", "a confirmed price (refresh above)"));
-                        return missing.length ? (
-                          <p className="caption text-pa-earth" role="status">
-                            {t("checkout.missing.prefix", "To pay, we still need:")} {missing.join(" · ")}
-                          </p>
-                        ) : null;
-                      })()
-                    )}
-                    <button disabled className="btn-primary w-full opacity-40 cursor-not-allowed">
-                      {t("bookingWidget.proceedToPayment", "Proceed to Payment")}
-                    </button>
-                  </div>
+                  // Sem preço confirmado não há botão: o banner acima diz como o atualizar.
+                  <p className="caption text-pa-earth" role="status">{t("checkout.refreshBeforePay", "Refresh the price above before paying.")}</p>
                 )}
-                {/* Cancellation policy repeated in human text next to the pay button (spec §7) */}
-                {selectedPolicyCode || effective?.cancellationPolicy?.length ? (
-                  <CancellationPolicyLine
-                    code={selectedPolicyCode}
-                    checkIn={checkIn}
-                    lang={lang}
-                    className="caption text-pa-stone-aa text-center leading-snug"
-                  />
-                ) : null}
                 <p className="flex items-center justify-center gap-1.5 caption text-pa-stone-aa">
                   <Lock className="w-3 h-3" /> {t("checkout.secureNote", "Encrypted, secure payment")}
                 </p>

@@ -775,7 +775,18 @@
       "alreadyPaidShort": "Deze boeking is al betaald. Bekijk uw e-mail voor de bevestiging.",
       "saveFailed": "We konden uw laatste wijzigingen niet opslaan. Controleer uw verbinding en probeer het opnieuw.",
       "network": "Verbindingsprobleem. Controleer uw internet en probeer het opnieuw.",
-      "genericRetry": "De betaling kon niet worden voltooid. Probeer het opnieuw — of neem contact met ons op en wij ronden uw boeking persoonlijk af."
+      "genericRetry": "De betaling kon niet worden voltooid. Probeer het opnieuw — of neem contact met ons op en wij ronden uw boeking persoonlijk af.",
+      "declinedLimit": "De betaling is geweigerd, vaak vanwege de limiet van de kaart voor dit bedrag. Gebruik een andere kaart of betaalmethode.",
+      "declinedGeneric": "De betaling is geweigerd. Gebruik een andere kaart of betaalmethode.",
+      "cardExpired": "Deze kaart is verlopen. Gebruik een andere kaart of betaalmethode.",
+      "cardNotSupported": "Deze kaart accepteert deze betaling niet. Gebruik een andere kaart of betaalmethode.",
+      "incorrectCvc": "De beveiligingscode (CVC) klopt niet. Controleer deze en probeer het opnieuw.",
+      "incorrectNumber": "Het kaartnummer klopt niet. Controleer het en probeer het opnieuw.",
+      "cardDetails": "Sommige kaartgegevens kloppen niet. Controleer het nummer, de vervaldatum en de beveiligingscode en probeer het opnieuw.",
+      "bankUnavailable": "De bank kon de betaling op dit moment niet verwerken. Er is niets afgeschreven. Probeer het zo meteen opnieuw.",
+      "authenticationFailed": "De bevestiging bij uw bank is niet afgerond, dus er is niets afgeschreven. Probeer het opnieuw en bevestig in de app van uw bank.",
+      "twoPartsUnavailable": "Betalen in twee delen is niet meer beschikbaar voor deze boeking. Er is niets afgeschreven: u kunt nu het volledige bedrag betalen.",
+      "prepareFailed": "We konden de betaling niet voorbereiden. Er is niets afgeschreven. Probeer het opnieuw."
     },
     "payButton": "{{amount}} betalen",
     "cancelButton": "Annuleren",
@@ -790,7 +801,16 @@
     "payNowButton": "Nu {{amountNow}} betalen",
     "payNowAfter": "Daarna {{amountLater}} op {{date}}.",
     "processingFirst": "Het eerste deel wordt verwerkt…",
-    "mandateMissing": "Vink de machtiging hierboven aan om verder te gaan."
+    "mandateMissing": "Vink de machtiging hierboven aan om verder te gaan.",
+    "termsHint": "Vink dit vakje aan om te betalen.",
+    "walletsHint": "Om met {{wallets}} te betalen, vult u uw gegevens aan en vinkt u hieronder het vakje voor de voorwaarden aan.",
+    "errorActions": {
+      "twoParts": "Liever in twee delen betalen (vandaag {{amountNow}})",
+      "otherMethod": "Een andere kaart of betaalmethode gebruiken",
+      "otherCard": "Een andere kaart gebruiken",
+      "concierge": "Met de concierge spreken",
+      "whatsappMessage": "Hallo, ik heb hulp nodig bij mijn boeking: {{property}}, {{checkIn}} tot {{checkOut}}, gasten: {{guests}}. De betaling is niet gelukt."
+    }
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1884,7 +1904,14 @@
     "rate": {
       "twoPartsLine": "U kunt ook in twee delen betalen: {{amountNow}} vandaag en {{amountLater}} op {{date}}.",
       "twoPartsLinePlain": "U kunt ook in twee delen betalen: {{amountNow}} vandaag en {{amountLater}} op {{date}}."
-    }
+    },
+    "emailLineLabel": "Bevestiging naar",
+    "emailChange": "wijzigen",
+    "fieldErrors": {
+      "firstName": "Vul uw voornaam in.",
+      "lastName": "Vul uw achternaam in."
+    },
+    "nifInvalid": "Dit Portugese NIF lijkt niet te kloppen: controleer de 9 cijfers. Begin een btw-nummer uit een ander land met de landcode (bijvoorbeeld ES)."
   },
   "host": {
     "hostedBy": "Uw hosts: Ricardo & het Portugal Active-team",

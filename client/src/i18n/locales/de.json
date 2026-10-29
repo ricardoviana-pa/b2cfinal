@@ -775,7 +775,18 @@
       "alreadyPaidShort": "Diese Buchung ist bereits bezahlt. Die Bestätigung finden Sie in Ihrer E-Mail.",
       "saveFailed": "Ihre letzten Änderungen konnten nicht gespeichert werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
       "network": "Verbindungsproblem. Prüfen Sie Ihr Internet und versuchen Sie es erneut.",
-      "genericRetry": "Die Zahlung konnte nicht abgeschlossen werden. Versuchen Sie es erneut — oder kontaktieren Sie uns und wir schließen Ihre Buchung persönlich ab."
+      "genericRetry": "Die Zahlung konnte nicht abgeschlossen werden. Versuchen Sie es erneut — oder kontaktieren Sie uns und wir schließen Ihre Buchung persönlich ab.",
+      "declinedLimit": "Die Zahlung wurde abgelehnt, oft wegen des Kartenlimits für diesen Betrag. Bitte verwenden Sie eine andere Karte oder Zahlungsart.",
+      "declinedGeneric": "Die Zahlung wurde abgelehnt. Bitte verwenden Sie eine andere Karte oder Zahlungsart.",
+      "cardExpired": "Diese Karte ist abgelaufen. Bitte verwenden Sie eine andere Karte oder Zahlungsart.",
+      "cardNotSupported": "Diese Karte akzeptiert diese Zahlung nicht. Bitte verwenden Sie eine andere Karte oder Zahlungsart.",
+      "incorrectCvc": "Der Sicherheitscode (CVC) ist nicht korrekt. Bitte prüfen Sie ihn und versuchen Sie es erneut.",
+      "incorrectNumber": "Die Kartennummer ist nicht korrekt. Bitte prüfen Sie sie und versuchen Sie es erneut.",
+      "cardDetails": "Einige Kartendaten sind nicht korrekt. Prüfen Sie Nummer, Ablaufdatum und Sicherheitscode und versuchen Sie es erneut.",
+      "bankUnavailable": "Die Bank konnte die Zahlung gerade nicht verarbeiten. Es wurde nichts abgebucht. Bitte versuchen Sie es gleich noch einmal.",
+      "authenticationFailed": "Die Bestätigung bei Ihrer Bank wurde nicht abgeschlossen, daher wurde nichts abgebucht. Versuchen Sie es erneut und bestätigen Sie in Ihrer Banking-App.",
+      "twoPartsUnavailable": "Die Zahlung in zwei Teilen ist für diese Buchung nicht mehr verfügbar. Es wurde nichts abgebucht: Sie können jetzt den Gesamtbetrag bezahlen.",
+      "prepareFailed": "Wir konnten die Zahlung nicht vorbereiten. Es wurde nichts abgebucht. Bitte versuchen Sie es erneut."
     },
     "payButton": "{{amount}} zahlen",
     "cancelButton": "Abbrechen",
@@ -790,7 +801,16 @@
     "payNowButton": "Jetzt {{amountNow}} bezahlen",
     "payNowAfter": "Danach {{amountLater}} am {{date}}.",
     "processingFirst": "Der erste Teil wird verarbeitet…",
-    "mandateMissing": "Bestätigen Sie oben die Autorisierung, um fortzufahren."
+    "mandateMissing": "Bestätigen Sie oben die Autorisierung, um fortzufahren.",
+    "termsHint": "Kreuzen Sie dieses Feld an, um zu bezahlen.",
+    "walletsHint": "Um mit {{wallets}} zu bezahlen, vervollständigen Sie Ihre Angaben und kreuzen Sie unten das Feld für die Bedingungen an.",
+    "errorActions": {
+      "twoParts": "Stattdessen in zwei Teilen bezahlen (heute {{amountNow}})",
+      "otherMethod": "Andere Karte oder Zahlungsart verwenden",
+      "otherCard": "Andere Karte verwenden",
+      "concierge": "Mit dem Concierge sprechen",
+      "whatsappMessage": "Hallo, ich brauche Hilfe bei meiner Buchung: {{property}}, {{checkIn}} bis {{checkOut}}, Gäste: {{guests}}. Die Zahlung ist nicht durchgegangen."
+    }
   },
   "contact": {
     "heroAlt": "Portugal Active kontaktieren",
@@ -1884,7 +1904,14 @@
     "rate": {
       "twoPartsLine": "Sie können auch in zwei Teilen zahlen: {{amountNow}} heute und {{amountLater}} am {{date}}.",
       "twoPartsLinePlain": "Sie können auch in zwei Teilen zahlen: {{amountNow}} heute und {{amountLater}} am {{date}}."
-    }
+    },
+    "emailLineLabel": "Bestätigung an",
+    "emailChange": "ändern",
+    "fieldErrors": {
+      "firstName": "Bitte geben Sie Ihren Vornamen ein.",
+      "lastName": "Bitte geben Sie Ihren Nachnamen ein."
+    },
+    "nifInvalid": "Diese portugiesische NIF scheint nicht korrekt zu sein: Prüfen Sie die 9 Ziffern. Für eine USt-IdNr. aus einem anderen Land beginnen Sie mit dem Ländercode (zum Beispiel ES)."
   },
   "host": {
     "hostedBy": "Ihre Gastgeber: Ricardo & das Portugal-Active-Team",

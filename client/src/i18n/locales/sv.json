@@ -775,7 +775,18 @@
       "alreadyPaidShort": "Denna bokning är redan betald. Kolla din e-post för bekräftelsen.",
       "saveFailed": "Vi kunde inte spara dina senaste ändringar. Kontrollera din anslutning och försök igen.",
       "network": "Anslutningsproblem. Kontrollera ditt internet och försök igen.",
-      "genericRetry": "Betalningen kunde inte slutföras. Försök igen — eller kontakta oss så slutför vi din bokning personligen."
+      "genericRetry": "Betalningen kunde inte slutföras. Försök igen — eller kontakta oss så slutför vi din bokning personligen.",
+      "declinedLimit": "Betalningen nekades, ofta på grund av kortets gräns för det här beloppet. Använd ett annat kort eller betalsätt.",
+      "declinedGeneric": "Betalningen nekades. Använd ett annat kort eller betalsätt.",
+      "cardExpired": "Kortet har gått ut. Använd ett annat kort eller betalsätt.",
+      "cardNotSupported": "Kortet godtar inte den här betalningen. Använd ett annat kort eller betalsätt.",
+      "incorrectCvc": "Säkerhetskoden (CVC) är inte korrekt. Kontrollera den och försök igen.",
+      "incorrectNumber": "Kortnumret är inte korrekt. Kontrollera det och försök igen.",
+      "cardDetails": "Vissa kortuppgifter är inte korrekta. Kontrollera numret, utgångsdatumet och säkerhetskoden och försök igen.",
+      "bankUnavailable": "Banken kunde inte behandla betalningen just nu. Ingenting har dragits. Försök igen om en stund.",
+      "authenticationFailed": "Bekräftelsen hos din bank slutfördes inte, så ingenting har dragits. Försök igen och bekräfta i bankens app.",
+      "twoPartsUnavailable": "Betalning i två delar är inte längre tillgänglig för den här bokningen. Ingenting har dragits: du kan betala hela beloppet nu.",
+      "prepareFailed": "Vi kunde inte förbereda betalningen. Ingenting har dragits. Försök igen."
     },
     "payButton": "Betala {{amount}}",
     "cancelButton": "Avbryt",
@@ -790,7 +801,16 @@
     "payNowButton": "Betala {{amountNow}} nu",
     "payNowAfter": "Sedan {{amountLater}} den {{date}}.",
     "processingFirst": "Första delen behandlas…",
-    "mandateMissing": "Kryssa i godkännandet ovan för att fortsätta."
+    "mandateMissing": "Kryssa i godkännandet ovan för att fortsätta.",
+    "termsHint": "Kryssa i rutan för att betala.",
+    "walletsHint": "För att betala med {{wallets}}, fyll i dina uppgifter och kryssa i rutan för villkoren längre ner.",
+    "errorActions": {
+      "twoParts": "Betala i två delar i stället ({{amountNow}} i dag)",
+      "otherMethod": "Använd ett annat kort eller betalsätt",
+      "otherCard": "Använd ett annat kort",
+      "concierge": "Prata med conciergen",
+      "whatsappMessage": "Hej, jag behöver hjälp med min bokning: {{property}}, {{checkIn}} till {{checkOut}}, gäster: {{guests}}. Betalningen gick inte igenom."
+    }
   },
   "contact": {
     "heroAlt": "Kontakta Portugal Active",
@@ -1884,7 +1904,14 @@
     "rate": {
       "twoPartsLine": "Du kan också betala i två delar: {{amountNow}} i dag och {{amountLater}} den {{date}}.",
       "twoPartsLinePlain": "Du kan också betala i två delar: {{amountNow}} i dag och {{amountLater}} den {{date}}."
-    }
+    },
+    "emailLineLabel": "Bekräftelse till",
+    "emailChange": "ändra",
+    "fieldErrors": {
+      "firstName": "Ange ditt förnamn.",
+      "lastName": "Ange ditt efternamn."
+    },
+    "nifInvalid": "Det här portugisiska NIF-numret ser inte rätt ut: kontrollera de 9 siffrorna. För ett momsnummer från ett annat land, börja med landskoden (till exempel ES)."
   },
   "host": {
     "hostedBy": "Värdar: Ricardo & Portugal Active-teamet",
