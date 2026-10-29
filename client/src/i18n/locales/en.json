@@ -2015,7 +2015,6 @@
     "onRequestDates": "We cannot show a price online for these dates. Send the request and our concierge will confirm availability and the total.",
     "total": "Total",
     "totalSoFar": "Total so far",
-    "vatIncluded": "VAT included.",
     "accommodationLabel": "Accommodation",
     "feesPendingShort": "Other charges to be confirmed.",
     "depositNote": "A refundable security deposit of {{amount}} is held by the property.",

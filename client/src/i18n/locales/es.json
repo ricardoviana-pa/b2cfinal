@@ -2015,7 +2015,6 @@
     "onRequestDates": "No podemos mostrar en línea un precio para estas fechas. Envíe la solicitud y nuestro concierge confirmará la disponibilidad y el total.",
     "total": "Total",
     "totalSoFar": "Total hasta ahora",
-    "vatIncluded": "IVA incluido.",
     "accommodationLabel": "Alojamiento",
     "feesPendingShort": "Otros cargos por confirmar.",
     "depositNote": "La casa retiene una fianza reembolsable de {{amount}}.",

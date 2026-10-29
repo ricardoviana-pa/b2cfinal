@@ -2015,7 +2015,6 @@
     "onRequestDates": "Emme voi näyttää näille päiville hintaa verkossa. Lähetä pyyntö, niin concierge vahvistaa saatavuuden ja kokonaissumman.",
     "total": "Yhteensä",
     "totalSoFar": "Yhteensä toistaiseksi",
-    "vatIncluded": "Sisältää ALV:n.",
     "accommodationLabel": "Majoitus",
     "feesPendingShort": "Muut maksut vahvistetaan erikseen.",
     "depositNote": "Talo pidättää palautettavan {{amount}} vakuuden.",
