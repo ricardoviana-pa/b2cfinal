@@ -500,7 +500,7 @@ export function PartnerBookingPanel({
           <button
             type="submit"
             disabled={createLead.isPending}
-            className="pa-action w-full min-h-[52px] px-8 text-xs font-medium tracking-[0.15em] uppercase bg-black text-white hover:bg-black/85 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="pa-action pa-reserve-cta w-full min-h-[52px] px-8 text-xs font-medium tracking-[0.15em] uppercase bg-black text-white hover:bg-black/85 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {createLead.isPending ? (
               <span className="flex items-center justify-center gap-2">

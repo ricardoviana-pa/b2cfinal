@@ -1566,7 +1566,7 @@ export default function BookingWidget({
                 setStep("payment");
               }}
               disabled={createIntent.isPending}
-              className="pa-action w-full min-h-[52px] bg-black text-white caption font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors disabled:opacity-60"
+              className="pa-action pa-reserve-cta w-full min-h-[52px] bg-black text-white caption font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors disabled:opacity-60"
             >
               {createIntent.isPending ? (
                 <span className="flex items-center justify-center gap-2">
