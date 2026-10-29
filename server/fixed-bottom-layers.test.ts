@@ -1,12 +1,23 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import postcss, { type AtRule, type Rule } from 'postcss';
+import ts from 'typescript';
 import {
   BOTTOM_BAR_H_VAR,
   COOKIE_BANNER_LIFT,
+  COOKIE_BANNER_OPEN_ATTR,
   FOOTER_BOTTOM_INSET,
+  LANGUAGE_CARD_ATTR,
   RISE_ABOVE_COOKIE_BANNER,
+  WHATSAPP_BOTTOM,
+  WHATSAPP_BOTTOM_LG,
+  WHATSAPP_RISE_LG,
+  WHATSAPP_RISE_SM,
   publishBottomBarHeight,
 } from '@/lib/fixedBottom';
+import { hasBottomBookingBar } from '@/lib/languageSuggestion';
 
 // Auditoria de 29 out 2026, verificação em produção:
 // - W2: no telemóvel, na primeira visita, o banner de cookies (z-60, 156 px)
@@ -15,6 +26,11 @@ import {
 //   banner e o «Gerir cookies» do rodapé.
 // - P3: no telemóvel, a barra fixa da casa e a da experiência tapavam para
 //   sempre a última linha do rodapé (Privacidade, Termos, Cookies, Gerir cookies).
+// Revisão do PR #178 (no fim do ficheiro): o WhatsApp subia mais do que
+// precisava (R1), a regra dos modais caía inteira sem :has() (R2), o rodapé da
+// página «experiência não encontrada» saltava ao abrir o banner, e, já com o
+// #175, o cartão de língua mexia-se com `bottom` e o «voltar ao topo» tapava o
+// seu ×.
 
 const read = (p: string) => fs.readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 
@@ -75,6 +91,10 @@ const tw = (source: string, cls: string) => {
 };
 
 const css = read('client/src/index.css');
+/** The WhatsApp button's rule on a phone, from 640 px (SM) or from 1024 px (LG). */
+const SM = '@media (min-width: 640px)';
+const LG = '@media (min-width: 1024px)';
+const whatsappRule = (media?: string) => cssRule(css, '.whatsapp-float', media);
 const app = read('client/src/App.tsx');
 const backToTop = app.slice(app.indexOf('function BackToTop'), app.indexOf('function OfflineBanner'));
 const footer = read('client/src/components/layout/Footer.tsx');
@@ -117,8 +137,12 @@ describe('W2: a booking bar sits on the open cookie banner, never under it', () 
   });
 
   it('the sheet a bar opens, and the phone menu, are never under the banner while open', () => {
-    const rule = css.match(/body\[data-scroll-locked\] \[data-cookie-banner\],\s*body:has\(#mobile-menu-panel:not\(\[inert\]\)\) \[data-cookie-banner\] \{\s*z-index:\s*(\d+);\s*\}/);
+    // Two rules (R2, below): the sheet's does not depend on :has().
+    const rule = css.match(/\n\s*body\[data-scroll-locked\] \[data-cookie-banner\] \{\s*z-index:\s*(\d+);\s*\}/);
     expect(rule).not.toBeNull();
+    const menuRule = css.match(/@supports selector\(:has\(\*\)\) \{\s*body:has\(#mobile-menu-panel:not\(\[inert\]\)\) \[data-cookie-banner\] \{\s*z-index:\s*(\d+);\s*\}/);
+    expect(menuRule).not.toBeNull();
+    expect(Number(menuRule![1])).toBe(Number(rule![1]));
     const underModal = Number(rule![1]);
     const banner = read('client/src/components/layout/CookieBanner.tsx');
     expect(banner).toMatch(/data-cookie-banner=""\s+className="fixed bottom-0 left-0 right-0 z-\[\d+\]"/);
@@ -145,21 +169,23 @@ describe('W2: a booking bar sits on the open cookie banner, never under it', () 
 });
 
 describe('P2: the floats rise above the banner and keep out of the footer’s last links', () => {
-  const mobile = cssRule(css, '.whatsapp-float');
-  const desktop = cssRule(css, '.whatsapp-float', '@media (min-width: 1024px)');
-
-  it('the WhatsApp button and “back to top” rise with the same transform as the bars', () => {
-    expect(declaration(mobile, 'transform')).toBe(RISE_ABOVE_COOKIE_BANNER);
+  it('on a phone the WhatsApp button, and “back to top” everywhere, rise with the same transform as the bars', () => {
+    expect(declaration(whatsappRule(), 'transform')).toBe(RISE_ABOVE_COOKIE_BANNER);
     expect(backToTop).toMatch(/transform: RISE_ABOVE_COOKIE_BANNER,/);
   });
 
-  it('lifted, the WhatsApp button clears the open banner (and its “Accept all”) on a computer and on a phone', () => {
+  it('lifted, the WhatsApp button clears the open banner (and its “Accept all”) on a computer, a tablet and a phone', () => {
+    const [mobile, tablet, desktop] = [whatsappRule(), whatsappRule(SM), whatsappRule(LG)];
+    expect(declaration(tablet, 'transform')).toBe(WHATSAPP_RISE_SM);
+    expect(declaration(desktop, 'transform')).toBe(WHATSAPP_RISE_LG);
+    expect(declaration(mobile, 'bottom')).toBe(`calc(${WHATSAPP_BOTTOM})`);
+    expect(declaration(desktop, 'bottom')).toBe(WHATSAPP_BOTTOM_LG);
     for (const content of BANNERS) {
-      for (const [rule, safes] of [[desktop, [0, 20]], [mobile, SAFE_AREAS]] as const) {
+      for (const [bottomRule, transformRule, safes] of [[desktop, desktop, [0, 20]], [mobile, tablet, SAFE_AREAS], [mobile, mobile, SAFE_AREAS]] as const) {
         for (const safe of safes) {
           const bannerH = content + safe;
-          const floatBottom = cssPx(declaration(rule, 'bottom'), { safe }) + cssPx(COOKIE_BANNER_LIFT, { bannerH, safe });
-          expect(floatBottom, `${declaration(rule, 'bottom')} over a ${bannerH}px banner`).toBeGreaterThanOrEqual(bannerH + 4);
+          const floatBottom = cssPx(declaration(bottomRule, 'bottom'), { safe }) - cssPx(declaration(transformRule, 'transform'), { bannerH, safe });
+          expect(floatBottom, `${declaration(bottomRule, 'bottom')} over a ${bannerH}px banner`).toBeGreaterThanOrEqual(bannerH + 4);
         }
       }
     }
@@ -255,5 +281,167 @@ describe('P3: the footer keeps the fixed bar, the floats and the open banner cle
     const page = read('client/src/pages/PropertyDetail.tsx');
     expect(page).not.toMatch(/lg:hidden h-\[100px\]/);
     expect(page).toMatch(/<Footer \/>/);
+  });
+});
+
+// ─── Revisão do PR #178 ──────────────────────────────────────────────────────
+
+type Box = { top: number; bottom: number; left: number; right: number };
+const overlap = (a: Box, b: Box) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+
+describe('R1: from 640 px the WhatsApp button rises only as far as it must', () => {
+  const bottomOf = (rule: string, safe = 0) => cssPx(declaration(rule, 'bottom'), { safe });
+  const liftOf = (rule: string, bannerH: number, safe = 0) => -cssPx(declaration(rule, 'transform'), { bannerH, safe });
+  /** The 56 px button 28 px from the right, as WhatsAppFloat.tsx places it from md. */
+  const floatBox = (vw: number, vh: number, bottom: number): Box => {
+    const size = tw(whatsappFloat, 'sm:w');
+    const right = tw(whatsappFloat, 'md:right');
+    return { top: vh - bottom - size, bottom: vh - bottom, left: vw - right - size, right: vw - right };
+  };
+
+  it('it ends 0.5rem above the open banner, or stays where it is if that already clears it', () => {
+    const [mobile, tablet, desktop] = [whatsappRule(), whatsappRule(SM), whatsappRule(LG)];
+    for (const content of BANNERS) {
+      for (const safe of [0, 20]) {
+        const bannerH = content + safe;
+        for (const [bottomRule, rule] of [[mobile, tablet], [desktop, desktop]] as const) {
+          const own = bottomOf(bottomRule, safe);
+          expect(own + liftOf(rule, bannerH, safe), `${declaration(bottomRule, 'bottom')} over ${bannerH}px`).toBeCloseTo(Math.max(own, bannerH + 8), 6);
+        }
+      }
+    }
+    expect(liftOf(tablet, 0)).toBeCloseTo(0, 6);
+    expect(liftOf(desktop, 0)).toBeCloseTo(0, 6);
+  });
+
+  it('iPad portrait, contact page: over the 77 px banner it stays off «SEND MESSAGE», where the full lift put it', () => {
+    // Measured on the local build, 768×1024 en, first visit: banner 947–1024; the form's submit at y 804–848, x 544–736.
+    const send: Box = { top: 804.2, bottom: 848.2, left: 544.4, right: 736 };
+    const [mobile, tablet] = [whatsappRule(), whatsappRule(SM)];
+    expect(liftOf(tablet, 77)).toBeCloseTo(0, 6);
+    expect(overlap(floatBox(768, 1024, bottomOf(mobile) + liftOf(tablet, 77)), send)).toBe(false);
+    expect(overlap(floatBox(768, 1024, bottomOf(mobile) + cssPx(COOKIE_BANNER_LIFT, { bannerH: 77 })), send)).toBe(true);
+  });
+
+  it('the homepage waits with its button at the hero while the banner is open: at 1024 px even 0.5rem above it, it lands on «Search homes»', () => {
+    // 1024×768 en, first visit: banner 691–768; the hero's «Search homes» at y 593–657, x 811–982.
+    const search: Box = { top: 592.7, bottom: 656.7, left: 811.1, right: 982 };
+    const desktop = whatsappRule(LG);
+    expect(overlap(floatBox(1024, 768, bottomOf(desktop) + liftOf(desktop, 77)), search)).toBe(true);
+    expect(overlap(floatBox(1024, 768, bottomOf(desktop)), search)).toBe(false); // banner closed: no lift, no collision
+    const home = read('client/src/pages/Home.tsx');
+    expect(home).toMatch(/<div className=\{pastHero \? undefined : 'hidden lg:block home-float-at-hero'\}>\s*<WhatsAppFloat \/>/);
+    expect(css).toMatch(new RegExp(`html\\[${COOKIE_BANNER_OPEN_ATTR}\\] \\.home-float-at-hero \\{\\s*display: none;\\s*\\}`));
+    // The banner marks <html> while it is open, and takes the mark back when it closes or leaves the page.
+    const banner = read('client/src/components/layout/CookieBanner.tsx');
+    const effect = banner.slice(banner.indexOf("root.style.setProperty('--cookie-banner-h', '0px');"), banner.indexOf('}, [visible]);'));
+    expect(effect).toMatch(/update\(\);\s*root\.setAttribute\(COOKIE_BANNER_OPEN_ATTR, ''\);/);
+    expect(effect.match(/root\.removeAttribute\(COOKIE_BANNER_OPEN_ATTR\);/g)).toHaveLength(2);
+  });
+});
+
+describe('R2: without :has() the banner still goes under an open sheet', () => {
+  it('no rule lists a :has() selector with others, and the sheet’s rule needs none', () => {
+    const rules: Array<{ selectors: string[]; supports: string | null }> = [];
+    postcss.parse(css).walkRules((rule: Rule) => {
+      const parent = rule.parent?.type === 'atrule' ? (rule.parent as AtRule) : null;
+      rules.push({ selectors: rule.selectors, supports: parent?.name === 'supports' ? parent.params : null });
+    });
+    const withHas = rules.filter(({ selectors }) => selectors.some((s) => s.includes(':has(')));
+    expect(withHas.length).toBeGreaterThan(0);
+    for (const { selectors, supports } of withHas) {
+      // A browser drops a whole rule over one selector it cannot read.
+      expect(selectors, selectors.join(', ')).toHaveLength(1);
+      expect(supports, selectors[0]).toBe('selector(:has(*))');
+    }
+    const sheet = rules.filter(({ selectors }) => selectors.includes('body[data-scroll-locked] [data-cookie-banner]'));
+    expect(sheet).toEqual([{ selectors: ['body[data-scroll-locked] [data-cookie-banner]'], supports: null }]);
+  });
+});
+
+describe('the experience «not found» page: the footer comes after the full-height column', () => {
+  /** Lines of <Footer> inside an element whose className has both min-h-screen and flex-col. */
+  function footersInFullHeightColumns(file: string): number[] {
+    const source = ts.createSourceFile(file, fs.readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    const found: number[] = [];
+    const className = (el: ts.JsxOpeningLikeElement) => {
+      for (const p of el.attributes.properties) {
+        if (!ts.isJsxAttribute(p) || p.name.getText(source) !== 'className' || !p.initializer) continue;
+        return ts.isStringLiteral(p.initializer) ? p.initializer.text : p.initializer.getText(source);
+      }
+      return '';
+    };
+    const visit = (node: ts.Node, inColumn: boolean) => {
+      let column = inColumn;
+      if (ts.isJsxElement(node)) {
+        const cls = className(node.openingElement);
+        if (/\bmin-h-screen\b/.test(cls) && /\bflex-col\b/.test(cls)) column = true;
+      }
+      if ((ts.isJsxSelfClosingElement(node) || ts.isJsxOpeningElement(node)) && node.tagName.getText(source) === 'Footer' && inColumn) {
+        found.push(source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1);
+      }
+      ts.forEachChild(node, (child) => visit(child, column));
+    };
+    visit(source, false);
+    return found;
+  }
+
+  it('its bottom padding grows with the open banner: inside a min-h-screen column that pulled the footer up (layout shift) instead of lengthening the page', () => {
+    expect(FOOTER_BOTTOM_INSET).toContain('var(--cookie-banner-h, 0px)');
+    const pages = fileURLToPath(new URL('../client/src/pages/', import.meta.url));
+    const files = (fs.readdirSync(pages, { recursive: true }) as string[]).filter((f) => f.endsWith('.tsx'));
+    expect(files).toContain('ExperienceDetail.tsx');
+    const offenders = files.flatMap((f) => footersInFullHeightColumns(path.join(pages, f)).map((line) => `${f}:${line}`));
+    expect(offenders).toEqual([]);
+    // The page still has its footer, right after the column.
+    const page = read('client/src/pages/ExperienceDetail.tsx');
+    const notFound = page.slice(page.indexOf('if (!exp) {'), page.indexOf('/* ── Derived values ── */'));
+    expect(notFound).toMatch(/<div className="min-h-screen flex flex-col">[\s\S]*<\/div>\s*<\/div>\s*<Footer \/>\s*<\/div>\s*\);/);
+  });
+});
+
+describe('#175’s language card against the banner and the floats', () => {
+  const card = read('client/src/components/layout/LanguageSuggestion.tsx');
+  const tag = card.slice(card.indexOf('data-testid="language-suggestion"'), card.indexOf('<p className'));
+  const offset = (variant: 'aboveBookingBar' | 'elsewhere') => {
+    const m = tag.match(/aboveBookingBar\s*\?\s*'bottom-\[calc\((\d+)rem\+env\(safe-area-inset-bottom,0px\)\)\][^']*'\s*:\s*'bottom-\[calc\((\d+)rem\+env\(safe-area-inset-bottom,0px\)\)\]/);
+    expect(m).not.toBeNull();
+    return Number(m![variant === 'aboveBookingBar' ? 1 : 2]) * 16;
+  };
+
+  it('rises above the open banner with a transform, on the banner’s curve: no layout shift when the banner opens', () => {
+    // With `bottom: calc(var(--cookie-banner-h) + …)` the card jumped 156 px when the banner opened: CLS 0.05–0.08 on a phone.
+    expect(tag).not.toMatch(/--cookie-banner-h/);
+    expect(tag).toMatch(/style=\{\{ transform: RISE_ABOVE_COOKIE_BANNER \}\}/);
+    expect(tag).toMatch(/transition-transform duration-500 ease-\[cubic-bezier\(0\.16,1,0\.3,1\)\]/);
+    expect(read('client/src/components/layout/CookieBanner.tsx')).toContain("animation: 'cookieSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)'");
+    for (const content of BANNERS) {
+      for (const safe of SAFE_AREAS) {
+        const bannerH = content + safe;
+        const lift = cssPx(COOKIE_BANNER_LIFT, { bannerH, safe });
+        // Above the banner…
+        expect(offset('elsewhere') + safe + lift, `${bannerH}`).toBeGreaterThanOrEqual(bannerH + 8);
+        // …and, over an English page's booking bar (73–87 px), above the bar sitting on the banner.
+        for (const bar of [73, 81, 87]) expect(offset('aboveBookingBar') + safe + lift).toBeGreaterThanOrEqual(lift + bar + safe + 8);
+      }
+    }
+  });
+
+  it('on a phone, over a booking bar, it covers the place of “back to top”, which steps aside until the card goes', () => {
+    const bttBottom = cssPx(backToTop.match(/bottom: '([^']+)'/)![1]);
+    const bttSize = tw(backToTop, 'h');
+    for (const cardH of [60, 68, 70, 78, 90]) {
+      // Both at the right edge on a phone (the card is full width there): they would overlap.
+      expect(offset('aboveBookingBar') < bttBottom + bttSize && bttBottom < offset('aboveBookingBar') + cardH, `${cardH}`).toBe(true);
+    }
+    expect(card).toMatch(/root\.setAttribute\(LANGUAGE_CARD_ATTR, aboveBookingBar \? 'above-bar' : 'bottom'\);\s*return \(\) => root\.removeAttribute\(LANGUAGE_CARD_ATTR\);/);
+    expect(LANGUAGE_CARD_ATTR).toBe('data-language-card');
+    expect(css).toMatch(/@media \(max-width: 639\.98px\) \{\s*html\[data-language-card="above-bar"\] \.back-to-top \{\s*display: none;\s*\}\s*\}/);
+    expect(backToTop).toMatch(/className="back-to-top fixed /);
+    for (const p of ['/homes/villa-x', '/experiences/horseback-riding', '/activities/canyoning']) expect(hasBottomBookingBar(p), p).toBe(true);
+    // Elsewhere the card (two lines, ≤ 72 px) ends under the WhatsApp button's place: nothing steps aside.
+    expect(offset('elsewhere') + 72).toBeLessThanOrEqual(cssPx(declaration(cssRule(css, '.whatsapp-float'), 'bottom')));
+    // From 640 px the card is on the left (max 24rem) and the floats on the right.
+    expect(tag).toMatch(/sm:left-6 sm:right-auto sm:max-w-sm/);
   });
 });

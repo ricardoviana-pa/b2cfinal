@@ -239,11 +239,14 @@ function BackToTop() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="fixed z-[89] right-4 sm:right-6 md:right-7 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg transition-[opacity,transform] duration-300"
+      // .back-to-top: on a phone it steps aside while the language card sits
+      // above a booking bar, on its place (index.css, lib/fixedBottom.ts).
+      className="back-to-top fixed z-[89] right-4 sm:right-6 md:right-7 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg transition-[opacity,transform] duration-300"
       style={{
         bottom: 'calc(5rem + 56px + env(safe-area-inset-bottom, 0px))',
         // Above the cookie banner while it is open, like the bars and the
-        // WhatsApp button under it (lib/fixedBottom.ts).
+        // WhatsApp button under it (lib/fixedBottom.ts). On a computer it then
+        // also clears the booking card's RESERVE (PR #179).
         transform: RISE_ABOVE_COOKIE_BANNER,
         backgroundColor: '#8B7355',
         opacity: show ? 1 : 0,
