@@ -42,19 +42,58 @@ export function planDate(iso: string, lang: string): string {
   }).format(new Date(iso));
 }
 
+/**
+ * Autorização da 2.ª parte (spec 6.2): o texto do servidor tal como vem (é o
+ * que fica registado) e uma caixa separada da dos Termos, nunca pré-marcada.
+ * Vive mesmo acima do botão de pagar, junto aos Termos e à frase de política
+ * (auditoria do funil, out/2026, n.º 1); a dica fica junto à caixa enquanto
+ * não estiver marcada.
+ */
+export function MandateConsent({
+  offer,
+  accepted,
+  onChange,
+  id = "checkout-mandate",
+}: {
+  offer: PaymentPlanOffer;
+  accepted: boolean;
+  onChange: (v: boolean) => void;
+  id?: string;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="space-y-2">
+      {/* Texto do servidor, tal como vem: é o que fica registado. */}
+      <p className="caption text-pa-earth leading-relaxed whitespace-pre-line">{offer.mandate.text}</p>
+      <label className="flex items-start gap-2 cursor-pointer select-none">
+        <input
+          id={id}
+          type="checkbox"
+          checked={accepted}
+          onChange={(e) => onChange(e.target.checked)}
+          aria-describedby={accepted ? undefined : `${id}-hint`}
+          className="mt-0.5 w-4 h-4 accent-black border-pa-sand rounded"
+        />
+        <span className="caption text-pa-dark leading-snug">{offer.mandate.checkbox}</span>
+      </label>
+      {!accepted && (
+        <p id={`${id}-hint`} className="caption text-pa-earth leading-snug pl-6">
+          {t("payment.mandateMissing", "Tick the authorisation above to continue.")}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function PaymentPlanSelector({
   offer,
   plan,
   onPlanChange,
-  mandateAccepted,
-  onMandateChange,
   lang,
 }: {
   offer: PaymentPlanOffer;
   plan: PaymentPlanChoice;
   onPlanChange: (p: PaymentPlanChoice) => void;
-  mandateAccepted: boolean;
-  onMandateChange: (v: boolean) => void;
   lang: string;
 }) {
   const { t } = useTranslation();
@@ -112,19 +151,9 @@ export function PaymentPlanSelector({
         )}
       </div>
 
+      {/* A autorização da 2.ª parte vive junto ao botão de pagar (MandateConsent). */}
       {plan === "two_parts" && (
-        <div className="border-t border-pa-sand pt-3 space-y-2">
-          {/* Texto do servidor, tal como vem: é o que fica registado. */}
-          <p className="caption text-pa-earth leading-relaxed whitespace-pre-line">{offer.mandate.text}</p>
-          <label className="flex items-start gap-2 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={mandateAccepted}
-              onChange={(e) => onMandateChange(e.target.checked)}
-              className="mt-0.5 w-4 h-4 accent-black border-pa-sand rounded"
-            />
-            <span className="caption text-pa-dark leading-snug">{offer.mandate.checkbox}</span>
-          </label>
+        <div className="border-t border-pa-sand pt-3">
           <p className="caption text-pa-stone-aa leading-snug flex items-start gap-1.5">
             <Check className="w-3 h-3 mt-0.5 text-pa-gold shrink-0" />
             {t("checkout.payPlan.split.walletNote", "Apple Pay and Google Pay pay the whole stay today. To pay in two parts, use your card.")}

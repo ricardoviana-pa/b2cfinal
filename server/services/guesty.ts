@@ -6,6 +6,7 @@
  */
 
 import { guestyClient } from "../lib/guesty";
+import { BoundedMap } from "../lib/boundedMap";
 import { isBEApiConfigured, createBEQuote, beQuotesUnderPressure, type BERatePlanOption } from "./guesty-booking";
 import { getPropertiesForSite } from "./properties-store";
 
@@ -13,7 +14,8 @@ type QuoteSource = "live" | "cached" | "base" | "request";
 
 const QUOTE_CACHE_TTL_MS = 15 * 60 * 1000; // 15 min for live quotes
 const QUOTE_CACHE_FALLBACK_TTL_MS = 3 * 60 * 1000; // 3 min for base-price fallbacks (retry sooner)
-const quoteCache = new Map<string, { expiresAt: number; value: QuoteResult }>();
+// Chave = casa + datas + hóspedes: sem teto crescia com cada pesquisa.
+const quoteCache = new BoundedMap<string, { expiresAt: number; value: QuoteResult }>(2000);
 /** In-flight dedup: concurrent getQuote calls for same params share one promise. */
 const inFlightGetQuotes = new Map<string, Promise<QuoteResult>>();
 
@@ -46,6 +48,55 @@ export function describeGuestyError(err: any): string {
 /** O Guesty responde assim quando a casa está em "reserva por pedido" nas datas. */
 export function isRequestOnlyError(reason: string): boolean {
   return /only available by request/i.test(reason);
+}
+
+/** Porque é que umas datas não se podem reservar (para a mensagem do cliente). */
+export type UnavailableReason = "dates" | "min_stay" | "advance_notice";
+
+/**
+ * O BE recusou ESTAS datas (noites fechadas, estadia mínima, antecedência):
+ * é uma resposta definitiva, não uma avaria — não melhora com retry e não se
+ * mostra como "não conseguimos confirmar o preço". As frases vêm de
+ * parseBEError (guesty-booking.ts) e do 422 do BE.
+ */
+export function datesUnavailableReason(reason: string): UnavailableReason | null {
+  if (/minimum stay rule/i.test(reason)) return "min_stay";
+  if (/advance notice rule/i.test(reason)) return "advance_notice";
+  if (/not available for the selected dates/i.test(reason)) return "dates";
+  return null;
+}
+
+type StayVerdict = { status: "unavailable"; reason: UnavailableReason } | { status: "open" } | { status: "unknown" };
+
+/**
+ * O que o calendário do BE diz das NOITES de uma estadia (o dia da saída não
+ * é uma noite). Auditoria 29 out 2026 (prices-availability-02): só
+ * booked/blocked/maintenance contavam como fechadas, e as noites
+ * "unavailable" (Lima River Houses, 12–18 jan) passavam, devolvendo o
+ * basePrice do Guesty com available:true. Agora qualquer estado que não seja
+ * "available" fecha a estadia, tal como a chegada fechada (cta), a saída
+ * fechada (ctd) e a estadia mínima do dia de chegada.
+ */
+export function calendarStayVerdict(days: any[], checkIn: string, checkOut: string): StayVerdict {
+  const byDate = new Map<string, any>();
+  for (const d of Array.isArray(days) ? days : []) if (d && typeof d.date === "string") byDate.set(d.date, d);
+  const start = Date.parse(checkIn + "T00:00:00Z");
+  const end = Date.parse(checkOut + "T00:00:00Z");
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return { status: "unknown" };
+  const nights: string[] = [];
+  for (let t = start; t < end; t += 86_400_000) nights.push(new Date(t).toISOString().slice(0, 10));
+  let missing = false;
+  for (const date of nights) {
+    const day = byDate.get(date);
+    if (!day) { missing = true; continue; }
+    if (day.status !== "available") return { status: "unavailable", reason: "dates" };
+  }
+  const arrival = byDate.get(checkIn);
+  if (arrival?.cta === true) return { status: "unavailable", reason: "dates" };
+  if (byDate.get(checkOut)?.ctd === true) return { status: "unavailable", reason: "dates" };
+  const minNights = Number(arrival?.minNights);
+  if (Number.isFinite(minNights) && minNights > nights.length) return { status: "unavailable", reason: "min_stay" };
+  return missing ? { status: "unknown" } : { status: "open" };
 }
 
 function setCachedQuote(key: string, value: QuoteResult): void {
@@ -128,6 +179,15 @@ export interface QuoteResult {
   fallbackMessage?: string;
   /** A casa é reservada por pedido nestas datas (config do Guesty) — não é falha */
   requestOnly?: boolean;
+  /** Datas fechadas (o calendário ou o BE disseram-no): available é false e não é falha de preço. */
+  unavailable?: boolean;
+  unavailableReason?: UnavailableReason;
+  /**
+   * Sem cotação live (o BE falhou e nada prova que as datas estão fechadas).
+   * O bloco `pricing` vem a zeros DE PROPÓSITO: o basePrice do Guesty é um
+   * valor de referência, não um preço, e nunca se mostra como tal.
+   */
+  estimate?: boolean;
   /** Present when source is "live" or "cached" — the BE quote ID for payment processing. */
   quoteId?: string;
   ratePlanId?: string;
@@ -208,8 +268,9 @@ export async function getQuote(
 
   const promise = _getQuoteImpl(listingId, checkIn, checkOut, guests, cacheKey)
     .then((r) => {
-      // Saúde do BE: só resultados frescos contam (cache hits saem acima)
-      recordQuoteOutcome(r.source === "live" || !!r.requestOnly, listingId);
+      // Saúde do BE: só resultados frescos contam (cache hits saem acima).
+      // Datas fechadas e "por pedido" são respostas certas, não falhas.
+      recordQuoteOutcome(r.source === "live" || !!r.requestOnly || !!r.unavailable, listingId);
       return r;
     })
     .finally(() => {
@@ -252,7 +313,7 @@ async function _getQuoteImpl(
         } catch (attemptErr: any) {
           const reason = describeGuestyError(attemptErr);
           // Respostas definitivas do Guesty não melhoram com retry
-          if (isRequestOnlyError(reason) || /not available for the selected dates/i.test(reason)) throw attemptErr;
+          if (isRequestOnlyError(reason) || datesUnavailableReason(reason)) throw attemptErr;
           const remaining = budgetEnd - Date.now() - 1_200;
           if (attempt === 2 || remaining < 5_000) throw attemptErr;
           console.warn(`[getQuote] BE tentativa ${attempt} falhou para ${listingId} (${reason}); retry em 1.2s`);
@@ -293,25 +354,25 @@ async function _getQuoteImpl(
       if (isRequestOnlyError(reason)) {
         return { ...buildPriceOnRequestResult(listingId, checkIn, checkOut, guests), requestOnly: true };
       }
+      // O BE recusou estas datas (fechadas, estadia mínima, antecedência):
+      // indisponível, sem descer aos tiers seguintes.
+      const closed = datesUnavailableReason(reason);
+      if (closed) return buildUnavailableResult(listingId, checkIn, checkOut, closed);
     }
   }
 
   // ── TIER 2 (removed): Open API /v1/quotes permanently removed 2026-03-31 ──
   // The v1 endpoint is dead. Only the BE API (Tier 1) produces live quotes now.
 
-  // ── Return base-price cache if we have one ──
+  // ── Resultado "sem preço live" recente (3 min): poupa o calendário ──
   const cached = getCachedQuote(cacheKey);
   if (cached) {
-    console.info(`[getQuote] ✓ CACHED quote for ${listingId}: €${cached.pricing.total}`);
-    return {
-      ...cached,
-      source: "base" as QuoteSource,
-      fallbackMessage: "Estimated price based on property's base rate.",
-    };
+    console.info(`[getQuote] sem preço live (em cache) para ${listingId}`);
+    return cached;
   }
 
-  // ── TIER 3: Calendar check for definitive unavailability ──
-  let calendarHasBookedDays = false;
+  // ── TIER 3: o calendário decide se as datas estão fechadas ──
+  let verdict: StayVerdict = { status: "unknown" };
   try {
     const calendar = await Promise.race([
       guestyClient.getListingCalendar(listingId, checkIn, checkOut),
@@ -319,72 +380,25 @@ async function _getQuoteImpl(
     ]);
     // BE API returns flat array; guard against wrapped response
     const days = Array.isArray(calendar) ? calendar : (calendar?.days || []);
-    if (days.length > 0) {
-      calendarHasBookedDays = days.some((d: any) =>
-        d.status === "booked" || d.status === "blocked" || d.status === "maintenance"
-      );
-    }
+    verdict = calendarStayVerdict(days, checkIn, checkOut);
   } catch {
-    calendarHasBookedDays = false;
+    verdict = { status: "unknown" };
   }
-  if (calendarHasBookedDays) {
-    return buildPriceOnRequestResult(listingId, checkIn, checkOut, guests);
+  if (verdict.status === "unavailable") {
+    return buildUnavailableResult(listingId, checkIn, checkOut, verdict.reason);
   }
 
-  // ── TIER 4: Listing base price from Open API ──
-  try {
-    const listing = await Promise.race([
-      guestyClient.getListing(listingId, "prices"),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("listing_fetch_timeout")), 6_000)),
-    ]);
-    const basePrice = Number(listing?.prices?.basePrice || 0);
-    const cleaningFee = Number(listing?.prices?.cleaningFee || 0);
-    if (basePrice > 0 && nights > 0) {
-      const baseResult: QuoteResult = {
-        available: true, listingId, checkIn, checkOut, nights,
-        currency: listing?.prices?.currency || "EUR",
-        pricing: {
-          nightlyRate: basePrice,
-          totalNights: basePrice * nights,
-          cleaningFee,
-          subtotal: basePrice * nights + cleaningFee,
-          total: basePrice * nights + cleaningFee,
-        },
-        source: "base",
-        fallbackMessage: "Live pricing is temporarily unavailable. Showing an estimated base rate.",
-      };
-      setCachedQuote(cacheKey, baseResult);
-      console.info(`[getQuote] ✓ BASE price for ${listingId}: €${baseResult.pricing.total}/night`);
-      return baseResult;
-    }
-  } catch { /* ignore */ }
-
-  // ── TIER 5: Synced property catalogue data ──
-  try {
-    const allProps = await getPropertiesForSite();
-    const prop = allProps.find((p: any) => p.guestyId === listingId);
-    const syncedPrice = Number(prop?.pricePerNight || prop?.priceFrom || 0);
-    const syncedCleaning = Number(prop?.cleaningFee || 0);
-    if (syncedPrice > 0 && nights > 0) {
-      const syncResult: QuoteResult = {
-        available: true, listingId, checkIn, checkOut, nights,
-        currency: prop?.currency || "EUR",
-        pricing: {
-          nightlyRate: syncedPrice,
-          totalNights: syncedPrice * nights,
-          cleaningFee: syncedCleaning,
-          subtotal: syncedPrice * nights + syncedCleaning,
-          total: syncedPrice * nights + syncedCleaning,
-        },
-        source: "base",
-        fallbackMessage: "Estimated price based on property's base rate.",
-      };
-      setCachedQuote(cacheKey, syncResult);
-      return syncResult;
-    }
-  } catch { /* ignore */ }
-
-  return buildPriceOnRequestResult(listingId, checkIn, checkOut, guests);
+  // ── TIER 4: sem preço live ──
+  // Antes devolvia o basePrice do Guesty (ou o pricePerNight do catálogo) com
+  // available:true, e a página mostrava esse valor de referência como "From
+  // €X" (Lima River Houses: €550 contra um "desde" real de €342). Agora:
+  // estimate:true e pricing a zeros — nenhum consumidor tem número para
+  // mostrar; o widget cai no "desde" calculado e no estado "tente de novo /
+  // concierge".
+  const result = buildNoLivePriceResult(listingId, checkIn, checkOut);
+  setCachedQuote(cacheKey, result);
+  console.info(`[getQuote] sem preço live para ${listingId} (${nights}n; calendário: ${verdict.status})`);
+  return result;
 }
 
 /**
@@ -472,9 +486,47 @@ export function buildPriceOnRequestResult(
   };
 }
 
+/** Datas fechadas: a mesma forma que o getBatchQuotes usa para "indisponível". */
+export function buildUnavailableResult(
+  listingId: string,
+  checkIn: string,
+  checkOut: string,
+  reason: UnavailableReason = "dates",
+): QuoteResult {
+  return {
+    ...buildPriceOnRequestResult(listingId, checkIn, checkOut, 0),
+    fallbackMessage: "Not available for selected dates",
+    unavailable: true,
+    unavailableReason: reason,
+  };
+}
+
 /**
- * Hard cap so PLP batch quotes never hang if Guesty or fallbacks stall.
- * First resolution wins (live quote or deadline fallback).
+ * Sem preço live e sem prova de que as datas estão fechadas (o BE falhou ou
+ * demorou). Nunca leva o basePrice do Guesty: pricing a zeros, estimate:true.
+ * available fica true = "nada indica que está fechada" — quem mostra
+ * "indisponível" olha para `unavailable`, não para isto.
+ */
+export function buildNoLivePriceResult(listingId: string, checkIn: string, checkOut: string): QuoteResult {
+  const nights = Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000);
+  return {
+    available: true,
+    listingId,
+    checkIn,
+    checkOut,
+    nights,
+    currency: "EUR",
+    pricing: { nightlyRate: 0, totalNights: 0, cleaningFee: 0, subtotal: 0, total: 0 },
+    source: "base",
+    estimate: true,
+    fallbackMessage: "Live pricing is temporarily unavailable.",
+  };
+}
+
+/**
+ * Hard cap so a quote never hangs if Guesty or fallbacks stall.
+ * First resolution wins (live quote or deadline fallback). Passado o prazo
+ * não se sabe nada das datas: "sem preço live", não "indisponível".
  */
 export async function getQuoteWithDeadline(
   listingId: string,
@@ -487,7 +539,7 @@ export async function getQuoteWithDeadline(
     getQuote(listingId, checkIn, checkOut, guests),
     new Promise<QuoteResult>((resolve) => {
       setTimeout(
-        () => resolve(buildPriceOnRequestResult(listingId, checkIn, checkOut, guests)),
+        () => resolve(buildNoLivePriceResult(listingId, checkIn, checkOut)),
         deadlineMs
       );
     }),

@@ -399,7 +399,15 @@
     "requestOnlyTitle": "Nestas datas, esta casa é reservada mediante pedido.",
     "requestOnlyBody": "Envie o seu pedido ao nosso concierge e confirmamos a disponibilidade e o preço pessoalmente.",
     "twoPartsHint": "Pode pagar em duas partes: metade hoje, metade a {{date}}. Ou tudo agora, com o Flex incluído.",
-    "twoPartsHintPlain": "Pode pagar em duas partes: metade hoje, metade a {{date}}."
+    "twoPartsHintPlain": "Pode pagar em duas partes: metade hoje, metade a {{date}}.",
+    "phoneErrors": {
+      "digits": "Um número {{dialCode}} tem {{digits}} algarismos depois do indicativo. Confirme o número e o país.",
+      "digitsRange": "Um número {{dialCode}} tem entre {{min}} e {{max}} algarismos depois do indicativo. Confirme o número e o país.",
+      "leadingZero": "Retire o 0 depois de {{dialCode}}.",
+      "tooShort": "Este número parece curto demais. Confirme-o, com o indicativo do país.",
+      "tooLong": "Este número parece longo demais. Confirme-o, com o indicativo do país.",
+      "countryCode": "Comece o número por + e o indicativo do país."
+    }
   },
   "common": {
     "loading": "A carregar…",
@@ -605,7 +613,7 @@
     "heroGuarantee": "Sem taxas de reserva. Melhor preço garantido. Resposta do concierge em 2 horas.",
     "proofHotels": "{{homes}} casas e villas",
     "proofRating": "4.8★ avaliação média",
-    "proofManaged": "Geridas pela nossa equipa",
+    "proofManaged": "{{own}} geridas pela nossa equipa",
     "heroAlt": "Campo de ténis privado e moradia da Mirante 1, sobre Albufeira, no Algarve",
     "searchDestination": "Destino",
     "searchMinhoCoast": "Costa do Minho",
@@ -639,14 +647,14 @@
     "howItWorksOverline": "COMO FUNCIONA",
     "howItWorksTitle": "Três passos até à sua casa.",
     "step1Title": "Escolha o seu alojamento",
-    "step1Body": "Navegue pela nossa coleção. Filtre por destino, tamanho e estilo. Cada alojamento cumpre o mesmo padrão operacional.",
+    "step1Body": "Navegue pela nossa coleção. Filtre por destino, tamanho e estilo. Cada alojamento que gerimos cumpre o mesmo padrão operacional.",
     "step2Title": "Diga-nos do que precisa",
     "step2Body": "Chef privado? Transferência do aeroporto? Aulas de surf para as crianças? O nosso concierge planeia tudo antes da sua chegada.",
     "step3Title": "Nós cuidamos de tudo",
     "step3Body": "Do momento em que aterra até ao momento em que parte, a nossa equipa local está no terreno. Só há uma coisa a fazer: desfrutar.",
     "conceptOverline": "O CONCEITO",
     "conceptTitle": "Não é um hotel. Não é um aluguer. Algo melhor.",
-    "conceptBody": "Cada casa na nossa coleção é operada como um hotel privado. Uma equipa local dedicada cuida de tudo, desde o cabaz de boas-vindas na chegada até um chef privado a cozinhar com ingredientes do mercado desta manhã. Sem receções. Sem átrios partilhados. Apenas a sua casa, o seu ritmo, as suas regras.",
+    "conceptBody": "Cada casa que gerimos é operada com o serviço de um hotel. Uma equipa local dedicada cuida de tudo, desde o cabaz de boas-vindas na chegada até um chef privado a cozinhar com ingredientes do mercado desta manhã. Sem receções. Sem átrios partilhados. Apenas a sua casa, o seu ritmo, as suas regras.",
     "conceptPoint1": "A privacidade de um lar",
     "conceptPoint1Body": "Sem espaços partilhados, sem horários. A propriedade inteira é exclusivamente sua.",
     "conceptPoint2": "O serviço de um hotel de cinco estrelas",
@@ -656,7 +664,7 @@
     "conceptCta": "Descubra a nossa abordagem",
     "destOverline": "A NOSSA GEOGRAFIA",
     "destTitle": "Portugal, de norte a sul.",
-    "destBody": "Da costa atlântica selvagem do Minho às falésias soalheiras do Algarve — passando pelo Douro, Lisboa e o Alentejo. Cada casa cumpre o mesmo padrão de qualidade, serviço e cuidado.",
+    "destBody": "Da costa atlântica selvagem do Minho às falésias soalheiras do Algarve — passando pelo Douro, Lisboa e o Alentejo. Cada casa que gerimos cumpre o mesmo padrão de qualidade, serviço e cuidado.",
     "destComingSoon": "Em breve",
     "destNowOperating": "A operar agora",
     "destHome_one": "{{count}} alojamento",
@@ -775,7 +783,20 @@
       "alreadyPaidShort": "Esta reserva já está paga. Verifique o seu email para a confirmação.",
       "saveFailed": "Não conseguimos guardar as suas últimas alterações. Verifique a ligação e tente novamente.",
       "network": "Problema de ligação. Verifique a internet e tente novamente.",
-      "genericRetry": "O pagamento não pôde ser concluído. Tente novamente — ou contacte-nos e concluímos a sua reserva pessoalmente."
+      "genericRetry": "O pagamento não pôde ser concluído. Tente novamente — ou contacte-nos e concluímos a sua reserva pessoalmente.",
+      "declinedLimit": "O pagamento foi recusado, muitas vezes por causa do limite do cartão para este valor. Use outro cartão ou método de pagamento.",
+      "declinedGeneric": "O pagamento foi recusado. Use outro cartão ou método de pagamento.",
+      "cardExpired": "Este cartão expirou. Use outro cartão ou método de pagamento.",
+      "cardNotSupported": "Este cartão não aceita este pagamento. Use outro cartão ou método de pagamento.",
+      "incorrectCvc": "O código de segurança (CVC) não está correto. Verifique e tente novamente.",
+      "incorrectNumber": "O número do cartão não está correto. Verifique e tente novamente.",
+      "cardDetails": "Há dados do cartão que não estão corretos. Verifique o número, a validade e o código de segurança e tente novamente.",
+      "bankUnavailable": "O banco não conseguiu processar o pagamento neste momento. Nada foi cobrado. Tente novamente daqui a pouco.",
+      "authenticationFailed": "A confirmação com o seu banco não foi concluída, por isso nada foi cobrado. Tente novamente e confirme na app do banco.",
+      "twoPartsUnavailable": "O pagamento em duas partes deixou de estar disponível para esta reserva. Nada foi cobrado: pode pagar o valor total agora.",
+      "prepareFailed": "Não conseguimos preparar o pagamento. Nada foi cobrado. Tente novamente.",
+      "priceChanged": "O preço ou os dados desta reserva mudaram entretanto. Atualize o preço para continuar.",
+      "duplicateTransaction": "Foi feito há instantes um pagamento com este cartão e este valor. Verifique o seu email e a app do banco antes de pagar outra vez."
     },
     "payButton": "Pagar {{amount}}",
     "cancelButton": "Cancelar",
@@ -790,7 +811,18 @@
     "payNowButton": "Pagar {{amountNow}} agora",
     "payNowAfter": "Depois, {{amountLater}} a {{date}}.",
     "processingFirst": "A processar a primeira parte…",
-    "mandateMissing": "Marque a autorização acima para continuar."
+    "mandateMissing": "Marque a autorização acima para continuar.",
+    "termsHint": "Marque esta caixa para pagar.",
+    "walletsHint": "Para pagar com {{wallets}}, complete os seus dados e marque a caixa dos Termos mais abaixo.",
+    "errorActions": {
+      "twoParts": "Pagar em duas partes ({{amountNow}} hoje)",
+      "otherMethod": "Usar outro cartão ou método",
+      "otherCard": "Usar outro cartão",
+      "concierge": "Falar com o concierge",
+      "whatsappMessage": "Olá, preciso de ajuda com a minha reserva: {{property}}, de {{checkIn}} a {{checkOut}}, hóspedes: {{guests}}. O pagamento não passou."
+    },
+    "methodsAccepted": "Métodos de pagamento aceites",
+    "notChargedYet": "Ainda não lhe será cobrado nada."
   },
   "contact": {
     "heroAlt": "Contactar Portugal Active",
@@ -852,12 +884,12 @@
   },
   "about": {
     "heroAlt": "A equipa Portugal Active",
-    "heroTitle": "Não nos limitamos a alugar casas. Operamos cada uma como um hotel.",
+    "heroTitle": "Não nos limitamos a alugar casas. Gerimos casas como um hotel.",
     "storyOverline": "A NOSSA HISTÓRIA",
     "storyTitle": "A Nossa História",
     "storyP1": "A Portugal Active começou em 2017 como empresa de turismo de aventura em Viana do Castelo, fundada por Ricardo Viana — um cientista do desporto que deixou a academia para construir algo na costa onde cresceu. Passeios de bicicleta, equitação, canyoning, aulas de surf. Depois, uma única propriedade mudou tudo. Assumimos um lodge e gerimo-lo como geríamos as nossas aventuras: com preparação obsessiva, atenção personalizada e uma equipa presente do primeiro ao último momento. Os hóspedes notaram.",
-    "storyP2": "Olhámos para a forma como as casas de férias eram alugadas em Portugal e vimos sempre o mesmo padrão: propriedades bonitas, entregues com um molho de chaves e um número de telefone. Nenhuma equipa no terreno. Ninguém por trás da experiência após o check-in. Por isso redesenhámos tudo — equipa de limpeza a tempo inteiro, manutenção, concierge que vive na região, checklist de {{points}} pontos antes de cada chegada. Não um aluguer com extras. Um modelo totalmente novo: o hotel privado.",
-    "storyP3": "De uma propriedade para {{count}}, cada uma gerida de ponta a ponta pela nossa equipa. A Forbes, o The Times e o The Guardian escreveram sobre o que estamos a construir. Continuamos sediados em Viana do Castelo. Independentes. A crescer mais de 100% ao ano. E movidos pela mesma convicção: a forma como as pessoas vivem uma casa de férias está errada, e somos nós que a estamos a mudar.",
+    "storyP2": "Olhámos para a forma como as casas de férias eram alugadas em Portugal e vimos sempre o mesmo padrão: propriedades bonitas, entregues com um molho de chaves e um número de telefone. Nenhuma equipa no terreno. Ninguém por trás da experiência após o check-in. Por isso redesenhámos tudo — equipa de limpeza a tempo inteiro, manutenção, concierge que vive na região, checklist de {{points}} pontos antes de cada chegada. Não um aluguer com extras. Um modelo totalmente novo: uma casa privada, gerida com o serviço de um hotel.",
+    "storyP3": "De uma propriedade para {{count}}, {{own}} delas geridas de ponta a ponta pela nossa equipa. A Forbes, o The Times e o The Guardian escreveram sobre o que estamos a construir. Continuamos sediados em Viana do Castelo. Independentes. A crescer mais de 100% ao ano. E movidos pela mesma convicção: a forma como as pessoas vivem uma casa de férias está errada, e somos nós que a estamos a mudar.",
     "modelOverline": "O NOSSO MODELO",
     "modelTitle": "Hospitalidade privada. Não um marketplace.",
     "modelP1": "Não listamos alojamentos numa plataforma e esperamos. Operamos cada propriedade como um hotel privado, com pessoal interno, inspeções diárias, limpeza profissional e uma equipa de concierge que conhece cada hóspede pelo nome antes de chegar.",
@@ -878,7 +910,7 @@
     "ctaExplore": "EXPLORE OS NOSSOS ALOJAMENTOS",
     "ctaContact": "ENTRE EM CONTACTO",
     "heroOverline": "Casas e Villas de Luxo em Portugal",
-    "heroSubtitle": "Uma equipa. Um padrão. {{count}} casas em Portugal, cada uma gerida de ponta a ponta pela nossa equipa.",
+    "heroSubtitle": "{{count}} casas em Portugal, {{own}} delas geridas de ponta a ponta pela nossa equipa.",
     "founderCaption": "Ricardo Viana, Fundador. Viana do Castelo.",
     "pressOverline": "Destaque em",
     "modelP3": "É isto que \"a privacidade de uma casa, o serviço de um hotel\" significa na prática. A privacidade e o espaço de uma casa, com a fiabilidade e a profundidade de serviço de um hotel. Uma marca. Um padrão operacional. Independentemente da propriedade que escolher.",
@@ -887,13 +919,13 @@
     "standard1Title": "Roupa de cama de qualidade hoteleira",
     "standard1Body": "Lençóis de algodão com mais de 300 fios, edredões premium e toalhas de banho grandes. Substituídos conforme o planeamento.",
     "standard2Title": "Limpeza profissional",
-    "standard2Body": "A nossa equipa treinada prepara cada alojamento antes da chegada. Não é um profissional de limpeza diferente a cada semana. A nossa equipa.",
+    "standard2Body": "A nossa equipa treinada prepara cada alojamento que gerimos antes da chegada. Não é um profissional de limpeza diferente a cada semana. A nossa equipa.",
     "standard3Title": "Chef privado sob pedido",
     "standard3Body": "Chefs profissionais que compram no mercado matinal e cozinham na sua cozinha. Do pequeno-almoço a jantares de vários pratos.",
     "standard4Title": "Concierge desde o primeiro dia",
     "standard4Body": "O seu concierge contacta-o antes da chegada. Restaurantes, transferências, aulas de surf, provas de vinhos. Uma mensagem.",
     "standard5Title": "Preparação de {{points}} pontos",
-    "standard5Body": "Cada alojamento é verificado segundo a nossa lista de preparação antes de cada chegada. Cada eletrodoméstico, cada divisão, cada detalhe.",
+    "standard5Body": "Cada alojamento que gerimos é verificado segundo a nossa lista de preparação antes de cada chegada. Cada eletrodoméstico, cada divisão, cada detalhe.",
     "standard6Title": "Cabaz de boas-vindas",
     "standard6Body": "Vinho local, água, fruta da época e produtos regionais. Colocada em cada alojamento no dia da chegada.",
     "discoverExperiences": "DESCUBRA AS NOSSAS EXPERIÊNCIAS",
@@ -909,8 +941,8 @@
     "ownersCta": "SAIBA MAIS SOBRE GESTÃO DE PROPRIEDADES",
     "behindScenesOverline": "NOS BASTIDORES",
     "behindScenesTitle": "A lista de {{points}} pontos",
-    "behindScenesP1": "Antes de cada chegada, a nossa equipa interna corre uma lista de verificação de {{points}} pontos. Roupa de cama passada, amenities repostos, cada superfície inspecionada. É isto o serviço de hotel aplicado a uma casa privada.",
-    "behindScenesP2": "Sem equipas de limpeza externas. Sem atalhos. A nossa equipa cuida pessoalmente de cada casa, e o padrão nunca cede."
+    "behindScenesP1": "Antes de cada chegada a uma casa que gerimos, a nossa equipa interna corre uma lista de verificação de {{points}} pontos. Roupa de cama passada, amenities repostos, cada superfície inspecionada. É isto o serviço de hotel aplicado a uma casa privada.",
+    "behindScenesP2": "Sem equipas de limpeza externas. Sem atalhos. A nossa equipa cuida pessoalmente de cada casa que gerimos, e o padrão nunca cede."
   },
   "services": {
     "heroAlt": "Experiências Portugal Active",
@@ -1171,7 +1203,7 @@
     "s2OriginBody": "Se autorizar os cookies de análise, escolhendo Aceitar tudo no aviso de cookies, guardamos também, junto do seu pedido de reserva, de onde veio a visita ao nosso site: a campanha, o anúncio ou o site de onde chegou. Usamos esta informação apenas internamente, para saber que ações de marketing funcionam, e não a partilhamos com terceiros. Sem essa autorização, não guardamos a origem da visita.",
     "s3Title": "3. Partilha de Dados",
     "s3Body": "Não vendemos a sua informação pessoal. Podemos partilhar os seus dados com proprietários e prestadores de serviços para cumprir a sua reserva e prestar os serviços que pediu. Se já ficou connosco ou nos deu o seu email, podemos também enviá-lo, sempre codificado (hash) e por isso ilegível, a plataformas de anúncios como a Meta (Facebook e Instagram) e a Google, para lhe mostrarmos as nossas ofertas nessas plataformas. Pode pedir para sair destas listas a qualquer momento em info@portugalactive.com.",
-    "s3AdsBody": "Se escolher Aceitar tudo no aviso de cookies, quando começa ou conclui uma reserva no nosso site enviamos também à Meta (Facebook e Instagram), a partir do nosso servidor, o valor e o código da reserva, a casa escolhida, o seu email e telefone codificados (hash), os identificadores dos cookies da Meta, o endereço IP e o tipo de navegador. Serve para sabermos que anúncios trazem reservas. Guardamos esses identificadores durante 31 dias. Sem essa autorização, ou se escolher Apenas essenciais, não enviamos nada à Meta.",
+    "s3AdsBody": "Se escolher Aceitar tudo no aviso de cookies, quando começa ou conclui uma reserva no nosso site enviamos também à Meta (Facebook e Instagram), a partir do nosso servidor, o valor e o código da reserva, a casa escolhida, o seu email e telefone codificados (hash), os identificadores dos cookies da Meta, o endereço IP e o tipo de navegador. Serve para sabermos que anúncios trazem reservas. Guardamos esses identificadores durante 31 dias. Sem essa autorização, ou se escolher Apenas essenciais, não enviamos à Meta nenhum destes dados da reserva.",
     "s4Title": "4. Os Seus Direitos",
     "s4Body": "Ao abrigo do RGPD, tem o direito de aceder, corrigir, eliminar ou portar os seus dados pessoais. Pode também retirar o consentimento para comunicações de marketing, incluindo anúncios personalizados, a qualquer momento. Contacte-nos em info@portugalactive.com para exercer estes direitos.",
     "s5Title": "5. Contacto",
@@ -1201,6 +1233,10 @@
     "updatesBody": "Podemos atualizar esta Política de Cookies periodicamente para refletir alterações na tecnologia, legislação ou nas nossas práticas de dados. Encorajamo-lo a rever esta página periodicamente.",
     "contactTitle": "Contacte-nos",
     "contactBody": "Se tiver questões sobre a nossa utilização de cookies, contacte-nos em info@portugalactive.com."
+  },
+  "legalFooter": {
+    "complaintsBook": "Livro de Reclamações",
+    "complaintsBookAria": "Livro de Reclamações Eletrónico (abre num novo separador)"
   },
   "blog": {
     "overline": "DIÁRIO",
@@ -1887,7 +1923,17 @@
     "rate": {
       "twoPartsLine": "Também pode pagar em duas partes: {{amountNow}} hoje e {{amountLater}} a {{date}}.",
       "twoPartsLinePlain": "Também pode pagar em duas partes: {{amountNow}} hoje e {{amountLater}} a {{date}}."
-    }
+    },
+    "emailLineLabel": "Confirmação para",
+    "emailChange": "alterar",
+    "fieldErrors": {
+      "firstName": "Indique o seu nome.",
+      "lastName": "Indique o seu apelido."
+    },
+    "nifInvalid": "Este NIF não parece correto: verifique os 9 dígitos. Para um número de IVA de outro país, comece pelo código do país (por exemplo ES).",
+    "emailHoldNote": "Guardamos este preço até {{date}}, {{time}}. Se não terminar agora, podemos enviar-lhe um ou dois lembretes por email. Sem spam.",
+    "emailReminderNote": "Se não terminar agora, podemos enviar-lhe um ou dois lembretes por email. Sem spam.",
+    "conciergeMessage": "Olá, tenho uma pergunta sobre a minha reserva: {{property}}, de {{checkIn}} a {{checkOut}}, hóspedes: {{guests}}."
   },
   "host": {
     "hostedBy": "Anfitriões: Ricardo & a equipa Portugal Active",

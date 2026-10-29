@@ -399,7 +399,15 @@
     "requestOnlyTitle": "För dessa datum bokas detta hem på förfrågan.",
     "requestOnlyBody": "Skicka din förfrågan till vår concierge så bekräftar vi tillgänglighet och pris personligen.",
     "twoPartsHint": "Du kan betala i två delar: halva i dag och resten den {{date}}. Eller allt nu, med Flex inkluderat.",
-    "twoPartsHintPlain": "Du kan betala i två delar: halva i dag och resten den {{date}}."
+    "twoPartsHintPlain": "Du kan betala i två delar: halva i dag och resten den {{date}}.",
+    "phoneErrors": {
+      "digits": "Ett nummer med {{dialCode}} har {{digits}} siffror efter landsnumret. Kontrollera numret och landet.",
+      "digitsRange": "Ett nummer med {{dialCode}} har {{min}} till {{max}} siffror efter landsnumret. Kontrollera numret och landet.",
+      "leadingZero": "Ta bort nollan efter {{dialCode}}.",
+      "tooShort": "Numret verkar för kort. Kontrollera det, med landsnummer.",
+      "tooLong": "Numret verkar för långt. Kontrollera det, med landsnummer.",
+      "countryCode": "Börja numret med + och landsnumret."
+    }
   },
   "common": {
     "loading": "Laddar…",
@@ -605,7 +613,7 @@
     "heroGuarantee": "Inga bokningsavgifter. Bästa pris garanterat. Concierge-svar inom 2 timmar.",
     "proofHotels": "{{homes}} villor och semesterhus",
     "proofRating": "4.8★ gästbetyg",
-    "proofManaged": "Drivna av vårt eget team",
+    "proofManaged": "{{own}} drivs av vårt eget team",
     "heroAlt": "Privat tennisbana och villa vid Mirante 1, ovanför Albufeira i Algarve",
     "searchDestination": "Destination",
     "searchMinhoCoast": "Minho-kusten",
@@ -639,14 +647,14 @@
     "howItWorksOverline": "SÅ FUNGERAR DET",
     "howItWorksTitle": "Tre steg till din villa.",
     "step1Title": "Välj ditt hem",
-    "step1Body": "Bläddra i vår kollektion. Filtrera efter destination, storlek och stil. Varje hem uppfyller samma driftsstandard.",
+    "step1Body": "Bläddra i vår kollektion. Filtrera efter destination, storlek och stil. Varje hem vi förvaltar uppfyller samma driftsstandard.",
     "step2Title": "Berätta vad du behöver",
     "step2Body": "Privat kock? Flygplatstransfer? Surfkurser för barnen? Vår concierge planerar allt innan du anländer.",
     "step3Title": "Vi hanterar varje detalj",
     "step3Body": "Från det ögonblick du landar till det ögonblick du lämnar är vårt lokala team på plats. Du behöver bara njuta.",
     "conceptOverline": "KONCEPTET",
     "conceptTitle": "Inte ett hotell. Inte en uthyrning. Något bättre.",
-    "conceptBody": "Varje hem i vår kollektion drivs som ett privat hotell. Ett dedikerat lokalt team hanterar allt, från välkomstkorgen vid ankomst till en privat kock som lagar mat med ingredienser från morgonens marknad. Inga receptionsdisar. Inga delade lobbyer. Bara ditt hem, din takt, dina regler.",
+    "conceptBody": "Varje hem vi förvaltar drivs med ett hotells service. Ett dedikerat lokalt team hanterar allt, från välkomstkorgen vid ankomst till en privat kock som lagar mat med ingredienser från morgonens marknad. Inga receptionsdisar. Inga delade lobbyer. Bara ditt hem, din takt, dina regler.",
     "conceptPoint1": "Hemmets integritet",
     "conceptPoint1Body": "Inga delade utrymmen, inga scheman. Hela bostaden är uteslutande din.",
     "conceptPoint2": "Femstjärnigt hotells service",
@@ -656,7 +664,7 @@
     "conceptCta": "Upptäck vårt tillvägagångssätt",
     "destOverline": "VÅR GEOGRAFI",
     "destTitle": "Portugal, från kust till kust.",
-    "destBody": "Från Minhos vilda Atlantkuster till Algarves soldränkta klippor — med Douro-dalen, Lissabon och Alentejo däremellan. Varje hem uppfyller samma standard för kvalitet, service och omsorg.",
+    "destBody": "Från Minhos vilda Atlantkuster till Algarves soldränkta klippor — med Douro-dalen, Lissabon och Alentejo däremellan. Varje hem vi förvaltar uppfyller samma standard för kvalitet, service och omsorg.",
     "destComingSoon": "Kommer snart",
     "destNowOperating": "Nu i drift",
     "destHome_one": "{{count}} hem",
@@ -775,7 +783,20 @@
       "alreadyPaidShort": "Denna bokning är redan betald. Kolla din e-post för bekräftelsen.",
       "saveFailed": "Vi kunde inte spara dina senaste ändringar. Kontrollera din anslutning och försök igen.",
       "network": "Anslutningsproblem. Kontrollera ditt internet och försök igen.",
-      "genericRetry": "Betalningen kunde inte slutföras. Försök igen — eller kontakta oss så slutför vi din bokning personligen."
+      "genericRetry": "Betalningen kunde inte slutföras. Försök igen — eller kontakta oss så slutför vi din bokning personligen.",
+      "declinedLimit": "Betalningen nekades, ofta på grund av kortets gräns för det här beloppet. Använd ett annat kort eller betalsätt.",
+      "declinedGeneric": "Betalningen nekades. Använd ett annat kort eller betalsätt.",
+      "cardExpired": "Kortet har gått ut. Använd ett annat kort eller betalsätt.",
+      "cardNotSupported": "Kortet godtar inte den här betalningen. Använd ett annat kort eller betalsätt.",
+      "incorrectCvc": "Säkerhetskoden (CVC) är inte korrekt. Kontrollera den och försök igen.",
+      "incorrectNumber": "Kortnumret är inte korrekt. Kontrollera det och försök igen.",
+      "cardDetails": "Vissa kortuppgifter är inte korrekta. Kontrollera numret, utgångsdatumet och säkerhetskoden och försök igen.",
+      "bankUnavailable": "Banken kunde inte behandla betalningen just nu. Ingenting har dragits. Försök igen om en stund.",
+      "authenticationFailed": "Bekräftelsen hos din bank slutfördes inte, så ingenting har dragits. Försök igen och bekräfta i bankens app.",
+      "twoPartsUnavailable": "Betalning i två delar är inte längre tillgänglig för den här bokningen. Ingenting har dragits: du kan betala hela beloppet nu.",
+      "prepareFailed": "Vi kunde inte förbereda betalningen. Ingenting har dragits. Försök igen.",
+      "priceChanged": "Priset eller uppgifterna för den här bokningen har ändrats under tiden. Uppdatera priset för att fortsätta.",
+      "duplicateTransaction": "Nyss gjordes en betalning med det här kortet och det här beloppet. Kontrollera din e-post och din bankapp innan du betalar igen."
     },
     "payButton": "Betala {{amount}}",
     "cancelButton": "Avbryt",
@@ -790,7 +811,18 @@
     "payNowButton": "Betala {{amountNow}} nu",
     "payNowAfter": "Sedan {{amountLater}} den {{date}}.",
     "processingFirst": "Första delen behandlas…",
-    "mandateMissing": "Kryssa i godkännandet ovan för att fortsätta."
+    "mandateMissing": "Kryssa i godkännandet ovan för att fortsätta.",
+    "termsHint": "Kryssa i rutan för att betala.",
+    "walletsHint": "För att betala med {{wallets}}, fyll i dina uppgifter och kryssa i rutan för villkoren längre ner.",
+    "errorActions": {
+      "twoParts": "Betala i två delar i stället ({{amountNow}} i dag)",
+      "otherMethod": "Använd ett annat kort eller betalsätt",
+      "otherCard": "Använd ett annat kort",
+      "concierge": "Prata med conciergen",
+      "whatsappMessage": "Hej, jag behöver hjälp med min bokning: {{property}}, {{checkIn}} till {{checkOut}}, gäster: {{guests}}. Betalningen gick inte igenom."
+    },
+    "methodsAccepted": "Betalningssätt som accepteras",
+    "notChargedYet": "Du debiteras inte än."
   },
   "contact": {
     "heroAlt": "Kontakta Portugal Active",
@@ -852,12 +884,12 @@
   },
   "about": {
     "heroAlt": "Portugal Active-teamet",
-    "heroTitle": "Vi hyr inte bara ut villor. Vi driver var och en som ett hotell.",
+    "heroTitle": "Vi hyr inte bara ut villor. Vi driver hem som ett hotell.",
     "storyOverline": "VÅR HISTORIA",
     "storyTitle": "Född ur en enkel övertygelse: Portugal förtjänar bättre gästfrihet.",
     "storyP1": "Portugal Active startade 2017 som ett äventyrsturismföretag i Viana do Castelo, grundat av Ricardo Viana — en idrottsvetare som lämnade akademin för att bygga något på kusten där han växte upp. Cykelturer, ridning, canyoning, surfskola. Sedan förändrade en enda fastighet allt. Vi tog över ett lodge och drev det som våra äventyr: med besatt förberedelse, personlig uppmärksamhet och ett team närvarande från första till sista stund. Gästerna märkte det.",
-    "storyP2": "Vi tittade på hur semesterhus hyrdes ut i Portugal och såg samma mönster överallt: vackra fastigheter, överlämnade med nycklar och ett telefonnummer. Inget team på plats. Ingen bakom upplevelsen efter incheckningen. Så vi designade om allt — ett heltidsanställt städteam, underhållspersonal, en concierge som bor i regionen, en {{points}}-punktschecklista inför varje ankomst. Inte en uthyrning med tillägg. En helt ny modell: det privata hotellet.",
-    "storyP3": "Från en fastighet till över femtio, var och en hanterad från början till slut av vårt eget team. Forbes, The Times och The Guardian har skrivit om vad vi bygger. Vi finns fortfarande i Viana do Castelo. Oberoende. Växer med över 100% per år. Och drivna av samma övertygelse: sättet människor upplever ett semesterhus på är trasigt, och vi är de som fixar det.",
+    "storyP2": "Vi tittade på hur semesterhus hyrdes ut i Portugal och såg samma mönster överallt: vackra fastigheter, överlämnade med nycklar och ett telefonnummer. Inget team på plats. Ingen bakom upplevelsen efter incheckningen. Så vi designade om allt — ett heltidsanställt städteam, underhållspersonal, en concierge som bor i regionen, en {{points}}-punktschecklista inför varje ankomst. Inte en uthyrning med tillägg. En helt ny modell: ett privat hem, drivet med ett hotells service.",
+    "storyP3": "Från en fastighet till {{count}}, varav {{own}} hanteras från början till slut av vårt eget team. Forbes, The Times och The Guardian har skrivit om vad vi bygger. Vi finns fortfarande i Viana do Castelo. Oberoende. Växer med över 100% per år. Och drivna av samma övertygelse: sättet människor upplever ett semesterhus på är trasigt, och vi är de som fixar det.",
     "modelOverline": "VÅR MODELL",
     "modelTitle": "Privat gästfrihet. Inte en marknadsplats.",
     "modelP1": "Vi listar inte hem på en plattform och väntar. Vi driver varje fastighet som ett privat hotell, med egen personal, dagliga inspektioner, professionell städning och ett concierge-team som känner varje gäst vid namn innan de anländer.",
@@ -878,7 +910,7 @@
     "ctaExplore": "UTFORSKA VÅRA HEM",
     "ctaContact": "KONTAKTA OSS",
     "heroOverline": "Lyxvillor & Semesterhus i Portugal",
-    "heroSubtitle": "Ett team. En standard. Femtio hem över hela Portugal, vart och ett förvaltat från början till slut av våra egna medarbetare.",
+    "heroSubtitle": "{{count}} hem över hela Portugal, varav {{own}} förvaltas från början till slut av våra egna medarbetare.",
     "founderCaption": "Ricardo Viana, grundare. Viana do Castelo.",
     "pressOverline": "I media",
     "modelP3": "Det är detta \"ett hems avskildhet, ett hotells service\" betyder i praktiken. Hemmets integritet och utrymme, med ett hotells tillförlitlighet och servicedjup. Ett varumärke. En driftstandard. Oavsett vilken fastighet du väljer.",
@@ -887,13 +919,13 @@
     "standard1Title": "Lakan av hotellkvalitet",
     "standard1Body": "Bomullslakan med över 300 trådar, premiumtäcken och fullstora badhanddukar. Byts ut enligt schema.",
     "standard2Title": "Professionell städning",
-    "standard2Body": "Vårt utbildade team förbereder varje hem före ankomst. Inte en annan städare varje vecka. Våra egna medarbetare.",
+    "standard2Body": "Vårt utbildade team förbereder varje hem vi förvaltar före ankomst. Inte en annan städare varje vecka. Våra egna medarbetare.",
     "standard3Title": "Privat kock på begäran",
     "standard3Body": "Professionella kockar som handlar på morgonmarknaden och lagar mat i ditt kök. Från frukost till flergångsmiddagar.",
     "standard4Title": "Concierge från dag ett",
     "standard4Body": "Din concierge kontaktar dig före ankomst. Restauranger, transferer, surfkurser, vinprovningar. Ett meddelande.",
     "standard5Title": "{{points}}-punkts förberedelse",
-    "standard5Body": "Varje hem kontrolleras mot vår förberedelsechecklista före varje enskild ankomst. Varje apparat, varje rum, varje detalj.",
+    "standard5Body": "Varje hem vi förvaltar kontrolleras mot vår förberedelsechecklista före varje enskild ankomst. Varje apparat, varje rum, varje detalj.",
     "standard6Title": "Välkomstkorg",
     "standard6Body": "Lokalt vin, vatten, säsongens frukt och regionala produkter. Placeras i varje hem på ankomstdagen.",
     "discoverExperiences": "UTFORSKA VÅRA UPPLEVELSER",
@@ -909,8 +941,8 @@
     "statConcierge": "Concierge",
     "behindScenesOverline": "BAKOM KULISSERNA",
     "behindScenesTitle": "Checklistan med {{points}} punkter",
-    "behindScenesP1": "Före varje ankomst går vårt eget team igenom en checklista med {{points}} punkter. Struket linne, påfyllda förnödenheter, varje yta inspekterad. Så ser hotellservice ut när den tillämpas på ett privat hem.",
-    "behindScenesP2": "Inga externa städteam. Inga genvägar. Vårt team sköter varje hem personligen, så att standarden aldrig sviktar."
+    "behindScenesP1": "Före varje ankomst till ett hem vi förvaltar går vårt eget team igenom en checklista med {{points}} punkter. Struket linne, påfyllda förnödenheter, varje yta inspekterad. Så ser hotellservice ut när den tillämpas på ett privat hem.",
+    "behindScenesP2": "Inga externa städteam. Inga genvägar. Vårt team sköter varje hem vi förvaltar personligen, så att standarden aldrig sviktar."
   },
   "services": {
     "heroAlt": "Portugal Active-upplevelser",
@@ -1163,13 +1195,15 @@
   "privacy": {
     "overline": "JURIDIK",
     "title": "Integritetspolicy",
-    "lastUpdated": "Senast uppdaterad: september 2026",
+    "lastUpdated": "Senast uppdaterad: oktober 2026",
     "s1Title": "1. Information vi samlar in",
     "s1Body": "Vi samlar in information som du lämnar direkt till oss, till exempel när du gör en bokningsförfrågan, prenumererar på vårt nyhetsbrev eller kontaktar oss. Detta kan inkludera ditt namn, e-postadress, telefonnummer och resepreferenser.",
     "s2Title": "2. Hur vi använder din information",
     "s2Body": "Vi använder informationen vi samlar in för att bearbeta dina bokningar, kommunicera med dig om din vistelse, skicka marknadsföringskommunikation (med ditt samtycke) och förbättra våra tjänster.",
+    "s2OriginBody": "Om du tillåter analyscookies genom att välja Acceptera alla i cookiemeddelandet sparar vi också, tillsammans med din bokningsförfrågan, varifrån ditt besök på vår webbplats kom: kampanjen, annonsen eller webbplatsen du kom ifrån. Vi använder informationen endast internt, för att veta vilka marknadsföringsinsatser som fungerar, och vi delar den inte med tredje part. Utan det tillståndet sparar vi inte besökets ursprung.",
     "s3Title": "3. Datadelning",
     "s3Body": "Vi säljer inte din personliga information. Vi kan dela dina uppgifter med fastighetsägare och tjänsteleverantörer för att uppfylla din bokning och leverera de tjänster du har begärt. Om du har bott hos oss eller gett oss din e-postadress kan vi också skicka den, alltid hashad och därmed oläslig, till annonsplattformar som Meta (Facebook och Instagram) och Google, för att visa dig våra erbjudanden där. Du kan när som helst be om att bli borttagen från dessa listor genom att skriva till info@portugalactive.com.",
+    "s3AdsBody": "Om du väljer Acceptera alla i cookiemeddelandet skickar vi också, när du påbörjar eller slutför en bokning på vår webbplats, från vår server till Meta (Facebook och Instagram): bokningens belopp och kod, det hem du valde, din e-postadress och ditt telefonnummer i hashad form, identifierarna i Metas cookies, IP-adressen och webbläsartypen. Så vet vi vilka annonser som ger bokningar. Vi sparar dessa identifierare i 31 dagar. Utan det tillståndet, eller om du väljer Endast nödvändiga, skickar vi ingen av dessa bokningsuppgifter till Meta.",
     "s4Title": "4. Dina rättigheter",
     "s4Body": "Enligt GDPR har du rätt att få tillgång till, korrigera, radera eller överföra dina personuppgifter. Du kan också när som helst dra tillbaka samtycke för marknadsföringskommunikation, inklusive personanpassade annonser. Kontakta oss på info@portugalactive.com för att utöva dessa rättigheter.",
     "s5Title": "5. Kontakt",
@@ -1177,7 +1211,7 @@
   },
   "cookiesPage": {
     "title": "Cookiepolicy",
-    "lastUpdated": "Senast uppdaterad: mars 2026",
+    "lastUpdated": "Senast uppdaterad: oktober 2026",
     "whatTitle": "Vad är cookies?",
     "whatBody": "Cookies är små textfiler som placeras på din enhet när du besöker vår webbplats. De hjälper oss att ge dig en bättre upplevelse genom att komma ihåg dina preferenser, förstå hur du använder vår webbplats och förbättra våra tjänster.",
     "howTitle": "Hur vi använder cookies",
@@ -1186,6 +1220,7 @@
     "essentialBody": "Dessa cookies är nödvändiga för att webbplatsen ska fungera korrekt. De möjliggör grundläggande funktioner som sidnavigering, åtkomst till säkra områden och programfunktionalitet. Webbplatsen kan inte fungera korrekt utan dessa cookies.",
     "analyticsTitle": "Analyticscookies",
     "analyticsBody": "Med ditt samtycke hjälper Google Analytics och Microsoft Clarity oss att förstå hur webbplatsen används. Verktygen kan behandla onlineidentifierare och interaktioner; uppgifterna är inte nödvändigtvis anonyma.",
+    "originBody": "pa-origin. En liten post som sparas i din webbläsare med besökets ursprung: kampanjen, annonsen eller webbplatsen du kom ifrån, sidan du kom in på och datum och tid för det första och det senaste besöket. Den är inte avsedd att spara ditt namn, din e-postadress eller ditt telefonnummer. Så vet vi vilka marknadsföringsinsatser som fungerar; om du gör en bokning sparar vi ursprunget tillsammans med din bokningsförfrågan, endast för internt bruk. Den skapas bara om du väljer Acceptera alla och raderas så snart du drar tillbaka ditt tillstånd i Cookieinställningar. Varje registrerat besök räknas i 30 dagar och raderas första gången du återvänder till webbplatsen efter den perioden. Du kan också radera den när som helst genom att rensa webbplatsens data i din webbläsare.",
     "functionalTitle": "Funktionella cookies",
     "functionalBody": "Dessa cookies gör det möjligt för webbplatsen att komma ihåg val du gör (som ditt föredragna språk eller region) och tillhandahålla förbättrade, personaliserade funktioner. De kan också användas för att komma ihåg ändringar du har gjort i textstorlek, teckensnitt och andra anpassningsbara element.",
     "marketingTitle": "Marknadsföringscookies",
@@ -1198,6 +1233,10 @@
     "updatesBody": "Vi kan uppdatera denna cookiepolicy från tid till annan för att återspegla förändringar i teknik, lagstiftning eller våra datapraxis. Vi uppmuntrar dig att granska denna sida regelbundet.",
     "contactTitle": "Kontakta oss",
     "contactBody": "Om du har frågor om vår användning av cookies, kontakta oss på info@portugalactive.com."
+  },
+  "legalFooter": {
+    "complaintsBook": "Klagobok",
+    "complaintsBookAria": "Livro de Reclamações, Portugals officiella elektroniska klagobok (öppnas i en ny flik)"
   },
   "blog": {
     "overline": "JOURNAL",
@@ -1884,7 +1923,17 @@
     "rate": {
       "twoPartsLine": "Du kan också betala i två delar: {{amountNow}} i dag och {{amountLater}} den {{date}}.",
       "twoPartsLinePlain": "Du kan också betala i två delar: {{amountNow}} i dag och {{amountLater}} den {{date}}."
-    }
+    },
+    "emailLineLabel": "Bekräftelse till",
+    "emailChange": "ändra",
+    "fieldErrors": {
+      "firstName": "Ange ditt förnamn.",
+      "lastName": "Ange ditt efternamn."
+    },
+    "nifInvalid": "Det här portugisiska NIF-numret ser inte rätt ut: kontrollera de 9 siffrorna. För ett momsnummer från ett annat land, börja med landskoden (till exempel ES).",
+    "emailHoldNote": "Vi håller det här priset till {{date}}, {{time}}. Om du inte slutför nu kan vi skicka dig en eller två påminnelser via e-post. Ingen spam.",
+    "emailReminderNote": "Om du inte slutför nu kan vi skicka dig en eller två påminnelser via e-post. Ingen spam.",
+    "conciergeMessage": "Hej, jag har en fråga om min bokning: {{property}}, {{checkIn}} till {{checkOut}}, gäster: {{guests}}."
   },
   "host": {
     "hostedBy": "Värdar: Ricardo & Portugal Active-teamet",

@@ -33,6 +33,43 @@ async function bookedRateCancellation(listingId?: string | null, ratePlanId?: st
   return plan ? { policy: planPolicyCode(plan) } : null;
 }
 
+/**
+ * PayPal e Klarna, depois de a reserva existir: UMA confirmação por reserva.
+ *
+ * Checkout 2.0 (intentId no PI): a confirmação do hóspede é a do checkout
+ * (9 línguas, resumo, política da tarifa), e sai uma só vez do
+ * completeCheckoutIntent, daqui ou do webhook, conforme quem marcar o intent
+ * como pago primeiro. A confirmação antiga (sem língua, sai em inglês) saía
+ * também, sempre: o hóspede recebia duas.
+ *
+ * A antiga fica para o fluxo sem intent e para quando o checkout não fecha
+ * (intent ilegível, BD em baixo, reserva que não bate certo): quem pagou
+ * recebe sempre uma confirmação, e o erro continua a subir como antes.
+ *
+ * Vai para o email com que o hóspede pagou (`payment.guestEmail`, a metadata
+ * do PI, já igual à do regresso ao site): o PayPal e o Klarna não gravam no
+ * intent o email corrigido no passo 3, e a confirmação ia para o do passo 1.
+ */
+export async function confirmWalletBooking(
+  payment: { intentId?: string | null; guestEmail?: string | null },
+  reservation: { reservationId: string; confirmationCode: string },
+  sendLegacyConfirmation: () => void,
+): Promise<void> {
+  if (!payment.intentId) {
+    sendLegacyConfirmation();
+    return;
+  }
+  const { completeCheckoutIntent } = await import("../services/checkout-confirmation");
+  try {
+    await completeCheckoutIntent(payment.intentId, reservation.reservationId, reservation.confirmationCode, undefined, {
+      email: payment.guestEmail,
+    });
+  } catch (err) {
+    sendLegacyConfirmation();
+    throw err;
+  }
+}
+
 async function partnerProperty(uid: string) {
   const { getPropertiesForSite } = await import('../services/properties-store');
   return (await getPropertiesForSite()).find((p: any) => p.source === 'tripwix' && p.isActive !== false && p.supplierUid === uid) as any;
@@ -202,12 +239,22 @@ export const bookingRouter = router({
 
       const prop = await partnerProperty(input.tripwixUid);
       if (!prop) return null;
-      return getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut, partnerFees(prop, input.guests));
+      const quote = await getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut, partnerFees(prop, input.guests));
+      // Sem cotação (casa que o job ainda não leu, por exemplo logo depois de
+      // um deploy): cache curta, para o preço aparecer assim que houver
+      // calendário (revisão do PR #173, P173-R2).
+      if (!quote) ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60");
+      return quote;
     }),
 
   /**
    * Day-by-day availability for a partner home, so its panel can show the same
    * calendar as the rest of the portfolio instead of native date inputs.
+   *
+   * null = availability not known yet (the background job has not read this
+   * home, or its last good read is older than 48 h). It used to be [], which
+   * the calendar draws as every date free (revisão do PR #173, P173-R2); the
+   * panel can now say "availability to be confirmed" instead.
    */
   partnerCalendar: publicProcedure
     .input(z.object({
@@ -219,7 +266,9 @@ export const bookingRouter = router({
       ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=60");
       const { getPartnerCalendar } = await import("../services/tripwix");
       if (!await partnerProperty(input.tripwixUid)) return [];
-      return (await getPartnerCalendar(input.tripwixUid, input.startDate, input.endDate)) ?? [];
+      const days = await getPartnerCalendar(input.tripwixUid, input.startDate, input.endDate);
+      if (!days) ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60");
+      return days;
     }),
 
   /** Public catalogue pricing; published partner IDs only, bounded concurrency. */
@@ -233,9 +282,13 @@ export const bookingRouter = router({
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300');
       const { getPartnerQuote, getTripwixLowestNightly } = await import('../services/tripwix');
+      const { hydrateTripwixCalendars } = await import('../services/tripwix-calendar');
       const { getPropertiesForSite } = await import('../services/properties-store');
       const wanted = new Set(input.uids);
       const properties = (await getPropertiesForSite()).filter((p: any) => p.source === 'tripwix' && p.isActive !== false && wanted.has(p.supplierUid)) as any[];
+      // Calendários em memória (o job refresca-os); a BD é lida numa só consulta
+      // para as casas que este processo ainda não leu, nunca uma por casa.
+      await hydrateTripwixCalendars(properties.map((p) => p.supplierUid));
       const result: Record<string, { from: number | null; quote: Awaited<ReturnType<typeof getPartnerQuote>> }> = {};
       let next = 0;
       await Promise.all(Array.from({ length: Math.min(4, properties.length) }, async () => {
@@ -898,26 +951,25 @@ export const bookingRouter = router({
         status: "upcoming",
       });
 
-      // Fire-and-forget: the rate's policy is read first (cached, bounded), then the email goes
-      void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
-        guestName: `${input.guestFirstName} ${input.guestLastName}`,
-        guestEmail: input.guestEmail,
-        propertyName: input.propertyName || "Portugal Active Home",
-        destination: input.destination,
-        checkIn: input.checkIn,
-        checkOut: input.checkOut,
-        guests: input.numberOfAdults + input.numberOfChildren,
-        totalPrice: input.totalAmount,
-        confirmationCode: reservation.confirmationCode,
-        cancellation,
-      })).catch((err: any) => {
-        console.warn(`[PayPal] Confirmation email failed (non-blocking): ${err.message}`);
+      // Uma confirmação por reserva (confirmWalletBooking). A antiga, quando sai,
+      // é fire-and-forget: a política da tarifa lê-se primeiro (cache, com
+      // limite de tempo) e depois o email segue.
+      await confirmWalletBooking(pi.metadata ?? {}, reservation, () => {
+        void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
+          guestName: `${input.guestFirstName} ${input.guestLastName}`,
+          guestEmail: input.guestEmail,
+          propertyName: input.propertyName || "Portugal Active Home",
+          destination: input.destination,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guests: input.numberOfAdults + input.numberOfChildren,
+          totalPrice: input.totalAmount,
+          confirmationCode: reservation.confirmationCode,
+          cancellation,
+        })).catch((err: any) => {
+          console.warn(`[PayPal] Confirmation email failed (non-blocking): ${err.message}`);
+        });
       });
-
-      if (pi.metadata?.intentId) {
-        const { completeCheckoutIntent } = await import('../services/checkout-confirmation');
-        await completeCheckoutIntent(pi.metadata.intentId, reservation.reservationId, reservation.confirmationCode);
-      }
       return {
         reservationId: reservation.reservationId,
         confirmationCode: reservation.confirmationCode,
@@ -1093,26 +1145,23 @@ export const bookingRouter = router({
         status: "upcoming",
       });
 
-      // Fire-and-forget: the rate's policy is read first (cached, bounded), then the email goes
-      void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
-        guestName: `${input.guestFirstName} ${input.guestLastName}`,
-        guestEmail: input.guestEmail,
-        propertyName: input.propertyName || "Portugal Active Home",
-        destination: input.destination,
-        checkIn: input.checkIn,
-        checkOut: input.checkOut,
-        guests: input.numberOfAdults + input.numberOfChildren,
-        totalPrice: input.totalAmount,
-        confirmationCode: reservation.confirmationCode,
-        cancellation,
-      })).catch((err: any) => {
-        console.warn(`[Klarna] Confirmation email failed (non-blocking): ${err.message}`);
+      // Uma confirmação por reserva (confirmWalletBooking), como no PayPal.
+      await confirmWalletBooking(pi.metadata ?? {}, reservation, () => {
+        void bookedRateCancellation(input.listingId, input.ratePlanId).then((cancellation) => sendBookingConfirmation({
+          guestName: `${input.guestFirstName} ${input.guestLastName}`,
+          guestEmail: input.guestEmail,
+          propertyName: input.propertyName || "Portugal Active Home",
+          destination: input.destination,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guests: input.numberOfAdults + input.numberOfChildren,
+          totalPrice: input.totalAmount,
+          confirmationCode: reservation.confirmationCode,
+          cancellation,
+        })).catch((err: any) => {
+          console.warn(`[Klarna] Confirmation email failed (non-blocking): ${err.message}`);
+        });
       });
-
-      if (pi.metadata?.intentId) {
-        const { completeCheckoutIntent } = await import('../services/checkout-confirmation');
-        await completeCheckoutIntent(pi.metadata.intentId, reservation.reservationId, reservation.confirmationCode);
-      }
       return {
         reservationId: reservation.reservationId,
         confirmationCode: reservation.confirmationCode,

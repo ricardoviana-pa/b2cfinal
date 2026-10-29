@@ -443,7 +443,13 @@ describe('duas partes: settle da 1.ª parte', () => {
     const note = fake.note.mock.calls.map(c => c[1]).find((t: string) => t.includes('duas partes'));
     expect(note).toContain('2.a parte 1073.00 EUR agendada para 24/10/2099');
     expect(note).toContain('NAO cobrar no Guesty');
-    expect(note).toContain('NIF para a fatura: 123456789');
+    // O NIF saiu do fim desta nota: vai no topo do campo, na escrita dos
+    // serviços que a confirmação comum a todos os métodos faz.
+    expect(note).not.toContain('123456789');
+    await vi.waitFor(() => expect(fake.note.mock.calls.some(c => String(c[1]).includes('SERVICOS DO CHECKOUT'))).toBe(true));
+    const services = fake.note.mock.calls.find(c => String(c[1]).includes('SERVICOS DO CHECKOUT'))!;
+    expect(services[2]).toEqual({ prepend: 'FATURA COM NIF 123456789 (pedido pelo hospede no checkout do site)' });
+    await vi.waitFor(() => expect(fake.opsEmail).toHaveBeenCalledWith(expect.objectContaining({ nif: '123456789' })));
     expect(fake.intents.get(id).status).toBe('paid');
   });
 

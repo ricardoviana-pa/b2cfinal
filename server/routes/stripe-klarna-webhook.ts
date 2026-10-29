@@ -97,7 +97,11 @@ export function registerStripeKlarnaWebhookRoute(app: Express): void {
 
           if (meta.intentId) {
             const { completeCheckoutIntent } = await import('../services/checkout-confirmation');
-            await completeCheckoutIntent(meta.intentId, reservation.reservationId, reservation.confirmationCode);
+            // O email com que se pagou (o do passo 3, o da reserva): o Klarna
+            // não o grava no intent antes de pagar (paidEmailUpdate).
+            await completeCheckoutIntent(meta.intentId, reservation.reservationId, reservation.confirmationCode, undefined, {
+              email: meta.guestEmail,
+            });
           }
 
           console.info(`[StripeKlarnaWebhook] Reservation ready: ${reservation.reservationId} (${reservation.confirmationCode}) for PI ${pi.id}`);

@@ -22,7 +22,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
-import { HOME_COUNT_LABEL } from '@shared/brandFacts';
+import { HOME_COUNT_LABEL, OWN_HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
@@ -430,7 +430,7 @@ export default function Home() {
               </span>
               <span className="text-white/25">·</span>
               <span className="body-sm text-white/60 font-medium font-body" >
-                {t('home.proofManaged', 'Run by our own team')}
+                {t('home.proofManaged', { own: OWN_HOME_COUNT_LABEL, defaultValue: '{{own}} run by our own team' })}
               </span>
             </div>
 

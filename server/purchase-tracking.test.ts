@@ -121,11 +121,50 @@ describe('inspeção do dataLayer fora do live', () => {
 });
 
 describe('política de privacidade: envio à Meta pelo servidor', () => {
-  it('PT explains the consent-gated server send; other languages leave it out until translated', async () => {
+  it('PT explains the consent-gated server send', async () => {
     const pt = (await import('../client/src/i18n/locales/pt.json')).default as any;
-    const en = (await import('../client/src/i18n/locales/en.json')).default as any;
     const body: string = pt.privacy.s3AdsBody;
     for (const fact of ['Aceitar tudo', 'Meta', 'servidor', 'hash', '31 dias', 'Apenas essenciais']) expect(body).toContain(fact);
-    expect(en.privacy.s3AdsBody).toBeUndefined();
+  });
+
+  // Auditoria 29 out 2026 (i18n-copy-05): EN and the other 7 languages got the
+  // same paragraph; it names the banner's buttons in each language.
+  it.each(['en', 'fr', 'es', 'it', 'de', 'nl', 'sv', 'fi'])('%s explains it too, with the same facts', async (lng) => {
+    const { readFileSync } = await import('node:fs');
+    const loc = JSON.parse(readFileSync(`client/src/i18n/locales/${lng}.json`, 'utf8'));
+    const body: string = loc.privacy.s3AdsBody;
+    expect(typeof body).toBe('string');
+    const lower = body.toLowerCase();
+    for (const fact of ['meta', 'hash', '31', 'ip']) expect(lower, fact).toContain(fact);
+    expect(lower).toContain(String(loc.cookieBanner.acceptAll).toLowerCase());
+    expect(lower).toContain(String(loc.cookieBanner.essentialOnly).toLowerCase());
+  });
+
+  // Revisão do PR #174 (privacy-s3-send-nothing-to-meta-contradiction): o
+  // parágrafo anterior (s3Body) diz que o email em hash de quem já ficou
+  // connosco ou nos deu o email pode seguir para as listas de anúncios da Meta,
+  // com saída a pedido, seja qual for a escolha no aviso de cookies. Por isso a
+  // frase final do s3AdsBody só promete que os dados da reserva descritos nesse
+  // parágrafo ficam de fora; "não enviamos nada à Meta" contradiz o s3Body.
+  const BOOKING_WORD: Record<string, string> = {
+    en: 'booking', pt: 'reserva', fr: 'réservation', es: 'reserva', it: 'prenotazione',
+    de: 'buchung', nl: 'boeking', sv: 'boknings', fi: 'varaus',
+  };
+  const NOTHING_TO_META: Record<string, RegExp> = {
+    en: /\bnothing to meta\b/, pt: /\bnada à meta\b/, fr: /\brien à meta\b/, es: /\bnada a meta\b/,
+    it: /\bnulla a meta\b/, de: /\bnichts an meta\b/, nl: /\bniets naar meta\b/,
+    sv: /\bingenting till meta\b/, fi: /\bmetalle mitään\.$/,
+  };
+  it.each(Object.keys(BOOKING_WORD))('%s: without consent it rules out the booking data, not everything sent to Meta', async (lng) => {
+    const { readFileSync } = await import('node:fs');
+    const loc = JSON.parse(readFileSync(`client/src/i18n/locales/${lng}.json`, 'utf8'));
+    // Premissa: o s3Body continua a nomear a Meta (listas de anúncios).
+    expect(String(loc.privacy.s3Body).toLowerCase()).toContain('meta');
+    const sentences = String(loc.privacy.s3AdsBody).trim().split(/(?<=\.)\s+/);
+    const last = sentences[sentences.length - 1].toLowerCase();
+    expect(last).toContain(String(loc.cookieBanner.essentialOnly).toLowerCase());
+    expect(last).toContain('meta');
+    expect(last, 'a frase final fala dos dados da reserva').toContain(BOOKING_WORD[lng]);
+    expect(last).not.toMatch(NOTHING_TO_META[lng]);
   });
 });

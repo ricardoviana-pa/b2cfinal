@@ -236,8 +236,13 @@ variáveis DLV `ecommerce.*` da tag "1 - GA4 - Reservation"). Acionador: evento 
   conversão. Mudar isto altera os lances de 12 a 18 campanhas.
 - **Render**: `META_PIXEL_ID`, `META_CAPI_TOKEN` e, durante o teste, `META_CAPI_TEST_CODE`
   (o Ricardo cola o token: o agente não introduz tokens).
-- **Política de privacidade**: parágrafo `privacy.s3AdsBody` em PT (10/10). As outras oito
-  línguas omitem-no até serem traduzidas, como o `s2OriginBody`.
+- **Política de privacidade**: parágrafo `privacy.s3AdsBody` em PT (10/10); traduzido nas
+  outras oito línguas a 29/10, tal como o `s2OriginBody` e o `cookiesPage.originBody`
+  (auditoria i18n-copy-05; tradução fiel do PT, por rever pelo advogado). A frase final
+  ("Sem essa autorização […] não enviamos à Meta nenhum destes dados da reserva") fala só
+  dos dados da reserva desse parágrafo: o `s3Body`, logo antes, diz que o email em hash de
+  quem já ficou connosco ou nos deu o email pode ir para as listas de anúncios da Meta e da
+  Google, com saída a pedido. Um "não enviamos nada à Meta" contradizia-o.
 
 ## 7. Como testar
 
@@ -265,3 +270,23 @@ variáveis DLV `ecommerce.*` da tag "1 - GA4 - Reservation"). Acionador: evento 
 - GTM: republicar a versão 30.
 - CAPI: apagar `META_CAPI_TOKEN` no Render para parar o envio sem deploy.
 - Lista de permissões: Gestor de Eventos → B2C Pixel → Definições → Permissões de tráfego.
+
+## 9. Widget da Bókun (auditoria de 29/10/2026)
+
+O widget das experiências (iframe de `widgets.bokun.io`) reencaminha para a página, por
+`postMessage` (`{ messageType: 'GaEvent', args }`), os eventos GA4 do canal de reservas da
+Bókun: `view_item`, `add_to_cart`, `begin_checkout` e `purchase` com o valor da experiência,
+`affiliation: 'Bokun widgets'` e `item_id` numérico. O script da Bókun na página repetia-os
+no nosso `dataLayer` sem passar pelo consentimento, e as tags de conversão das casas
+(Google Ads "Reserva B2C", GA4 purchase, Meta Purchase) disparam só pelo nome do evento.
+
+`client/src/lib/bokunAnalyticsGuard.ts` trava essas mensagens antes do listener da Bókun
+(instalada em `ensureBokunLoader`, antes do script: os listeners da `window` correm pela
+ordem de registo). Os eventos passam a `bokun_<nome>`, com o conteúdo em `bokun` e sem
+`ecommerce`, e só entram com "Aceitar tudo"; os comandos `consent`/`set`/`config` da Bókun
+são descartados. O pedido `InitializeTagManager` do iframe é confirmado pela guarda, para o
+iframe não carregar o GTM dentro dele. Os nossos eventos não passam por aqui.
+
+Fora do código (por fazer): desligar o Google Tag Manager/GA4 no canal de reservas da Bókun
+(ou apontá-lo a uma propriedade GA4 separada) e, no GTM, exigir `property_id` nas tags de
+`purchase` e `begin_checkout` (ver PR da auditoria de 29/10).

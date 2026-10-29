@@ -4,9 +4,19 @@
  * Guesty Booking Engine handles the actual charge; we pass a payment method token.
  *
  * Requires: BE-API + STRIPE_PUBLISHABLE_KEY (from Guesty-connected Stripe account).
+ *
+ * Checkout 2.0, passo do pagamento (auditoria do funil, out/2026, n.º 1, 4 e 11):
+ * - o bloco monta logo que há preço; o formulário do cartão nunca desmonta
+ *   enquanto o hóspede edita (nem ao mudar de plano ou de método);
+ * - o botão final mostra sempre a ação e o valor e só fica ativo com os
+ *   Termos (e, em duas partes, a autorização), que vêm em `consent`, mesmo
+ *   acima dele; nome, email e telefone validam-se no clique (`validateGuest`);
+ * - Apple Pay / Google Pay só aparecem com os dados certos e os Termos
+ *   aceites (`walletsReady`): a folha abre no toque e já não deixa validar;
+ * - uma recusa mostra um só aviso traduzido, com até três saídas.
  */
 
-import { useEffect, useState, useMemo, useRef, type ReactElement } from "react";
+import { useCallback, useEffect, useState, useMemo, useRef, type ReactElement, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { loadStripe } from "@/lib/stripeLoader";
 import {
@@ -19,10 +29,13 @@ import {
 import { trpc } from "@/lib/trpc";
 import { formatQuotedEur } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
+import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
+import { payButtonGate, walletNames } from "@/lib/checkoutPayment";
 import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
 import { expressCheckoutElementsOptions } from "./stripeElementsOptions";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
+import PaymentErrorNotice, { type PaymentErrorView, type TwoPartsSwitch } from "./PaymentErrorNotice";
 
 type PaymentMethodId = "card" | "googlepay" | "paypal" | "klarna";
 
@@ -121,7 +134,9 @@ interface CheckoutPaymentFormProps {
   /** Analytics only: property and paid extras visible at payment submission. */
   paymentItems?: Array<Record<string, unknown>>;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
-  onCancel: () => void;
+  /** Widget antigo: botão "Cancelar" por baixo do pagamento. O checkout 2.0
+   *  não o passa (o "← Voltar" e a barra de passos chegam; auditoria n.º 11). */
+  onCancel?: () => void;
   /** Grava já qualquer estado pendente do intent (debounces) ANTES de criar a
    *  cobrança — o servidor cobra o que está na BD, não o que está no ecrã.
    *  Se falhar, o pagamento aborta (auditoria set/2026, H3). */
@@ -138,31 +153,48 @@ interface CheckoutPaymentFormProps {
   payLaterCaption?: string;
   /** Klarna e PayPal cobram sempre tudo e sem o Flex incluído: o total deles. */
   otherMethodsTotal?: number;
-}
-
-/** H6 (auditoria set/2026): o servidor fala inglês técnico ("PI pi_… not
- *  succeeded", "quote expired; refresh…") e isso chegava cru ao hóspede nas
- *  9 línguas. Mapear as mensagens conhecidas para copy traduzida; o resto cai
- *  numa genérica com caminho de saída. */
-function humanPaymentError(e: unknown, t: any): string {
-  const msg = String((e as { message?: unknown })?.message ?? "");
-  if (/quote expired|refresh your dates|refresh the price/i.test(msg))
-    return t("payment.errors.quoteExpired", "The price hold for these dates has expired. Refresh the price and try again.");
-  if (/dates no longer available/i.test(msg))
-    return t("payment.errors.datesGone", "These dates were booked in the meantime. Please choose different dates.");
-  if (/still processing/i.test(msg))
-    return t("payment.errors.stillProcessing", "Your previous payment attempt is still processing. Please wait a moment — do not pay again.");
-  if (/already paid/i.test(msg))
-    return t("payment.errors.alreadyPaidShort", "This booking is already paid. Check your email for the confirmation.");
-  if (/could not be saved/i.test(msg))
-    return t("payment.errors.saveFailed", "We could not save your latest changes. Check your connection and try again.");
-  if (/fetch|network|failed to load/i.test(msg))
-    return t("payment.errors.network", "Connection problem. Check your internet and try again.");
-  return t("payment.errors.genericRetry", "The payment could not be completed. Please try again — or contact us and we will finish your booking personally.");
+  /** Checkout 2.0: Termos aceites. Sem este prop (widget antigo, que só mostra
+   *  o formulário depois dos Termos) o botão não depende dele. */
+  termsAccepted?: boolean;
+  /** Checkout 2.0: autorização da 2.ª parte, Termos e frase de política,
+   *  mesmo acima do botão final do método visível (spec 4.1, pontos 4 e 5). */
+  consent?: ReactNode;
+  /** Checkout 2.0: valida nome, email e telefone no clique em Pagar. false =
+   *  o erro fica no campo, que recebe o foco, e nada é criado nem cobrado. */
+  validateGuest?: () => boolean;
+  /** Checkout 2.0: dados do hóspede certos e Termos aceites (Apple/Google Pay). */
+  walletsReady?: boolean;
+  /** Aviso de erro: WhatsApp do concierge com a casa e as datas escritas. */
+  conciergeHref?: string;
+  /** Aviso de erro: "Pagar em duas partes (X hoje)", só numa recusa pelo
+   *  limite do cartão, com a oferta do servidor e o plano em "tudo agora". */
+  twoPartsSwitch?: TwoPartsSwitch | null;
+  /** O servidor deixou de dar as duas partes: voltar a "tudo agora" e reler a oferta. */
+  onTwoPartsUnavailable?: () => void;
+  /** O servidor pediu a autorização da 2.ª parte: levar o hóspede à caixa. */
+  onMandateMissing?: () => void;
+  /** /checkout/demo: o bloco completo sem Stripe, sem eventos e sem cobrança possível. */
+  demo?: boolean;
+  /** Demo (?declined=insufficient_funds): simula uma recusa, para rever o aviso. */
+  demoDecline?: string | null;
 }
 
 const isQuoteExpiredError = (e: unknown) =>
   /quote expired|refresh your dates|refresh the price/i.test(String((e as { message?: unknown })?.message ?? ""));
+
+/** Erro → aviso: a mensagem humana na língua do hóspede e a classificação
+ *  (que decide as ações do aviso). */
+function errorView(e: unknown, t: any): PaymentErrorView {
+  return { message: humanPaymentError(e, t), info: classifyPaymentError(e) };
+}
+
+/** Texto do botão do cartão: sempre a ação e o valor. */
+function cardPayLabel(t: any, lang: string, total: number, plan: "full" | "two_parts" | undefined, loading: boolean): string {
+  if (loading) return plan === "two_parts" ? t("payment.processingFirst", "Processing the first part…") : t("payment.processing");
+  return plan === "two_parts"
+    ? t("payment.payNowButton", { amountNow: formatQuotedEur(total, lang) })
+    : t("payment.payButton", { amount: formatQuotedEur(total, lang) });
+}
 
 /** Funil (out/2026): as recusas de pagamento só apareciam no ecrã do hóspede.
  *  Este evento leva para o GA4 o passo e o código do erro (Stripe: type, code,
@@ -190,6 +222,14 @@ function trackPaymentFailed(args: {
   });
 }
 
+/** Props do aviso de erro, iguais para todos os métodos. */
+interface ErrorNoticeProps {
+  plan?: "full" | "two_parts";
+  twoParts: TwoPartsSwitch | null;
+  onUseOtherMethod: () => void;
+  conciergeHref?: string;
+}
+
 /* ════════════════════════════════════════════════════════════════
    Bloco 3 — Apple Pay / Google Pay via ExpressCheckoutElement.
    SÓ no checkout v2 (intentId presente) e SEMPRE na conta de
@@ -207,6 +247,10 @@ function ExpressWalletInner({
   onBeforePay,
   onQuoteExpired,
   withPlan,
+  ready,
+  error,
+  setError,
+  noticeProps,
 }: {
   intentId: string;
   listingId: string;
@@ -217,21 +261,38 @@ function ExpressWalletInner({
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onBeforePay?: () => Promise<void>;
   onQuoteExpired?: () => void;
+  /** Dados do hóspede certos e Termos aceites: só então os botões aparecem. */
+  ready: boolean;
+  error: PaymentErrorView | null;
+  setError: (e: PaymentErrorView | null) => void;
+  noticeProps: ErrorNoticeProps;
 }) {
   const { t } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const createCardCharge = trpc.checkout.createCardCharge.useMutation();
   const finalizeCardCharge = trpc.checkout.finalizeCardCharge.useMutation();
-  const [error, setError] = useState("");
   const [available, setAvailable] = useState(false);
+  const [methods, setMethods] = useState<{ applePay?: boolean; googlePay?: boolean } | null>(null);
   const processingRef = useRef(false);
   const paymentInfoFiredRef = useRef(false);
+  const readyRef = useRef(ready);
+  readyRef.current = ready;
 
-  const handleConfirm = async (event: { expressPaymentType?: string }) => {
+  /** Fecha a folha da wallet com falha (erro antes do confirmPayment). */
+  const closeSheet = (event: { paymentFailed?: (p?: { reason?: "fail" | "invalid_shipping_address" }) => void }) => {
+    try { event.paymentFailed?.({ reason: "fail" }); } catch { /* a folha já fechou */ }
+  };
+
+  const handleConfirm = async (event: {
+    expressPaymentType?: string;
+    paymentFailed?: (p?: { reason?: "fail" | "invalid_shipping_address" }) => void;
+  }) => {
+    // Os botões só aparecem com tudo certo; isto é só a rede de segurança.
+    if (!readyRef.current) { closeSheet(event); return; }
     if (!stripe || !elements || processingRef.current) return;
     processingRef.current = true;
-    setError("");
+    setError(null);
 
     // M11: fire-once — cada retry de wallet duplicava o add_payment_info
     if (!paymentInfoFiredRef.current) {
@@ -247,12 +308,14 @@ function ExpressWalletInner({
     // Só depois do confirmPayment ter sucedido é que um erro significa
     // "dinheiro capturado" — antes disso, re-tentar é sempre seguro.
     let paymentCaptured = false;
+    let confirming = false;
     try {
       // Deferred flow: validar o elemento antes de criar o PI (regra Stripe)
       const { error: submitError } = await elements.submit();
       if (submitError) {
         trackPaymentFailed({ stage: "validation", method: event.expressPaymentType || "wallet", error: submitError, listingId, value: total });
-        setError(submitError.message || t("payment.errors.cardValidationFailed"));
+        setError(errorView(submitError, t));
+        closeSheet(event);
         processingRef.current = false;
         return;
       }
@@ -269,6 +332,7 @@ function ExpressWalletInner({
         onSuccess(fin.confirmationCode, fin.reservationId);
         return;
       }
+      confirming = true;
       const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
         elements,
         clientSecret,
@@ -277,7 +341,7 @@ function ExpressWalletInner({
       });
       if (confirmErr) {
         trackPaymentFailed({ stage: "confirm", method: event.expressPaymentType || "wallet", error: confirmErr, listingId, value: total });
-        setError(confirmErr.message || t("payment.errors.cardValidationFailed"));
+        setError(errorView(confirmErr, t));
         processingRef.current = false;
         return;
       }
@@ -291,35 +355,45 @@ function ExpressWalletInner({
       if (paymentCaptured) {
         // Dinheiro capturado, reserva pendente — o webhook/sweep completam;
         // manter o botão bloqueado e dizer a verdade ao hóspede.
-        setError(t("payment.errors.paidAwaitingConfirmation", "Your payment was received. We are confirming your booking — you will get the confirmation by email in a few minutes. Do not pay again."));
+        setError({
+          message: t("payment.errors.paidAwaitingConfirmation", "Your payment was received. We are confirming your booking — you will get the confirmation by email in a few minutes. Do not pay again."),
+          info: { key: "payment.errors.paidAwaitingConfirmation", kind: "blocked", retrySameCard: false },
+        });
       } else {
         // Nada foi cobrado: desbloquear para nova tentativa (antes ficava um
         // botão vivo mas inerte — auditoria set/2026, H5)
         trackPaymentFailed({ stage: "server", method: event.expressPaymentType || "wallet", error: e, listingId, value: total });
         if (isQuoteExpiredError(e)) onQuoteExpired?.();
-        setError(humanPaymentError(e, t));
+        setError(errorView(e, t));
+        // Antes do confirm a folha fica à espera: fechá-la já, com falha.
+        if (!confirming) closeSheet(event);
         processingRef.current = false;
       }
     }
   };
 
+  const names = walletNames(methods);
   return (
     <div style={{ display: available ? "block" : "none" }} className="space-y-3">
-      <ExpressCheckoutElement
-        options={{
-          // Só wallets: cartão, PayPal e Klarna já têm caminho próprio em baixo
-          paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
-          layout: { maxColumns: 2, maxRows: 1 } as any,
-        }}
-        onReady={({ availablePaymentMethods }) => setAvailable(!!availablePaymentMethods)}
-        onConfirm={handleConfirm}
-      />
-      {error && (
-        <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
-          <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
-          <p className="text-[#DC2626] text-sm leading-snug">{error}</p>
-        </div>
+      {/* Dados ou Termos em falta: uma linha no sítio onde os botões vão aparecer */}
+      {!ready && names && (
+        <p className="caption text-pa-earth leading-snug">{t("payment.walletsHint", { wallets: names })}</p>
       )}
+      <div style={{ display: ready ? "block" : "none" }}>
+        <ExpressCheckoutElement
+          options={{
+            // Só wallets: cartão, PayPal e Klarna já têm caminho próprio em baixo
+            paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
+            layout: { maxColumns: 2, maxRows: 1 } as any,
+          }}
+          onReady={({ availablePaymentMethods }) => {
+            setAvailable(!!availablePaymentMethods);
+            setMethods(availablePaymentMethods ?? null);
+          }}
+          onConfirm={handleConfirm}
+        />
+      </div>
+      {error && <PaymentErrorNotice error={error} {...noticeProps} plan="full" />}
       <div aria-hidden style={{ borderTop: "1px solid #E8E4DC" }} />
     </div>
   );
@@ -357,23 +431,44 @@ function PaymentFormInner({
   plan,
   mandateAccepted,
   payLaterCaption,
-}: Omit<CheckoutPaymentFormProps, "currency">) {
+  termsAccepted,
+  consent,
+  validateGuest,
+  onTwoPartsUnavailable,
+  onMandateMissing,
+  visible,
+  error,
+  setError,
+  noticeProps,
+}: Omit<CheckoutPaymentFormProps, "currency"> & {
+  /** O cartão fica montado (e o que já foi escrito) mesmo com PayPal/Klarna escolhidos. */
+  visible: boolean;
+  error: PaymentErrorView | null;
+  setError: (e: PaymentErrorView | null) => void;
+  noticeProps: ErrorNoticeProps;
+}) {
   const { t, i18n } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const createCardCharge = trpc.checkout.createCardCharge.useMutation();
   const finalizeCardCharge = trpc.checkout.finalizeCardCharge.useMutation();
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const submittedRef = useRef(false);
   const paymentInfoFiredRef = useRef(false);
   const createReservation = trpc.booking.createBEInstantReservation.useMutation();
+  const gate = payButtonGate({ termsAccepted: termsAccepted ?? true, plan, mandateAccepted });
+  const setErrorText = (message: string) => setError(message ? { message } : null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submittedRef.current) return;
+    // Checkout 2.0: nome, email e telefone validam-se aqui. Se faltar algo, o
+    // erro fica no campo (que recebe o foco) e nada é criado nem cobrado.
+    if (validateGuest && !validateGuest()) return;
+    // Termos (e a autorização, em duas partes): o botão já está inativo sem eles.
+    if (!gate.enabled) return;
     if (!stripe || !elements || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()) {
-      setError(t('payment.errors.requiredFields'));
+      setErrorText(t('payment.errors.requiredFields'));
       return;
     }
 
@@ -390,13 +485,13 @@ function PaymentFormInner({
 
     submittedRef.current = true;
     setLoading(true);
-    setError("");
+    setError(null);
 
     // Step 1: Validate the PaymentElement form (safe to retry — no charge yet)
     const { error: submitError } = await elements.submit();
     if (submitError) {
       trackPaymentFailed({ stage: "validation", method: "card", error: submitError, listingId, value: total });
-      setError(submitError.message || t('payment.errors.cardValidationFailed'));
+      setError(intentId ? errorView(submitError, t) : { message: submitError.message || t('payment.errors.cardValidationFailed') });
       setLoading(false);
       submittedRef.current = false; // Safe: no payment method created yet
       return;
@@ -436,7 +531,7 @@ function PaymentFormInner({
         });
         if (confirmErr) {
           trackPaymentFailed({ stage: "confirm", method: "card", error: confirmErr, listingId, value: total });
-          setError(confirmErr.message || t("payment.errors.cardValidationFailed"));
+          setError(errorView(confirmErr, t));
           setLoading(false);
           submittedRef.current = false;
           return;
@@ -451,14 +546,21 @@ function PaymentFormInner({
         if (paymentCaptured) {
           // Dinheiro capturado, reserva pendente — o webhook/sweep completam;
           // manter o botão bloqueado e dizer a verdade ao hóspede.
-          setError(t("payment.errors.paidAwaitingConfirmation", "Your payment was received. We are confirming your booking — you will get the confirmation by email in a few minutes. Do not pay again."));
+          setError({
+            message: t("payment.errors.paidAwaitingConfirmation", "Your payment was received. We are confirming your booking — you will get the confirmation by email in a few minutes. Do not pay again."),
+            info: { key: "payment.errors.paidAwaitingConfirmation", kind: "blocked", retrySameCard: false },
+          });
           setLoading(false);
         } else {
           // Nada foi cobrado: desbloquear para nova tentativa (antes ficava
           // um botão vivo mas inerte — auditoria set/2026, H5)
           trackPaymentFailed({ stage: "server", method: "card", error: e, listingId, value: total });
           if (isQuoteExpiredError(e)) onQuoteExpired?.();
-          setError(humanPaymentError(e, t));
+          const view = errorView(e, t);
+          // Duas partes deixaram de existir: volta a "tudo agora" e relê a oferta.
+          if (view.info?.kind === "two_parts_unavailable") onTwoPartsUnavailable?.();
+          if (view.info?.kind === "mandate_missing") onMandateMissing?.();
+          setError(view);
           setLoading(false);
           submittedRef.current = false;
         }
@@ -480,14 +582,14 @@ function PaymentFormInner({
 
       if (stripeError) {
         trackPaymentFailed({ stage: "validation", method: "card_legacy", error: stripeError, listingId, value: total });
-        setError(stripeError.message || t('payment.errors.cardValidationFailed'));
+        setErrorText(stripeError.message || t('payment.errors.cardValidationFailed'));
         setLoading(false);
         submittedRef.current = false;
         return;
       }
 
       if (!pm?.id) {
-        setError(t('payment.errors.couldNotCreatePaymentMethod'));
+        setErrorText(t('payment.errors.couldNotCreatePaymentMethod'));
         setLoading(false);
         submittedRef.current = false;
         return;
@@ -495,7 +597,7 @@ function PaymentFormInner({
 
       paymentMethod = pm;
     } catch (stripeException: any) {
-      setError(stripeException?.message || t('payment.errors.cardValidationFailed'));
+      setErrorText(stripeException?.message || t('payment.errors.cardValidationFailed'));
       setLoading(false);
       submittedRef.current = false;
       return;
@@ -550,11 +652,11 @@ function PaymentFormInner({
 
       if (safeToRetry) {
         submittedRef.current = false;
-        setError(message);
+        setErrorText(message);
       } else {
         // Potentially charged — do NOT allow retry.
         // Show error with contact info so guest can verify.
-        setError(
+        setErrorText(
           message + "\n\n" +
           t('payment.errors.contactSupport', {
             defaultValue: "If you were charged, please contact us at reservations@portugalactive.com or WhatsApp +351 927 161 771. Do not attempt to pay again."
@@ -567,7 +669,7 @@ function PaymentFormInner({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4" style={visible ? undefined : { display: "none" }}>
       <div className="p-4 bg-white border border-[#E8E4DC] rounded">
         <PaymentElement
           options={{
@@ -586,33 +688,79 @@ function PaymentFormInner({
         />
       </div>
 
-      {error && (
-        <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
-          <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
-          <p className="text-[#DC2626] text-sm leading-snug">{error}</p>
-        </div>
-      )}
+      {error && <PaymentErrorNotice error={error} {...noticeProps} />}
+
+      {/* Autorização (duas partes), Termos e política, mesmo acima do botão */}
+      {visible && consent}
 
       <div className="flex flex-col gap-3">
         <button
           type="submit"
-          disabled={!stripe || loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim() || (plan === "two_parts" && !mandateAccepted)}
+          disabled={!stripe || loading || !gate.enabled}
           className="btn-primary w-full disabled:opacity-50"
         >
-          {loading
-            ? (plan === "two_parts" ? t('payment.processingFirst', 'Processing the first part…') : t('payment.processing'))
-            : plan === "two_parts"
-              ? t('payment.payNowButton', { amountNow: formatQuotedEur(total, i18n.language) })
-              : t('payment.payButton', { amount: formatQuotedEur(total, i18n.language) })}
+          {cardPayLabel(t, i18n.language, total, plan, loading)}
         </button>
-        {plan === "two_parts" && (
-          <p className="caption text-pa-earth text-center -mt-1">
-            {mandateAccepted ? payLaterCaption : t('payment.mandateMissing', 'Tick the authorisation above to continue.')}
-          </p>
+        {plan === "two_parts" && payLaterCaption && (
+          <p className="caption text-pa-earth text-center -mt-1">{payLaterCaption}</p>
         )}
-        <button type="button" onClick={onCancel} className="btn-ghost">
-          {t('payment.cancelButton')}
+        {onCancel && (
+          <button type="button" onClick={onCancel} className="btn-ghost">
+            {t('payment.cancelButton')}
+          </button>
+        )}
+      </div>
+    </form>
+  );
+}
+
+/** /checkout/demo: o mesmo bloco, sem Stripe (os campos do cartão são uma
+ *  imagem) — para rever o percurso e o aviso de erro sem cobrança possível. */
+function DemoCardForm({
+  visible,
+  plan,
+  total,
+  payLaterCaption,
+  enabled,
+  consent,
+  error,
+  noticeProps,
+  onPay,
+}: {
+  visible: boolean;
+  plan?: "full" | "two_parts";
+  total: number;
+  payLaterCaption?: string;
+  enabled: boolean;
+  consent?: ReactNode;
+  error: PaymentErrorView | null;
+  noticeProps: ErrorNoticeProps;
+  onPay: () => void;
+}) {
+  const { t, i18n } = useTranslation();
+  const field = "h-[44px] rounded border border-[#E8E4DC] px-3 flex items-center caption text-pa-stone-aa";
+  return (
+    <form
+      onSubmit={(e) => { e.preventDefault(); onPay(); }}
+      className="space-y-4"
+      style={visible ? undefined : { display: "none" }}
+    >
+      <div className="p-4 bg-white border border-[#E8E4DC] rounded space-y-2" aria-hidden>
+        <div className={field}>1234 1234 1234 1234</div>
+        <div className="grid grid-cols-2 gap-2">
+          <div className={field}>MM / YY</div>
+          <div className={field}>CVC</div>
+        </div>
+      </div>
+      {error && <PaymentErrorNotice error={error} {...noticeProps} />}
+      {visible && consent}
+      <div className="flex flex-col gap-3">
+        <button type="submit" disabled={!enabled} className="btn-primary w-full disabled:opacity-50">
+          {cardPayLabel(t, i18n.language, total, plan, false)}
         </button>
+        {plan === "two_parts" && payLaterCaption && (
+          <p className="caption text-pa-earth text-center -mt-1">{payLaterCaption}</p>
+        )}
       </div>
     </form>
   );
@@ -620,19 +768,35 @@ function PaymentFormInner({
 
 export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const { t, i18n } = useTranslation();
+  const demo = !!props.demo;
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("card");
   const [hoveredMethod, setHoveredMethod] = useState<PaymentMethodId | null>(null);
-  const [paypalError, setPaypalError] = useState("");
-  const [klarnaError, setKlarnaError] = useState("");
+  // Um aviso por método; ficam aqui para o cartão manter o que foi escrito
+  // (e o seu aviso) quando o hóspede espreita outro método.
+  const [cardError, setCardError] = useState<PaymentErrorView | null>(null);
+  const [walletError, setWalletError] = useState<PaymentErrorView | null>(null);
+  const [paypalError, setPaypalError] = useState<PaymentErrorView | null>(null);
+  const [klarnaError, setKlarnaError] = useState<PaymentErrorView | null>(null);
+  const [demoNotice, setDemoNotice] = useState(false);
+  const methodsRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   // Em duas partes só há cartão: volta ao cartão se estava noutro método.
   useEffect(() => {
     if (props.plan === "two_parts" && paymentMethod !== "card") setPaymentMethod("card");
   }, [props.plan, paymentMethod]);
-  const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery();
-  // Per-listing payment provider: fetch the Stripe connected account for this property
+  // As wallets saem em duas partes: um aviso delas não pode reaparecer ao voltar.
+  useEffect(() => {
+    if (props.plan === "two_parts") setWalletError(null);
+  }, [props.plan]);
+  const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery(undefined, {
+    enabled: !demo,
+  });
+  // Per-listing payment provider: fetch the Stripe connected account for this property.
+  // Checkout 2.0: o PI vive na conta de PLATAFORMA e o resultado desta chamada
+  // (ao Guesty) era deitado fora — esperar por ela só atrasava o cartão.
   const { data: paymentProvider, isLoading: providerLoading } = trpc.booking.getPaymentProvider.useQuery(
     { listingId: props.listingId },
-    { enabled: !!props.listingId },
+    { enabled: !!props.listingId && !props.intentId && !demo },
   );
 
   // Per-listing Stripe connected account is the ONLY source of truth.
@@ -654,6 +818,8 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
 
   // Deferred intent mode: PaymentElement without a client secret.
   // We pass mode + amount + currency so Stripe knows the context.
+  // Uma só instância para o cartão (sem key por plano ou método): mudar de
+  // plano atualiza o valor (elements.update) e o cartão escrito fica.
   const elementsOptions = useMemo(
     () => ({
       mode: "payment" as const,
@@ -670,9 +836,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       // Card form em sessão types (layout só-cartão, sem o seletor interno do
       // Stripe); o servidor cria o PI no formato que casa com a sessão: types
       // para o card form, automatic para o ECE (input wallet no createCardCharge).
-      ...(paymentMethod !== "paypal" && paymentMethod !== "klarna"
-        ? { paymentMethodTypes: STRIPE_METHOD_TYPES[paymentMethod] }
-        : {}),
+      paymentMethodTypes: STRIPE_METHOD_TYPES.card,
       appearance: {
         theme: "stripe" as const,
         variables: {
@@ -688,7 +852,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         },
       },
     }),
-    [props.total, props.currency, i18n.language, paymentMethod],
+    [props.total, props.currency, i18n.language],
   );
 
   // Bloco 3: opções do Elements para o ExpressCheckoutElement (wallets), com o
@@ -699,10 +863,65 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     [props.total, props.currency, i18n.language],
   );
 
+  const clearErrors = useCallback(() => {
+    setCardError(null);
+    setWalletError(null);
+    setPaypalError(null);
+    setKlarnaError(null);
+  }, []);
+
+  /** "Usar outro cartão ou método": leva ao seletor (ou, em duas partes, ao cartão). */
+  const goToOtherMethod = useCallback(() => {
+    clearErrors();
+    const target = props.plan === "two_parts" ? cardRef.current : (methodsRef.current ?? cardRef.current);
+    target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    target?.focus({ preventScroll: true });
+  }, [clearErrors, props.plan]);
+
+  const twoPartsSwitch = props.twoPartsSwitch;
+  const noticeProps: ErrorNoticeProps = useMemo(
+    () => ({
+      plan: props.plan,
+      twoParts: twoPartsSwitch
+        ? { amountNow: twoPartsSwitch.amountNow, onSelect: () => { clearErrors(); twoPartsSwitch.onSelect(); } }
+        : null,
+      onUseOtherMethod: goToOtherMethod,
+      conciergeHref: props.conciergeHref,
+    }),
+    [props.plan, twoPartsSwitch, clearErrors, goToOtherMethod, props.conciergeHref],
+  );
+
+  const gate = payButtonGate({ termsAccepted: props.termsAccepted ?? true, plan: props.plan, mandateAccepted: props.mandateAccepted });
+  const otherMethodsAmount = props.otherMethodsTotal ?? props.total;
+
+  /** PayPal/Klarna falharam antes do redirect: o mesmo aviso traduzido do cartão.
+   *  "O preço ou os dados mudaram" (wallet-price-validation.ts) acende, como o
+   *  preço expirado, o "Atualizar preço": tentar outra vez dava o mesmo erro. */
+  const onRedirectMethodError = (method: "paypal" | "klarna") => (err: unknown, stage: "server" | "confirm") => {
+    trackPaymentFailed({ stage, method, error: err, listingId: props.listingId, value: otherMethodsAmount });
+    const view = errorView(err, t);
+    if (isQuoteExpiredError(err) || needsPriceRefresh(view.info)) props.onQuoteExpired?.();
+    (method === "paypal" ? setPaypalError : setKlarnaError)(view);
+  };
+
+  /** Demo: o mesmo percurso até ao clique, depois uma recusa simulada ou o aviso de demo. */
+  const demoPay = (setError: (e: PaymentErrorView | null) => void) => {
+    if (props.validateGuest && !props.validateGuest()) return;
+    if (!gate.enabled) return;
+    setDemoNotice(false);
+    if (props.demoDecline) {
+      setError(errorView({ type: "card_error", code: "card_declined", decline_code: props.demoDecline, message: "Your card was declined." }, t));
+    } else {
+      setError(null);
+      setDemoNotice(true);
+    }
+  };
+
   // CRITICAL: Wait for BOTH queries to settle before rendering Stripe Elements.
   // Without this, the component renders with the wrong Stripe account (from env var)
   // and then re-mounts when the per-listing account loads, breaking the PaymentElement.
-  if (stripeConfigLoading || providerLoading) {
+  // (No checkout v2 a conta é sempre a de plataforma: só falta a chave.)
+  if (!demo && (stripeConfigLoading || providerLoading)) {
     return (
       <div className="flex items-center justify-center py-8 gap-2 text-sm text-black/40">
         <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
@@ -711,12 +930,12 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     );
   }
 
-  if (!stripeConfig?.publishableKey || !stripePromise) {
+  if (!demo && (!stripeConfig?.publishableKey || !stripePromise)) {
     // M6 (auditoria set/2026): antes isto era `null` — área de pagamento em
     // branco, sem explicação. O hóspede merece saber e ter uma saída.
     return (
       <div className="flex items-start gap-2 p-4 bg-[#F5F1EB] border border-[#E8E4DC] rounded-md">
-        <span className="text-[#8B7355] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
+        <span className="text-pa-gold-aa mt-0.5 shrink-0" aria-hidden>&#9888;</span>
         <p className="text-sm leading-relaxed text-[#1A1A18]">
           {t("payment.unavailableFallback", "Online payment is temporarily unavailable. Please try again in a few minutes, or contact our concierge and we will complete your booking personally.")}
         </p>
@@ -727,12 +946,55 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const nameParts = props.guestName.trim().split(/\s+/);
   const guestFirstName = nameParts[0] || props.guestName;
   const guestLastName = nameParts.slice(1).join(" ") || guestFirstName;
+  const twoParts = props.plan === "two_parts";
+  const cardVisible = twoParts || (paymentMethod !== "paypal" && paymentMethod !== "klarna");
+  const walletsReady = props.walletsReady ?? true;
+  const publishableKey = stripeConfig?.publishableKey ?? "";
+
+  const redirectGuest = {
+    firstName: guestFirstName,
+    lastName: guestLastName,
+    email: props.guestEmail,
+    phone: props.guestPhone || undefined,
+  };
+  const redirectCommon = {
+    amount: otherMethodsAmount,
+    currency: props.currency || "eur",
+    listingId: props.listingId,
+    checkIn: props.checkIn,
+    checkOut: props.checkOut,
+    guestDetails: redirectGuest,
+    numberOfGuests: { adults: props.guests || 2, children: 0, infants: 0 },
+    propertyName: props.propertyName,
+    destination: props.destination,
+    ratePlanId: props.ratePlanId,
+    intentId: props.intentId,
+    couponCode: props.couponCode,
+    purchaseItems: props.purchaseItems,
+    paymentItems: props.paymentItems,
+    stripePublishableKey: publishableKey,
+    disabled: !gate.enabled,
+    onBeforeStart: props.validateGuest,
+    onBeforePay: props.onBeforePay,
+    demo,
+  };
 
   return (
     <div className="space-y-4">
       {/* Bloco 3: Apple Pay / Google Pay (Express Checkout, conta de plataforma)
           — só no checkout v2; o legacy nunca monta este bloco */}
-      {props.intentId && props.plan !== "two_parts" && (
+      {props.intentId && !twoParts && (demo ? (
+        <div className="space-y-3">
+          {walletsReady ? (
+            <div aria-hidden className="h-[44px] rounded border border-dashed border-pa-sand flex items-center justify-center caption text-pa-earth">
+              Apple Pay / Google Pay
+            </div>
+          ) : (
+            <p className="caption text-pa-earth leading-snug">{t("payment.walletsHint", { wallets: "Apple Pay / Google Pay" })}</p>
+          )}
+          <div aria-hidden style={{ borderTop: "1px solid #E8E4DC" }} />
+        </div>
+      ) : (
         <Elements stripe={stripePromise} options={expressElementsOptions}>
           <ExpressWalletInner
             withPlan={!!props.plan}
@@ -743,19 +1005,24 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             onSuccess={props.onSuccess}
             onBeforePay={props.onBeforePay}
             onQuoteExpired={props.onQuoteExpired}
+            ready={walletsReady}
+            error={walletError}
+            setError={setWalletError}
+            noticeProps={noticeProps}
           />
         </Elements>
-      )}
+      ))}
 
       {/* Payment method selector — 3 icon cards (Google Pay hidden). Em duas
           partes só há cartão: Klarna e PayPal cobram tudo hoje. */}
-      {props.plan !== "two_parts" && (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "9px" }}>
+      {!twoParts && (
+      <div ref={methodsRef} tabIndex={-1} className="outline-none" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "9px" }}>
         {PAYMENT_METHODS.filter(({ id }) => id !== "googlepay").map(({ id, label, Logo }) => (
           <button
             key={id}
             type="button"
-            onClick={() => { setPaymentMethod(id); setPaypalError(""); setKlarnaError(""); }}
+            aria-pressed={paymentMethod === id}
+            onClick={() => { setPaymentMethod(id); clearErrors(); setDemoNotice(false); }}
             onMouseEnter={() => setHoveredMethod(id)}
             onMouseLeave={() => setHoveredMethod(null)}
             style={{
@@ -786,10 +1053,11 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
               <Logo />
             </div>
             <span
+              className={paymentMethod === id ? "text-pa-gold-aa" : undefined}
               style={{
                 fontSize: "12.5px",
                 fontWeight: paymentMethod === id ? 600 : 500,
-                color: paymentMethod === id ? "#8B7355" : "#45433d",
+                color: paymentMethod === id ? undefined : "#45433d",
                 textAlign: "center",
               }}
             >
@@ -800,92 +1068,70 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       </div>
       )}
 
-      {(props.plan === "two_parts" || (paymentMethod !== "paypal" && paymentMethod !== "klarna")) && (
-        <Elements key={props.plan === "two_parts" ? "card-two-parts" : paymentMethod} stripe={stripePromise} options={elementsOptions}>
-          <PaymentFormInner {...props} />
-        </Elements>
-      )}
+      {/* Cartão: sempre montado (escondido com PayPal/Klarna) — o que o
+          hóspede escreveu sobrevive a edições, à troca de plano e de método. */}
+      <div ref={cardRef} tabIndex={-1} className="outline-none" style={cardVisible ? undefined : { display: "none" }}>
+        {demo ? (
+          <DemoCardForm
+            visible={cardVisible}
+            plan={props.plan}
+            total={props.total}
+            payLaterCaption={props.payLaterCaption}
+            enabled={gate.enabled}
+            consent={props.consent}
+            error={cardError}
+            noticeProps={noticeProps}
+            onPay={() => demoPay(setCardError)}
+          />
+        ) : (
+          <Elements stripe={stripePromise} options={elementsOptions}>
+            <PaymentFormInner
+              {...props}
+              visible={cardVisible}
+              error={cardError}
+              setError={setCardError}
+              noticeProps={noticeProps}
+            />
+          </Elements>
+        )}
+      </div>
 
-      {paymentMethod === "paypal" && props.plan !== "two_parts" && (
+      {paymentMethod === "paypal" && !twoParts && (
         <div className="space-y-3">
-          {paypalError && (
-            <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
-              <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
-              <p className="text-[#DC2626] text-sm leading-snug">{paypalError}</p>
-            </div>
-          )}
+          {paypalError && <PaymentErrorNotice error={paypalError} {...noticeProps} />}
+          {props.consent}
           <PayPalCheckoutButton
-            amount={props.otherMethodsTotal ?? props.total}
-            currency={props.currency || "eur"}
-            listingId={props.listingId}
-            checkIn={props.checkIn}
-            checkOut={props.checkOut}
-            guestDetails={{
-              firstName: guestFirstName,
-              lastName: guestLastName,
-              email: props.guestEmail,
-              phone: props.guestPhone || undefined,
-            }}
-            numberOfGuests={{
-              adults: props.guests || 2,
-              children: 0,
-              infants: 0,
-            }}
-            propertyName={props.propertyName}
-            destination={props.destination}
-            ratePlanId={props.ratePlanId}
-            intentId={props.intentId}
-            couponCode={props.couponCode}
-            purchaseItems={props.purchaseItems}
-            paymentItems={props.paymentItems}
-            stripePublishableKey={stripeConfig.publishableKey}
-            onError={(msg) => setPaypalError(msg)}
+            {...redirectCommon}
+            onError={onRedirectMethodError("paypal")}
+            onDemo={() => demoPay(setPaypalError)}
           />
-          <button type="button" onClick={props.onCancel} className="btn-ghost w-full">
-            {t('payment.cancelButton')}
-          </button>
+          {props.onCancel && (
+            <button type="button" onClick={props.onCancel} className="btn-ghost w-full">
+              {t('payment.cancelButton')}
+            </button>
+          )}
         </div>
       )}
 
-      {paymentMethod === "klarna" && props.plan !== "two_parts" && (
+      {paymentMethod === "klarna" && !twoParts && (
         <div className="space-y-3">
-          {klarnaError && (
-            <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
-              <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
-              <p className="text-[#DC2626] text-sm leading-snug">{klarnaError}</p>
-            </div>
-          )}
+          {klarnaError && <PaymentErrorNotice error={klarnaError} {...noticeProps} />}
+          {props.consent}
           <KlarnaCheckoutButton
-            amount={props.otherMethodsTotal ?? props.total}
-            currency={props.currency || "eur"}
-            listingId={props.listingId}
-            checkIn={props.checkIn}
-            checkOut={props.checkOut}
-            guestDetails={{
-              firstName: guestFirstName,
-              lastName: guestLastName,
-              email: props.guestEmail,
-              phone: props.guestPhone || undefined,
-            }}
-            numberOfGuests={{
-              adults: props.guests || 2,
-              children: 0,
-              infants: 0,
-            }}
-            propertyName={props.propertyName}
-            destination={props.destination}
-            ratePlanId={props.ratePlanId}
-            intentId={props.intentId}
-            couponCode={props.couponCode}
-            purchaseItems={props.purchaseItems}
-            paymentItems={props.paymentItems}
-            stripePublishableKey={stripeConfig.publishableKey}
-            onError={(msg) => setKlarnaError(msg)}
+            {...redirectCommon}
+            onError={onRedirectMethodError("klarna")}
+            onDemo={() => demoPay(setKlarnaError)}
           />
-          <button type="button" onClick={props.onCancel} className="btn-ghost w-full">
-            {t('payment.cancelButton')}
-          </button>
+          {props.onCancel && (
+            <button type="button" onClick={props.onCancel} className="btn-ghost w-full">
+              {t('payment.cancelButton')}
+            </button>
+          )}
         </div>
+      )}
+
+      {demo && demoNotice && (
+        <p role="status" className="rounded-lg border border-pa-gold bg-pa-warm p-3 body-sm text-pa-dark">{t("conversion.demoNotice")}</p>
       )}
     </div>
   );

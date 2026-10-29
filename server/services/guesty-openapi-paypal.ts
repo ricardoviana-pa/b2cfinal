@@ -1,4 +1,5 @@
 import { guestyClient, isAmbiguousGuestyFailure } from "../lib/guesty";
+import { withTimeout } from "./rate-plan-policy";
 
 export interface CreateReservationInput {
   listingId: string;
@@ -454,9 +455,209 @@ export async function fetchReservationPaymentState(reservationId: string): Promi
   }
 }
 
-/** Manifesto de serviços na nota da reserva Guesty (best-effort; fecha o gap
- *  Klarna/PayPal). Nunca bloqueia o pagamento. */
-export async function appendReservationNote(reservationId: string, note: string): Promise<boolean> {
+/** Teto do notes.other que o site escreve. É nosso (defensivo), o Guesty não
+ *  documenta um limite; por isso nunca se corta o que já lá está. */
+export const RESERVATION_NOTE_MAX = 4000;
+
+export interface ReservationNotePlan {
+  /** O campo notes.other inteiro, como deve ficar. */
+  text: string;
+  /** Há alguma coisa a gravar (senão não se faz o PUT). */
+  changed: boolean;
+  /** Texto novo que este PUT grava. */
+  written: string[];
+  /** Texto novo que não coube e por isso não foi escrito (vai no alerta). */
+  missing: string[];
+}
+
+/**
+ * O que gravar no notes.other, a partir do que já lá está. Pura, testada.
+ *
+ * - `note` junta-se no fim, como sempre; `prepend` vai para o TOPO do campo,
+ *   para linhas que nunca podem cair num corte (o NIF da fatura).
+ * - Texto que já lá está não se repete (settle e webhook podem correr os dois).
+ * - Nunca se corta o que já lá está, e cada texto novo entra inteiro ou não
+ *   entra: um corte a meio deixava na reserva meia data ("agendada para 24/1")
+ *   ou um "NAO cobrar" sem fim, e o hóspede pode já ter pago. O que não coube
+ *   volta em `missing`, para o alerta levar o texto inteiro ao CS. O topo tem
+ *   prioridade sobre o fim.
+ */
+export function planReservationNote(
+  existingRaw: unknown,
+  note: string,
+  prepend = "",
+  max = RESERVATION_NOTE_MAX,
+): ReservationNotePlan {
+  const existing = String(existingRaw ?? "").trim();
+  const top = String(prepend ?? "").trim();
+  const add = String(note ?? "").trim();
+  const needTop = !!top && !existing.includes(top);
+  const needAdd = !!add && !existing.includes(add);
+  const join = (...parts: string[]) => parts.filter(Boolean).join("\n\n");
+  const written: string[] = [];
+  const missing: string[] = [];
+  let text = existing;
+  if (needTop) {
+    if (join(top, text).length <= max) {
+      text = join(top, text);
+      written.push(top);
+    } else missing.push(top);
+  }
+  if (needAdd) {
+    if (join(text, add).length <= max) {
+      text = join(text, add);
+      written.push(add);
+    } else missing.push(add);
+  }
+  return { text, changed: text !== existing, written, missing };
+}
+
+/** Alertas de notas por gravar já entregues: reserva + texto → instante. O
+ *  motor das duas partes repete a nota de 10 em 10 minutos enquanto falhar;
+ *  o CS recebe o mesmo texto no máximo uma vez por dia. */
+const noteAlertSentAt = new Map<string, number>();
+const NOTE_ALERT_REPEAT_MS = 24 * 3600_000;
+
+/** Alertas ainda a caminho, pela mesma chave. O settle do cartão corre do
+ *  finalize e do webhook, um a seguir ao outro: um 2.º pedido igual enquanto o
+ *  1.º email não saiu junta-se a ele, em vez de mandar outro. */
+const noteAlertInFlight = new Map<string, Promise<boolean>>();
+
+/** Quanto se espera pelo alerta de falta de espaço (o único cujo resultado
+ *  conta): dois envios do Resend, um a seguir ao outro e sem limite próprio, e
+ *  o settle do cartão espera por esta função dentro do lock do intent. */
+export const NOTE_ALERT_WAIT_MS = 10_000;
+
+function escapeOpsHtml(text: string): string {
+  return String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+}
+
+function guestyErrorSummary(err: any): string {
+  const parts = [String(err?.message ?? err ?? "erro desconhecido")];
+  if (err?.method && err?.endpoint) parts.push(`${err.method} ${err.endpoint}`);
+  if (err?.details != null) {
+    let details: string;
+    try {
+      details = typeof err.details === "string" ? err.details : JSON.stringify(err.details);
+    } catch {
+      details = String(err.details);
+    }
+    if (details && details !== "null") parts.push(details.slice(0, 300));
+  }
+  return parts.join(" · ");
+}
+
+type NoteAlertInput = {
+  reservationId: string;
+  confirmationCode?: string | null;
+  kind: "failed" | "no-room";
+  missing: string[];
+  error?: unknown;
+};
+
+/**
+ * Alerta ao CS com o texto que não ficou na reserva (pode levar o NIF da
+ * fatura e, nas duas partes, o "NAO cobrar"), para o colar à mão. Nunca
+ * lança. Devolve true quando um humano tem o texto: email entregue agora, ou
+ * o mesmo texto já entregue nas últimas 24 h. Um pedido igual a um que ainda
+ * está a sair recebe o resultado desse.
+ */
+function alertReservationNoteNotWritten(input: NoteAlertInput): Promise<boolean> {
+  const text = input.missing.join("\n\n");
+  const key = `${input.reservationId}\u0000${input.kind}\u0000${text}`;
+  const now = Date.now();
+  const last = noteAlertSentAt.get(key);
+  if (last != null && now - last < NOTE_ALERT_REPEAT_MS) return Promise.resolve(true);
+  const inFlight = noteAlertInFlight.get(key);
+  if (inFlight) return inFlight;
+  const sending = sendReservationNoteAlert(input, text, key, now).finally(() => noteAlertInFlight.delete(key));
+  noteAlertInFlight.set(key, sending);
+  return sending;
+}
+
+async function sendReservationNoteAlert(input: NoteAlertInput, text: string, key: string, now: number): Promise<boolean> {
+  try {
+    noteAlertSentAt.forEach((at, k) => {
+      if (now - at >= NOTE_ALERT_REPEAT_MS) noteAlertSentAt.delete(k);
+    });
+
+    const label = escapeOpsHtml(input.confirmationCode || input.reservationId);
+    const url = `https://app.guesty.com/reservations/${encodeURIComponent(input.reservationId)}/summary`;
+    const textHtml = escapeOpsHtml(text).replace(/\n/g, "<br>");
+    // O que se perde se ninguém colar o texto, dito sem rodeios.
+    const carries = [
+      text.includes("FATURA COM NIF") ? "o NIF para a fatura" : "",
+      /NAO cobrar|NAO e divida/i.test(text) ? "o aviso de NÃO cobrar o hóspede" : "",
+    ].filter(Boolean);
+    const why = carries.length ? ` Leva ${carries.join(" e ")}.` : "";
+    const subject =
+      input.kind === "failed"
+        ? `NOTA NÃO GRAVADA NO GUESTY — ${label}`
+        : `NOTA SEM ESPAÇO NO GUESTY — ${label}`;
+    const lines =
+      input.kind === "failed"
+        ? [
+            `O site não conseguiu gravar a nota interna da reserva ${label} no Guesty. Esta falha não trava a reserva nem o pagamento.`,
+            `Abrir a reserva no Guesty e colar nas notas o texto abaixo, tal como está.${why}`,
+            `Reserva: <a href="${url}">${url}</a>`,
+            `<strong>Texto por gravar:</strong><br>${textHtml}`,
+            `Erro: ${escapeOpsHtml(guestyErrorSummary(input.error))}`,
+            `O site escreve estas notas com GET/PUT /v1/reservations/{id}, que o Guesty dá como obsoleto e retira no fim do ano. Se este aviso aparecer em várias reservas, avisar a equipa técnica.`,
+          ]
+        : [
+            `As notas da reserva ${label} no Guesty já não têm espaço (o site escreve até ${RESERVATION_NOTE_MAX} caracteres) e o texto novo não foi escrito. Nada do que lá estava foi apagado.`,
+            `Abrir a reserva no Guesty, arrumar as notas e colar o texto abaixo, tal como está.${why}`,
+            `Reserva: <a href="${url}">${url}</a>`,
+            `<strong>Texto por gravar:</strong><br>${textHtml}`,
+          ];
+    const { sendOpsAlert, emailDeliveryConfigured } = await import("./transactional-email");
+    const accepted = await sendOpsAlert(subject, lines, { copyToSales: true });
+    // Um email que não saiu não conta: a próxima tentativa volta a avisar.
+    // Sem Resend (preview, DEV ou produção mal configurada) o sendEmail só o
+    // escreve no log, e ninguém fica com o texto: também não conta.
+    const delivered = accepted && emailDeliveryConfigured();
+    if (delivered) noteAlertSentAt.set(key, now);
+    return delivered;
+  } catch (err: any) {
+    console.error(`[Guesty] alerta de nota por gravar nao saiu (${input.reservationId}): ${err?.message}`);
+    return false;
+  }
+}
+
+/** Só para testes: espera pelos alertas que ainda estão a sair. */
+export const __testing = {
+  noteAlertsSettled: async (): Promise<void> => {
+    await Promise.all([...noteAlertInFlight.values()]);
+  },
+};
+
+/**
+ * Nota interna da reserva no Guesty (notes.other): manifesto de serviços,
+ * nota do pagamento, NIF da fatura, avisos das duas partes. Best-effort:
+ * nunca lança nem bloqueia o pagamento, mas também nunca falha calada. Se
+ * não ficar gravada, o CS recebe um alerta com o texto para colar à mão.
+ *
+ * `opts.prepend` vai para o topo do campo (ver planReservationNote).
+ *
+ * Devolve true quando não há nada a repetir: texto gravado, já lá estava, ou
+ * não coube e o CS já tem o texto por email (repetir não arranja espaço).
+ * Devolve false quando a leitura ou a escrita falharam (quem repete, repete)
+ * ou quando o alerta de falta de espaço não saiu (ou não saiu a tempo).
+ *
+ * Nunca espera pelo email da falha (a resposta é false de qualquer maneira), e
+ * pelo da falta de espaço no máximo NOTE_ALERT_WAIT_MS: o settle do cartão
+ * chama isto dentro do lock do intent, antes de o dar por pago e de mandar os
+ * emails ao hóspede.
+ */
+export async function appendReservationNote(
+  reservationId: string,
+  note: string,
+  opts: { prepend?: string } = {},
+): Promise<boolean> {
+  // Por gravar, por esta ordem: tudo enquanto não se leu a reserva.
+  let pending = [String(opts.prepend ?? "").trim(), String(note ?? "").trim()].filter(Boolean);
+  if (!pending.length) return true;
+  let confirmationCode: string | null = null;
   try {
     // PUT em notes.other SUBSTITUI o campo inteiro. Com o PUT directo, a nota
     // "SERVICOS DO CHECKOUT" (escrita logo a seguir ao settle, e sempre, porque
@@ -467,17 +668,29 @@ export async function appendReservationNote(reservationId: string, note: string)
     // nada a dizer que já estava pago. Lê-se, acrescenta-se, e não se repete.
     // Sem filtro de campos: com "fields" o Guesty devolve vazio quando o nome
     // não bate certo, e um vazio aqui voltava a apagar tudo.
+    // GET/PUT /v1/reservations/{id} estão obsoletos (30 jul 2026, retirados no
+    // fim do ano): a migração para a v3 precisa de uma reserva de teste.
     const current = await guestyClient.request<any>("GET", "/v1/reservations/" + reservationId);
-    const existing = String(current?.notes?.other ?? "").trim();
-    const add = note.trim();
-    if (existing.includes(add)) return true;
-    const merged = existing ? existing + "\n\n" + add : add;
-    await guestyClient.request("PUT", "/v1/reservations/" + reservationId, {
-      body: { notes: { other: merged.slice(0, 4000) } },
-    });
-    return true;
+    confirmationCode = typeof current?.confirmationCode === "string" ? current.confirmationCode : null;
+    const plan = planReservationNote(current?.notes?.other, note, opts.prepend);
+    pending = pending.filter((t) => plan.written.includes(t) || plan.missing.includes(t));
+    if (plan.changed) {
+      await guestyClient.request("PUT", "/v1/reservations/" + reservationId, {
+        body: { notes: { other: plan.text } },
+      });
+    }
+    if (!plan.missing.length) return true;
+    console.warn(`[Guesty] nota sem espaco na reserva ${reservationId}: ${plan.missing.length} texto(s) por gravar — alerta ao CS`);
+    // Um alerta que chegue depois do limite conta na mesma para a próxima
+    // tentativa (fica registado quando sai), que então não volta a avisar.
+    return await withTimeout(
+      alertReservationNoteNotWritten({ reservationId, confirmationCode, kind: "no-room", missing: plan.missing }),
+      NOTE_ALERT_WAIT_MS,
+      false,
+    );
   } catch (err: any) {
     console.warn("[Guesty] appendReservationNote falhou (" + reservationId + "):", err?.message);
+    void alertReservationNoteNotWritten({ reservationId, confirmationCode, kind: "failed", missing: pending, error: err });
     return false;
   }
 }

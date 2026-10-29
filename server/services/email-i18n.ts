@@ -948,7 +948,7 @@ const fiTo = refundTo("maksussa käytetylle kortille", (l) => `kortille ••�
 /** it: artigo/preposição + data, com elisão antes de 8 e 11 ("il 15 luglio",
  *  "l'8 luglio", "dall'11 luglio"); cap = início de frase. */
 const IT_ELIDED = { il: "l'", al: "all'", dal: "dall'", del: "dell'" } as const;
-const itArt = (prep: keyof typeof IT_ELIDED, d: string, cap = false) => {
+export const itArt = (prep: keyof typeof IT_ELIDED, d: string, cap = false) => {
   const s = /^(8|11)\b/.test(d) ? `${IT_ELIDED[prep]}${d}` : `${prep} ${d}`;
   return cap ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 };

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const mock = vi.hoisted(() => ({
   candidates: vi.fn(), claim: vi.fn(), send: vi.fn(), properties: vi.fn(), eligible: vi.fn(),
   consent: vi.fn(), claimAlert: vi.fn(), alert: vi.fn(), update: vi.fn(), beQuote: vi.fn(), avail: vi.fn(),
+  attempt: vi.fn(), plan: vi.fn(), breakdown: vi.fn(),
 }));
 vi.mock("../db", () => ({
   listRecoveryCandidates: mock.candidates, claimRecoveryStage: mock.claim,
@@ -14,7 +15,12 @@ vi.mock("./guesty", () => ({ checkAvailability: mock.avail, describeGuestyError:
 vi.mock("../lib/guesty", () => ({ guestyClient: { getListingCalendar: vi.fn().mockResolvedValue([]) } }));
 vi.mock("./properties-store", () => ({ getPropertiesForSite: mock.properties, isHiddenFromCatalog: () => false }));
 vi.mock('./recovery-eligibility', () => ({ canRemindRecoveryStay: mock.eligible }));
-import { recoveryOptoutUrl, runCheckoutRecoverySweep, startCheckoutRecoveryScheduler } from "./checkout-recovery";
+// Contacto 1 no pagamento: tentativas PayPal/Klarna na Stripe, a oferta de
+// duas partes do checkout e o total que o checkout cobraria.
+vi.mock("./stripe-klarna", () => ({ hasCheckoutPaymentAttempt: mock.attempt }));
+vi.mock("../routers/checkout", () => ({ clientPaymentPlanFor: mock.plan }));
+vi.mock("./checkout-card-charge", () => ({ listingBreakdownFromIntent: mock.breakdown }));
+import { paymentWasAttempted, recoveryOptoutUrl, runCheckoutRecoverySweep, startCheckoutRecoveryScheduler } from "./checkout-recovery";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -31,6 +37,9 @@ beforeEach(() => {
   mock.alert.mockResolvedValue(undefined);
   mock.update.mockResolvedValue(true);
   mock.avail.mockResolvedValue({ available: true });
+  mock.attempt.mockResolvedValue(false);
+  mock.plan.mockResolvedValue({ available: false, reason: "disabled" });
+  mock.breakdown.mockResolvedValue({ totalCents: 250_000 });
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.useRealTimers(); });
 const futureCheckIn = new Date(Date.now() + 40 * 86_400_000).toISOString().slice(0, 10);
@@ -212,5 +221,135 @@ describe("funil de 4 contactos", () => {
     expect(mock.eligible).toHaveBeenCalledOnce();
     expect(mock.alert).toHaveBeenCalledOnce();
     expect(mock.send).not.toHaveBeenCalled();
+  });
+});
+
+describe("contacto 1 no pagamento: o email depende de ter havido uma tentativa de pagar", () => {
+  // Tarifa moderate (cancelamento gratuito até 7 dias antes), 3 000 € de estadia.
+  const atPayment = (over: Record<string, unknown> = {}) => intent(2, {
+    status: "payment_pending", ratePlanId: "rp-moderate",
+    quote: { total: 3000, currency: "EUR", ratePlanOptions: [
+      { ratePlanId: "rp-moderate", name: "Flexible", total: 3000, nightlyRate: 600, cleaningFee: 0, cancellationPolicy: ["MODERATE"] },
+    ] },
+    ...over,
+  });
+  const chargeAt = "2099-01-15T10:00:00.000Z";
+
+  it("sem tentativa (nada no intent nem na Stripe): a pergunta, com a política da tarifa e as duas partes do checkout", async () => {
+    const row = atPayment();
+    mock.candidates.mockResolvedValue([row]);
+    mock.plan.mockResolvedValue({ available: true, depositCents: 150_000, balanceCents: 150_000, chargeAt });
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.attempt).toHaveBeenCalledWith(row.id);
+    // As mesmas regras do ecrã do checkout, sobre este intent.
+    expect(mock.plan).toHaveBeenCalledWith(expect.objectContaining({ id: row.id, ratePlanId: "rp-moderate" }));
+    expect(mock.breakdown).not.toHaveBeenCalled();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
+      stage: 1, paymentStep: true, paymentAttempted: false, klarna: false,
+      cancellation: { policy: "moderate" },
+      twoParts: { todayCents: 150_000, laterCents: 150_000, chargeAt: new Date(chargeAt) },
+    }));
+  });
+
+  it("cartão ou wallet tentados (PI no intent): o texto de sempre, sem perguntar à Stripe, e as duas partes no mesmo cartão para o limite do banco", async () => {
+    const row = atPayment({ paymentIntentId: "pi_card_attempt" });
+    mock.candidates.mockResolvedValue([row]);
+    mock.plan.mockResolvedValue({ available: true, depositCents: 150_000, balanceCents: 150_000, chargeAt });
+    await runCheckoutRecoverySweep();
+    expect(mock.attempt).not.toHaveBeenCalled();
+    // As mesmas regras do ecrã do checkout, como na variante sem tentativa.
+    expect(mock.plan).toHaveBeenCalledWith(expect.objectContaining({ id: row.id, ratePlanId: "rp-moderate" }));
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
+      stage: 1, paymentStep: true, paymentAttempted: true, klarna: false,
+      cancellation: { policy: "moderate" },
+      twoParts: { todayCents: 150_000, laterCents: 150_000, chargeAt: new Date(chargeAt) },
+    }));
+  });
+
+  it("PayPal ou Klarna tentados (só a Stripe sabe): o texto de sempre; o Klarna nunca, nem dentro do limite, enquanto o país de faturação for forçado a PT", async () => {
+    const { KLARNA_BILLING_COUNTRY_FORCED_PT } = await import("./recovery-funnel");
+    expect(KLARNA_BILLING_COUNTRY_FORCED_PT).toBe(true);
+    mock.candidates.mockResolvedValue([atPayment({ quote: { total: 900, currency: "EUR" } })]);
+    mock.attempt.mockResolvedValue(true);
+    mock.breakdown.mockResolvedValue({ totalCents: 95_000 });
+    await runCheckoutRecoverySweep();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 1, paymentAttempted: true, klarna: false }));
+    // Sem Klarna possível, nem se calcula o total para o limite dele.
+    expect(mock.breakdown).not.toHaveBeenCalled();
+  });
+
+  it("Stripe sem resposta: conta como sem tentativa (o texto que não fala de falhas serve a todos)", async () => {
+    mock.attempt.mockRejectedValue(new Error("stripe search unavailable"));
+    expect(await paymentWasAttempted({ id: "intent-x", paymentIntentId: null })).toBe(false);
+    expect(await paymentWasAttempted({ id: "intent-x", paymentIntentId: "pi_y" })).toBe(true);
+    mock.candidates.mockResolvedValue([atPayment()]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ paymentAttempted: false }));
+  });
+
+  it.each([
+    ["sem oferta (tarifa, antecedência ou flag)", () => mock.plan.mockResolvedValue({ available: false, reason: "lead_time" })],
+    ["erro ao calcular", () => mock.plan.mockRejectedValue(new Error("listing facts unavailable"))],
+  ])("duas partes %s: o email sai sem a linha", async (_label, arrange) => {
+    arrange();
+    mock.candidates.mockResolvedValue([atPayment()]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ paymentAttempted: false, twoParts: null }));
+  });
+
+  it("fora do passo de pagamento nada disto corre: nem Stripe, nem duas partes, nem total", async () => {
+    mock.candidates.mockResolvedValue([intent(2)]);
+    await runCheckoutRecoverySweep();
+    expect(mock.attempt).not.toHaveBeenCalled();
+    expect(mock.plan).not.toHaveBeenCalled();
+    expect(mock.breakdown).not.toHaveBeenCalled();
+    const sent = mock.send.mock.calls[0][0];
+    expect(sent).toMatchObject({ stage: 1, paymentStep: false });
+    expect(sent.paymentAttempted).toBeUndefined();
+    expect(sent.twoParts).toBeUndefined();
+  });
+
+  it("contacto 2 no pagamento: o texto não muda (só o contacto 1 tem as variantes)", async () => {
+    mock.candidates.mockResolvedValue([atPayment({ createdAt: new Date(Date.now() - 21 * 3_600_000), recoveryStage: 1 })]);
+    await runCheckoutRecoverySweep();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 2 }));
+    expect(mock.attempt).not.toHaveBeenCalled();
+  });
+});
+
+describe("contacto 3: o Flex só é oferecido quando acrescenta dias à tarifa", () => {
+  const requote = (cancellationPolicy?: string[]) => ({
+    quoteId: "q-new", total: 2280, currency: "EUR", nights: 5, ratePlanId: "rp1",
+    pricing: { nightlyRate: 420, totalNights: 2100, cleaningFee: 180, taxesAndFees: 0 },
+    ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2280, nightlyRate: 420, cleaningFee: 180, taxesAndFees: 0,
+      ...(cancellationPolicy ? { cancellationPolicy } : {}) }],
+  });
+  const stage3 = () => intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) });
+  beforeEach(() => mock.consent.mockResolvedValue(true));
+
+  it("moderate (cancela de graça até 7 dias antes, o mesmo prazo do Flex): sem Flex oferecido", async () => {
+    mock.beQuote.mockResolvedValue(requote(["MODERATE"]));
+    mock.candidates.mockResolvedValue([stage3()]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    const patch = mock.update.mock.calls[0][1];
+    expect(patch).toMatchObject({ guestyQuoteId: "q-new" });
+    expect(patch).not.toHaveProperty("flex");
+    expect(patch).not.toHaveProperty("flexGiftUntil");
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: null }));
+  });
+
+  it.each([["FIRM"], ["STRICT"], ["STRICT_60"], ["NON_REFUNDABLE"]])("%s: o Flex acrescenta dias e continua oferecido", async (code) => {
+    mock.beQuote.mockResolvedValue(requote([code]));
+    mock.candidates.mockResolvedValue([stage3()]);
+    await runCheckoutRecoverySweep();
+    expect(mock.update.mock.calls[0][1]).toMatchObject({ flex: true, flexGiftUntil: expect.any(Date), flexGiftReason: "recovery" });
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: expect.objectContaining({ days: 7 }) }));
+  });
+
+  it("política desconhecida: como antes, o Flex é oferecido", async () => {
+    mock.beQuote.mockResolvedValue(requote());
+    mock.candidates.mockResolvedValue([stage3()]);
+    await runCheckoutRecoverySweep();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: expect.objectContaining({ days: 7 }) }));
   });
 });

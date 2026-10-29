@@ -399,7 +399,15 @@
     "requestOnlyTitle": "Pour ces dates, cette maison se réserve sur demande.",
     "requestOnlyBody": "Envoyez votre demande à notre concierge et nous confirmerons personnellement la disponibilité et le prix.",
     "twoPartsHint": "Vous pouvez payer en deux fois : la moitié aujourd'hui, l'autre moitié le {{date}}. Ou tout maintenant, avec le Flex inclus.",
-    "twoPartsHintPlain": "Vous pouvez payer en deux fois : la moitié aujourd'hui, l'autre moitié le {{date}}."
+    "twoPartsHintPlain": "Vous pouvez payer en deux fois : la moitié aujourd'hui, l'autre moitié le {{date}}.",
+    "phoneErrors": {
+      "digits": "Un numéro en {{dialCode}} compte {{digits}} chiffres après l'indicatif. Vérifiez le numéro et le pays.",
+      "digitsRange": "Un numéro en {{dialCode}} compte entre {{min}} et {{max}} chiffres après l'indicatif. Vérifiez le numéro et le pays.",
+      "leadingZero": "Retirez le 0 après {{dialCode}}.",
+      "tooShort": "Ce numéro semble trop court. Vérifiez-le, avec l'indicatif du pays.",
+      "tooLong": "Ce numéro semble trop long. Vérifiez-le, avec l'indicatif du pays.",
+      "countryCode": "Commencez le numéro par + et l'indicatif du pays."
+    }
   },
   "common": {
     "loading": "Chargement…",
@@ -605,7 +613,7 @@
     "heroGuarantee": "Pas de frais de réservation. Meilleur prix garanti. Réponse du concierge sous 2 heures.",
     "proofHotels": "{{homes}} villas et maisons privées",
     "proofRating": "4.8★ note moyenne",
-    "proofManaged": "Gérées par notre équipe",
+    "proofManaged": "{{own}} gérées par notre équipe",
     "heroAlt": "Court de tennis privé et villa de Mirante 1, au-dessus d'Albufeira, en Algarve",
     "searchDestination": "Destination",
     "searchMinhoCoast": "Côte du Minho",
@@ -639,14 +647,14 @@
     "howItWorksOverline": "COMMENT ÇA MARCHE",
     "howItWorksTitle": "Trois étapes jusqu'à votre villa.",
     "step1Title": "Choisissez votre maison",
-    "step1Body": "Parcourez notre collection. Filtrez par destination, taille et style. Chaque maison répond à la même norme d'exploitation.",
+    "step1Body": "Parcourez notre collection. Filtrez par destination, taille et style. Chaque maison que nous gérons répond à la même norme d'exploitation.",
     "step2Title": "Dites-nous ce dont vous avez besoin",
     "step2Body": "Chef privé ? Transfert aéroport ? Cours de surf pour les enfants ? Notre concierge organise tout avant votre arrivée.",
     "step3Title": "Nous gérons chaque détail",
     "step3Body": "Du moment où vous atterrissez au moment où vous partez, notre équipe locale est sur le terrain. Vous ne faites que profiter.",
     "conceptOverline": "LE CONCEPT",
     "conceptTitle": "Pas un hôtel. Pas une location. Quelque chose de mieux.",
-    "conceptBody": "Chaque maison de notre collection est exploitée comme un hôtel privé. Une équipe locale dévouée gère tout, du panier de bienvenue à l'arrivée au chef privé cuisant avec des ingrédients du marché de ce matin. Pas de réception. Pas de halls partagés. Juste votre maison, votre rythme, vos règles.",
+    "conceptBody": "Chaque maison que nous gérons est exploitée avec le service d'un hôtel. Une équipe locale dévouée gère tout, du panier de bienvenue à l'arrivée au chef privé cuisant avec des ingrédients du marché de ce matin. Pas de réception. Pas de halls partagés. Juste votre maison, votre rythme, vos règles.",
     "conceptPoint1": "L'intimité d'une maison",
     "conceptPoint1Body": "Pas d'espaces partagés, pas de calendriers. La propriété entière est exclusivement vôtre.",
     "conceptPoint2": "Le service d'un hôtel cinq étoiles",
@@ -656,7 +664,7 @@
     "conceptCta": "Découvrir notre approche",
     "destOverline": "OÙ NOUS OPÉRONS",
     "destTitle": "Trois régions. Une norme.",
-    "destBody": "De la côte sauvage de l'Atlantique du Minho au sud ensoleillé de l'Algarve, chaque maison répond à la même norme de qualité, de service et de soin.",
+    "destBody": "De la côte sauvage de l'Atlantique du Minho au sud ensoleillé de l'Algarve, chaque maison que nous gérons répond à la même norme de qualité, de service et de soin.",
     "destNowOperating": "Actuellement en exploitation",
     "destHome_one": "{{count}} maison",
     "destHome_other": "{{count}} maisons",
@@ -775,7 +783,20 @@
       "alreadyPaidShort": "Cette réservation est déjà payée. Consultez votre email pour la confirmation.",
       "saveFailed": "Impossible d enregistrer vos dernières modifications. Vérifiez votre connexion et réessayez.",
       "network": "Problème de connexion. Vérifiez votre internet et réessayez.",
-      "genericRetry": "Le paiement n a pas pu être finalisé. Réessayez — ou contactez-nous et nous finaliserons votre réservation personnellement."
+      "genericRetry": "Le paiement n a pas pu être finalisé. Réessayez — ou contactez-nous et nous finaliserons votre réservation personnellement.",
+      "declinedLimit": "Le paiement a été refusé, souvent à cause du plafond de la carte pour ce montant. Utilisez une autre carte ou un autre moyen de paiement.",
+      "declinedGeneric": "Le paiement a été refusé. Veuillez utiliser une autre carte ou un autre moyen de paiement.",
+      "cardExpired": "Cette carte a expiré. Veuillez utiliser une autre carte ou un autre moyen de paiement.",
+      "cardNotSupported": "Cette carte n'accepte pas ce paiement. Veuillez utiliser une autre carte ou un autre moyen de paiement.",
+      "incorrectCvc": "Le code de sécurité (CVC) n'est pas correct. Vérifiez-le et réessayez.",
+      "incorrectNumber": "Le numéro de carte n'est pas correct. Vérifiez-le et réessayez.",
+      "cardDetails": "Certaines informations de la carte ne sont pas correctes. Vérifiez le numéro, la date d'expiration et le code de sécurité, puis réessayez.",
+      "bankUnavailable": "La banque n'a pas pu traiter le paiement pour le moment. Rien n'a été débité. Réessayez dans un instant.",
+      "authenticationFailed": "La confirmation auprès de votre banque n'a pas abouti, rien n'a donc été débité. Réessayez et confirmez dans l'application de votre banque.",
+      "twoPartsUnavailable": "Le paiement en deux fois n'est plus disponible pour cette réservation. Rien n'a été débité : vous pouvez payer le montant total maintenant.",
+      "prepareFailed": "Nous n'avons pas pu préparer le paiement. Rien n'a été débité. Veuillez réessayer.",
+      "priceChanged": "Le prix ou les détails de cette réservation ont changé entre-temps. Actualisez le prix pour continuer.",
+      "duplicateTransaction": "Un paiement avec cette carte et ce montant vient d'être effectué. Consultez votre email et votre application bancaire avant de payer à nouveau."
     },
     "payButton": "Payer {{amount}}",
     "cancelButton": "Annuler",
@@ -790,7 +811,18 @@
     "payNowButton": "Payer {{amountNow}} maintenant",
     "payNowAfter": "Puis {{amountLater}} le {{date}}.",
     "processingFirst": "Traitement de la première partie…",
-    "mandateMissing": "Cochez l'autorisation ci-dessus pour continuer."
+    "mandateMissing": "Cochez l'autorisation ci-dessus pour continuer.",
+    "termsHint": "Cochez cette case pour payer.",
+    "walletsHint": "Pour payer avec {{wallets}}, complétez vos coordonnées et cochez la case des conditions ci-dessous.",
+    "errorActions": {
+      "twoParts": "Payer plutôt en deux fois ({{amountNow}} aujourd'hui)",
+      "otherMethod": "Utiliser une autre carte ou un autre moyen",
+      "otherCard": "Utiliser une autre carte",
+      "concierge": "Parler au concierge",
+      "whatsappMessage": "Bonjour, j'ai besoin d'aide pour ma réservation : {{property}}, du {{checkIn}} au {{checkOut}}, voyageurs : {{guests}}. Le paiement n'est pas passé."
+    },
+    "methodsAccepted": "Moyens de paiement acceptés",
+    "notChargedYet": "Rien ne vous sera débité pour l'instant."
   },
   "contact": {
     "heroAlt": "Contacter Portugal Active",
@@ -852,12 +884,12 @@
   },
   "about": {
     "heroAlt": "L'équipe Portugal Active",
-    "heroTitle": "Nous ne louons pas seulement des villas. Nous gérons chacune comme un hôtel.",
+    "heroTitle": "Nous ne louons pas seulement des villas. Nous gérons des maisons comme un hôtel.",
     "storyOverline": "NOTRE HISTOIRE",
     "storyTitle": "Née d'une conviction simple : le Portugal mérite une meilleure hospitalité.",
     "storyP1": "Portugal Active a débuté en 2017 comme entreprise de tourisme d'aventure à Viana do Castelo, fondée par Ricardo Viana — un scientifique du sport qui a quitté le monde académique pour construire quelque chose sur la côte où il a grandi. Vélo, équitation, canyoning, surf. Puis une seule propriété a tout changé. Nous avons pris en charge un lodge et l'avons géré comme nos aventures : avec une préparation obsessionnelle, une attention personnelle et une équipe présente du premier au dernier instant. Les clients l'ont remarqué.",
-    "storyP2": "Nous avons regardé comment les maisons de vacances étaient louées au Portugal et avons vu le même schéma partout : de belles propriétés, remises avec un jeu de clés et un numéro de téléphone. Aucune équipe sur le terrain. Personne derrière l'expérience après le check-in. Nous avons donc tout repensé — une équipe de ménage à temps plein, la maintenance, un concierge qui vit dans la région, une checklist de {{points}} points avant chaque arrivée. Pas une location avec des extras. Un modèle entièrement nouveau : l'hôtel privé.",
-    "storyP3": "D'une propriété à plus de cinquante, chacune gérée de bout en bout par notre équipe. Forbes, The Times et The Guardian ont écrit sur ce que nous construisons. Nous sommes toujours basés à Viana do Castelo. Toujours indépendants. Toujours en croissance de plus de 100% par an. Et toujours portés par la même conviction : la façon dont les gens vivent une maison de vacances est cassée, et c'est nous qui la réparons.",
+    "storyP2": "Nous avons regardé comment les maisons de vacances étaient louées au Portugal et avons vu le même schéma partout : de belles propriétés, remises avec un jeu de clés et un numéro de téléphone. Aucune équipe sur le terrain. Personne derrière l'expérience après le check-in. Nous avons donc tout repensé — une équipe de ménage à temps plein, la maintenance, un concierge qui vit dans la région, une checklist de {{points}} points avant chaque arrivée. Pas une location avec des extras. Un modèle entièrement nouveau : une maison privée, gérée avec le service d'un hôtel.",
+    "storyP3": "D'une propriété à {{count}}, dont {{own}} gérées de bout en bout par notre équipe. Forbes, The Times et The Guardian ont écrit sur ce que nous construisons. Nous sommes toujours basés à Viana do Castelo. Toujours indépendants. Toujours en croissance de plus de 100% par an. Et toujours portés par la même conviction : la façon dont les gens vivent une maison de vacances est cassée, et c'est nous qui la réparons.",
     "modelOverline": "NOTRE MODÈLE",
     "modelTitle": "Une hospitalité privée. Pas une marketplace.",
     "modelP1": "Nous ne listons pas les maisons sur une plateforme en attendant. Nous exploitons chaque propriété comme un hôtel privé, avec du personnel interne, des inspections quotidiennes, un service d'entretien professionnel, et une équipe concierge qui connaît chaque client par son nom avant son arrivée.",
@@ -878,7 +910,7 @@
     "ctaExplore": "DÉCOUVRIR NOS MAISONS",
     "ctaContact": "NOUS CONTACTER",
     "heroOverline": "Villas et Maisons de Luxe au Portugal",
-    "heroSubtitle": "Une équipe. Un standard. Cinquante maisons à travers le Portugal, chacune gérée de bout en bout par nos équipes.",
+    "heroSubtitle": "{{count}} maisons à travers le Portugal, dont {{own}} gérées de bout en bout par nos équipes.",
     "founderCaption": "Ricardo Viana, Fondateur. Viana do Castelo.",
     "pressOverline": "Dans la presse",
     "modelP3": "Voilà ce que « l'intimité d'une maison, le service d'un hôtel » signifie concrètement. L'intimité et l'espace d'une maison, avec la fiabilité et la profondeur de service d'un hôtel. Une marque. Un standard opérationnel. Quelle que soit la propriété que vous choisissez.",
@@ -887,13 +919,13 @@
     "standard1Title": "Linge de maison de qualité hôtelière",
     "standard1Body": "Draps en coton de plus de 300 fils, couettes premium et serviettes de bain grand format. Remplacés selon le planning.",
     "standard2Title": "Entretien professionnel",
-    "standard2Body": "Notre équipe formée prépare chaque maison avant l'arrivée. Pas un agent de ménage différent chaque semaine. Nos équipes.",
+    "standard2Body": "Notre équipe formée prépare chaque maison que nous gérons avant l'arrivée. Pas un agent de ménage différent chaque semaine. Nos équipes.",
     "standard3Title": "Chef privé sur demande",
     "standard3Body": "Des chefs professionnels qui font leurs achats au marché du matin et cuisinent dans votre cuisine. Du petit-déjeuner aux dîners gastronomiques.",
     "standard4Title": "Concierge dès le premier jour",
     "standard4Body": "Votre concierge vous contacte avant votre arrivée. Restaurants, transferts, cours de surf, dégustations de vins. Un seul message.",
     "standard5Title": "Préparation en {{points}} points",
-    "standard5Body": "Chaque maison est vérifiée selon notre checklist de préparation avant chaque arrivée. Chaque appareil, chaque pièce, chaque détail.",
+    "standard5Body": "Chaque maison que nous gérons est vérifiée selon notre checklist de préparation avant chaque arrivée. Chaque appareil, chaque pièce, chaque détail.",
     "standard6Title": "Panier de bienvenue",
     "standard6Body": "Vin local, eau, fruits de saison et produits régionaux. Placé dans chaque maison le jour de l'arrivée.",
     "discoverExperiences": "DÉCOUVRIR NOS EXPÉRIENCES",
@@ -909,8 +941,8 @@
     "statConcierge": "Conciergerie",
     "behindScenesOverline": "EN COULISSES",
     "behindScenesTitle": "La liste de contrôle en {{points}} points",
-    "behindScenesP1": "Avant chaque arrivée, notre équipe interne suit une liste de contrôle en {{points}} points. Linge repassé, produits réapprovisionnés, chaque surface inspectée. Voilà à quoi ressemble le service hôtelier appliqué à une maison privée.",
-    "behindScenesP2": "Pas d'équipes de ménage externes. Pas de raccourcis. Notre équipe s'occupe personnellement de chaque maison, et le standard ne faiblit jamais."
+    "behindScenesP1": "Avant chaque arrivée dans une maison que nous gérons, notre équipe interne suit une liste de contrôle en {{points}} points. Linge repassé, produits réapprovisionnés, chaque surface inspectée. Voilà à quoi ressemble le service hôtelier appliqué à une maison privée.",
+    "behindScenesP2": "Pas d'équipes de ménage externes. Pas de raccourcis. Notre équipe s'occupe personnellement de chaque maison que nous gérons, et le standard ne faiblit jamais."
   },
   "services": {
     "heroAlt": "Expériences Portugal Active",
@@ -1163,13 +1195,15 @@
   "privacy": {
     "overline": "LÉGAL",
     "title": "Politique de confidentialité",
-    "lastUpdated": "Dernière mise à jour : septembre 2026",
+    "lastUpdated": "Dernière mise à jour : octobre 2026",
     "s1Title": "1. Informations que nous collectons",
     "s1Body": "Nous collectons les informations que vous nous fournissez directement, par exemple lorsque vous faites une demande de réservation, vous abonnez à notre newsletter ou nous contactez. Cela peut inclure votre nom, adresse e-mail, numéro de téléphone et préférences de voyage.",
     "s2Title": "2. Comment nous utilisons vos informations",
     "s2Body": "Nous utilisons les informations collectées pour traiter vos réservations, communiquer avec vous au sujet de votre séjour, envoyer des communications marketing (avec votre consentement) et améliorer nos services.",
+    "s2OriginBody": "Si vous autorisez les cookies d'analyse en choisissant Accepter tout dans l'avis relatif aux cookies, nous enregistrons également, avec votre demande de réservation, d'où vient votre visite sur notre site : la campagne, l'annonce ou le site d'origine. Nous utilisons cette information uniquement en interne, pour savoir quelles actions marketing fonctionnent, et nous ne la partageons pas avec des tiers. Sans cette autorisation, nous n'enregistrons pas la provenance de la visite.",
     "s3Title": "3. Partage des données",
     "s3Body": "Nous ne vendons pas vos informations personnelles. Nous pouvons partager vos données avec les propriétaires et prestataires de services afin d'honorer votre réservation et de fournir les services que vous avez demandés. Si vous avez séjourné chez nous ou nous avez communiqué votre adresse e-mail, nous pouvons également la transmettre, toujours hachée et donc illisible, à des plateformes publicitaires comme Meta (Facebook et Instagram) et Google, afin de vous présenter nos offres sur ces plateformes. Vous pouvez demander à être retiré de ces listes à tout moment en écrivant à info@portugalactive.com.",
+    "s3AdsBody": "Si vous choisissez Accepter tout dans l'avis relatif aux cookies, lorsque vous commencez ou finalisez une réservation sur notre site, nous envoyons également à Meta (Facebook et Instagram), depuis notre serveur, le montant et le code de la réservation, la maison choisie, votre adresse e-mail et votre numéro de téléphone sous forme hachée (hash), les identifiants des cookies de Meta, l'adresse IP et le type de navigateur. Cela nous permet de savoir quelles publicités amènent des réservations. Nous conservons ces identifiants pendant 31 jours. Sans cette autorisation, ou si vous choisissez Essentiels uniquement, nous n'envoyons à Meta aucune de ces données de réservation.",
     "s4Title": "4. Vos droits",
     "s4Body": "En vertu du RGPD, vous avez le droit d'accéder, de corriger, de supprimer ou de transférer vos données personnelles. Vous pouvez également retirer votre consentement aux communications marketing, y compris les publicités personnalisées, à tout moment. Contactez-nous à info@portugalactive.com pour exercer ces droits.",
     "s5Title": "5. Contact",
@@ -1177,7 +1211,7 @@
   },
   "cookiesPage": {
     "title": "Politique de cookies",
-    "lastUpdated": "Dernière mise à jour : mars 2026",
+    "lastUpdated": "Dernière mise à jour : octobre 2026",
     "whatTitle": "Que sont les cookies ?",
     "whatBody": "Les cookies sont de petits fichiers texte placés sur votre appareil lorsque vous visitez notre site web. Ils nous aident à vous offrir une meilleure expérience en mémorisant vos préférences, en comprenant comment vous utilisez notre site et en améliorant nos services.",
     "howTitle": "Comment nous utilisons les cookies",
@@ -1186,6 +1220,7 @@
     "essentialBody": "Ces cookies sont nécessaires au bon fonctionnement du site web. Ils activent les fonctionnalités de base comme la navigation entre les pages, l'accès aux zones sécurisées et la fonctionnalité de l'itinéraire. Le site ne peut pas fonctionner correctement sans ces cookies.",
     "analyticsTitle": "Cookies d'analyse",
     "analyticsBody": "Avec votre accord, Google Analytics et Microsoft Clarity nous aident à comprendre l’utilisation du site. Ces outils peuvent traiter des identifiants en ligne et des interactions ; les données ne sont pas nécessairement anonymes.",
+    "originBody": "pa-origin. Un petit enregistrement conservé dans votre navigateur, qui indique d'où vient votre visite : la campagne, l'annonce ou le site d'origine, la page d'entrée, ainsi que la date et l'heure de la première et de la dernière visite. Il n'est pas conçu pour enregistrer votre nom, votre adresse e-mail ou votre numéro de téléphone. Il nous permet de savoir quelles actions marketing fonctionnent ; si vous effectuez une réservation, nous conservons cette provenance avec votre demande de réservation, pour un usage interne uniquement. Il n'est créé que si vous choisissez Accepter tout et il est supprimé dès que vous retirez votre autorisation dans Gérer les cookies. Chaque visite enregistrée compte pendant 30 jours et est supprimée la première fois que vous revenez sur le site après ce délai. Vous pouvez aussi le supprimer à tout moment en effaçant les données de ce site dans votre navigateur.",
     "functionalTitle": "Cookies fonctionnels",
     "functionalBody": "Ces cookies permettent au site web de mémoriser les choix que vous faites (comme votre langue ou région préférée) et de fournir des fonctionnalités améliorées et personnalisées. Ils peuvent également être utilisés pour mémoriser les modifications que vous avez apportées à la taille du texte, aux polices et à d'autres éléments personnalisables.",
     "marketingTitle": "Cookies marketing",
@@ -1198,6 +1233,10 @@
     "updatesBody": "Nous pouvons mettre à jour cette politique de cookies de temps en temps pour refléter les changements technologiques, législatifs ou de nos pratiques en matière de données. Nous vous encourageons à consulter cette page régulièrement.",
     "contactTitle": "Nous contacter",
     "contactBody": "Si vous avez des questions sur notre utilisation des cookies, veuillez nous contacter à info@portugalactive.com."
+  },
+  "legalFooter": {
+    "complaintsBook": "Livre de réclamations",
+    "complaintsBookAria": "Livro de Reclamações, le livre de réclamations électronique officiel du Portugal (s'ouvre dans un nouvel onglet)"
   },
   "blog": {
     "overline": "JOURNAL",
@@ -1884,7 +1923,17 @@
     "rate": {
       "twoPartsLine": "Vous pouvez aussi payer en deux fois : {{amountNow}} aujourd'hui et {{amountLater}} le {{date}}.",
       "twoPartsLinePlain": "Vous pouvez aussi payer en deux fois : {{amountNow}} aujourd'hui et {{amountLater}} le {{date}}."
-    }
+    },
+    "emailLineLabel": "Confirmation à",
+    "emailChange": "modifier",
+    "fieldErrors": {
+      "firstName": "Indiquez votre prénom.",
+      "lastName": "Indiquez votre nom."
+    },
+    "nifInvalid": "Ce NIF portugais ne semble pas correct : vérifiez les 9 chiffres. Pour un numéro de TVA d'un autre pays, commencez par son code pays (par exemple ES).",
+    "emailHoldNote": "Nous gardons ce prix jusqu'au {{date}}, {{time}}. Si vous ne terminez pas maintenant, nous pourrons vous envoyer un ou deux rappels par email. Pas de spam.",
+    "emailReminderNote": "Si vous ne terminez pas maintenant, nous pourrons vous envoyer un ou deux rappels par email. Pas de spam.",
+    "conciergeMessage": "Bonjour, j'ai une question sur ma réservation : {{property}}, du {{checkIn}} au {{checkOut}}, voyageurs : {{guests}}."
   },
   "host": {
     "hostedBy": "Vos hôtes : Ricardo & l’équipe Portugal Active",

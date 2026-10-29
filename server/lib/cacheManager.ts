@@ -1,10 +1,14 @@
+import { BoundedMap, approxJsonBytes } from "./boundedMap";
+
 type CacheEntry<T = unknown> = {
   value: T;
   expiresAt: number;
 };
 
 export class CacheManager {
-  private store = new Map<string, CacheEntry>();
+  // Com teto (ver BoundedMap): as chaves de calendário levam as datas do pedido
+  // e cresciam sem limite; um calendário de 12 meses pesa dezenas de KB.
+  private store = new BoundedMap<string, CacheEntry>(1000, 48 * 1024 * 1024, (e) => approxJsonBytes(e.value));
 
   get<T = unknown>(key: string): T | null {
     const entry = this.store.get(key);
