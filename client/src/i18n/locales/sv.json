@@ -1960,6 +1960,17 @@
     "qPets": "Kan jag ta med mitt husdjur?",
     "aPets": "Ja — {{name}} välkomnar husdjur. Meddela oss vid bokningen; en mindre avgift kan tillkomma."
   },
+  "seoMeta": {
+    "photoAlt": "{{name}} – {{kind}}, Portugal – foto {{n}}",
+    "photoAltHero": "{{name}} – {{kind}}, Portugal",
+    "photoAltOf": "{{name}} – {{place}} – foto {{n}} av {{total}}",
+    "guestCount_one": "{{num}} Gäst",
+    "guestCount_other": "{{num}} Gäster",
+    "bedroomCount_one": "{{num}} Sovrum",
+    "bedroomCount_other": "{{num}} Sovrum",
+    "bathroomCount_one": "{{num}} Badrum",
+    "bathroomCount_other": "{{num}} Badrum"
+  },
   "collections": {
     "eyebrow": "Kurerad kollektion",
     "count": "{{count}} hus i denna kollektion",

@@ -55,8 +55,9 @@ export default function DestinationDetail() {
     description: dest?.seoDescription ?? (dest ? `Discover ${dest.name}. Private villas with pool, concierge, and curated experiences.`.slice(0, 155) : undefined),
     image: dest?.regionImage || dest?.coverImage,
     url: dest ? `/destinations/${dest.slug}` : undefined,
-    // Drafts (copy still "[TBD]") and coming-soon entries stay out of the index.
-    noindex: !!dest && (dest.status !== 'active' || !!dest.comingSoon),
+    // Drafts (copy still "[TBD]") and coming-soon entries stay out of the
+    // index; an unknown slug is a 404 on the server and noindex here too.
+    noindex: !dest || dest.status !== 'active' || !!dest.comingSoon,
   });
 
   const [modalProduct, setModalProduct] = useState<Product | null>(null);

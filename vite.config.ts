@@ -181,6 +181,10 @@ export default defineConfig(({ command, isSsrBuild }) => ({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    // dist/public/.vite/manifest.json: o servidor lê-o para pôr no <head> do
+    // HTML o CSS da rota e os modulepreload da língua e da página
+    // (server/lib/routeAssets.ts). Só no build do cliente.
+    manifest: !isSsrBuild,
     rollupOptions: {
       output: {
         manualChunks(id) {

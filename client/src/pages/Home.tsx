@@ -45,6 +45,7 @@ import { getUniqueLocalities } from '@/lib/utils';
 import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
 import { HOME_FEATURED_ORDER, HOME_FEATURED_COUNT, catalogKey, curatedPosition } from '@/config/propertyOrder';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
+import { useFromPrices } from '@/hooks/useFromPrices';
 import { isChildUnit } from '@/config/propertyGroups';
 
 const destinations = destinationsData as unknown as Destination[];
@@ -238,10 +239,8 @@ export default function Home() {
   }, [properties]);
 
   const fromListingIds = useMemo(() => featured.filter(p => p.guestyId).map(p => p.guestyId!), [featured]);
-  const { data: featuredFromPrices } = trpc.booking.lowestNightlyBatch.useQuery(
-    { listingIds: fromListingIds },
-    { enabled: fromListingIds.length > 0, staleTime: 5 * 60_000 },
-  );
+  // Starts from the prices the server put into the page (useFromPrices).
+  const { data: featuredFromPrices } = useFromPrices(fromListingIds);
   // Partner homes (Tripwix) have no Guesty listing: their "from" price and
   // dated quotes come from the partner calendar, exactly as on the PLP.
   const partner = usePartnerPrices(
@@ -766,25 +765,25 @@ export default function Home() {
                 img: IMAGES.expGastronomy,
                 video: '/videos/private-chef.mp4',
                 videoPoster: '/videos/private-chef-poster.webp',
-                href: '/services#gastronomy',
+                href: '/concierge#gastronomy',
               },
               {
                 title: t('home.expWellness'),
                 body: t('home.expWellnessBody'),
                 img: IMAGES.expWellness,
-                href: '/services#wellness',
+                href: '/concierge#wellness',
               },
               {
                 title: t('home.expAdventure'),
                 body: t('home.expAdventureBody'),
                 img: IMAGES.expAdventure,
-                href: '/adventures',
+                href: '/experiences',
               },
               {
                 title: t('home.expMobility'),
                 body: t('home.expMobilityBody'),
                 img: IMAGES.expMobility,
-                href: '/services#mobility',
+                href: '/concierge#mobility',
               },
             ].map((exp, i) => (
               <Link key={i} href={exp.href} className="group block flex-shrink-0 w-[220px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>

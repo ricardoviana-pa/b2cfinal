@@ -12,7 +12,11 @@ import express, { type Express } from "express";
 import { HOME_COUNT_LABEL, OWN_HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
 import { serviceRouteSlug } from '@shared/serviceRoutes';
-import { POLICY_LANGS, cancellationPolicyCopy, cancellationPolicyMetaDescription, cancellationPolicySummary } from '@shared/cancellationPolicy';
+import { POLICY_LANGS, cancellationPolicyMetaDescription } from '@shared/cancellationPolicy';
+import { PROPERTY_DESCRIPTION, PROPERTY_TITLE, asSentence, propertyPageMeta, propertyPageName, truncateWords } from '@shared/propertyMeta';
+import { mergePropertyOverrides, propertyOverrideFor, propertyOverrideKey } from '@shared/propertyLocalization';
+import { buildPdpFaq, faqPageNode, interpolate, type FaqTranslate } from '@shared/pdpFaq';
+import { placePhrases } from '@shared/regionPhrases';
 import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
@@ -21,6 +25,10 @@ import { pathToFileURL } from "node:url";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 import { isNonIndexableHost } from "../lib/hosts.js";
+import { htmlCacheHeaders, isPrivateHtmlPath } from "../lib/htmlCache";
+import { noStoreIfTracked, ssrRenderUrl } from "../lib/trackingParams";
+import { GUESTY_IMAGE_ORIGIN, injectBeforeBodyEnd, injectIntoHead, needsGuestyPreconnect, routeAssets, routeModulePreloadScript, routeStyleTags, type ViteManifest } from "../lib/routeAssets";
+import { guestyIdsOf, readFromPricesForSsr } from "../lib/ssrFromPrices";
 import { setStaticFileHeaders } from "../lib/security-headers";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
@@ -741,27 +749,8 @@ function decodeEntities(s: string): string {
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ');
 }
 
-/** Cut a snippet to `max` characters without leaving half a thought: end on
- *  the last whole sentence when one fills most of the budget, else at a word
- *  boundary with an ellipsis — never mid-word ("e as nossa", auditoria
- *  set/2026). */
-function truncateWords(s: string, max: number): string {
-  const clean = String(s ?? '').replace(/\s+/g, ' ').trim();
-  if (clean.length <= max) return clean;
-  const window = clean.slice(0, max);
-  const sentenceEnd = Math.max(window.lastIndexOf('. '), window.lastIndexOf('! '), window.lastIndexOf('? '));
-  if (sentenceEnd > max * 0.6) return window.slice(0, sentenceEnd + 1);
-  const cut = clean.slice(0, max - 1);
-  const at = cut.lastIndexOf(' ');
-  return (at > max * 0.6 ? cut.slice(0, at) : cut).replace(/[\s,;:–—-]+$/, '') + '…';
-}
-
-/** Close a free-text fragment (an imported tagline) with a full stop so the
- *  sentence that follows doesn't run into it ("beach close Book direct"). */
-function asSentence(s: string): string {
-  const clean = String(s ?? '').replace(/\s+/g, ' ').trim();
-  return !clean || /[.!?…]$/.test(clean) ? clean : `${clean}.`;
-}
+// truncateWords / asSentence live in shared/propertyMeta.ts: the client's
+// home-page meta must cut descriptions exactly as the server does.
 
 const DEFAULT_OG_IMAGE = 'https://www.portugalactive.com/hero/home-mirante-tennis-og.jpg';
 
@@ -855,43 +844,50 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
     ],
   };
 
-  // Mirror the client's "Good to know" FAQ so crawlers that don't execute JS
-  // (most AI crawlers) see the same FAQPage the hydrated page emits. en+pt
-  // templates, en fallback elsewhere — same pattern as collections meta.
-  const pt = lang === 'pt';
-  const faq: Array<{ q: string; a: string }> = [];
-  if (prop.maxGuests != null) {
-    faq.push(pt
-      ? { q: `Quantos hóspedes pode receber ${name}?`, a: `${name} recebe até ${prop.maxGuests} hóspedes em ${prop.bedrooms} quartos com ${prop.bathrooms} casas de banho.` }
-      : { q: `How many guests can ${name} sleep?`, a: `${name} sleeps up to ${prop.maxGuests} guests across ${prop.bedrooms} bedrooms with ${prop.bathrooms} bathrooms.` });
-  }
-  if (prop.petsAllowed === true) {
-    faq.push(pt
-      ? { q: 'Posso levar o meu animal de estimação?', a: `Sim — ${name} aceita animais de estimação. Avise-nos ao reservar; pode aplicar-se uma pequena taxa adicional.` }
-      : { q: 'Can I bring my pet?', a: `Yes — ${name} welcomes pets. Let us know when you book; a small additional fee may apply.` });
-  }
-  // No hardcoded night count — the synced terms value drifts from the
-  // calendar, which is the only per-season source of truth.
-  faq.push(pt
-    ? { q: 'Qual é a estadia mínima?', a: 'A estadia mínima varia com a época — o calendário mostra o requisito exato para as suas datas. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites.' }
-    : { q: 'What is the minimum stay?', a: 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.' });
-  // Same cancellation Q&A as the visible "Good to know" (shared source = Guesty's
-  // codes), in the same pt/en language as the rest of this FAQPage.
-  const faqLang = pt ? 'pt' : 'en';
-  faq.push({ q: cancellationPolicyCopy(faqLang).question, a: cancellationPolicySummary(faqLang) });
-  faq.push(pt
-    ? { q: 'Porquê reservar diretamente com a Portugal Active?', a: 'Reservar direto garante o melhor preço online sem taxas de serviço de OTAs, concierge dedicado por WhatsApp e uma equipa local que gere a casa de ponta a ponta.' }
-    : { q: 'Why book directly with Portugal Active?', a: 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.' });
-  const faqPage = {
-    '@type': 'FAQPage',
-    mainEntity: faq.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  };
+  // The visible "Good to know" list, built by the same function the page uses
+  // (shared/pdpFaq.ts) from the same catalogues, in the page's language. It
+  // used to be a server-only English/Portuguese FAQ with a "best rate" answer
+  // on every home (partner homes included) and a July/August rule no home has
+  // (auditoria out/2026, seo-health-faq-jsonld-drift).
+  const faq = buildPdpFaq(
+    { name: propertyPageName(prop) || name, checkInTime: prop.checkInTime, checkOutTime: prop.checkOutTime, petsAllowed: prop.petsAllowed },
+    lang,
+    localeTranslator(lang),
+  );
 
-  return { '@context': 'https://schema.org', '@graph': [vacationRental, breadcrumb, faqPage] };
+  return { '@context': 'https://schema.org', '@graph': [vacationRental, breadcrumb, faqPageNode(faq)] };
+}
+
+/* ── i18n catalogues on the server ────────────────────────────────────────
+   The client's locale files (client/src/i18n/locales/<lang>.json), read once.
+   Used where the bot HTML must say exactly what the hydrated page says — the
+   home-page FAQPage. Lookup order matches i18next's: the language, then
+   English, then the inline fallback. */
+const _localeCatalogues = new Map<string, Record<string, any> | null>();
+function localeCatalogue(lang: string): Record<string, any> | null {
+  if (!_localeCatalogues.has(lang)) {
+    let data: Record<string, any> | null = null;
+    try {
+      data = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'client', 'src', 'i18n', 'locales', `${lang}.json`), 'utf8'));
+    } catch { data = null; }
+    _localeCatalogues.set(lang, data);
+  }
+  return _localeCatalogues.get(lang) ?? null;
+}
+function lookupKey(cat: Record<string, any> | null, key: string): string | undefined {
+  let node: any = cat;
+  for (const part of key.split('.')) {
+    if (node == null || typeof node !== 'object') return undefined;
+    node = node[part];
+  }
+  return typeof node === 'string' ? node : undefined;
+}
+function localeTranslator(lang: string): FaqTranslate {
+  const l = ALL_LANGS.includes(lang) ? lang : 'en';
+  return (key, fallback, vars) => {
+    const raw = lookupKey(localeCatalogue(l), key) ?? (l !== 'en' ? lookupKey(localeCatalogue('en'), key) : undefined) ?? fallback;
+    return interpolate(raw, vars);
+  };
 }
 
 /** Safely convert any date-ish value to a YYYY-MM-DD string, or null. */
@@ -1110,6 +1106,52 @@ function buildPropertySeoBody(prop: any, lang: string): string {
   return `<article>${breadcrumb}<h1>${escText(name)}</h1>${loc}${img}${tagline}${desc}${amenityList}</article>`;
 }
 
+/** The English record with the language's override laid over it — the same
+ *  deep merge the page does (shared/propertyLocalization.ts). */
+function localizePropertyForLang(prop: any, lang: string): any {
+  if (!prop || lang === 'en') return prop;
+  return mergePropertyOverrides(prop, loadI18nOverrides('properties', lang)) ?? prop;
+}
+
+/** Meta, JSON-LD and crawlable body of /{lang}/homes/{slug}. Title and
+ *  description come from shared/propertyMeta.ts, which the hydrated page
+ *  calls with the same record — so the browser has nothing to rewrite. */
+function buildPropertyDynamicMeta(rawProp: any, lang: string): DynamicMeta {
+  const prop = localizePropertyForLang(rawProp, lang);
+  // The curated display name goes into title, og and the body — never the raw
+  // Guesty seoTitle ("<OTA title> — Portugal Active"), which produced the
+  // double brand (auditoria set/2026, N9). Imported Guesty SEO snippets can
+  // still carry retired names and inclusions, so they are not used either.
+  const meta = propertyPageMeta(prop, lang);
+  return {
+    title: meta.title,
+    description: meta.description,
+    image: meta.image,
+    url: `${BOT_BASE_URL}/${lang}${meta.path}`,
+    type: 'place',
+    // Server-render VacationRental + BreadcrumbList JSON-LD. domId matches the
+    // client `<StructuredData id={`property-${slug}`}>`.
+    schemaDomId: `sd-property-${prop.slug}`,
+    schemaGraph: buildPropertyGraph(prop, lang),
+    bodyHtml: buildPropertySeoBody(prop, lang),
+  };
+}
+
+/** SSR prefetch of a home page: the English record (what the tRPC query
+ *  returns, so client refetches agree with the cache) plus this home's
+ *  override for the page's language, which the page applies on its first
+ *  render — the server HTML is then in the page's language, not English
+ *  under a translated heading (auditoria out/2026). Read-only. */
+function buildPropertyPrefetch(slug: string, prop: any, lang: string): Record<string, unknown> {
+  const out: Record<string, unknown> = { propertyBySlug: { slug, data: prop } };
+  if (prop && lang !== 'en') {
+    const ov = propertyOverrideFor(prop, loadI18nOverrides('properties', lang));
+    const key = propertyOverrideKey(prop);
+    if (ov && key) out.propertyOverrides = { lang, slug, data: { [key]: ov } };
+  }
+  return out;
+}
+
 function buildExperienceSeoBody(exp: any, lang: string): string {
   const L = SEO_LABELS[lang] ?? SEO_LABELS.en;
   const name = exp.name || 'Experience';
@@ -1322,141 +1364,21 @@ const DESTINATION_DESCRIPTION: Record<string, Record<string, string>> = {
    from Drizzle. Only English SEO text lives in DB, so we wrap the English
    brand name / post title with per-language framing to localize meta for
    the 8 other languages. Proper names (property "Casa do Minho", post
-   titles) stay in the original language — only the framing is translated. */
+   titles) stay in the original language — only the framing is translated.
 
-/** Label for a destination slug in the visitor's language. Used in property
- *  meta (e.g. "in Minho Coast, Portugal"). Keeps region name untranslated
- *  where it's a proper noun (Minho, Alentejo, Algarve); translates "Coast",
- *  "Porto & Douro", "Lisbon". */
-const DEST_LABEL: Record<string, Record<string, string>> = {
-  douro: {
-    en: 'the Douro Valley', pt: 'Douro', es: 'el Duero', fr: 'la vallée du Douro',
-    de: 'Douro-Tal', it: 'Valle del Douro', nl: 'Douro-vallei', fi: 'Douron laakso',
-    sv: 'Dourodalen',
-  },
-  minho: {
-    en: 'Minho Coast', pt: 'Costa do Minho', es: 'Costa del Miño', fr: 'Côte du Minho',
-    de: 'Minho-Küste', it: 'Costa del Minho', nl: 'Minho-kust', fi: 'Minhon rannikko',
-    sv: 'Minhokusten',
-  },
-  porto: {
-    en: 'Porto & Douro', pt: 'Porto e Douro', es: 'Oporto y Duero', fr: 'Porto et Douro',
-    de: 'Porto & Douro', it: 'Porto e Douro', nl: 'Porto & Douro', fi: 'Porto ja Douro',
-    sv: 'Porto & Douro',
-  },
-  lisbon: {
-    en: 'Lisbon', pt: 'Lisboa', es: 'Lisboa', fr: 'Lisbonne', de: 'Lissabon',
-    it: 'Lisbona', nl: 'Lissabon', fi: 'Lissabon', sv: 'Lissabon',
-  },
-  alentejo: {
-    en: 'Alentejo', pt: 'Alentejo', es: 'Alentejo', fr: 'Alentejo', de: 'Alentejo',
-    it: 'Alentejo', nl: 'Alentejo', fi: 'Alentejo', sv: 'Alentejo',
-  },
-  algarve: {
-    en: 'Algarve', pt: 'Algarve', es: 'Algarve', fr: 'Algarve', de: 'Algarve',
-    it: 'Algarve', nl: 'Algarve', fi: 'Algarve', sv: 'Algarve',
-  },
-};
+   Home pages: PROPERTY_TITLE / PROPERTY_DESCRIPTION come from
+   shared/propertyMeta.ts, the builder the hydrated page uses too.
 
-function destLabel(slug: string | null | undefined, lang: string): string {
-  if (!slug) return '';
-  const key = slug.toLowerCase();
-  return DEST_LABEL[key]?.[lang] ?? DEST_LABEL[key]?.en ?? slug;
-}
+   Places inside a sentence come from shared/regionPhrases.ts, with the
+   article and preposition each language needs ("no Minho", "dans le Minho",
+   "an der Algarve"); the old label table interpolated "Minho Coast" after a
+   fixed preposition ("em Costa do Minho", "à Côte du Minho", "in Minho-Küste")
+   and called inland homes and activities coastal (auditoria out/2026,
+   i18n-copy-08). */
 
-/** Property title: "{name} | {bedrooms}-bedroom villa in {destination} | Portugal Active" (per-lang). */
-const PROPERTY_TITLE: Record<string, (p: { name: string; bedrooms?: number | null; destination: string }) => string> = {
-  en: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `${bedrooms}-Bedroom ` : '';
-    return `${name} | ${b}Luxury Villa in ${destLabel(destination, 'en')} | Portugal Active`;
-  },
-  pt: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `T${bedrooms} ` : '';
-    return `${name} | Casa de Luxo ${b}em ${destLabel(destination, 'pt')} | Portugal Active`;
-  },
-  es: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `de ${bedrooms} dormitorios ` : '';
-    return `${name} | Villa de Lujo ${b}en ${destLabel(destination, 'es')} | Portugal Active`;
-  },
-  fr: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `${bedrooms} chambres ` : '';
-    return `${name} | Villa de Luxe ${b}à ${destLabel(destination, 'fr')} | Portugal Active`;
-  },
-  de: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `${bedrooms}-Schlafzimmer-` : '';
-    return `${name} | ${b}Luxusvilla in ${destLabel(destination, 'de')} | Portugal Active`;
-  },
-  it: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `con ${bedrooms} camere da letto ` : '';
-    return `${name} | Villa di Lusso ${b}in ${destLabel(destination, 'it')} | Portugal Active`;
-  },
-  nl: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `met ${bedrooms} slaapkamers ` : '';
-    return `${name} | Luxevilla ${b}in ${destLabel(destination, 'nl')} | Portugal Active`;
-  },
-  fi: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `${bedrooms} makuuhuoneen ` : '';
-    return `${name} | ${b}Luksushuvila – ${destLabel(destination, 'fi')} | Portugal Active`;
-  },
-  sv: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `med ${bedrooms} sovrum ` : '';
-    return `${name} | Lyxvilla ${b}i ${destLabel(destination, 'sv')} | Portugal Active`;
-  },
-};
-
-/** Property description template. Uses tagline if available, else generates
- *  a descriptive sentence. Closes with a localized CTA. Trimmed to 155 chars. */
-const PROPERTY_DESCRIPTION: Record<string, (p: { tagline?: string | null; bedrooms?: number | null; maxGuests?: number | null; destination: string; name: string }) => string> = {
-  en: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = (tagline && asSentence(tagline)) || `${bedrooms ? `${bedrooms}-bedroom ` : ''}luxury villa in ${destLabel(destination, 'en')}${maxGuests ? ` for up to ${maxGuests} guests` : ''}.`;
-    return `${name}. ${base} Book direct with Portugal Active.`;
-  },
-  // Imported taglines can remain English. On translated routes use the
-  // localised factual template instead of producing mixed-language snippets.
-  pt: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Casa de luxo ${bedrooms ? `T${bedrooms} ` : ''}em ${destLabel(destination, 'pt')}${maxGuests ? ` para até ${maxGuests} hóspedes` : ''}.`;
-    return `${name}. ${base} Reserve diretamente com a Portugal Active.`;
-  },
-  es: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Villa de lujo ${bedrooms ? `de ${bedrooms} dormitorios ` : ''}en ${destLabel(destination, 'es')}${maxGuests ? ` para hasta ${maxGuests} huéspedes` : ''}.`;
-    return `${name}. ${base} Reserve directamente con Portugal Active.`;
-  },
-  fr: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Villa de luxe ${bedrooms ? `${bedrooms} chambres ` : ''}à ${destLabel(destination, 'fr')}${maxGuests ? ` jusqu'à ${maxGuests} personnes` : ''}.`;
-    return `${name}. ${base} Réservez en direct avec Portugal Active.`;
-  },
-  de: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Luxusvilla ${bedrooms ? `mit ${bedrooms} Schlafzimmern ` : ''}in ${destLabel(destination, 'de')}${maxGuests ? ` für bis zu ${maxGuests} Gäste` : ''}.`;
-    return `${name}. ${base} Buchen Sie direkt bei Portugal Active.`;
-  },
-  it: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Villa di lusso ${bedrooms ? `con ${bedrooms} camere ` : ''}in ${destLabel(destination, 'it')}${maxGuests ? ` fino a ${maxGuests} ospiti` : ''}.`;
-    return `${name}. ${base} Prenota direttamente con Portugal Active.`;
-  },
-  nl: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Luxevilla ${bedrooms ? `met ${bedrooms} slaapkamers ` : ''}in ${destLabel(destination, 'nl')}${maxGuests ? ` tot ${maxGuests} gasten` : ''}.`;
-    return `${name}. ${base} Boek direct bij Portugal Active.`;
-  },
-  fi: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Luksushuvila ${bedrooms ? `${bedrooms} makuuhuoneella ` : ''}kohteessa ${destLabel(destination, 'fi')}${maxGuests ? `, jopa ${maxGuests} hengelle` : ''}.`;
-    return `${name}. ${base} Varaa suoraan Portugal Activesta.`;
-  },
-  sv: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Lyxvilla ${bedrooms ? `med ${bedrooms} sovrum ` : ''}i ${destLabel(destination, 'sv')}${maxGuests ? ` för upp till ${maxGuests} gäster` : ''}.`;
-    return `${name}. ${base} Boka direkt med Portugal Active.`;
-  },
-};
-
-/** "on the Minho Coast", "na Costa do Minho", "en la Costa del Miño" — not
- *  "in Minho Coast" / "em Costa do Minho" / "en Costa del Miño". */
-function enIn(label: string): string {
-  return /Coast$/.test(label) ? `on the ${label}` : `in ${label}`;
-}
-function ptIn(label: string): string {
-  return /^(Costa|Serra|Ria)\b/.test(label) ? `na ${label}` : `em ${label}`;
-}
-function esIn(label: string): string {
-  return /^(Costa|Sierra|Serra|Ría)\b/.test(label) ? `en la ${label}` : `en ${label}`;
+/** "{name} in the Minho" — the region phrase for a slug, or '' without one. */
+function inPlace(destination: string | null | undefined, lang: string): string {
+  return destination ? placePhrases(destination, lang).in : '';
 }
 
 /** Localised experience names usually say where they are already ("Canyoning
@@ -1470,29 +1392,27 @@ function experienceTitle(lang: string, e: { name: string; destination?: string |
 }
 
 /** Experience title template. */
-const EXPERIENCE_TITLE: Record<string, (e: { name: string; destination?: string | null }) => string> = {
-  en: ({ name, destination }) => destination ? `${name} ${enIn(destLabel(destination, 'en'))}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  pt: ({ name, destination }) => destination ? `${name} ${ptIn(destLabel(destination, 'pt'))}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  es: ({ name, destination }) => destination ? `${name} ${esIn(destLabel(destination, 'es'))}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  fr: ({ name, destination }) => destination ? `${name} à ${destLabel(destination, 'fr')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  de: ({ name, destination }) => destination ? `${name} in ${destLabel(destination, 'de')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  it: ({ name, destination }) => destination ? `${name} a ${destLabel(destination, 'it')}, Portogallo | Portugal Active` : `${name} | Portugal Active`,
-  nl: ({ name, destination }) => destination ? `${name} in ${destLabel(destination, 'nl')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  fi: ({ name, destination }) => destination ? `${name} – ${destLabel(destination, 'fi')}, Portugali | Portugal Active` : `${name} | Portugal Active`,
-  sv: ({ name, destination }) => destination ? `${name} i ${destLabel(destination, 'sv')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-};
+const COUNTRY: Record<string, string> = { it: 'Portogallo', fi: 'Portugali' };
+const EXPERIENCE_TITLE: Record<string, (e: { name: string; destination?: string | null }) => string> = Object.fromEntries(
+  ALL_LANGS.map((lang) => [lang, ({ name, destination }: { name: string; destination?: string | null }) => {
+    if (!destination) return `${name} | Portugal Active`;
+    // Finnish inflects the place itself; the dash keeps the name untouched.
+    const where = lang === 'fi' ? `– ${placePhrases(destination, lang).name}` : inPlace(destination, lang);
+    return `${name} ${where}, ${COUNTRY[lang] ?? 'Portugal'} | Portugal Active`;
+  }]),
+);
 
 /** Experience description: preserve tagline if present; otherwise generate. */
 const EXPERIENCE_DESCRIPTION: Record<string, (e: { name: string; tagline?: string | null; duration?: string | null; destination?: string | null }) => string> = {
-  en: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'en')}` : ''}. Guided by local experts. Book direct with Portugal Active.`,
-  pt: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` em ${destLabel(destination, 'pt')}` : ''}. Guiado por especialistas locais. Reserve direto com a Portugal Active.`,
-  es: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` en ${destLabel(destination, 'es')}` : ''}. Guiado por expertos locales. Reserva directa con Portugal Active.`,
-  fr: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` à ${destLabel(destination, 'fr')}` : ''}. Guidé par des experts locaux. Réservation directe avec Portugal Active.`,
-  de: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'de')}` : ''}. Geführt von lokalen Experten. Direkt bei Portugal Active buchen.`,
-  it: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` a ${destLabel(destination, 'it')}` : ''}. Guidato da esperti locali. Prenota diretto con Portugal Active.`,
-  nl: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'nl')}` : ''}. Begeleid door lokale experts. Direct boeken bij Portugal Active.`,
-  fi: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` kohteessa ${destLabel(destination, 'fi')}` : ''}. Paikallisten asiantuntijoiden opastama. Varaa suoraan Portugal Activesta.`,
-  sv: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` i ${destLabel(destination, 'sv')}` : ''}. Guidad av lokala experter. Boka direkt med Portugal Active.`,
+  en: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'en')}` : ''}. Guided by local experts. Book direct with Portugal Active.`,
+  pt: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'pt')}` : ''}. Guiado por especialistas locais. Reserve diretamente com a Portugal Active.`,
+  es: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'es')}` : ''}. Guiado por expertos locales. Reserve directamente con Portugal Active.`,
+  fr: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'fr')}` : ''}. Guidé par des experts locaux. Réservation directe avec Portugal Active.`,
+  de: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'de')}` : ''}. Geführt von lokalen Experten. Direkt bei Portugal Active buchen.`,
+  it: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'it')}` : ''}. Guidato da esperti locali. Prenoti direttamente con Portugal Active.`,
+  nl: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'nl')}` : ''}. Begeleid door lokale experts. Direct boeken bij Portugal Active.`,
+  fi: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` – ${placePhrases(destination, 'fi').name}` : ''}. Paikallisten asiantuntijoiden opastama. Varaa suoraan Portugal Activesta.`,
+  sv: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'sv')}` : ''}. Guidad av lokala experter. Boka direkt med Portugal Active.`,
 };
 
 /** Service title. */
@@ -1534,11 +1454,27 @@ const BLOG_SUFFIX: Record<string, string> = {
   sv: ' | Portugal Active-journalen',
 };
 
-export function serveStatic(app: Express) {
-  const distPath =
+// Dynamic content prefixes: if a slug under these paths doesn't match any
+// record in the data source, we return 404 (not 200 = soft 404).
+// Destinations joined in out/2026: "/en/destinations/<anything>" answered
+// 200, "index, follow", with the homepage title (seo-health-soft-404).
+const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/collections/", "/blog/", "/services/", "/experiences/", "/activities/", "/destinations/"];
+
+/** The shell's robots meta, rewritten to keep the page out of the index. */
+function forceNoindex(html: string): string {
+  return html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
+}
+
+/** The booking pages the client actually has; any other /booking/… is a 404
+ *  (it answered 200, "index, follow"). All of them are noindex. */
+const BOOKING_ROUTE = /^\/booking\/(?:(?:confirmation|thank-you|balance)\/[^/]+|paypal-return|klarna-return)\/?$/;
+
+export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
+  // opts.distPath: tests serve a small fixture build (perf-ssr-html.test.ts).
+  const distPath = opts.distPath ?? (
     process.env.NODE_ENV === "development"
       ? path.resolve(import.meta.dirname, "../..", "dist", "public")
-      : path.resolve(import.meta.dirname, "public");
+      : path.resolve(import.meta.dirname, "public"));
   if (!fs.existsSync(distPath)) {
     console.error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`
@@ -1554,15 +1490,35 @@ export function serveStatic(app: Express) {
     setHeaders: setStaticFileHeaders,
   }));
 
+  // /.well-known/ (llms.txt) is public on purpose. Every other dot-path of the
+  // build is not: dist/public/.vite/manifest.json is the map of the source
+  // modules (admin pages included) that server/lib/routeAssets.ts reads from
+  // disk, and send only hides a dot-FILE by default, not a dot-folder (review
+  // of PR #177). dotfiles: "ignore" below lets those paths fall through to the
+  // 404 page; send decodes the path first, so /%2Evite/… is covered too.
+  app.use("/.well-known", express.static(path.join(distPath, ".well-known"), {
+    maxAge: "1h",
+    setHeaders: setStaticFileHeaders,
+    index: false,
+    redirect: false,
+  }));
+
   app.use(express.static(distPath, {
     maxAge: "1h",
     setHeaders: setStaticFileHeaders,
+    dotfiles: "ignore",
     // Do NOT let express.static serve index.html for directory requests.
     // Otherwise "/" is served as the raw shell with a 200 before the
     // bare-path redirect middleware runs — forcing a client-side
     // LocaleRouter redirect to /en (a full second app boot, ~4s on mobile).
     // With index:false, "/" falls through to the 301 → /en redirect.
     index: false,
+    // Nor add a slash to a bare page path that happens to match a folder of
+    // client/public (/homes, /destinations, /experiences…): that was an extra
+    // 301 (/homes?gclid=… → /homes/?gclid=… → /en/homes/?gclid=…), with no
+    // Cache-Control, carrying the visitor's click id. The path now falls
+    // through to the bare-path redirect below: one hop, and noStoreIfTracked.
+    redirect: false,
   }));
 
   const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
@@ -1601,6 +1557,7 @@ export function serveStatic(app: Express) {
 
     // Redirect to /en/ prefixed version
     const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+    noStoreIfTracked(res, query);
     return res.redirect(301, `/en${p === '/' ? '' : p}${query}`);
   });
 
@@ -1621,14 +1578,11 @@ export function serveStatic(app: Express) {
       const rest = segments.slice(2).join('/');
       const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
       // Redirect /{lang}/journal/slug → /{lang}/blog/slug
+      noStoreIfTracked(res, query);
       return res.redirect(301, `/${lang}/blog${rest ? `/${rest}` : ''}${query}`);
     }
     return next();
   });
-
-  // Dynamic content prefixes: if a slug under these paths doesn't match
-  // any record in the data source, we return 404 (not 200 = soft 404).
-  const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/collections/", "/blog/", "/services/", "/experiences/", "/activities/"];
 
   // ── SSR (gated by SSR_ENABLED) ───────────────────────────────────────────
   type SsrRender = (
@@ -1640,13 +1594,16 @@ export function serveStatic(app: Express) {
   let _ssrRender: SsrRender | null = null;
   let _ssrUnavailable = false;
 
-  // Memoise the SSR render output per locale-prefixed path. The render is
-  // deterministic per path (live pricing is client-hydrated, so it isn't in this
-  // markup; property data has its own cache) and query strings don't affect it.
-  // Cloudflare serves the HTML as `DYNAMIC` (uncached), so WITHOUT this every
-  // request re-runs the full React render on the origin — the source of the TTFB
-  // tail latency and the per-request server load. With it, repeat views of a URL
-  // skip the render entirely. 5-min TTL keeps content fresh after a Guesty sync.
+  // Memoise the SSR render output per locale-prefixed URL. Keyed by the URL
+  // WITHOUT tracking parameters (utm_*, gclid, fbclid… — lib/trackingParams.ts):
+  // they never change the markup, and keying on them meant every ad click (a
+  // unique gclid each) rendered the page from scratch and evicted a real page
+  // from this FIFO (auditoria out/2026, performance-01-html-edge-cache). The
+  // page is also RENDERED from that clean URL, so no visitor's click id can end
+  // up in markup that is shared. Other parameters (dates, guests, filters) do
+  // change the page and stay in the key. Without this cache every edge miss
+  // re-runs the full React render on the origin. 5-min TTL keeps content fresh
+  // after a Guesty sync.
   const SSR_RENDER_TTL_MS = 5 * 60 * 1000;
   const SSR_RENDER_CACHE_MAX = 400;
   /** Destination slugs whose page must not be indexed: status !== "active" or comingSoon. */
@@ -1699,10 +1656,15 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
    *  prefetched — the full 66-property list dehydrates to ~1.3 MB, far too
    *  heavy to embed; the homepage LCP is the static hero (already SSR'd), so
    *  the property carousel / listing grid fill in client-side instead. */
-  async function buildPrefetch(strippedPath: string): Promise<Record<string, unknown> | undefined> {
+  async function buildPrefetch(strippedPath: string, lang: string): Promise<Record<string, unknown> | undefined> {
     const m = strippedPath.match(/^\/homes\/([^/]+)$/);
     if (m) {
-      return { propertyBySlug: { slug: m[1], data: await getPropertyBySlugCached(m[1]) } };
+      const prop = await getPropertyBySlugCached(m[1]);
+      const out = buildPropertyPrefetch(m[1], prop, lang);
+      // The booking card's "From €X" (lib/ssrFromPrices.ts). Partner homes
+      // price off their own calendar and keep fetching it as before.
+      const fromPrices = prop && prop.source !== "tripwix" ? await readFromPricesForSsr([prop.guestyId]) : undefined;
+      return fromPrices ? { ...out, fromPrices } : out;
     }
     // Blog articles: seed the handful of homes shown under the article, so
     // those links are in the served HTML. This is the whole point of the
@@ -1730,7 +1692,9 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
       try {
         const { getPropertiesForDestination } = await import("../services/properties-store");
         const input = { slug: destMatch[1] };
-        return { destinationHomes: { input, data: await getPropertiesForDestination(input.slug) } };
+        const homes = await getPropertiesForDestination(input.slug);
+        const fromPrices = await readFromPricesForSsr(guestyIdsOf(homes));
+        return { destinationHomes: { input, data: homes }, ...(fromPrices ? { fromPrices } : {}) };
       } catch {
         return undefined;
       }
@@ -1745,7 +1709,15 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
         const { getSiteLocalities, getPropertiesForSite, catalogProperties } = await import("../services/properties-store");
         const { toCatalogCard, recentGuestFeedback } = await import("../services/property-catalog");
         const [localities, properties] = await Promise.all([getSiteLocalities(), getPropertiesForSite().then(catalogProperties)]);
-        return { localities, catalogForSite: properties.map(toCatalogCard), ...(strippedPath === "/" ? { guestFeedback: recentGuestFeedback(properties) } : {}) };
+        const catalogForSite = properties.map(toCatalogCard);
+        // "From €X" on the cards, in the server HTML (lib/ssrFromPrices.ts).
+        const fromPrices = await readFromPricesForSsr(guestyIdsOf(catalogForSite));
+        return {
+          localities,
+          catalogForSite,
+          ...(strippedPath === "/" ? { guestFeedback: recentGuestFeedback(properties) } : {}),
+          ...(fromPrices ? { fromPrices } : {}),
+        };
       } catch {
         return undefined;
       }
@@ -1753,41 +1725,58 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
     return undefined;
   }
 
+  /** Vite's build manifest, read once (null when absent: dev, old build). */
+  let _manifest: ViteManifest | null | undefined;
+  function getManifest(): ViteManifest | null {
+    if (_manifest === undefined) {
+      try {
+        _manifest = JSON.parse(fs.readFileSync(path.join(distPath, ".vite", "manifest.json"), "utf-8")) as ViteManifest;
+      } catch {
+        _manifest = null;
+      }
+    }
+    return _manifest;
+  }
+
+  /** What the page needs before it can render and hydrate (lib/routeAssets.ts):
+   *  in the <head>, the route's CSS and a preconnect to Guesty's image CDN
+   *  when the LCP photo is there; at the end of <body>, the script that
+   *  modulepreloads its language, content catalogues and page chunk once the
+   *  LCP photo has loaded. Not on private pages; error pages get the language
+   *  file only. */
+  function withRouteAssets(html: string, strippedPath: string, lang: string, status: number): string {
+    if (isPrivateHtmlPath(strippedPath)) return html;
+    const head: string[] = [];
+    const rootAt = html.indexOf('<div id="root">');
+    if (status === 200 && rootAt !== -1 && needsGuestyPreconnect(html.slice(rootAt, rootAt + 20_000))) {
+      head.push(`<link rel="preconnect" href="${GUESTY_IMAGE_ORIGIN}">`);
+    }
+    const manifest = getManifest();
+    let bodyEnd = "";
+    if (manifest) {
+      const assets = routeAssets(manifest, lang, status === 200 ? strippedPath : "/404");
+      const styles = routeStyleTags(assets);
+      if (styles) head.push(styles);
+      bodyEnd = routeModulePreloadScript(assets);
+    }
+    return injectBeforeBodyEnd(injectIntoHead(html, head.join("\n    ")), bodyEnd);
+  }
+
   /** Embed a string as a safe JS string literal inside a <script> tag. */
   function scriptString(s: string): string {
     return JSON.stringify(s).replace(/</g, "\\u003c");
   }
 
-  /** Routes whose HTML must never be shared between visitors or held at the
-   *  edge — anything behind auth or tied to a single booking/payment. */
-  const NEVER_CACHE_PREFIXES = ["/account", "/login", "/admin", "/owners-portal", "/checkout", "/booking"];
-
   /** Auth-gated routes that must say noindex in their own markup. A subset of
-   *  the list above: /checkout has its own block, and /booking carries real
-   *  confirmation pages that are handled separately. */
+   *  NEVER_CACHE_PREFIXES (lib/htmlCache.ts): /checkout has its own block, and
+   *  /booking carries real confirmation pages that are handled separately. */
   const AUTH_NOINDEX_PREFIXES = ["/login", "/account", "/owners-portal", "/admin"];
 
-  /**
-   * Cache-Control for the HTML document.
-   *
-   * The HTML is identical for every visitor of a given URL (no Set-Cookie, and
-   * per-user state is fetched client-side), so public pages can be held by the
-   * CDN — that's what turns a ~0.3-0.9 s origin round trip into an edge hit and
-   * takes the SSR render off the origin entirely.
-   *
-   * `max-age=0` keeps BROWSERS revalidating, so a visitor never runs stale HTML
-   * that points at asset hashes a deploy has already replaced; only the shared
-   * CDN copy is reused (`s-maxage`). That window is deliberately short for the
-   * same reason — after a deploy, stale HTML referencing deleted /assets/*
-   * hashes would break the page, so we trade a little cache depth for safety.
-   */
+  /** Cache headers for the HTML document — the policy and its reasons live in
+   *  lib/htmlCache.ts (browser Cache-Control unchanged; CDN-Cache-Control gives
+   *  Cloudflare the same 60 s plus stale-if-error). */
   function setHtmlCacheHeaders(res: any, strippedPath: string, status: number) {
-    const isPrivate = NEVER_CACHE_PREFIXES.some(pre => strippedPath.startsWith(pre));
-    if (isPrivate || status !== 200) {
-      res.setHeader("Cache-Control", "private, no-store");
-      return;
-    }
-    res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=120");
+    for (const [name, value] of Object.entries(htmlCacheHeaders(strippedPath, status))) res.setHeader(name, value);
   }
 
   /** Fill <div id="root"> with real SSR markup when SSR is enabled; otherwise
@@ -1803,17 +1792,18 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
       const render = await getSsrRender();
       if (render) {
         try {
-          let entry = _ssrRenderCache.get(reqPath);
+          const renderUrl = ssrRenderUrl(reqPath);
+          let entry = _ssrRenderCache.get(renderUrl);
           if (!entry || Date.now() - entry.at >= SSR_RENDER_TTL_MS) {
-            const prefetch = await buildPrefetch(strippedPath);
-            const out = await render(reqPath, prefetch ? { prefetch } : undefined);
+            const prefetch = await buildPrefetch(strippedPath, extractLang(renderUrl.split("?")[0]));
+            const out = await render(renderUrl, prefetch ? { prefetch } : undefined);
             entry = { appHtml: out.appHtml, dehydratedState: out.dehydratedState, at: Date.now() };
             // Simple FIFO cap — evict the oldest entry when full.
             if (_ssrRenderCache.size >= SSR_RENDER_CACHE_MAX) {
               const oldest = _ssrRenderCache.keys().next().value;
               if (oldest !== undefined) _ssrRenderCache.delete(oldest);
             }
-            _ssrRenderCache.set(reqPath, entry);
+            _ssrRenderCache.set(renderUrl, entry);
           }
           const rqScript = `<script>window.__RQ_STATE__=${scriptString(entry.dehydratedState)}</script>`;
           // Catalogue routes include real cards in SSR; no duplicate hidden link index.
@@ -1837,7 +1827,19 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
     const isDynamicPrefix = KNOWN_PREFIXES.some(pre => p.startsWith(pre));
     // Initial status — will be refined for dynamic content below
     let status = (isStaticKnown || isDynamicPrefix) ? 200 : 404;
+    if (p.startsWith("/booking/") && !BOOKING_ROUTE.test(p)) status = 404;
     const indexPath = path.resolve(distPath, "index.html");
+
+    /** Every HTML answer leaves through here. A 404 always says noindex: the
+     *  cache-hit branch below used to return before that rewrite, so an
+     *  unknown URL said "index, follow" from its second request on (review
+     *  of PR #177). Reads `status` when called, after the branches refine it. */
+    const sendHtml = (body: string) => {
+      if (status === 404) body = forceNoindex(body);
+      body = withRouteAssets(body, p, lang, status);
+      setHtmlCacheHeaders(res, p, status);
+      return res.status(status).set("Content-Type", "text/html").send(body);
+    };
 
     // Load the shell (cached after first read).
     let html: string;
@@ -1857,7 +1859,11 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
     const blogPost = blogSlug ? await getBlogArticleBySlugCached(blogSlug, lang) : null;
     if (blogPost?.status === 'published') {
       const redirect = blogLanguageRedirect(blogPost, lang);
-      if (redirect) return res.redirect(302, redirect + (req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : ''));
+      if (redirect) {
+        const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+        noStoreIfTracked(res, query);
+        return res.redirect(302, redirect + query);
+      }
     }
     html = injectLocaleTags(html, { lang, pagePath: p, languages: blogPost ? blogLanguages(blogPost) : undefined });
 
@@ -1870,9 +1876,11 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 
-    // Checkout pages are transactional capability URLs — never indexable.
+    // Checkout and booking pages are transactional capability URLs — never
+    // indexable (confirmation, thank-you, balance, payment returns).
     // Must happen HERE: several branches below return early (cache hits).
-    if (p.startsWith("/checkout/") || p.startsWith("/booking/balance/")) {
+    if (p.startsWith("/checkout/") || p.startsWith("/booking/")) {
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 
@@ -1951,17 +1959,12 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Cached null on a dynamic content route → content doesn't exist → 404
         status = 404;
-        html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
       }
-      setHtmlCacheHeaders(res, p, status);
-      return res.status(status).set("Content-Type", "text/html").send(html);
+      return sendHtml(html);
     }
 
     // If static route was already handled, no dynamic lookup needed
-    if (localized) {
-      setHtmlCacheHeaders(res, p, status);
-      return res.status(status).set("Content-Type", "text/html").send(html);
-    }
+    if (localized) return sendHtml(html);
 
     // Dynamic route — look up content, cache result, inject meta
     try {
@@ -1971,40 +1974,8 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
       // Properties come from Guesty sync file or static JSON fallback.
       const homesMatch = p.match(/^\/homes\/([^/]+)$/);
       if (homesMatch) {
-        let prop = await getPropertyBySlugCached(homesMatch[1]);
-        // Descriptions come from Guesty in English; apply the per-locale
-        // overrides so bots get the localised meta + body too. Guesty homes are
-        // keyed by guestyId; partner (Tripwix) homes have none and are keyed by
-        // slug — the same fallback the client's mergePropertyOverrides uses.
-        if (prop && lang !== 'en') {
-          const ovs = loadI18nOverrides("properties", lang);
-          const ov = (prop.guestyId && ovs[prop.guestyId]) || ovs[prop.slug];
-          if (ov) prop = { ...prop, ...ov };
-        }
-        if (prop) {
-          // The curated display name goes into title, og and the body — never
-          // the raw Guesty seoTitle ("<OTA title> — Portugal Active"), which
-          // produced the double brand (auditoria set/2026, N9).
-          const displayName = getDisplayName(prop);
-          const titleFn = PROPERTY_TITLE[lang] ?? PROPERTY_TITLE.en;
-          const descFn = PROPERTY_DESCRIPTION[lang] ?? PROPERTY_DESCRIPTION.en;
-          const title = titleFn({ name: displayName, bedrooms: prop.bedrooms, destination: prop.destination });
-          // Use the same curated name and facts as the visible PDP. Imported
-          // Guesty SEO snippets can still contain retired names and inclusions.
-          const rawDesc = descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: displayName });
-          dynamicMeta = {
-            title,
-            description: truncateWords(rawDesc, 155),
-            image: Array.isArray(prop.images) && prop.images.length > 0 ? prop.images[0] : undefined,
-            url: `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`,
-            type: 'place',
-            // Server-render VacationRental + BreadcrumbList JSON-LD. domId
-            // matches the client `<StructuredData id={`property-${slug}`}>`.
-            schemaDomId: `sd-property-${prop.slug}`,
-            schemaGraph: buildPropertyGraph(prop, lang),
-            bodyHtml: buildPropertySeoBody(prop, lang),
-          };
-        }
+        const prop = await getPropertyBySlugCached(homesMatch[1]);
+        if (prop) dynamicMeta = buildPropertyDynamicMeta(prop, lang);
       }
 
       // /blog/:slug — from blog.json + per-locale overrides (NOT the DB, where
@@ -2161,19 +2132,13 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Dynamic content route with no matching record → proper 404 (not soft 404)
         status = 404;
-        html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
       }
     } catch (err) {
       console.error("[Meta] Error injecting dynamic meta:", err);
     }
 
-    // For any 404, ensure noindex so Google doesn't index dead pages
-    if (status === 404) {
-      html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
-    }
-
-    setHtmlCacheHeaders(res, p, status);
-    res.status(status).set("Content-Type", "text/html").send(html);
+    // Any 404 says noindex (sendHtml), so Google doesn't index dead pages.
+    sendHtml(html);
   });
 }
 
@@ -2196,11 +2161,18 @@ export const __testing = {
   injectMeta,
   injectSchemaGraph,
   PROPERTY_DESCRIPTION,
+  PROPERTY_TITLE,
   DESTINATION_DESCRIPTION,
   truncateWords,
   asSentence,
   localizeExperienceForMeta,
   experienceTitle,
+  EXPERIENCE_DESCRIPTION,
   DESTINATION_TITLE,
-  destLabel,
+  buildPropertyDynamicMeta,
+  buildPropertyPrefetch,
+  localizePropertyForLang,
+  localeTranslator,
+  DYNAMIC_CONTENT_PREFIXES,
+  BOOKING_ROUTE,
 };

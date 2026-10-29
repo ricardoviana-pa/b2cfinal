@@ -37,6 +37,7 @@ import { runTwoPartsMigrations, scheduleTwoPartsSchemaRetry, TwoPartsSchemaError
 import cron from "node-cron";
 import { legacyRedirects } from "../lib/redirects.js";
 import { isNonIndexableHost } from "../lib/hosts.js";
+import { noStoreIfTracked } from "../lib/trackingParams.js";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -74,11 +75,13 @@ async function startServer() {
 
     // Non-www production → www (portug**al**active.com only, not dev/stg/www)
     if (fwdHost === 'portug' + 'alactive.com') {
+      noStoreIfTracked(res, req.originalUrl);
       return res.redirect(301, `https://www.portug` + `alactive.com${req.originalUrl}`);
     }
 
     // HTTP → HTTPS for production domains only
     if (proto === 'http' && fwdHost && (fwdHost === 'portug' + 'alactive.com' || fwdHost === 'www.portug' + 'alactive.com')) {
+      noStoreIfTracked(res, req.originalUrl);
       return res.redirect(301, `https://${fwdHost}${req.originalUrl}`);
     }
 

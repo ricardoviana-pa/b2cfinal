@@ -5,8 +5,8 @@
  */
 
 import { localitySlug } from "../../shared/destinationNavigation";
-import { readFile } from "node:fs/promises";
-import { existsSync, readFileSync } from "node:fs";
+import { readFile, stat } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { withPartnerDefaults, normalizePartnerAmenities } from "./tripwix";
 import { normalizePublicPropertyGeography } from "./property-geography";
@@ -28,15 +28,61 @@ const FALLBACK_PATH = join(process.cwd(), "client", "src", "data", "properties.j
  * ships with the build; Render's disk is ephemeral.
  */
 const TRIPWIX_PATH = join(process.cwd(), "client", "src", "data", "tripwix-properties.json");
+const DESTINATIONS_PATH = join(process.cwd(), "client", "src", "data", "destinations.json");
+
+/** The files the store reads. A variable, not constants, so tests can point
+ *  it at temporary files (__testing.setPaths). */
+const paths = { sync: SYNC_PATH, fallback: FALLBACK_PATH, tripwix: TRIPWIX_PATH, destinations: DESTINATIONS_PATH };
+
+/**
+ * Which version of a file is on disk: changes whenever the file is rewritten
+ * (the Guesty sync writes data/properties-synced.json in place; a deploy ships
+ * new copies of the others). "-" when the file is missing.
+ */
+async function fileVersion(path: string): Promise<string> {
+  try {
+    const s = await stat(path);
+    return `${s.mtimeMs}:${s.size}:${s.ino}`;
+  } catch {
+    return "-";
+  }
+}
+
+/* Parsed once per version of the files (auditoria out/2026,
+ * performance-05-origin-ssr-reparse): getPropertiesForSite() is called by
+ * about 30 places, several times per page render, and used to read and
+ * JSON.parse the 1.6 MB catalogue (plus the 240 KB partner file) on every
+ * call. Now a call costs three stat()s; the files are read again only when
+ * one of them changes, and the "Loaded N properties" log line is printed once
+ * per load instead of once per call. */
+let snapshot: { version: string; list: any[] } | null = null;
+let loading: { version: string; promise: Promise<any[]> } | null = null;
+let loadCount = 0;
+
+async function storeVersion(): Promise<string> {
+  const [sync, fallback, tripwix] = await Promise.all([fileVersion(paths.sync), fileVersion(paths.fallback), fileVersion(paths.tripwix)]);
+  return [sync, fallback, tripwix, process.env.TRIPWIX_INVENTORY === "0" ? "partner-off" : "partner-on"].join("|");
+}
+
+/** JSON files read through the same version check (destinations.json). */
+const jsonFiles = new Map<string, { version: string; value: unknown }>();
+async function readJsonFile(path: string): Promise<unknown> {
+  const version = await fileVersion(path);
+  const hit = jsonFiles.get(path);
+  if (hit && hit.version === version) return hit.value;
+  const value = JSON.parse(await readFile(path, "utf-8"));
+  jsonFiles.set(path, { version, value });
+  return value;
+}
 
 async function getTripwixProperties(): Promise<any[]> {
   if (process.env.TRIPWIX_INVENTORY === "0") {
     console.info("[Properties] Tripwix partner inventory disabled via TRIPWIX_INVENTORY=0.");
     return [];
   }
-  if (!existsSync(TRIPWIX_PATH)) return [];
+  if (!existsSync(paths.tripwix)) return [];
   try {
-    const data = JSON.parse(await readFile(TRIPWIX_PATH, "utf-8"));
+    const data = JSON.parse(await readFile(paths.tripwix, "utf-8"));
     if (!Array.isArray(data) || data.length === 0) return [];
     console.info(`[Properties] Loaded ${data.length} Tripwix partner properties.`);
     return data.map(withPartnerDefaults);
@@ -77,13 +123,35 @@ function normalizePartner(partner: any[], own: any[]): any[] {
   return partner.map((p) => ({ ...p, amenities: normalizePartnerAmenities(p.amenities, vocab) }));
 }
 
+/**
+ * Every public property (own homes + partner inventory). Cached per version
+ * of the source files; each call gets its own array (the records themselves
+ * are shared, as they already were through the SSR slug cache — callers read
+ * them, never write to them).
+ */
 export async function getPropertiesForSite(): Promise<any[]> {
+  const version = await storeVersion();
+  if (snapshot && snapshot.version === version) return snapshot.list.slice();
+  if (!loading || loading.version !== version) {
+    const promise = loadPropertiesFromDisk().then((list) => {
+      snapshot = { version, list };
+      return list;
+    });
+    const entry = { version, promise };
+    loading = entry;
+    promise.finally(() => { if (loading === entry) loading = null; }).catch(() => {});
+  }
+  return (await loading.promise).slice();
+}
+
+async function loadPropertiesFromDisk(): Promise<any[]> {
+  loadCount++;
   const partner = await getTripwixProperties();
 
   // 1. Prefer runtime sync file (freshest data from current server session)
-  if (existsSync(SYNC_PATH)) {
+  if (existsSync(paths.sync)) {
     try {
-      const raw = await readFile(SYNC_PATH, "utf-8");
+      const raw = await readFile(paths.sync, "utf-8");
       const data = JSON.parse(raw);
       if (Array.isArray(data) && data.length > 0) {
         console.info(`[Properties] Loaded ${data.length} properties from runtime sync.`);
@@ -96,7 +164,7 @@ export async function getPropertiesForSite(): Promise<any[]> {
 
   // 2. Fallback: static file (now auto-updated by GitHub commits from sync)
   try {
-    const raw = await readFile(FALLBACK_PATH, "utf-8");
+    const raw = await readFile(paths.fallback, "utf-8");
     const data = JSON.parse(raw);
     if (Array.isArray(data) && data.length > 0) {
       const real = hasRealData(data);
@@ -234,11 +302,7 @@ export async function getSiteLocalities(): Promise<
   const destName = new Map<string, string>();
   const destOrder = new Map<string, number>();
   try {
-    const raw = await readFile(
-      join(process.cwd(), "client", "src", "data", "destinations.json"),
-      "utf-8",
-    );
-    const arr = JSON.parse(raw);
+    const arr = await readJsonFile(paths.destinations);
     if (Array.isArray(arr)) {
       arr.forEach((d: any, i: number) => {
         if (d?.slug && d?.name) {
@@ -277,11 +341,9 @@ export async function getSiteLocalities(): Promise<
 
 /* ── Destination pages ──────────────────────────────────────────────────── */
 
-const DESTINATIONS_PATH = join(process.cwd(), "client", "src", "data", "destinations.json");
-
-function readDestinations(): Array<{ slug: string; region: string; status?: string; comingSoon?: boolean }> {
+async function readDestinations(): Promise<Array<{ slug: string; region: string; status?: string; comingSoon?: boolean }>> {
   try {
-    const raw = JSON.parse(readFileSync(DESTINATIONS_PATH, "utf-8"));
+    const raw = await readJsonFile(paths.destinations);
     return Array.isArray(raw) ? raw : [];
   } catch {
     return [];
@@ -320,7 +382,7 @@ function toCard(p: any): any {
  * cards and the count are in the served HTML.
  */
 export async function getPropertiesForDestination(slug: string): Promise<any[]> {
-  const dests = readDestinations();
+  const dests = await readDestinations();
   const d = dests.find((x) => x.slug === slug);
   if (!d) return [];
   const regionOf = (dest: string) => dests.find((x) => x.slug === dest)?.region ?? dest;
@@ -335,3 +397,24 @@ export async function getPropertiesForDestination(slug: string): Promise<any[]> 
     : all.filter((p) => p.destination === d.region);
   return list.map(toCard);
 }
+
+/* ── Test hooks ─────────────────────────────────────────────────────────── */
+export const __testing = {
+  /** Point the store at other files (tests); returns the previous paths. */
+  setPaths(next: Partial<typeof paths>): typeof paths {
+    const prev = { ...paths };
+    Object.assign(paths, next);
+    snapshot = null;
+    loading = null;
+    jsonFiles.clear();
+    return prev;
+  },
+  /** How many times the catalogue was read from disk and parsed. */
+  loadCount: () => loadCount,
+  reset(): void {
+    snapshot = null;
+    loading = null;
+    jsonFiles.clear();
+    loadCount = 0;
+  },
+};

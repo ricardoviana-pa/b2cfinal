@@ -246,7 +246,7 @@ describe("legacyRedirects.resolvePath", () => {
       expect(resolvePath("/about")).toBeNull();
       expect(resolvePath("/blog")).toBeNull();
       expect(resolvePath("/destinations")).toBeNull();
-      expect(resolvePath("/services")).toBeNull();
+      expect(resolvePath("/concierge")).toBeNull();
     });
 
     it("returns null for unknown deep paths the SPA may handle", () => {
@@ -255,10 +255,16 @@ describe("legacyRedirects.resolvePath", () => {
     });
   });
 
-  describe("single-segment slug fallback", () => {
-    it("/old-blog-slug-without-prefix/ → /blog (likely WP post)", () => {
-      expect(resolvePath("/best-things-to-do-in-viana-do-castelo")).toBe("/en/blog");
+  describe("single-segment slugs", () => {
+    it("a WordPress-era post goes to the article it became", () => {
+      expect(resolvePath("/best-things-to-do-in-viana-do-castelo")).toBe("/en/blog/getaway-best-things-to-do-viana-do-castelo");
       expect(resolvePath("/founder-ricardo-viana/")).toBe("/en/about"); // STATIC wins
+    });
+
+    it("an unknown single segment is not sent to the blog index (it 404s)", () => {
+      expect(resolvePath("/zz-audit-garbage-9431")).toBeNull();
+      expect(redirectTarget("/en/zz-audit-garbage-9431")).toBeNull();
+      expect(redirectTarget("/pt/qualquer-coisa")).toBeNull();
     });
   });
 });

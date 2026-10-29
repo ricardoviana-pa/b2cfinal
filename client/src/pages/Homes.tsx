@@ -29,6 +29,8 @@ import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
+import { cardPriority } from '@/lib/listingImagePriority';
+import { useFromPrices } from '@/hooks/useFromPrices';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import { parseDestinationSelection } from '@/lib/homeSearch';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
@@ -100,10 +102,8 @@ export default function Homes() {
     () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
     [allProperties],
   );
-  const { data: guestyFromPrices } = trpc.booking.lowestNightlyBatch.useQuery(
-    { listingIds: fromListingIds },
-    { enabled: fromListingIds.length > 0, staleTime: 5 * 60 * 1000 },
-  );
+  // Starts from the prices the server put into the page (useFromPrices).
+  const { data: guestyFromPrices } = useFromPrices(fromListingIds);
 
   // ItemList + BreadcrumbList JSON-LD for the catalogue page
   const homesGraph = useMemo(() => {
@@ -996,6 +996,7 @@ export default function Homes() {
                       listId="search_results"
                       listName="Search Results"
                       itemIndex={index + 1}
+                      {...cardPriority('homes', index)}
                     />
                   </div>
                 ))}

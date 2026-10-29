@@ -30,7 +30,7 @@ Consult each experience and property page for the pricing unit, included service
 - [Homes](https://www.portugalactive.com/en/homes)
 - [Destinations](https://www.portugalactive.com/en/destinations)
 - [Experiences](https://www.portugalactive.com/en/experiences)
-- [Services](https://www.portugalactive.com/en/services)
+- [Concierge services](https://www.portugalactive.com/en/concierge)
 - [Journal](https://www.portugalactive.com/en/blog)
 - [About](https://www.portugalactive.com/en/about)
 - [Sitemap](https://www.portugalactive.com/sitemap.xml)

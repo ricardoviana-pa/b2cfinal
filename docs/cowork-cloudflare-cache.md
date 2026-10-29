@@ -13,7 +13,9 @@ O servidor já envia os headers corretos — verifica com:
 
 ```
 curl -sI https://www.portugalactive.com/en | grep -i cache-control
-# esperado: public, max-age=0, s-maxage=60, stale-while-revalidate=120
+# esperado: cache-control: public, max-age=0, s-maxage=60, stale-while-revalidate=120
+#           cdn-cache-control: public, max-age=60, stale-if-error=86400
+#           (o Cloudflare usa o CDN-Cache-Control; o browser, o Cache-Control)
 curl -sI https://www.portugalactive.com/en/account | grep -i cache-control
 # esperado: private, no-store
 ```
