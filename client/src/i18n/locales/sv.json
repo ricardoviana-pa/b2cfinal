@@ -1933,7 +1933,12 @@
     "nifInvalid": "Det här portugisiska NIF-numret ser inte rätt ut: kontrollera de 9 siffrorna. För ett momsnummer från ett annat land, börja med landskoden (till exempel ES).",
     "emailHoldNote": "Vi håller det här priset till {{date}}, {{time}}. Om du inte slutför nu kan vi skicka dig en eller två påminnelser via e-post. Ingen spam.",
     "emailReminderNote": "Om du inte slutför nu kan vi skicka dig en eller två påminnelser via e-post. Ingen spam.",
-    "conciergeMessage": "Hej, jag har en fråga om min bokning: {{property}}, {{checkIn}} till {{checkOut}}, gäster: {{guests}}."
+    "conciergeMessage": "Hej, jag har en fråga om min bokning: {{property}}, {{checkIn}} till {{checkOut}}, gäster: {{guests}}.",
+    "sections": {
+      "noExtras": "Inga tillägg",
+      "extrasCount_one": "{{count}} tillägg",
+      "extrasCount_other": "{{count}} tillägg"
+    }
   },
   "host": {
     "hostedBy": "Värd: Portugal Active",

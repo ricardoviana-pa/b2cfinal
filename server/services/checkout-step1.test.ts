@@ -199,7 +199,9 @@ describe("contexto e contacto humano em todos os passos", () => {
 
   it("no telemóvel, o nome e a foto da casa no topo de cada passo", () => {
     expect(page).toMatch(/const mobileContext = \(\s*<div className="lg:hidden/);
-    expect(page).toMatch(/<section key=\{step\}[^>]*>\s*\{mobileContext\}/);
+    // Uma página, três secções (29 out 2026): a faixa vive no topo da coluna de
+    // conteúdo, acima de todas as secções, em vez de dentro do passo
+    expect(page).toMatch(/<div className="space-y-4">\s*\{mobileContext\}/);
   });
 
   it("um WhatsApp discreto no cabeçalho, medido como whatsapp_click com o passo", () => {

@@ -1933,7 +1933,12 @@
     "nifInvalid": "Tämä portugalilainen NIF ei näytä oikealta: tarkista 9 numeroa. Jos kyseessä on toisen maan ALV-tunnus, aloita maatunnuksella (esimerkiksi ES).",
     "emailHoldNote": "Pidämme tämän hinnan voimassa {{date}} klo {{time}} asti. Jos et viimeistele nyt, voimme lähettää sinulle muistutuksen tai kaksi sähköpostilla. Ei roskapostia.",
     "emailReminderNote": "Jos et viimeistele nyt, voimme lähettää sinulle muistutuksen tai kaksi sähköpostilla. Ei roskapostia.",
-    "conciergeMessage": "Hei, minulla on kysymys varauksestani: {{property}}, saapuminen {{checkIn}}, lähtö {{checkOut}}, vieraita: {{guests}}."
+    "conciergeMessage": "Hei, minulla on kysymys varauksestani: {{property}}, saapuminen {{checkIn}}, lähtö {{checkOut}}, vieraita: {{guests}}.",
+    "sections": {
+      "noExtras": "Ei lisäpalveluita",
+      "extrasCount_one": "{{count}} lisäpalvelu",
+      "extrasCount_other": "{{count}} lisäpalvelua"
+    }
   },
   "host": {
     "hostedBy": "Isäntänä Portugal Active",

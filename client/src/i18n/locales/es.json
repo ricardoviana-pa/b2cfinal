@@ -1933,7 +1933,12 @@
     "nifInvalid": "Este NIF portugués no parece correcto: compruebe los 9 dígitos. Para un número de IVA de otro país, empiece por el código del país (por ejemplo ES).",
     "emailHoldNote": "Mantenemos este precio hasta el {{date}}, {{time}}. Si no termina ahora, podemos enviarle uno o dos recordatorios por email. Sin spam.",
     "emailReminderNote": "Si no termina ahora, podemos enviarle uno o dos recordatorios por email. Sin spam.",
-    "conciergeMessage": "Hola, tengo una pregunta sobre mi reserva: {{property}}, del {{checkIn}} al {{checkOut}}, huéspedes: {{guests}}."
+    "conciergeMessage": "Hola, tengo una pregunta sobre mi reserva: {{property}}, del {{checkIn}} al {{checkOut}}, huéspedes: {{guests}}.",
+    "sections": {
+      "noExtras": "Sin extras",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extras"
+    }
   },
   "host": {
     "hostedBy": "Anfitrión: Portugal Active",

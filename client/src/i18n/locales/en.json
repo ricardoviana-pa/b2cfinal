@@ -1933,7 +1933,12 @@
     "nifInvalid": "This Portuguese NIF does not look right: check the 9 digits. For a VAT number from another country, start with its country code (for example ES).",
     "emailHoldNote": "We hold this price until {{date}}, {{time}}. If you don't finish now, we may email you a reminder or two. No spam.",
     "emailReminderNote": "If you don't finish now, we may email you a reminder or two. No spam.",
-    "conciergeMessage": "Hello, I have a question about my booking: {{property}}, {{checkIn}} to {{checkOut}}, guests: {{guests}}."
+    "conciergeMessage": "Hello, I have a question about my booking: {{property}}, {{checkIn}} to {{checkOut}}, guests: {{guests}}.",
+    "sections": {
+      "noExtras": "No extras",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extras"
+    }
   },
   "host": {
     "hostedBy": "Hosted by Portugal Active",

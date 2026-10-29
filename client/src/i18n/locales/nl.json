@@ -1933,7 +1933,12 @@
     "nifInvalid": "Dit Portugese NIF lijkt niet te kloppen: controleer de 9 cijfers. Begin een btw-nummer uit een ander land met de landcode (bijvoorbeeld ES).",
     "emailHoldNote": "We houden deze prijs vast tot {{date}}, {{time}}. Als u nu niet afrondt, sturen we u mogelijk een of twee herinneringen per e-mail. Geen spam.",
     "emailReminderNote": "Als u nu niet afrondt, sturen we u mogelijk een of twee herinneringen per e-mail. Geen spam.",
-    "conciergeMessage": "Hallo, ik heb een vraag over mijn boeking: {{property}}, {{checkIn}} tot {{checkOut}}, gasten: {{guests}}."
+    "conciergeMessage": "Hallo, ik heb een vraag over mijn boeking: {{property}}, {{checkIn}} tot {{checkOut}}, gasten: {{guests}}.",
+    "sections": {
+      "noExtras": "Geen extra’s",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extra’s"
+    }
   },
   "host": {
     "hostedBy": "Uw host: Portugal Active",
