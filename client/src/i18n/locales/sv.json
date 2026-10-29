@@ -1163,13 +1163,15 @@
   "privacy": {
     "overline": "JURIDIK",
     "title": "Integritetspolicy",
-    "lastUpdated": "Senast uppdaterad: september 2026",
+    "lastUpdated": "Senast uppdaterad: oktober 2026",
     "s1Title": "1. Information vi samlar in",
     "s1Body": "Vi samlar in information som du lämnar direkt till oss, till exempel när du gör en bokningsförfrågan, prenumererar på vårt nyhetsbrev eller kontaktar oss. Detta kan inkludera ditt namn, e-postadress, telefonnummer och resepreferenser.",
     "s2Title": "2. Hur vi använder din information",
     "s2Body": "Vi använder informationen vi samlar in för att bearbeta dina bokningar, kommunicera med dig om din vistelse, skicka marknadsföringskommunikation (med ditt samtycke) och förbättra våra tjänster.",
+    "s2OriginBody": "Om du tillåter analyscookies genom att välja Acceptera alla i cookiemeddelandet sparar vi också, tillsammans med din bokningsförfrågan, varifrån ditt besök på vår webbplats kom: kampanjen, annonsen eller webbplatsen du kom ifrån. Vi använder informationen endast internt, för att veta vilka marknadsföringsinsatser som fungerar, och vi delar den inte med tredje part. Utan det tillståndet sparar vi inte besökets ursprung.",
     "s3Title": "3. Datadelning",
     "s3Body": "Vi säljer inte din personliga information. Vi kan dela dina uppgifter med fastighetsägare och tjänsteleverantörer för att uppfylla din bokning och leverera de tjänster du har begärt. Om du har bott hos oss eller gett oss din e-postadress kan vi också skicka den, alltid hashad och därmed oläslig, till annonsplattformar som Meta (Facebook och Instagram) och Google, för att visa dig våra erbjudanden där. Du kan när som helst be om att bli borttagen från dessa listor genom att skriva till info@portugalactive.com.",
+    "s3AdsBody": "Om du väljer Acceptera alla i cookiemeddelandet skickar vi också, när du påbörjar eller slutför en bokning på vår webbplats, från vår server till Meta (Facebook och Instagram): bokningens belopp och kod, det hem du valde, din e-postadress och ditt telefonnummer i hashad form, identifierarna i Metas cookies, IP-adressen och webbläsartypen. Så vet vi vilka annonser som ger bokningar. Vi sparar dessa identifierare i 31 dagar. Utan det tillståndet, eller om du väljer Endast nödvändiga, skickar vi ingenting till Meta.",
     "s4Title": "4. Dina rättigheter",
     "s4Body": "Enligt GDPR har du rätt att få tillgång till, korrigera, radera eller överföra dina personuppgifter. Du kan också när som helst dra tillbaka samtycke för marknadsföringskommunikation, inklusive personanpassade annonser. Kontakta oss på info@portugalactive.com för att utöva dessa rättigheter.",
     "s5Title": "5. Kontakt",
@@ -1177,7 +1179,7 @@
   },
   "cookiesPage": {
     "title": "Cookiepolicy",
-    "lastUpdated": "Senast uppdaterad: mars 2026",
+    "lastUpdated": "Senast uppdaterad: oktober 2026",
     "whatTitle": "Vad är cookies?",
     "whatBody": "Cookies är små textfiler som placeras på din enhet när du besöker vår webbplats. De hjälper oss att ge dig en bättre upplevelse genom att komma ihåg dina preferenser, förstå hur du använder vår webbplats och förbättra våra tjänster.",
     "howTitle": "Hur vi använder cookies",
@@ -1186,6 +1188,7 @@
     "essentialBody": "Dessa cookies är nödvändiga för att webbplatsen ska fungera korrekt. De möjliggör grundläggande funktioner som sidnavigering, åtkomst till säkra områden och programfunktionalitet. Webbplatsen kan inte fungera korrekt utan dessa cookies.",
     "analyticsTitle": "Analyticscookies",
     "analyticsBody": "Med ditt samtycke hjälper Google Analytics och Microsoft Clarity oss att förstå hur webbplatsen används. Verktygen kan behandla onlineidentifierare och interaktioner; uppgifterna är inte nödvändigtvis anonyma.",
+    "originBody": "pa-origin. En liten post som sparas i din webbläsare med besökets ursprung: kampanjen, annonsen eller webbplatsen du kom ifrån, sidan du kom in på och datum och tid för det första och det senaste besöket. Den är inte avsedd att spara ditt namn, din e-postadress eller ditt telefonnummer. Så vet vi vilka marknadsföringsinsatser som fungerar; om du gör en bokning sparar vi ursprunget tillsammans med din bokningsförfrågan, endast för internt bruk. Den skapas bara om du väljer Acceptera alla och raderas så snart du drar tillbaka ditt tillstånd i Cookieinställningar. Varje registrerat besök räknas i 30 dagar och raderas första gången du återvänder till webbplatsen efter den perioden. Du kan också radera den när som helst genom att rensa webbplatsens data i din webbläsare.",
     "functionalTitle": "Funktionella cookies",
     "functionalBody": "Dessa cookies gör det möjligt för webbplatsen att komma ihåg val du gör (som ditt föredragna språk eller region) och tillhandahålla förbättrade, personaliserade funktioner. De kan också användas för att komma ihåg ändringar du har gjort i textstorlek, teckensnitt och andra anpassningsbara element.",
     "marketingTitle": "Marknadsföringscookies",
@@ -1198,6 +1201,10 @@
     "updatesBody": "Vi kan uppdatera denna cookiepolicy från tid till annan för att återspegla förändringar i teknik, lagstiftning eller våra datapraxis. Vi uppmuntrar dig att granska denna sida regelbundet.",
     "contactTitle": "Kontakta oss",
     "contactBody": "Om du har frågor om vår användning av cookies, kontakta oss på info@portugalactive.com."
+  },
+  "legalFooter": {
+    "complaintsBook": "Klagobok",
+    "complaintsBookAria": "Livro de Reclamações, Portugals officiella elektroniska klagobok (öppnas i en ny flik)"
   },
   "blog": {
     "overline": "JOURNAL",

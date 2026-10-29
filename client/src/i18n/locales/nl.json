@@ -1163,13 +1163,15 @@
   "privacy": {
     "overline": "JURIDISCH",
     "title": "Privacybeleid",
-    "lastUpdated": "Laatst bijgewerkt: september 2026",
+    "lastUpdated": "Laatst bijgewerkt: oktober 2026",
     "s1Title": "1. Gegevens die wij verzamelen",
     "s1Body": "Wij verzamelen informatie die u rechtstreeks aan ons verstrekt, zoals wanneer u een boekingsaanvraag doet, u abonneert op onze nieuwsbrief of contact met ons opneemt. Dit kan uw naam, e-mailadres, telefoonnummer en reisvoorkeuren omvatten.",
     "s2Title": "2. Hoe wij uw gegevens gebruiken",
     "s2Body": "Wij gebruiken de verzamelde informatie om uw boekingen te verwerken, met u te communiceren over uw verblijf, marketingcommunicatie te verzenden (met uw toestemming) en onze services te verbeteren.",
+    "s2OriginBody": "Als u analytische cookies toestaat door in de cookiemelding Alles accepteren te kiezen, bewaren wij bij uw boekingsaanvraag ook waar uw bezoek aan onze site vandaan kwam: de campagne, de advertentie of de website via welke u bij ons kwam. Wij gebruiken deze informatie alleen intern, om te weten welke marketingacties werken, en wij delen haar niet met derden. Zonder die toestemming bewaren wij de herkomst van het bezoek niet.",
     "s3Title": "3. Gegevens delen",
     "s3Body": "Wij verkopen uw persoonlijke informatie niet. Wij kunnen uw gegevens delen met vastgoedeigenaren en dienstverleners om uw boeking te vervullen en de door u gevraagde services te leveren. Als u bij ons heeft verbleven of ons uw e-mailadres heeft gegeven, kunnen wij dit ook, altijd gehasht en dus onleesbaar, doorgeven aan advertentieplatforms zoals Meta (Facebook en Instagram) en Google, om u daar onze aanbiedingen te tonen. U kunt op elk moment vragen om van deze lijsten te worden verwijderd via info@portugalactive.com.",
+    "s3AdsBody": "Als u in de cookiemelding Alles accepteren kiest, sturen wij, wanneer u op onze site een boeking start of afrondt, vanaf onze server ook naar Meta (Facebook en Instagram): het bedrag en de code van de boeking, de gekozen woning, uw e-mailadres en telefoonnummer in gehashte vorm, de identificatoren van de Meta-cookies, het IP-adres en het type browser. Zo weten wij welke advertenties boekingen opleveren. Wij bewaren deze identificatoren 31 dagen. Zonder die toestemming, of als u Alleen essentieel kiest, sturen wij niets naar Meta.",
     "s4Title": "4. Uw rechten",
     "s4Body": "Onder de AVG heeft u het recht op inzage, correctie, verwijdering of overdracht van uw persoonsgegevens. U kunt ook op elk moment uw toestemming voor marketingcommunicatie, inclusief gepersonaliseerde advertenties, intrekken. Neem contact op via info@portugalactive.com om deze rechten uit te oefenen.",
     "s5Title": "5. Contact",
@@ -1177,7 +1179,7 @@
   },
   "cookiesPage": {
     "title": "Cookiebeleid",
-    "lastUpdated": "Laatst bijgewerkt: maart 2026",
+    "lastUpdated": "Laatst bijgewerkt: oktober 2026",
     "whatTitle": "Wat zijn cookies?",
     "whatBody": "Cookies zijn kleine tekstbestanden die op uw apparaat worden geplaatst wanneer u onze website bezoekt. Ze helpen ons u een betere ervaring te bieden door uw voorkeuren te onthouden, te begrijpen hoe u onze site gebruikt en onze services te verbeteren.",
     "howTitle": "Hoe wij cookies gebruiken",
@@ -1186,6 +1188,7 @@
     "essentialBody": "Deze cookies zijn noodzakelijk voor het goed functioneren van de website. Ze maken basisfuncties mogelijk zoals paginanavigatie, toegang tot beveiligde gebieden en planningsfunctionaliteit. De website kan niet goed functioneren zonder deze cookies.",
     "analyticsTitle": "Analytische cookies",
     "analyticsBody": "Met je toestemming helpen Google Analytics en Microsoft Clarity ons het gebruik van de site te begrijpen. Deze tools kunnen online identificatoren en interacties verwerken; de gegevens zijn niet noodzakelijk anoniem.",
+    "originBody": "pa-origin. Een kleine registratie in uw browser met de herkomst van het bezoek: de campagne, de advertentie of de website via welke u kwam, de pagina waarop u binnenkwam en de datum en het tijdstip van het eerste en het laatste bezoek. Deze is niet bedoeld om uw naam, e-mailadres of telefoonnummer op te slaan. Zo weten wij welke marketingacties werken; als u boekt, bewaren wij deze herkomst bij uw boekingsaanvraag, alleen voor intern gebruik. Deze wordt alleen aangemaakt als u Alles accepteren kiest en wordt verwijderd zodra u uw toestemming intrekt via Cookie-instellingen. Elk geregistreerd bezoek telt 30 dagen mee en wordt verwijderd de eerste keer dat u na die periode naar de site terugkeert. U kunt de registratie ook op elk moment verwijderen door de gegevens van deze site in uw browser te wissen.",
     "functionalTitle": "Functionele cookies",
     "functionalBody": "Deze cookies stellen de website in staat om keuzes die u maakt te onthouden (zoals uw voorkeurstaal of regio) en bieden verbeterde, gepersonaliseerde functies. Ze kunnen ook worden gebruikt om wijzigingen te onthouden die u heeft aangebracht in tekstgrootte, lettertypen en andere aanpasbare elementen.",
     "marketingTitle": "Marketingcookies",
@@ -1198,6 +1201,10 @@
     "updatesBody": "Wij kunnen dit cookiebeleid van tijd tot tijd bijwerken om wijzigingen in technologie, wetgeving of onze gegevenspraktijken weer te geven. Wij moedigen u aan deze pagina periodiek te raadplegen.",
     "contactTitle": "Contact",
     "contactBody": "Als u vragen heeft over ons gebruik van cookies, neem dan contact met ons op via info@portugalactive.com."
+  },
+  "legalFooter": {
+    "complaintsBook": "Klachtenboek",
+    "complaintsBookAria": "Livro de Reclamações, het officiële elektronische klachtenboek van Portugal (opent in een nieuw tabblad)"
   },
   "blog": {
     "overline": "JOURNAL",

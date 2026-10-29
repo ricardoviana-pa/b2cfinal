@@ -1202,6 +1202,10 @@
     "contactTitle": "Contacte-nos",
     "contactBody": "Se tiver questões sobre a nossa utilização de cookies, contacte-nos em info@portugalactive.com."
   },
+  "legalFooter": {
+    "complaintsBook": "Livro de Reclamações",
+    "complaintsBookAria": "Livro de Reclamações Eletrónico (abre num novo separador)"
+  },
   "blog": {
     "overline": "DIÁRIO",
     "title": "Histórias de Portugal.",

@@ -1163,13 +1163,15 @@
   "privacy": {
     "overline": "RECHTLICHES",
     "title": "Datenschutzrichtlinie",
-    "lastUpdated": "Zuletzt aktualisiert: September 2026",
+    "lastUpdated": "Zuletzt aktualisiert: Oktober 2026",
     "s1Title": "1. Welche Daten wir erfassen",
     "s1Body": "Wir erfassen Informationen, die Sie uns direkt mitteilen, z. B. bei einer Buchungsanfrage, Newsletter-Anmeldung oder Kontaktaufnahme. Dies kann Ihren Namen, Ihre E-Mail-Adresse, Telefonnummer und Reisepräferenzen umfassen.",
     "s2Title": "2. Wie wir Ihre Daten verwenden",
     "s2Body": "Wir verwenden die gesammelten Informationen, um Ihre Buchungen zu bearbeiten, mit Ihnen über Ihren Aufenthalt zu kommunizieren, Marketing-Mitteilungen zu senden (mit Ihrer Zustimmung) und unsere Services zu verbessern.",
+    "s2OriginBody": "Wenn Sie Analyse-Cookies erlauben, indem Sie im Cookie-Hinweis Alle akzeptieren wählen, speichern wir zusammen mit Ihrer Buchungsanfrage auch, woher Ihr Besuch auf unserer Website kam: die Kampagne, die Anzeige oder die Website, über die Sie zu uns gekommen sind. Wir verwenden diese Information nur intern, um zu erfahren, welche Marketingmaßnahmen funktionieren, und geben sie nicht an Dritte weiter. Ohne diese Erlaubnis speichern wir die Herkunft des Besuchs nicht.",
     "s3Title": "3. Datenweitergabe",
     "s3Body": "Wir verkaufen Ihre persönlichen Daten nicht. Wir können Ihre Daten mit Immobilieneigentümern und Dienstleistern teilen, um Ihre Buchung abzuwickeln und die von Ihnen angeforderten Services zu erbringen. Wenn Sie bereits bei uns übernachtet oder uns Ihre E-Mail-Adresse gegeben haben, können wir diese außerdem, stets gehasht und damit unlesbar, an Werbeplattformen wie Meta (Facebook und Instagram) und Google übermitteln, um Ihnen dort unsere Angebote zu zeigen. Sie können jederzeit per E-Mail an info@portugalactive.com verlangen, von diesen Listen entfernt zu werden.",
+    "s3AdsBody": "Wenn Sie im Cookie-Hinweis Alle akzeptieren wählen und auf unserer Website eine Buchung beginnen oder abschließen, senden wir von unserem Server aus außerdem an Meta (Facebook und Instagram): den Wert und den Code der Buchung, das gewählte Haus, Ihre E-Mail-Adresse und Telefonnummer in gehashter Form, die Kennungen der Meta-Cookies, die IP-Adresse und den Browsertyp. So erfahren wir, welche Anzeigen Buchungen bringen. Diese Kennungen speichern wir 31 Tage lang. Ohne diese Erlaubnis oder wenn Sie Nur erforderliche wählen, senden wir nichts an Meta.",
     "s4Title": "4. Ihre Rechte",
     "s4Body": "Gemäß der DSGVO haben Sie das Recht auf Zugang, Berichtigung, Löschung oder Übertragung Ihrer personenbezogenen Daten. Sie können Ihre Einwilligung zu Marketing-Mitteilungen, einschließlich personalisierter Werbung, jederzeit widerrufen. Kontaktieren Sie uns unter info@portugalactive.com, um diese Rechte auszuüben.",
     "s5Title": "5. Kontakt",
@@ -1177,7 +1179,7 @@
   },
   "cookiesPage": {
     "title": "Cookie-Richtlinie",
-    "lastUpdated": "Zuletzt aktualisiert: März 2026",
+    "lastUpdated": "Zuletzt aktualisiert: Oktober 2026",
     "whatTitle": "Was sind Cookies?",
     "whatBody": "Cookies sind kleine Textdateien, die auf Ihrem Gerät gespeichert werden, wenn Sie unsere Website besuchen. Sie helfen uns, Ihnen eine bessere Erfahrung zu bieten, indem sie Ihre Einstellungen speichern, verstehen, wie Sie unsere Website nutzen, und unsere Services verbessern.",
     "howTitle": "Wie wir Cookies verwenden",
@@ -1186,6 +1188,7 @@
     "essentialBody": "Diese Cookies sind für das ordnungsgemäße Funktionieren der Website erforderlich. Sie ermöglichen grundlegende Funktionen wie Seitennavigation, Zugang zu sicheren Bereichen und Reiseplan-Funktionalität. Die Website kann ohne diese Cookies nicht ordnungsgemäß funktionieren.",
     "analyticsTitle": "Analyse-Cookies",
     "analyticsBody": "Mit Ihrer Zustimmung helfen uns Google Analytics und Microsoft Clarity zu verstehen, wie die Website genutzt wird. Diese Dienste können Online-Kennungen und Interaktionen verarbeiten; die Daten sind nicht unbedingt anonym.",
+    "originBody": "pa-origin. Ein kleiner Eintrag in Ihrem Browser mit der Herkunft des Besuchs: die Kampagne, die Anzeige oder die Website, über die Sie gekommen sind, die Einstiegsseite sowie Datum und Uhrzeit des ersten und des letzten Besuchs. Er ist nicht dafür gedacht, Ihren Namen, Ihre E-Mail-Adresse oder Ihre Telefonnummer zu speichern. So erfahren wir, welche Marketingmaßnahmen funktionieren; wenn Sie buchen, speichern wir diese Herkunft zusammen mit Ihrer Buchungsanfrage, nur für den internen Gebrauch. Er wird nur angelegt, wenn Sie Alle akzeptieren wählen, und gelöscht, sobald Sie Ihre Erlaubnis unter Cookie-Einstellungen widerrufen. Jeder erfasste Besuch zählt 30 Tage lang und wird gelöscht, wenn Sie nach Ablauf dieser Frist zum ersten Mal auf die Website zurückkehren. Sie können ihn auch jederzeit löschen, indem Sie die Daten dieser Website in Ihrem Browser entfernen.",
     "functionalTitle": "Funktionale Cookies",
     "functionalBody": "Diese Cookies ermöglichen es der Website, Ihre Entscheidungen zu speichern (wie Ihre bevorzugte Sprache oder Region) und erweiterte, personalisierte Funktionen bereitzustellen. Sie können auch verwendet werden, um Änderungen zu speichern, die Sie an Textgröße, Schriftarten und anderen anpassbaren Elementen vorgenommen haben.",
     "marketingTitle": "Marketing-Cookies",
@@ -1198,6 +1201,10 @@
     "updatesBody": "Wir können diese Cookie-Richtlinie gelegentlich aktualisieren, um Änderungen in Technologie, Gesetzgebung oder unseren Datenpraktiken widerzuspiegeln. Wir empfehlen Ihnen, diese Seite regelmäßig zu besuchen.",
     "contactTitle": "Kontakt",
     "contactBody": "Bei Fragen zu unserer Verwendung von Cookies kontaktieren Sie uns unter info@portugalactive.com."
+  },
+  "legalFooter": {
+    "complaintsBook": "Beschwerdebuch",
+    "complaintsBookAria": "Livro de Reclamações, das offizielle elektronische Beschwerdebuch Portugals (öffnet sich in einem neuen Tab)"
   },
   "blog": {
     "overline": "JOURNAL",

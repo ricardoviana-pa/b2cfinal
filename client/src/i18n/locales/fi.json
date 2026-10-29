@@ -1163,13 +1163,15 @@
   "privacy": {
     "overline": "OIKEUDELLINEN",
     "title": "Tietosuojakäytäntö",
-    "lastUpdated": "Päivitetty viimeksi: syyskuu 2026",
+    "lastUpdated": "Päivitetty viimeksi: lokakuu 2026",
     "s1Title": "1. Keräämämme tiedot",
     "s1Body": "Keräämme tietoja, jotka annat meille suoraan, kuten tehdessäsi varaustiedustelun, tilatessasi uutiskirjeemme tai ottaessasi meihin yhteyttä. Tähän voi sisältyä nimesi, sähköpostiosoitteesi, puhelinnumerosi ja matkatoiveesi.",
     "s2Title": "2. Miten käytämme tietojasi",
     "s2Body": "Käytämme keräämiämme tietoja varaustesi käsittelyyn, sinulle oleskelustasi viestimiseen, markkinointiviestien lähettämiseen (suostumuksellasi) ja palveluidemme parantamiseen.",
+    "s2OriginBody": "Jos sallit analytiikkaevästeet valitsemalla evästeilmoituksessa Hyväksy kaikki, tallennamme varauspyyntösi yhteyteen myös sen, mistä käyntisi sivustollemme tuli: kampanjan, mainoksen tai sivuston, jolta saavuit. Käytämme tätä tietoa vain sisäisesti, jotta tiedämme, mitkä markkinointitoimet toimivat, emmekä jaa sitä kolmansille osapuolille. Ilman tätä lupaa emme tallenna käynnin alkuperää.",
     "s3Title": "3. Tietojen jakaminen",
     "s3Body": "Emme myy henkilökohtaisia tietojasi. Saatamme jakaa tietojasi kiinteistönomistajien ja palveluntarjoajien kanssa varauksesi toteuttamiseksi ja pyytämiesi palvelujen toimittamiseksi. Jos olet majoittunut luonamme tai antanut meille sähköpostiosoitteesi, voimme myös välittää sen aina tiivistettynä (hash) ja siten lukukelvottomana mainosalustoille, kuten Metalle (Facebook ja Instagram) ja Googlelle, jotta voimme näyttää sinulle tarjouksiamme niissä. Voit milloin tahansa pyytää, että poistamme sinut näiltä listoilta, kirjoittamalla osoitteeseen info@portugalactive.com.",
+    "s3AdsBody": "Jos valitset evästeilmoituksessa Hyväksy kaikki, lähetämme palvelimeltamme myös Metalle (Facebook ja Instagram), kun aloitat tai viimeistelet varauksen sivustollamme, varauksen summan ja koodin, valitsemasi kodin, sähköpostiosoitteesi ja puhelinnumerosi tiivistettyinä (hash), Metan evästeiden tunnisteet, IP-osoitteen ja selaimen tyypin. Näin tiedämme, mitkä mainokset tuovat varauksia. Säilytämme näitä tunnisteita 31 päivää. Ilman tätä lupaa tai jos valitset Vain välttämättömät, emme lähetä Metalle mitään.",
     "s4Title": "4. Oikeutesi",
     "s4Body": "GDPR:n nojalla sinulla on oikeus päästä käsiksi henkilötietoihisi, oikaista, poistaa tai siirtää ne. Voit myös peruuttaa suostumuksesi markkinointiviestintään, myös henkilökohtaisiin mainoksiin, milloin tahansa. Ota yhteyttä osoitteeseen info@portugalactive.com käyttääksesi näitä oikeuksia.",
     "s5Title": "5. Yhteystiedot",
@@ -1177,7 +1179,7 @@
   },
   "cookiesPage": {
     "title": "Evästekäytäntö",
-    "lastUpdated": "Päivitetty viimeksi: maaliskuu 2026",
+    "lastUpdated": "Päivitetty viimeksi: lokakuu 2026",
     "whatTitle": "Mitä evästeet ovat?",
     "whatBody": "Evästeet ovat pieniä tekstitiedostoja, jotka sijoitetaan laitteellesi vieraillessasi verkkosivustollamme. Ne auttavat meitä tarjoamaan sinulle paremman kokemuksen muistamalla asetuksesi, ymmärtämällä miten käytät sivustoamme ja parantamalla palveluitamme.",
     "howTitle": "Miten käytämme evästeitä",
@@ -1186,6 +1188,7 @@
     "essentialBody": "Nämä evästeet ovat välttämättömiä verkkosivuston asianmukaiselle toiminnalle. Ne mahdollistavat perustoiminnot kuten sivunavigoinnin, pääsyn suojatuille alueille ja ohjelmatoiminnallisuuden. Verkkosivusto ei voi toimia kunnolla ilman näitä evästeitä.",
     "analyticsTitle": "Analytiikkaevästeet",
     "analyticsBody": "Luvallasi Google Analytics ja Microsoft Clarity auttavat meitä ymmärtämään sivuston käyttöä. Nämä työkalut voivat käsitellä verkkotunnisteita ja vuorovaikutuksia; tiedot eivät välttämättä ole anonyymejä.",
+    "originBody": "pa-origin. Pieni merkintä selaimessasi, joka kertoo käynnin alkuperän: kampanjan, mainoksen tai sivuston, jolta saavuit, sivun, jolle tulit, sekä ensimmäisen ja viimeisimmän käynnin päivämäärän ja kellonajan. Sitä ei ole tarkoitettu nimesi, sähköpostiosoitteesi tai puhelinnumerosi tallentamiseen. Sen avulla tiedämme, mitkä markkinointitoimet toimivat; jos teet varauksen, tallennamme alkuperän varauspyyntösi yhteyteen vain sisäiseen käyttöön. Se luodaan vain, jos valitset Hyväksy kaikki, ja se poistetaan heti, kun perut lupasi kohdassa Evästeasetukset. Jokainen tallennettu käynti huomioidaan 30 päivän ajan, ja se poistetaan, kun palaat sivustolle ensimmäisen kerran tämän ajan jälkeen. Voit myös poistaa sen milloin tahansa tyhjentämällä tämän sivuston tiedot selaimestasi.",
     "functionalTitle": "Toiminnalliset evästeet",
     "functionalBody": "Nämä evästeet mahdollistavat verkkosivuston muistamaan tekemäsi valinnat (kuten kieliasetuksesi tai alueesi) ja tarjoamaan parannettuja, henkilökohtaisia ominaisuuksia. Niitä voidaan myös käyttää muistamaan tekemäsi muutokset tekstikokoon, fontteihin ja muihin muokattaviin elementteihin.",
     "marketingTitle": "Markkinointievästeet",
@@ -1198,6 +1201,10 @@
     "updatesBody": "Saatamme päivittää tätä evästekäytäntöä ajoittain heijastamaan muutoksia teknologiassa, lainsäädännössä tai tietokäytännöissämme. Kehotamme sinua tarkistamaan tämän sivun säännöllisesti.",
     "contactTitle": "Ota yhteyttä",
     "contactBody": "Jos sinulla on kysyttävää evästeiden käytöstämme, ota yhteyttä osoitteeseen info@portugalactive.com."
+  },
+  "legalFooter": {
+    "complaintsBook": "Valituskirja",
+    "complaintsBookAria": "Livro de Reclamações, Portugalin virallinen sähköinen valituskirja (avautuu uuteen välilehteen)"
   },
   "blog": {
     "overline": "JOURNAL",

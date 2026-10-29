@@ -236,8 +236,9 @@ variáveis DLV `ecommerce.*` da tag "1 - GA4 - Reservation"). Acionador: evento 
   conversão. Mudar isto altera os lances de 12 a 18 campanhas.
 - **Render**: `META_PIXEL_ID`, `META_CAPI_TOKEN` e, durante o teste, `META_CAPI_TEST_CODE`
   (o Ricardo cola o token: o agente não introduz tokens).
-- **Política de privacidade**: parágrafo `privacy.s3AdsBody` em PT (10/10). As outras oito
-  línguas omitem-no até serem traduzidas, como o `s2OriginBody`.
+- **Política de privacidade**: parágrafo `privacy.s3AdsBody` em PT (10/10); traduzido nas
+  outras oito línguas a 29/10, tal como o `s2OriginBody` e o `cookiesPage.originBody`
+  (auditoria i18n-copy-05; tradução fiel do PT, por rever pelo advogado).
 
 ## 7. Como testar
 

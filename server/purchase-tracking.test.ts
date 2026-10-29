@@ -121,11 +121,22 @@ describe('inspeção do dataLayer fora do live', () => {
 });
 
 describe('política de privacidade: envio à Meta pelo servidor', () => {
-  it('PT explains the consent-gated server send; other languages leave it out until translated', async () => {
+  it('PT explains the consent-gated server send', async () => {
     const pt = (await import('../client/src/i18n/locales/pt.json')).default as any;
-    const en = (await import('../client/src/i18n/locales/en.json')).default as any;
     const body: string = pt.privacy.s3AdsBody;
     for (const fact of ['Aceitar tudo', 'Meta', 'servidor', 'hash', '31 dias', 'Apenas essenciais']) expect(body).toContain(fact);
-    expect(en.privacy.s3AdsBody).toBeUndefined();
+  });
+
+  // Auditoria 29 out 2026 (i18n-copy-05): EN and the other 7 languages got the
+  // same paragraph; it names the banner's buttons in each language.
+  it.each(['en', 'fr', 'es', 'it', 'de', 'nl', 'sv', 'fi'])('%s explains it too, with the same facts', async (lng) => {
+    const { readFileSync } = await import('node:fs');
+    const loc = JSON.parse(readFileSync(`client/src/i18n/locales/${lng}.json`, 'utf8'));
+    const body: string = loc.privacy.s3AdsBody;
+    expect(typeof body).toBe('string');
+    const lower = body.toLowerCase();
+    for (const fact of ['meta', 'hash', '31', 'ip']) expect(lower, fact).toContain(fact);
+    expect(lower).toContain(String(loc.cookieBanner.acceptAll).toLowerCase());
+    expect(lower).toContain(String(loc.cookieBanner.essentialOnly).toLowerCase());
   });
 });

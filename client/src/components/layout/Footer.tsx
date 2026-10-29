@@ -8,10 +8,11 @@ import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { openCookiePreferences } from '@/lib/measurementConsent';
 import { IMAGES } from '@/lib/images';
-import { Instagram, Youtube, Linkedin, Facebook, Check, Phone, Mail, MessageCircle, ArrowUpRight } from 'lucide-react';
+import { Instagram, Youtube, Linkedin, Facebook, Check, Phone, Mail, MessageCircle, ArrowUpRight, BookOpen } from 'lucide-react';
 import FooterPaymentLogos from './FooterPaymentLogos';
 import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
+import { COMPLAINTS_BOOK_NAME, COMPLAINTS_BOOK_URL } from '@/lib/legalLinks';
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
@@ -230,6 +231,28 @@ export default function Footer() {
               </span>
               <FooterPaymentLogos />
             </div>
+          </div>
+
+          {/* Livro de Reclamações Eletrónico: acesso visível e destacado em todas
+              as páginas (DL 156/2005, alterado pelo DL 74/2017). O nome oficial
+              fica em português em todas as línguas; nas outras segue a tradução.
+              A linha da identidade legal (denominação, NIPC, sede) entra aqui
+              quando o Ricardo enviar os dados. */}
+          <div className="mt-7 flex justify-center xl:justify-start">
+            <a
+              href={COMPLAINTS_BOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t('legalFooter.complaintsBookAria')}
+              className="inline-flex items-center gap-2.5 rounded-sm border border-white/25 px-3.5 py-2 text-[12px] leading-snug text-white/80 hover:border-white/50 hover:text-white transition-colors"
+              style={{ fontFamily: 'var(--font-body)' }}
+            >
+              <BookOpen size={15} className="flex-shrink-0 text-[#C4A87C]" aria-hidden="true" />
+              <span>
+                <span lang="pt" className="font-medium">{COMPLAINTS_BOOK_NAME}</span>
+                {language !== 'pt' && <span className="text-white/65"> · {t('legalFooter.complaintsBook')}</span>}
+              </span>
+            </a>
           </div>
 
           {/* Row 2: copyright + legal — single baseline, hairline divider */}

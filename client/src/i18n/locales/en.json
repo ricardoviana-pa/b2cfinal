@@ -1420,13 +1420,15 @@
   "privacy": {
     "overline": "LEGAL",
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: September 2026",
+    "lastUpdated": "Last updated: October 2026",
     "s1Title": "1. Information We Collect",
     "s1Body": "We collect information you provide directly to us, such as when you make a booking enquiry, subscribe to our newsletter, or contact us. This may include your name, email address, phone number, and travel preferences.",
     "s2Title": "2. How We Use Your Information",
     "s2Body": "We use the information we collect to process your bookings, communicate with you about your stay, send marketing communications (with your consent), and improve our services.",
+    "s2OriginBody": "If you allow analytics cookies by choosing Accept all in the cookie notice, we also store, with your booking request, where your visit to our site came from: the campaign, the ad or the website you arrived from. We use this information only internally, to learn which marketing actions work, and we do not share it with third parties. Without that permission, we do not store where your visit came from.",
     "s3Title": "3. Data Sharing",
     "s3Body": "We do not sell your personal information. We may share your data with property owners and service providers to fulfil your booking and deliver the services you have requested. If you have stayed with us or given us your email address, we may also send it, always hashed and therefore unreadable, to advertising platforms such as Meta (Facebook and Instagram) and Google, so that we can show you our offers on those platforms. You can ask to be removed from these lists at any time by writing to info@portugalactive.com.",
+    "s3AdsBody": "If you choose Accept all in the cookie notice, when you start or complete a booking on our site we also send Meta (Facebook and Instagram), from our server, the booking value and code, the home you chose, your email address and phone number in hashed form, the identifiers of Meta's cookies, your IP address and your browser type. This tells us which ads bring in bookings. We keep those identifiers for 31 days. Without that permission, or if you choose Essential only, we send nothing to Meta.",
     "s4Title": "4. Your Rights",
     "s4Body": "Under GDPR, you have the right to access, correct, delete, or port your personal data. You may also withdraw consent for marketing communications, including personalised ads, at any time. Contact us at info@portugalactive.com to exercise these rights.",
     "s5Title": "5. Contact",
@@ -1434,7 +1436,7 @@
   },
   "cookiesPage": {
     "title": "Cookie Policy",
-    "lastUpdated": "Last updated: March 2026",
+    "lastUpdated": "Last updated: October 2026",
     "whatTitle": "What are cookies?",
     "whatBody": "Cookies are small text files that are placed on your device when you visit our website. They help us provide you with a better experience by remembering your preferences, understanding how you use our site, and improving our services.",
     "howTitle": "How we use cookies",
@@ -1443,6 +1445,7 @@
     "essentialBody": "These cookies are necessary for the website to function properly. They enable basic features like page navigation, access to secure areas, and itinerary functionality. The website cannot function properly without these cookies.",
     "analyticsTitle": "Analytics cookies",
     "analyticsBody": "With your permission, Google Analytics and Microsoft Clarity help us understand how the site is used. These tools can process online identifiers and interactions; data is not necessarily anonymous.",
+    "originBody": "pa-origin. A small record kept in your browser with where your visit came from: the campaign, the ad or the website you arrived from, the page you entered on, and the date and time of your first and latest visit. It is not designed to store your name, email address or phone number. It tells us which marketing actions work; if you make a booking, we store that origin with your booking request, for internal use only. It is only created if you choose Accept all, and it is deleted as soon as you withdraw your permission in Cookie settings. Each recorded visit counts for 30 days and is deleted the first time you return to the site after that period. You can also delete it at any time by clearing this site's data in your browser.",
     "functionalTitle": "Functional cookies",
     "functionalBody": "These cookies allow the website to remember choices you make (such as your preferred language or region) and provide enhanced, personalised features. They may also be used to remember changes you have made to text size, fonts, and other customisable elements.",
     "marketingTitle": "Marketing cookies",
@@ -1455,6 +1458,10 @@
     "updatesBody": "We may update this Cookie Policy from time to time to reflect changes in technology, legislation, or our data practices. We encourage you to review this page periodically.",
     "contactTitle": "Contact us",
     "contactBody": "If you have any questions about our use of cookies, please contact us at info@portugalactive.com."
+  },
+  "legalFooter": {
+    "complaintsBook": "Complaints book",
+    "complaintsBookAria": "Livro de Reclamações, Portugal's official electronic complaints book (opens in a new tab)"
   },
   "blog": {
     "overline": "JOURNAL",
