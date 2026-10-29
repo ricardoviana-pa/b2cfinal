@@ -657,9 +657,9 @@ function brandFooter(tagline: string): string {
   <p style="font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:#9E9A90;margin:10px 0 0;">${tagline}</p>
 </td></tr>`;
 }
-/** Signature block: the region's concierge when confirmed (name + photo),
- *  otherwise Sara — never an anonymous "your concierge · Portugal Active"
- *  (auditoria set/2026, N8). */
+/** Signature block: the region's concierge when confirmed (name, photo, "your
+ *  concierge"), otherwise the brand: "Portugal Active" with "Concierge" under
+ *  it. Never an invented person (Ricardo, 29 out 2026). */
 function conciergeSignature(lang: EmailLang, destination?: string | null, locality?: string | null): string {
   const C = CONFIRMATION_I18N[lang];
   const signer = getEmailSigner(destination, locality);
@@ -670,7 +670,7 @@ function conciergeSignature(lang: EmailLang, destination?: string | null, locali
     ${photo}
     <p style="font-family:${SANS};font-size:12.5px;color:${PA.stoneAA};margin:0 0 5px 0;">${C.regards}</p>
     <p style="font-family:${SERIF};font-size:21px;color:${PA.dark};margin:0;letter-spacing:.2px;">${signer.name}</p>
-    <p style="font-family:${SANS};font-size:10.5px;color:${PA.gold};letter-spacing:.16em;text-transform:uppercase;margin:5px 0 0 0;">${C.yourConcierge}</p>
+    <p style="font-family:${SANS};font-size:10.5px;color:${PA.gold};letter-spacing:.16em;text-transform:uppercase;margin:5px 0 0 0;">${signer.brand ? C.conciergeTeam : C.yourConcierge}</p>
   </td></tr></table>`;
 }
 

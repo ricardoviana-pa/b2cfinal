@@ -1940,11 +1940,8 @@
     "conciergeMessage": "Bonjour, j'ai une question sur ma réservation : {{property}}, du {{checkIn}} au {{checkOut}}, voyageurs : {{guests}}."
   },
   "host": {
-    "hostedBy": "Vos hôtes : Ricardo & l’équipe Portugal Active",
-    "basedIn": "Équipe locale à Viana do Castelo",
-    "meetUs": "Rencontrez-nous",
-    "hostedByName": "Vos hôtes : {{name}} & l’équipe Portugal Active",
-    "basedInCity": "Équipe locale {{inPlace}}"
+    "hostedBy": "Votre hôte : Portugal Active",
+    "meetUs": "Rencontrez-nous"
   },
   "location": {
     "title": "Localisation",

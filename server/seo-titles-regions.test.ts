@@ -189,7 +189,7 @@ describe('locale strings that place a destination render grammatically', () => {
     'destinationDetail.guide.seeAndDoTitleNamed', 'destinationDetail.guide.conciergePicks',
     'destinationDetail.guide.whenToVisitTitleNamed', 'destinationDetail.guide.getHereTitleNamed',
     'destinationGrowth.journalTitle', 'propertyDetail.moreIn', 'propertyDetail.allDestHomes',
-    'propertyDetail.adventuresSubtitle', 'host.basedInCity',
+    'propertyDetail.adventuresSubtitle',
   ];
   async function t(lang: string) {
     const i18n = createInstance();

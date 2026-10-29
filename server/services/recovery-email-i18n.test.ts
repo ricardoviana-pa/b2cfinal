@@ -187,3 +187,48 @@ describe("confirmação do pagamento: sem texto em inglês nas outras 8 línguas
     expect(html).toContain("Luxury villas in Portugal. The privacy of a home, the service of a hotel.");
   });
 });
+
+describe("assinatura dos emails: a marca, nunca uma pessoa inventada", () => {
+  // Sem concierge confirmado para a região, assina "Portugal Active", com
+  // "Concierge" por baixo. O Ricardo, 29 out 2026: "Portugal Active é
+  // Portugal Active" (antes assinava "Sara · a sua concierge").
+  function signature(html: string): { name?: string; sub?: string } {
+    const m = html.match(/letter-spacing:\.2px;">([^<]+)<\/p>\s*<p[^>]*text-transform:uppercase[^>]*>([^<]+)<\/p>/);
+    return { name: m?.[1], sub: m?.[2] };
+  }
+
+  async function renderConfirmation(lang: EmailLang): Promise<string> {
+    await email.sendCheckoutGuestConfirmation({
+      email: "guest@example.test",
+      guestFirstName: "Ana",
+      propertyName: "Casa Sintética",
+      destination: "minho",
+      checkIn: "2099-11-10",
+      checkOut: "2099-11-15",
+      guests: 4,
+      confirmationCode: "SYNTH-123",
+      reception: { type: "self" },
+      quote: base.quote,
+      canonical: { lines: [], receptionCents: 0, flexCents: 0, totalCents: 169_000 },
+      viewUrl: "https://www.portugalactive.com/pt/booking/thank-you/synthetic",
+      locale: lang,
+      cancellation: { policy: "moderate" },
+      intentId: "synthetic-intent",
+    });
+    return lastHtml();
+  }
+
+  it.each(EMAIL_LANGS)("%s: confirmação e recuperação assinadas pela Portugal Active", async (lang) => {
+    for (const html of [await renderConfirmation(lang), await render(lang, 1)]) {
+      expect(signature(html)).toEqual({ name: "Portugal Active", sub: CONFIRMATION_I18N[lang].conciergeTeam });
+      expect(html).not.toMatch(/>Sara</);
+      expect(html).not.toContain(`>${CONFIRMATION_I18N[lang].yourConcierge}<`);
+    }
+  });
+
+  it("o subtítulo da marca é curto e nunca um nome de pessoa", () => {
+    for (const lang of EMAIL_LANGS) {
+      expect(CONFIRMATION_I18N[lang].conciergeTeam).toMatch(/^Concierge(rie)?$/);
+    }
+  });
+});

@@ -5,7 +5,6 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
 import { useMeasurementConsent } from '@/hooks/useMeasurementConsent';
-import { getConcierge } from '@shared/concierges';
 import { localizeDuration, localizeRoomName } from '@/lib/duration';
 import { useParams, Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -703,7 +702,6 @@ export default function PropertyDetail() {
   // (auditoria set/2026, N19). Submit the URLs in Search Console once live.
   const PARTNER_HOMES_NOINDEX = false;
   const partnerNoindex = PARTNER_HOMES_NOINDEX && (property as any)?.source === 'tripwix';
-  const host = getConcierge((property as any)?.destination, (property as any)?.locality);
 
   usePageMeta({ ...pdpMeta, type: 'place', noindex: partnerNoindex });
 
@@ -1307,29 +1305,15 @@ export default function PropertyDetail() {
         </Link>}
       </div>
 
-      {/* A human at the decision point — the About page has the founder with a
-          face and a story, but the page where money changes hands had nobody.
-          The host is the concierge of the home's region (shared/concierges.ts),
-          on every home. */}
-      <div className="mt-5 pt-5 border-t border-pa-sand flex items-center gap-3">
-        <img
-          src={host.photo}
-          alt={`${host.fullName}, Portugal Active`}
-          className="w-11 h-11 rounded-full object-cover shrink-0"
-          loading="lazy"
-        />
-        <div className="min-w-0">
-          <p className="body-sm text-pa-dark font-medium leading-tight">
-            {t('host.hostedByName', { name: host.name, defaultValue: 'Hosted by {{name}} & the Portugal Active team' })}
-          </p>
-          <p className="caption text-pa-stone leading-tight mt-0.5">
-            {t('host.basedInCity', { city: placePhrases(host.basedIn, i18n.language).name, ...placeVars(host.basedIn, i18n.language), defaultValue: 'Local team {{inPlace}}' })} ·{' '}
-            <Link href="/about" className="text-pa-gold-aa hover:underline">
-              {t('host.meetUs', 'Meet us')}
-            </Link>
-          </p>
-        </div>
-      </div>
+      {/* Quem recebe é a Portugal Active, em todas as casas (próprias ou de
+          parceiros): sem nome de pessoa nem "equipa local em X". O Ricardo,
+          29 out 2026: "Portugal Active é Portugal Active". */}
+      <p className="mt-5 pt-5 border-t border-pa-sand body-sm text-pa-dark leading-tight">
+        {t('host.hostedBy', 'Hosted by Portugal Active')} ·{' '}
+        <Link href="/about" className="caption text-pa-gold-aa hover:underline">
+          {t('host.meetUs', 'Meet us')}
+        </Link>
+      </p>
     </>
   );
 
