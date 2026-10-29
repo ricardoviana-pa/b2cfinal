@@ -2090,6 +2090,50 @@
     "results": "{{count}} kohdetta",
     "sort": "Lajittele kohteet"
   },
+  "destinationSearch": {
+    "regions": "Alueet",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Douron laakso",
+      "silver-coast": "Hopearannikko"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} kohde",
+    "homes_other": "{{count}} kohdetta",
+    "available_one": "{{count}} vapaana",
+    "available_other": "{{count}} vapaana",
+    "toConfirm_one": "joista {{count}} vahvistettavana",
+    "toConfirm_other": "joista {{count}} vahvistettavana",
+    "unavailable_one": "{{count}} ei saatavilla",
+    "unavailable_other": "{{count}} ei saatavilla",
+    "showHomes_one": "Näytä {{count}} kohde",
+    "showHomes_other": "Näytä {{count}} kohdetta"
+  },
+  "listingWhatsApp": {
+    "intro": "Hei! Katselen kohteita Portugal Activen verkkosivuilla ja haluaisin apua valintaan.",
+    "introNoMatch": "Hei! En löytänyt Portugal Activen verkkosivuilta kohdetta, joka vastaisi toiveitani. Voitteko auttaa?",
+    "introNoAvailability": "Hei! En löytänyt Portugal Activen verkkosivuilta vapaata kohdetta päivilleni. Voitteko auttaa?",
+    "destination": "Matkakohde: {{place}}",
+    "collection": "Kokoelma: {{name}}",
+    "dates": "Päivät: {{from}} → {{to}}",
+    "guests": "Vieraat: {{count}}",
+    "aria": "Kirjoita conciergellemme WhatsAppissa"
+  },
+  "listingReassurance": {
+    "cancellation": "Maksuton peruutus palautettavissa hintavaihtoehdoissa siihen päivään asti, joka näytetään ennen maksamista",
+    "whatsapp": "Kysyttävää? Kirjoita conciergellemme WhatsAppissa"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} kohde",
+    "kicker_other": "{{name}} · {{count}} kohdetta",
+    "title": "Valitse lomakotisi",
+    "viewAll_one": "Katso {{count}} kohde",
+    "viewAll_other": "Katso kaikki {{count}} kohdetta"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Kieli: {{language}}"
+  },
   "pdpUx": {
     "navigation": "Tutustu kohteeseen",
     "bedrooms": "Makuuhuoneet"

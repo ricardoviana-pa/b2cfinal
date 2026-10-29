@@ -2093,6 +2093,53 @@
     "results": "{{count}} casas",
     "sort": "Ordenar casas"
   },
+  "destinationSearch": {
+    "regions": "Regiões",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Vale do Douro",
+      "silver-coast": "Costa de Prata"
+    }
+  },
+  "listingRail": {
+    "homes_zero": "{{count}} casas",
+    "homes_one": "{{count}} casa",
+    "homes_other": "{{count}} casas",
+    "available_zero": "{{count}} disponíveis",
+    "available_one": "{{count}} disponível",
+    "available_other": "{{count}} disponíveis",
+    "toConfirm_one": "das quais {{count}} por confirmar",
+    "toConfirm_other": "das quais {{count}} por confirmar",
+    "unavailable_one": "{{count}} indisponível",
+    "unavailable_other": "{{count}} indisponíveis",
+    "showHomes_zero": "Mostrar {{count}} casas",
+    "showHomes_one": "Mostrar {{count}} casa",
+    "showHomes_other": "Mostrar {{count}} casas"
+  },
+  "listingWhatsApp": {
+    "intro": "Olá! Estou a ver casas no site da Portugal Active e gostava de ajuda para escolher.",
+    "introNoMatch": "Olá! Não encontrei no site da Portugal Active uma casa que corresponda ao que procuro. Podem ajudar?",
+    "introNoAvailability": "Olá! Não encontrei no site da Portugal Active uma casa disponível nas minhas datas. Podem ajudar?",
+    "destination": "Destino: {{place}}",
+    "collection": "Coleção: {{name}}",
+    "dates": "Datas: {{from}} → {{to}}",
+    "guests": "Hóspedes: {{count}}",
+    "aria": "Falar com o nosso concierge no WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Cancelamento gratuito nas tarifas reembolsáveis, até à data apresentada antes de pagar",
+    "whatsapp": "Dúvidas? Fale com o nosso concierge no WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} casa",
+    "kicker_other": "{{name}} · {{count}} casas",
+    "title": "Escolha a sua casa",
+    "viewAll_one": "Ver {{count}} casa",
+    "viewAll_other": "Ver as {{count}} casas"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Escrito em {{language}}"
+  },
   "pdpUx": {
     "navigation": "Explore esta casa",
     "bedrooms": "Quartos"

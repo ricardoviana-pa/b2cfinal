@@ -2090,6 +2090,50 @@
     "results": "{{count}} logements",
     "sort": "Trier les logements"
   },
+  "destinationSearch": {
+    "regions": "Régions",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Vallée du Douro",
+      "silver-coast": "Côte d’Argent"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} logement",
+    "homes_other": "{{count}} logements",
+    "available_one": "{{count}} disponible",
+    "available_other": "{{count}} disponibles",
+    "toConfirm_one": "dont {{count}} à confirmer",
+    "toConfirm_other": "dont {{count}} à confirmer",
+    "unavailable_one": "{{count}} indisponible",
+    "unavailable_other": "{{count}} indisponibles",
+    "showHomes_one": "Afficher {{count}} logement",
+    "showHomes_other": "Afficher {{count}} logements"
+  },
+  "listingWhatsApp": {
+    "intro": "Bonjour ! Je regarde les maisons sur le site de Portugal Active et j’aimerais de l’aide pour choisir.",
+    "introNoMatch": "Bonjour ! Je n’ai pas trouvé sur le site de Portugal Active de maison qui corresponde à ce que je cherche. Pouvez-vous m’aider ?",
+    "introNoAvailability": "Bonjour ! Je n’ai pas trouvé sur le site de Portugal Active de maison disponible à mes dates. Pouvez-vous m’aider ?",
+    "destination": "Destination : {{place}}",
+    "collection": "Collection : {{name}}",
+    "dates": "Dates : {{from}} → {{to}}",
+    "guests": "Voyageurs : {{count}}",
+    "aria": "Écrire à notre concierge sur WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Annulation gratuite avec les tarifs remboursables, jusqu’à la date affichée avant le paiement",
+    "whatsapp": "Des questions ? Écrivez à notre concierge sur WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} maison",
+    "kicker_other": "{{name}} · {{count}} maisons",
+    "title": "Choisissez votre maison",
+    "viewAll_one": "Voir {{count}} maison",
+    "viewAll_other": "Voir les {{count}} maisons"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Rédigé en {{language}}"
+  },
   "pdpUx": {
     "navigation": "Découvrez ce logement",
     "bedrooms": "Chambres"
