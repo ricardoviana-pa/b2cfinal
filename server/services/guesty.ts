@@ -6,6 +6,7 @@
  */
 
 import { guestyClient } from "../lib/guesty";
+import { BoundedMap } from "../lib/boundedMap";
 import { isBEApiConfigured, createBEQuote, beQuotesUnderPressure, type BERatePlanOption } from "./guesty-booking";
 import { getPropertiesForSite } from "./properties-store";
 
@@ -13,7 +14,8 @@ type QuoteSource = "live" | "cached" | "base" | "request";
 
 const QUOTE_CACHE_TTL_MS = 15 * 60 * 1000; // 15 min for live quotes
 const QUOTE_CACHE_FALLBACK_TTL_MS = 3 * 60 * 1000; // 3 min for base-price fallbacks (retry sooner)
-const quoteCache = new Map<string, { expiresAt: number; value: QuoteResult }>();
+// Chave = casa + datas + hóspedes: sem teto crescia com cada pesquisa.
+const quoteCache = new BoundedMap<string, { expiresAt: number; value: QuoteResult }>(2000);
 /** In-flight dedup: concurrent getQuote calls for same params share one promise. */
 const inFlightGetQuotes = new Map<string, Promise<QuoteResult>>();
 

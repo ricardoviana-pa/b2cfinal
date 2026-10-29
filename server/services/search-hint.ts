@@ -14,6 +14,7 @@
  *     windows when no house can take the whole stay.
  */
 import { guestyBEClient } from "../lib/guesty";
+import { BoundedMap, approxJsonBytes } from "../lib/boundedMap";
 import { getPropertiesForSite, catalogProperties } from "./properties-store";
 
 /** Beyond this we don't try to validate a continuous stay against calendars
@@ -26,7 +27,8 @@ const ARRIVAL_SCAN_DAYS = 21;
 const MAX_CANDIDATE_LISTINGS = 5;
 
 const CACHE_TTL_MS = 60 * 60 * 1000;
-const cache = new Map<string, { days: any[]; at: number }>();
+// Chave = casa + intervalo pesquisado: teto de entradas e de bytes.
+const cache = new BoundedMap<string, { days: any[]; at: number }>(500, 16 * 1024 * 1024, (e) => approxJsonBytes(e.days));
 
 export interface DateWindow {
   checkIn: string;

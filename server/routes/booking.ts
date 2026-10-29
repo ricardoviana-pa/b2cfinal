@@ -23,6 +23,8 @@ const RATE_PLAN_LOOKUP_TIMEOUT_MS = 2500;
 
 const TTL_LISTING_MS = 6 * 60 * 60 * 1000;
 const TTL_CALENDAR_MS = 60 * 1000;
+/** Intervalo máximo de /api/listings/:id/calendar (rota pública; o site usa calendar-window). */
+const CALENDAR_MAX_SPAN_DAYS = 400;
 
 function toIsoDate(input: string): string {
   const d = new Date(input);
@@ -362,6 +364,13 @@ export function registerBookingRoutes(app: Express): void {
 
     if (!from || !to) {
       res.status(400).json({ message: "Invalid from/to date params" });
+      return;
+    }
+    // Rota pública: o intervalo vem do pedido e entra na chave da cache e no
+    // pedido ao Guesty. Um intervalo de anos pesava MB e enchia a memória.
+    const spanDays = (Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000;
+    if (!(spanDays >= 0 && spanDays <= CALENDAR_MAX_SPAN_DAYS)) {
+      res.status(400).json({ message: `from/to must span 0-${CALENDAR_MAX_SPAN_DAYS} days` });
       return;
     }
 
