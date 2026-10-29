@@ -55,6 +55,20 @@ describe('guest requests never call the partner API', () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
 
+  it('reads nothing without the partner key or with impossible dates', async () => {
+    vi.stubEnv('TRIPWIX_API_KEY', '');
+    const fetcher = vi.fn();
+    vi.stubGlobal('fetch', fetcher);
+    const { readTripwixCalendar, refreshNextTripwixCalendar } = await load();
+    expect(await refreshNextTripwixCalendar([{ uid: 'a' }])).toEqual({ action: 'idle' });
+    expect(await readTripwixCalendar('a', '2028-07-01', '2028-07-08')).toBeNull();
+    vi.stubEnv('TRIPWIX_API_KEY', 'test-only');
+    expect(await readTripwixCalendar('a', '2026-02-30', '2026-03-01')).toBeNull();
+    expect(await readTripwixCalendar('a', '2026-11-10', '2026-11-01')).toBeNull();
+    expect(await readTripwixCalendar('a', '2026-11-01', '2028-01-01')).toBeNull();
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
   it('serves what the job read: calendar, dated quote and a 12-month "from"', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ok(calendar(1000, (i) => (i >= 121 ? 'available' : 'unavailable')))));
     const { refreshTripwixCalendar } = await load();
