@@ -39,7 +39,8 @@ import {
   UNKNOWN_STATUS,
   type DayRule,
 } from "../client/src/lib/dateRangeSelection";
-import { noPriceLabelKey, partnerQuoteNotice, partnerRequestQuoteStatus } from "../client/src/lib/partnerAvailability";
+import { partnerQuoteNotice, partnerRequestQuoteStatus } from "../client/src/lib/partnerAvailability";
+import { noPriceLabelKey } from "../client/src/lib/partnerPriceLabel";
 
 const DAY = 86_400_000;
 const T0 = Date.parse("2026-10-29T08:00:00Z");

@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { loadPropertyOverrides, mergePropertyOverrides, propertyOverridesQueryKey } from '@/lib/localizeProperty';
 import { SSR_FROM_PRICES_KEY, pickLowestNightly, type SsrFromPrices } from '@/lib/ssrFromPrices';
-import { noPriceLabelKey } from '@/lib/partnerAvailability';
+import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import { countVars } from '@/lib/plural';
 import { propertyKindInline } from '@shared/propertyMeta';
 import { propertyPageMetaOpts } from '@/lib/propertyPageMeta';

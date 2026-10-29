@@ -48,17 +48,6 @@ export function partnerQuoteNotice(input: {
   return "error";
 }
 
-/**
- * The price line of a card (or the property page's mobile bar) with no price
- * to show and no dates chosen. A partner home whose "from" came back as none
- * (`null`: no calendar, or nothing open in 12 months) cannot be priced by
- * picking dates either, so it reads "Price on request"; `undefined` (not
- * computed yet) and our own homes keep "Select dates for price".
- */
-export function noPriceLabelKey(isPartner: boolean, fromPrice: number | null | undefined): "property.priceOnRequest" | "property.selectDatesForPrice" {
-  return isPartner && fromPrice === null ? "property.priceOnRequest" : "property.selectDatesForPrice";
-}
-
 /** Status of the request the concierge receives: "unknown" when there was no price at all. */
 export function partnerRequestQuoteStatus(quote: { available: boolean; feesKnown: boolean } | null | undefined): "complete" | "partial" | "unavailable" | "unknown" {
   if (!quote) return "unknown";

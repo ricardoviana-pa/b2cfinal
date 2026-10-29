@@ -11,7 +11,7 @@ import { propertyTripHref } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
 import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
-import { noPriceLabelKey } from '@/lib/partnerAvailability';
+import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import { cardImageLoading } from '@/lib/listingImagePriority';
