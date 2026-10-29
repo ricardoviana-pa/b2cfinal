@@ -3,7 +3,9 @@
  * Documento de referência: docs/checkout_recovery.md.
  *
  * Quatro contactos, cada um com um argumento diferente:
- *   1 · 1h   A casa (ou, se parou no pagamento, "ficou algo por resolver?")
+ *   1 · 1h   A casa. Se parou no pagamento: sem tentativa de pagar, "ficou
+ *            alguma dúvida?"; depois de uma tentativa, "ficou algo por
+ *            resolver?" (checkout-recovery.ts, paymentStepFacts)
  *   2 · 20h  Urgência verdadeira: a hora exata a que o preço expira e,
  *            quando for verdade, a escassez real do calendário
  *   3 · 72h  Datas re-verificadas, preço de hoje, e o Flex oferecido 72h
@@ -41,6 +43,20 @@ export const HOLDOUT_PERCENT = 10;
 
 /** Alerta ao concierge: abandono no pagamento a partir deste total (EUR). */
 export const CONCIERGE_ALERT_MIN_TOTAL = 3000;
+
+/**
+ * Klarna no checkout: o país de faturação vai sempre PT
+ * (KlarnaCheckoutButton), e para clientes portugueses o "Paga em 3" vai até
+ * 1 000 € (docs/pagamento_duas_partes.md, 2.1). Acima disso, o email que
+ * sugere o Klarna a quem teve "um limite do banco" mandava o hóspede para
+ * outra recusa.
+ */
+export const KLARNA_MAX_CENTS = 100_000;
+
+/** O Klarna aceita este total (cêntimos)? Sem total conhecido, não se sugere. */
+export function klarnaCanPay(totalCents: number | null | undefined): boolean {
+  return typeof totalCents === "number" && Number.isSafeInteger(totalCents) && totalCents > 0 && totalCents <= KLARNA_MAX_CENTS;
+}
 
 export type RecoveryStage = 1 | 2 | 3 | 4;
 

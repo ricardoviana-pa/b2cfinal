@@ -379,8 +379,10 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string, pricing?:
  * Oferta de duas partes para o ecrã do checkout, com os valores que o
  * createCardCharge vai cobrar: o depósito mede-se sem o Flex oferecido pelo
  * pagamento integral (que se retira em duas partes) e o "tudo agora" com ele.
+ * Exportada para o email de recuperação dizer o que o checkout diria
+ * (checkout-recovery.ts): uma só fonte das regras.
  */
-async function clientPaymentPlanFor(intent: any) {
+export async function clientPaymentPlanFor(intent: any) {
   if (intent.status === "paid") return { available: false as const, reason: null };
   const config = readTwoPartsConfig();
   if (!config.enabled) return { available: false as const, reason: "disabled" as const };

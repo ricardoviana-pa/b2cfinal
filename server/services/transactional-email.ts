@@ -535,6 +535,26 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
    fallback): copy in recovery-copy.ts and email-i18n.ts, labels of the
    stay card as the checkout showed them, footer tagline included.
    ================================================================ */
+/** Duas partes como o checkout as oferece no momento do envio (cêntimos). */
+export interface RecoveryTwoParts {
+  todayCents: number;
+  laterCents: number;
+  chargeAt: Date;
+}
+
+/** A linha das duas partes só vale com valores inteiros e positivos que somem
+ *  ao cêntimo o total do cartão da estadia. Os extras pagos, a receção e o
+ *  Flex não aparecem nesse cartão, por isso com eles o "hoje" e o "depois"
+ *  somavam mais do que o total mostrado (parecia que as duas partes custavam
+ *  mais): na dúvida, sem linha. */
+export function twoPartsMatchCard(t: RecoveryTwoParts | null | undefined, cardTotal: number | null | undefined): t is RecoveryTwoParts {
+  if (!t || cardTotal == null || !Number.isFinite(Number(cardTotal))) return false;
+  const ok = (c: number) => Number.isSafeInteger(c) && c > 0;
+  if (!ok(t.todayCents) || !ok(t.laterCents)) return false;
+  if (!(t.chargeAt instanceof Date) || !Number.isFinite(t.chargeAt.getTime())) return false;
+  return t.todayCents + t.laterCents === Math.round(Number(cardTotal) * 100);
+}
+
 interface CheckoutRecoveryData {
   guestEmail: string;
   guestFirstName?: string | null;
@@ -565,6 +585,19 @@ interface CheckoutRecoveryData {
   stage: 1 | 2 | 3 | 4;
   /** Contacto 1: o hóspede parou no passo de pagamento */
   paymentStep?: boolean;
+  /** Contacto 1 no pagamento: chegou a carregar em Pagar (cobrança tentada,
+   *  checkout-recovery.ts). Sem isto o texto é o de quem ainda não tentou,
+   *  "ficou alguma dúvida?", sem falar de cartões recusados. */
+  paymentAttempted?: boolean;
+  /** Contacto 1 depois de uma tentativa: o total cabe no limite do Klarna.
+   *  Sem isto o Klarna não é sugerido. */
+  klarna?: boolean;
+  /** Contacto 1 sem tentativa: política da tarifa (planPolicyCode), para a
+   *  linha do cancelamento gratuito (só quando ainda há prazo). */
+  cancellation?: EmailCancellation | null;
+  /** Contacto 1 sem tentativa: duas partes como o checkout as oferece no
+   *  envio. Ausente ou sem bater com o total do cartão: sem linha. */
+  twoParts?: RecoveryTwoParts | null;
   /** Contacto 2: escassez real do calendário (só quando é verdade) */
   scarcity?: { unavailable: number; total: number } | null;
   /** Contacto 3: Flex oferecido */
@@ -654,6 +687,14 @@ function cancellationEmailLine(c: EmailCancellation | null | undefined, lang: Em
   return `<p style="font-family:${SANS};font-size:12.5px;color:${PA.earth};line-height:1.6;margin:0;"><span style="color:${PA.dark};font-weight:600;">${escapeHtml(copy.label)}</span> &middot; ${escapeHtml(d.text)}${link}</p>`;
 }
 
+/** A mesma linha, só quando ainda há cancelamento gratuito por gozar (uma
+ *  tarifa reembolsável conhecida e o prazo à frente). Para um email que vende:
+ *  na não reembolsável, com o prazo já passado ou sem código conhecido, nada. */
+function freeCancellationEmailLine(c: EmailCancellation | null | undefined, lang: EmailLang, checkIn?: string | null): string {
+  const d = describeCancellationPolicy(c?.policy, { lang, checkIn });
+  return d.known && d.deadline ? cancellationEmailLine(c, lang, checkIn) : "";
+}
+
 function formatStayDate(iso: string, lang: EmailLang): string {
   try {
     return new Intl.DateTimeFormat(INTL_TAG[lang] ?? "en-GB", {
@@ -699,7 +740,12 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   const house = data.propertyName || CONFIRMATION_I18N[lang].yourHome;
   const firstName = (data.guestFirstName || "").trim().split(" ")[0];
   const greeting = firstName ? T.greetingNamed(firstName) : T.greeting;
-  const pay = data.stage === 1 && !!data.paymentStep;
+  // Contacto 1 no passo de pagamento. Com tentativa de pagar: o texto das
+  // falhas de sempre, com o Klarna só dentro do limite dele. Sem tentativa
+  // (a maioria): "ficou alguma dúvida?", sem falar de cartões recusados.
+  const pay = data.stage === 1 && !!data.paymentStep && !!data.paymentAttempted;
+  const ask = data.stage === 1 && !!data.paymentStep && !data.paymentAttempted;
+  const klarna = pay && data.klarna === true;
   const gift = data.stage === 3 ? data.flexGift ?? null : null;
   const alts = data.stage === 4 ? (data.alternatives ?? []) : [];
   const until = data.expiresAt ? formatGuaranteeUntil(data.expiresAt, lang, T.atTime) : "";
@@ -711,11 +757,11 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   let subject: string, preheader: string, headline: string, body: string, personal: string, cta: string, ctaUrl: string;
   switch (data.stage) {
     case 1:
-      subject = pay ? F.subject1Pay(house) : F.subject1(house);
-      preheader = pay ? F.preheader1Pay : F.preheader1;
-      headline = pay ? F.headline1Pay : F.headline1;
-      body = pay ? F.body1Pay(greeting, house) : F.body1(greeting, house);
-      personal = pay ? F.personal1Pay : F.personal1;
+      subject = ask ? F.subject1Ask(house) : pay ? F.subject1Pay(house) : F.subject1(house);
+      preheader = ask ? F.preheader1Ask : pay ? F.preheader1Pay(klarna) : F.preheader1;
+      headline = ask ? F.headline1Ask : pay ? F.headline1Pay : F.headline1;
+      body = ask ? F.body1Ask(greeting, house) : pay ? F.body1Pay(greeting, house, klarna) : F.body1(greeting, house);
+      personal = ask ? F.personal1Ask : pay ? F.personal1Pay : F.personal1;
       cta = T.cta; ctaUrl = data.resumeUrl;
       break;
     case 2:
@@ -756,6 +802,15 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(T.taxesLabel, eur(q.taxesAndFees, lang));
   if (gift) priceLines += line(F.flexIncluded, `<s style="color:${PA.stoneAA};">${eur(gift.value, lang)}</s> &nbsp;${eur(0, lang)}`, true);
   const total = q.total ?? data.total;
+  // Contacto 1 sem tentativa: as duas razões para reservar já, por baixo do
+  // total. O cancelamento gratuito só com prazo por gozar (nunca na não
+  // reembolsável, nunca "as condições da sua tarifa"); as duas partes só como
+  // o checkout as oferece agora e a bater com o total do cartão.
+  const freeCancelLine = ask ? freeCancellationEmailLine(data.cancellation, lang, data.checkIn) : "";
+  const twoParts = data.twoParts;
+  const twoPartsText = ask && twoPartsMatchCard(twoParts, total)
+    ? F.twoPartsLine(eurCents(twoParts.todayCents, lang), eurCents(twoParts.laterCents, lang), lisbonDay(twoParts.chargeAt, lang))
+    : "";
   const destination = data.destination ? data.destination.charAt(0).toUpperCase() + data.destination.slice(1) : "";
   const photo = data.imageUrl
     ? `<tr><td style="border-radius:12px 12px 0 0;overflow:hidden;"><img src="${data.imageUrl}" alt="${house}" width="600" style="display:block;width:100%;height:auto;border-radius:12px 12px 0 0;" /></td></tr>`
@@ -775,6 +830,8 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
     <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, lang)}</td>
   </tr></table></td></tr>` : ""}
   ${until ? `<tr><td style="padding:14px 24px 0 24px;"><p style="font-family:${SANS};font-size:11.5px;color:${PA.gold};line-height:1.5;margin:0;">${T.guaranteedUntil} ${until}</p></td></tr>` : ""}
+  ${freeCancelLine ? `<tr><td style="padding:12px 24px 0 24px;">${freeCancelLine}</td></tr>` : ""}
+  ${twoPartsText ? `<tr><td style="padding:8px 24px 0 24px;"><p style="font-family:${SANS};font-size:12.5px;color:${PA.earth};line-height:1.6;margin:0;">${escapeHtml(twoPartsText)}</p></td></tr>` : ""}
   <tr><td style="padding:0 0 20px 0;"></td></tr>
 </table>
 </td></tr>`;
@@ -837,7 +894,7 @@ ${stayCard}
 ${altBlock}
 <tr><td style="padding:0 0 24px 0;">
   <a href="${ctaUrl}" target="_blank" style="display:block;background:${PA.dark};color:#ffffff;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;text-align:center;padding:15px 24px;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;">${cta}</a>
-  <p style="text-align:center;margin:14px 0 0;"><a href="https://wa.me/351927161771?text=${encodeURIComponent(T.whatsappMsg(String(data.propertyName ?? house)))}" style="font-family:${SANS};font-size:13px;color:${PA.gold};text-decoration:underline;">${T.whatsappLine}</a></p>
+  <p style="text-align:center;margin:14px 0 0;"><a href="https://wa.me/351927161771?text=${encodeURIComponent(T.whatsappMsg(String(data.propertyName ?? house)))}" style="font-family:${SANS};font-size:13px;color:${PA.gold};text-decoration:underline;">${ask ? F.whatsapp1Ask : T.whatsappLine}</a></p>
 </td></tr>
 <tr><td style="padding:0 0 8px 0;">
   <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.6;margin:0;">${personal}</p>

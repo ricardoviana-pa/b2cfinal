@@ -12,10 +12,32 @@ consoante o passo onde o hóspede parou.
 
 | Contacto | Quando | Para quem | Argumento |
 |---|---|---|---|
-| 1 | 1 hora depois | Todos | A casa: tudo guardado, um clique para continuar, convite a responder (a equipa lê todas as respostas; o Reply-To de todos os contactos é a caixa de reservas `BOOKING_NOTIFICATION_EMAIL`, booking@ por omissão, mesmo que o remetente mude; nunca promete leitura pessoal). Se parou no **pagamento**: "Ficou algo por resolver?", com os métodos alternativos (Apple/Google Pay, PayPal, Klarna). |
+| 1 | 1 hora depois | Todos | A casa: tudo guardado, um clique para continuar, convite a responder (a equipa lê todas as respostas; o Reply-To de todos os contactos é a caixa de reservas `BOOKING_NOTIFICATION_EMAIL`, booking@ por omissão, mesmo que o remetente mude; nunca promete leitura pessoal). Se parou no **pagamento**, conforme tentou ou não pagar (ver "Contacto 1 no pagamento"). |
 | 2 | 20 horas depois | Todos | Urgência verdadeira: a hora exata a que o preço expira e, só quando for verdade, a escassez do calendário ("das 47 noites à volta das suas datas, 29 já não estão disponíveis"). |
 | 3 | 3 dias depois | Só com consentimento de marketing | As datas são re-verificadas no Guesty, o preço é refeito e guardado mais 23 horas, e o **Flex é oferecido durante 72 horas**. Se as datas já não se vendem, salta para o contacto 4. |
 | 4 | 7 dias depois | Só com consentimento de marketing | Até 3 casas na mesma região, com capacidade e livres nas mesmas datas, com foto, nome, lugar e ligação. **Sem preço no cartão**: o `priceFrom` do catálogo não é o preço daquelas datas e a unidade (noite ou pessoa) não está confirmada. É o último contacto. |
+
+## Contacto 1 no pagamento
+
+Desde 29 out 2026 (auditoria do funil, n.º 8). A maioria de quem pára no
+pagamento nunca carregou em Pagar, e o texto antigo explicava a desistência
+com "um cartão recusado, um limite do banco". O email escolhe-se no envio:
+
+- **Houve tentativa de pagar**: o PI do cartão ou da wallet está no intent
+  (o `createCardCharge` só corre depois do clique em Pagar), ou a Stripe tem um
+  PI do PayPal ou do Klarna com o `intentId` na metadata (criado no clique,
+  antes do redirect). Texto de sempre, "Ficou algo por resolver?", com os
+  métodos alternativos. O Klarna só é sugerido quando o total que o checkout
+  cobraria cabe no "Paga em 3" de clientes portugueses (até 1 000 €: o país de
+  faturação vai sempre PT).
+- **Sem tentativa** (também quando a Stripe não responde): "Ficou alguma dúvida
+  antes de reservar?", sem falar de falhas, com o concierge da região a um
+  toque (WhatsApp) e, por baixo do total, duas linhas: o cancelamento gratuito
+  da tarifa com a data (só se ainda houver prazo; nunca na não reembolsável) e
+  "ou em duas partes: X hoje e Y a <data>, no mesmo cartão", calculado no envio
+  com a mesma função do ecrã do checkout. A linha das duas partes só sai se os
+  valores somarem o total do cartão do email (com extras pagos, que o cartão
+  não mostra, não sai).
 
 ## O incentivo: Flex oferecido
 

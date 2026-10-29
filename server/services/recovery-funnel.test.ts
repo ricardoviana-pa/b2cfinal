@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { nextRecoveryStage, isRecoveryHoldout, flexGiftActive, calendarScarcity, hasEnoughLeadTime, RECOVERY_TIMING } from "./recovery-funnel";
+import {
+  nextRecoveryStage, isRecoveryHoldout, flexGiftActive, calendarScarcity, hasEnoughLeadTime, RECOVERY_TIMING,
+  klarnaCanPay, KLARNA_MAX_CENTS,
+} from "./recovery-funnel";
 import { computeChargeBreakdown } from "./checkout-pricing";
 
 const H = 3_600_000;
@@ -50,5 +53,22 @@ describe("regras do funil de recuperação", () => {
     const day = 86_400_000;
     expect(hasEnoughLeadTime(new Date(Date.now() + 10 * day).toISOString().slice(0, 10))).toBe(true);
     expect(hasEnoughLeadTime(new Date(Date.now() + day).toISOString().slice(0, 10))).toBe(false);
+  });
+});
+
+describe("Klarna: limite do Paga em 3 para clientes PT", () => {
+  it("até 1 000 € inclusive, sim; acima, não", () => {
+    expect(KLARNA_MAX_CENTS).toBe(100_000);
+    expect(klarnaCanPay(99_900)).toBe(true);
+    expect(klarnaCanPay(100_000)).toBe(true);
+    expect(klarnaCanPay(100_001)).toBe(false);
+    expect(klarnaCanPay(250_000)).toBe(false);
+  });
+  it("sem total conhecido (ou inválido), não se sugere", () => {
+    expect(klarnaCanPay(null)).toBe(false);
+    expect(klarnaCanPay(undefined)).toBe(false);
+    expect(klarnaCanPay(0)).toBe(false);
+    expect(klarnaCanPay(Number.NaN)).toBe(false);
+    expect(klarnaCanPay(500.5)).toBe(false);
   });
 });

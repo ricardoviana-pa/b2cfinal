@@ -277,6 +277,30 @@ export async function findSucceededPaymentIntentByIntentId(
 }
 
 /**
+ * O hóspede chegou a carregar em Pagar neste checkout? Procura na conta da
+ * PLATAFORMA os PIs com o intentId na metadata: cartão e wallets (card_v2,
+ * criados pelo createCardCharge depois do clique) e PayPal e Klarna (criados
+ * no clique, antes do redirect, e que não deixam nada no intent). A 2.ª parte
+ * das duas partes não conta: não é uma tentativa do checkout.
+ *
+ * Só lê. A pesquisa da Stripe é eventualmente consistente (cerca de um
+ * minuto): serve para o email de recuperação, que sai uma hora depois.
+ */
+export async function hasCheckoutPaymentAttempt(intentId: string): Promise<boolean> {
+  const stripe = getStripe();
+  const res = await stripe.paymentIntents.search({
+    query: `metadata['intentId']:'${intentId.replace(/['\\]/g, "")}'`,
+    limit: 10,
+  });
+  return res.data.some(
+    (p) =>
+      p.metadata?.intentId === intentId &&
+      p.metadata?.part !== "balance" &&
+      p.metadata?.flow !== "card_v2_balance",
+  );
+}
+
+/**
  * Bloco 4: reembolso parcial no PI original, SEMPRE na conta de plataforma.
  * Idempotente por (PI, sku) via idempotency key do Stripe.
  */
