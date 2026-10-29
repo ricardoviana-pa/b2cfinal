@@ -55,6 +55,13 @@ export const BOOT_QUIET_MS = 90_000;
 const BACKOFF_BASE_MS = 15 * 60_000;
 const BACKOFF_MAX_MS = 12 * HOUR;
 /**
+ * Um calendário que acaba mais de 30 dias antes do fim da janela pedida é
+ * "curto" (verificação de 29 out 2026, Tripwix P1): a Tripwix devolve nove
+ * casas só até 2027-03-04, mesmo pedindo o ano, e a resposta conta como boa.
+ * O site mostra os dias seguintes "a pedido"; o job diz quais são.
+ */
+export const SHORT_CALENDAR_DAYS = 30;
+/**
  * Uma leitura boa volta a escrever a cópia quando a guardada tem mais de 1 h
  * (o intervalo de refresh), mesmo sem mudanças: assim um restart sabe quando
  * cada casa foi mesmo lida. Com 6 h, o processo novo via a hora da última
@@ -93,6 +100,8 @@ type Entry = {
   /** O que está na BD (para não reescrever um calendário igual dentro da hora). */
   persistedSignature: string | null;
   persistedAt: number;
+  /** Último dia de um calendário curto já dito em log por este processo (uma linha por mudança, não por leitura). */
+  shortLogged: string | null;
 };
 
 const entries = new Map<string, Entry>();
@@ -126,7 +135,17 @@ const storeKey = (uid: string) => `${STORE_CAT}_${uid}`;
 const minutes = (ms: number) => Math.max(1, Math.round(ms / 60_000));
 
 function newEntry(): Entry {
-  return { start: "", end: "", days: null, fetchedAt: 0, failures: 0, nextAttemptAt: 0, lastError: null, lastAttemptAt: 0, persistedSignature: null, persistedAt: 0 };
+  return { start: "", end: "", days: null, fetchedAt: 0, failures: 0, nextAttemptAt: 0, lastError: null, lastAttemptAt: 0, persistedSignature: null, persistedAt: 0, shortLogged: null };
+}
+
+/**
+ * O último dia que a Tripwix devolveu, quando acaba mais de SHORT_CALENDAR_DAYS
+ * antes do fim da janela pedida; null quando o calendário cobre a janela.
+ */
+export function shortCalendarEnd(days: readonly TripwixDay[] | null | undefined, windowEnd: string): string | null {
+  if (!days?.length || !validDate(windowEnd)) return null;
+  const last = days[days.length - 1].date;
+  return spanDays(last, windowEnd) > SHORT_CALENDAR_DAYS ? last : null;
 }
 
 /** Preço da noite como número; vazio, zero ou inválido → null (a noite não se cota). */
@@ -465,6 +484,13 @@ export async function refreshTripwixCalendar(uid: string, name?: string): Promis
     e.fetchedAt = Date.now();
     e.lastAttemptAt = e.fetchedAt;
     if (e.failures > 0) console.info(`[Tripwix] calendário de ${label} lido outra vez, depois de ${e.failures} falha(s)`);
+    // Uma leitura boa mas curta: o site mostra os dias seguintes "a pedido",
+    // sem preço. Uma linha quando o último dia muda, não a cada hora.
+    const shortEnd = shortCalendarEnd(outcome.days, end);
+    if (shortEnd && shortEnd !== e.shortLogged) {
+      console.warn(`[Tripwix] calendário de ${label} só tem dias até ${shortEnd} (pedido até ${end}): os dias seguintes ficam "a pedido" no site, sem preço; confirmar com a Tripwix`);
+    }
+    e.shortLogged = shortEnd;
     e.failures = 0;
     e.nextAttemptAt = 0;
     e.lastError = null;
@@ -554,16 +580,20 @@ export function tripwixCalendarSummary(homes: Array<{ uid: string; name?: string
   let stale = 0;
   let toFill = 0;
   const failing: string[] = [];
+  /** Casas com calendário que acaba bem antes do ano pedido (dias seguintes "a pedido" no site). */
+  const short: string[] = [];
   for (const home of homes) {
     const e = entries.get(home.uid);
     if (e?.days && now - e.fetchedAt <= MAX_STALE_MS) {
       withData++;
       if (now - e.fetchedAt > 2 * REFRESH_EVERY_MS) stale++;
+      const shortEnd = shortCalendarEnd(e.days, e.end);
+      if (shortEnd) short.push(`${home.name ?? home.uid} (até ${shortEnd})`);
     }
     if (needsFill(home.uid, now)) toFill++;
     if (e && e.failures > 0) failing.push(`${home.name ?? home.uid} (${e.lastError}; ${e.failures}×)`);
   }
-  return { total: homes.length, withData, stale, toFill, failing, readsLastHour: tripwixReadsInLastHour(), throttledUntil };
+  return { total: homes.length, withData, stale, toFill, failing, short, readsLastHour: tripwixReadsInLastHour(), throttledUntil };
 }
 
 /* ════════════════════════════════════════════════════════════════

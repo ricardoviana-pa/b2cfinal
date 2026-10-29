@@ -85,6 +85,34 @@ export function classifyOwnQuote(q) {
   return { bucket: 'fallback', detail: q.fallbackMessage || q.source || 'sem preço live' };
 }
 
+/** O calendário de uma parceira tem de chegar pelo menos até hoje + 330 dias para não ser "curto". */
+export const PARTNER_CALENDAR_MIN_DAYS = 330;
+
+/**
+ * Até onde chega o calendário de uma casa parceira (booking.partnerCalendar,
+ * hoje → hoje + 365). Verificação de produção, 29 out 2026 (Tripwix P1):
+ * nove casas param a 2027-03-04 e a quote de teste (uma estadia daqui a ~7
+ * semanas) nunca o mostrava. O servidor devolve "unknown" nos dias que a
+ * Tripwix não publicou (e um servidor antigo simplesmente não os devolve):
+ *   none   sem calendário (null, ou nenhum dia publicado)
+ *   short  o 1.º dia não publicado vem antes de hoje + 330 dias
+ *   full   publicado até ao fim (ou quase) da janela
+ */
+export function partnerCalendarHorizon(days, today) {
+  if (!Array.isArray(days)) return { status: 'none', detail: 'sem calendário (null)' };
+  const known = new Map(days.filter((d) => d && typeof d.date === 'string' && d.status !== 'unknown').map((d) => [d.date, d]));
+  if (!known.size) return { status: 'none', detail: 'nenhum dia publicado pela Tripwix' };
+  const limit = Date.parse(`${today}T00:00:00Z`) + PARTNER_CALENDAR_MIN_DAYS * 86400000;
+  for (let t = Date.parse(`${today}T00:00:00Z`); t <= limit; t += 86400000) {
+    const date = new Date(t).toISOString().slice(0, 10);
+    if (!known.has(date)) {
+      const last = [...known.keys()].filter((d) => d < date).sort().at(-1) ?? null;
+      return { status: 'short', firstUnknown: date, lastKnown: last, detail: `só até ${last ?? '—'}; a partir de ${date} "a pedido"` };
+    }
+  }
+  return { status: 'full' };
+}
+
 /** Quote de uma casa parceira (booking.partnerQuote, calendário guardado pelo job). */
 export function classifyPartnerQuote(q, minNights) {
   if (q === null || q === undefined) return { bucket: 'no-calendar', detail: 'sem calendário da Tripwix (ver logs [Tripwix])' };

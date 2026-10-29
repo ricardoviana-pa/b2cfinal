@@ -390,6 +390,10 @@
     "clearDates": "Clear",
     "availableLabel": "Available",
     "unavailableLabel": "Unavailable",
+    "onRequestLabel": "On request",
+    "onRequestNote": "We cannot show availability or a price online for dates on request. You can still ask for them: our concierge confirms availability and the price.",
+    "onRequestAll": "We cannot show availability or prices online for this home at the moment. You can ask for any dates: our concierge confirms availability and the price.",
+    "calendarLoadError": "We could not load availability just now. You can still ask for any dates: our concierge confirms availability and the price.",
     "confirmDates": "Confirm",
     "tariffInCheckout": "Two rates available. Choose yours in the next step.",
     "reserve": "RESERVE",
@@ -2012,8 +2016,10 @@
     "soFarLabel": "so far",
     "perNight": "per night",
     "pickDates": "Pick your dates for the exact total",
+    "onRequestHint": "Our concierge confirms availability and the price for your dates",
     "minNights": "This home has a {{min}}-night minimum.",
     "quoteError": "We could not price these dates just now. Send the request and the concierge will confirm the total.",
+    "onRequestDates": "We cannot show a price online for these dates. Send the request and our concierge will confirm availability and the total.",
     "total": "Total",
     "totalSoFar": "Total so far",
     "vatIncluded": "VAT included.",
@@ -2149,6 +2155,50 @@
     "toConfirm": "{{count}} to confirm",
     "results": "{{count}} homes",
     "sort": "Sort homes"
+  },
+  "destinationSearch": {
+    "regions": "Regions",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Douro Valley",
+      "silver-coast": "Silver Coast"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} home",
+    "homes_other": "{{count}} homes",
+    "available_one": "{{count}} available",
+    "available_other": "{{count}} available",
+    "toConfirm_one": "including {{count}} to confirm",
+    "toConfirm_other": "including {{count}} to confirm",
+    "unavailable_one": "{{count}} unavailable",
+    "unavailable_other": "{{count}} unavailable",
+    "showHomes_one": "Show {{count}} home",
+    "showHomes_other": "Show {{count}} homes"
+  },
+  "listingWhatsApp": {
+    "intro": "Hello! I'm looking at homes on the Portugal Active website and would like some help choosing.",
+    "introNoMatch": "Hello! I couldn't find a home that matches what I'm looking for on the Portugal Active website. Can you help?",
+    "introNoAvailability": "Hello! I couldn't find a home available for my dates on the Portugal Active website. Can you help?",
+    "destination": "Destination: {{place}}",
+    "collection": "Collection: {{name}}",
+    "dates": "Dates: {{from}} → {{to}}",
+    "guests": "Guests: {{count}}",
+    "aria": "Ask our concierge on WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Free cancellation on refundable rates paid online, until the date shown before you pay",
+    "whatsapp": "Questions? Ask our concierge on WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} home",
+    "kicker_other": "{{name}} · {{count}} homes",
+    "title": "Choose your home",
+    "viewAll_one": "See {{count}} home",
+    "viewAll_other": "See all {{count}} homes"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Written in {{language}}"
   },
   "pdpUx": {
     "navigation": "Explore this home",

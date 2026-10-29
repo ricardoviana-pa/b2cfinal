@@ -5,6 +5,7 @@ import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
 import type { BookingSelection } from './BookingWidget';
 import { formatQuotedEur, intlLocale, formatBookingDate } from '@/lib/format';
+import { partnerCalendarView, partnerQuoteNotice, partnerRequestQuoteStatus } from '@/lib/partnerAvailability';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import { useDateRangePicker } from './useDateRangePicker';
 import PhoneInput from './PhoneInput';
@@ -95,15 +96,31 @@ export function PartnerBookingPanel({
     return { startDate: start.toISOString().slice(0, 10), endDate: end.toISOString().slice(0, 10) };
   }, []);
 
-  const { data: calendarDays, isLoading: calendarLoading } = trpc.booking.partnerCalendar.useQuery(
+  // Also read once dates are set (a dated search): when a stay has no price,
+  // the calendar says why — dates on request, or booked. One retry: the
+  // answer comes from the server's memory (never Tripwix), and a single
+  // failed read used to stay for the whole visit (15-min cache, no refetch).
+  const {
+    data: calendarDays, isLoading: calendarLoading, isError: calendarError, refetch: refetchCalendar,
+  } = trpc.booking.partnerCalendar.useQuery(
     { tripwixUid, ...calendarRange },
-    { enabled: !!tripwixUid && showCalendar, staleTime: 15 * 60 * 1000, retry: false, refetchOnWindowFocus: false },
+    { enabled: !!tripwixUid && (showCalendar || datesValid), staleTime: 15 * 60 * 1000, retry: 1, refetchOnWindowFocus: false },
+  );
+  // What the calendar draws: a date it does not have is on request, never
+  // free, except after the window on a home whose calendar runs to its end.
+  const calendarView = useMemo(
+    () => partnerCalendarView({ calendar: calendarDays, calendarError, windowEnd: calendarRange.endDate }),
+    [calendarDays, calendarError, calendarRange.endDate],
   );
 
   const { data: quote, isFetching, isError } = trpc.booking.partnerQuote.useQuery(
     { tripwixUid, checkIn, checkOut, guests },
     { enabled: datesValid, staleTime: 15 * 60 * 1000, retry: false, refetchOnWindowFocus: false },
   );
+  const quoteNotice = partnerQuoteNotice({
+    checkIn, checkOut, quote, quoteFetching: isFetching, quoteError: isError,
+    calendar: calendarDays, calendarError, windowEnd: calendarRange.endDate,
+  });
 
   useEffect(() => {
     onSelectionChange?.({ checkIn, checkOut, guests, loading: isFetching,
@@ -169,7 +186,8 @@ export function PartnerBookingPanel({
         message: message.trim() || undefined,
         metadata: {
           locale: lang,
-          quoteStatus: quote?.available ? (quote.feesKnown ? 'complete' : 'partial') : 'unavailable',
+          // No price at all (dates not open yet, or none chosen) is "unknown" for the team, not "unavailable".
+          quoteStatus: partnerRequestQuoteStatus(quote),
           property: propertySlug,
           propertyName,
           checkin: checkIn || '—',
@@ -284,7 +302,12 @@ export function PartnerBookingPanel({
               </span>
             ) : null}
             <p className="text-[11.5px] text-[#806A48] mt-1" style={{ fontWeight: 400 }}>
-              {t('partnerBooking.pickDates', 'Pick your dates for the exact total')}
+              {/* No "from" at all (no calendar, or nothing open in 12 months),
+                  or dates chosen that are on request: picking dates will not
+                  produce a total, so do not promise one. */}
+              {fromPrice === null || quoteNotice === 'on-request'
+                ? t('partnerBooking.onRequestHint', 'Our concierge confirms availability and the price for your dates')
+                : t('partnerBooking.pickDates', 'Pick your dates for the exact total')}
               {fromPrice ? ` · ${t('partnerBooking.vatIncluded')}` : ''}
             </p>
           </>
@@ -340,7 +363,26 @@ export function PartnerBookingPanel({
               ) : (
                 <AvailabilityCalendar
                   singleMonth
-                  days={calendarDays ?? []}
+                  // A date the home has not published (or every date, with no
+                  // calendar) is on request, never free.
+                  days={calendarView.days}
+                  missingStatus={calendarView.missing}
+                  missingUntil={calendarView.missingUntil}
+                  unknownNote={
+                    <>
+                      {t(calendarView.noteKey)}
+                      {/* Its own line: buttons get a 44px touch target. */}
+                      {calendarView.retry && (
+                        <button
+                          type="button"
+                          onClick={() => { void refetchCalendar(); }}
+                          className="flex items-center underline underline-offset-2 text-[#1A1A18] hover:text-black font-medium"
+                        >
+                          {t('bookingWidget.tryAgain', 'Try again')}
+                        </button>
+                      )}
+                    </>
+                  }
                   checkIn={checkIn}
                   checkOut={checkOut}
                   minNights={minNights}
@@ -409,11 +451,32 @@ export function PartnerBookingPanel({
         </div>
 
         <div className="px-5 pt-5 pb-6 space-y-3">
-          {(isError || (!isFetching && quote === null)) && datesValid && (
+          {quoteNotice === 'error' && (
             <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
               <p className="text-red-600 leading-snug text-xs">
                 {t('partnerBooking.quoteError', 'We could not price these dates just now. Send the request and the concierge will confirm the total.')}
+              </p>
+            </div>
+          )}
+
+          {/* Nights on request (not published, or no calendar on the page):
+              not a fault, and not booked — the request goes to the concierge,
+              who confirms both. Nothing here claims why the price is missing. */}
+          {quoteNotice === 'on-request' && (
+            <div className="flex items-start gap-2.5 p-3 bg-[#F5F1EB] border border-[#E8E4DC]" role="status">
+              <span className="text-[#806A48] text-sm shrink-0 leading-none mt-0.5" aria-hidden="true">i</span>
+              <p className="text-xs text-[#1A1A18] leading-snug">
+                {t('partnerBooking.onRequestDates', 'We cannot show a price online for these dates. Send the request and our concierge will confirm availability and the total.')}
+              </p>
+            </div>
+          )}
+
+          {quoteNotice === 'taken' && (
+            <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
+              <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
+              <p className="text-xs text-amber-800 font-medium leading-snug">
+                {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
               </p>
             </div>
           )}

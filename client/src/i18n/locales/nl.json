@@ -390,6 +390,10 @@
     "clearDates": "Wissen",
     "availableLabel": "Beschikbaar",
     "unavailableLabel": "Niet beschikbaar",
+    "onRequestLabel": "Op aanvraag",
+    "onRequestNote": "Voor data op aanvraag kunnen we beschikbaarheid en prijs niet online tonen. U kunt ze toch aanvragen: onze concierge bevestigt beschikbaarheid en prijs.",
+    "onRequestAll": "Beschikbaarheid en prijzen van dit huis kunnen we op dit moment niet online tonen. U kunt elke gewenste datum aanvragen: onze concierge bevestigt beschikbaarheid en prijs.",
+    "calendarLoadError": "We konden de beschikbaarheid nu niet laden. U kunt toch elke gewenste datum aanvragen: onze concierge bevestigt beschikbaarheid en prijs.",
     "confirmDates": "Bevestigen",
     "tariffInCheckout": "Twee tarieven beschikbaar. Kies het uwe in de volgende stap.",
     "reserve": "RESERVEREN",
@@ -2012,8 +2016,10 @@
     "soFarLabel": "tot nu toe",
     "perNight": "per nacht",
     "pickDates": "Kies uw data voor het exacte totaal",
+    "onRequestHint": "Onze concierge bevestigt beschikbaarheid en prijs voor uw data",
     "minNights": "Dit huis vraagt minimaal {{min}} nachten.",
     "quoteError": "We konden deze data nu niet berekenen. Stuur de aanvraag; de concierge bevestigt het totaal.",
+    "onRequestDates": "Voor deze data kunnen we online geen prijs tonen. Stuur de aanvraag en onze concierge bevestigt beschikbaarheid en het totaal.",
     "total": "Totaal",
     "totalSoFar": "Totaal tot nu toe",
     "vatIncluded": "Inclusief btw.",
@@ -2149,6 +2155,50 @@
     "toConfirm": "{{count}} te bevestigen",
     "results": "{{count}} woningen",
     "sort": "Woningen sorteren"
+  },
+  "destinationSearch": {
+    "regions": "Regio’s",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Dourovallei",
+      "silver-coast": "Zilverkust"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} woning",
+    "homes_other": "{{count}} woningen",
+    "available_one": "{{count}} beschikbaar",
+    "available_other": "{{count}} beschikbaar",
+    "toConfirm_one": "waarvan {{count}} nog te bevestigen",
+    "toConfirm_other": "waarvan {{count}} nog te bevestigen",
+    "unavailable_one": "{{count}} niet beschikbaar",
+    "unavailable_other": "{{count}} niet beschikbaar",
+    "showHomes_one": "Toon {{count}} woning",
+    "showHomes_other": "Toon {{count}} woningen"
+  },
+  "listingWhatsApp": {
+    "intro": "Hallo! Ik bekijk huizen op de website van Portugal Active en zou graag hulp krijgen bij het kiezen.",
+    "introNoMatch": "Hallo! Ik heb op de website van Portugal Active geen huis gevonden dat past bij wat ik zoek. Kunt u mij helpen?",
+    "introNoAvailability": "Hallo! Ik heb op de website van Portugal Active geen huis gevonden dat beschikbaar is op mijn data. Kunt u mij helpen?",
+    "destination": "Bestemming: {{place}}",
+    "collection": "Collectie: {{name}}",
+    "dates": "Data: {{from}} → {{to}}",
+    "guests": "Gasten: {{count}}",
+    "aria": "Onze concierge een bericht sturen via WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Gratis annuleren met online betaalde restitueerbare tarieven, tot de datum die u ziet voordat u betaalt",
+    "whatsapp": "Vragen? Stuur onze concierge een bericht via WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} woning",
+    "kicker_other": "{{name}} · {{count}} woningen",
+    "title": "Kies uw woning",
+    "viewAll_one": "Bekijk {{count}} woning",
+    "viewAll_other": "Bekijk alle {{count}} woningen"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Geschreven in het {{language}}"
   },
   "pdpUx": {
     "navigation": "Ontdek deze woning",
