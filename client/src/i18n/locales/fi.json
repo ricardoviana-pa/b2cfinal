@@ -1940,11 +1940,8 @@
     "conciergeMessage": "Hei, minulla on kysymys varauksestani: {{property}}, saapuminen {{checkIn}}, lähtö {{checkOut}}, vieraita: {{guests}}."
   },
   "host": {
-    "hostedBy": "Isäntinänne Ricardo & Portugal Active -tiimi",
-    "basedIn": "Paikallinen tiimi Viana do Castelossa",
-    "meetUs": "Tutustu meihin",
-    "hostedByName": "Isäntinä {{name}} & Portugal Active -tiimi",
-    "basedInCity": "Paikallinen tiimi: {{city}}"
+    "hostedBy": "Isäntänä Portugal Active",
+    "meetUs": "Tutustu meihin"
   },
   "location": {
     "title": "Sijainti",
