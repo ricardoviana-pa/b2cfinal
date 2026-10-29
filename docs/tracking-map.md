@@ -238,7 +238,11 @@ variáveis DLV `ecommerce.*` da tag "1 - GA4 - Reservation"). Acionador: evento 
   (o Ricardo cola o token: o agente não introduz tokens).
 - **Política de privacidade**: parágrafo `privacy.s3AdsBody` em PT (10/10); traduzido nas
   outras oito línguas a 29/10, tal como o `s2OriginBody` e o `cookiesPage.originBody`
-  (auditoria i18n-copy-05; tradução fiel do PT, por rever pelo advogado).
+  (auditoria i18n-copy-05; tradução fiel do PT, por rever pelo advogado). A frase final
+  ("Sem essa autorização […] não enviamos à Meta nenhum destes dados da reserva") fala só
+  dos dados da reserva desse parágrafo: o `s3Body`, logo antes, diz que o email em hash de
+  quem já ficou connosco ou nos deu o email pode ir para as listas de anúncios da Meta e da
+  Google, com saída a pedido. Um "não enviamos nada à Meta" contradizia-o.
 
 ## 7. Como testar
 

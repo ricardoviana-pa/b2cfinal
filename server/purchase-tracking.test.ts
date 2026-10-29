@@ -139,4 +139,32 @@ describe('política de privacidade: envio à Meta pelo servidor', () => {
     expect(lower).toContain(String(loc.cookieBanner.acceptAll).toLowerCase());
     expect(lower).toContain(String(loc.cookieBanner.essentialOnly).toLowerCase());
   });
+
+  // Revisão do PR #174 (privacy-s3-send-nothing-to-meta-contradiction): o
+  // parágrafo anterior (s3Body) diz que o email em hash de quem já ficou
+  // connosco ou nos deu o email pode seguir para as listas de anúncios da Meta,
+  // com saída a pedido, seja qual for a escolha no aviso de cookies. Por isso a
+  // frase final do s3AdsBody só promete que os dados da reserva descritos nesse
+  // parágrafo ficam de fora; "não enviamos nada à Meta" contradiz o s3Body.
+  const BOOKING_WORD: Record<string, string> = {
+    en: 'booking', pt: 'reserva', fr: 'réservation', es: 'reserva', it: 'prenotazione',
+    de: 'buchung', nl: 'boeking', sv: 'boknings', fi: 'varaus',
+  };
+  const NOTHING_TO_META: Record<string, RegExp> = {
+    en: /\bnothing to meta\b/, pt: /\bnada à meta\b/, fr: /\brien à meta\b/, es: /\bnada a meta\b/,
+    it: /\bnulla a meta\b/, de: /\bnichts an meta\b/, nl: /\bniets naar meta\b/,
+    sv: /\bingenting till meta\b/, fi: /\bmetalle mitään\.$/,
+  };
+  it.each(Object.keys(BOOKING_WORD))('%s: without consent it rules out the booking data, not everything sent to Meta', async (lng) => {
+    const { readFileSync } = await import('node:fs');
+    const loc = JSON.parse(readFileSync(`client/src/i18n/locales/${lng}.json`, 'utf8'));
+    // Premissa: o s3Body continua a nomear a Meta (listas de anúncios).
+    expect(String(loc.privacy.s3Body).toLowerCase()).toContain('meta');
+    const sentences = String(loc.privacy.s3AdsBody).trim().split(/(?<=\.)\s+/);
+    const last = sentences[sentences.length - 1].toLowerCase();
+    expect(last).toContain(String(loc.cookieBanner.essentialOnly).toLowerCase());
+    expect(last).toContain('meta');
+    expect(last, 'a frase final fala dos dados da reserva').toContain(BOOKING_WORD[lng]);
+    expect(last).not.toMatch(NOTHING_TO_META[lng]);
+  });
 });
