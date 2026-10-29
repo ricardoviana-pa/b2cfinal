@@ -1,11 +1,14 @@
 import type { Property, SortOption } from './types';
 import { sortProperties } from './utils';
+import { isSearchRegion } from './destinationSearch';
 
-/** Region choices are distinct from city names; clearing resets both. */
+/** Region choices are distinct from city names; clearing resets both.
+ *  Every region the pickers offer is accepted (douro and silver-coast were
+ *  silently dropped, so "Douro" reset the search to every home). */
 export function parseDestinationSelection(value: string): { destination: string; location: string } {
   if (value.startsWith('region:')) {
     const destination = value.slice(7);
-    return { destination: ['minho', 'porto', 'lisbon', 'alentejo', 'algarve'].includes(destination) ? destination : '', location: '' };
+    return { destination: isSearchRegion(destination) ? destination : '', location: '' };
   }
   return { destination: '', location: value };
 }
@@ -77,13 +80,53 @@ export function addSearchDays(iso: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
+/**
+ * The `guests` a search writes into the listing URL: the party the guest
+ * chose, a party of 1 included; nothing while the picker still shows its
+ * default (`chosen` false, or 0). The listing quotes for the URL's party, or
+ * 2 when it has none (listingQuoteGuests), so dropping a chosen 1 — the old
+ * `guests > 1` — left a solo search quoted for 2 with the stepper reading
+ * «1 guests», and Search did nothing (revisão 2 do PR #175).
+ */
+export function searchGuestsParam(guests: number, chosen = true): string | null {
+  return chosen && Number.isFinite(guests) && guests >= 1 ? String(Math.floor(guests)) : null;
+}
+
+/** Homepage search → listing URL. `destination` is the picker value: a
+ *  municipality, or `region:<slug>` for a whole region. `guests` is only
+ *  written when the guest chose it (pass 0 otherwise): a default "2" in the
+ *  URL turned into a "2+ guests" filter nobody had set. */
 export function buildHomeSearchPath({ destination, checkin, checkout, guests }: {
   destination: string; checkin: string; checkout: string; guests: number;
 }): string {
   const params = new URLSearchParams();
-  if (destination) params.set('location', destination);
+  const pick = parseDestinationSelection(destination);
+  if (pick.destination) params.set('destination', pick.destination);
+  else if (pick.location) params.set('location', pick.location);
   if (checkin) params.set('checkin', checkin);
   if (checkout) params.set('checkout', checkout);
-  if (guests > 1) params.set('guests', String(guests));
+  const party = searchGuestsParam(guests);
+  if (party) params.set('guests', party);
   return `/homes${params.size ? `?${params}` : ''}`;
+}
+
+/** Party size a listing search is priced for when the URL has none. */
+export const DEFAULT_QUOTE_GUESTS = 2;
+
+/**
+ * The party the listing quotes for (Guesty search, partner quotes, search
+ * hint): the one in the URL, i.e. the search the guest submitted, else 2.
+ * Never the picker's unsubmitted value: with no guests in the URL — what a
+ * homepage search now sends by default — each tap on the stepper re-ran all
+ * three requests before the guest pressed Search, while the URL and the
+ * chips stayed the same (revisão do PR #175, R1; ux-home-plp-10).
+ */
+export function listingQuoteGuests(urlGuests: number): number {
+  return Number.isFinite(urlGuests) && urlGuests > 0 ? urlGuests : DEFAULT_QUOTE_GUESTS;
+}
+
+/** The search (dates + quoted party) a set of listing quotes answers.
+ *  `guests` is the URL's party (0 when it names none). */
+export function listingQuotesKey(checkin: string, checkout: string, guests: number): string {
+  return `${checkin}|${checkout}|${listingQuoteGuests(guests)}`;
 }

@@ -47,7 +47,8 @@ export interface RenderPrefetch {
   /** Result of trpc.properties.listForSite (the full site property list). */
   listForSite?: unknown;
   catalogForSite?: unknown;
-  guestFeedback?: unknown;
+  /** Result of trpc.properties.guestFeedback for the page language (homepage). */
+  guestFeedback?: { input: { locale: string }; data: unknown };
   /** Result of trpc.properties.getBySlugForSite for a single property page. */
   propertyBySlug?: { slug: string; data: unknown };
   /** That home's override for the page's language ({ [guestyId|slug]: fields }),
@@ -119,8 +120,8 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
   // render real content. getQueryKey produces the exact key the client hooks
   // use, so the dehydrated state hydrates cleanly with no key mismatch.
   const pf = opts?.prefetch;
-  if (pf?.guestFeedback !== undefined) {
-    queryClient.setQueryData(getQueryKey(trpc.properties.guestFeedback, undefined, 'query'), pf.guestFeedback);
+  if (pf?.guestFeedback) {
+    queryClient.setQueryData(getQueryKey(trpc.properties.guestFeedback, pf.guestFeedback.input, 'query'), pf.guestFeedback.data);
   }
   if (pf?.catalogForSite !== undefined) {
     queryClient.setQueryData(getQueryKey(trpc.properties.catalogForSite, undefined, 'query'), pf.catalogForSite);

@@ -11,8 +11,9 @@ import { propertyTripHref } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
 import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
+import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import type { Property, Destination } from '@/lib/types';
-import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
+import { getPropertyImages, optimizeGuestyImage, cardSrcSet } from '@/lib/images';
 import { cardImageLoading } from '@/lib/listingImagePriority';
 import destinationsData from '@/data/destinations.json';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
@@ -108,7 +109,7 @@ export default function PropertyCard({
   // into the server HTML by React), while the <img> itself stays lazy so a
   // phone, where they are below the fold, does not fetch them up front.
   if (preloadMedia && !priority) {
-    const srcSet = guestySrcSet(rawImages[0], [400, 640, 768, 1080]);
+    const srcSet = cardSrcSet(rawImages[0]);
     preload(optimizeGuestyImage(rawImages[0], 1080), {
       as: 'image',
       ...(srcSet ? { imageSrcSet: srcSet, imageSizes } : {}),
@@ -125,7 +126,7 @@ export default function PropertyCard({
     [currentImage + 1, currentImage - 1].forEach((i) => {
       const raw = rawImages[(i + total) % total];
       const img = new Image();
-      const srcSet = guestySrcSet(raw, [400, 640, 768, 1080]);
+      const srcSet = cardSrcSet(raw);
       if (srcSet) { img.sizes = imageSizes; img.srcset = srcSet; }
       img.src = optimizeGuestyImage(raw, 1080);
     });
@@ -224,7 +225,7 @@ export default function PropertyCard({
         <img
           key={rawImages[currentImage]}
           src={optimizeGuestyImage(rawImages[currentImage], 1080)}
-          srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}
+          srcSet={cardSrcSet(rawImages[currentImage])}
           alt={t('property.imageAlt', { name: displayName, current: currentImage + 1, total })}
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03]`}
           loading={imgLoading.loading}
@@ -292,14 +293,14 @@ export default function PropertyCard({
       {/* Content */}
       <div className="pt-3.5">
         {/* Location */}
-        <p className="text-[0.6875rem] font-medium tracking-[0.02em] text-[#8B7355] mb-1">
+        <p className="text-[0.6875rem] font-medium tracking-[0.02em] text-pa-gold-aa mb-1">
           {property.locality}, Portugal
         </p>
 
         {/* Name + specs — the detail icons sit to the right of the name on
             every card (single and multi-unit), so the row reads consistently. */}
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-[1.0625rem] font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors leading-tight flex-1 min-w-0">
+          <h3 className="text-[1.0625rem] font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors leading-tight flex-1 min-w-0">
             {displayName}
           </h3>
           <div className="flex items-center gap-2.5 text-[0.8125rem] text-[#6B6860] shrink-0 pt-1">
@@ -394,7 +395,10 @@ export default function PropertyCard({
                     </span>
                   );
                 }
-                return <span className="text-[#726D63] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
+                // A partner home with no "from" (no calendar, or nothing open
+                // in 12 months): picking dates will not price it either, so
+                // "select dates for price" would be a false promise.
+                return <span className="text-[#726D63] text-[0.8125rem]">{t(noPriceLabelKey(isPartner, fromPrice))}</span>;
               })()}
               {hasPartnerPrice && (
                 <p className="text-[0.6875rem] text-[#726D63] mt-1 leading-relaxed">

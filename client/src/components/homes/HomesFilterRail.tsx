@@ -7,7 +7,7 @@
  * pills; the cards below are the colour. Mobile folds the same panels into
  * a bottom sheet with a live "Show N homes" button.
  */
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowUpDown, Check, ChevronDown, LayoutGrid, Map as MapIcon, SlidersHorizontal, X } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -27,7 +27,12 @@ export interface HomesFilterRailProps {
   /** "Sleeps at least" (the `guests` query param). 0 = any. */
   guests: number;
   counts: FacetCounts;
+  /** Short count ("63 available", "85 homes"): the only part that sits on the rule. */
   resultLabel: ReactNode;
+  /** The rest of a dated search ("including 27 to confirm · 12 unavailable"), on its own line under the rule. */
+  resultDetail?: string;
+  /** The whole status as one sentence, for screen readers. Defaults to resultLabel. */
+  resultFull?: ReactNode;
   pending?: boolean;
   activeCount: number;
   view: CatalogueView;
@@ -45,6 +50,22 @@ export interface HomesFilterRailProps {
 }
 
 const dim = (count: number) => (count === 0 ? 'opacity-40' : '');
+
+/**
+ * Where keyboard focus goes when the Filters sheet closes: back to the
+ * Filters button. The sheet opens with `autoFocus` (vaul defaults it to
+ * false and then cancels Radix's open focus, so the focus trap never started:
+ * Tab walked the page hidden behind the sheet, 150+ presses before an option —
+ * revisão 2 do PR #175). Focus now moves into the sheet; and since the button
+ * is not a DrawerTrigger, Radix has no trigger to give it back to on Esc or
+ * "Show N homes" — it fell to <body>.
+ */
+export function returnFocusTo(target: RefObject<HTMLElement | null>) {
+  return (event: Event) => {
+    event.preventDefault();
+    target.current?.focus({ preventScroll: true });
+  };
+}
 
 /* ───────────── small parts ───────────── */
 
@@ -95,7 +116,7 @@ function MenuTrigger({ label, value, open }: { label: string; value?: string | n
 function Section({ title, children, first }: { title: string; children: ReactNode; first?: boolean }) {
   return (
     <div className={`px-5 py-4 ${first ? '' : 'border-t border-pa-sand'}`}>
-      <p className="eyebrow mb-3">{title}</p>
+      <p className="eyebrow text-pa-gold-aa mb-3">{title}</p>
       {children}
     </div>
   );
@@ -129,7 +150,10 @@ function OptionRow({ label, count, selected, onClick, box }: {
   );
 }
 
-/** A row of equal cells on one rule: the right shape for a short numeric scale. */
+/** A row of equal cells on one rule: the right shape for a short numeric scale.
+ *  The keyboard ring is drawn inside each cell: the row's overflow-hidden
+ *  (for its rounded corners) clipped the site's outer ring, so a keyboard
+ *  user could not see which cell had focus. */
 function Strip<T extends string | number>({ options, value, onChange }: {
   options: { value: T; label: string; count: number }[]; value: T; onChange: (v: T) => void;
 }) {
@@ -143,7 +167,7 @@ function Strip<T extends string | number>({ options, value, onChange }: {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(o.value)}
-            className={`flex flex-col items-center justify-center h-12 font-body transition-colors ${
+            className={`flex flex-col items-center justify-center h-12 font-body transition-colors focus-visible:outline-offset-[-3px] ${
               active ? 'bg-pa-dark text-white' : `bg-white text-pa-dark hover:bg-pa-warm ${dim(o.count)}`
             }`}
           >
@@ -163,7 +187,7 @@ function ViewSwitch({ value, onChange, compact }: { value: CatalogueView; onChan
     { v: 'map', icon: MapIcon, label: t('homes.filters.map', 'Map') },
   ];
   return (
-    <div role="group" aria-label={t('homes.filters.view', 'View')} className="inline-flex items-center rounded-full border border-pa-sand bg-white p-0.5">
+    <div role="group" aria-label={t('homes.filters.view', 'View')} className="inline-flex shrink-0 items-center rounded-full border border-pa-sand bg-white p-0.5">
       {items.map(({ v, icon: Icon, label }) => {
         const active = value === v;
         return (
@@ -261,9 +285,10 @@ function SortPanel({ facets, sortOptions, onSort, first }: Pick<HomesFilterRailP
 /* ───────────── the rail ───────────── */
 
 export default function HomesFilterRail(props: HomesFilterRailProps) {
-  const { facets, guests, counts, resultLabel, pending, activeCount, view, onView, sortOptions, onKind, onClearAll, tokens } = props;
+  const { facets, guests, counts, resultLabel, resultDetail, resultFull, pending, activeCount, view, onView, sortOptions, onKind, onClearAll, tokens } = props;
   const { t, bedroomLabel, budgetLabel, featureLabel } = usePanelCopy();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const filtersButton = useRef<HTMLButtonElement>(null);
   const [openMenu, setOpenMenu] = useState<'space' | 'price' | 'features' | 'sort' | null>(null);
 
   const spaceValue = [
@@ -304,17 +329,28 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
     </div>
   );
 
-  const status = (
-    <span className="inline-flex items-center gap-2 font-body text-[13px] text-pa-stone-aa whitespace-nowrap" role="status">
-      {pending && <span aria-hidden className="w-3 h-3 rounded-full border-2 border-pa-gold border-t-transparent animate-spin" />}
-      {resultLabel}
+  const spinner = pending && <span aria-hidden className="w-3 h-3 shrink-0 rounded-full border-2 border-pa-gold border-t-transparent animate-spin" />;
+  // The rule carries the short count only; a dated search's detail goes on
+  // the line under it. Screen readers get the whole sentence once.
+  // #726D63 (pa-stone): pa-stone-aa (#78756F) is 4.39:1 on the cream rail.
+  const status = (className: string) => (
+    <span className={`items-center gap-2 font-body text-[13px] text-pa-stone ${className}`} role="status">
+      {spinner}
+      <span aria-hidden className="truncate">{resultLabel}</span>
+      <span className="sr-only">{resultFull ?? resultLabel}</span>
     </span>
   );
+  const detail = (testId: string, className: string) => resultDetail ? (
+    <p aria-hidden data-testid={testId} className={`font-body text-[12px] leading-snug text-pa-stone text-right first-letter:uppercase ${className}`}>
+      {resultDetail}
+    </p>
+  ) : null;
 
   return (
     <div data-testid="plp-filters">
-      {/* Desktop and tablet: one rule, everything on it. */}
-      <div className="hidden md:block border-y border-pa-sand">
+      {/* Desktop: one rule, everything on it. From 1280 px: on narrower screens the
+          rule ran past the screen edge and hid Map (ux-home-plp-09). */}
+      <div className="hidden xl:block border-y border-pa-sand">
         <div className="flex items-stretch gap-x-7 min-h-[52px]">
           <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="gap-x-6" />
           <div className="flex items-stretch gap-x-6 pl-7 border-l border-pa-sand">
@@ -322,32 +358,55 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
             {menu('price', t('homes.filters.price', 'Price'), priceValue, <PricePanel {...props} first />)}
             {menu('features', t('homes.filters.features', 'Features'), featuresValue, <FeaturesPanel {...props} first />)}
           </div>
-          <div className="ml-auto flex items-center gap-x-5">
-            {status}
-            <span aria-hidden className="h-4 w-px bg-pa-sand" />
+          <div className="ml-auto flex min-w-0 items-center gap-x-5">
+            {status('inline-flex min-w-0 whitespace-nowrap')}
+            <span aria-hidden className="h-4 w-px shrink-0 bg-pa-sand" />
             {menu('sort', t('homes.filters.sort', 'Sort'), null, <SortPanel {...props} first />, 'end')}
             <ViewSwitch value={view} onChange={onView} />
           </div>
         </div>
       </div>
-      <div className="hidden md:block">{trail}</div>
+      {(trail || resultDetail) && (
+        <div className="hidden xl:flex items-start justify-between gap-x-6">
+          <div className="min-w-0">{trail}</div>
+          {detail('plp-status-detail-wide', 'shrink-0 py-2.5')}
+        </div>
+      )}
 
-      {/* Phone: the type switch on its own rule, then filters · count · view. */}
-      <div className="md:hidden">
-        <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="justify-between border-y border-pa-sand h-11 [&>button]:px-0" />
-        <div className="flex items-center justify-between gap-3 h-12 border-b border-pa-sand">
-          <button type="button" onClick={() => setSheetOpen(true)} className="inline-flex items-center gap-2 h-full font-body text-[13px] text-pa-dark">
-            <SlidersHorizontal className="w-4 h-4" />
+      {/* Phone and tablet: the type switch on its own rule, then filters ·
+          count · view. Filters and the view switch never shrink; the count
+          takes what is left (short form) and a dated search's detail goes on
+          its own line — at 360–414 px the long status pushed Map off-screen
+          and slid under the Filters badge (ux-home-plp-09).
+          The row is 52 px: the List/Map pill is 50 (two 44 px touch targets,
+          its padding and border). At 48 px with the detail pulled up under
+          it, the pill's edge ran through «· 9 unavailable» and the line took
+          the taps on the bottom of Map and Filters (revisão 2 do PR #175). */}
+      <div className="xl:hidden">
+        <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="justify-between md:justify-start md:gap-x-10 border-y border-pa-sand h-11 [&>button]:px-0" />
+        <div className={`flex items-center gap-3 h-[52px] ${resultDetail ? '' : 'border-b border-pa-sand'}`}>
+          <button
+            ref={filtersButton}
+            type="button"
+            onClick={() => setSheetOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={sheetOpen}
+            className="inline-flex shrink-0 items-center gap-2 h-full font-body text-[13px] text-pa-dark"
+          >
+            <SlidersHorizontal className="w-4 h-4 shrink-0" />
             <span>{t('conversion.filters', 'Filters')}</span>
             {activeCount > 0 && <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-pa-dark px-1 text-[10px] font-medium text-white">{activeCount}</span>}
           </button>
-          {status}
+          {status('flex min-w-0 flex-1 justify-end')}
           <ViewSwitch value={view} onChange={onView} compact />
         </div>
+        {detail('plp-status-detail', 'pb-2 border-b border-pa-sand')}
         {trail}
 
-        <Drawer open={sheetOpen} onOpenChange={setSheetOpen}>
-          <DrawerContent className="bg-pa-cream max-h-[90dvh] rounded-t-2xl">
+        {/* autoFocus: focus moves into the sheet and stays there (Radix's trap);
+            on close it returns to «Filters» (returnFocusTo). */}
+        <Drawer open={sheetOpen} onOpenChange={setSheetOpen} autoFocus>
+          <DrawerContent className="bg-pa-cream max-h-[90dvh] rounded-t-2xl" onCloseAutoFocus={returnFocusTo(filtersButton)}>
             <div className="px-5 pt-2 pb-2">
               <DrawerTitle className="font-display text-2xl font-normal text-pa-dark text-left">{t('conversion.filters', 'Filters')}</DrawerTitle>
               <DrawerDescription className="caption text-left mt-0.5">{t('conversion.filterIntro')}</DrawerDescription>
@@ -363,7 +422,7 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
                 {t('homes.filters.clearAll', 'Clear all')}
               </button>
               <button type="button" onClick={() => setSheetOpen(false)} className="btn-primary min-h-11">
-                {t('filters.showHomes', { count: counts.kind[facets.kind] })}
+                {t('listingRail.showHomes', { count: counts.kind[facets.kind] })}
               </button>
             </div>
           </DrawerContent>

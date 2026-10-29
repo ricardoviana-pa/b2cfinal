@@ -118,12 +118,57 @@ export async function getTripwixLowestNightly(uid: string, minNights = 1): Promi
   return value;
 }
 
-export async function getPartnerCalendar(uid: string, startDate: string, endDate: string) {
+/**
+ * Um dia do calendário da PDP de uma casa parceira. 'unknown' = a Tripwix não
+ * publicou este dia: nem livre nem ocupado, "a pedido" (sem preço).
+ */
+export type PartnerCalendarDay = { date: string; status: 'available' | 'unavailable' | 'unknown'; price?: number };
+
+/** A janela mais longa que o calendário da PDP serve (a mesma de readTripwixCalendar). */
+const MAX_CALENDAR_SPAN_DAYS = 400;
+
+/**
+ * Cada dia de `start` a `end` (inclusive), para o calendário da PDP.
+ *
+ * Verificação em produção, 29 out 2026 (Tripwix P1/P2): o calendário só
+ * trazia os dias que a Tripwix devolveu, e o site desenhava os que faltavam
+ * como livres. Nove casas param a 2027-03-04 (a Tripwix não devolve mais
+ * nada para elas, mesmo pedindo o ano) e quatro não têm calendário nenhum:
+ * meses inteiros apareciam abertos e, escolhidos, davam "não foi possível
+ * calcular o preço". Agora cada dia que a Tripwix não devolveu (depois do
+ * último que publicou, num buraco, ou numa data repetida) vem 'unknown', sem
+ * preço — nunca 'available'. Os dias devolvidos mantêm a regra de sempre:
+ * livre só com preço válido.
+ */
+export function partnerCalendarDays(days: readonly TripwixDay[] | null | undefined, start: string, end: string): PartnerCalendarDay[] {
+  if (!validDate(start) || !validDate(end) || end < start) return [];
+  if ((Date.parse(end) - Date.parse(start)) / 86_400_000 > MAX_CALENDAR_SPAN_DAYS) return [];
+  const byDate = new Map<string, TripwixDay | null>();
+  for (const d of days ?? []) byDate.set(d.date, byDate.has(d.date) ? null : d);
+  const out: PartnerCalendarDay[] = [];
+  for (let date = start; date <= end; date = addDays(date, 1)) {
+    const d = byDate.get(date);
+    if (!d) {
+      out.push({ date, status: 'unknown' });
+      continue;
+    }
+    const net = Number(d.price);
+    out.push(Number.isFinite(net) && net > 0
+      ? { date, status: d.status === 'available' ? 'available' : 'unavailable', price: partnerGuestPrice(net) }
+      : { date, status: 'unavailable' });
+  }
+  return out;
+}
+
+/**
+ * O calendário da PDP de uma casa parceira, dia a dia (ver partnerCalendarDays).
+ * null = não há calendário desta casa (o job ainda não a leu, a Tripwix falha
+ * para ela, ou a última leitura boa tem mais de 48 h): o painel mostra todas
+ * as datas "a pedido".
+ */
+export async function getPartnerCalendar(uid: string, startDate: string, endDate: string): Promise<PartnerCalendarDay[] | null> {
   const snapshot = await readTripwixCalendar(uid, startDate, endDate, { partial: true });
-  return snapshot?.days.map(d => ({ date: d.date,
-    status: d.status === 'available' && Number(d.price) > 0 ? 'available' : 'unavailable',
-    price: Number(d.price) > 0 ? partnerGuestPrice(Number(d.price)) : undefined,
-  })) ?? null;
+  return snapshot ? partnerCalendarDays(snapshot.days, startDate, endDate) : null;
 }
 
 /**

@@ -80,7 +80,10 @@ describe('homepage search submission', () => {
     expect(new URL(buildHomeSearchPath({ destination: 'Caminhã', checkin: '', checkout: '', guests: 2 }), 'https://example.test').searchParams.get('location')).toBe('Caminhã');
   });
   it('permits flexible-date browsing without empty parameters', () => {
-    expect(buildHomeSearchPath({ destination: '', checkin: '', checkout: '', guests: 1 })).toBe('/homes');
+    // 0 = the guest chose no party (HeroSearch: guestsChosen ? guests : 0).
+    // A chosen 1 is a real search for one person (revisão 2 do PR #175).
+    expect(buildHomeSearchPath({ destination: '', checkin: '', checkout: '', guests: 0 })).toBe('/homes');
+    expect(buildHomeSearchPath({ destination: '', checkin: '', checkout: '', guests: 1 })).toBe('/homes?guests=1');
   });
   it('advances correctly through DST, year end and leap day', () => {
     expect(addSearchDays('2026-10-24', 2)).toBe('2026-10-26');
