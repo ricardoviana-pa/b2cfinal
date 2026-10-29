@@ -7,7 +7,7 @@
  * pills; the cards below are the colour. Mobile folds the same panels into
  * a bottom sheet with a live "Show N homes" button.
  */
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowUpDown, Check, ChevronDown, LayoutGrid, Map as MapIcon, SlidersHorizontal, X } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -50,6 +50,22 @@ export interface HomesFilterRailProps {
 }
 
 const dim = (count: number) => (count === 0 ? 'opacity-40' : '');
+
+/**
+ * Where keyboard focus goes when the Filters sheet closes: back to the
+ * Filters button. The sheet opens with `autoFocus` (vaul defaults it to
+ * false and then cancels Radix's open focus, so the focus trap never started:
+ * Tab walked the page hidden behind the sheet, 150+ presses before an option —
+ * revisão 2 do PR #175). Focus now moves into the sheet; and since the button
+ * is not a DrawerTrigger, Radix has no trigger to give it back to on Esc or
+ * "Show N homes" — it fell to <body>.
+ */
+export function returnFocusTo(target: RefObject<HTMLElement | null>) {
+  return (event: Event) => {
+    event.preventDefault();
+    target.current?.focus({ preventScroll: true });
+  };
+}
 
 /* ───────────── small parts ───────────── */
 
@@ -134,7 +150,10 @@ function OptionRow({ label, count, selected, onClick, box }: {
   );
 }
 
-/** A row of equal cells on one rule: the right shape for a short numeric scale. */
+/** A row of equal cells on one rule: the right shape for a short numeric scale.
+ *  The keyboard ring is drawn inside each cell: the row's overflow-hidden
+ *  (for its rounded corners) clipped the site's outer ring, so a keyboard
+ *  user could not see which cell had focus. */
 function Strip<T extends string | number>({ options, value, onChange }: {
   options: { value: T; label: string; count: number }[]; value: T; onChange: (v: T) => void;
 }) {
@@ -148,7 +167,7 @@ function Strip<T extends string | number>({ options, value, onChange }: {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(o.value)}
-            className={`flex flex-col items-center justify-center h-12 font-body transition-colors ${
+            className={`flex flex-col items-center justify-center h-12 font-body transition-colors focus-visible:outline-offset-[-3px] ${
               active ? 'bg-pa-dark text-white' : `bg-white text-pa-dark hover:bg-pa-warm ${dim(o.count)}`
             }`}
           >
@@ -269,6 +288,7 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
   const { facets, guests, counts, resultLabel, resultDetail, resultFull, pending, activeCount, view, onView, sortOptions, onKind, onClearAll, tokens } = props;
   const { t, bedroomLabel, budgetLabel, featureLabel } = usePanelCopy();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const filtersButton = useRef<HTMLButtonElement>(null);
   const [openMenu, setOpenMenu] = useState<'space' | 'price' | 'features' | 'sort' | null>(null);
 
   const spaceValue = [
@@ -357,11 +377,22 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
           count · view. Filters and the view switch never shrink; the count
           takes what is left (short form) and a dated search's detail goes on
           its own line — at 360–414 px the long status pushed Map off-screen
-          and slid under the Filters badge (ux-home-plp-09). */}
+          and slid under the Filters badge (ux-home-plp-09).
+          The row is 52 px: the List/Map pill is 50 (two 44 px touch targets,
+          its padding and border). At 48 px with the detail pulled up under
+          it, the pill's edge ran through «· 9 unavailable» and the line took
+          the taps on the bottom of Map and Filters (revisão 2 do PR #175). */}
       <div className="xl:hidden">
         <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="justify-between md:justify-start md:gap-x-10 border-y border-pa-sand h-11 [&>button]:px-0" />
-        <div className={`flex items-center gap-3 h-12 ${resultDetail ? '' : 'border-b border-pa-sand'}`}>
-          <button type="button" onClick={() => setSheetOpen(true)} className="inline-flex shrink-0 items-center gap-2 h-full font-body text-[13px] text-pa-dark">
+        <div className={`flex items-center gap-3 h-[52px] ${resultDetail ? '' : 'border-b border-pa-sand'}`}>
+          <button
+            ref={filtersButton}
+            type="button"
+            onClick={() => setSheetOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={sheetOpen}
+            className="inline-flex shrink-0 items-center gap-2 h-full font-body text-[13px] text-pa-dark"
+          >
             <SlidersHorizontal className="w-4 h-4 shrink-0" />
             <span>{t('conversion.filters', 'Filters')}</span>
             {activeCount > 0 && <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-pa-dark px-1 text-[10px] font-medium text-white">{activeCount}</span>}
@@ -369,11 +400,13 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
           {status('flex min-w-0 flex-1 justify-end')}
           <ViewSwitch value={view} onChange={onView} compact />
         </div>
-        {detail('plp-status-detail', '-mt-1.5 pb-2 border-b border-pa-sand')}
+        {detail('plp-status-detail', 'pb-2 border-b border-pa-sand')}
         {trail}
 
-        <Drawer open={sheetOpen} onOpenChange={setSheetOpen}>
-          <DrawerContent className="bg-pa-cream max-h-[90dvh] rounded-t-2xl">
+        {/* autoFocus: focus moves into the sheet and stays there (Radix's trap);
+            on close it returns to «Filters» (returnFocusTo). */}
+        <Drawer open={sheetOpen} onOpenChange={setSheetOpen} autoFocus>
+          <DrawerContent className="bg-pa-cream max-h-[90dvh] rounded-t-2xl" onCloseAutoFocus={returnFocusTo(filtersButton)}>
             <div className="px-5 pt-2 pb-2">
               <DrawerTitle className="font-display text-2xl font-normal text-pa-dark text-left">{t('conversion.filters', 'Filters')}</DrawerTitle>
               <DrawerDescription className="caption text-left mt-0.5">{t('conversion.filterIntro')}</DrawerDescription>

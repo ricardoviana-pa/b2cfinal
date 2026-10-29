@@ -1143,7 +1143,7 @@ export default function Homes() {
 
           </div>
           {showMap && (
-            <div className="hidden lg:block lg:sticky lg:top-[calc(5rem+92px+1.25rem)] lg:h-[calc(100dvh-5rem-92px-2.5rem)] xl:top-[calc(5rem+52px+1.25rem)] xl:h-[calc(100dvh-5rem-52px-2.5rem)]">
+            <div className="hidden lg:block lg:sticky lg:top-[calc(5rem+96px+1.25rem)] lg:h-[calc(100dvh-5rem-96px-2.5rem)] xl:top-[calc(5rem+52px+1.25rem)] xl:h-[calc(100dvh-5rem-52px-2.5rem)]">
               <Suspense fallback={<div className="h-full rounded-xl bg-pa-warm animate-pulse" />}>
                 <HomesMap
                   properties={hasDates && !quotesPending ? availableProperties : filtered}
