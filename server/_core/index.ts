@@ -818,6 +818,13 @@ ${allUrls.join("\n")}
       .then(({ startAdSignalsPurge }) => startAdSignalsPurge())
       .catch((e) => console.warn("[AdSignals] limpeza não arrancou:", e?.message ?? e));
 
+    // Casas parceiras (Tripwix): os calendários vêm da BD e de um job a ritmo
+    // fixo (≤ 35 leituras/h; o limite deles é 100/h). Os pedidos dos
+    // hóspedes já não chamam a Tripwix (services/tripwix-calendar.ts).
+    import("../services/tripwix-refresh")
+      .then(({ startTripwixRefresh }) => startTripwixRefresh())
+      .catch((e) => console.warn("[Tripwix] refresh dos calendários não arrancou:", e?.message ?? e));
+
     // Pagamento em duas partes (Fase 2): motor da 2.ª parte e digest diário às
     // 09:00 de Lisboa. O motor só corre com CHECKOUT_BALANCE=true no serviço
     // de produção (canRunBalanceEngine). O digest é agendado no serviço de

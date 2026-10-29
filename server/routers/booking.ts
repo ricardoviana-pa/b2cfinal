@@ -233,9 +233,13 @@ export const bookingRouter = router({
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300');
       const { getPartnerQuote, getTripwixLowestNightly } = await import('../services/tripwix');
+      const { hydrateTripwixCalendars } = await import('../services/tripwix-calendar');
       const { getPropertiesForSite } = await import('../services/properties-store');
       const wanted = new Set(input.uids);
       const properties = (await getPropertiesForSite()).filter((p: any) => p.source === 'tripwix' && p.isActive !== false && wanted.has(p.supplierUid)) as any[];
+      // Calendários em memória (o job refresca-os); a BD é lida numa só consulta
+      // para as casas que este processo ainda não leu, nunca uma por casa.
+      await hydrateTripwixCalendars(properties.map((p) => p.supplierUid));
       const result: Record<string, { from: number | null; quote: Awaited<ReturnType<typeof getPartnerQuote>> }> = {};
       let next = 0;
       await Promise.all(Array.from({ length: Math.min(4, properties.length) }, async () => {
