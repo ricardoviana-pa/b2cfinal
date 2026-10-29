@@ -2,19 +2,38 @@
  * Diagnóstico de saúde das quotes, casa a casa (auditoria set/2026: a Eben
  * Lodge não dava quote live em nenhum teste e ninguém sabia).
  *
- * Percorre o catálogo e pede uma quote real a cada listing, com throttle
- * (1 pedido / 1.5s) para não esgotar o rate limit do Guesty — foi exatamente
- * isso que uma sondagem sem throttle causou em produção a 23 set.
+ * Percorre as casas que o site publica e pede uma quote real a cada uma, com
+ * throttle (1 pedido / 1.5s) para não esgotar o rate limit do Guesty — foi
+ * exatamente isso que uma sondagem sem throttle causou em produção a 23 set.
+ *
+ * Auditoria 29 out 2026 (prices-availability-02):
+ * - As casas vêm de properties.listForSite do HOST (o que o site publica): o
+ *   listing de teste do Guesty fica de fora e entram as casas parceiras.
+ * - Um "sem preço live" (base/estimate) com o calendário fechado nessas
+ *   noites conta como INDISPONÍVEL, não como avaria a corrigir no Guesty.
+ * - As casas parceiras (Tripwix) são cotadas pelo caminho delas
+ *   (booking.partnerQuote): servem o calendário que o job guardou, sem
+ *   chamadas à Tripwix.
  *
  * Uso:
  *   node scripts/quote-health.mjs                        # produção
  *   HOST=https://dev.portugalactive.com node scripts/quote-health.mjs
  *   CHECKIN=2027-01-11 CHECKOUT=2027-01-16 node scripts/quote-health.mjs
+ *   PARTNERS=0 node scripts/quote-health.mjs             # só as nossas casas
  *
- * Casas em "BASE/FALLBACK" de forma consistente = provável configuração em
+ * Casas em "SEM QUOTE LIVE" de forma consistente = provável configuração em
  * falta no Booking Engine (rate plan, listing inativo). Corrigir no Guesty.
  */
 import fs from "node:fs";
+import {
+  calendarClosesStay,
+  classifyOwnQuote,
+  classifyPartnerQuote,
+  isPartnerHome,
+  isQuotableOwnHome,
+  isPublicHome,
+  stayNights,
+} from "./lib/quote-health.mjs";
 
 const HOST = (process.env.HOST || "https://www.portugalactive.com").replace(/\/+$/, "");
 // Janela a ~7 semanas, meio de semana: costuma estar aberta e sem mínimos de época alta
@@ -24,41 +43,103 @@ const iso = (d) => d.toISOString().slice(0, 10);
 const CHECKIN = process.env.CHECKIN || iso(monday);
 const CHECKOUT = process.env.CHECKOUT || iso(new Date(monday.getTime() + 5 * 86400000));
 const THROTTLE_MS = Number(process.env.THROTTLE_MS || 1500);
+const WITH_PARTNERS = process.env.PARTNERS !== "0";
 
-const raw = JSON.parse(fs.readFileSync(new URL("../client/src/data/properties.json", import.meta.url), "utf8"));
-// Casas de portfolio (isPortfolio) são só montra e nunca têm preço online
-const props = (raw.properties || raw).filter((p) => (p.guestyId || p.listingId) && !p.isPortfolio);
+async function trpc(path, input) {
+  const payload = input === undefined ? { 0: { json: null, meta: { values: ["undefined"] } } } : { 0: { json: input } };
+  const r = await fetch(`${HOST}/api/trpc/${path}?batch=1&input=${encodeURIComponent(JSON.stringify(payload))}`);
+  const body = await r.json().catch(() => null);
+  return { status: r.status, data: body?.[0]?.result?.data?.json };
+}
 
-const rows = { live: [], base: [], unavailable: [], error: [] };
-console.log(`Quote health · ${HOST} · ${CHECKIN} → ${CHECKOUT} · ${props.length} casas · ${THROTTLE_MS}ms entre pedidos\n`);
+/** O que o HOST publica; sem resposta, os ficheiros locais com as mesmas exclusões do site. */
+async function loadHomes() {
+  try {
+    const { status, data } = await trpc("properties.listForSite");
+    if (Array.isArray(data) && data.length) return { homes: data.filter(isPublicHome), origin: `${HOST} (listForSite)` };
+    throw new Error(`HTTP ${status}`);
+  } catch (e) {
+    const read = (rel) => {
+      const url = new URL(rel, import.meta.url);
+      return fs.existsSync(url) ? JSON.parse(fs.readFileSync(url, "utf8")) : [];
+    };
+    const own = read("../client/src/data/properties.json");
+    const partner = read("../client/src/data/tripwix-properties.json");
+    console.warn(`listForSite indisponível (${e?.message ?? e}); a usar os ficheiros locais`);
+    return { homes: [...(own.properties || own), ...partner].filter(isPublicHome), origin: "ficheiros locais" };
+  }
+}
 
-for (const p of props) {
+const { homes, origin } = await loadHomes();
+const own = homes.filter(isQuotableOwnHome);
+const partners = WITH_PARTNERS ? homes.filter(isPartnerHome) : [];
+const lastNight = stayNights(CHECKIN, CHECKOUT).at(-1) || CHECKIN;
+
+const rows = { live: [], base: [], unavailable: [], request: [], noCalendar: [], error: [] };
+const mark = { live: ".", unavailable: "u", request: "p", fallback: "F", "no-calendar": "T", error: "E" };
+console.log(`Quote health · ${HOST} · ${CHECKIN} → ${CHECKOUT} · ${own.length} casas nossas + ${partners.length} parceiras (${origin}) · ${THROTTLE_MS}ms entre pedidos\n`);
+
+for (const p of own) {
   const id = p.guestyId || p.listingId;
   const name = String(p.name || id).slice(0, 56);
-  const input = encodeURIComponent(JSON.stringify({ 0: { json: { listingId: id, checkIn: CHECKIN, checkOut: CHECKOUT, guests: 2 } } }));
+  let bucket = "error";
   try {
-    const r = await fetch(`${HOST}/api/trpc/booking.getQuote?batch=1&input=${input}`);
-    const q = (await r.json())?.[0]?.result?.data?.json;
-    if (!q) rows.error.push({ name, detail: `HTTP ${r.status}` });
-    else if (q.available === false) rows.unavailable.push({ name });
-    else if (q.source === "live" || q.source === "cached") rows.live.push({ name, total: q.pricing?.total });
-    else rows.base.push({ name, detail: q.fallbackMessage || q.source });
-    process.stdout.write(q?.source === "live" || q?.source === "cached" ? "." : q?.available === false ? "u" : "F");
+    const { status, data: q } = await trpc("booking.getQuote", { listingId: id, checkIn: CHECKIN, checkOut: CHECKOUT, guests: 2 });
+    const c = q ? classifyOwnQuote(q) : { bucket: "error", detail: `HTTP ${status}` };
+    bucket = c.bucket;
+    if (c.bucket === "fallback") {
+      // Sem preço live: é avaria só se o calendário tiver as noites abertas.
+      await new Promise((res) => setTimeout(res, THROTTLE_MS));
+      const cal = await trpc("booking.getCalendar", { listingId: id, from: CHECKIN, to: CHECKOUT });
+      const why = calendarClosesStay(cal.data?.days, CHECKIN, CHECKOUT);
+      if (why) {
+        bucket = "unavailable";
+        rows.unavailable.push({ name, detail: `${why}; o servidor respondeu "sem preço live"` });
+      } else rows.base.push({ name, detail: c.detail });
+    } else if (c.bucket === "live") rows.live.push({ name, total: c.total });
+    else if (c.bucket === "unavailable") rows.unavailable.push({ name, detail: c.detail });
+    else if (c.bucket === "request") rows.request.push({ name, detail: c.detail });
+    else rows.error.push({ name, detail: c.detail });
   } catch (e) {
     rows.error.push({ name, detail: e?.message });
-    process.stdout.write("E");
   }
+  process.stdout.write(mark[bucket] ?? "?");
   await new Promise((res) => setTimeout(res, THROTTLE_MS));
 }
 
-console.log(`\n\nRESULTADO: live/cached ${rows.live.length} · fallback ${rows.base.length} · indisponíveis ${rows.unavailable.length} · erros ${rows.error.length}\n`);
+if (partners.length) process.stdout.write(" | parceiras: ");
+for (const p of partners) {
+  const name = `${String(p.name || p.supplierUid).slice(0, 48)} (parceira)`;
+  let bucket = "error";
+  try {
+    const { status, data: q } = await trpc("booking.partnerQuote", { tripwixUid: p.supplierUid, checkIn: CHECKIN, checkOut: CHECKOUT, guests: 2 });
+    if (status !== 200) throw new Error(`HTTP ${status}`);
+    const c = classifyPartnerQuote(q, p.minNights);
+    bucket = c.bucket;
+    if (c.bucket === "live") rows.live.push({ name, total: c.total });
+    else if (c.bucket === "unavailable") rows.unavailable.push({ name, detail: c.detail });
+    else rows.noCalendar.push({ name, detail: c.detail });
+  } catch (e) {
+    rows.error.push({ name, detail: e?.message });
+  }
+  process.stdout.write(mark[bucket] ?? "?");
+  await new Promise((res) => setTimeout(res, THROTTLE_MS));
+}
+
+console.log(
+  `\n\nRESULTADO: live/cached ${rows.live.length} · fallback ${rows.base.length} · indisponíveis ${rows.unavailable.length}` +
+  ` · por pedido ${rows.request.length} · parceiras sem calendário ${rows.noCalendar.length} · erros ${rows.error.length}` +
+  ` (noites ${CHECKIN} → ${lastNight})\n`,
+);
 const list = (title, arr) => {
   if (!arr.length) return;
   console.log(title);
   arr.forEach((r) => console.log(`  - ${r.name}${r.detail ? `  (${r.detail})` : ""}`));
   console.log("");
 };
-list("SEM QUOTE LIVE (corrigir no Guesty/BE):", rows.base);
+list("SEM QUOTE LIVE com as noites abertas (corrigir no Guesty/BE):", rows.base);
+list("PARCEIRAS SEM CALENDÁRIO (ver logs [Tripwix] no Render; perguntar à Tripwix se persistir):", rows.noCalendar);
 list("INDISPONÍVEIS nas datas de teste (normal se ocupadas; testar outra janela):", rows.unavailable);
+list("POR PEDIDO nas datas de teste (configuração do Guesty):", rows.request);
 list("ERROS:", rows.error);
-process.exit(rows.base.length || rows.error.length ? 1 : 0);
+process.exit(rows.base.length || rows.noCalendar.length || rows.error.length ? 1 : 0);
