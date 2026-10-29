@@ -31,6 +31,7 @@ vi.mock('../services/properties-store', () => ({ getPropertiesForSite: vi.fn(asy
 ]) }));
 
 import { checkoutRouter } from '../routers/checkout';
+import { consentToSend } from '@/lib/checkoutStay';
 const caller = () => checkoutRouter.createCaller({
   req: { headers: { host: 'checkout.invalid' } }, res: {}, user: null,
 } as any);
@@ -98,6 +99,29 @@ describe('captureLead: o consentimento só muda quando o hóspede o muda', () =>
     expect(fake.demote).toHaveBeenCalledWith(EMAIL);
     await caller().captureLead({ intentId: id, email: EMAIL, consent: true, locale: 'pt' });
     expect(fake.promote).toHaveBeenCalledWith(EMAIL);
+  });
+});
+
+describe('trocar o email no passo 1 não leva o consentimento reposto (revisão do PR #176)', () => {
+  it('o consentimento reposto de um email nunca põe o email novo no segmento de marketing', async () => {
+    const id = await draft();
+    await caller().captureLead({ intentId: id, email: EMAIL, consent: true, locale: 'pt' });
+    fake.consent.mockResolvedValueOnce(true);
+    const restored = (await caller().getIntent({ intentId: id })).newsletterOptIn;
+    expect(restored).toBe(true);
+    // O browser: a caixa veio reposta para EMAIL; o hóspede (um link de
+    // recuperação reencaminhado, um aparelho partilhado) troca o email e
+    // carrega em Continuar sem mexer na caixa.
+    const other = 'other-guest@checkout.invalid';
+    const consent = consentToSend({ checked: restored!, touched: false, restoredFor: EMAIL, email: other });
+    expect(consent).toBeUndefined();
+    fake.lead.mockClear();
+    await caller().captureLead({ intentId: id, email: other, consent, locale: 'pt' });
+    expect(fake.lead).toHaveBeenCalledOnce();
+    expect(fake.lead.mock.calls[0][0]).toMatchObject({
+      email: other, source: 'checkout', metadata: expect.objectContaining({ consent: 'false' }),
+    });
+    expect(fake.promote).not.toHaveBeenCalled();
   });
 });
 

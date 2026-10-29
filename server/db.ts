@@ -1,4 +1,5 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
+import { dbErrorSummary } from "./lib/db-error-log";
 import { ne, eq, desc, asc, and, or, like, sql, inArray, notInArray, isNotNull, isNull, gt, gte, lt, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
@@ -1077,7 +1078,8 @@ export async function checkoutNewsletterConsent(email: string): Promise<boolean 
       .limit(1);
     return rows.length > 0;
   } catch (error) {
-    console.error("[Database] checkoutNewsletterConsent failed:", error);
+    // Sem o email do hóspede: o erro do Drizzle traz os parâmetros da query
+    console.error("[Database] checkoutNewsletterConsent failed:", dbErrorSummary(error));
     return null;
   }
 }

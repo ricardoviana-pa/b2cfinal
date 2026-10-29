@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import fs from "node:fs";
-import { consentToSend, stayContinueAction } from "@/lib/checkoutStay";
+import { consentChecked, consentToSend, stayContinueAction } from "@/lib/checkoutStay";
 import { PAYMENT_MARKS } from "@/components/booking/PaymentMethodsNote";
 
 /**
@@ -47,24 +47,45 @@ describe("o Continuar do passo 1 nunca fica parado", () => {
 });
 
 describe("a caixa de marketing volta como o hóspede a deixou", () => {
+  const ana = "ana@example.com";
+
   it("sem lhe mexer e sem saber como estava, não se envia nada (o servidor não retira o consentimento)", () => {
-    expect(consentToSend({ checked: false, touched: false, restored: false })).toBeUndefined();
+    expect(consentToSend({ checked: false, touched: false, restoredFor: null, email: ana })).toBeUndefined();
+    expect(consentChecked({ checked: false, touched: false, restoredFor: null, email: ana })).toBe(false);
   });
 
-  it("reposta do servidor, envia-se o estado reposto", () => {
-    expect(consentToSend({ checked: true, touched: false, restored: true })).toBe(true);
-    expect(consentToSend({ checked: false, touched: false, restored: true })).toBe(false);
+  it("reposta do servidor para este email, envia-se e mostra-se o estado reposto", () => {
+    expect(consentToSend({ checked: true, touched: false, restoredFor: ana, email: ana })).toBe(true);
+    expect(consentToSend({ checked: false, touched: false, restoredFor: ana, email: ana })).toBe(false);
+    expect(consentChecked({ checked: true, touched: false, restoredFor: ana, email: ana })).toBe(true);
+    // a BD compara sem maiúsculas: o mesmo endereço escrito de outra forma
+    expect(consentToSend({ checked: true, touched: false, restoredFor: ana, email: " Ana@Example.com " })).toBe(true);
+  });
+
+  it("com outro email no campo, o consentimento reposto não passa: nada se envia e a caixa aparece desmarcada (revisão do PR #176)", () => {
+    // um link de recuperação reencaminhado, um aparelho partilhado: o email muda no passo 1
+    const other = { checked: true, touched: false, restoredFor: ana, email: "rui@example.com" };
+    expect(consentToSend(other)).toBeUndefined();
+    expect(consentChecked(other)).toBe(false);
+    // e volta se o email voltar a ser o do consentimento
+    expect(consentChecked({ ...other, email: ana })).toBe(true);
   });
 
   it("mexida pelo hóspede, vence sempre o último estado", () => {
-    expect(consentToSend({ checked: false, touched: true, restored: true })).toBe(false);
-    expect(consentToSend({ checked: true, touched: true, restored: false })).toBe(true);
-    expect(consentToSend({ checked: false, touched: true, restored: false })).toBe(false);
+    expect(consentToSend({ checked: false, touched: true, restoredFor: ana, email: ana })).toBe(false);
+    expect(consentToSend({ checked: true, touched: true, restoredFor: null, email: ana })).toBe(true);
+    expect(consentToSend({ checked: false, touched: true, restoredFor: null, email: ana })).toBe(false);
+    // marcada nesta sessão, com o email que está no campo quando carrega em Continuar
+    expect(consentToSend({ checked: true, touched: true, restoredFor: ana, email: "rui@example.com" })).toBe(true);
+    expect(consentChecked({ checked: true, touched: true, restoredFor: ana, email: "rui@example.com" })).toBe(true);
   });
 
-  it("nunca vem marcada por omissão", () => {
+  it("nunca vem marcada por omissão, e o ecrã usa estas regras", () => {
     const page = read("client/src/pages/checkout/CheckoutPage.tsx");
     expect(page).toMatch(/const \[newsletterOptIn, setNewsletterOptIn\] = useState\(false\);/);
+    expect(page).toMatch(/setConsentRestoredFor\(intent\.email\);/);
+    expect(page).toMatch(/consentToSend\(\{ checked: newsletterOptIn, touched: newsletterTouched, restoredFor: consentRestoredFor, email \}\)/);
+    expect(page).toMatch(/checked=\{consentChecked\(\{ checked: newsletterOptIn, touched: newsletterTouched, restoredFor: consentRestoredFor, email \}\)\}/);
   });
 });
 

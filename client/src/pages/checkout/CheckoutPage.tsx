@@ -41,7 +41,7 @@ import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
 import { phoneIssue, phoneIssueMessage } from "@/lib/phone";
-import { consentToSend, stayContinueAction } from "@/lib/checkoutStay";
+import { consentChecked, consentToSend, stayContinueAction } from "@/lib/checkoutStay";
 import { flexAddsValue, flexExtraDays, flexPriceForPlan } from "@shared/flexValue";
 import { conciergeWhatsAppHref, guestDetailsIssues, walletsUnlocked, type GuestField } from "@/lib/checkoutPayment";
 import { checkTaxId, normalizeTaxId } from "@/lib/taxId";
@@ -258,9 +258,11 @@ export default function CheckoutPage() {
   const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   // Auditoria do funil (n.º 2, crítico): a caixa nunca era reposta e um
   // segundo Continuar mandava consent:false, retirando o hóspede da lista sem
-  // ele mexer. Agora vem do servidor e só se envia o que é conhecido.
+  // ele mexer. Agora vem do servidor e só se envia o que é conhecido — e o
+  // valor reposto só vale para o email para o qual foi lido (revisão do PR
+  // #176: trocar o email no passo 1 não pode levar o consentimento de outro).
   const [newsletterTouched, setNewsletterTouched] = useState(false);
-  const consentRestoredRef = useRef(false);
+  const [consentRestoredFor, setConsentRestoredFor] = useState<string | null>(null);
   // "Continuar" sem email válido: o campo recebe o foco e a dica fica em evidência
   const [emailNudge, setEmailNudge] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -321,11 +323,12 @@ export default function CheckoutPage() {
     setQuoteId(intent.guestyQuoteId ?? null);
     setSelectedRatePlanId(intent.ratePlanId ?? null);
     if (intent.email) setEmail(intent.email);
-    // Consentimento de marketing tal como o hóspede o deixou (null = não se sabe)
+    // Consentimento de marketing tal como o hóspede o deixou (null = não se
+    // sabe), lido para o email do intent e só válido para esse email
     const savedConsent = (intentQuery.data as { newsletterOptIn?: boolean | null } | undefined)?.newsletterOptIn;
-    if (typeof savedConsent === "boolean") {
+    if (typeof savedConsent === "boolean" && intent.email) {
       setNewsletterOptIn(savedConsent);
-      consentRestoredRef.current = true;
+      setConsentRestoredFor(intent.email);
     }
     if (intent.guestFirstName) setFirstName(intent.guestFirstName);
     if (intent.guestLastName) setLastName(intent.guestLastName);
@@ -598,7 +601,7 @@ export default function CheckoutPage() {
     contactSavingRef.current = true;
     try {
       if (!isDemo) {
-        const consent = consentToSend({ checked: newsletterOptIn, touched: newsletterTouched, restored: consentRestoredRef.current });
+        const consent = consentToSend({ checked: newsletterOptIn, touched: newsletterTouched, restoredFor: consentRestoredFor, email });
         const saved = await captureLead.mutateAsync({ intentId: intent.id, email, locale: lang, consent });
         if (!saved.ok) throw new Error("Contact not saved");
       }
@@ -617,7 +620,7 @@ export default function CheckoutPage() {
     }
     setStep("customize");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [intent, email, lang, captureLead, utils, isDemo, newsletterOptIn, newsletterTouched]);
+  }, [intent, email, lang, captureLead, utils, isDemo, newsletterOptIn, newsletterTouched, consentRestoredFor]);
 
   /** O "Continuar" do passo 1 (barra do telemóvel e cartão do email) nunca
    *  fica parado: sem email válido leva ao campo, foca-o e mostra a dica; com
@@ -2050,7 +2053,7 @@ export default function CheckoutPage() {
                 <label className="flex items-start gap-2.5 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={newsletterOptIn}
+                    checked={consentChecked({ checked: newsletterOptIn, touched: newsletterTouched, restoredFor: consentRestoredFor, email })}
                     onChange={(e) => {
                       setNewsletterOptIn(e.target.checked);
                       setNewsletterTouched(true);
