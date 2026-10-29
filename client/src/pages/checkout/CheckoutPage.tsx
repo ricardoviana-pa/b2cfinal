@@ -1606,12 +1606,15 @@ export default function CheckoutPage() {
                           onChange={() => {
                             setSelectedRatePlanId(opt.ratePlanId);
                             syncIntent({ ratePlanId: opt.ratePlanId });
-                            pushDL({
-                              event: "rate_plan_selected",
-                              rate_plan: nonRef ? "non_refundable" : "flexible",
-                              value: opt.total,
-                              property_id: intent.listingId,
-                            });
+                            // A demo não manda eventos (como os outros pushDL deste ficheiro).
+                            if (!isDemo) {
+                              pushDL({
+                                event: "rate_plan_selected",
+                                rate_plan: nonRef ? "non_refundable" : "flexible",
+                                value: opt.total,
+                                property_id: intent.listingId,
+                              });
+                            }
                           }}
                           className="accent-black w-4 h-4 shrink-0"
                         />

@@ -600,7 +600,7 @@ Decisões do Ricardo (28 out):
 - o monitor externo do `/api/health/balance-scheduler` cria-o o Claude quando o motor for ligado.
 
 Falta:
-- revisão nativa do mandato nas 7 línguas traduzidas a 28 out (versão `2026-10-28.v2`, obrigatória em DE, FR e NL); a v2 também tirou "e SMS" do texto validado pelo André, que tem de confirmar;
+- revisão nativa do mandato nas 7 línguas traduzidas a 28 out (versão `2026-10-28.v2`, hoje `2026-10-29.v3`, obrigatória em DE, FR e NL); a v2 também tirou "e SMS" do texto validado pelo André, que tem de confirmar; a v3 só mexeu no italiano (artigo antes de 8 e 11, «l'11 novembre», e repetido em cada data das retentativas);
 - o bloco pré-contratual e as CGV novas, que o André tem de ver;
 - a dica no widget e a linha no passo 1;
 - os ciclos completos em modo de teste da Stripe, antes de `TWO_PARTS_BALANCE_ENGINE_READY`.

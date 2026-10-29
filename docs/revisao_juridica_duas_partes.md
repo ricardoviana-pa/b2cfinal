@@ -112,9 +112,11 @@ Exemplo: 2.ª parte de 1 262,00 €, cobrada a 28 de junho de 2027, novas tentat
 
 **Caixa (não pré-marcada):** Autorizzo Portugal Active ad addebitare 1.262,00 € il 28 giugno 2027 sulla carta che uso ora, come seconda e ultima parte di questo soggiorno e, se l'addebito viene rifiutato, a riprovare lo stesso importo fino al giorno 8 luglio 2027 alle 23:59 (ora di Lisbona).
 
-**Texto por baixo:** Pagando, autorizza Portugal Active ad addebitare 1.262,00 € il 28 giugno 2027 sulla carta che usa ora, come seconda e ultima parte di questo soggiorno. Se l'addebito viene rifiutato, la avvisiamo via email, riproviamo lo stesso importo il 29 giugno 2027 e 1 luglio 2027, e ha 7 giorni dall'avviso per pagare con un altro metodo; altrimenti la prenotazione viene annullata e le rimborsiamo tutto quanto pagato. Può pagare prima, cambiare carta o annullare in qualsiasi momento, dal link nella sua conferma. Cancellazione gratuita fino al giorno 8 luglio 2027 alle 23:59 (ora di Lisbona).
+**Texto por baixo:** Pagando, autorizza Portugal Active ad addebitare 1.262,00 € il 28 giugno 2027 sulla carta che usa ora, come seconda e ultima parte di questo soggiorno. Se l'addebito viene rifiutato, la avvisiamo via email, riproviamo lo stesso importo il 29 giugno 2027 e il 1 luglio 2027, e ha 7 giorni dall'avviso per pagare con un altro metodo; altrimenti la prenotazione viene annullata e le rimborsiamo tutto quanto pagato. Può pagare prima, cambiare carta o annullare in qualsiasi momento, dal link nella sua conferma. Cancellazione gratuita fino al giorno 8 luglio 2027 alle 23:59 (ora di Lisbona).
 
 **Troca de cartão (página do saldo):** Autorizzo Portugal Active ad addebitare 1.262,00 € il 28 giugno 2027 su questa nuova carta, come seconda e ultima parte di questo soggiorno, con nuovi tentativi dello stesso importo fino al giorno 8 luglio 2027 alle 23:59 (ora di Lisbona) se viene rifiutato.
+
+Nota (v3, 29 out 2026): quando a data começa por 8 ou 11 o artigo italiano elide, como em todo o site: «ad addebitare … l'11 novembre 2026», «l'8 dicembre». O dia 1 fica «il 1 luglio» (lê-se «primo»).
 
 ### DE
 

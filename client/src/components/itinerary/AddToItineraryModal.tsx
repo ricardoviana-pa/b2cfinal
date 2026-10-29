@@ -177,7 +177,7 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+          <form id="lead-experience" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
             {fields.map(field => (
               <div key={field.key}>
                 <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-1.5 block">
