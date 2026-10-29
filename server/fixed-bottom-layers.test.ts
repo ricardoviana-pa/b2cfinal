@@ -207,22 +207,25 @@ describe('P2: the floats rise above the banner and keep out of the footer’s la
 describe('P3: the footer keeps the fixed bar, the floats and the open banner clear of its last row', () => {
   afterEach(() => vi.unstubAllGlobals());
 
-  const clearanceRule = css.match(/:root \{\s*--floats-clearance:\s*([^;]+);\s*\}\s*@media \(min-width: 1024px\) \{\s*:root \{\s*--floats-clearance:\s*([^;]+);/);
+  // Phone, 640–1023 px (verificação final de 29 out, P6: "back to top" sits 8 px higher there) and from lg.
+  const TABLET = '@media (min-width: 640px) and (max-width: 1023.98px)';
+  const clearanceRule = css.match(new RegExp(`:root \\{\\s*--floats-clearance:\\s*([^;]+);\\s*\\}\\s*${escapeRe(TABLET)} \\{\\s*:root \\{\\s*--floats-clearance:\\s*([^;]+);\\s*\\}\\s*\\}\\s*@media \\(min-width: 1024px\\) \\{\\s*:root \\{\\s*--floats-clearance:\\s*([^;]+);`));
   const footerPadding = tw(footer.slice(footer.indexOf('{/* Bottom bar */}')), 'py'); // container py-7 → 28
 
   it('its bottom padding covers whatever is fixed at the bottom of the screen', () => {
     expect(clearanceRule).not.toBeNull();
-    const [, phoneClearance, desktopClearance] = clearanceRule!;
+    const [, phoneClearance, tabletClearance, desktopClearance] = clearanceRule!;
     expect(cssPx(desktopClearance)).toBe(0);
     for (const content of BAR_CONTENT) {
       for (const safe of SAFE_AREAS) {
         const barH = content + safe; // what the bar publishes: its offsetHeight, safe-area padding included
-        const clearance = cssPx(phoneClearance, { safe });
-        expect(cssPx(FOOTER_BOTTOM_INSET, { barH, safe, clearance }), `bar ${barH}`).toBeGreaterThanOrEqual(barH);
-        for (const banner of BANNERS) {
-          const bannerH = banner + safe;
-          // Open banner: the bar's content sits on it (W2).
-          expect(cssPx(FOOTER_BOTTOM_INSET, { barH, bannerH, safe, clearance }), `bar ${barH} + banner ${bannerH}`).toBeGreaterThanOrEqual(bannerH + content);
+        for (const clearance of [cssPx(phoneClearance, { safe }), cssPx(tabletClearance, { safe })]) {
+          expect(cssPx(FOOTER_BOTTOM_INSET, { barH, safe, clearance }), `bar ${barH}`).toBeGreaterThanOrEqual(barH);
+          for (const banner of BANNERS) {
+            const bannerH = banner + safe;
+            // Open banner: the bar's content sits on it (W2).
+            expect(cssPx(FOOTER_BOTTOM_INSET, { barH, bannerH, safe, clearance }), `bar ${barH} + banner ${bannerH}`).toBeGreaterThanOrEqual(bannerH + content);
+          }
         }
       }
     }
@@ -233,17 +236,26 @@ describe('P3: the footer keeps the fixed bar, the floats and the open banner cle
   });
 
   it('on a phone or a tablet, scrolled to the end, the last row sits above “back to top” and the WhatsApp button', () => {
-    const [, phoneClearance] = clearanceRule!;
-    const bottom = backToTop.match(/bottom: '([^']+)'/)![1];
+    const [, phoneClearance, tabletClearance] = clearanceRule!;
+    // "Back to top"'s bottom is in index.css (.back-to-top), per band (P6).
+    expect(backToTop).not.toMatch(/bottom:/);
+    const bands = [
+      { clearance: phoneClearance, bottom: declaration(cssRule(css, '.back-to-top'), 'bottom'), waHeight: tw(whatsappFloat, 'h') },
+      { clearance: tabletClearance, bottom: declaration(cssRule(css, '.back-to-top', TABLET), 'bottom'), waHeight: tw(whatsappFloat, 'sm:h') },
+    ];
     const size = Math.max(tw(backToTop, 'h'), tw(backToTop, 'sm:h'));
-    const waTop = cssPx(declaration(cssRule(css, '.whatsapp-float'), 'bottom'), {}) + tw(whatsappFloat, 'sm:h');
-    for (const safe of SAFE_AREAS) {
-      for (const bannerH of [0, ...BANNERS.map((b) => b + safe)]) {
-        const lift = cssPx(COOKIE_BANNER_LIFT, { bannerH, safe });
-        const floatsTop = Math.max(cssPx(bottom, { safe }) + size, waTop + safe) + lift;
-        for (const barH of [0, ...BAR_CONTENT.map((c) => c + safe)]) {
-          const lastRowBottom = cssPx(FOOTER_BOTTOM_INSET, { barH, bannerH, safe, clearance: cssPx(phoneClearance, { safe }) }) + footerPadding;
-          expect(lastRowBottom, `safe ${safe}, banner ${bannerH}, bar ${barH}`).toBeGreaterThanOrEqual(floatsTop + 4);
+    for (const { clearance, bottom, waHeight } of bands) {
+      const waTop = cssPx(declaration(cssRule(css, '.whatsapp-float'), 'bottom'), {}) + waHeight;
+      // The arrow sits right on top of the WhatsApp button, never into it.
+      expect(cssPx(bottom), bottom).toBe(waTop);
+      for (const safe of SAFE_AREAS) {
+        for (const bannerH of [0, ...BANNERS.map((b) => b + safe)]) {
+          const lift = cssPx(COOKIE_BANNER_LIFT, { bannerH, safe });
+          const floatsTop = Math.max(cssPx(bottom, { safe }) + size, waTop + safe) + lift;
+          for (const barH of [0, ...BAR_CONTENT.map((c) => c + safe)]) {
+            const lastRowBottom = cssPx(FOOTER_BOTTOM_INSET, { barH, bannerH, safe, clearance: cssPx(clearance, { safe }) }) + footerPadding;
+            expect(lastRowBottom, `${bottom}: safe ${safe}, banner ${bannerH}, bar ${barH}`).toBeGreaterThanOrEqual(floatsTop + 4);
+          }
         }
       }
     }
@@ -428,7 +440,7 @@ describe('#175’s language card against the banner and the floats', () => {
   });
 
   it('on a phone, over a booking bar, it covers the place of “back to top”, which steps aside until the card goes', () => {
-    const bttBottom = cssPx(backToTop.match(/bottom: '([^']+)'/)![1]);
+    const bttBottom = cssPx(declaration(cssRule(css, '.back-to-top'), 'bottom')); // phone band (index.css, P6)
     const bttSize = tw(backToTop, 'h');
     for (const cardH of [60, 68, 70, 78, 90]) {
       // Both at the right edge on a phone (the card is full width there): they would overlap.

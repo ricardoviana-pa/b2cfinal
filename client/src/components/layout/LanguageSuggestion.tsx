@@ -22,10 +22,11 @@ import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { pushDL } from '@/lib/datalayer';
-import { LANGUAGE_CARD_ATTR, RISE_ABOVE_COOKIE_BANNER } from '@/lib/fixedBottom';
+import { COOKIE_BANNER_OPEN_ATTR, HOME_HERO_ATTR, LANGUAGE_CARD_ATTR, RISE_ABOVE_COOKIE_BANNER } from '@/lib/fixedBottom';
+import { COOKIE_CHOICE_EVENT, getCookieChoice } from '@/lib/measurementConsent';
 import {
   LANGUAGE_CHOICE_KEY, SUGGESTION_COPY, SUGGESTION_DECLINED_KEY, SUGGESTION_SHOWN_KEY,
-  hasBottomBookingBar, pageOffersLanguage, pathInLanguage, shownThisVisit, suggestedLanguage, type SuggestedLanguage,
+  hasBottomBookingBar, languageCardWaits, pageOffersLanguage, pathInLanguage, shownThisVisit, suggestedLanguage, type SuggestedLanguage,
 } from '@/lib/languageSuggestion';
 
 function read(storage: () => Storage, key: string): string | null {
@@ -33,6 +34,21 @@ function read(storage: () => Storage, key: string): string | null {
 }
 function write(storage: () => Storage, key: string, value: string) {
   try { storage().setItem(key, value); } catch { /* private mode: not remembered, still works */ }
+}
+// Once per visit, in every tab (localStorage): written when the card is on the
+// page, and kept fresh by each later page of the visit, so a tab opened later
+// in the visit stays quiet.
+const keepVisit = () => write(() => localStorage, SUGGESTION_SHOWN_KEY, String(Date.now()));
+
+/** Must the card wait right now (lib/languageSuggestion.ts, languageCardWaits), read from the page? */
+function cardWaitsNow(): boolean {
+  const root = document.documentElement;
+  return languageCardWaits({
+    viewportWidth: window.innerWidth,
+    homeHeroOnScreen: root.hasAttribute(HOME_HERO_ATTR),
+    cookieChoice: getCookieChoice(),
+    cookieBannerOpen: root.hasAttribute(COOKIE_BANNER_OPEN_ATTR),
+  });
 }
 
 /** hreflang of every alternate in the head, as the server (or usePageMeta) wrote them. */
@@ -51,16 +67,30 @@ export default function LanguageSuggestion() {
   const [location] = useLocation();
   const { i18n } = useTranslation();
   const [target, setTarget] = useState<SuggestedLanguage | null>(null);
+  // The card waits while it would land on the page's own buttons (the hero
+  // on a phone or a tablet, the open banner on a phone): decided, not shown.
+  const [waits, setWaits] = useState(false);
   const shownOn = useRef<string | null>(null);
   const answered = useRef(false);
   const landingPage = useRef(location);
   const leftLandingPage = useRef(false);
 
   useEffect(() => {
+    const update = () => setWaits(cardWaitsNow());
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: [HOME_HERO_ATTR, COOKIE_BANNER_OPEN_ATTR] });
+    window.addEventListener(COOKIE_CHOICE_EVENT, update);
+    window.addEventListener('resize', update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener(COOKIE_CHOICE_EVENT, update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
+  useEffect(() => {
     if (location !== landingPage.current) leftLandingPage.current = true;
-    // Once per visit, in every tab (localStorage): each page of the visit
-    // keeps the marker fresh, so a tab opened later in the visit stays quiet.
-    const keepVisit = () => write(() => localStorage, SUGGESTION_SHOWN_KEY, String(Date.now()));
     // Leaving the page it appeared on without answering hides it.
     if (shownOn.current !== null) {
       if (shownOn.current !== location) setTarget(null);
@@ -71,6 +101,9 @@ export default function LanguageSuggestion() {
       keepVisit();
       return;
     }
+    // A language decided for the previous page while the card waited there is
+    // not this page's: decide again from this page's alternates.
+    setTarget(null);
     const next = suggestedLanguage({
       pageLang: i18n.language || 'en',
       path: location,
@@ -90,10 +123,6 @@ export default function LanguageSuggestion() {
       if (!ownAlternates || answered.current) return;
       const offered = pageOffersLanguage(pageAlternates(), next);
       if (offered === null) return;
-      if (offered && shownOn.current === null) {
-        shownOn.current = location;
-        keepVisit();
-      }
       setTarget(offered ? next : null);
     };
     const first = window.setTimeout(decide, 0);
@@ -111,16 +140,23 @@ export default function LanguageSuggestion() {
   }, [location, i18n.language]);
 
   const aboveBookingBar = hasBottomBookingBar(location);
-  // While shown, <html> says where (LANGUAGE_CARD_ATTR): over a booking bar, on
-  // a phone, the card covers the place of "back to top", which steps aside.
+  const visible = target !== null && !waits;
+  // While on the page: this is the visit's one card (SUGGESTION_SHOWN_KEY),
+  // on this page; and <html> says where (LANGUAGE_CARD_ATTR): over a booking
+  // bar, on a phone, the card covers the place of "back to top", which steps
+  // aside. A card that only waited was never shown: the next page decides anew.
   useEffect(() => {
-    if (!target) return;
+    if (!visible) return;
+    if (shownOn.current === null) {
+      shownOn.current = location;
+      keepVisit();
+    }
     const root = document.documentElement;
     root.setAttribute(LANGUAGE_CARD_ATTR, aboveBookingBar ? 'above-bar' : 'bottom');
     return () => root.removeAttribute(LANGUAGE_CARD_ATTR);
-  }, [target, aboveBookingBar]);
+  }, [visible, aboveBookingBar, location]);
 
-  if (!target) return null;
+  if (!visible) return null;
   const copy = SUGGESTION_COPY[target];
   const href = pathInLanguage(window.location.pathname, window.location.search, window.location.hash, target);
 

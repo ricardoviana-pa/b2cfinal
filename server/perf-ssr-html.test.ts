@@ -227,6 +227,30 @@ describe("what the static handler must not serve, and repeat 404s", () => {
       expect(robots(await res.text())).toBe("index, follow");
     }
   });
+
+  // Verificação final de 29 out 2026, P7: every 404 carried the 19 hreflang
+  // alternates of its own (dead) URL, and the language card read them and
+  // offered "Auf Deutsch ansehen" on "Experience not found".
+  it("a 404 carries no hreflang alternates, on the first request and the repeat; a real page keeps its 19", async () => {
+    const missing = [
+      "/en/experiences/zz-not-a-real-one-7731", "/en/activities/zz-not-a-real-one-7731", "/en/services/zz-not-a-real-one-7731",
+      "/en/blog/zz-not-a-real-one-7731", "/en/collections/zz-not-a-real-one-7731", "/en/destinations/zz-not-a-real-one-7731",
+      "/de/homes/zz-no-such-home-7731", "/en/zz-repeat-404-7731", "/en/booking/zz-7731",
+    ];
+    for (const p of missing) {
+      for (let i = 1; i <= 2; i++) {
+        const res = await get(p);
+        const html = await res.text();
+        expect(res.status, `${p} #${i}`).toBe(404);
+        expect(html, `${p} #${i}`).not.toContain("hreflang=");
+        expect(robots(html), `${p} #${i}`).toBe("noindex, nofollow");
+      }
+    }
+    for (const p of ["/en/destinations/minho", "/en", "/pt/homes"]) {
+      const html = await (await get(p)).text();
+      expect(html.match(/hreflang=/g), p).toHaveLength(19);
+    }
+  });
 });
 
 /** The module list of the end-of-body preload script, or null when absent. */

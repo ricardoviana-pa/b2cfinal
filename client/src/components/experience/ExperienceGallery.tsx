@@ -171,11 +171,16 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
         </div>
       </div>
 
-      {/* View all photos button (desktop, below grid) */}
+      {/* View all photos button (desktop, below grid). lg:mr-16 keeps it out
+          of the WhatsApp button's corner (28 px from the edge, 56 px wide, and
+          57 px higher while the cookie banner is open): with the banner open
+          at 1280×800 the button covered "(42)" and opened WhatsApp instead of
+          the photos (verificação final de 29 out, P1) — the same rule as the
+          footer's last row (Footer.tsx, lg:pr-16). */}
       <div className="hidden lg:flex container justify-end pt-3">
         <button
           onClick={() => openLightbox(0)}
-          className="pa-action text-[11px] font-medium tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
+          className="pa-action lg:mr-16 text-[11px] font-medium tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
         >
           View all photos ({total})
         </button>

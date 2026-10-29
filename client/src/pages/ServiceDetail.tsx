@@ -58,6 +58,8 @@ export default function ServiceDetail() {
     description: planning?.seoDescription ?? (item ? `${item.tagline || item.name}. ${t('serviceDetail.metaSuffix', 'Book this experience with your Portugal Active villa stay.')}`.slice(0, 155) : undefined),
     image: item?.image,
     url: item ? (item.category === 'activity' ? `/experiences/${item.slug}` : `/services/${item.slug}`) : undefined,
+    // Unknown slug: a 404 on the server, noindex here, no alternates (P7).
+    noindex: !item,
   });
 
   if (!item) {
