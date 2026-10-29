@@ -1,4 +1,5 @@
 import { guestyClient, isAmbiguousGuestyFailure } from "../lib/guesty";
+import { withTimeout } from "./rate-plan-policy";
 
 export interface CreateReservationInput {
   listingId: string;
@@ -517,6 +518,16 @@ export function planReservationNote(
 const noteAlertSentAt = new Map<string, number>();
 const NOTE_ALERT_REPEAT_MS = 24 * 3600_000;
 
+/** Alertas ainda a caminho, pela mesma chave. O settle do cartão corre do
+ *  finalize e do webhook, um a seguir ao outro: um 2.º pedido igual enquanto o
+ *  1.º email não saiu junta-se a ele, em vez de mandar outro. */
+const noteAlertInFlight = new Map<string, Promise<boolean>>();
+
+/** Quanto se espera pelo alerta de falta de espaço (o único cujo resultado
+ *  conta): dois envios do Resend, um a seguir ao outro e sem limite próprio, e
+ *  o settle do cartão espera por esta função dentro do lock do intent. */
+export const NOTE_ALERT_WAIT_MS = 10_000;
+
 function escapeOpsHtml(text: string): string {
   return String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
@@ -536,25 +547,36 @@ function guestyErrorSummary(err: any): string {
   return parts.join(" · ");
 }
 
-/**
- * Alerta ao CS com o texto que não ficou na reserva (pode levar o NIF da
- * fatura e, nas duas partes, o "NAO cobrar"), para o colar à mão. Nunca
- * lança. Devolve true quando um humano tem o texto: email entregue agora, ou
- * o mesmo texto já entregue nas últimas 24 h.
- */
-async function alertReservationNoteNotWritten(input: {
+type NoteAlertInput = {
   reservationId: string;
   confirmationCode?: string | null;
   kind: "failed" | "no-room";
   missing: string[];
   error?: unknown;
-}): Promise<boolean> {
+};
+
+/**
+ * Alerta ao CS com o texto que não ficou na reserva (pode levar o NIF da
+ * fatura e, nas duas partes, o "NAO cobrar"), para o colar à mão. Nunca
+ * lança. Devolve true quando um humano tem o texto: email entregue agora, ou
+ * o mesmo texto já entregue nas últimas 24 h. Um pedido igual a um que ainda
+ * está a sair recebe o resultado desse.
+ */
+function alertReservationNoteNotWritten(input: NoteAlertInput): Promise<boolean> {
+  const text = input.missing.join("\n\n");
+  const key = `${input.reservationId}\u0000${input.kind}\u0000${text}`;
+  const now = Date.now();
+  const last = noteAlertSentAt.get(key);
+  if (last != null && now - last < NOTE_ALERT_REPEAT_MS) return Promise.resolve(true);
+  const inFlight = noteAlertInFlight.get(key);
+  if (inFlight) return inFlight;
+  const sending = sendReservationNoteAlert(input, text, key, now).finally(() => noteAlertInFlight.delete(key));
+  noteAlertInFlight.set(key, sending);
+  return sending;
+}
+
+async function sendReservationNoteAlert(input: NoteAlertInput, text: string, key: string, now: number): Promise<boolean> {
   try {
-    const text = input.missing.join("\n\n");
-    const key = `${input.reservationId}\u0000${input.kind}\u0000${text}`;
-    const now = Date.now();
-    const last = noteAlertSentAt.get(key);
-    if (last != null && now - last < NOTE_ALERT_REPEAT_MS) return true;
     noteAlertSentAt.forEach((at, k) => {
       if (now - at >= NOTE_ALERT_REPEAT_MS) noteAlertSentAt.delete(k);
     });
@@ -588,9 +610,12 @@ async function alertReservationNoteNotWritten(input: {
             `Reserva: <a href="${url}">${url}</a>`,
             `<strong>Texto por gravar:</strong><br>${textHtml}`,
           ];
-    const { sendOpsAlert } = await import("./transactional-email");
-    const delivered = await sendOpsAlert(subject, lines, { copyToSales: true });
+    const { sendOpsAlert, emailDeliveryConfigured } = await import("./transactional-email");
+    const accepted = await sendOpsAlert(subject, lines, { copyToSales: true });
     // Um email que não saiu não conta: a próxima tentativa volta a avisar.
+    // Sem Resend (preview, DEV ou produção mal configurada) o sendEmail só o
+    // escreve no log, e ninguém fica com o texto: também não conta.
+    const delivered = accepted && emailDeliveryConfigured();
     if (delivered) noteAlertSentAt.set(key, now);
     return delivered;
   } catch (err: any) {
@@ -598,6 +623,13 @@ async function alertReservationNoteNotWritten(input: {
     return false;
   }
 }
+
+/** Só para testes: espera pelos alertas que ainda estão a sair. */
+export const __testing = {
+  noteAlertsSettled: async (): Promise<void> => {
+    await Promise.all([...noteAlertInFlight.values()]);
+  },
+};
 
 /**
  * Nota interna da reserva no Guesty (notes.other): manifesto de serviços,
@@ -610,7 +642,12 @@ async function alertReservationNoteNotWritten(input: {
  * Devolve true quando não há nada a repetir: texto gravado, já lá estava, ou
  * não coube e o CS já tem o texto por email (repetir não arranja espaço).
  * Devolve false quando a leitura ou a escrita falharam (quem repete, repete)
- * ou quando o alerta de falta de espaço não saiu.
+ * ou quando o alerta de falta de espaço não saiu (ou não saiu a tempo).
+ *
+ * Nunca espera pelo email da falha (a resposta é false de qualquer maneira), e
+ * pelo da falta de espaço no máximo NOTE_ALERT_WAIT_MS: o settle do cartão
+ * chama isto dentro do lock do intent, antes de o dar por pago e de mandar os
+ * emails ao hóspede.
  */
 export async function appendReservationNote(
   reservationId: string,
@@ -644,10 +681,16 @@ export async function appendReservationNote(
     }
     if (!plan.missing.length) return true;
     console.warn(`[Guesty] nota sem espaco na reserva ${reservationId}: ${plan.missing.length} texto(s) por gravar — alerta ao CS`);
-    return await alertReservationNoteNotWritten({ reservationId, confirmationCode, kind: "no-room", missing: plan.missing });
+    // Um alerta que chegue depois do limite conta na mesma para a próxima
+    // tentativa (fica registado quando sai), que então não volta a avisar.
+    return await withTimeout(
+      alertReservationNoteNotWritten({ reservationId, confirmationCode, kind: "no-room", missing: plan.missing }),
+      NOTE_ALERT_WAIT_MS,
+      false,
+    );
   } catch (err: any) {
     console.warn("[Guesty] appendReservationNote falhou (" + reservationId + "):", err?.message);
-    await alertReservationNoteNotWritten({ reservationId, confirmationCode, kind: "failed", missing: pending, error: err });
+    void alertReservationNoteNotWritten({ reservationId, confirmationCode, kind: "failed", missing: pending, error: err });
     return false;
   }
 }

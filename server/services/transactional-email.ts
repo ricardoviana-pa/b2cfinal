@@ -42,6 +42,16 @@ const resend = resendKey ? new Resend(resendKey) : null;
 
 const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <booking@portugalactive.com>";
 
+/**
+ * Os emails saem mesmo? Sem RESEND_API_KEY (preview, DEV) o sendEmail não
+ * envia: escreve o email no log e não falha. Quem só pode dar um aviso por
+ * entregue quando alguém o recebe (o alerta de nota do Guesty por gravar)
+ * pergunta aqui.
+ */
+export function emailDeliveryConfigured(): boolean {
+  return isProduction && !!resend;
+}
+
 /* ================================================================
    CORE SEND
    ================================================================ */

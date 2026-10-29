@@ -10,11 +10,15 @@ vi.mock("../lib/guesty", async (importOriginal) => {
   };
 });
 
-// Os alertas ao CS saem por aqui: nada vai para a rede.
-const mail = vi.hoisted(() => ({ sendOpsAlert: vi.fn(async (_s: string, _l: string[], _o?: unknown) => true) }));
-vi.mock("./transactional-email", () => ({ sendOpsAlert: mail.sendOpsAlert }));
+// Os alertas ao CS saem por aqui: nada vai para a rede. `configured`: há um
+// fornecedor de email (Resend); sem ele o email fica só no log.
+const mail = vi.hoisted(() => ({
+  sendOpsAlert: vi.fn(async (_s: string, _l: string[], _o?: unknown) => true),
+  configured: vi.fn(() => true),
+}));
+vi.mock("./transactional-email", () => ({ sendOpsAlert: mail.sendOpsAlert, emailDeliveryConfigured: mail.configured }));
 
-import { createReservationViaOpenApi } from "./guesty-openapi-paypal";
+import { createReservationViaOpenApi, __testing } from "./guesty-openapi-paypal";
 import { guestyClient } from "../lib/guesty";
 
 const baseInput = {
@@ -197,10 +201,15 @@ describe("appendReservationNote — falhas e falta de espaço chegam ao CS", () 
     vi.mocked(guestyClient.request).mockReset();
     mail.sendOpsAlert.mockReset();
     mail.sendOpsAlert.mockResolvedValue(true);
+    mail.configured.mockReset();
+    mail.configured.mockReturnValue(true);
     vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
-  afterEach(() => vi.useRealTimers());
+  afterEach(async () => {
+    vi.useRealTimers();
+    await __testing.noteAlertsSettled(); // nenhum alerta a meio passa para o teste seguinte
+  });
 
   const alertOf = (i = 0) => {
     const [subject, lines, opts] = mail.sendOpsAlert.mock.calls[i] as [string, string[], any];
@@ -232,6 +241,7 @@ describe("appendReservationNote — falhas e falta de espaço chegam ao CS", () 
     );
 
     expect(await appendReservationNote("res-get", "SERVICOS DO CHECKOUT:\nRececao: self check-in", { prepend: "FATURA COM NIF 123<456>" })).toBe(false);
+    await __testing.noteAlertsSettled(); // o alerta sai sem o settle esperar por ele
 
     expect(vi.mocked(guestyClient.request)).toHaveBeenCalledTimes(1); // nada de PUT às cegas
     expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
@@ -253,6 +263,7 @@ describe("appendReservationNote — falhas e falta de espaço chegam ao CS", () 
       .mockRejectedValueOnce(new Error("Guesty request failed (500)"));
 
     expect(await appendReservationNote("res-put", note, { prepend: "FATURA COM NIF 999999990 (pedido)" })).toBe(false);
+    await __testing.noteAlertsSettled();
 
     const { subject, html } = alertOf();
     expect(subject).toBe("NOTA NÃO GRAVADA NO GUESTY — GY-NOTE01");
@@ -305,15 +316,19 @@ describe("appendReservationNote — falhas e falta de espaço chegam ao CS", () 
     const note = "Checkout 2.0 em duas partes: 2.a parte 1073.00 EUR cobrada pela plataforma (PI pi_b). NAO cobrar ao hospede.";
 
     expect(await appendReservationNote("res-repeat", note)).toBe(false);
+    await __testing.noteAlertsSettled();
     vi.setSystemTime(new Date("2099-10-24T09:10:00Z"));
     expect(await appendReservationNote("res-repeat", note)).toBe(false);
+    await __testing.noteAlertsSettled();
     expect(mail.sendOpsAlert).toHaveBeenCalledTimes(1);
     // Outra reserva, outro aviso.
     expect(await appendReservationNote("res-repeat-2", note)).toBe(false);
+    await __testing.noteAlertsSettled();
     expect(mail.sendOpsAlert).toHaveBeenCalledTimes(2);
     // No dia seguinte, se ainda falhar, volta a avisar.
     vi.setSystemTime(new Date("2099-10-25T09:10:00Z"));
     expect(await appendReservationNote("res-repeat", note)).toBe(false);
+    await __testing.noteAlertsSettled();
     expect(mail.sendOpsAlert).toHaveBeenCalledTimes(3);
   });
 
@@ -323,7 +338,9 @@ describe("appendReservationNote — falhas e falta de espaço chegam ao CS", () 
     mail.sendOpsAlert.mockResolvedValueOnce(false);
 
     await appendReservationNote("res-retry-alert", "nota");
+    await __testing.noteAlertsSettled();
     await appendReservationNote("res-retry-alert", "nota");
+    await __testing.noteAlertsSettled();
     expect(mail.sendOpsAlert).toHaveBeenCalledTimes(2);
   });
 
@@ -333,6 +350,80 @@ describe("appendReservationNote — falhas e falta de espaço chegam ao CS", () 
     mail.sendOpsAlert.mockRejectedValueOnce(new Error("resend down"));
 
     await expect(appendReservationNote("res-alert-throws", "nota")).resolves.toBe(false);
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
+  });
+
+  /** Um envio do Resend que fica pendurado até o teste o soltar. */
+  const stalledSend = () => {
+    let release!: (delivered: boolean) => void;
+    mail.sendOpsAlert.mockImplementationOnce(() => new Promise<boolean>((resolve) => { release = resolve; }));
+    return (delivered = true) => release(delivered);
+  };
+
+  it("escrita falhada com o Resend pendurado: false logo, sem esperar pelo email (o settle corre dentro do lock)", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockRejectedValue(new Error("Guesty request failed (410)"));
+    const release = stalledSend();
+
+    // Se esperasse pelo email, isto nunca resolvia (o teste acabava por timeout).
+    await expect(appendReservationNote("res-stalled", "FATURA COM NIF 123456789")).resolves.toBe(false);
+    await vi.waitFor(() => expect(mail.sendOpsAlert).toHaveBeenCalledOnce());
+    release();
+    await __testing.noteAlertsSettled();
+  });
+
+  it("o mesmo pedido enquanto o 1.º alerta ainda sai (finalize e webhook seguidos): um email, não dois", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockRejectedValue(new Error("Guesty request failed (503)"));
+    const release = stalledSend();
+
+    expect(await appendReservationNote("res-twice", "nota do pagamento")).toBe(false);
+    await vi.waitFor(() => expect(mail.sendOpsAlert).toHaveBeenCalledOnce());
+    expect(await appendReservationNote("res-twice", "nota do pagamento")).toBe(false);
+    release();
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
+    // Entregue: a passagem seguinte, no mesmo dia, já não avisa.
+    expect(await appendReservationNote("res-twice", "nota do pagamento")).toBe(false);
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
+  });
+
+  it("sem espaço com o Resend lento: espera no máximo NOTE_ALERT_WAIT_MS e devolve false; o alerta que sai depois conta", async () => {
+    vi.useFakeTimers();
+    const { appendReservationNote, RESERVATION_NOTE_MAX, NOTE_ALERT_WAIT_MS } = await import("./guesty-openapi-paypal");
+    expect(NOTE_ALERT_WAIT_MS).toBe(10_000);
+    vi.mocked(guestyClient.request).mockResolvedValue({ notes: { other: "c".repeat(RESERVATION_NOTE_MAX) } } as any);
+    mail.sendOpsAlert.mockImplementationOnce(() => new Promise<boolean>((resolve) => setTimeout(() => resolve(true), 60_000)));
+
+    let settled: boolean | undefined;
+    const pending = appendReservationNote("res-slow", "nota que nao cabe").then((r) => { settled = r; return r; });
+    await vi.waitFor(() => expect(mail.sendOpsAlert).toHaveBeenCalledOnce());
+    await vi.advanceTimersByTimeAsync(NOTE_ALERT_WAIT_MS - 1_000);
+    expect(settled).toBeUndefined();
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(await pending).toBe(false);
+
+    // O email acaba por sair: a próxima passagem já não avisa e dá-o por resolvido.
+    await vi.advanceTimersByTimeAsync(60_000);
+    await __testing.noteAlertsSettled();
+    expect(await appendReservationNote("res-slow", "nota que nao cabe")).toBe(true);
+    expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
+  });
+
+  it("sem Resend (o email fica só no log): a falta de espaço não conta como avisada e a próxima passagem volta a avisar", async () => {
+    const { appendReservationNote, RESERVATION_NOTE_MAX } = await import("./guesty-openapi-paypal");
+    mail.configured.mockReturnValue(false);
+    vi.mocked(guestyClient.request).mockResolvedValue({ notes: { other: "c".repeat(RESERVATION_NOTE_MAX) } } as any);
+
+    expect(await appendReservationNote("res-console", "FATURA COM NIF 123456789")).toBe(false);
+    expect(await appendReservationNote("res-console", "FATURA COM NIF 123456789")).toBe(false);
+    expect(mail.sendOpsAlert).toHaveBeenCalledTimes(2);
+    // Com o fornecedor configurado, o mesmo alerta entregue fica resolvido.
+    mail.configured.mockReturnValue(true);
+    expect(await appendReservationNote("res-console", "FATURA COM NIF 123456789")).toBe(true);
+    expect(mail.sendOpsAlert).toHaveBeenCalledTimes(3);
   });
 
   it("sem texto nenhum não lê nem escreve", async () => {
