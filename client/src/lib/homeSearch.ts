@@ -1,11 +1,14 @@
 import type { Property, SortOption } from './types';
 import { sortProperties } from './utils';
+import { isSearchRegion } from './destinationSearch';
 
-/** Region choices are distinct from city names; clearing resets both. */
+/** Region choices are distinct from city names; clearing resets both.
+ *  Every region the pickers offer is accepted (douro and silver-coast were
+ *  silently dropped, so "Douro" reset the search to every home). */
 export function parseDestinationSelection(value: string): { destination: string; location: string } {
   if (value.startsWith('region:')) {
     const destination = value.slice(7);
-    return { destination: ['minho', 'porto', 'lisbon', 'alentejo', 'algarve'].includes(destination) ? destination : '', location: '' };
+    return { destination: isSearchRegion(destination) ? destination : '', location: '' };
   }
   return { destination: '', location: value };
 }
@@ -77,11 +80,17 @@ export function addSearchDays(iso: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
+/** Homepage search → listing URL. `destination` is the picker value: a
+ *  municipality, or `region:<slug>` for a whole region. `guests` is only
+ *  written when the guest chose it (pass 0 otherwise): a default "2" in the
+ *  URL turned into a "2+ guests" filter nobody had set. */
 export function buildHomeSearchPath({ destination, checkin, checkout, guests }: {
   destination: string; checkin: string; checkout: string; guests: number;
 }): string {
   const params = new URLSearchParams();
-  if (destination) params.set('location', destination);
+  const pick = parseDestinationSelection(destination);
+  if (pick.destination) params.set('destination', pick.destination);
+  else if (pick.location) params.set('location', pick.location);
   if (checkin) params.set('checkin', checkin);
   if (checkout) params.set('checkout', checkout);
   if (guests > 1) params.set('guests', String(guests));

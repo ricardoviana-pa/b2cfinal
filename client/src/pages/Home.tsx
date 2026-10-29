@@ -41,8 +41,8 @@ import destinationsData from '@/data/destinations.json';
 import { localizeDestination, useDestinationOverrides } from '@/lib/localizeContent';
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
-import { getUniqueLocalities } from '@/lib/utils';
 import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
+import DestinationOptions, { useDestinationOptions } from '@/components/marketing/DestinationOptions';
 import { HOME_FEATURED_ORDER, HOME_FEATURED_COUNT, catalogKey, curatedPosition } from '@/config/propertyOrder';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { isChildUnit } from '@/config/propertyGroups';
@@ -120,41 +120,11 @@ export default function Home() {
     ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[],
   [propsData]);
 
-  // Destination options come from a tiny dedicated query that is SSR-prefetched,
-  // so the picker is usable on first paint instead of waiting for the full
-  // property list. Falls back to deriving them locally if that query is cold.
-  const { data: localityOptions } = trpc.properties.localities.useQuery();
-  const derivedCities = useMemo(() => getUniqueLocalities(properties), [properties]);
-  const cities = (localityOptions?.length ? localityOptions : derivedCities) as Array<{
-    label: string; value: string; group?: string;
-      groupSlug?: string;
-  }>;
-
-  // Render the destination options grouped by region (Minho Coast, Porto and
-  // Douro, …). A flat alphabetical list of 15 municipalities means little to an
-  // international guest — "Carreço" or "Trofa" only make sense under a region.
-  // The server returns them pre-sorted by destination, so consecutive grouping
-  // is enough; entries without a group (offline fallback) render flat.
-  const cityOptions = useMemo(() => {
-    const groups: Array<[string, typeof cities]> = [];
-    for (const c of cities) {
-      const g = c.groupSlug || c.group || '';
-      const last = groups[groups.length - 1];
-      if (last && last[0] === g) last[1].push(c);
-      else groups.push([g, [c]]);
-    }
-    // Region labels in the page language (destinations.<slug>), never the
-    // server's English display name (auditoria set/2026, T3).
-    return groups.map(([g, items], gi) =>
-      g ? (
-        <optgroup key={`g-${g}-${gi}`} label={t(`destinations.${g}`, { defaultValue: items[0]?.group || g })}>
-          {items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
-        </optgroup>
-      ) : (
-        items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)
-      ),
-    );
-  }, [cities, t]);
+  // Destination choices shared with the listing page: regions first with their
+  // number of homes, then municipalities under their region (the localities
+  // query is tiny and SSR-prefetched, so the picker works on first paint).
+  const { model: destinationModel } = useDestinationOptions(propsData as Property[] | undefined);
+  const cityOptions = <DestinationOptions model={destinationModel} />;
 
   // True once the hero is scrolled past — gates the mobile WhatsApp float so it
   // can't overlap the hero search card.
@@ -170,6 +140,11 @@ export default function Home() {
   const [searchCheckin, setSearchCheckin] = useState('');
   const [searchCheckout, setSearchCheckout] = useState('');
   const [searchGuests, setSearchGuests] = useState(2);
+  // The picker shows 2 by default; only a number the guest picked goes into
+  // the listing URL and the card links (a default "2" became a "2+ guests"
+  // filter nobody had set — auditoria 29 out).
+  const [guestsChosen, setGuestsChosen] = useState(false);
+  const chooseGuests = (n: number) => { setSearchGuests(n); setGuestsChosen(true); };
 
   // Live quotes for featured cards when dates are entered
   const utils = trpc.useUtils();
@@ -440,8 +415,8 @@ export default function Home() {
               <Link href="/concierge" className="hero-text-link">{t('siteUx.exploreServices')} <ArrowRight className="w-4 h-4" /></Link>
             </div>
           </div>
-          <HeroSearch options={cityOptions} destination={searchDest} checkin={searchCheckin} checkout={searchCheckout} guests={searchGuests}
-            onDestination={setSearchDest} onCheckin={handleCheckinChange} onCheckout={setSearchCheckout} onGuests={setSearchGuests} />
+          <HeroSearch options={cityOptions} destination={searchDest} checkin={searchCheckin} checkout={searchCheckout} guests={searchGuests} guestsChosen={guestsChosen}
+            onDestination={setSearchDest} onCheckin={handleCheckinChange} onCheckout={setSearchCheckout} onGuests={chooseGuests} />
         </div>
       </section>
 
@@ -499,7 +474,7 @@ export default function Home() {
       <StayCollections />
       <section ref={s3Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
-          <p className="eyebrow mb-3">{t('home.homesOverline')}</p>
+          <p className="eyebrow text-pa-gold-aa mb-3">{t('home.homesOverline')}</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
               <h2 className="headline-lg text-pa-dark mb-3">{t('home.homesTitle')}</h2>
@@ -526,7 +501,7 @@ export default function Home() {
                   property={property}
                   checkin={searchCheckin || undefined}
                   checkout={searchCheckout || undefined}
-                  guests={searchGuests > 1 ? searchGuests : undefined}
+                  guests={guestsChosen && searchGuests > 1 ? searchGuests : undefined}
                   nights={searchNights}
                   liveQuote={(property.source === 'tripwix' ? partner.quotes[property.slug] : homeQuotes[property.slug]) || undefined}
                   quoteLoading={property.source === 'tripwix' ? partner.isFetching : homeQuotesLoading}
@@ -542,7 +517,7 @@ export default function Home() {
           <div className="mt-10 text-center">
             <Link
               href="/homes"
-              className="inline-flex items-center gap-2 caption font-semibold text-pa-dark hover:text-pa-gold transition-colors"
+              className="inline-flex items-center gap-2 caption font-semibold text-pa-dark hover:text-pa-gold-aa transition-colors"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.exploreAllHomes')} <ArrowRight className="w-4 h-4" />
@@ -599,7 +574,7 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 5: HOW IT WORKS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s5Ref} className="fade-in cv-auto py-12 bg-white">
         <div className="container">
-          <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.howItWorksOverline')}</p>
+          <p className="caption font-medium text-pa-gold-aa mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.howItWorksOverline')}</p>
           <h2 className="headline-lg text-pa-dark mb-10 max-w-lg">{t('home.howItWorksTitle')}</h2>
 
           <div className="flex gap-6 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:gap-8 lg:gap-12 md:overflow-visible">
@@ -621,7 +596,9 @@ export default function Home() {
               },
             ].map((step, i) => (
               <div key={i} className="relative flex-shrink-0 w-[260px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
+                {/* Decorative numerals: the steps are already in reading order. */}
                 <p
+                  aria-hidden="true"
                   className="font-display text-[4rem] leading-none mb-4 font-normal"
                   style={{color: 'rgba(139,115,85,0.3)'}}
                 >
@@ -658,7 +635,7 @@ export default function Home() {
           {/* Right: text (40%) */}
           <div className="lg:col-span-2 flex items-center px-8 py-14 lg:px-14 lg:py-16 bg-white">
             <div className="max-w-md">
-              <p className="caption font-medium text-pa-gold mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.conceptOverline')}</p>
+              <p className="caption font-medium text-pa-gold-aa mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.conceptOverline')}</p>
               <h2 className="headline-lg text-pa-dark mb-5">{t('home.conceptTitle')}</h2>
               <p className="body-md mb-8">
                 {t('home.conceptBody')}
@@ -702,7 +679,7 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 7: DESTINATIONS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s7Ref} className="fade-in cv-auto section-padding bg-pa-cream">
         <div className="container">
-          <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.destOverline')}</p>
+          <p className="caption font-medium text-pa-gold-aa mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.destOverline')}</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
             <div>
               <h2 className="headline-lg text-pa-dark mb-3">{t('home.destTitle')}</h2>
@@ -755,7 +732,7 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 8: EXPERIENCES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s8Ref} className="fade-in cv-auto section-padding bg-pa-warm">
         <div className="container">
-          <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.expOverline')}</p>
+          <p className="caption font-medium text-pa-gold-aa mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.expOverline')}</p>
           <h2 className="headline-lg text-pa-dark mb-10">{t('home.expTitle')}</h2>
 
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
