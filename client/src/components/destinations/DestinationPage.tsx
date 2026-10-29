@@ -169,28 +169,32 @@ export function DestinationPage({
         aria-label={t("destinationGrowth.chapters")}
         className="border-b border-pa-sand bg-white"
       >
-        <div className="container flex gap-6 overflow-x-auto whitespace-nowrap py-2 text-sm">
+        {/* Links never shrink: the global 44px touch target replaces the flex
+            min-width, so long labels ran into each other ("Reiseführer
+            entdeckeErlebnisse") instead of the row scrolling (auditoria 29
+            out, Regression:P5). Same rule as .minho-chapters. */}
+        <div className="container flex gap-6 overflow-x-auto no-scrollbar whitespace-nowrap py-2 text-sm">
           <a
-            className="inline-flex min-h-11 items-center"
+            className="inline-flex min-h-11 shrink-0 items-center"
             href="#destination-homes"
           >
             {t("destinationGrowth.homes")}
           </a>
           <a
-            className="inline-flex min-h-11 items-center"
+            className="inline-flex min-h-11 shrink-0 items-center"
             href="#destination-seasons"
           >
             {t("destinationGrowth.seasons")}
           </a>
           <a
-            className="inline-flex min-h-11 items-center"
+            className="inline-flex min-h-11 shrink-0 items-center"
             href="#destination-guide"
           >
             {t("destinationGrowth.guide")}
           </a>
           {adventures.length > 0 && (
             <a
-              className="inline-flex min-h-11 items-center"
+              className="inline-flex min-h-11 shrink-0 items-center"
               href="#destination-experiences"
             >
               {t("destinationGrowth.experiences")}
