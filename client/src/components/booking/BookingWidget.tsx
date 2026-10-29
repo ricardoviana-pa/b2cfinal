@@ -23,8 +23,10 @@ import type { AvailabilityDay } from "./AvailabilityCalendar";
 // it loads only when the guest reaches the payment step, not on every PDP view.
 const CheckoutPaymentForm = lazy(() => import("./CheckoutPaymentForm"));
 import PhoneInput from "./PhoneInput";
+import PaymentMethodsNote from "./PaymentMethodsNote";
 import productsData from "@/data/products.json";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
+import { phoneIssue, phoneIssueMessage } from "@/lib/phone";
 import { formatEur, formatQuotedEur, formatBookingDate, intlLocale } from "@/lib/format";
 
 export interface BookingSelection {
@@ -1420,7 +1422,12 @@ export default function BookingWidget({
               />
             )}
 
-            {/* ── CTA Section — confirmed live price, direct booking ── */}
+            {/* ── CTA Section — confirmed live price, direct booking ──
+                 O botão e a linha dos meios de pagamento vão juntos: no
+                 computador o pa-reserve-cta fica preso ao fundo do painel
+                 (index.css, 29 out) e a linha "ainda não é cobrado" tem de
+                 ficar à vista com ele (auditoria do funil, crítico). */}
+            <div className="pa-reserve-cta bg-white space-y-2.5">
             <button
               onClick={() => {
                 // L6 (auditoria set/2026): duplo clique criava dois intents e
@@ -1566,7 +1573,7 @@ export default function BookingWidget({
                 setStep("payment");
               }}
               disabled={createIntent.isPending}
-              className="pa-action pa-reserve-cta w-full min-h-[52px] bg-black text-white caption font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors disabled:opacity-60"
+              className="pa-action w-full min-h-[52px] bg-black text-white caption font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors disabled:opacity-60"
             >
               {createIntent.isPending ? (
                 <span className="flex items-center justify-center gap-2">
@@ -1580,6 +1587,8 @@ export default function BookingWidget({
                 <>{t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatQuotedEur(effectiveQuote.total, lang)}</>
               )}
             </button>
+            <PaymentMethodsNote align="center" />
+            </div>
 
             {beQuoteError && (
               <div className="bg-red-50/60 border border-red-200/40 px-4 py-2.5 caption text-inherit text-red-700">
@@ -1642,7 +1651,7 @@ export default function BookingWidget({
               <p className="caption text-inherit text-red-500">{t("bookingWidget.invalidEmail", { defaultValue: "Please enter a valid email address" })}</p>
             )}
             {phoneTouched && guestPhone && !isValidPhone(guestPhone) && (
-              <p className="caption text-inherit text-red-500">{t("bookingWidget.invalidPhone", { defaultValue: "Please enter a valid phone number" })}</p>
+              <p className="caption text-inherit text-red-500">{phoneIssueMessage(phoneIssue(guestPhone), t)}</p>
             )}
 
             {/* Payment form only renders when ALL guest details are valid + terms accepted */}

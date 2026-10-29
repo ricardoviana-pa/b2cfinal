@@ -399,7 +399,15 @@
     "requestOnlyTitle": "Für diese Daten wird dieses Haus auf Anfrage gebucht.",
     "requestOnlyBody": "Senden Sie Ihre Anfrage an unseren Concierge, wir bestätigen Verfügbarkeit und Preis persönlich.",
     "twoPartsHint": "Sie können in zwei Teilen zahlen: die Hälfte heute, die andere Hälfte am {{date}}. Oder alles jetzt, mit Flex inklusive.",
-    "twoPartsHintPlain": "Sie können in zwei Teilen zahlen: die Hälfte heute, die andere Hälfte am {{date}}."
+    "twoPartsHintPlain": "Sie können in zwei Teilen zahlen: die Hälfte heute, die andere Hälfte am {{date}}.",
+    "phoneErrors": {
+      "digits": "Eine Nummer mit {{dialCode}} hat {{digits}} Ziffern nach der Landesvorwahl. Bitte prüfen Sie Nummer und Land.",
+      "digitsRange": "Eine Nummer mit {{dialCode}} hat {{min}} bis {{max}} Ziffern nach der Landesvorwahl. Bitte prüfen Sie Nummer und Land.",
+      "leadingZero": "Lassen Sie die 0 nach {{dialCode}} weg.",
+      "tooShort": "Diese Nummer scheint zu kurz. Bitte prüfen Sie sie mit Landesvorwahl.",
+      "tooLong": "Diese Nummer scheint zu lang. Bitte prüfen Sie sie mit Landesvorwahl.",
+      "countryCode": "Beginnen Sie die Nummer mit + und der Landesvorwahl."
+    }
   },
   "common": {
     "loading": "Wird geladen…",
@@ -810,7 +818,9 @@
       "otherCard": "Andere Karte verwenden",
       "concierge": "Mit dem Concierge sprechen",
       "whatsappMessage": "Hallo, ich brauche Hilfe bei meiner Buchung: {{property}}, {{checkIn}} bis {{checkOut}}, Gäste: {{guests}}. Die Zahlung ist nicht durchgegangen."
-    }
+    },
+    "methodsAccepted": "Akzeptierte Zahlungsmethoden",
+    "notChargedYet": "Es wird noch nichts abgebucht."
   },
   "contact": {
     "heroAlt": "Portugal Active kontaktieren",
@@ -1738,11 +1748,11 @@
         "desc": "Senden Sie uns Ihre Liste. Wir erledigen den Einkauf und richten alles vor Ihrer Ankunft her. Die Supermarktrechnung wird separat zum Selbstkostenpreis berechnet."
       }
     },
-    "emailTitle": "Wohin senden wir Ihre Buchung?",
+    "emailTitle": "Ihre E-Mail",
     "perStay": "pro Aufenthalt",
     "flex": {
       "title": "Flex, garantierte Umbuchung",
-      "tagline": "Buchen Sie um, wann immer nötig. Der gezahlte Betrag geht nie verloren.",
+      "tagline": "Buchen Sie bis {{days}} Tage vor der Anreise um. Der gezahlte Betrag geht nie verloren.",
       "perBooking": "einmalig, pro Buchung",
       "benefit1": "Umbuchen bis {{days}} Tage vor Check-in, kostenlos",
       "benefit2": "Der gezahlte Betrag bleibt geschützt, er geht nie verloren",
@@ -1911,7 +1921,10 @@
       "firstName": "Bitte geben Sie Ihren Vornamen ein.",
       "lastName": "Bitte geben Sie Ihren Nachnamen ein."
     },
-    "nifInvalid": "Diese portugiesische NIF scheint nicht korrekt zu sein: Prüfen Sie die 9 Ziffern. Für eine USt-IdNr. aus einem anderen Land beginnen Sie mit dem Ländercode (zum Beispiel ES)."
+    "nifInvalid": "Diese portugiesische NIF scheint nicht korrekt zu sein: Prüfen Sie die 9 Ziffern. Für eine USt-IdNr. aus einem anderen Land beginnen Sie mit dem Ländercode (zum Beispiel ES).",
+    "emailHoldNote": "Wir halten diesen Preis bis {{date}}, {{time}}. Wenn Sie jetzt nicht abschließen, senden wir Ihnen eventuell ein oder zwei Erinnerungen per E-Mail. Kein Spam.",
+    "emailReminderNote": "Wenn Sie jetzt nicht abschließen, senden wir Ihnen eventuell ein oder zwei Erinnerungen per E-Mail. Kein Spam.",
+    "conciergeMessage": "Hallo, ich habe eine Frage zu meiner Buchung: {{property}}, {{checkIn}} bis {{checkOut}}, Gäste: {{guests}}."
   },
   "host": {
     "hostedBy": "Ihre Gastgeber: Ricardo & das Portugal-Active-Team",

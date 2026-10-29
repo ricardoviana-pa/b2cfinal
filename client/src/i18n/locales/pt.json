@@ -399,7 +399,15 @@
     "requestOnlyTitle": "Nestas datas, esta casa é reservada mediante pedido.",
     "requestOnlyBody": "Envie o seu pedido ao nosso concierge e confirmamos a disponibilidade e o preço pessoalmente.",
     "twoPartsHint": "Pode pagar em duas partes: metade hoje, metade a {{date}}. Ou tudo agora, com o Flex incluído.",
-    "twoPartsHintPlain": "Pode pagar em duas partes: metade hoje, metade a {{date}}."
+    "twoPartsHintPlain": "Pode pagar em duas partes: metade hoje, metade a {{date}}.",
+    "phoneErrors": {
+      "digits": "Um número {{dialCode}} tem {{digits}} algarismos depois do indicativo. Confirme o número e o país.",
+      "digitsRange": "Um número {{dialCode}} tem entre {{min}} e {{max}} algarismos depois do indicativo. Confirme o número e o país.",
+      "leadingZero": "Retire o 0 depois de {{dialCode}}.",
+      "tooShort": "Este número parece curto demais. Confirme-o, com o indicativo do país.",
+      "tooLong": "Este número parece longo demais. Confirme-o, com o indicativo do país.",
+      "countryCode": "Comece o número por + e o indicativo do país."
+    }
   },
   "common": {
     "loading": "A carregar…",
@@ -810,7 +818,9 @@
       "otherCard": "Usar outro cartão",
       "concierge": "Falar com o concierge",
       "whatsappMessage": "Olá, preciso de ajuda com a minha reserva: {{property}}, de {{checkIn}} a {{checkOut}}, hóspedes: {{guests}}. O pagamento não passou."
-    }
+    },
+    "methodsAccepted": "Métodos de pagamento aceites",
+    "notChargedYet": "Ainda não lhe será cobrado nada."
   },
   "contact": {
     "heroAlt": "Contactar Portugal Active",
@@ -1741,11 +1751,11 @@
         "desc": "Envie-nos a sua lista. Fazemos as compras e deixamos tudo arrumado antes de chegar. A conta do supermercado é cobrada à parte, ao custo."
       }
     },
-    "emailTitle": "Para onde enviamos a sua reserva?",
+    "emailTitle": "O seu email",
     "perStay": "por estadia",
     "flex": {
       "title": "Flex, remarcação garantida",
-      "tagline": "Remarque quando quiser. O valor que pagou nunca se perde.",
+      "tagline": "Remarque até {{days}} dias antes da chegada. O valor que pagou nunca se perde.",
       "perBooking": "pagamento único, por reserva",
       "benefit1": "Remarque até {{days}} dias antes do check-in, sem custo",
       "benefit2": "O valor pago fica sempre protegido, nunca se perde",
@@ -1914,7 +1924,10 @@
       "firstName": "Indique o seu nome.",
       "lastName": "Indique o seu apelido."
     },
-    "nifInvalid": "Este NIF não parece correto: verifique os 9 dígitos. Para um número de IVA de outro país, comece pelo código do país (por exemplo ES)."
+    "nifInvalid": "Este NIF não parece correto: verifique os 9 dígitos. Para um número de IVA de outro país, comece pelo código do país (por exemplo ES).",
+    "emailHoldNote": "Guardamos este preço até {{date}}, {{time}}. Se não terminar agora, podemos enviar-lhe um ou dois lembretes por email. Sem spam.",
+    "emailReminderNote": "Se não terminar agora, podemos enviar-lhe um ou dois lembretes por email. Sem spam.",
+    "conciergeMessage": "Olá, tenho uma pergunta sobre a minha reserva: {{property}}, de {{checkIn}} a {{checkOut}}, hóspedes: {{guests}}."
   },
   "host": {
     "hostedBy": "Anfitriões: Ricardo & a equipa Portugal Active",

@@ -399,7 +399,15 @@
     "requestOnlyTitle": "Voor deze data wordt dit huis op aanvraag geboekt.",
     "requestOnlyBody": "Stuur uw aanvraag naar onze concierge en wij bevestigen beschikbaarheid en prijs persoonlijk.",
     "twoPartsHint": "U kunt in twee delen betalen: de helft vandaag, de andere helft op {{date}}. Of alles nu, met Flex inbegrepen.",
-    "twoPartsHintPlain": "U kunt in twee delen betalen: de helft vandaag, de andere helft op {{date}}."
+    "twoPartsHintPlain": "U kunt in twee delen betalen: de helft vandaag, de andere helft op {{date}}.",
+    "phoneErrors": {
+      "digits": "Een nummer met {{dialCode}} heeft {{digits}} cijfers na de landcode. Controleer het nummer en het land.",
+      "digitsRange": "Een nummer met {{dialCode}} heeft {{min}} tot {{max}} cijfers na de landcode. Controleer het nummer en het land.",
+      "leadingZero": "Laat de 0 na {{dialCode}} weg.",
+      "tooShort": "Dit nummer lijkt te kort. Controleer het, met de landcode.",
+      "tooLong": "Dit nummer lijkt te lang. Controleer het, met de landcode.",
+      "countryCode": "Begin het nummer met + en de landcode."
+    }
   },
   "common": {
     "loading": "Laden…",
@@ -810,7 +818,9 @@
       "otherCard": "Een andere kaart gebruiken",
       "concierge": "Met de concierge spreken",
       "whatsappMessage": "Hallo, ik heb hulp nodig bij mijn boeking: {{property}}, {{checkIn}} tot {{checkOut}}, gasten: {{guests}}. De betaling is niet gelukt."
-    }
+    },
+    "methodsAccepted": "Geaccepteerde betaalmethoden",
+    "notChargedYet": "Er wordt nog niets afgeschreven."
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1738,11 +1748,11 @@
         "desc": "Stuur ons uw lijst. Wij doen de boodschappen en zetten alles klaar vóór uw aankomst. De supermarktrekening wordt apart en tegen kostprijs in rekening gebracht."
       }
     },
-    "emailTitle": "Waar sturen we uw boeking naartoe?",
+    "emailTitle": "Uw e-mailadres",
     "perStay": "per verblijf",
     "flex": {
       "title": "Flex, gegarandeerd omboeken",
-      "tagline": "Boek om wanneer u wilt. Het betaalde bedrag gaat nooit verloren.",
+      "tagline": "Boek om tot {{days}} dagen vóór aankomst. Het betaalde bedrag gaat nooit verloren.",
       "perBooking": "eenmalig, per boeking",
       "benefit1": "Boek om tot {{days}} dagen vóór check-in, kosteloos",
       "benefit2": "Het betaalde bedrag blijft beschermd, het gaat nooit verloren",
@@ -1911,7 +1921,10 @@
       "firstName": "Vul uw voornaam in.",
       "lastName": "Vul uw achternaam in."
     },
-    "nifInvalid": "Dit Portugese NIF lijkt niet te kloppen: controleer de 9 cijfers. Begin een btw-nummer uit een ander land met de landcode (bijvoorbeeld ES)."
+    "nifInvalid": "Dit Portugese NIF lijkt niet te kloppen: controleer de 9 cijfers. Begin een btw-nummer uit een ander land met de landcode (bijvoorbeeld ES).",
+    "emailHoldNote": "We houden deze prijs vast tot {{date}}, {{time}}. Als u nu niet afrondt, sturen we u mogelijk een of twee herinneringen per e-mail. Geen spam.",
+    "emailReminderNote": "Als u nu niet afrondt, sturen we u mogelijk een of twee herinneringen per e-mail. Geen spam.",
+    "conciergeMessage": "Hallo, ik heb een vraag over mijn boeking: {{property}}, {{checkIn}} tot {{checkOut}}, gasten: {{guests}}."
   },
   "host": {
     "hostedBy": "Uw hosts: Ricardo & het Portugal Active-team",

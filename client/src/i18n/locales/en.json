@@ -399,7 +399,15 @@
     "requestOnlyTitle": "This home is booked on request for these dates.",
     "requestOnlyBody": "Send your request to our concierge and we will confirm availability and price personally.",
     "twoPartsHint": "You can pay in two parts: half today, half on {{date}}. Or everything now, with Flex included.",
-    "twoPartsHintPlain": "You can pay in two parts: half today, half on {{date}}."
+    "twoPartsHintPlain": "You can pay in two parts: half today, half on {{date}}.",
+    "phoneErrors": {
+      "digits": "A {{dialCode}} number has {{digits}} digits after the country code. Check the number and the country.",
+      "digitsRange": "A {{dialCode}} number has {{min}} to {{max}} digits after the country code. Check the number and the country.",
+      "leadingZero": "Leave out the 0 after {{dialCode}}.",
+      "tooShort": "This number looks too short. Check it, with the country code.",
+      "tooLong": "This number looks too long. Check it, with the country code.",
+      "countryCode": "Start the number with + and the country code."
+    }
   },
   "common": {
     "loading": "Loading…",
@@ -845,7 +853,9 @@
       "otherCard": "Use another card",
       "concierge": "Talk to the concierge",
       "whatsappMessage": "Hello, I need help with my booking: {{property}}, {{checkIn}} to {{checkOut}}, guests: {{guests}}. The payment did not go through."
-    }
+    },
+    "methodsAccepted": "Accepted payment methods",
+    "notChargedYet": "You won't be charged yet."
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1738,11 +1748,11 @@
         "desc": "Send us your list. We do the shopping and leave everything set up before you arrive. The supermarket bill is charged separately, at cost."
       }
     },
-    "emailTitle": "Where should we send your booking?",
+    "emailTitle": "Your email",
     "perStay": "per stay",
     "flex": {
       "title": "Flex, guaranteed rebooking",
-      "tagline": "Rebook whenever you need. The amount you paid is never lost.",
+      "tagline": "Rebook up to {{days}} days before arrival. The amount you paid is never lost.",
       "perBooking": "one-time, per booking",
       "benefit1": "Rebook up to {{days}} days before check-in, at no cost",
       "benefit2": "The amount you paid stays protected, it is never lost",
@@ -1911,7 +1921,10 @@
       "firstName": "Enter your first name.",
       "lastName": "Enter your last name."
     },
-    "nifInvalid": "This Portuguese NIF does not look right: check the 9 digits. For a VAT number from another country, start with its country code (for example ES)."
+    "nifInvalid": "This Portuguese NIF does not look right: check the 9 digits. For a VAT number from another country, start with its country code (for example ES).",
+    "emailHoldNote": "We hold this price until {{date}}, {{time}}. If you don't finish now, we may email you a reminder or two. No spam.",
+    "emailReminderNote": "If you don't finish now, we may email you a reminder or two. No spam.",
+    "conciergeMessage": "Hello, I have a question about my booking: {{property}}, {{checkIn}} to {{checkOut}}, guests: {{guests}}."
   },
   "host": {
     "hostedBy": "Hosted by Ricardo & the Portugal Active team",

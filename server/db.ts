@@ -1057,6 +1057,31 @@ export async function hasNewsletterConsent(email: string): Promise<boolean> {
   }
 }
 
+/**
+ * A caixa de marketing do passo 1 do checkout, tal como o hóspede a deixou:
+ * o captureLead mantém os leads do checkout deste email em
+ * "newsletter-checkout" enquanto a caixa estiver marcada e passa-os a
+ * "checkout" quando é desmarcada. (Uma subscrição no rodapé não conta: o
+ * checkout nunca lhe mexe.) null = não se sabe (sem BD ou leitura falhada):
+ * quem chama não repõe nada e o captureLead não mexe no consentimento.
+ */
+export async function checkoutNewsletterConsent(email: string): Promise<boolean | null> {
+  if (!email) return null;
+  const db = await getDb();
+  if (!db) return null;
+  try {
+    const rows = await db
+      .select({ id: leads.id })
+      .from(leads)
+      .where(and(eq(leads.email, email), eq(leads.source, "newsletter-checkout")))
+      .limit(1);
+    return rows.length > 0;
+  } catch (error) {
+    console.error("[Database] checkoutNewsletterConsent failed:", error);
+    return null;
+  }
+}
+
 /** Claim do alerta "ligar ao hóspede": só o primeiro sweep o envia. */
 export async function claimConciergeAlert(id: string): Promise<boolean> {
   const db = await getDb();

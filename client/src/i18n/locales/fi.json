@@ -399,7 +399,15 @@
     "requestOnlyTitle": "Näinä päivinä tämä koti varataan pyynnöstä.",
     "requestOnlyBody": "Lähetä pyyntösi conciergellemme, niin vahvistamme saatavuuden ja hinnan henkilökohtaisesti.",
     "twoPartsHint": "Voit maksaa kahdessa osassa: puolet tänään ja puolet {{date}}. Tai kaiken nyt, Flex mukaan lukien.",
-    "twoPartsHintPlain": "Voit maksaa kahdessa osassa: puolet tänään ja puolet {{date}}."
+    "twoPartsHintPlain": "Voit maksaa kahdessa osassa: puolet tänään ja puolet {{date}}.",
+    "phoneErrors": {
+      "digits": "Numerossa, joka alkaa {{dialCode}}, on maatunnuksen jälkeen {{digits}} numeroa. Tarkista numero ja maa.",
+      "digitsRange": "Numerossa, joka alkaa {{dialCode}}, on maatunnuksen jälkeen vähintään {{min}} ja enintään {{max}} numeroa. Tarkista numero ja maa.",
+      "leadingZero": "Jätä pois 0 maatunnuksen {{dialCode}} jälkeen.",
+      "tooShort": "Numero näyttää liian lyhyeltä. Tarkista se maatunnuksen kanssa.",
+      "tooLong": "Numero näyttää liian pitkältä. Tarkista se maatunnuksen kanssa.",
+      "countryCode": "Aloita numero merkillä + ja maatunnuksella."
+    }
   },
   "common": {
     "loading": "Ladataan…",
@@ -810,7 +818,9 @@
       "otherCard": "Käytä toista korttia",
       "concierge": "Keskustele conciergen kanssa",
       "whatsappMessage": "Hei, tarvitsen apua varaukseni kanssa: {{property}}, saapuminen {{checkIn}}, lähtö {{checkOut}}, vieraita: {{guests}}. Maksu ei mennyt läpi."
-    }
+    },
+    "methodsAccepted": "Hyväksytyt maksutavat",
+    "notChargedYet": "Sinua ei veloiteta vielä."
   },
   "contact": {
     "heroAlt": "Ota yhteyttä Portugal Activeen",
@@ -1738,11 +1748,11 @@
         "desc": "Lähetä meille listasi. Teemme ostokset ja järjestämme kaiken valmiiksi ennen saapumistasi. Kaupan lasku veloitetaan erikseen, omakustannehintaan."
       }
     },
-    "emailTitle": "Minne lähetämme varauksesi?",
+    "emailTitle": "Sähköpostisi",
     "perStay": "per majoitus",
     "flex": {
       "title": "Flex, taattu uudelleenvaraus",
-      "tagline": "Siirrä varaustasi milloin tahansa. Maksettu summa ei koskaan mene hukkaan.",
+      "tagline": "Siirrä varausta {{days}} päivään asti ennen saapumista. Maksettu summa ei koskaan mene hukkaan.",
       "perBooking": "kertamaksu, per varaus",
       "benefit1": "Siirrä varausta {{days}} päivään asti ennen sisäänkirjautumista, maksutta",
       "benefit2": "Maksettu summa pysyy suojattuna, se ei koskaan mene hukkaan",
@@ -1911,7 +1921,10 @@
       "firstName": "Anna etunimesi.",
       "lastName": "Anna sukunimesi."
     },
-    "nifInvalid": "Tämä portugalilainen NIF ei näytä oikealta: tarkista 9 numeroa. Jos kyseessä on toisen maan ALV-tunnus, aloita maatunnuksella (esimerkiksi ES)."
+    "nifInvalid": "Tämä portugalilainen NIF ei näytä oikealta: tarkista 9 numeroa. Jos kyseessä on toisen maan ALV-tunnus, aloita maatunnuksella (esimerkiksi ES).",
+    "emailHoldNote": "Pidämme tämän hinnan voimassa {{date}} klo {{time}} asti. Jos et viimeistele nyt, voimme lähettää sinulle muistutuksen tai kaksi sähköpostilla. Ei roskapostia.",
+    "emailReminderNote": "Jos et viimeistele nyt, voimme lähettää sinulle muistutuksen tai kaksi sähköpostilla. Ei roskapostia.",
+    "conciergeMessage": "Hei, minulla on kysymys varauksestani: {{property}}, saapuminen {{checkIn}}, lähtö {{checkOut}}, vieraita: {{guests}}."
   },
   "host": {
     "hostedBy": "Isäntinänne Ricardo & Portugal Active -tiimi",

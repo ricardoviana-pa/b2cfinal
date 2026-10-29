@@ -1,4 +1,4 @@
-import { accommodationSubtotal } from "@shared/booking-money";
+import { effectiveQuote, type CheckoutQuoteSnapshot } from "@/lib/checkoutQuote";
 /**
  * Checkout 2.0 — Fase 1 (docs/checkout_spec.md §3, §4, §16).
  *
@@ -27,6 +27,7 @@ import {
   ChevronUp,
   ChevronDown,
   Tag,
+  MessageCircle,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
@@ -39,6 +40,9 @@ import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine"
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
+import { phoneIssue, phoneIssueMessage } from "@/lib/phone";
+import { consentToSend, stayContinueAction } from "@/lib/checkoutStay";
+import { flexAddsValue, flexExtraDays, flexPriceForPlan } from "@shared/flexValue";
 import { conciergeWhatsAppHref, guestDetailsIssues, walletsUnlocked, type GuestField } from "@/lib/checkoutPayment";
 import { checkTaxId, normalizeTaxId } from "@/lib/taxId";
 import { pushDL, pushEcommerce, buildPropertyItem } from "@/lib/datalayer";
@@ -56,33 +60,13 @@ import FlexBlock, { type FlexConfig } from "./FlexBlock";
 import { MandateConsent, PaymentPlanSelector, planDate, type PaymentPlanChoice, type PaymentPlanOffer } from "./PaymentPlanSelector";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
+import PaymentMethodsNote from "@/components/booking/PaymentMethodsNote";
 import TwoPartsHint from "@/components/booking/TwoPartsHint";
 
 type Step = "stay" | "customize" | "pay";
 
 /** Quote snapshot mirrored from the intent (euro floats, same shape as the server json column) */
-interface QuoteSnapshot {
-  nightlyRate: number;
-  totalNights: number;
-  cleaningFee: number;
-  taxesAndFees: number;
-  total: number;
-  nights: number;
-  currency: string;
-  quoteCreatedAt: number | null;
-  couponCode?: string;
-  ratePlanOptions?: Array<{
-    ratePlanId: string;
-    name: string;
-    total: number;
-    nightlyRate: number;
-    cleaningFee: number;
-    taxesAndFees?: number;
-    cancellationPolicy?: string[];
-    /** Guesty's share charged after the deadline (percent) — 100 on every plan today. */
-    cancellationFee?: string | number | null;
-  }>;
-}
+type QuoteSnapshot = CheckoutQuoteSnapshot;
 
 const QUOTE_EXPIRY_MS = 23 * 60 * 60 * 1000;
 
@@ -272,6 +256,13 @@ export default function CheckoutPage() {
   // ser um acto afirmativo). Sem ele o email só serve a recuperação
   // transacional do checkout; com ele o lead entra no segmento da newsletter.
   const [newsletterOptIn, setNewsletterOptIn] = useState(false);
+  // Auditoria do funil (n.º 2, crítico): a caixa nunca era reposta e um
+  // segundo Continuar mandava consent:false, retirando o hóspede da lista sem
+  // ele mexer. Agora vem do servidor e só se envia o que é conhecido.
+  const [newsletterTouched, setNewsletterTouched] = useState(false);
+  const consentRestoredRef = useRef(false);
+  // "Continuar" sem email válido: o campo recebe o foco e a dica fica em evidência
+  const [emailNudge, setEmailNudge] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -330,6 +321,12 @@ export default function CheckoutPage() {
     setQuoteId(intent.guestyQuoteId ?? null);
     setSelectedRatePlanId(intent.ratePlanId ?? null);
     if (intent.email) setEmail(intent.email);
+    // Consentimento de marketing tal como o hóspede o deixou (null = não se sabe)
+    const savedConsent = (intentQuery.data as { newsletterOptIn?: boolean | null } | undefined)?.newsletterOptIn;
+    if (typeof savedConsent === "boolean") {
+      setNewsletterOptIn(savedConsent);
+      consentRestoredRef.current = true;
+    }
     if (intent.guestFirstName) setFirstName(intent.guestFirstName);
     if (intent.guestLastName) setLastName(intent.guestLastName);
     if (intent.guestPhone) setPhone(intent.guestPhone);
@@ -391,22 +388,8 @@ export default function CheckoutPage() {
     return () => window.clearTimeout(tm);
   }, [intent?.expiresAt]);
 
-  // ── Derived pricing (selected rate plan overlays the base quote) ──
-  const effective = useMemo(() => {
-    if (!quote) return null;
-    const opt = quote.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
-    if (!opt) return { ...quote, ratePlanId: selectedRatePlanId ?? undefined, cancellationPolicy: undefined as string[] | undefined };
-    return {
-      ...quote,
-      nightlyRate: opt.nightlyRate,
-      totalNights: accommodationSubtotal(opt.total, opt.cleaningFee, opt.taxesAndFees ?? 0),
-      cleaningFee: opt.cleaningFee,
-      taxesAndFees: opt.taxesAndFees ?? 0,
-      total: opt.total,
-      ratePlanId: opt.ratePlanId,
-      cancellationPolicy: opt.cancellationPolicy,
-    };
-  }, [quote, selectedRatePlanId]);
+  // ── Derived pricing (selected rate plan overlays the base quote; lib/checkoutQuote.ts) ──
+  const effective = useMemo(() => effectiveQuote(quote, selectedRatePlanId), [quote, selectedRatePlanId]);
 
   // ── Extras catalog (Fase 2 — Personalizar), curado no servidor pelo contexto ──
   const checkInMonth = checkIn ? Number(checkIn.slice(5, 7)) : undefined;
@@ -458,6 +441,10 @@ export default function CheckoutPage() {
   const property = propertyQuery.data as any;
   const heroImage = property?.images?.[0]
     ? optimizeGuestyImage(property.images[0], 800)
+    : undefined;
+  // Miniatura do telemóvel (48-56 px; 160 px chega para ecrãs 3x)
+  const thumbImage = property?.images?.[0]
+    ? optimizeGuestyImage(property.images[0], 160)
     : undefined;
   const displayName = sanitizePropertyName(intent?.propertyName || property?.name || "");
   const backParams = new URLSearchParams();
@@ -611,7 +598,8 @@ export default function CheckoutPage() {
     contactSavingRef.current = true;
     try {
       if (!isDemo) {
-        const saved = await captureLead.mutateAsync({ intentId: intent.id, email, locale: lang, consent: newsletterOptIn });
+        const consent = consentToSend({ checked: newsletterOptIn, touched: newsletterTouched, restored: consentRestoredRef.current });
+        const saved = await captureLead.mutateAsync({ intentId: intent.id, email, locale: lang, consent });
         if (!saved.ok) throw new Error("Contact not saved");
       }
     } catch {
@@ -629,7 +617,32 @@ export default function CheckoutPage() {
     }
     setStep("customize");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [intent, email, lang, captureLead, utils, isDemo, newsletterOptIn]);
+  }, [intent, email, lang, captureLead, utils, isDemo, newsletterOptIn, newsletterTouched]);
+
+  /** O "Continuar" do passo 1 (barra do telemóvel e cartão do email) nunca
+   *  fica parado: sem email válido leva ao campo, foca-o e mostra a dica; com
+   *  o preço expirado ou as datas ocupadas leva ao aviso que diz o que fazer. */
+  const continueFromStay = () => {
+    const action = stayContinueAction({
+      emailValid: isValidEmail(email),
+      quoteStale,
+      datesUnavailable,
+      saving: captureLead.isPending || contactSavingRef.current,
+    });
+    if (action === "busy") return;
+    setSheetOpen(false);
+    if (action === "submit") {
+      void submitEmail();
+    } else if (action === "focus_email") {
+      setEmailTouched(true);
+      setEmailNudge(true);
+      focusField("checkout-email");
+    } else if (action === "refresh_price") {
+      focusField("checkout-refresh-price");
+    } else {
+      focusField("checkout-change-dates");
+    }
+  };
 
   /**
    * Aplica/remove o código promocional na quote BE existente (o quoteId
@@ -808,12 +821,14 @@ export default function CheckoutPage() {
   const extrasTotal = useMemo(() => paidExtras.reduce((sum, e) => sum + (e.amount ?? 0), 0), [paidExtras]);
 
   const receptionAmt = receptionConfig ? receptionAmount(receptionConfig, receptionChoice) : 0;
-  // Flex dinâmico: 10% do valor das noites (piso: config.price)
-  const flexUnit = flexConfig
-    ? (quote?.totalNights ?? 0) > 0
-      ? Math.round(((quote?.totalNights ?? 0) * ((flexConfig as any).pricePercent ?? 10)) / 100)
-      : flexConfig.price
-    : 0;
+  // Flex dinâmico: 10% do valor das noites DA TARIFA ESCOLHIDA (piso:
+  // config.price). Auditoria do funil, n.º 14 (c): usava as noites da cotação
+  // com que o hóspede chegou (quote.totalNights, a tarifa por omissão); ao
+  // trocar de tarifa o servidor cobrava sobre as novas noites e o botão
+  // mostrava outro valor (o PayPal/Klarna recusavam com "o preço mudou").
+  // A mesma conta do servidor: shared/flexValue.ts, teste de paridade em
+  // server/services/flex-value.test.ts.
+  const flexUnit = flexConfig ? flexPriceForPlan(effective, flexConfig) : 0;
   // Flex oferecido pelo funil de recuperação (contacto 3): o servidor cobra 0
   // enquanto flexGiftUntil for válido; o ecrã tem de dizer o mesmo
   const flexGifted = !!(intent as any)?.flexGiftUntil && new Date((intent as any).flexGiftUntil).getTime() > Date.now();
@@ -900,6 +915,23 @@ export default function CheckoutPage() {
   // the thank-you page, so a plan never reads two different ways.
   const selectedPolicyCode = planPolicyCode(selectedPlanOption);
   const freeCancelUntil = freeCancellationDeadline(selectedPolicyCode, checkIn);
+
+  // Flex onde não acrescenta nada (auditoria do funil, n.º 14 a): remarca até
+  // 7 dias antes, o mesmo prazo do cancelamento gratuito da tarifa moderate,
+  // e a menos de 7 dias da chegada já não serve. Aí o bloco não aparece e um
+  // Flex pago que tinha sido escolhido (noutra tarifa) sai sozinho, como
+  // abaixo do limiar (M2). Um Flex oferecido (recuperação, 0 €) fica.
+  // Política desconhecida: null, o Flex mantém-se como até aqui.
+  const flexExtra = flexConfig
+    ? flexExtraDays({ policyCode: selectedPolicyCode, checkIn, rescheduleDaysBefore: flexConfig.rescheduleDaysBefore })
+    : null;
+  const flexOffered = flexAddsValue(flexExtra);
+  useEffect(() => {
+    if (!flexSelected || flexGifted || !flexConfig || flexOffered) return;
+    setFlexSelected(false);
+    syncIntent({ flex: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flexSelected, flexGifted, !!flexConfig, flexOffered]);
 
   // AUDIT A1: extras/flex sincronizam com o intent a cada alteração (debounce
   // 600ms) — antes só persistiam no continueToPay: um refresh no Personalizar
@@ -1166,15 +1198,23 @@ export default function CheckoutPage() {
   }, [intent?.id]);
 
   // ── Price-guarantee deadline label ──
-  const guaranteeLabel = useMemo(() => {
+  const priceHold = useMemo(() => {
     if (!intent?.expiresAt) return null;
     const d = new Date(intent.expiresAt);
     if (Number.isNaN(d.getTime()) || d.getTime() < Date.now()) return null;
     const time = d.toLocaleTimeString(intlLocale(lang), { hour: "2-digit", minute: "2-digit" });
     const pad = (n: number) => String(n).padStart(2, "0");
     const localYmd = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-    return t("checkout.priceGuaranteed", { date: formatBookingDate(localYmd, lang), time });
-  }, [intent?.expiresAt, lang, t]);
+    return { date: formatBookingDate(localYmd, lang), time };
+  }, [intent?.expiresAt, lang]);
+  const guaranteeLabel = priceHold ? t("checkout.priceGuaranteed", priceHold) : null;
+  // Passo 1 (auditoria do funil, n.º 2; spec §4): a razão verdadeira para o
+  // email, sem prometer um envio que não sai já. O captureLead não envia
+  // nada; os lembretes (1 h e 20 h) só saem se o hóspede não terminar, e
+  // nunca ao grupo de controlo — daí o "podemos".
+  const emailNote = priceHold
+    ? t("checkout.emailHoldNote", priceHold)
+    : t("checkout.emailReminderNote");
 
   // ── Passo do pagamento (auditoria do funil, out/2026, n.º 1, 4 e 11) ──
   // Nome, email e telefone validam-se no clique em Pagar: o erro fica no campo,
@@ -1629,6 +1669,9 @@ export default function CheckoutPage() {
   const showEmailField = emailEditing || emailInvalid;
   const emailError = emailInvalid && (showGuestErrors || (emailTouched && email.length > 0));
   const phoneError = !isValidPhone(phone) && (showGuestErrors || (phoneTouched && !!phone));
+  // A razão junto ao campo (auditoria do funil, n.º 7): "um número +351 tem 9
+  // algarismos…", "retire o 0 depois de +44", nunca recusar sem dizer porquê.
+  const phoneErrorText = phoneError ? phoneIssueMessage(phoneIssue(phone), t) : "";
   const nifIssue = checkTaxId(nif) === "pt_invalid";
 
   // Autorização (duas partes), Termos e a frase de política: mesmo acima do
@@ -1683,6 +1726,36 @@ export default function CheckoutPage() {
       guests,
     }),
   );
+  // Contacto humano em todos os passos (auditoria do funil, crítico): o único
+  // WhatsApp do checkout estava no aviso de datas ocupadas. A mensagem já leva
+  // a casa e as datas; o clique conta como whatsapp_click pelo
+  // data-track-source (installContactClickTracking), com o passo.
+  const conciergeQuestionHref = conciergeWhatsAppHref(
+    t("checkout.conciergeMessage", {
+      property: displayName,
+      checkIn: formatBookingDate(checkIn, lang, true),
+      checkOut: formatBookingDate(checkOut, lang, true),
+      guests,
+    }),
+  );
+
+  // Telemóvel: a casa (nome e foto) no topo de cada passo. O resumo com a foto
+  // só existe no computador e a folha "Ver detalhes" vem fechada; numa compra
+  // de milhares de euros falta o "estou a reservar a casa certa" (crítico).
+  const mobileContext = (
+    <div className="lg:hidden flex items-center gap-3" data-testid="checkout-mobile-context">
+      {thumbImage ? (
+        <img src={thumbImage} alt="" className="w-12 h-12 rounded-md object-cover shrink-0 bg-pa-warm" width={48} height={48} />
+      ) : null}
+      <div className="min-w-0">
+        <p className="font-display body-sm text-pa-dark leading-snug truncate">{displayName}</p>
+        {intent.destination && (
+          <p className="eyebrow tracking-[0.08em] uppercase text-pa-stone-aa truncate">{intent.destination}</p>
+        )}
+      </div>
+    </div>
+  );
+
   const twoPartsSwitch = offer && plan === "full"
     ? {
         amountNow: formatQuotedEur(offer.depositCents / 100, lang),
@@ -1764,6 +1837,17 @@ export default function CheckoutPage() {
             {saveIssue && (
               <span className="caption text-pa-earth">{t("checkout.saveIssue", "Reconnecting, changes pending")}</span>
             )}
+            <a
+              href={conciergeQuestionHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track-source={`checkout_header_${step}`}
+              aria-label={t("property.needHelpConcierge", "Need help? Talk to concierge")}
+              title={t("property.needHelpConcierge", "Need help? Talk to concierge")}
+              className="w-9 h-9 rounded-full border border-pa-sand flex items-center justify-center text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
+            >
+              <MessageCircle className="w-4 h-4" aria-hidden />
+            </a>
             <Link
               href={backHref}
               aria-label={t("checkout.closeAria", "Back to the property")}
@@ -1778,6 +1862,7 @@ export default function CheckoutPage() {
       <main className="max-w-[1100px] mx-auto px-4 pt-8 lg:grid lg:grid-cols-[minmax(0,640px)_380px] lg:gap-12 lg:items-start">
         {/* ══════════ CONTENT COLUMN ══════════ */}
         <section key={step} className="space-y-6 checkout-step-in">
+          {mobileContext}
           {isDemo && <p role="status" className="rounded-lg border border-pa-gold bg-pa-warm p-3 body-sm text-pa-dark">{t('conversion.demoNotice')}</p>}
           {/* Stale quote / unavailable banners */}
           {quoteStale && !datesUnavailable && (
@@ -1786,6 +1871,7 @@ export default function CheckoutPage() {
                 {t("checkout.quoteExpiredBanner", "This price has expired. Refresh to see the current price for your dates — your details are kept.")}
               </p>
               <button
+                id="checkout-refresh-price"
                 type="button"
                 onClick={() => requote(checkIn, checkOut, guests)}
                 disabled={requoting}
@@ -1802,6 +1888,7 @@ export default function CheckoutPage() {
               </p>
               <div className="flex items-center gap-4">
                 <button
+                  id="checkout-change-dates"
                   type="button"
                   onClick={() => { setStep("stay"); setEditingStay(true); setDatesUnavailable(false); }}
                   className="caption text-inherit font-medium text-red-700 underline underline-offset-2"
@@ -1904,12 +1991,11 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              {/* Price breakdown — mobile only: on desktop the lateral summary
-                  already shows it and the duplication reads noisy (spec v1.2 §4) */}
-              {effective && (
-                <div className="lg:hidden bg-white border border-pa-sand rounded-lg p-5">{summaryLines}</div>
-              )}
-
+              {/* Sem o resumo de preço só do telemóvel (auditoria do funil,
+                  n.º 2): repetia o "Ver detalhes" da barra e empurrava o email
+                  para baixo da dobra. A ordem da spec §4 fica: resumo da
+                  estadia, tarifa, email (as duas partes vivem no cartão da
+                  tarifa reembolsável). */}
               {rateChoice}
               {/* Uma só tarifa (sem cartões para escolher): a frase da política
                   fica aqui, a única do ecrã (auditoria do funil, n.º 11). */}
@@ -1922,24 +2008,35 @@ export default function CheckoutPage() {
                 />
               ) : null}
 
-              {/* Email capture */}
+              {/* Email capture. O título não promete um envio (o captureLead
+                  não envia nada) e a nota diz o que acontece de facto: o preço
+                  fica guardado até à expiração real e, se o hóspede não
+                  terminar, podem sair um ou dois lembretes (spec §4, auditoria
+                  do funil n.º 2 e críticos). */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
-                <h2 className="font-display text-[19px] text-pa-dark leading-snug">
-                  {t("checkout.emailTitle", "Where should we send your booking?")}
-                </h2>
-                <label htmlFor="checkout-email" className="block caption font-medium text-pa-earth">
-                  {t("checkout.emailLabel", "Your email")}
-                </label>
+                <div>
+                  <h2 className="font-display text-[19px] text-pa-dark leading-snug">
+                    <label htmlFor="checkout-email">{t("checkout.emailTitle", "Your email")}</label>
+                  </h2>
+                  <p id="checkout-email-note" className="caption text-pa-earth leading-snug mt-1">{emailNote}</p>
+                </div>
                 <input
                   id="checkout-email"
                   type="email"
                   autoComplete="email"
-                  aria-label={t("bookingWidget.emailPh")}
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (isValidEmail(e.target.value)) setEmailNudge(false);
+                  }}
                   onBlur={() => setEmailTouched(true)}
                   placeholder={t("checkout.emailPh", "name@email.com")}
-                  className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+                  aria-describedby={isValidEmail(email) ? "checkout-email-note" : "checkout-email-note checkout-email-hint"}
+                  aria-invalid={(emailTouched && email.length > 0 && !isValidEmail(email)) || undefined}
+                  className={cn(
+                    "w-full h-[48px] border bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none",
+                    emailNudge && !isValidEmail(email) ? "border-pa-dark ring-1 ring-pa-dark" : "border-pa-sand",
+                  )}
                 />
                 {emailTouched && email.length > 0 && !isValidEmail(email) && (
                   <p className="caption text-inherit text-red-500">{t("bookingWidget.invalidEmail", "Please enter a valid email address")}</p>
@@ -1954,20 +2051,25 @@ export default function CheckoutPage() {
                   <input
                     type="checkbox"
                     checked={newsletterOptIn}
-                    onChange={(e) => setNewsletterOptIn(e.target.checked)}
+                    onChange={(e) => {
+                      setNewsletterOptIn(e.target.checked);
+                      setNewsletterTouched(true);
+                    }}
                     className="mt-[1px] h-[14px] w-[14px] shrink-0 accent-pa-dark cursor-pointer"
                   />
                   <span className="caption text-pa-stone-aa leading-relaxed">
                     {t("checkout.newsletterOptIn", "Keep me updated by email.")}
                   </span>
                 </label>
+                {/* Nunca parado (auditoria do funil, n.º 2): sem email válido
+                    leva ao campo e mostra a dica, em vez de não fazer nada. */}
                 <button
                   type="button"
-                  onClick={submitEmail}
-                  disabled={!isValidEmail(email) || quoteStale || datesUnavailable || captureLead.isPending}
-                  className="hidden lg:inline-flex btn-primary w-full disabled:opacity-40"
+                  onClick={continueFromStay}
+                  aria-busy={captureLead.isPending || undefined}
+                  className="hidden lg:inline-flex btn-primary w-full"
                 >
-                  {t("booking.continue", "Continue")}
+                  {captureLead.isPending ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : t("booking.continue", "Continue")}
                 </button>
                 {contactSaveError && (
                   <p className="caption text-red-600" role="alert">
@@ -1976,12 +2078,19 @@ export default function CheckoutPage() {
                 )}
                 {/* L2: o botão desativado sem dica era um toque morto */}
                 {!isValidEmail(email) && !quoteStale && !datesUnavailable && (
-                  <p className="caption text-pa-stone-aa" role="status">
+                  <p
+                    id="checkout-email-hint"
+                    className={cn("caption", emailNudge ? "text-pa-dark font-medium" : "text-pa-stone-aa")}
+                    role="status"
+                  >
                     {email
                       ? t("checkout.emailInvalidHint", "That email doesn't look right — check it to continue.")
                       : t("checkout.emailNeededHint", "Enter your email above to continue.")}
                   </p>
                 )}
+                {/* Antes do portão do email: como se pode pagar e que ainda
+                    não se cobra nada (auditoria do funil, crítico). */}
+                <PaymentMethodsNote className="border-t border-pa-sand pt-3" />
               </div>
             </>
           )}
@@ -2028,8 +2137,9 @@ export default function CheckoutPage() {
               )}
               {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a
                   service. Rendered in full, never collapsed: hiding it behind a
-                  <details> killed the attach rate (regressão de a4c2b55). */}
-              {flexConfig && effective && (
+                  <details> killed the attach rate (regressão de a4c2b55).
+                  Só onde acrescenta dias à tarifa (flexOffered, n.º 14). */}
+              {flexConfig && effective && flexOffered && (
                 <FlexBlock
                   config={{ ...flexConfig, price: flexUnit }}
                   gifted={flexGifted}
@@ -2159,9 +2269,11 @@ export default function CheckoutPage() {
                     onChange={setPhone}
                     onBlur={() => setPhoneTouched(true)}
                     placeholder={t("bookingWidget.phonePh", "Phone number *")}
+                    describedBy={phoneError ? "checkout-phone-error" : undefined}
+                    invalid={phoneError}
                   />
                   {phoneError && (
-                    <p className="caption text-red-600 mt-1" role="alert">{t("bookingWidget.invalidPhone", "Please enter a valid phone number")}</p>
+                    <p id="checkout-phone-error" className="caption text-red-600 mt-1" role="alert">{phoneErrorText}</p>
                   )}
                 </div>
                 <div>
@@ -2280,8 +2392,8 @@ export default function CheckoutPage() {
         {sheetOpen && (
           <div className="max-h-[60vh] overflow-y-auto bg-white border-t border-pa-sand px-5 pt-4 pb-3 shadow-[0_-8px_32px_rgba(26,26,24,0.10)] space-y-4 checkout-step-in">
             <div className="flex items-center gap-3">
-              {heroImage && (
-                <img src={heroImage} alt="" className="w-14 h-14 rounded-md object-cover shrink-0" width={56} height={56} />
+              {thumbImage && (
+                <img src={thumbImage} alt="" className="w-14 h-14 rounded-md object-cover shrink-0" width={56} height={56} />
               )}
               <div className="min-w-0">
                 <p className="font-display body-sm text-pa-dark leading-snug truncate">{displayName}</p>
@@ -2300,7 +2412,9 @@ export default function CheckoutPage() {
             )}
           </div>
         )}
-        <div className="bg-white border-t border-pa-sand px-4 py-3 flex items-center justify-between gap-3" style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))" }}>
+        {/* Com o banner de cookies por baixo, a barra não repete a margem da
+            zona segura (o banner já a tem): menos ecrã tapado no passo 1. */}
+        <div className="bg-white border-t border-pa-sand px-4 py-3 flex items-center justify-between gap-3" style={{ paddingBottom: "calc(0.75rem + max(0px, env(safe-area-inset-bottom, 0px) - var(--cookie-banner-h, 0px)))" }}>
           <button
             type="button"
             onClick={() => setSheetOpen((v) => !v)}
@@ -2325,13 +2439,15 @@ export default function CheckoutPage() {
             </div>
           </button>
           {step === "stay" && (
+            // Nunca parado (auditoria do funil, n.º 2): era o único botão do
+            // passo no telemóvel e, sem email, um toque não fazia nada.
             <button
               type="button"
-              onClick={submitEmail}
-              disabled={!isValidEmail(email) || quoteStale || datesUnavailable || captureLead.isPending}
-              className="btn-primary flex-1 max-w-[220px] disabled:opacity-40"
+              onClick={continueFromStay}
+              aria-busy={captureLead.isPending || undefined}
+              className="btn-primary flex-1 max-w-[220px]"
             >
-              {t("booking.continue", "Continue")}
+              {captureLead.isPending ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : t("booking.continue", "Continue")}
             </button>
           )}
           {step === "customize" && (

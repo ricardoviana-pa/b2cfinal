@@ -399,7 +399,15 @@
     "requestOnlyTitle": "För dessa datum bokas detta hem på förfrågan.",
     "requestOnlyBody": "Skicka din förfrågan till vår concierge så bekräftar vi tillgänglighet och pris personligen.",
     "twoPartsHint": "Du kan betala i två delar: halva i dag och resten den {{date}}. Eller allt nu, med Flex inkluderat.",
-    "twoPartsHintPlain": "Du kan betala i två delar: halva i dag och resten den {{date}}."
+    "twoPartsHintPlain": "Du kan betala i två delar: halva i dag och resten den {{date}}.",
+    "phoneErrors": {
+      "digits": "Ett nummer med {{dialCode}} har {{digits}} siffror efter landsnumret. Kontrollera numret och landet.",
+      "digitsRange": "Ett nummer med {{dialCode}} har {{min}} till {{max}} siffror efter landsnumret. Kontrollera numret och landet.",
+      "leadingZero": "Ta bort nollan efter {{dialCode}}.",
+      "tooShort": "Numret verkar för kort. Kontrollera det, med landsnummer.",
+      "tooLong": "Numret verkar för långt. Kontrollera det, med landsnummer.",
+      "countryCode": "Börja numret med + och landsnumret."
+    }
   },
   "common": {
     "loading": "Laddar…",
@@ -810,7 +818,9 @@
       "otherCard": "Använd ett annat kort",
       "concierge": "Prata med conciergen",
       "whatsappMessage": "Hej, jag behöver hjälp med min bokning: {{property}}, {{checkIn}} till {{checkOut}}, gäster: {{guests}}. Betalningen gick inte igenom."
-    }
+    },
+    "methodsAccepted": "Betalningssätt som accepteras",
+    "notChargedYet": "Du debiteras inte än."
   },
   "contact": {
     "heroAlt": "Kontakta Portugal Active",
@@ -1738,11 +1748,11 @@
         "desc": "Skicka oss din lista. Vi handlar och ställer allt i ordning före ankomst. Matbutikens nota debiteras separat, till självkostnadspris."
       }
     },
-    "emailTitle": "Vart skickar vi din bokning?",
+    "emailTitle": "Din e-post",
     "perStay": "per vistelse",
     "flex": {
       "title": "Flex, garanterad ombokning",
-      "tagline": "Boka om när du behöver. Beloppet du betalat går aldrig förlorat.",
+      "tagline": "Boka om upp till {{days}} dagar före ankomst. Beloppet du betalat går aldrig förlorat.",
       "perBooking": "engångsbelopp, per bokning",
       "benefit1": "Boka om upp till {{days}} dagar före incheckning, utan kostnad",
       "benefit2": "Beloppet du betalat förblir skyddat, det går aldrig förlorat",
@@ -1911,7 +1921,10 @@
       "firstName": "Ange ditt förnamn.",
       "lastName": "Ange ditt efternamn."
     },
-    "nifInvalid": "Det här portugisiska NIF-numret ser inte rätt ut: kontrollera de 9 siffrorna. För ett momsnummer från ett annat land, börja med landskoden (till exempel ES)."
+    "nifInvalid": "Det här portugisiska NIF-numret ser inte rätt ut: kontrollera de 9 siffrorna. För ett momsnummer från ett annat land, börja med landskoden (till exempel ES).",
+    "emailHoldNote": "Vi håller det här priset till {{date}}, {{time}}. Om du inte slutför nu kan vi skicka dig en eller två påminnelser via e-post. Ingen spam.",
+    "emailReminderNote": "Om du inte slutför nu kan vi skicka dig en eller två påminnelser via e-post. Ingen spam.",
+    "conciergeMessage": "Hej, jag har en fråga om min bokning: {{property}}, {{checkIn}} till {{checkOut}}, gäster: {{guests}}."
   },
   "host": {
     "hostedBy": "Värdar: Ricardo & Portugal Active-teamet",
