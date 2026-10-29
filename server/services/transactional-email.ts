@@ -11,6 +11,7 @@ import { FUNNEL_I18N } from "./recovery-copy";
 import { sanitizePropertyName } from "@shared/displayName";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import { originEmailSummary, type ServerVisitOrigin } from "./visit-origin";
+import { invoiceNif } from "./invoice-nif";
 import {
   cancellationPolicyCopy,
   cancellationPolicyPath,
@@ -40,6 +41,16 @@ const isProduction = !!resendKey;
 const resend = resendKey ? new Resend(resendKey) : null;
 
 const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <booking@portugalactive.com>";
+
+/**
+ * Os emails saem mesmo? Sem RESEND_API_KEY (preview, DEV) o sendEmail não
+ * envia: escreve o email no log e não falha. Quem só pode dar um aviso por
+ * entregue quando alguém o recebe (o alerta de nota do Guesty por gravar)
+ * pergunta aqui.
+ */
+export function emailDeliveryConfigured(): boolean {
+  return isProduction && !!resend;
+}
 
 /* ================================================================
    CORE SEND
@@ -534,6 +545,26 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
    fallback): copy in recovery-copy.ts and email-i18n.ts, labels of the
    stay card as the checkout showed them, footer tagline included.
    ================================================================ */
+/** Duas partes como o checkout as oferece no momento do envio (cêntimos). */
+export interface RecoveryTwoParts {
+  todayCents: number;
+  laterCents: number;
+  chargeAt: Date;
+}
+
+/** A linha das duas partes só vale com valores inteiros e positivos que somem
+ *  ao cêntimo o total do cartão da estadia. Os extras pagos, a receção e o
+ *  Flex não aparecem nesse cartão, por isso com eles o "hoje" e o "depois"
+ *  somavam mais do que o total mostrado (parecia que as duas partes custavam
+ *  mais): na dúvida, sem linha. */
+export function twoPartsMatchCard(t: RecoveryTwoParts | null | undefined, cardTotal: number | null | undefined): t is RecoveryTwoParts {
+  if (!t || cardTotal == null || !Number.isFinite(Number(cardTotal))) return false;
+  const ok = (c: number) => Number.isSafeInteger(c) && c > 0;
+  if (!ok(t.todayCents) || !ok(t.laterCents)) return false;
+  if (!(t.chargeAt instanceof Date) || !Number.isFinite(t.chargeAt.getTime())) return false;
+  return t.todayCents + t.laterCents === Math.round(Number(cardTotal) * 100);
+}
+
 interface CheckoutRecoveryData {
   guestEmail: string;
   guestFirstName?: string | null;
@@ -564,6 +595,21 @@ interface CheckoutRecoveryData {
   stage: 1 | 2 | 3 | 4;
   /** Contacto 1: o hóspede parou no passo de pagamento */
   paymentStep?: boolean;
+  /** Contacto 1 no pagamento: chegou a carregar em Pagar (cobrança tentada,
+   *  checkout-recovery.ts). Sem isto o texto é o de quem ainda não tentou,
+   *  "ficou alguma dúvida?", sem falar de cartões recusados. */
+  paymentAttempted?: boolean;
+  /** Contacto 1 depois de uma tentativa: o Klarna pode ser sugerido
+   *  (checkout-recovery.ts decide; hoje nunca, com o país de faturação do
+   *  Klarna forçado a PT). Sem isto o Klarna não é sugerido. */
+  klarna?: boolean;
+  /** Contacto 1 no pagamento (as duas variantes): política da tarifa
+   *  (planPolicyCode), para a linha do cancelamento gratuito (só quando ainda
+   *  há prazo). */
+  cancellation?: EmailCancellation | null;
+  /** Contacto 1 no pagamento (as duas variantes): duas partes como o checkout
+   *  as oferece no envio. Ausente ou sem bater com o total do cartão: sem linha. */
+  twoParts?: RecoveryTwoParts | null;
   /** Contacto 2: escassez real do calendário (só quando é verdade) */
   scarcity?: { unavailable: number; total: number } | null;
   /** Contacto 3: Flex oferecido */
@@ -653,6 +699,14 @@ function cancellationEmailLine(c: EmailCancellation | null | undefined, lang: Em
   return `<p style="font-family:${SANS};font-size:12.5px;color:${PA.earth};line-height:1.6;margin:0;"><span style="color:${PA.dark};font-weight:600;">${escapeHtml(copy.label)}</span> &middot; ${escapeHtml(d.text)}${link}</p>`;
 }
 
+/** A mesma linha, só quando ainda há cancelamento gratuito por gozar (uma
+ *  tarifa reembolsável conhecida e o prazo à frente). Para um email que vende:
+ *  na não reembolsável, com o prazo já passado ou sem código conhecido, nada. */
+function freeCancellationEmailLine(c: EmailCancellation | null | undefined, lang: EmailLang, checkIn?: string | null): string {
+  const d = describeCancellationPolicy(c?.policy, { lang, checkIn });
+  return d.known && d.deadline ? cancellationEmailLine(c, lang, checkIn) : "";
+}
+
 function formatStayDate(iso: string, lang: EmailLang): string {
   try {
     return new Intl.DateTimeFormat(INTL_TAG[lang] ?? "en-GB", {
@@ -698,7 +752,13 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   const house = data.propertyName || CONFIRMATION_I18N[lang].yourHome;
   const firstName = (data.guestFirstName || "").trim().split(" ")[0];
   const greeting = firstName ? T.greetingNamed(firstName) : T.greeting;
-  const pay = data.stage === 1 && !!data.paymentStep;
+  // Contacto 1 no passo de pagamento. Com tentativa de pagar: o texto das
+  // falhas de sempre, com o Klarna só quando quem chama o sugere. Sem
+  // tentativa (a maioria): "ficou alguma dúvida?", sem falar de cartões recusados.
+  const atPayment = data.stage === 1 && !!data.paymentStep;
+  const pay = atPayment && !!data.paymentAttempted;
+  const ask = atPayment && !data.paymentAttempted;
+  const klarna = pay && data.klarna === true;
   const gift = data.stage === 3 ? data.flexGift ?? null : null;
   const alts = data.stage === 4 ? (data.alternatives ?? []) : [];
   const until = data.expiresAt ? formatGuaranteeUntil(data.expiresAt, lang, T.atTime) : "";
@@ -710,11 +770,11 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   let subject: string, preheader: string, headline: string, body: string, personal: string, cta: string, ctaUrl: string;
   switch (data.stage) {
     case 1:
-      subject = pay ? F.subject1Pay(house) : F.subject1(house);
-      preheader = pay ? F.preheader1Pay : F.preheader1;
-      headline = pay ? F.headline1Pay : F.headline1;
-      body = pay ? F.body1Pay(greeting, house) : F.body1(greeting, house);
-      personal = pay ? F.personal1Pay : F.personal1;
+      subject = ask ? F.subject1Ask(house) : pay ? F.subject1Pay(house) : F.subject1(house);
+      preheader = ask ? F.preheader1Ask : pay ? F.preheader1Pay(klarna) : F.preheader1;
+      headline = ask ? F.headline1Ask : pay ? F.headline1Pay : F.headline1;
+      body = ask ? F.body1Ask(greeting, house) : pay ? F.body1Pay(greeting, house, klarna) : F.body1(greeting, house);
+      personal = ask ? F.personal1Ask : pay ? F.personal1Pay : F.personal1;
       cta = T.cta; ctaUrl = data.resumeUrl;
       break;
     case 2:
@@ -755,6 +815,17 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(T.taxesLabel, eur(q.taxesAndFees, lang));
   if (gift) priceLines += line(F.flexIncluded, `<s style="color:${PA.stoneAA};">${eur(gift.value, lang)}</s> &nbsp;${eur(0, lang)}`, true);
   const total = q.total ?? data.total;
+  // Contacto 1 no pagamento, com ou sem tentativa: as duas razões para
+  // reservar já, por baixo do total. Depois de uma tentativa, as duas partes
+  // são também a resposta a "um limite do banco": metade hoje, no mesmo cartão.
+  // O cancelamento gratuito só com prazo por gozar (nunca na não reembolsável,
+  // nunca "as condições da sua tarifa"); as duas partes só como o checkout as
+  // oferece agora e a bater com o total do cartão.
+  const freeCancelLine = atPayment ? freeCancellationEmailLine(data.cancellation, lang, data.checkIn) : "";
+  const twoParts = data.twoParts;
+  const twoPartsText = atPayment && twoPartsMatchCard(twoParts, total)
+    ? F.twoPartsLine(eurCents(twoParts.todayCents, lang), eurCents(twoParts.laterCents, lang), lisbonDay(twoParts.chargeAt, lang))
+    : "";
   const destination = data.destination ? data.destination.charAt(0).toUpperCase() + data.destination.slice(1) : "";
   const photo = data.imageUrl
     ? `<tr><td style="border-radius:12px 12px 0 0;overflow:hidden;"><img src="${data.imageUrl}" alt="${house}" width="600" style="display:block;width:100%;height:auto;border-radius:12px 12px 0 0;" /></td></tr>`
@@ -774,6 +845,8 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
     <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, lang)}</td>
   </tr></table></td></tr>` : ""}
   ${until ? `<tr><td style="padding:14px 24px 0 24px;"><p style="font-family:${SANS};font-size:11.5px;color:${PA.gold};line-height:1.5;margin:0;">${T.guaranteedUntil} ${until}</p></td></tr>` : ""}
+  ${freeCancelLine ? `<tr><td style="padding:12px 24px 0 24px;">${freeCancelLine}</td></tr>` : ""}
+  ${twoPartsText ? `<tr><td style="padding:8px 24px 0 24px;"><p style="font-family:${SANS};font-size:12.5px;color:${PA.earth};line-height:1.6;margin:0;">${escapeHtml(twoPartsText)}</p></td></tr>` : ""}
   <tr><td style="padding:0 0 20px 0;"></td></tr>
 </table>
 </td></tr>`;
@@ -1080,7 +1153,10 @@ export async function sendCheckoutGuestConfirmation(d: {
     if (q.nights && q.totalNights != null) {
       priceLines += line(`${q.nights} ${C.nightsLabel}`, eur(q.totalNights, lang));
     }
-    if (q.cleaningFee && q.cleaningFee > 0) priceLines += line("Service fee", eur(q.cleaningFee, lang));
+    // O rótulo do resumo do checkout nessa língua ("Limpeza final"), como na
+    // recuperação: o "Service fee" em inglês, nas 9 línguas, contradizia o
+    // "sem taxas de reserva" que o checkout acabou de prometer.
+    if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(cleaningFeeLabel(lang), eur(q.cleaningFee, lang));
     if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(C.taxesLabel, eur(q.taxesAndFees, lang));
     const receptionAmt = d.receptionAmount ?? 0;
     if (d.reception?.type === "hosted" && receptionAmt > 0) {
@@ -1212,7 +1288,7 @@ export async function sendCheckoutGuestConfirmation(d: {
   ${total > 0 ? `<tr><td style="padding:10px 24px 0 24px;">
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid ${PA.sand};">
       <tr>
-        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">Total</td>
+        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">${LEGACY_I18N[lang].totalLabel}</td>
         <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, lang)}</td>
       </tr>
     </table>
@@ -1254,8 +1330,8 @@ ${ctaBlock}
   ${conciergeSignature(lang, d.destination)}
 </td></tr>
 
-<!-- Footer -->
-${brandFooter(legacyTagline(lang === "pt"))}
+<!-- Footer: a frase da marca na língua do hóspede (a antiga só existia em PT e EN) -->
+${brandFooter(C.footerTagline)}
 
 </table>
 </td></tr>
@@ -1286,9 +1362,13 @@ export async function sendCheckoutOpsManifest(d: {
   /** Pagamento em duas partes: destaque "NÃO cobrar" e "Pago hoje" com o
    *  valor do PI. Ausente = manifesto exatamente como antes. */
   plan?: CheckoutPlanSummary | null;
+  /** NIF que o hóspede pediu na fatura (texto livre do checkout). Com NIF, é
+   *  a 1.ª ação do email; sem NIF, o manifesto fica como antes. */
+  nif?: string | null;
 }): Promise<void> {
   try {
     const plan = usablePlan(d.plan, "OpsManifest");
+    const nif = invoiceNif(d.nif);
     const extras = Array.isArray(d.extras) ? d.extras : [];
     const needs = extras.filter((e) => e.fulfillment === "needs_confirmation");
     const requests = extras.filter((e) => e.amount == null);
@@ -1304,6 +1384,16 @@ export async function sendCheckoutOpsManifest(d: {
     // ── AÇÕES: o que a equipa tem de tratar, por ordem de urgência ──
     // Regras específicas por sku primeiro (operação real); genéricas depois.
     const actions: Array<{ urgent: boolean; text: string }> = [];
+    // O NIF primeiro: o Guesty não o recebe (o campo que a Hostkit lê está
+    // por confirmar, spec 5.13, e os serviços nem entram no folio), por isso a
+    // fatura só sai com ele se alguém o puser. Uma fatura que já saiu sem o
+    // NIF pedido tem de ser anulada e emitida outra.
+    if (nif) {
+      actions.push({
+        urgent: true,
+        text: `FATURA COM NIF ${escapeHtml(nif)}: o hospede pediu a fatura com este NIF. Garantir que a fatura da estadia (Hostkit) e a dos servicos, se houver, saem com ele; se alguma ja saiu sem NIF, anular e emitir outra.`,
+      });
+    }
     const handled = new Set<string>();
     for (const e of paid) {
       const sku = String(e.sku);
@@ -1416,7 +1506,8 @@ export async function sendCheckoutOpsManifest(d: {
     const html = render(rows);
     const urgentFlag = needs.length || requests.length ? "ACAO ATE 24H — " : "";
     const planFlag = plan ? " · DUAS PARTES, NAO COBRAR" : "";
-    await sendEmail(BOOKING_ALERT_EMAIL, `[CS] ${urgentFlag}Reserva ${d.confirmationCode || d.intentId.slice(0, 8)} · ${d.propertyName || ""}${planFlag}`, html);
+    const nifFlag = nif ? " · FATURA COM NIF" : "";
+    await sendEmail(BOOKING_ALERT_EMAIL, `[CS] ${urgentFlag}Reserva ${d.confirmationCode || d.intentId.slice(0, 8)} · ${d.propertyName || ""}${planFlag}${nifFlag}`, html);
     console.info(`[OpsManifest] enviado (intent ${d.intentId}, ${actions.length} acoes)`);
     // Cópia de vendas para a gestão: cada reserva direta com casa, valor e
     // extras — pedido do Ricardo (16 ago) para acompanhar o que o site vende.

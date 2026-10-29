@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("../lib/guesty", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../lib/guesty")>();
@@ -10,7 +10,15 @@ vi.mock("../lib/guesty", async (importOriginal) => {
   };
 });
 
-import { createReservationViaOpenApi } from "./guesty-openapi-paypal";
+// Os alertas ao CS saem por aqui: nada vai para a rede. `configured`: há um
+// fornecedor de email (Resend); sem ele o email fica só no log.
+const mail = vi.hoisted(() => ({
+  sendOpsAlert: vi.fn(async (_s: string, _l: string[], _o?: unknown) => true),
+  configured: vi.fn(() => true),
+}));
+vi.mock("./transactional-email", () => ({ sendOpsAlert: mail.sendOpsAlert, emailDeliveryConfigured: mail.configured }));
+
+import { createReservationViaOpenApi, __testing } from "./guesty-openapi-paypal";
 import { guestyClient } from "../lib/guesty";
 
 const baseInput = {
@@ -152,6 +160,277 @@ describe("appendReservationNote — acrescenta, nunca apaga", () => {
     const { appendReservationNote } = await import("./guesty-openapi-paypal");
     vi.mocked(guestyClient.request).mockRejectedValueOnce(new Error("503"));
     expect(await appendReservationNote("res-1", "x")).toBe(false);
+  });
+});
+
+describe("planReservationNote — topo, fim e nunca cortar", () => {
+  it("o topo vai antes do que lá está e a nota nova depois", async () => {
+    const { planReservationNote } = await import("./guesty-openapi-paypal");
+    const plan = planReservationNote("nota do pagamento", "SERVICOS DO CHECKOUT:\nFlex: nao", "FATURA COM NIF 123456789");
+    expect(plan.text).toBe("FATURA COM NIF 123456789\n\nnota do pagamento\n\nSERVICOS DO CHECKOUT:\nFlex: nao");
+    expect(plan).toMatchObject({ changed: true, written: ["FATURA COM NIF 123456789", "SERVICOS DO CHECKOUT:\nFlex: nao"], missing: [] });
+  });
+
+  it("nada a gravar quando os dois textos já lá estão", async () => {
+    const { planReservationNote } = await import("./guesty-openapi-paypal");
+    const plan = planReservationNote("FATURA COM NIF 1\n\nnota A", "nota A", "FATURA COM NIF 1");
+    expect(plan).toEqual({ text: "FATURA COM NIF 1\n\nnota A", changed: false, written: [], missing: [] });
+  });
+
+  it("sem espaço: o que lá está fica inteiro, o topo entra primeiro e a nota que não cabe não entra cortada", async () => {
+    const { planReservationNote } = await import("./guesty-openapi-paypal");
+    const existing = "x".repeat(80);
+    const twoParts = "Checkout 2.0 em duas partes: 2.a parte 1073.00 EUR agendada para 24/10/2099. NAO cobrar no Guesty.";
+    const plan = planReservationNote(existing, twoParts, "FATURA COM NIF 9", 100);
+    expect(plan.text).toBe("FATURA COM NIF 9\n\n" + existing);
+    expect(plan.written).toEqual(["FATURA COM NIF 9"]);
+    expect(plan.missing).toEqual([twoParts]);
+    expect(plan.text).not.toContain("24/1");
+  });
+
+  it("um campo já acima do teto nunca é cortado nem regravado", async () => {
+    const { planReservationNote } = await import("./guesty-openapi-paypal");
+    const existing = "CS: ".padEnd(150, "y");
+    const plan = planReservationNote(existing, "nota nova", "FATURA COM NIF 9", 100);
+    expect(plan).toEqual({ text: existing, changed: false, written: [], missing: ["FATURA COM NIF 9", "nota nova"] });
+  });
+});
+
+describe("appendReservationNote — falhas e falta de espaço chegam ao CS", () => {
+  beforeEach(() => {
+    vi.mocked(guestyClient.request).mockReset();
+    mail.sendOpsAlert.mockReset();
+    mail.sendOpsAlert.mockResolvedValue(true);
+    mail.configured.mockReset();
+    mail.configured.mockReturnValue(true);
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+  afterEach(async () => {
+    vi.useRealTimers();
+    await __testing.noteAlertsSettled(); // nenhum alerta a meio passa para o teste seguinte
+  });
+
+  const alertOf = (i = 0) => {
+    const [subject, lines, opts] = mail.sendOpsAlert.mock.calls[i] as [string, string[], any];
+    return { subject, lines, html: lines.join("\n"), opts };
+  };
+
+  it("NIF no topo e serviços no fim, numa só escrita", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request)
+      .mockResolvedValueOnce({ notes: { other: "Checkout 2.0: pagamento unico 2147.00 EUR na plataforma." } } as any)
+      .mockResolvedValueOnce({} as any);
+
+    expect(await appendReservationNote("res-top", "SERVICOS DO CHECKOUT:\nFlex: nao", { prepend: "FATURA COM NIF 123456789" })).toBe(true);
+
+    const puts = vi.mocked(guestyClient.request).mock.calls.filter((c) => c[0] === "PUT");
+    expect(puts).toHaveLength(1);
+    const other = (puts[0][2] as any).body.notes.other as string;
+    expect(other.startsWith("FATURA COM NIF 123456789\n\n")).toBe(true);
+    expect(other.endsWith("SERVICOS DO CHECKOUT:\nFlex: nao")).toBe(true);
+    expect(other).toContain("Checkout 2.0: pagamento unico 2147.00 EUR na plataforma.");
+    expect(mail.sendOpsAlert).not.toHaveBeenCalled();
+  });
+
+  it("leitura falhada: false e alerta com a reserva, o texto inteiro por gravar e o erro", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    const { GuestyClientError } = await import("../lib/guesty");
+    vi.mocked(guestyClient.request).mockRejectedValueOnce(
+      new GuestyClientError({ message: "Guesty request failed (410)", status: 410, method: "GET", endpoint: "/v1/reservations/res-get", details: { message: "Gone" } }),
+    );
+
+    expect(await appendReservationNote("res-get", "SERVICOS DO CHECKOUT:\nRececao: self check-in", { prepend: "FATURA COM NIF 123<456>" })).toBe(false);
+    await __testing.noteAlertsSettled(); // o alerta sai sem o settle esperar por ele
+
+    expect(vi.mocked(guestyClient.request)).toHaveBeenCalledTimes(1); // nada de PUT às cegas
+    expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
+    const { subject, html, opts } = alertOf();
+    expect(subject).toBe("NOTA NÃO GRAVADA NO GUESTY — res-get");
+    expect(opts).toEqual({ copyToSales: true });
+    expect(html).toContain("https://app.guesty.com/reservations/res-get/summary");
+    expect(html).toContain("FATURA COM NIF 123&lt;456&gt;<br><br>SERVICOS DO CHECKOUT:<br>Rececao: self check-in");
+    expect(html).not.toContain("<456>");
+    expect(html).toContain("Leva o NIF para a fatura.");
+    expect(html).toContain("Erro: Guesty request failed (410) · GET /v1/reservations/res-get · {&quot;message&quot;:&quot;Gone&quot;}");
+  });
+
+  it("escrita falhada nas duas partes: o alerta leva o NÃO cobrar e o código da reserva", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    const note = "Checkout 2.0 em duas partes: 1.a parte 1074.00 EUR registada (PI pi_x); 2.a parte 1073.00 EUR agendada para 24/10/2099, cobrada AUTOMATICAMENTE pela plataforma. NAO cobrar no Guesty, NAO criar payment link, NAO pedir cartao ao hospede.";
+    vi.mocked(guestyClient.request)
+      .mockResolvedValueOnce({ confirmationCode: "GY-NOTE01", notes: { other: "FATURA COM NIF 999999990 (pedido)" } } as any)
+      .mockRejectedValueOnce(new Error("Guesty request failed (500)"));
+
+    expect(await appendReservationNote("res-put", note, { prepend: "FATURA COM NIF 999999990 (pedido)" })).toBe(false);
+    await __testing.noteAlertsSettled();
+
+    const { subject, html } = alertOf();
+    expect(subject).toBe("NOTA NÃO GRAVADA NO GUESTY — GY-NOTE01");
+    // Só o que faltava gravar: o NIF já lá estava.
+    expect(html).toContain("<strong>Texto por gravar:</strong><br>Checkout 2.0 em duas partes:");
+    expect(html).not.toContain("Texto por gravar:</strong><br>FATURA COM NIF");
+    expect(html).toContain("Leva o aviso de NÃO cobrar o hóspede.");
+    expect(html).toContain("Erro: Guesty request failed (500)");
+  });
+
+  it("sem espaço (o corte que antes era calado): nada do que lá está se perde, a nota não entra cortada e o CS recebe-a inteira", async () => {
+    const { appendReservationNote, RESERVATION_NOTE_MAX } = await import("./guesty-openapi-paypal");
+    const csNotes = "Notas do CS: ".padEnd(RESERVATION_NOTE_MAX - 100, "z");
+    const note = "Checkout 2.0 em duas partes: 2.a parte 1073.00 EUR agendada para 24/10/2099, cobrada AUTOMATICAMENTE pela plataforma. NAO cobrar no Guesty, NAO criar payment link.";
+    vi.mocked(guestyClient.request)
+      .mockResolvedValueOnce({ confirmationCode: "GY-FULL01", notes: { other: csNotes } } as any)
+      .mockResolvedValueOnce({} as any);
+
+    expect(await appendReservationNote("res-full", note, { prepend: "FATURA COM NIF 123456789" })).toBe(true);
+
+    const put = vi.mocked(guestyClient.request).mock.calls.find((c) => c[0] === "PUT")!;
+    const other = (put[2] as any).body.notes.other as string;
+    expect(other).toBe("FATURA COM NIF 123456789\n\n" + csNotes); // o NIF coube no topo
+    expect(other).not.toContain("duas partes");
+    const { subject, html } = alertOf();
+    expect(subject).toBe("NOTA SEM ESPAÇO NO GUESTY — GY-FULL01");
+    expect(html).toContain("Nada do que lá estava foi apagado.");
+    expect(html).toContain("<strong>Texto por gravar:</strong><br>" + note);
+    expect(html).toContain("Leva o aviso de NÃO cobrar o hóspede.");
+  });
+
+  it("sem espaço e sem alerta entregue devolve false (quem repete volta a tentar e a avisar)", async () => {
+    const { appendReservationNote, RESERVATION_NOTE_MAX } = await import("./guesty-openapi-paypal");
+    const full = "c".repeat(RESERVATION_NOTE_MAX);
+    mail.sendOpsAlert.mockResolvedValueOnce(false);
+    vi.mocked(guestyClient.request).mockResolvedValue({ notes: { other: full } } as any);
+
+    expect(await appendReservationNote("res-undelivered", "nota que nao cabe")).toBe(false);
+    expect(vi.mocked(guestyClient.request).mock.calls.some((c) => c[0] === "PUT")).toBe(false);
+    // A passagem seguinte volta a avisar, e com o email entregue fica resolvido.
+    expect(await appendReservationNote("res-undelivered", "nota que nao cabe")).toBe(true);
+    expect(mail.sendOpsAlert).toHaveBeenCalledTimes(2);
+  });
+
+  it("o mesmo texto por gravar avisa no máximo uma vez por dia (o motor repete de 10 em 10 min)", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2099-10-24T09:00:00Z"));
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockRejectedValue(new Error("Guesty request failed (503)"));
+    const note = "Checkout 2.0 em duas partes: 2.a parte 1073.00 EUR cobrada pela plataforma (PI pi_b). NAO cobrar ao hospede.";
+
+    expect(await appendReservationNote("res-repeat", note)).toBe(false);
+    await __testing.noteAlertsSettled();
+    vi.setSystemTime(new Date("2099-10-24T09:10:00Z"));
+    expect(await appendReservationNote("res-repeat", note)).toBe(false);
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledTimes(1);
+    // Outra reserva, outro aviso.
+    expect(await appendReservationNote("res-repeat-2", note)).toBe(false);
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledTimes(2);
+    // No dia seguinte, se ainda falhar, volta a avisar.
+    vi.setSystemTime(new Date("2099-10-25T09:10:00Z"));
+    expect(await appendReservationNote("res-repeat", note)).toBe(false);
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledTimes(3);
+  });
+
+  it("um alerta que não sai não silencia o seguinte", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockRejectedValue(new Error("Guesty request failed (503)"));
+    mail.sendOpsAlert.mockResolvedValueOnce(false);
+
+    await appendReservationNote("res-retry-alert", "nota");
+    await __testing.noteAlertsSettled();
+    await appendReservationNote("res-retry-alert", "nota");
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledTimes(2);
+  });
+
+  it("um alerta que rebenta não rebenta quem escreve a nota", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockRejectedValue(new Error("Guesty request failed (503)"));
+    mail.sendOpsAlert.mockRejectedValueOnce(new Error("resend down"));
+
+    await expect(appendReservationNote("res-alert-throws", "nota")).resolves.toBe(false);
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
+  });
+
+  /** Um envio do Resend que fica pendurado até o teste o soltar. */
+  const stalledSend = () => {
+    let release!: (delivered: boolean) => void;
+    mail.sendOpsAlert.mockImplementationOnce(() => new Promise<boolean>((resolve) => { release = resolve; }));
+    return (delivered = true) => release(delivered);
+  };
+
+  it("escrita falhada com o Resend pendurado: false logo, sem esperar pelo email (o settle corre dentro do lock)", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockRejectedValue(new Error("Guesty request failed (410)"));
+    const release = stalledSend();
+
+    // Se esperasse pelo email, isto nunca resolvia (o teste acabava por timeout).
+    await expect(appendReservationNote("res-stalled", "FATURA COM NIF 123456789")).resolves.toBe(false);
+    await vi.waitFor(() => expect(mail.sendOpsAlert).toHaveBeenCalledOnce());
+    release();
+    await __testing.noteAlertsSettled();
+  });
+
+  it("o mesmo pedido enquanto o 1.º alerta ainda sai (finalize e webhook seguidos): um email, não dois", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockRejectedValue(new Error("Guesty request failed (503)"));
+    const release = stalledSend();
+
+    expect(await appendReservationNote("res-twice", "nota do pagamento")).toBe(false);
+    await vi.waitFor(() => expect(mail.sendOpsAlert).toHaveBeenCalledOnce());
+    expect(await appendReservationNote("res-twice", "nota do pagamento")).toBe(false);
+    release();
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
+    // Entregue: a passagem seguinte, no mesmo dia, já não avisa.
+    expect(await appendReservationNote("res-twice", "nota do pagamento")).toBe(false);
+    await __testing.noteAlertsSettled();
+    expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
+  });
+
+  it("sem espaço com o Resend lento: espera no máximo NOTE_ALERT_WAIT_MS e devolve false; o alerta que sai depois conta", async () => {
+    vi.useFakeTimers();
+    const { appendReservationNote, RESERVATION_NOTE_MAX, NOTE_ALERT_WAIT_MS } = await import("./guesty-openapi-paypal");
+    expect(NOTE_ALERT_WAIT_MS).toBe(10_000);
+    vi.mocked(guestyClient.request).mockResolvedValue({ notes: { other: "c".repeat(RESERVATION_NOTE_MAX) } } as any);
+    mail.sendOpsAlert.mockImplementationOnce(() => new Promise<boolean>((resolve) => setTimeout(() => resolve(true), 60_000)));
+
+    let settled: boolean | undefined;
+    const pending = appendReservationNote("res-slow", "nota que nao cabe").then((r) => { settled = r; return r; });
+    await vi.waitFor(() => expect(mail.sendOpsAlert).toHaveBeenCalledOnce());
+    await vi.advanceTimersByTimeAsync(NOTE_ALERT_WAIT_MS - 1_000);
+    expect(settled).toBeUndefined();
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(await pending).toBe(false);
+
+    // O email acaba por sair: a próxima passagem já não avisa e dá-o por resolvido.
+    await vi.advanceTimersByTimeAsync(60_000);
+    await __testing.noteAlertsSettled();
+    expect(await appendReservationNote("res-slow", "nota que nao cabe")).toBe(true);
+    expect(mail.sendOpsAlert).toHaveBeenCalledOnce();
+  });
+
+  it("sem Resend (o email fica só no log): a falta de espaço não conta como avisada e a próxima passagem volta a avisar", async () => {
+    const { appendReservationNote, RESERVATION_NOTE_MAX } = await import("./guesty-openapi-paypal");
+    mail.configured.mockReturnValue(false);
+    vi.mocked(guestyClient.request).mockResolvedValue({ notes: { other: "c".repeat(RESERVATION_NOTE_MAX) } } as any);
+
+    expect(await appendReservationNote("res-console", "FATURA COM NIF 123456789")).toBe(false);
+    expect(await appendReservationNote("res-console", "FATURA COM NIF 123456789")).toBe(false);
+    expect(mail.sendOpsAlert).toHaveBeenCalledTimes(2);
+    // Com o fornecedor configurado, o mesmo alerta entregue fica resolvido.
+    mail.configured.mockReturnValue(true);
+    expect(await appendReservationNote("res-console", "FATURA COM NIF 123456789")).toBe(true);
+    expect(mail.sendOpsAlert).toHaveBeenCalledTimes(3);
+  });
+
+  it("sem texto nenhum não lê nem escreve", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    expect(await appendReservationNote("res-empty", "  ", { prepend: "" })).toBe(true);
+    expect(vi.mocked(guestyClient.request)).not.toHaveBeenCalled();
+    expect(mail.sendOpsAlert).not.toHaveBeenCalled();
   });
 });
 

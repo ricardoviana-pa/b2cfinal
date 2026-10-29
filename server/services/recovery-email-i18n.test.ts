@@ -1,5 +1,6 @@
 /**
- * Email de recuperação do checkout: nada em inglês fora do inglês.
+ * Emails do checkout ao hóspede (recuperação e confirmação): nada em inglês
+ * fora do inglês.
  *
  * Três textos saíam em inglês nas 9 línguas: o rótulo "Total" do cartão da
  * estadia (contactos 1 a 3), a linha "Service fee" e a frase do rodapé "The
@@ -7,12 +8,17 @@
  * língua e em cada contacto e falha se alguma destas frases voltar a aparecer
  * numa língua que não seja o inglês.
  *
+ * A confirmação do pagamento (sendCheckoutGuestConfirmation) tinha os mesmos
+ * três até out/2026: "Service fee" em todas as línguas, também em inglês,
+ * depois de o checkout chamar à linha "Limpeza final" e prometer "sem taxas de
+ * reserva". Passa pelo mesmo teste.
+ *
  * "Total" é também a palavra nativa em PT, ES e FR; por isso o rótulo da linha
  * do total compara-se com a palavra certa de cada língua, em vez de se
  * procurar a palavra inglesa no HTML.
  */
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { EMAIL_LANGS, RECOVERY_I18N, type EmailLang } from "./email-i18n";
+import { CONFIRMATION_I18N, EMAIL_LANGS, RECOVERY_I18N, type EmailLang } from "./email-i18n";
 
 const fake = vi.hoisted(() => ({ send: vi.fn(async () => ({ error: null })) }));
 vi.mock("resend", () => ({ Resend: class { emails = { send: fake.send }; } }));
@@ -132,6 +138,52 @@ describe("email de recuperação: sem texto em inglês nas outras 8 línguas", (
     expect(totalRowLabel(html)).toBe("Total");
     expect(html).toContain(">Final cleaning</td>");
     expect(html).not.toContain("Service fee");
+    expect(html).toContain("Luxury villas in Portugal. The privacy of a home, the service of a hotel.");
+  });
+});
+
+describe("confirmação do pagamento: sem texto em inglês nas outras 8 línguas", () => {
+  async function renderConfirmation(lang: EmailLang): Promise<string> {
+    await email.sendCheckoutGuestConfirmation({
+      email: "guest@example.test",
+      guestFirstName: "Ana",
+      propertyName: "Casa Sintética",
+      destination: "minho",
+      checkIn: "2099-11-10",
+      checkOut: "2099-11-15",
+      guests: 4,
+      confirmationCode: "SYNTH-123",
+      reception: { type: "self" },
+      // Limpeza e taxas presentes: todas as linhas do cartão aparecem.
+      quote: base.quote,
+      canonical: { lines: [], receptionCents: 0, flexCents: 0, totalCents: 169_000 },
+      viewUrl: "https://www.portugalactive.com/pt/booking/thank-you/synthetic",
+      locale: lang,
+      cancellation: { policy: "moderate" },
+      intentId: "synthetic-intent",
+    });
+    return lastHtml();
+  }
+
+  it.each(EMAIL_LANGS)("%s: nem 'Service fee' nem a frase do rodapé em inglês", async (lang) => {
+    const html = await renderConfirmation(lang);
+    expect(html).not.toContain("Service fee");
+    if (lang !== "en") {
+      for (const leftover of ENGLISH_LEFTOVERS) expect(html).not.toMatch(leftover);
+    }
+    expect(html).toContain(CONFIRMATION_I18N[lang].footerTagline);
+  });
+
+  it.each(EMAIL_LANGS)("%s: limpeza final e total com os rótulos da língua", async (lang) => {
+    const html = await renderConfirmation(lang);
+    expect(html).toContain(`>${CLEANING[lang]}</td>`);
+    expect(totalRowLabel(html)).toBe(TOTAL[lang]);
+  });
+
+  it("inglês: o rótulo do checkout, nunca 'Service fee'", async () => {
+    const html = await renderConfirmation("en");
+    expect(html).toContain(">Final cleaning</td>");
+    expect(totalRowLabel(html)).toBe("Total");
     expect(html).toContain("Luxury villas in Portugal. The privacy of a home, the service of a hotel.");
   });
 });

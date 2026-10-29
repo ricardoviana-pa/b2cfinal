@@ -8,8 +8,19 @@
  * Em italiano o hóspede é tratado por Lei, com a cortesia em minúscula (il suo,
  * la sua, le, lei), como nos outros emails do site; os botões ficam no
  * infinitivo (Prenotare, Vedere, Tornare), como "Riprendere la mia prenotazione".
+ *
+ * Contacto 1 no passo de pagamento, duas variantes (auditoria 29 out 2026):
+ * a maioria de quem lá pára nunca carregou em Pagar, e o texto das falhas
+ * ("um cartão recusado, um limite do banco") falava de um problema que essa
+ * pessoa não teve. Sem tentativa: "ficou alguma dúvida?", sem falar de falhas.
+ * Com tentativa: o texto de sempre, sem o Klarna enquanto o país de faturação
+ * for forçado a PT (recovery-funnel.ts). Nas duas, por baixo do total, o
+ * cancelamento gratuito e as duas partes quando o checkout as oferece. O
+ * WhatsApp é o de todos os emails (whatsappLine): um número central, sem
+ * concierge por região. Para as duas partes nunca "sinal", "depósito" nem
+ * "prestações" (nem os equivalentes noutras línguas).
  */
-import type { EmailLang } from "./email-i18n";
+import { itArt, type EmailLang } from "./email-i18n";
 
 export interface FunnelStrings {
   // 1 · a casa
@@ -18,12 +29,22 @@ export interface FunnelStrings {
   headline1: string;
   body1: (g: string, h: string) => string;
   personal1: string;
-  // 1 · variante: parou no pagamento
+  // 1 · variante: chegou a pagar e não ficou (cobrança tentada). `klarna`:
+  // o Klarna pode ser sugerido (checkout-recovery.ts; hoje nunca, com o país
+  // de faturação forçado a PT); sem isso o Klarna não é sugerido.
   subject1Pay: (h: string) => string;
-  preheader1Pay: string;
+  preheader1Pay: (klarna?: boolean) => string;
   headline1Pay: string;
-  body1Pay: (g: string, h: string) => string;
+  body1Pay: (g: string, h: string, klarna?: boolean) => string;
   personal1Pay: string;
+  // 1 · variante: parou no pagamento sem tentar pagar
+  subject1Ask: (h: string) => string;
+  preheader1Ask: string;
+  headline1Ask: string;
+  body1Ask: (g: string, h: string) => string;
+  personal1Ask: string;
+  /** Duas partes como o checkout as oferece no momento do envio. */
+  twoPartsLine: (today: string, later: string, date: string) => string;
   // 2 · urgência verdadeira
   subject2: (h: string, time: string) => string;
   preheader2: string;
@@ -60,10 +81,16 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1: (g, h) => `${g} guardámos a sua estadia em ${h} exatamente como a deixou: as datas, os hóspedes e o preço. Basta um clique para continuar, neste ou noutro dispositivo.`,
     personal1: "Se quiser saber mais sobre a casa ou a região antes de decidir, responda a este email. Lemos todas as respostas.",
     subject1Pay: (h) => `A sua reserva em ${h} ficou a meio`,
-    preheader1Pay: "O preço mantém-se. Pode concluir com cartão, Apple Pay, Google Pay, PayPal ou Klarna.",
+    preheader1Pay: (k) => `O preço mantém-se. Pode concluir com cartão, Apple Pay, Google Pay${k ? ", PayPal ou Klarna" : " ou PayPal"}.`,
     headline1Pay: "Ficou algo por resolver?",
-    body1Pay: (g, h) => `${g} chegou ao pagamento da sua estadia em ${h}, mas a reserva não ficou concluída. Acontece a muitos hóspedes: um cartão recusado, um limite do banco, uma dúvida de última hora. O seu preço mantém-se e pode pagar como preferir: cartão, Apple Pay ou Google Pay, PayPal, ou dividir o pagamento com Klarna.`,
+    body1Pay: (g, h, k) => `${g} chegou ao pagamento da sua estadia em ${h}, mas a reserva não ficou concluída. Acontece a muitos hóspedes: um cartão recusado, um limite do banco, uma dúvida de última hora. O seu preço mantém-se e pode pagar como preferir: ${k ? "cartão, Apple Pay ou Google Pay, PayPal, ou dividir o pagamento com Klarna" : "cartão, Apple Pay, Google Pay ou PayPal"}.`,
     personal1Pay: "Prefere tratar disto com uma pessoa? Responda a este email ou escreva-nos por WhatsApp e concluímos a reserva consigo.",
+    subject1Ask: (h) => `Alguma dúvida antes de reservar ${h}?`,
+    preheader1Ask: "O seu preço mantém-se. Se ficou alguma dúvida, o seu concierge está a uma mensagem de distância.",
+    headline1Ask: "Ficou alguma dúvida antes de reservar?",
+    body1Ask: (g, h) => `${g} a sua estadia em ${h} ficou guardada no último passo, tal como a deixou. Se ficou alguma pergunta sobre a casa, a região ou as condições da reserva, estamos aqui para ajudar. O seu preço mantém-se.`,
+    personal1Ask: "Também pode responder a este email com qualquer dúvida sobre a casa, a região ou a reserva. Lemos todas as respostas.",
+    twoPartsLine: (t, l, d) => `Ou em duas partes, no mesmo cartão: ${t} hoje e ${l} a ${d}.`,
     subject2: (h, t) => `${h}: o seu preço mantém-se até às ${t}`,
     preheader2: "Depois dessa hora o valor é recalculado para as suas datas.",
     headline2: "O seu preço mantém-se por mais algumas horas.",
@@ -95,10 +122,16 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1: (g, h) => `${g} we saved your stay at ${h} exactly as you left it: the dates, the guests and the price. One click and you're back, on this device or any other.`,
     personal1: "If you'd like to know more about the house or the area before deciding, just reply to this email. We read every reply.",
     subject1Pay: (h) => `Your booking at ${h} is halfway there`,
-    preheader1Pay: "Your price still stands. Finish with card, Apple Pay, Google Pay, PayPal or Klarna.",
+    preheader1Pay: (k) => `Your price still stands. Finish with card, Apple Pay, Google Pay${k ? ", PayPal or Klarna" : " or PayPal"}.`,
     headline1Pay: "Did something get in the way?",
-    body1Pay: (g, h) => `${g} you reached the payment step for your stay at ${h}, but the booking wasn't completed. It happens to many guests: a declined card, a bank limit, a last-minute question. Your price still stands and you can pay however suits you: card, Apple Pay or Google Pay, PayPal, or split the payment with Klarna.`,
+    body1Pay: (g, h, k) => `${g} you reached the payment step for your stay at ${h}, but the booking wasn't completed. It happens to many guests: a declined card, a bank limit, a last-minute question. Your price still stands and you can pay however suits you: ${k ? "card, Apple Pay or Google Pay, PayPal, or split the payment with Klarna" : "card, Apple Pay, Google Pay or PayPal"}.`,
     personal1Pay: "Would you rather sort this out with a person? Reply to this email or message us on WhatsApp and we'll complete the booking with you.",
+    subject1Ask: (h) => `Any questions before you book ${h}?`,
+    preheader1Ask: "Your price still stands. If something is unclear, your concierge is one message away.",
+    headline1Ask: "Any questions before you book?",
+    body1Ask: (g, h) => `${g} your stay at ${h} is saved at the last step, just as you left it. If you have a question about the house, the area or the booking terms, we're here to help. Your price still stands.`,
+    personal1Ask: "You can also reply to this email with any question about the house, the area or the booking. We read every reply.",
+    twoPartsLine: (t, l, d) => `Or in two parts, on the same card: ${t} today and ${l} on ${d}.`,
     subject2: (h, t) => `${h}: your price holds until ${t}`,
     preheader2: "After that, the rate for your dates is recalculated.",
     headline2: "Your price holds for a few more hours.",
@@ -130,10 +163,16 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1: (g, h) => `${g} nous avons conservé votre séjour à ${h} exactement tel que vous l'avez laissé : les dates, les voyageurs et le prix. Un clic suffit pour reprendre, sur cet appareil ou un autre.`,
     personal1: "Si vous souhaitez en savoir plus sur la maison ou la région avant de décider, répondez simplement à cet email. Nous lisons toutes les réponses.",
     subject1Pay: (h) => `Votre réservation à ${h} est restée en suspens`,
-    preheader1Pay: "Votre prix est maintenu. Finalisez par carte, Apple Pay, Google Pay, PayPal ou Klarna.",
+    preheader1Pay: (k) => `Votre prix est maintenu. Finalisez par carte, Apple Pay, Google Pay${k ? ", PayPal ou Klarna" : " ou PayPal"}.`,
     headline1Pay: "Un imprévu au moment de payer ?",
-    body1Pay: (g, h) => `${g} vous êtes arrivé au paiement de votre séjour à ${h}, mais la réservation n'a pas été finalisée. Cela arrive souvent : une carte refusée, un plafond bancaire, une question de dernière minute. Votre prix est maintenu et vous pouvez payer comme vous le souhaitez : carte, Apple Pay ou Google Pay, PayPal, ou en plusieurs fois avec Klarna.`,
+    body1Pay: (g, h, k) => `${g} vous êtes arrivé au paiement de votre séjour à ${h}, mais la réservation n'a pas été finalisée. Cela arrive souvent : une carte refusée, un plafond bancaire, une question de dernière minute. Votre prix est maintenu et vous pouvez payer comme vous le souhaitez : ${k ? "carte, Apple Pay ou Google Pay, PayPal, ou en plusieurs fois avec Klarna" : "carte, Apple Pay, Google Pay ou PayPal"}.`,
     personal1Pay: "Vous préférez régler cela avec une personne ? Répondez à cet email ou écrivez-nous sur WhatsApp et nous finaliserons la réservation avec vous.",
+    subject1Ask: (h) => `Une question avant de réserver ${h} ?`,
+    preheader1Ask: "Votre prix est maintenu. Si quelque chose n'est pas clair, votre concierge est à un message de vous.",
+    headline1Ask: "Une question avant de réserver ?",
+    body1Ask: (g, h) => `${g} votre séjour à ${h} est conservé à la dernière étape, tel que vous l'avez laissé. Si vous avez une question sur la maison, la région ou les conditions de réservation, nous sommes là pour vous aider. Votre prix est maintenu.`,
+    personal1Ask: "Vous pouvez aussi répondre à cet email pour toute question sur la maison, la région ou la réservation. Nous lisons toutes les réponses.",
+    twoPartsLine: (t, l, d) => `Ou en deux parties, avec la même carte : ${t} aujourd'hui et ${l} le ${d}.`,
     subject2: (h, t) => `${h} : votre prix est maintenu jusqu'à ${t}`,
     preheader2: "Passé ce délai, le tarif de vos dates est recalculé.",
     headline2: "Votre prix est maintenu encore quelques heures.",
@@ -165,10 +204,16 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1: (g, h) => `${g} guardamos su estancia en ${h} tal como la dejó: las fechas, los huéspedes y el precio. Un clic y puede continuar, en este dispositivo o en otro.`,
     personal1: "Si quiere saber más sobre la casa o la zona antes de decidir, responda a este email. Leemos todas las respuestas.",
     subject1Pay: (h) => `Su reserva en ${h} quedó a medias`,
-    preheader1Pay: "Su precio se mantiene. Termine con tarjeta, Apple Pay, Google Pay, PayPal o Klarna.",
+    preheader1Pay: (k) => `Su precio se mantiene. Termine con tarjeta, Apple Pay, Google Pay${k ? ", PayPal o Klarna" : " o PayPal"}.`,
     headline1Pay: "¿Algo se interpuso?",
-    body1Pay: (g, h) => `${g} llegó al pago de su estancia en ${h}, pero la reserva no se completó. Le pasa a muchos huéspedes: una tarjeta rechazada, un límite del banco, una duda de última hora. Su precio se mantiene y puede pagar como prefiera: tarjeta, Apple Pay o Google Pay, PayPal, o dividir el pago con Klarna.`,
+    body1Pay: (g, h, k) => `${g} llegó al pago de su estancia en ${h}, pero la reserva no se completó. Le pasa a muchos huéspedes: una tarjeta rechazada, un límite del banco, una duda de última hora. Su precio se mantiene y puede pagar como prefiera: ${k ? "tarjeta, Apple Pay o Google Pay, PayPal, o dividir el pago con Klarna" : "tarjeta, Apple Pay, Google Pay o PayPal"}.`,
     personal1Pay: "¿Prefiere resolverlo con una persona? Responda a este email o escríbanos por WhatsApp y completamos la reserva con usted.",
+    subject1Ask: (h) => `¿Alguna duda antes de reservar ${h}?`,
+    preheader1Ask: "Su precio se mantiene. Si algo no está claro, su concierge está a un mensaje de distancia.",
+    headline1Ask: "¿Le ha quedado alguna duda antes de reservar?",
+    body1Ask: (g, h) => `${g} su estancia en ${h} está guardada en el último paso, tal como la dejó. Si tiene alguna pregunta sobre la casa, la zona o las condiciones de la reserva, estamos aquí para ayudarle. Su precio se mantiene.`,
+    personal1Ask: "También puede responder a este email con cualquier duda sobre la casa, la zona o la reserva. Leemos todas las respuestas.",
+    twoPartsLine: (t, l, d) => `O en dos partes, con la misma tarjeta: ${t} hoy y ${l} el ${d}.`,
     subject2: (h, t) => `${h}: su precio se mantiene hasta las ${t}`,
     preheader2: "Después, el precio de sus fechas se recalcula.",
     headline2: "Su precio se mantiene unas horas más.",
@@ -200,10 +245,16 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1: (g, h) => `${g} abbiamo salvato il suo soggiorno a ${h} esattamente come l'ha lasciato: date, ospiti e prezzo. Basta un clic per continuare, su questo dispositivo o su un altro.`,
     personal1: "Se desidera saperne di più sulla casa o sulla zona prima di decidere, risponda a questa email. Leggiamo tutte le risposte.",
     subject1Pay: (h) => `La sua prenotazione a ${h} è rimasta a metà`,
-    preheader1Pay: "Il prezzo resta valido. Può completare la prenotazione con carta, Apple Pay, Google Pay, PayPal o Klarna.",
+    preheader1Pay: (k) => `Il prezzo resta valido. Può completare la prenotazione con carta, Apple Pay, Google Pay${k ? ", PayPal o Klarna" : " o PayPal"}.`,
     headline1Pay: "Qualcosa è andato storto?",
-    body1Pay: (g, h) => `${g} ha raggiunto la fase di pagamento del suo soggiorno a ${h}, ma la prenotazione non è stata completata. Capita a molti ospiti: una carta rifiutata, un limite della banca, un dubbio dell'ultimo minuto. Il prezzo resta valido e può pagare come preferisce: carta, Apple Pay o Google Pay, PayPal, oppure dividere il pagamento con Klarna.`,
+    body1Pay: (g, h, k) => `${g} ha raggiunto la fase di pagamento del suo soggiorno a ${h}, ma la prenotazione non è stata completata. Capita a molti ospiti: una carta rifiutata, un limite della banca, un dubbio dell'ultimo minuto. Il prezzo resta valido e può pagare come preferisce: ${k ? "carta, Apple Pay o Google Pay, PayPal, oppure dividere il pagamento con Klarna" : "carta, Apple Pay, Google Pay o PayPal"}.`,
     personal1Pay: "Preferisce occuparsene con una persona? Risponda a questa email o ci scriva su WhatsApp e completeremo insieme la prenotazione.",
+    subject1Ask: (h) => `Qualche domanda prima di prenotare ${h}?`,
+    preheader1Ask: "Il prezzo resta valido. Se qualcosa non è chiaro, il suo concierge è a un messaggio di distanza.",
+    headline1Ask: "Qualche domanda prima di prenotare?",
+    body1Ask: (g, h) => `${g} il suo soggiorno a ${h} è salvato all'ultimo passo, così come l'ha lasciato. Se ha qualche domanda sulla casa, sulla zona o sulle condizioni della prenotazione, siamo qui per aiutarla. Il prezzo resta valido.`,
+    personal1Ask: "Può anche rispondere a questa email per qualsiasi domanda sulla casa, sulla zona o sulla prenotazione. Leggiamo tutte le risposte.",
+    twoPartsLine: (t, l, d) => `Oppure in due parti, con la stessa carta: ${t} oggi e ${l} ${itArt("il", d)}.`,
     subject2: (h, t) => `${h}: il suo prezzo resta valido fino alle ${t}`,
     preheader2: "Oltre quell'orario il prezzo per le sue date viene ricalcolato.",
     headline2: "Il suo prezzo resta valido ancora per qualche ora.",
@@ -235,10 +286,16 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1: (g, h) => `${g} wir haben Ihren Aufenthalt in ${h} genau so gespeichert, wie Sie ihn verlassen haben: Daten, Gäste und Preis. Ein Klick genügt, um weiterzumachen, auf diesem oder einem anderen Gerät.`,
     personal1: "Wenn Sie vor Ihrer Entscheidung mehr über das Haus oder die Region wissen möchten, antworten Sie einfach auf diese E-Mail. Wir lesen jede Antwort.",
     subject1Pay: (h) => `Ihre Buchung für ${h} ist noch offen`,
-    preheader1Pay: "Ihr Preis gilt weiterhin. Abschließen per Karte, Apple Pay, Google Pay, PayPal oder Klarna.",
+    preheader1Pay: (k) => `Ihr Preis gilt weiterhin. Abschließen per Karte, Apple Pay, Google Pay${k ? ", PayPal oder Klarna" : " oder PayPal"}.`,
     headline1Pay: "Ist etwas dazwischengekommen?",
-    body1Pay: (g, h) => `${g} Sie waren bereits bei der Zahlung für Ihren Aufenthalt in ${h}, aber die Buchung wurde nicht abgeschlossen. Das passiert vielen Gästen: eine abgelehnte Karte, ein Banklimit, eine Frage in letzter Minute. Ihr Preis gilt weiterhin und Sie können bezahlen, wie es Ihnen passt: Karte, Apple Pay oder Google Pay, PayPal oder in Raten mit Klarna.`,
+    body1Pay: (g, h, k) => `${g} Sie waren bereits bei der Zahlung für Ihren Aufenthalt in ${h}, aber die Buchung wurde nicht abgeschlossen. Das passiert vielen Gästen: eine abgelehnte Karte, ein Banklimit, eine Frage in letzter Minute. Ihr Preis gilt weiterhin und Sie können bezahlen, wie es Ihnen passt: ${k ? "Karte, Apple Pay oder Google Pay, PayPal oder in Raten mit Klarna" : "Karte, Apple Pay, Google Pay oder PayPal"}.`,
     personal1Pay: "Möchten Sie das lieber mit einem Menschen klären? Antworten Sie auf diese E-Mail oder schreiben Sie uns auf WhatsApp, und wir schließen die Buchung gemeinsam ab.",
+    subject1Ask: (h) => `Noch Fragen, bevor Sie ${h} buchen?`,
+    preheader1Ask: "Ihr Preis gilt weiterhin. Wenn etwas unklar ist, ist Ihr Concierge nur eine Nachricht entfernt.",
+    headline1Ask: "Noch Fragen vor der Buchung?",
+    body1Ask: (g, h) => `${g} Ihr Aufenthalt in ${h} ist beim letzten Schritt gespeichert, genau so, wie Sie ihn verlassen haben. Wenn Sie eine Frage zum Haus, zur Region oder zu den Buchungsbedingungen haben, helfen wir Ihnen gerne. Ihr Preis gilt weiterhin.`,
+    personal1Ask: "Sie können auch einfach auf diese E-Mail antworten, mit jeder Frage zum Haus, zur Region oder zur Buchung. Wir lesen jede Antwort.",
+    twoPartsLine: (t, l, d) => `Oder in zwei Teilen, mit derselben Karte: ${t} heute und ${l} am ${d}.`,
     subject2: (h, t) => `${h}: Ihr Preis gilt bis ${t} Uhr`,
     preheader2: "Danach wird der Preis für Ihre Daten neu berechnet.",
     headline2: "Ihr Preis gilt noch einige Stunden.",
@@ -270,10 +327,16 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1: (g, h) => `${g} we hebben uw verblijf in ${h} precies zo bewaard als u het achterliet: de data, de gasten en de prijs. Eén klik en u gaat verder, op dit of een ander apparaat.`,
     personal1: "Wilt u voor uw beslissing meer weten over het huis of de streek? Beantwoord dan deze e-mail. We lezen elk antwoord.",
     subject1Pay: (h) => `Uw boeking voor ${h} staat nog open`,
-    preheader1Pay: "Uw prijs blijft staan. Rond af met kaart, Apple Pay, Google Pay, PayPal of Klarna.",
+    preheader1Pay: (k) => `Uw prijs blijft staan. Rond af met kaart, Apple Pay, Google Pay${k ? ", PayPal of Klarna" : " of PayPal"}.`,
     headline1Pay: "Kwam er iets tussen?",
-    body1Pay: (g, h) => `${g} u was al bij de betaling voor uw verblijf in ${h}, maar de boeking is niet afgerond. Dat overkomt veel gasten: een geweigerde kaart, een banklimiet, een vraag op het laatste moment. Uw prijs blijft staan en u betaalt zoals u wilt: kaart, Apple Pay of Google Pay, PayPal, of gespreid met Klarna.`,
+    body1Pay: (g, h, k) => `${g} u was al bij de betaling voor uw verblijf in ${h}, maar de boeking is niet afgerond. Dat overkomt veel gasten: een geweigerde kaart, een banklimiet, een vraag op het laatste moment. Uw prijs blijft staan en u betaalt zoals u wilt: ${k ? "kaart, Apple Pay of Google Pay, PayPal, of gespreid met Klarna" : "kaart, Apple Pay, Google Pay of PayPal"}.`,
     personal1Pay: "Regelt u dit liever met een persoon? Beantwoord deze e-mail of stuur ons een bericht via WhatsApp en we ronden de boeking samen af.",
+    subject1Ask: (h) => `Nog vragen voordat u ${h} boekt?`,
+    preheader1Ask: "Uw prijs blijft staan. Is iets niet duidelijk, dan is uw concierge maar één bericht verwijderd.",
+    headline1Ask: "Nog vragen voordat u boekt?",
+    body1Ask: (g, h) => `${g} uw verblijf in ${h} staat bewaard bij de laatste stap, precies zoals u het achterliet. Heeft u een vraag over het huis, de streek of de boekingsvoorwaarden, dan helpen we u graag. Uw prijs blijft staan.`,
+    personal1Ask: "U kunt ook deze e-mail beantwoorden met elke vraag over het huis, de streek of de boeking. We lezen elk antwoord.",
+    twoPartsLine: (t, l, d) => `Of in twee delen, met dezelfde kaart: ${t} vandaag en ${l} op ${d}.`,
     subject2: (h, t) => `${h}: uw prijs geldt tot ${t}`,
     preheader2: "Daarna wordt de prijs voor uw data opnieuw berekend.",
     headline2: "Uw prijs geldt nog enkele uren.",
@@ -305,10 +368,16 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1: (g, h) => `${g} vi har sparat din vistelse på ${h} precis som du lämnade den: datum, gäster och pris. Ett klick så fortsätter du, på den här enheten eller en annan.`,
     personal1: "Vill du veta mer om huset eller området innan du bestämmer dig? Svara bara på det här mejlet. Vi läser varje svar.",
     subject1Pay: (h) => `Din bokning av ${h} blev inte klar`,
-    preheader1Pay: "Ditt pris gäller fortfarande. Slutför med kort, Apple Pay, Google Pay, PayPal eller Klarna.",
+    preheader1Pay: (k) => `Ditt pris gäller fortfarande. Slutför med kort, Apple Pay, Google Pay${k ? ", PayPal eller Klarna" : " eller PayPal"}.`,
     headline1Pay: "Kom något emellan?",
-    body1Pay: (g, h) => `${g} du kom till betalningen för din vistelse på ${h}, men bokningen slutfördes inte. Det händer många gäster: ett nekat kort, en bankgräns, en fråga i sista stund. Ditt pris gäller fortfarande och du kan betala som du vill: kort, Apple Pay eller Google Pay, PayPal, eller dela upp betalningen med Klarna.`,
+    body1Pay: (g, h, k) => `${g} du kom till betalningen för din vistelse på ${h}, men bokningen slutfördes inte. Det händer många gäster: ett nekat kort, en bankgräns, en fråga i sista stund. Ditt pris gäller fortfarande och du kan betala som du vill: ${k ? "kort, Apple Pay eller Google Pay, PayPal, eller dela upp betalningen med Klarna" : "kort, Apple Pay, Google Pay eller PayPal"}.`,
     personal1Pay: "Vill du hellre lösa det med en person? Svara på det här mejlet eller skriv till oss på WhatsApp så slutför vi bokningen tillsammans.",
+    subject1Ask: (h) => `Några frågor innan du bokar ${h}?`,
+    preheader1Ask: "Ditt pris gäller fortfarande. Om något är oklart är din concierge bara ett meddelande bort.",
+    headline1Ask: "Några frågor innan du bokar?",
+    body1Ask: (g, h) => `${g} din vistelse på ${h} är sparad vid sista steget, precis som du lämnade den. Om du har en fråga om huset, området eller bokningsvillkoren hjälper vi dig gärna. Ditt pris gäller fortfarande.`,
+    personal1Ask: "Du kan också svara på det här mejlet med alla frågor om huset, området eller bokningen. Vi läser varje svar.",
+    twoPartsLine: (t, l, d) => `Eller i två delar, med samma kort: ${t} i dag och ${l} den ${d}.`,
     subject2: (h, t) => `${h}: ditt pris gäller till ${t}`,
     preheader2: "Därefter räknas priset för dina datum om.",
     headline2: "Ditt pris gäller några timmar till.",
@@ -340,10 +409,16 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1: (g, h) => `${g} tallensimme oleskelusi kohteessa ${h} juuri sellaisena kuin jätit sen: päivämäärät, vieraat ja hinnan. Yksi klikkaus ja jatkat siitä, tällä tai toisella laitteella.`,
     personal1: "Jos haluat tietää lisää talosta tai alueesta ennen päätöstä, vastaa tähän sähköpostiin. Luemme jokaisen vastauksen.",
     subject1Pay: (h) => `Varauksesi kohteeseen ${h} jäi kesken`,
-    preheader1Pay: "Hintasi on voimassa. Viimeistele kortilla, Apple Paylla, Google Paylla, PayPalilla tai Klarnalla.",
+    preheader1Pay: (k) => `Hintasi on voimassa. Viimeistele kortilla, Apple Paylla, Google Paylla${k ? ", PayPalilla tai Klarnalla" : " tai PayPalilla"}.`,
     headline1Pay: "Tuliko jotain väliin?",
-    body1Pay: (g, h) => `${g} pääsit jo maksuvaiheeseen oleskelullesi kohteessa ${h}, mutta varaus ei valmistunut. Näin käy monelle: hylätty kortti, pankin raja, viime hetken kysymys. Hintasi on edelleen voimassa ja voit maksaa haluamallasi tavalla: kortilla, Apple Paylla tai Google Paylla, PayPalilla tai osissa Klarnalla.`,
+    body1Pay: (g, h, k) => `${g} pääsit jo maksuvaiheeseen oleskelullesi kohteessa ${h}, mutta varaus ei valmistunut. Näin käy monelle: hylätty kortti, pankin raja, viime hetken kysymys. Hintasi on edelleen voimassa ja voit maksaa haluamallasi tavalla: ${k ? "kortilla, Apple Paylla tai Google Paylla, PayPalilla tai osissa Klarnalla" : "kortilla, Apple Paylla, Google Paylla tai PayPalilla"}.`,
     personal1Pay: "Hoidatko asian mieluummin ihmisen kanssa? Vastaa tähän sähköpostiin tai kirjoita meille WhatsAppissa, niin viimeistelemme varauksen kanssasi.",
+    subject1Ask: (h) => `Kysyttävää ennen kuin varaat kohteen ${h}?`,
+    preheader1Ask: "Hintasi on voimassa. Jos jokin on epäselvää, conciergesi on vain viestin päässä.",
+    headline1Ask: "Onko kysyttävää ennen varausta?",
+    body1Ask: (g, h) => `${g} oleskelusi kohteessa ${h} on tallessa viimeisessä vaiheessa, juuri niin kuin jätit sen. Jos sinulla on kysyttävää talosta, alueesta tai varausehdoista, autamme mielellämme. Hintasi on yhä voimassa.`,
+    personal1Ask: "Voit myös vastata tähän sähköpostiin, jos sinulla on kysyttävää talosta, alueesta tai varauksesta. Luemme jokaisen vastauksen.",
+    twoPartsLine: (t, l, d) => `Tai kahdessa osassa samalla kortilla: ${t} tänään ja ${l} ${d}.`,
     subject2: (h, t) => `${h}: hintasi on voimassa klo ${t} asti`,
     preheader2: "Sen jälkeen päivämääriesi hinta lasketaan uudelleen.",
     headline2: "Hintasi on voimassa vielä muutaman tunnin.",

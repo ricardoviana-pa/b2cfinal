@@ -44,6 +44,7 @@ import {
 } from "../services/transactional-email";
 import { appendReservationNote } from "../services/guesty-openapi-paypal";
 import { couponNoteLine } from "../services/coupon-note";
+import { invoiceNifNoteLine } from "../services/invoice-nif";
 import { mergeVisitOrigins, originNoteEnabled, originNoteLine, parseVisitOriginPayload } from "../services/visit-origin";
 import { getIntentOrigin, saveIntentOrigin } from "../services/visit-origin-store";
 import { deleteAdSignals, getAdSignals, requestClientIp, saveAdSignals } from "../services/ad-signals-store";
@@ -260,11 +261,18 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string, pricing?:
     // Origem da visita (UTM, clique, referrer): nota da reserva e email
     // [Venda direta]. Nunca vai para a CAPI, a Stripe nem o dataLayer.
     const originPromise = getIntentOrigin(intentId).catch(() => null);
+    // NIF para a fatura (spec 5.13): 1.ª ação do email ao CS e topo da nota
+    // da reserva, para TODOS os métodos, porque todos passam por aqui. Antes
+    // só o settle do cartão o punha, no fim da nota (a parte que cai num
+    // corte); PayPal e Klarna perdiam-no. Nenhum outro campo do Guesty até
+    // se confirmar qual é o que a Hostkit lê.
+    const nifLine = invoiceNifNoteLine(m.nif);
     void Promise.all([photoPromise, originPromise, planPromise]).then(([imageUrl, origin, plan]) => sendCheckoutOpsManifest({
       plan,
       canonical,
       imageUrl,
       origin,
+      nif: m.nif ?? null,
       couponCode: (m.quote as any)?.couponCode ?? null,
       confirmationCode: m.confirmationCode, reservationId: m.reservationId,
       propertyName: m.propertyName, checkIn: m.checkIn, checkOut: m.checkOut,
@@ -349,14 +357,18 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string, pricing?:
     const couponLine = couponNoteLine(m.quote);
     const originLine = originNoteEnabled() ? originNoteLine(await originPromise) : "";
     const headLines = [couponLine, originLine].filter(Boolean).join("\n");
-    if (m.reservationId && !hasPayload && headLines) {
-      void appendReservationNote(String(m.reservationId), headLines);
-    }
-    if (m.reservationId && hasPayload) {
+    let note = headLines;
+    if (hasPayload) {
       const lines = (Array.isArray(m.extras) ? m.extras : []).map((e: any) =>
         "- " + e.sku + (e.qty ? " x" + e.qty : "") + (e.days ? " " + e.days + " dias" : "") + (e.people ? " " + e.people + "p" : "") + " " + (e.amount != null ? e.amount + " EUR" : "(sob orcamento)") + (e.fulfillment === "needs_confirmation" ? " [CONFIRMAR 24H]" : ""));
-      const note = (headLines ? headLines + "\n" : "") + "SERVICOS DO CHECKOUT:\nRececao: " + (m.reception?.type === "hosted" ? "presencial" + (m.reception.late ? " apos 21h" : "") : "self check-in") + "\nFlex: " + (m.flex ? "SIM" : "nao") + "\n" + lines.join("\n");
-      void appendReservationNote(String(m.reservationId), note);
+      note = (headLines ? headLines + "\n" : "") + "SERVICOS DO CHECKOUT:\nRececao: " + (m.reception?.type === "hosted" ? "presencial" + (m.reception.late ? " apos 21h" : "") : "self check-in") + "\nFlex: " + (m.flex ? "SIM" : "nao") + "\n" + lines.join("\n");
+    }
+    // Uma só escrita: o NIF no topo do campo e o resto no fim. Duas escritas
+    // em paralelo perdiam uma (ler, juntar, gravar).
+    if (m.reservationId && (note || nifLine)) {
+      void (nifLine
+        ? appendReservationNote(String(m.reservationId), note, { prepend: nifLine })
+        : appendReservationNote(String(m.reservationId), note));
     }
   } catch (err: any) {
     console.error(`[Card2b] fireCheckoutPaidEmails falhou (intent ${intentId}):`, err?.message);
@@ -367,8 +379,10 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string, pricing?:
  * Oferta de duas partes para o ecrã do checkout, com os valores que o
  * createCardCharge vai cobrar: o depósito mede-se sem o Flex oferecido pelo
  * pagamento integral (que se retira em duas partes) e o "tudo agora" com ele.
+ * Exportada para o email de recuperação dizer o que o checkout diria
+ * (checkout-recovery.ts): uma só fonte das regras.
  */
-async function clientPaymentPlanFor(intent: any) {
+export async function clientPaymentPlanFor(intent: any) {
   if (intent.status === "paid") return { available: false as const, reason: null };
   const config = readTwoPartsConfig();
   if (!config.enabled) return { available: false as const, reason: "disabled" as const };

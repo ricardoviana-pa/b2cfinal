@@ -24,7 +24,7 @@ import {
   claimConciergeAlert,
   updateBookingIntent,
 } from "../db";
-import { sendCheckoutRecovery, sendConciergeCallAlert } from "./transactional-email";
+import { sendCheckoutRecovery, sendConciergeCallAlert, type RecoveryTwoParts } from "./transactional-email";
 import { getPropertiesForSite, isHiddenFromCatalog } from "./properties-store";
 import type { BookingIntent } from "../../drizzle/schema";
 import { canRemindRecoveryStay } from './recovery-eligibility';
@@ -35,9 +35,14 @@ import {
   nextRecoveryStage,
   hasEnoughLeadTime,
   calendarScarcity,
+  flexExtraDays,
+  klarnaCanPay,
+  KLARNA_BILLING_COUNTRY_FORCED_PT,
   type RecoveryStage,
 } from "./recovery-funnel";
 import { FLEX_CONFIG, flexPriceFor } from "../config/checkout-extras";
+import { planPolicyCode } from "@shared/cancellationPolicy";
+import { intentPolicyCode, withoutExpiredFullPaymentGift } from "./checkout-plan";
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -179,8 +184,16 @@ async function requoteForStage3(intent: BookingIntent): Promise<
     };
     const expiresAt = new Date(Date.now() + RECOVERY_TIMING.requoteTtlMs);
     // O Flex só existe acima do limiar (decisão de produto); abaixo, o
-    // contacto 3 vai sem incentivo em vez de oferecer algo que não se vende
-    const giftEligible = total >= FLEX_CONFIG.minTotal;
+    // contacto 3 vai sem incentivo em vez de oferecer algo que não se vende.
+    // E só se oferece quando acrescenta dias à tarifa: na moderate (cancela de
+    // graça até 7 dias antes) o Flex remarca até 7 dias antes, a mesma data,
+    // e "oferecê-lo" era oferecer nada. Política desconhecida: como antes.
+    const policy = planPolicyCode(plan ?? { cancellationPolicy: be.cancellationPolicy });
+    const addsNothing = flexExtraDays(policy, FLEX_CONFIG.rescheduleDaysBefore) === 0;
+    if (addsNothing && total >= FLEX_CONFIG.minTotal) {
+      console.info(`[Recovery] Contacto 3 sem Flex oferecido (intent ${intent.id}): a tarifa ${policy} já cancela de graça até ao prazo do Flex`);
+    }
+    const giftEligible = total >= FLEX_CONFIG.minTotal && !addsNothing;
     const flexGift = giftEligible
       ? {
           until: new Date(Date.now() + RECOVERY_TIMING.flexGiftMs),
@@ -252,6 +265,82 @@ async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
   } catch {
     return { alternatives: [], ownUrl: resumeUrl(intent, stage) };
   }
+}
+
+/** O que o contacto 1 sabe do passo de pagamento, lido no envio. */
+export interface PaymentStepFacts {
+  /** Chegou a carregar em Pagar (houve uma cobrança tentada). */
+  attempted: boolean;
+  /** Depois de uma tentativa: o Klarna pode ser sugerido. Hoje nunca
+   *  (KLARNA_BILLING_COUNTRY_FORCED_PT). */
+  klarna: boolean;
+  /** Política da tarifa, para a linha do cancelamento gratuito. */
+  cancellation: { policy: unknown } | null;
+  /** Duas partes como o checkout as mostraria agora. Depois de uma tentativa
+   *  é a resposta a "um limite do banco": metade hoje, no mesmo cartão. */
+  twoParts: RecoveryTwoParts | null;
+}
+
+/**
+ * O hóspede chegou a tentar pagar? Cartão e wallets deixam o PI no intent (o
+ * createCardCharge só corre depois do clique em Pagar). PayPal e Klarna
+ * criam o PI no clique e não deixam nada no intent: procura-se na Stripe pelo
+ * intentId. Sem resposta da Stripe: "sem tentativa", o texto que não fala de
+ * falhas e que também serve a quem tentou.
+ */
+export async function paymentWasAttempted(intent: Pick<BookingIntent, "id" | "paymentIntentId">): Promise<boolean> {
+  if (intent.paymentIntentId) return true;
+  try {
+    const { hasCheckoutPaymentAttempt } = await import("./stripe-klarna");
+    return await hasCheckoutPaymentAttempt(intent.id);
+  } catch (err: any) {
+    console.warn(`[Recovery] Tentativa de pagamento por confirmar (intent ${intent.id}): ${err?.message ?? err}`);
+    return false;
+  }
+}
+
+/** Total que o checkout cobraria agora (cêntimos, o que o Klarna receberia). null se não se souber. */
+async function checkoutTotalCents(intent: BookingIntent): Promise<number | null> {
+  try {
+    const { listingBreakdownFromIntent } = await import("./checkout-card-charge");
+    const b = await listingBreakdownFromIntent(intent);
+    return Number.isSafeInteger(b.totalCents) && b.totalCents > 0 ? b.totalCents : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Duas partes como o ecrã do checkout as mostraria agora: a mesma função do
+ * getIntent (clientPaymentPlanFor), com a flag, a tarifa, a antecedência e o
+ * mínimo de hoje. Qualquer dúvida (erro, sem oferta): null, e o email vai sem
+ * a linha.
+ */
+async function twoPartsOfferNow(intent: BookingIntent): Promise<RecoveryTwoParts | null> {
+  try {
+    const { clientPaymentPlanFor } = await import("../routers/checkout");
+    const plan: any = await clientPaymentPlanFor(withoutExpiredFullPaymentGift(intent));
+    if (!plan?.available) return null;
+    return { todayCents: Number(plan.depositCents), laterCents: Number(plan.balanceCents), chargeAt: new Date(plan.chargeAt) };
+  } catch (err: any) {
+    console.warn(`[Recovery] Duas partes por calcular (intent ${intent.id}): ${err?.message ?? err}`);
+    return null;
+  }
+}
+
+/** Contacto 1 no passo de pagamento: que email sai e com que linhas. */
+export async function paymentStepFacts(intent: BookingIntent): Promise<PaymentStepFacts> {
+  const attempted = await paymentWasAttempted(intent);
+  // O Klarna só depois de uma tentativa e nunca com o país de faturação
+  // forçado a PT: sugeri-lo a quem teve "um limite do banco" mandava a
+  // maioria (não clientes Klarna em Portugal) para outra recusa.
+  const klarna = attempted && !KLARNA_BILLING_COUNTRY_FORCED_PT && klarnaCanPay(await checkoutTotalCents(intent));
+  return {
+    attempted,
+    klarna,
+    cancellation: { policy: intentPolicyCode(intent) },
+    twoParts: await twoPartsOfferNow(intent),
+  };
 }
 
 function conciergeAlertDue(intent: BookingIntent, ageMs: number): boolean {
@@ -353,6 +442,9 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       }
       const scarcity = target === 2 ? await scarcityFor(intent) : null;
       const alt = target === 4 ? await alternativesFor(intent, 4) : null;
+      // Contacto 1 no passo de pagamento: o texto depende de ter havido uma
+      // tentativa de pagar; sem ela, o que o checkout ofereceria agora.
+      const payFacts = target === 1 && intent.status === "payment_pending" ? await paymentStepFacts(intent) : null;
 
       // Claim before sending — losing an email beats repeating one.
       const claimed = await claimRecoveryStage(intent.id, stage, target);
@@ -376,13 +468,18 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
           locale: intent.locale,
           stage: target,
           paymentStep: intent.status === "payment_pending",
+          paymentAttempted: payFacts?.attempted,
+          klarna: payFacts?.klarna,
+          cancellation: payFacts?.cancellation,
+          twoParts: payFacts?.twoParts,
           scarcity,
           flexGift,
           alternatives: alt?.alternatives,
           propertyUrl: alt?.ownUrl,
         });
         sent++;
-        console.info(`[Recovery] Contacto ${target} (${STAGE_TAG[target]}) enviado para intent ${intent.id}`);
+        const variant = payFacts ? (payFacts.attempted ? " · pagamento tentado" : " · sem tentativa de pagar") : "";
+        console.info(`[Recovery] Contacto ${target} (${STAGE_TAG[target]}) enviado para intent ${intent.id}${variant}`);
       } catch (err: any) {
         skip.failed++;
         console.error(`[Recovery] Send failed for intent ${intent.id}:`, err?.message ?? err);

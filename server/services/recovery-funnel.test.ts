@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { nextRecoveryStage, isRecoveryHoldout, flexGiftActive, calendarScarcity, hasEnoughLeadTime, RECOVERY_TIMING } from "./recovery-funnel";
+import {
+  nextRecoveryStage, isRecoveryHoldout, flexGiftActive, calendarScarcity, hasEnoughLeadTime, RECOVERY_TIMING,
+  flexExtraDays, klarnaCanPay, KLARNA_MAX_CENTS,
+} from "./recovery-funnel";
 import { computeChargeBreakdown } from "./checkout-pricing";
+import { FLEX_CONFIG } from "../config/checkout-extras";
 
 const H = 3_600_000;
 
@@ -50,5 +54,44 @@ describe("regras do funil de recuperação", () => {
     const day = 86_400_000;
     expect(hasEnoughLeadTime(new Date(Date.now() + 10 * day).toISOString().slice(0, 10))).toBe(true);
     expect(hasEnoughLeadTime(new Date(Date.now() + day).toISOString().slice(0, 10))).toBe(false);
+  });
+});
+
+describe("Flex: dias que acrescenta ao cancelamento gratuito da tarifa", () => {
+  const days = FLEX_CONFIG.rescheduleDaysBefore;
+  it("o Flex remarca até 7 dias antes da chegada (a regra que estes testes assumem)", () => {
+    expect(days).toBe(7);
+  });
+  it("moderate (cancela de graça até 7 dias antes): o Flex não acrescenta nada", () => {
+    expect(flexExtraDays("moderate", days)).toBe(0);
+  });
+  it("tarifas que deixam de cancelar de graça mais cedo: os dias entre o prazo delas e o do Flex", () => {
+    expect(flexExtraDays("firm", days)).toBe(7);
+    expect(flexExtraDays("strict", days)).toBe(23);
+    expect(flexExtraDays("strict_60", days)).toBe(53);
+  });
+  it("não reembolsável: o Flex é a única proteção", () => {
+    expect(flexExtraDays("non_refundable", days)).toBe(Infinity);
+  });
+  it("política desconhecida: não se sabe (null)", () => {
+    expect(flexExtraDays(null, days)).toBeNull();
+    expect(flexExtraDays(undefined, days)).toBeNull();
+  });
+});
+
+describe("Klarna: limite do Paga em 3 para clientes PT", () => {
+  it("até 1 000 € inclusive, sim; acima, não", () => {
+    expect(KLARNA_MAX_CENTS).toBe(100_000);
+    expect(klarnaCanPay(99_900)).toBe(true);
+    expect(klarnaCanPay(100_000)).toBe(true);
+    expect(klarnaCanPay(100_001)).toBe(false);
+    expect(klarnaCanPay(250_000)).toBe(false);
+  });
+  it("sem total conhecido (ou inválido), não se sugere", () => {
+    expect(klarnaCanPay(null)).toBe(false);
+    expect(klarnaCanPay(undefined)).toBe(false);
+    expect(klarnaCanPay(0)).toBe(false);
+    expect(klarnaCanPay(Number.NaN)).toBe(false);
+    expect(klarnaCanPay(500.5)).toBe(false);
   });
 });

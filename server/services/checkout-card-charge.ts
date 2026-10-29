@@ -523,21 +523,19 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
           : `ele pagou por inteiro o preco que lhe foi apresentado. `) +
         `Nao lhe pedir pagamento nem dados de cartao. Diferenca a resolver internamente.`
       : "";
-    // O NIF pedido no checkout tem de chegar a quem fatura (spec 5.13). O campo
-    // do Guesty que a Hostkit lê está por confirmar; até lá vai na nota, onde o
-    // CS o vê ao lado da reserva.
-    const nif = String((m as any).nif ?? "").trim();
-    const nifLine = nif ? ` NIF para a fatura: ${nif}.` : "";
+    // O NIF da fatura não vai aqui: vai no topo da nota, escrito pelo
+    // fireCheckoutPaidEmails, o ponto por onde passam todos os métodos (no fim
+    // desta nota só o cartão o levava, e era a primeira coisa a cair num corte).
     const servicesEur = ((pi.amount - depositStayCents) / 100).toFixed(2);
     const noteText = twoParts
       ? `Checkout 2.0 em duas partes: 1.a parte ${(depositStayCents / 100).toFixed(2)} EUR registada (PI ${paymentIntentId}); ` +
         `2.a parte ${(Number(pi.metadata.balanceCents) / 100).toFixed(2)} EUR agendada para ${lisbonDayLabel(pi.metadata.chargeAt)}, ` +
         `cobrada AUTOMATICAMENTE pela plataforma. NAO cobrar no Guesty, NAO criar payment link, NAO pedir cartao ao hospede, ` +
         `NAO alterar datas aqui (alterar pelo site/admin). Servicos ${servicesEur} EUR faturados pela Portugal Active.` +
-        gapWarning + nifLine
+        gapWarning
       : `Checkout 2.0: pagamento unico ${(pi.amount / 100).toFixed(2)} EUR na plataforma ` +
         `(estadia ${(b.stayCents / 100).toFixed(2)} registada aqui; servicos ${((pi.amount - b.stayCents) / 100).toFixed(2)} faturados pela Portugal Active). PI ${paymentIntentId}.` +
-        gapWarning + nifLine;
+        gapWarning;
     const noted = await appendReservationNote(reservationId, noteText).catch(() => false);
     if (noted) {
       await updatePaymentIntentMetadata(paymentIntentId, { splitNoteAdded: "1" }).catch(() => {});

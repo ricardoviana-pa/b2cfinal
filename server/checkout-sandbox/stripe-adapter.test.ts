@@ -15,7 +15,7 @@ vi.mock('stripe', () => ({ default: vi.fn(() => ({
 })) }));
 import {
   allowPaymentMethodRedisplay, createCardPaymentIntent, ensureStripeCustomer,
-  findSucceededPaymentIntentByIntentId, getPaymentIntent,
+  findSucceededPaymentIntentByIntentId, getPaymentIntent, hasCheckoutPaymentAttempt,
 } from '../services/stripe-klarna';
 
 const metadata = { flow: 'card_v2', intentId: 'synthetic-checkout' };
@@ -158,5 +158,27 @@ describe('getPaymentIntent, allowPaymentMethodRedisplay and the deposit lookup',
     ] });
     await expect(findSucceededPaymentIntentByIntentId('i1')).resolves.toBeNull();
     expect(sdk.retrieve).not.toHaveBeenCalled();
+  });
+
+  it('a payment attempt is any checkout PI (card, wallet, PayPal or Klarna), never the second part', async () => {
+    sdk.search.mockResolvedValueOnce({ data: [
+      { id: 'pi_paypal', status: 'requires_payment_method', metadata: { source: 'website-paypal', intentId: 'i1' } },
+    ] });
+    await expect(hasCheckoutPaymentAttempt("i1'")).resolves.toBe(false); // outro intent: não conta
+    expect(sdk.search).toHaveBeenCalledWith({ query: "metadata['intentId']:'i1'", limit: 10 });
+    for (const metadata of [
+      { source: 'website-paypal', intentId: 'i1' },
+      { source: 'website-klarna', intentId: 'i1' },
+      { flow: 'card_v2', intentId: 'i1' },
+    ]) {
+      sdk.search.mockResolvedValueOnce({ data: [{ id: 'pi_x', status: 'canceled', metadata }] });
+      await expect(hasCheckoutPaymentAttempt('i1')).resolves.toBe(true);
+    }
+    sdk.search.mockResolvedValueOnce({ data: [
+      { id: 'pi_balance', status: 'requires_payment_method', metadata: { flow: 'card_v2_balance', part: 'balance', intentId: 'i1' } },
+    ] });
+    await expect(hasCheckoutPaymentAttempt('i1')).resolves.toBe(false);
+    sdk.search.mockResolvedValueOnce({ data: [] });
+    await expect(hasCheckoutPaymentAttempt('i1')).resolves.toBe(false);
   });
 });
