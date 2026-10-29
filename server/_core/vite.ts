@@ -20,6 +20,7 @@ import { pathToFileURL } from "node:url";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 import { isNonIndexableHost } from "../lib/hosts.js";
+import { setStaticFileHeaders } from "../lib/security-headers";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
  *  tested, hydration verified clean); set the Render env var SSR_ENABLED=false to
@@ -1542,13 +1543,18 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // setStaticFileHeaders: imagens, vídeo, fontes, JS e CSS com
+  // Cross-Origin-Resource-Policy: cross-origin (logótipo dos emails, fotos
+  // ligadas de outros sites); o HTML fica same-origin (lib/security-headers.ts).
   app.use("/assets", express.static(path.join(distPath, "assets"), {
     maxAge: "1y",
     immutable: true,
+    setHeaders: setStaticFileHeaders,
   }));
 
   app.use(express.static(distPath, {
     maxAge: "1h",
+    setHeaders: setStaticFileHeaders,
     // Do NOT let express.static serve index.html for directory requests.
     // Otherwise "/" is served as the raw shell with a 200 before the
     // bare-path redirect middleware runs — forcing a client-side

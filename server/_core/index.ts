@@ -22,6 +22,8 @@ import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhoo
 import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
 import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
 import { registerVitalsRoute } from "../routes/vitals";
+import { registerHealthRoutes } from "../routes/health";
+import { permissionsPolicyHeader, registerSecurityTxtRoutes } from "../lib/security-headers";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -107,6 +109,12 @@ async function startServer() {
     crossOriginEmbedderPolicy: false,
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   }));
+  // Permissions-Policy (desliga câmara, microfone, USB… que o site não usa) e
+  // o CORP cross-origin dos estáticos (setStaticFileHeaders em vite.ts):
+  // server/lib/security-headers.ts.
+  app.use(permissionsPolicyHeader);
+  // Liveness para o Render e o monitor de uptime: antes de tudo o resto, sem BD.
+  registerHealthRoutes(app);
 
   const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false, message: { error: "Too many login attempts. Please try again later." } });
   const apiLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, standardHeaders: true, legacyHeaders: false });
@@ -135,6 +143,8 @@ async function startServer() {
     res.type("text/plain");
     res.sendFile(path.resolve(process.cwd(), "server", "config", "apple-developer-merchantid-domain-association"));
   });
+  // Contacto de segurança (RFC 9116)
+  registerSecurityTxtRoutes(app);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
