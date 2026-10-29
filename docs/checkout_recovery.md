@@ -27,17 +27,25 @@ com "um cartão recusado, um limite do banco". O email escolhe-se no envio:
   (o `createCardCharge` só corre depois do clique em Pagar), ou a Stripe tem um
   PI do PayPal ou do Klarna com o `intentId` na metadata (criado no clique,
   antes do redirect). Texto de sempre, "Ficou algo por resolver?", com os
-  métodos alternativos. O Klarna só é sugerido quando o total que o checkout
-  cobraria cabe no "Paga em 3" de clientes portugueses (até 1 000 €: o país de
-  faturação vai sempre PT).
+  métodos alternativos (cartão, Apple Pay, Google Pay, PayPal). **O Klarna não
+  é sugerido** enquanto o checkout mandar o país de faturação do Klarna fixo em
+  PT (`KLARNA_BILLING_COUNTRY_FORCED_PT`): assim, quem não é cliente Klarna em
+  Portugal é recusado em qualquer valor, e os portugueses acima do "Paga em 3"
+  (1 000 €). A resposta a "um limite do banco" é a linha das duas partes, no
+  mesmo cartão. Quando o país passar a ser o do hóspede, o limite de valor
+  (`klarnaCanPay`) volta a decidir.
 - **Sem tentativa** (também quando a Stripe não responde): "Ficou alguma dúvida
-  antes de reservar?", sem falar de falhas, com o concierge da região a um
-  toque (WhatsApp) e, por baixo do total, duas linhas: o cancelamento gratuito
-  da tarifa com a data (só se ainda houver prazo; nunca na não reembolsável) e
-  "ou em duas partes: X hoje e Y a <data>, no mesmo cartão", calculado no envio
-  com a mesma função do ecrã do checkout. A linha das duas partes só sai se os
-  valores somarem o total do cartão do email (com extras pagos, que o cartão
-  não mostra, não sai).
+  antes de reservar?", sem falar de falhas.
+
+Nas duas variantes, por baixo do total, duas linhas: o cancelamento gratuito da
+tarifa com a data (só se ainda houver prazo; nunca na não reembolsável) e "ou
+em duas partes: X hoje e Y a <data>, no mesmo cartão", calculado no envio com a
+mesma função do ecrã do checkout. A linha das duas partes só sai se os valores
+somarem o total do cartão do email (com extras pagos, que o cartão não mostra,
+não sai). O link do WhatsApp é o de todos os emails ("Prefere WhatsApp? Fale
+com o seu concierge."): é um número central, e ainda não há concierge
+confirmado por região (`shared/concierges.ts`), por isso nenhum email promete
+"o concierge da região".
 
 ## O incentivo: Flex oferecido
 

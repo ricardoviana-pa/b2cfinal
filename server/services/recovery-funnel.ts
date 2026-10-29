@@ -48,11 +48,18 @@ export const CONCIERGE_ALERT_MIN_TOTAL = 3000;
 
 /**
  * Klarna no checkout: o país de faturação vai sempre PT
- * (KlarnaCheckoutButton), e para clientes portugueses o "Paga em 3" vai até
- * 1 000 € (docs/pagamento_duas_partes.md, 2.1). Acima disso, o email que
- * sugere o Klarna a quem teve "um limite do banco" mandava o hóspede para
- * outra recusa.
+ * (KlarnaCheckoutButton, address.country). Assim, quem não é cliente Klarna
+ * em Portugal (a maioria dos checkouts, em inglês) é recusado em qualquer
+ * valor, e os portugueses acima do "Paga em 3" (até 1 000 €,
+ * docs/pagamento_duas_partes.md 2.1). Enquanto for assim, o contacto 1 não
+ * sugere o Klarna a quem teve "um limite do banco": a resposta é o pagamento
+ * em duas partes, no mesmo cartão (auditoria 29 out, n.º 8, correção do
+ * crítico). Quando o país passar a ser o do hóspede, pôr false: volta a
+ * decidir o limite de valor (klarnaCanPay).
  */
+export const KLARNA_BILLING_COUNTRY_FORCED_PT = true;
+
+/** "Paga em 3" do Klarna para clientes portugueses: até 1 000 €. */
 export const KLARNA_MAX_CENTS = 100_000;
 
 /** O Klarna aceita este total (cêntimos)? Sem total conhecido, não se sugere. */

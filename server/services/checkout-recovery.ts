@@ -37,6 +37,7 @@ import {
   calendarScarcity,
   flexExtraDays,
   klarnaCanPay,
+  KLARNA_BILLING_COUNTRY_FORCED_PT,
   type RecoveryStage,
 } from "./recovery-funnel";
 import { FLEX_CONFIG, flexPriceFor } from "../config/checkout-extras";
@@ -270,11 +271,13 @@ async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
 export interface PaymentStepFacts {
   /** Chegou a carregar em Pagar (houve uma cobrança tentada). */
   attempted: boolean;
-  /** Depois de uma tentativa: o total cabe no limite do Klarna. */
+  /** Depois de uma tentativa: o Klarna pode ser sugerido. Hoje nunca
+   *  (KLARNA_BILLING_COUNTRY_FORCED_PT). */
   klarna: boolean;
-  /** Sem tentativa: política da tarifa, para a linha do cancelamento gratuito. */
+  /** Política da tarifa, para a linha do cancelamento gratuito. */
   cancellation: { policy: unknown } | null;
-  /** Sem tentativa: duas partes como o checkout as mostraria agora. */
+  /** Duas partes como o checkout as mostraria agora. Depois de uma tentativa
+   *  é a resposta a "um limite do banco": metade hoje, no mesmo cartão. */
   twoParts: RecoveryTwoParts | null;
 }
 
@@ -327,12 +330,14 @@ async function twoPartsOfferNow(intent: BookingIntent): Promise<RecoveryTwoParts
 
 /** Contacto 1 no passo de pagamento: que email sai e com que linhas. */
 export async function paymentStepFacts(intent: BookingIntent): Promise<PaymentStepFacts> {
-  if (await paymentWasAttempted(intent)) {
-    return { attempted: true, klarna: klarnaCanPay(await checkoutTotalCents(intent)), cancellation: null, twoParts: null };
-  }
+  const attempted = await paymentWasAttempted(intent);
+  // O Klarna só depois de uma tentativa e nunca com o país de faturação
+  // forçado a PT: sugeri-lo a quem teve "um limite do banco" mandava a
+  // maioria (não clientes Klarna em Portugal) para outra recusa.
+  const klarna = attempted && !KLARNA_BILLING_COUNTRY_FORCED_PT && klarnaCanPay(await checkoutTotalCents(intent));
   return {
-    attempted: false,
-    klarna: false,
+    attempted,
+    klarna,
     cancellation: { policy: intentPolicyCode(intent) },
     twoParts: await twoPartsOfferNow(intent),
   };

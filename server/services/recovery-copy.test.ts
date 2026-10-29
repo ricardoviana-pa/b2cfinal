@@ -120,7 +120,7 @@ describe("contacto 1 no pagamento: sem tentativa, a pergunta; com tentativa, o t
     expect(subject).toBe(F.subject1Ask("Casa Sintética"));
     expect(html).toContain(F.headline1Ask);
     expect(html).toContain(F.body1Ask(RECOVERY_I18N[lang].greetingNamed("Ana"), "Casa Sintética"));
-    expect(html).toContain(F.whatsapp1Ask);
+    expect(html).toContain(RECOVERY_I18N[lang].whatsappLine);
     expect(html).toContain(F.personal1Ask);
     // O cancelamento gratuito com a data, pela frase única da política.
     const policy = describeCancellationPolicy("moderate", { lang, checkIn: base.checkIn });
@@ -136,7 +136,7 @@ describe("contacto 1 no pagamento: sem tentativa, a pergunta; com tentativa, o t
 
   it.each(EMAIL_LANGS)("%s, sem tentativa: nunca 'sinal', 'depósito' ou 'prestações' (nem equivalentes)", (lang) => {
     const F = FUNNEL_I18N[lang];
-    const text = [F.subject1Ask("‹h›"), F.preheader1Ask, F.headline1Ask, F.body1Ask("‹g›", "‹h›"), F.personal1Ask, F.whatsapp1Ask, F.twoPartsLine("‹a›", "‹b›", "‹d›")].join(" ");
+    const text = [F.subject1Ask("‹h›"), F.preheader1Ask, F.headline1Ask, F.body1Ask("‹g›", "‹h›"), F.personal1Ask, F.twoPartsLine("‹a›", "‹b›", "‹d›")].join(" ");
     expect(text).not.toMatch(/\b(sinal|dep[oó]sit|prestaç|instal+ment|deposit|acompte|arrhes|versement|plazos|cuota|anticipo|rata|rate\b|caparra|acconto|Anzahlung|Rate[n]?\b|aanbetaling|termijn|avbetalning|handpenning|osamaksu|erä)/i);
     expect(text).not.toMatch(/insurance|assurance|seguro|assicurazione|Versicherung|verzekering|försäkring|vakuutus/i);
     expect(text).not.toMatch(/hotel/i);
@@ -173,18 +173,22 @@ describe("contacto 1 no pagamento: sem tentativa, a pergunta; com tentativa, o t
     expect(FUNNEL_I18N.it.twoPartsLine("750 €", "750 €", "15 marzo 2100")).toBe("Oppure in due parti, con la stessa carta: 750 € oggi e 750 € il 15 marzo 2100.");
   });
 
-  it.each(EMAIL_LANGS)("%s, com tentativa: o texto de sempre; o Klarna só quando o total cabe no limite", async (lang) => {
+  it.each(EMAIL_LANGS)("%s, com tentativa: o texto de sempre, com as duas partes no mesmo cartão para o limite do banco; sem Klarna se não for sugerido", async (lang) => {
     const F = FUNNEL_I18N[lang];
-    await ask(lang, { paymentAttempted: true, klarna: false, quote: { ...stay, total: 3000 } });
+    await ask(lang, { paymentAttempted: true, klarna: false });
     let { subject, html } = lastSend();
     expect(subject).toBe(F.subject1Pay("Casa Sintética"));
     expect(html).toContain(F.headline1Pay);
     expect(html).toContain(CARD_TROUBLE[lang]);
     expect(html).not.toMatch(/Klarna/);
-    // Nada das linhas da variante sem tentativa.
     expect(html).not.toContain(F.headline1Ask);
-    expect(html).not.toContain(F.whatsapp1Ask);
-    expect(html).not.toContain(F.twoPartsLine(money(75_000, lang), money(75_000, lang), formatLisbonDay(chargeAt, lang)));
+    // As mesmas duas linhas por baixo do total: as duas partes e o cancelamento gratuito.
+    expect(html).toContain(twoPartsText(lang));
+    expect(html).toContain(describeCancellationPolicy("moderate", { lang, checkIn: base.checkIn }).text);
+    // Com valores que não somam o total do cartão, sem linha das duas partes.
+    await ask(lang, { paymentAttempted: true, klarna: false, quote: { ...stay, total: 3000 } });
+    expect(lastHtml()).not.toContain(twoPartsText(lang));
+    // O renderer ainda sabe sugerir o Klarna, para quando o país deixar de ser forçado.
     await ask(lang, { paymentAttempted: true, klarna: true });
     ({ html } = lastSend());
     expect(html).toContain(F.preheader1Pay(true));
@@ -200,6 +204,17 @@ describe("contacto 1 no pagamento: sem tentativa, a pergunta; com tentativa, o t
     expect(FUNNEL_I18N.en.body1Pay("Hello Ana,", "Casa Sintética", false)).toBe(
       "Hello Ana, you reached the payment step for your stay at Casa Sintética, but the booking wasn't completed. It happens to many guests: a declined card, a bank limit, a last-minute question. Your price still stands and you can pay however suits you: card, Apple Pay, Google Pay or PayPal.",
     );
+  });
+
+  it.each(EMAIL_LANGS)("%s: o WhatsApp do contacto 1 é o de sempre e não promete um concierge da região (o número é um só)", async (lang) => {
+    const T = RECOVERY_I18N[lang];
+    for (const over of [{ paymentStep: false }, { paymentAttempted: false }, { paymentAttempted: true }]) {
+      await ask(lang, over);
+      const html = lastHtml();
+      expect(html).toContain(`>${T.whatsappLine}</a>`);
+      expect(html).toContain("https://wa.me/351927161771?text=");
+      expect(html).not.toMatch(/da região|for the area|de la région|de la zona|della zona|der Region|van de streek|områdets|alueen/i);
+    }
   });
 
   it("fora do passo de pagamento: o contacto 1 de sempre, sem as linhas novas", async () => {

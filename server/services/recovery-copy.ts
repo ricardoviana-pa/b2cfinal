@@ -12,11 +12,13 @@
  * Contacto 1 no passo de pagamento, duas variantes (auditoria 29 out 2026):
  * a maioria de quem lá pára nunca carregou em Pagar, e o texto das falhas
  * ("um cartão recusado, um limite do banco") falava de um problema que essa
- * pessoa não teve. Sem tentativa: "ficou alguma dúvida?", com o cancelamento
- * gratuito, as duas partes quando o checkout as oferece e o concierge da
- * região, sem falar de falhas. Com tentativa: o texto de sempre, e o Klarna só
- * quando o valor cabe no limite dele. Para as duas partes nunca "sinal",
- * "depósito" nem "prestações" (nem os equivalentes noutras línguas).
+ * pessoa não teve. Sem tentativa: "ficou alguma dúvida?", sem falar de falhas.
+ * Com tentativa: o texto de sempre, sem o Klarna enquanto o país de faturação
+ * for forçado a PT (recovery-funnel.ts). Nas duas, por baixo do total, o
+ * cancelamento gratuito e as duas partes quando o checkout as oferece. O
+ * WhatsApp é o de todos os emails (whatsappLine): um número central, sem
+ * concierge por região. Para as duas partes nunca "sinal", "depósito" nem
+ * "prestações" (nem os equivalentes noutras línguas).
  */
 import { itArt, type EmailLang } from "./email-i18n";
 
@@ -28,7 +30,8 @@ export interface FunnelStrings {
   body1: (g: string, h: string) => string;
   personal1: string;
   // 1 · variante: chegou a pagar e não ficou (cobrança tentada). `klarna`:
-  // o valor cabe no limite do Klarna; sem isso o Klarna não é sugerido.
+  // o Klarna pode ser sugerido (checkout-recovery.ts; hoje nunca, com o país
+  // de faturação forçado a PT); sem isso o Klarna não é sugerido.
   subject1Pay: (h: string) => string;
   preheader1Pay: (klarna?: boolean) => string;
   headline1Pay: string;
@@ -40,8 +43,6 @@ export interface FunnelStrings {
   headline1Ask: string;
   body1Ask: (g: string, h: string) => string;
   personal1Ask: string;
-  /** Link do WhatsApp por baixo do botão: o concierge da região, a um toque. */
-  whatsapp1Ask: string;
   /** Duas partes como o checkout as oferece no momento do envio. */
   twoPartsLine: (today: string, later: string, date: string) => string;
   // 2 · urgência verdadeira
@@ -89,7 +90,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     headline1Ask: "Ficou alguma dúvida antes de reservar?",
     body1Ask: (g, h) => `${g} a sua estadia em ${h} ficou guardada no último passo, tal como a deixou. Se ficou alguma pergunta sobre a casa, a região ou as condições da reserva, estamos aqui para ajudar. O seu preço mantém-se.`,
     personal1Ask: "Também pode responder a este email com qualquer dúvida sobre a casa, a região ou a reserva. Lemos todas as respostas.",
-    whatsapp1Ask: "Tem uma pergunta? Fale com o concierge da região por WhatsApp.",
     twoPartsLine: (t, l, d) => `Ou em duas partes, no mesmo cartão: ${t} hoje e ${l} a ${d}.`,
     subject2: (h, t) => `${h}: o seu preço mantém-se até às ${t}`,
     preheader2: "Depois dessa hora o valor é recalculado para as suas datas.",
@@ -131,7 +131,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     headline1Ask: "Any questions before you book?",
     body1Ask: (g, h) => `${g} your stay at ${h} is saved at the last step, just as you left it. If you have a question about the house, the area or the booking terms, we're here to help. Your price still stands.`,
     personal1Ask: "You can also reply to this email with any question about the house, the area or the booking. We read every reply.",
-    whatsapp1Ask: "Have a question? Message the concierge for the area on WhatsApp.",
     twoPartsLine: (t, l, d) => `Or in two parts, on the same card: ${t} today and ${l} on ${d}.`,
     subject2: (h, t) => `${h}: your price holds until ${t}`,
     preheader2: "After that, the rate for your dates is recalculated.",
@@ -173,7 +172,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     headline1Ask: "Une question avant de réserver ?",
     body1Ask: (g, h) => `${g} votre séjour à ${h} est conservé à la dernière étape, tel que vous l'avez laissé. Si vous avez une question sur la maison, la région ou les conditions de réservation, nous sommes là pour vous aider. Votre prix est maintenu.`,
     personal1Ask: "Vous pouvez aussi répondre à cet email pour toute question sur la maison, la région ou la réservation. Nous lisons toutes les réponses.",
-    whatsapp1Ask: "Une question ? Écrivez au concierge de la région sur WhatsApp.",
     twoPartsLine: (t, l, d) => `Ou en deux parties, avec la même carte : ${t} aujourd'hui et ${l} le ${d}.`,
     subject2: (h, t) => `${h} : votre prix est maintenu jusqu'à ${t}`,
     preheader2: "Passé ce délai, le tarif de vos dates est recalculé.",
@@ -215,7 +213,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     headline1Ask: "¿Le ha quedado alguna duda antes de reservar?",
     body1Ask: (g, h) => `${g} su estancia en ${h} está guardada en el último paso, tal como la dejó. Si tiene alguna pregunta sobre la casa, la zona o las condiciones de la reserva, estamos aquí para ayudarle. Su precio se mantiene.`,
     personal1Ask: "También puede responder a este email con cualquier duda sobre la casa, la zona o la reserva. Leemos todas las respuestas.",
-    whatsapp1Ask: "¿Tiene una pregunta? Escriba al concierge de la zona por WhatsApp.",
     twoPartsLine: (t, l, d) => `O en dos partes, con la misma tarjeta: ${t} hoy y ${l} el ${d}.`,
     subject2: (h, t) => `${h}: su precio se mantiene hasta las ${t}`,
     preheader2: "Después, el precio de sus fechas se recalcula.",
@@ -257,7 +254,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     headline1Ask: "Qualche domanda prima di prenotare?",
     body1Ask: (g, h) => `${g} il suo soggiorno a ${h} è salvato all'ultimo passo, così come l'ha lasciato. Se ha qualche domanda sulla casa, sulla zona o sulle condizioni della prenotazione, siamo qui per aiutarla. Il prezzo resta valido.`,
     personal1Ask: "Può anche rispondere a questa email per qualsiasi domanda sulla casa, sulla zona o sulla prenotazione. Leggiamo tutte le risposte.",
-    whatsapp1Ask: "Ha una domanda? Scriva al concierge della zona su WhatsApp.",
     twoPartsLine: (t, l, d) => `Oppure in due parti, con la stessa carta: ${t} oggi e ${l} ${itArt("il", d)}.`,
     subject2: (h, t) => `${h}: il suo prezzo resta valido fino alle ${t}`,
     preheader2: "Oltre quell'orario il prezzo per le sue date viene ricalcolato.",
@@ -299,7 +295,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     headline1Ask: "Noch Fragen vor der Buchung?",
     body1Ask: (g, h) => `${g} Ihr Aufenthalt in ${h} ist beim letzten Schritt gespeichert, genau so, wie Sie ihn verlassen haben. Wenn Sie eine Frage zum Haus, zur Region oder zu den Buchungsbedingungen haben, helfen wir Ihnen gerne. Ihr Preis gilt weiterhin.`,
     personal1Ask: "Sie können auch einfach auf diese E-Mail antworten, mit jeder Frage zum Haus, zur Region oder zur Buchung. Wir lesen jede Antwort.",
-    whatsapp1Ask: "Eine Frage? Schreiben Sie dem Concierge der Region auf WhatsApp.",
     twoPartsLine: (t, l, d) => `Oder in zwei Teilen, mit derselben Karte: ${t} heute und ${l} am ${d}.`,
     subject2: (h, t) => `${h}: Ihr Preis gilt bis ${t} Uhr`,
     preheader2: "Danach wird der Preis für Ihre Daten neu berechnet.",
@@ -341,7 +336,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     headline1Ask: "Nog vragen voordat u boekt?",
     body1Ask: (g, h) => `${g} uw verblijf in ${h} staat bewaard bij de laatste stap, precies zoals u het achterliet. Heeft u een vraag over het huis, de streek of de boekingsvoorwaarden, dan helpen we u graag. Uw prijs blijft staan.`,
     personal1Ask: "U kunt ook deze e-mail beantwoorden met elke vraag over het huis, de streek of de boeking. We lezen elk antwoord.",
-    whatsapp1Ask: "Een vraag? Stuur de concierge van de streek een bericht via WhatsApp.",
     twoPartsLine: (t, l, d) => `Of in twee delen, met dezelfde kaart: ${t} vandaag en ${l} op ${d}.`,
     subject2: (h, t) => `${h}: uw prijs geldt tot ${t}`,
     preheader2: "Daarna wordt de prijs voor uw data opnieuw berekend.",
@@ -383,7 +377,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     headline1Ask: "Några frågor innan du bokar?",
     body1Ask: (g, h) => `${g} din vistelse på ${h} är sparad vid sista steget, precis som du lämnade den. Om du har en fråga om huset, området eller bokningsvillkoren hjälper vi dig gärna. Ditt pris gäller fortfarande.`,
     personal1Ask: "Du kan också svara på det här mejlet med alla frågor om huset, området eller bokningen. Vi läser varje svar.",
-    whatsapp1Ask: "En fråga? Skriv till områdets concierge på WhatsApp.",
     twoPartsLine: (t, l, d) => `Eller i två delar, med samma kort: ${t} i dag och ${l} den ${d}.`,
     subject2: (h, t) => `${h}: ditt pris gäller till ${t}`,
     preheader2: "Därefter räknas priset för dina datum om.",
@@ -425,7 +418,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     headline1Ask: "Onko kysyttävää ennen varausta?",
     body1Ask: (g, h) => `${g} oleskelusi kohteessa ${h} on tallessa viimeisessä vaiheessa, juuri niin kuin jätit sen. Jos sinulla on kysyttävää talosta, alueesta tai varausehdoista, autamme mielellämme. Hintasi on yhä voimassa.`,
     personal1Ask: "Voit myös vastata tähän sähköpostiin, jos sinulla on kysyttävää talosta, alueesta tai varauksesta. Luemme jokaisen vastauksen.",
-    whatsapp1Ask: "Kysyttävää? Kirjoita alueen conciergelle WhatsAppissa.",
     twoPartsLine: (t, l, d) => `Tai kahdessa osassa samalla kortilla: ${t} tänään ja ${l} ${d}.`,
     subject2: (h, t) => `${h}: hintasi on voimassa klo ${t} asti`,
     preheader2: "Sen jälkeen päivämääriesi hinta lasketaan uudelleen.",

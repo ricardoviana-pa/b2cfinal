@@ -251,30 +251,31 @@ describe("contacto 1 no pagamento: o email depende de ter havido uma tentativa d
     }));
   });
 
-  it("cartão ou wallet tentados (PI no intent): o texto de sempre, sem perguntar à Stripe; acima de 1 000 €, sem Klarna", async () => {
-    mock.candidates.mockResolvedValue([atPayment({ paymentIntentId: "pi_card_attempt" })]);
-    mock.breakdown.mockResolvedValue({ totalCents: 300_000 });
+  it("cartão ou wallet tentados (PI no intent): o texto de sempre, sem perguntar à Stripe, e as duas partes no mesmo cartão para o limite do banco", async () => {
+    const row = atPayment({ paymentIntentId: "pi_card_attempt" });
+    mock.candidates.mockResolvedValue([row]);
+    mock.plan.mockResolvedValue({ available: true, depositCents: 150_000, balanceCents: 150_000, chargeAt });
     await runCheckoutRecoverySweep();
     expect(mock.attempt).not.toHaveBeenCalled();
-    expect(mock.plan).not.toHaveBeenCalled();
+    // As mesmas regras do ecrã do checkout, como na variante sem tentativa.
+    expect(mock.plan).toHaveBeenCalledWith(expect.objectContaining({ id: row.id, ratePlanId: "rp-moderate" }));
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
-      stage: 1, paymentStep: true, paymentAttempted: true, klarna: false, cancellation: null, twoParts: null,
+      stage: 1, paymentStep: true, paymentAttempted: true, klarna: false,
+      cancellation: { policy: "moderate" },
+      twoParts: { todayCents: 150_000, laterCents: 150_000, chargeAt: new Date(chargeAt) },
     }));
   });
 
-  it("PayPal ou Klarna tentados (só a Stripe sabe): o texto de sempre, com o Klarna quando o total cabe no limite", async () => {
+  it("PayPal ou Klarna tentados (só a Stripe sabe): o texto de sempre; o Klarna nunca, nem dentro do limite, enquanto o país de faturação for forçado a PT", async () => {
+    const { KLARNA_BILLING_COUNTRY_FORCED_PT } = await import("./recovery-funnel");
+    expect(KLARNA_BILLING_COUNTRY_FORCED_PT).toBe(true);
     mock.candidates.mockResolvedValue([atPayment({ quote: { total: 900, currency: "EUR" } })]);
     mock.attempt.mockResolvedValue(true);
     mock.breakdown.mockResolvedValue({ totalCents: 95_000 });
     await runCheckoutRecoverySweep();
-    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 1, paymentAttempted: true, klarna: true }));
-  });
-
-  it("total do checkout por saber: o Klarna não é sugerido", async () => {
-    mock.candidates.mockResolvedValue([atPayment({ paymentIntentId: "pi_card_attempt" })]);
-    mock.breakdown.mockRejectedValue(new Error("listing facts unavailable"));
-    await runCheckoutRecoverySweep();
-    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ paymentAttempted: true, klarna: false }));
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 1, paymentAttempted: true, klarna: false }));
+    // Sem Klarna possível, nem se calcula o total para o limite dele.
+    expect(mock.breakdown).not.toHaveBeenCalled();
   });
 
   it("Stripe sem resposta: conta como sem tentativa (o texto que não fala de falhas serve a todos)", async () => {
