@@ -14,19 +14,17 @@ import {
   POLICY_ANCHORS,
   POLICY_CODES,
   cancellationPolicyCopy,
-  cancellationPolicyMetaDescription,
   policyRuleSentence,
 } from '@shared/cancellationPolicy';
+import { legalPageMeta } from '@shared/legalPageMeta';
 
 export default function CancellationPolicy() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const copy = cancellationPolicyCopy(lang);
-  usePageMeta({
-    title: 'Cancellation Policies',
-    description: cancellationPolicyMetaDescription(lang),
-    url: '/legal/cancellation-policy',
-  });
+  // Same title and description as the server's head, in the page language
+  // (the title was English after a client-side navigation).
+  usePageMeta({ ...legalPageMeta('/legal/cancellation-policy', lang), url: '/legal/cancellation-policy' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />

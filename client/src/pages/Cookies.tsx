@@ -6,10 +6,12 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { openCookiePreferences } from '@/lib/measurementConsent';
+import { legalPageMeta } from '@shared/legalPageMeta';
 
 export default function Cookies() {
-  const { t } = useTranslation();
-  usePageMeta({ title: 'Cookie Policy', description: 'Learn how Portugal Active uses cookies to improve your browsing experience. Manage your cookie preferences here.', url: '/legal/cookies' });
+  const { t, i18n } = useTranslation();
+  // Same title and description as the server's head, in the page language.
+  usePageMeta({ ...legalPageMeta('/legal/cookies', i18n.language), url: '/legal/cookies' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header variant="solid" />
