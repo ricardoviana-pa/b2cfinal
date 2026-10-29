@@ -204,7 +204,8 @@ describe("contexto e contacto humano em todos os passos", () => {
     expect(page).toMatch(/href=\{conciergeQuestionHref\}/);
     expect(page).toMatch(/data-track-source=\{`checkout_header_\$\{step\}`\}/);
     // o clique conta pelo listener global de wa.me (installContactClickTracking)
-    expect(read("client/src/lib/datalayer.ts")).toMatch(/if \(href\.includes\('wa\.me\/'\)\) \{\s*pushDL\(\{ event: 'whatsapp_click', source \}\);/);
+    // (o evento pode levar contexto extra dos data-track-*, p. ex. a listagem)
+    expect(read("client/src/lib/datalayer.ts")).toMatch(/if \(href\.includes\('wa\.me\/'\)\) \{\s*pushDL\(\{ event: 'whatsapp_click', source(?:, [^}]*)? \}\);/);
     expect(read("client/src/lib/checkoutPayment.ts")).toMatch(/https:\/\/wa\.me\//);
   });
 
