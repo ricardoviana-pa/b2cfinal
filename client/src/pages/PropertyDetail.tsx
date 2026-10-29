@@ -17,6 +17,7 @@ import { propertyKindInline } from '@shared/propertyMeta';
 import { propertyPageMetaOpts } from '@/lib/propertyPageMeta';
 import { buildPdpFaq, faqPageNode } from '@shared/pdpFaq';
 import { placeKey, placePhrases, placeVars } from '@shared/regionPhrases';
+import { displayedAggregate, formatRating } from '@shared/reviewStats';
 import { localizeProduct } from '@/lib/localizeProduct';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { PartnerBookingPanel } from '@/components/booking/PartnerBookingPanel';
@@ -589,13 +590,12 @@ export default function PropertyDetail() {
         // top-level fields never existed, so GeoCoordinates was always null.
         latitude: (property as any).address?.lat ?? null,
         longitude: (property as any).address?.lng ?? null,
-        aggregateRating:
-          (property as any).averageRating && (property as any).reviewCount
-            ? {
-                ratingValue: Number((property as any).averageRating),
-                reviewCount: Number((property as any).reviewCount),
-              }
-            : null,
+        // The numbers the visitor sees: the real average of every review,
+        // one decimal, only from three reviews (shared/reviewStats.ts).
+        aggregateRating: (() => {
+          const agg = displayedAggregate(property);
+          return agg.average === null ? null : { ratingValue: agg.average, reviewCount: agg.count };
+        })(),
         reviews: (property as any).reviews || null,
       }),
       buildBreadcrumbSchema([
@@ -1013,7 +1013,10 @@ export default function PropertyDetail() {
 
   // The rating beside the title, the facts under the photos (what the stat
   // pills used to say, as one line) and the section links.
-  const hasRating = !!(property.averageRating && property.reviewCount);
+  // Every review counts (29 out 2026): the count of all of them and, from
+  // three on, the real average with one decimal (shared/reviewStats.ts).
+  const reviewStats = displayedAggregate(property);
+  const hasRating = reviewStats.count > 0;
   const hasReviews = hasRating || (Array.isArray((property as any).reviews) && (property as any).reviews.length > 0);
   const facts: string[] = [
     // Plural-aware, with the language's decimal mark ("1 Chambre",
@@ -1247,8 +1250,9 @@ export default function PropertyDetail() {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 shrink-0 lg:pb-1">
                 {hasRating && (
                   <a href="#property-reviews" className="inline-flex items-center gap-1.5 min-h-11 lg:min-h-0 body-sm text-pa-dark font-normal underline underline-offset-4 decoration-pa-sand hover:decoration-pa-dark transition-colors">
-                    <Star size={14} className="text-pa-gold-aa fill-current" aria-hidden="true" />
-                    {property.averageRating}/5 · {property.reviewCount} {t('reviews.plural')}
+                    {reviewStats.average !== null && <Star size={14} className="text-pa-gold-aa fill-current" aria-hidden="true" />}
+                    {reviewStats.average !== null && `${formatRating(reviewStats.average, i18n.language)}/5 · `}
+                    {reviewStats.count} {reviewStats.count === 1 ? t('reviews.singular') : t('reviews.plural')}
                   </a>
                 )}
                 {property.tier === 'signature' && (
