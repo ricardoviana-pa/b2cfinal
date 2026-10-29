@@ -436,3 +436,61 @@ describe('visit origin on the reservation note (UTM, click type, referrer)', () 
     expect(fake.origins.get(id)).toEqual(before);
   });
 });
+
+describe('invoice NIF reaches the team for every payment method', () => {
+  const NIF_LINE = 'FATURA COM NIF PT 123 456 789 (pedido pelo hospede no checkout do site)';
+  async function readyIntent(nif?: string) {
+    const id = await draft();
+    await caller().captureLead({ intentId: id, email: 'guest@checkout.invalid', consent: false, locale: 'pt' });
+    await caller().updateIntent({ intentId: id, patch: {
+      guestFirstName: 'Synthetic', guestLastName: 'Guest', guestPhone: '+000000000', reception: { type: 'self' },
+      ...(nif === undefined ? {} : { nif }),
+    } });
+    return id;
+  }
+  async function payCard(id: string) {
+    const payment = await caller().createCardCharge({ intentId: id });
+    fake.payments.get(payment.paymentIntentId).status = 'succeeded';
+    await caller().finalizeCardCharge({ intentId: id, paymentIntentId: payment.paymentIntentId });
+  }
+  const servicesNote = () => fake.note.mock.calls.find(([, note]) => String(note).includes('SERVICOS DO CHECKOUT'));
+
+  it('card and wallets: the NIF opens the reservation note and the CS email, and is no longer at the end of the payment note', async () => {
+    const id = await readyIntent(' pt 123 456 789 ');
+    await payCard(id);
+    await vi.waitFor(() => expect(servicesNote()).toBeTruthy());
+    // Uma só escrita: NIF no topo do campo, serviços no fim.
+    expect(servicesNote()![0]).toBe('synthetic-reservation');
+    expect(servicesNote()![2]).toEqual({ prepend: NIF_LINE });
+    const paymentNote = fake.note.mock.calls.map(([, note]) => String(note)).find((note) => note.startsWith('Checkout 2.0: pagamento unico'));
+    expect(paymentNote).toBeTruthy();
+    expect(paymentNote).not.toContain('NIF');
+    await vi.waitFor(() => expect(fake.opsEmail).toHaveBeenCalledOnce());
+    expect(fake.opsEmail.mock.calls[0][0]).toMatchObject({ nif: ' pt 123 456 789 ', reservationId: 'synthetic-reservation' });
+  });
+
+  it('PayPal and Klarna: the server confirmation (no card settle) writes the NIF too', async () => {
+    const id = await readyIntent('PT 123 456 789');
+    const { completeCheckoutIntent } = await import('../services/checkout-confirmation');
+    // O que o router e os webhooks do PayPal e do Klarna chamam depois de criar a reserva.
+    await completeCheckoutIntent(id, 'synthetic-wallet-reservation', 'SYNTHETIC-WALLET');
+    await vi.waitFor(() => expect(servicesNote()).toBeTruthy());
+    expect(fake.note).toHaveBeenCalledOnce(); // sem settle de cartão, é a única nota
+    expect(servicesNote()![0]).toBe('synthetic-wallet-reservation');
+    expect(servicesNote()![2]).toEqual({ prepend: NIF_LINE });
+    await vi.waitFor(() => expect(fake.opsEmail).toHaveBeenCalledOnce());
+    expect(fake.opsEmail.mock.calls[0][0]).toMatchObject({ nif: 'PT 123 456 789', reservationId: 'synthetic-wallet-reservation' });
+    // Uma segunda confirmação (o webhook depois do router) não repete nada.
+    await completeCheckoutIntent(id, 'synthetic-wallet-reservation', 'SYNTHETIC-WALLET');
+    expect(fake.note).toHaveBeenCalledOnce();
+  });
+
+  it('without a NIF the note and the CS email are written as before', async () => {
+    const id = await readyIntent();
+    await payCard(id);
+    await vi.waitFor(() => expect(servicesNote()).toBeTruthy());
+    expect(servicesNote()).toHaveLength(2);
+    await vi.waitFor(() => expect(fake.opsEmail).toHaveBeenCalledOnce());
+    expect(fake.opsEmail.mock.calls[0][0].nif).toBeNull();
+  });
+});

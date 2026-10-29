@@ -72,3 +72,9 @@ it("the public listing route never returns check-in instructions", async () => {
   expect(body).not.toHaveProperty("checkInInstructions");
   expect(body).toMatchObject({ id: "synthetic-listing", name: "Synthetic Villa" });
 });
+it("the public calendar route refuses spans over 400 days or reversed ranges (memory)", async () => {
+  const long = await fetch(`${origin}/api/listings/synthetic-listing/calendar?from=2027-01-01&to=2029-01-01`);
+  expect(long.status).toBe(400);
+  const reversed = await fetch(`${origin}/api/listings/synthetic-listing/calendar?from=2027-02-01&to=2027-01-01`);
+  expect(reversed.status).toBe(400);
+});

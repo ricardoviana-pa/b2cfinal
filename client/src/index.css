@@ -582,7 +582,13 @@
       position: sticky;
       bottom: 0;
       z-index: 1;
-      box-shadow: 0 -14px 14px -4px #fff;
+      /* O anel de 2 px tapa a moldura do cartão da tarifa escolhida, que
+         passava pelos lados do bloco quando ele fica por cima. */
+      box-shadow: 0 -14px 14px -4px #fff, 0 0 0 2px #fff;
+      /* Camada própria: sem ela o Chrome pintava as últimas linhas do cartão
+         da tarifa por cima do fundo do bloco (visível com a linha dos meios
+         de pagamento debaixo do Reservar, auditoria do funil de 29 out). */
+      will-change: transform;
     }
   }
 

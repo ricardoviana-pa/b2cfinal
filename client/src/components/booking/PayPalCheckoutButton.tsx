@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { loadStripe } from "@/lib/stripeLoader";
 import { trpc } from "@/lib/trpc";
-import { formatEur } from "@/lib/format";
+import { formatQuotedEur } from "@/lib/format";
 import { pushEcommerce } from "@/lib/datalayer";
 
 interface PayPalCheckoutButtonProps {
@@ -37,7 +37,17 @@ interface PayPalCheckoutButtonProps {
   paymentItems?: Array<Record<string, unknown>>;
   // Platform Stripe publishable key (NOT the per-listing connected account key)
   stripePublishableKey: string;
-  onError: (msg: string) => void;
+  /** Termos (checkout 2.0) por aceitar: o botão fica inativo. */
+  disabled?: boolean;
+  /** Checkout 2.0: valida nome, email e telefone no clique; false = nada é criado. */
+  onBeforeStart?: () => boolean;
+  /** Grava o estado pendente do intent antes de criar o pagamento. */
+  onBeforePay?: () => Promise<void>;
+  /** O erro original (com o code da Stripe, quando o há) e onde falhou. */
+  onError: (error: unknown, stage: "server" | "confirm") => void;
+  /** /checkout/demo: nunca cria pagamento nem eventos. */
+  demo?: boolean;
+  onDemo?: () => void;
 }
 
 export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
@@ -48,6 +58,10 @@ export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
   const createPayPalPI = trpc.booking.createPayPalPaymentIntent.useMutation();
 
   const handleClick = async () => {
+    if (isProcessing || props.disabled) return;
+    if (props.demo) { props.onDemo?.(); return; }
+    // Checkout 2.0: dados do hóspede validados antes de qualquer pagamento
+    if (props.onBeforeStart && !props.onBeforeStart()) return;
     setIsProcessing(true);
     setStatusMsg(t("payment.preparingPaypal"));
 
@@ -59,7 +73,11 @@ export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
       ecommerce: { currency: "EUR", value: props.amount, items: props.paymentItems },
     });
 
+    let stage: "server" | "confirm" = "server";
     try {
+      // Estado pendente (extras, dados do hóspede) gravado ANTES de criar o
+      // pagamento: o servidor valida o valor contra o que está na BD.
+      await props.onBeforePay?.();
       // Load platform Stripe — do NOT pass stripeAccount option.
       // PayPal PaymentIntents live on the platform account, not the connected account.
       const stripe = await loadStripe(props.stripePublishableKey);
@@ -115,42 +133,48 @@ export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
 
       setStatusMsg(t("payment.redirecting"));
 
+      stage = "confirm";
       const { error } = await (stripe as any).confirmPayPalPayment(clientSecret, {
         return_url: returnUrl,
       });
 
       if (error) {
-        throw new Error(error.message || "PayPal payment failed");
+        // Mantém o code/decline_code da Stripe para o aviso traduzido e o payment_failed
+        throw Object.assign(new Error(error.message || "PayPal payment failed"), {
+          type: error.type, code: error.code, decline_code: error.decline_code,
+        });
       }
       // Normal path: confirmPayPalPayment redirects the browser to PayPal,
       // so execution doesn't continue here.
-    } catch (err: any) {
+    } catch (err: unknown) {
       sessionStorage.removeItem("paypal_booking_data");
       setIsProcessing(false);
       setStatusMsg("");
-      props.onError(err.message || "PayPal payment failed. Please try again.");
+      props.onError(err, stage);
     }
   };
 
+  const inactive = isProcessing || !!props.disabled;
   return (
     <button
       type="button"
       onClick={handleClick}
-      disabled={isProcessing}
+      disabled={inactive}
       style={{
         width: "100%",
         padding: "14px 20px",
         background: isProcessing ? "#888" : "#003087",
         color: "#fff",
+        opacity: props.disabled && !isProcessing ? 0.5 : 1,
         border: "none",
         borderRadius: "4px",
         fontSize: "15px",
         fontWeight: 600,
-        cursor: isProcessing ? "not-allowed" : "pointer",
+        cursor: inactive ? "not-allowed" : "pointer",
         letterSpacing: "0.04em",
       }}
     >
-      {isProcessing ? statusMsg : t("payment.payWithPaypal", { amount: formatEur(props.amount, i18n.language) })}
+      {isProcessing ? statusMsg : t("payment.payWithPaypal", { amount: formatQuotedEur(props.amount, i18n.language) })}
     </button>
   );
 }

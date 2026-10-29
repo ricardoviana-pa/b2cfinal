@@ -399,7 +399,15 @@
     "requestOnlyTitle": "Pour ces dates, cette maison se réserve sur demande.",
     "requestOnlyBody": "Envoyez votre demande à notre concierge et nous confirmerons personnellement la disponibilité et le prix.",
     "twoPartsHint": "Vous pouvez payer en deux fois : la moitié aujourd'hui, l'autre moitié le {{date}}. Ou tout maintenant, avec le Flex inclus.",
-    "twoPartsHintPlain": "Vous pouvez payer en deux fois : la moitié aujourd'hui, l'autre moitié le {{date}}."
+    "twoPartsHintPlain": "Vous pouvez payer en deux fois : la moitié aujourd'hui, l'autre moitié le {{date}}.",
+    "phoneErrors": {
+      "digits": "Un numéro en {{dialCode}} compte {{digits}} chiffres après l'indicatif. Vérifiez le numéro et le pays.",
+      "digitsRange": "Un numéro en {{dialCode}} compte entre {{min}} et {{max}} chiffres après l'indicatif. Vérifiez le numéro et le pays.",
+      "leadingZero": "Retirez le 0 après {{dialCode}}.",
+      "tooShort": "Ce numéro semble trop court. Vérifiez-le, avec l'indicatif du pays.",
+      "tooLong": "Ce numéro semble trop long. Vérifiez-le, avec l'indicatif du pays.",
+      "countryCode": "Commencez le numéro par + et l'indicatif du pays."
+    }
   },
   "common": {
     "loading": "Chargement…",
@@ -775,7 +783,20 @@
       "alreadyPaidShort": "Cette réservation est déjà payée. Consultez votre email pour la confirmation.",
       "saveFailed": "Impossible d enregistrer vos dernières modifications. Vérifiez votre connexion et réessayez.",
       "network": "Problème de connexion. Vérifiez votre internet et réessayez.",
-      "genericRetry": "Le paiement n a pas pu être finalisé. Réessayez — ou contactez-nous et nous finaliserons votre réservation personnellement."
+      "genericRetry": "Le paiement n a pas pu être finalisé. Réessayez — ou contactez-nous et nous finaliserons votre réservation personnellement.",
+      "declinedLimit": "Le paiement a été refusé, souvent à cause du plafond de la carte pour ce montant. Utilisez une autre carte ou un autre moyen de paiement.",
+      "declinedGeneric": "Le paiement a été refusé. Veuillez utiliser une autre carte ou un autre moyen de paiement.",
+      "cardExpired": "Cette carte a expiré. Veuillez utiliser une autre carte ou un autre moyen de paiement.",
+      "cardNotSupported": "Cette carte n'accepte pas ce paiement. Veuillez utiliser une autre carte ou un autre moyen de paiement.",
+      "incorrectCvc": "Le code de sécurité (CVC) n'est pas correct. Vérifiez-le et réessayez.",
+      "incorrectNumber": "Le numéro de carte n'est pas correct. Vérifiez-le et réessayez.",
+      "cardDetails": "Certaines informations de la carte ne sont pas correctes. Vérifiez le numéro, la date d'expiration et le code de sécurité, puis réessayez.",
+      "bankUnavailable": "La banque n'a pas pu traiter le paiement pour le moment. Rien n'a été débité. Réessayez dans un instant.",
+      "authenticationFailed": "La confirmation auprès de votre banque n'a pas abouti, rien n'a donc été débité. Réessayez et confirmez dans l'application de votre banque.",
+      "twoPartsUnavailable": "Le paiement en deux fois n'est plus disponible pour cette réservation. Rien n'a été débité : vous pouvez payer le montant total maintenant.",
+      "prepareFailed": "Nous n'avons pas pu préparer le paiement. Rien n'a été débité. Veuillez réessayer.",
+      "priceChanged": "Le prix ou les détails de cette réservation ont changé entre-temps. Actualisez le prix pour continuer.",
+      "duplicateTransaction": "Un paiement avec cette carte et ce montant vient d'être effectué. Consultez votre email et votre application bancaire avant de payer à nouveau."
     },
     "payButton": "Payer {{amount}}",
     "cancelButton": "Annuler",
@@ -790,7 +811,18 @@
     "payNowButton": "Payer {{amountNow}} maintenant",
     "payNowAfter": "Puis {{amountLater}} le {{date}}.",
     "processingFirst": "Traitement de la première partie…",
-    "mandateMissing": "Cochez l'autorisation ci-dessus pour continuer."
+    "mandateMissing": "Cochez l'autorisation ci-dessus pour continuer.",
+    "termsHint": "Cochez cette case pour payer.",
+    "walletsHint": "Pour payer avec {{wallets}}, complétez vos coordonnées et cochez la case des conditions ci-dessous.",
+    "errorActions": {
+      "twoParts": "Payer plutôt en deux fois ({{amountNow}} aujourd'hui)",
+      "otherMethod": "Utiliser une autre carte ou un autre moyen",
+      "otherCard": "Utiliser une autre carte",
+      "concierge": "Parler au concierge",
+      "whatsappMessage": "Bonjour, j'ai besoin d'aide pour ma réservation : {{property}}, du {{checkIn}} au {{checkOut}}, voyageurs : {{guests}}. Le paiement n'est pas passé."
+    },
+    "methodsAccepted": "Moyens de paiement acceptés",
+    "notChargedYet": "Rien ne vous sera débité pour l'instant."
   },
   "contact": {
     "heroAlt": "Contacter Portugal Active",
@@ -1884,7 +1916,17 @@
     "rate": {
       "twoPartsLine": "Vous pouvez aussi payer en deux fois : {{amountNow}} aujourd'hui et {{amountLater}} le {{date}}.",
       "twoPartsLinePlain": "Vous pouvez aussi payer en deux fois : {{amountNow}} aujourd'hui et {{amountLater}} le {{date}}."
-    }
+    },
+    "emailLineLabel": "Confirmation à",
+    "emailChange": "modifier",
+    "fieldErrors": {
+      "firstName": "Indiquez votre prénom.",
+      "lastName": "Indiquez votre nom."
+    },
+    "nifInvalid": "Ce NIF portugais ne semble pas correct : vérifiez les 9 chiffres. Pour un numéro de TVA d'un autre pays, commencez par son code pays (par exemple ES).",
+    "emailHoldNote": "Nous gardons ce prix jusqu'au {{date}}, {{time}}. Si vous ne terminez pas maintenant, nous pourrons vous envoyer un ou deux rappels par email. Pas de spam.",
+    "emailReminderNote": "Si vous ne terminez pas maintenant, nous pourrons vous envoyer un ou deux rappels par email. Pas de spam.",
+    "conciergeMessage": "Bonjour, j'ai une question sur ma réservation : {{property}}, du {{checkIn}} au {{checkOut}}, voyageurs : {{guests}}."
   },
   "host": {
     "hostedBy": "Vos hôtes : Ricardo & l’équipe Portugal Active",
