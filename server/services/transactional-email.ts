@@ -11,6 +11,7 @@ import { FUNNEL_I18N } from "./recovery-copy";
 import { sanitizePropertyName } from "@shared/displayName";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import { originEmailSummary, type ServerVisitOrigin } from "./visit-origin";
+import { invoiceNif } from "./invoice-nif";
 import {
   cancellationPolicyCopy,
   cancellationPolicyPath,
@@ -1286,9 +1287,13 @@ export async function sendCheckoutOpsManifest(d: {
   /** Pagamento em duas partes: destaque "NÃO cobrar" e "Pago hoje" com o
    *  valor do PI. Ausente = manifesto exatamente como antes. */
   plan?: CheckoutPlanSummary | null;
+  /** NIF que o hóspede pediu na fatura (texto livre do checkout). Com NIF, é
+   *  a 1.ª ação do email; sem NIF, o manifesto fica como antes. */
+  nif?: string | null;
 }): Promise<void> {
   try {
     const plan = usablePlan(d.plan, "OpsManifest");
+    const nif = invoiceNif(d.nif);
     const extras = Array.isArray(d.extras) ? d.extras : [];
     const needs = extras.filter((e) => e.fulfillment === "needs_confirmation");
     const requests = extras.filter((e) => e.amount == null);
@@ -1304,6 +1309,16 @@ export async function sendCheckoutOpsManifest(d: {
     // ── AÇÕES: o que a equipa tem de tratar, por ordem de urgência ──
     // Regras específicas por sku primeiro (operação real); genéricas depois.
     const actions: Array<{ urgent: boolean; text: string }> = [];
+    // O NIF primeiro: o Guesty não o recebe (o campo que a Hostkit lê está
+    // por confirmar, spec 5.13, e os serviços nem entram no folio), por isso a
+    // fatura só sai com ele se alguém o puser. Uma fatura que já saiu sem o
+    // NIF pedido tem de ser anulada e emitida outra.
+    if (nif) {
+      actions.push({
+        urgent: true,
+        text: `FATURA COM NIF ${escapeHtml(nif)}: o hospede pediu a fatura com este NIF. Garantir que a fatura da estadia (Hostkit) e a dos servicos, se houver, saem com ele; se alguma ja saiu sem NIF, anular e emitir outra.`,
+      });
+    }
     const handled = new Set<string>();
     for (const e of paid) {
       const sku = String(e.sku);
@@ -1416,7 +1431,8 @@ export async function sendCheckoutOpsManifest(d: {
     const html = render(rows);
     const urgentFlag = needs.length || requests.length ? "ACAO ATE 24H — " : "";
     const planFlag = plan ? " · DUAS PARTES, NAO COBRAR" : "";
-    await sendEmail(BOOKING_ALERT_EMAIL, `[CS] ${urgentFlag}Reserva ${d.confirmationCode || d.intentId.slice(0, 8)} · ${d.propertyName || ""}${planFlag}`, html);
+    const nifFlag = nif ? " · FATURA COM NIF" : "";
+    await sendEmail(BOOKING_ALERT_EMAIL, `[CS] ${urgentFlag}Reserva ${d.confirmationCode || d.intentId.slice(0, 8)} · ${d.propertyName || ""}${planFlag}${nifFlag}`, html);
     console.info(`[OpsManifest] enviado (intent ${d.intentId}, ${actions.length} acoes)`);
     // Cópia de vendas para a gestão: cada reserva direta com casa, valor e
     // extras — pedido do Ricardo (16 ago) para acompanhar o que o site vende.
