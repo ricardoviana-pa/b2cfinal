@@ -39,23 +39,32 @@ export function stayNights(checkIn, checkOut) {
 }
 
 /**
- * O calendário (booking.getCalendar) fecha a estadia? A mesma regra do
- * servidor (calendarStayVerdict em server/services/guesty.ts): qualquer
- * noite que não esteja "available", chegada fechada, saída fechada, ou
- * estadia mínima do dia de chegada maior do que a estadia.
+ * O que o calendário (booking.getCalendar) diz da estadia. A mesma regra do
+ * servidor (calendarStayVerdict em server/services/guesty.ts):
+ *   unavailable  uma noite que não está "available", chegada fechada, saída
+ *                fechada, ou estadia mínima do dia de chegada maior do que a estadia
+ *   open         todas as noites da estadia vieram e estão abertas
+ *   unknown      faltam noites (ou o calendário veio vazio): não se sabe.
+ *                O booking.getCalendar responde {days: []} a qualquer falha
+ *                do BE, por isso "vazio" é quase sempre o BE em baixo, não
+ *                datas abertas (revisão do PR #173).
  */
-export function calendarClosesStay(days, checkIn, checkOut) {
+export function calendarStayVerdict(days, checkIn, checkOut) {
   const byDate = new Map((Array.isArray(days) ? days : []).filter((d) => d && typeof d.date === 'string').map((d) => [d.date, d]));
   const nights = stayNights(checkIn, checkOut);
-  if (!nights.length) return null;
+  if (!nights.length) return { status: 'unknown', detail: 'datas inválidas' };
   const closed = nights.filter((date) => byDate.has(date) && byDate.get(date).status !== 'available');
-  if (closed.length) return `${closed.length} noite(s) fechada(s) no calendário`;
+  if (closed.length) return { status: 'unavailable', detail: `${closed.length} noite(s) fechada(s) no calendário` };
   const arrival = byDate.get(checkIn);
-  if (arrival?.cta === true) return 'chegada fechada nesse dia';
-  if (byDate.get(checkOut)?.ctd === true) return 'saída fechada nesse dia';
+  if (arrival?.cta === true) return { status: 'unavailable', detail: 'chegada fechada nesse dia' };
+  if (byDate.get(checkOut)?.ctd === true) return { status: 'unavailable', detail: 'saída fechada nesse dia' };
   const min = Number(arrival?.minNights);
-  if (Number.isFinite(min) && min > nights.length) return `estadia mínima de ${min} noites`;
-  return null;
+  if (Number.isFinite(min) && min > nights.length) return { status: 'unavailable', detail: `estadia mínima de ${min} noites` };
+  const missing = nights.filter((date) => !byDate.has(date)).length;
+  if (missing) {
+    return { status: 'unknown', detail: byDate.size ? `${missing} de ${nights.length} noites sem dados no calendário` : 'calendário vazio (BE em baixo?)' };
+  }
+  return { status: 'open' };
 }
 
 /**

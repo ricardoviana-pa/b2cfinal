@@ -11,6 +11,9 @@
  *   listing de teste do Guesty fica de fora e entram as casas parceiras.
  * - Um "sem preço live" (base/estimate) com o calendário fechado nessas
  *   noites conta como INDISPONÍVEL, não como avaria a corrigir no Guesty.
+ *   Com o calendário vazio ou incompleto (o BE em baixo responde {days: []})
+ *   fica em "calendário ilegível", à parte: não se sabe se as noites estão
+ *   abertas, por isso não é para corrigir no Guesty sem repetir.
  * - As casas parceiras (Tripwix) são cotadas pelo caminho delas
  *   (booking.partnerQuote): servem o calendário que o job guardou, sem
  *   chamadas à Tripwix.
@@ -26,7 +29,7 @@
  */
 import fs from "node:fs";
 import {
-  calendarClosesStay,
+  calendarStayVerdict,
   classifyOwnQuote,
   classifyPartnerQuote,
   isPartnerHome,
@@ -75,8 +78,8 @@ const own = homes.filter(isQuotableOwnHome);
 const partners = WITH_PARTNERS ? homes.filter(isPartnerHome) : [];
 const lastNight = stayNights(CHECKIN, CHECKOUT).at(-1) || CHECKIN;
 
-const rows = { live: [], base: [], unavailable: [], request: [], noCalendar: [], error: [] };
-const mark = { live: ".", unavailable: "u", request: "p", fallback: "F", "no-calendar": "T", error: "E" };
+const rows = { live: [], base: [], unreadable: [], unavailable: [], request: [], noCalendar: [], error: [] };
+const mark = { live: ".", unavailable: "u", request: "p", fallback: "F", unreadable: "?", "no-calendar": "T", error: "E" };
 console.log(`Quote health · ${HOST} · ${CHECKIN} → ${CHECKOUT} · ${own.length} casas nossas + ${partners.length} parceiras (${origin}) · ${THROTTLE_MS}ms entre pedidos\n`);
 
 for (const p of own) {
@@ -88,13 +91,20 @@ for (const p of own) {
     const c = q ? classifyOwnQuote(q) : { bucket: "error", detail: `HTTP ${status}` };
     bucket = c.bucket;
     if (c.bucket === "fallback") {
-      // Sem preço live: é avaria só se o calendário tiver as noites abertas.
+      // Sem preço live: é avaria do Guesty só se o calendário tiver as noites
+      // abertas. Um calendário vazio ou com noites em falta não prova nada (o
+      // getCalendar responde {days: []} quando o BE falha): lista à parte.
       await new Promise((res) => setTimeout(res, THROTTLE_MS));
-      const cal = await trpc("booking.getCalendar", { listingId: id, from: CHECKIN, to: CHECKOUT });
-      const why = calendarClosesStay(cal.data?.days, CHECKIN, CHECKOUT);
-      if (why) {
+      const cal = await trpc("booking.getCalendar", { listingId: id, from: CHECKIN, to: CHECKOUT }).catch((e) => ({ status: 0, data: null, error: e }));
+      const verdict = cal.status === 200
+        ? calendarStayVerdict(cal.data?.days, CHECKIN, CHECKOUT)
+        : { status: "unknown", detail: `getCalendar respondeu ${cal.status || cal.error?.message || "sem resposta"}` };
+      if (verdict.status === "unavailable") {
         bucket = "unavailable";
-        rows.unavailable.push({ name, detail: `${why}; o servidor respondeu "sem preço live"` });
+        rows.unavailable.push({ name, detail: `${verdict.detail}; o servidor respondeu "sem preço live"` });
+      } else if (verdict.status === "unknown") {
+        bucket = "unreadable";
+        rows.unreadable.push({ name, detail: `${verdict.detail}; ${c.detail}` });
       } else rows.base.push({ name, detail: c.detail });
     } else if (c.bucket === "live") rows.live.push({ name, total: c.total });
     else if (c.bucket === "unavailable") rows.unavailable.push({ name, detail: c.detail });
@@ -127,9 +137,9 @@ for (const p of partners) {
 }
 
 console.log(
-  `\n\nRESULTADO: live/cached ${rows.live.length} · fallback ${rows.base.length} · indisponíveis ${rows.unavailable.length}` +
-  ` · por pedido ${rows.request.length} · parceiras sem calendário ${rows.noCalendar.length} · erros ${rows.error.length}` +
-  ` (noites ${CHECKIN} → ${lastNight})\n`,
+  `\n\nRESULTADO: live/cached ${rows.live.length} · fallback ${rows.base.length} · calendário ilegível ${rows.unreadable.length}` +
+  ` · indisponíveis ${rows.unavailable.length} · por pedido ${rows.request.length} · parceiras sem calendário ${rows.noCalendar.length}` +
+  ` · erros ${rows.error.length} (noites ${CHECKIN} → ${lastNight})\n`,
 );
 const list = (title, arr) => {
   if (!arr.length) return;
@@ -138,8 +148,9 @@ const list = (title, arr) => {
   console.log("");
 };
 list("SEM QUOTE LIVE com as noites abertas (corrigir no Guesty/BE):", rows.base);
+list("SEM QUOTE LIVE e CALENDÁRIO ILEGÍVEL (o BE pode estar em baixo: ver logs [Booking] getCalendar FAILED e repetir antes de mexer no Guesty):", rows.unreadable);
 list("PARCEIRAS SEM CALENDÁRIO (ver logs [Tripwix] no Render; perguntar à Tripwix se persistir):", rows.noCalendar);
 list("INDISPONÍVEIS nas datas de teste (normal se ocupadas; testar outra janela):", rows.unavailable);
 list("POR PEDIDO nas datas de teste (configuração do Guesty):", rows.request);
 list("ERROS:", rows.error);
-process.exit(rows.base.length || rows.noCalendar.length || rows.error.length ? 1 : 0);
+process.exit(rows.base.length || rows.unreadable.length || rows.noCalendar.length || rows.error.length ? 1 : 0);

@@ -7,7 +7,12 @@
  * memória/BD (sem cotações no pedido). Puro e testável: o fetch é injetado.
  */
 
-/** "Desde €X" real de cada listing (null = sem noites reserváveis / ainda sem valor). */
+/**
+ * "Desde €X" real de cada listing. null = o site não tem valor para mostrar:
+ * casa sem noites reserváveis em 12 meses, OU ainda não calculada (processo
+ * acabado de arrancar), OU BD em baixo com a memória vazia. O endpoint não
+ * distingue os três (revisão do PR #173): ver unpricedGuard.
+ */
 export async function fetchLowestNightly(site, listingIds, { fetchImpl = fetch, chunk = 100 } = {}) {
   const out = new Map();
   const ids = [...new Set(listingIds)];
@@ -73,8 +78,26 @@ export function skipReason({ from, page }) {
     if (page.status >= 300 && page.status < 400) return `página redireciona (${page.status} → ${page.location ?? '?'})`;
     if (page.status !== 200) return page.status ? `página respondeu ${page.status}` : `página sem resposta (${page.error ?? 'erro'})`;
   }
-  if (!(typeof from === 'number' && from > 0)) return 'sem "desde" real (sem noites reserváveis em 12 meses)';
+  if (!(typeof from === 'number' && from > 0)) return 'sem "desde" no site (fechada em 12 meses, ou ainda sem valor calculado)';
   return null;
+}
+
+/** Acima disto, uma corrida com casas sem "desde" é produção degradada, não casas fechadas. */
+export const MAX_UNPRICED_SHARE = 0.1;
+
+/**
+ * Pode escrever-se o feed? Casas fechadas o ano inteiro são poucas (hoje, a
+ * Gerês Gateway). Muitas casas sem "desde" de uma vez querem dizer um
+ * processo acabado de arrancar (os valores ainda a aquecer) ou a BD em
+ * baixo: um feed escrito assim tirava dos anúncios casas reserváveis, em
+ * silêncio. Nesse caso não se escreve feed (`--max-unpriced <n>` deixa
+ * passar mais, quando se sabe que estão mesmo fechadas).
+ */
+export function unpricedGuard(fromPrices, ids, { maxShare = MAX_UNPRICED_SHARE, maxCount } = {}) {
+  const unique = [...new Set(ids)];
+  const unpriced = unique.filter((id) => !(fromPrices.get(id) > 0));
+  const limit = Number.isInteger(maxCount) && maxCount >= 0 ? maxCount : Math.floor(unique.length * maxShare);
+  return { ok: unpriced.length <= limit, unpriced, limit, total: unique.length };
 }
 
 /** Mediana de uma lista de números (para o resumo placeholder vs real). */

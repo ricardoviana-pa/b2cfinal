@@ -12,8 +12,11 @@
  * (booking.lowestNightlyBatch, GET, one call). Never properties.json's
  * priceFrom/pricePerNight: that is the Guesty placeholder (audit 29 Oct 2026,
  * prices-availability-07: median 1.8× the real "from"). Homes with no real
- * "from" (no bookable night in 12 months) and pages that do not answer 200
- * (404, redirect) are left out of the feed and listed at the end.
+ * "from" (closed for 12 months, or not computed yet) and pages that do not
+ * answer 200 (404, redirect) are left out of the feed and listed at the end.
+ * When more than 10% of the homes come back without a "from" the run writes
+ * no feed: that is production warming up after a deploy or its DB down, not
+ * closed homes (--max-unpriced <n> lets more through, for known closures).
  *
  * Outputs (exports/meta-catalog/, or --out <dir>):
  *   hotels.csv               main feed, English (default catalog language)
@@ -33,7 +36,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { checkPages, fetchLowestNightly, median, metaPrice, priceBand, skipReason } from './lib/meta-catalog-prices.mjs';
+import { checkPages, fetchLowestNightly, median, metaPrice, priceBand, skipReason, unpricedGuard } from './lib/meta-catalog-prices.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DATA = 'client/src/data';
@@ -328,6 +331,26 @@ try {
   console.error(`could not read the real "From" prices from ${SITE} (${e.message}). No feed written: base_price must never be Guesty's placeholder.`);
   process.exit(1);
 }
+// lowestNightlyBatch answers null for a home closed for 12 months, but also
+// for one the site has not computed yet (a fresh process) or when its DB is
+// down. Closed homes are few, so many nulls at once mean a degraded run:
+// write nothing rather than silently drop bookable homes from the ads.
+const MAX_UNPRICED_ARG = process.argv.indexOf('--max-unpriced');
+const maxUnpriced = MAX_UNPRICED_ARG !== -1 ? Number(process.argv[MAX_UNPRICED_ARG + 1]) : undefined;
+// Only homes already live in production count (the others are skipped below anyway).
+const guarded = live.filter((p) => !prodSlugs || prodSlugs.has(p.slug));
+const guard = unpricedGuard(fromPrices, guarded.map((p) => p.guestyId), { maxCount: maxUnpriced });
+console.log(`real "From €X": ${guard.total - guard.unpriced.length} of ${guard.total} homes (${guard.unpriced.length} without a value: closed for 12 months, or not computed yet)`);
+if (!guard.ok) {
+  const names = guarded.filter((p) => guard.unpriced.includes(p.guestyId)).map((p) => p.name);
+  console.error(
+    `\n${guard.unpriced.length} of ${guard.total} homes came back without a "From" price (limit ${guard.limit}). ` +
+    `Production is probably still warming up after a deploy, or its database is down. No feed written.\n` +
+    `Re-run in ~30 min (or after opening the listing page once). If these homes really are closed, pass --max-unpriced ${guard.unpriced.length}.\n` +
+    names.map((n) => `  - ${n}`).join('\n'),
+  );
+  process.exit(1);
+}
 // Pages that do not answer 200 (404, redirect to a new slug) never go in an ad.
 const pageStatus = process.argv.includes('--no-prod-check')
   ? new Map()
@@ -336,8 +359,6 @@ if (pageStatus.size) {
   const bad = [...pageStatus.values()].filter((s) => s.status !== 200).length;
   console.log(`page check: ${pageStatus.size} home pages, ${bad} not answering 200`);
 }
-const unpriced = live.filter((p) => !(fromPrices.get(p.guestyId) > 0)).length;
-console.log(`real "From €X": ${live.length - unpriced} of ${live.length} homes (${unpriced} without a bookable stay in 12 months)`);
 
 const skipped = [];
 const mainRows = [];
