@@ -12,7 +12,9 @@ import { KLARNA_MAX_EUR, PAYMENT_MARKS, paymentMarksFor } from "@/components/boo
 const read = (p: string) => fs.readFileSync(new URL(`../../${p}`, import.meta.url), "utf8");
 const LANGS = ["en", "pt", "fr", "es", "it", "de", "nl", "sv", "fi"] as const;
 const locale = (lang: string) => JSON.parse(read(`client/src/i18n/locales/${lang}.json`));
-const placeholders = (s: string) => (s.match(/\{\{\w+\}\}/g) ?? []).sort();
+// "{{date, al}}" (formatador do artigo italiano) é o mesmo marcador {{date}}.
+const placeholders = (s: string) =>
+  (s.match(/\{\{\s*\w+\s*(?:,[^}]*)?\}\}/g) ?? []).map((p) => p.replace(/\s/g, "").replace(/,[^}]*/, "")).sort();
 const BANNED = /insurance|seguro|assurance|versicherung|assicurazion|verzekering|försäkring|vakuutus|\bhotel|sinal|dep[oó]sito|presta[cç][oõ]es/i;
 
 describe("o Continuar do passo 1 nunca fica parado", () => {

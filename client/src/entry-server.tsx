@@ -21,6 +21,7 @@ import { getQueryKey } from '@trpc/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { createInstance } from 'i18next';
+import { addItalianDateFormats } from './i18n/italianDateFormats';
 import { preloadContentOverrides } from '@/lib/localizeContent';
 import { propertyOverridesQueryKey } from '@/lib/localizeProperty';
 import { SSR_FROM_PRICES_KEY, type SsrFromPrices } from '@/lib/ssrFromPrices';
@@ -93,6 +94,8 @@ async function createI18nForRequest(lng: string) {
       ...(lng !== 'en' ? { en: { translation: RESOURCES.en } } : {}),
     },
   });
+  // Os mesmos formatadores do browser: "{{date, il}}" no it.json.
+  addItalianDateFormats(instance);
   return instance;
 }
 

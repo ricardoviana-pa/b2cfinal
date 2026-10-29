@@ -18,12 +18,16 @@
  * v2 (28 out 2026), FR/ES/IT/DE/NL/SV/FI. As sete traduções estão POR REVER
  * por nativos (obrigatório em DE, FR e NL antes de ligar as duas partes); a
  * v2 também tirou o "e SMS" (decisão do Ricardo: avisos só por email).
+ * v3 (29 out 2026): em italiano o artigo antes da data segue a leitura do
+ * número, como no resto do site ("l'8 novembre", "l'11 novembre", nunca
+ * "il 11"; shared/italianDates.ts), e repete-se em cada data das retentativas.
  */
 import { createHash } from "crypto";
+import { itArt } from "@shared/italianDates";
 import { TWO_PARTS_RULES } from "./payment-plan";
 
 /** Versão do texto do mandato (caixa + parágrafo, pt e en). */
-export const TWO_PARTS_MANDATE_VERSION = "2026-10-28.v2";
+export const TWO_PARTS_MANDATE_VERSION = "2026-10-29.v3";
 
 /**
  * Versão da declaração de execução imediata do Flex
@@ -129,13 +133,13 @@ const TEMPLATES: Record<MandateLang, { checkbox: (s: MandateSlots) => string; te
   },
   it: {
     checkbox: (s) =>
-      `Autorizzo Portugal Active ad addebitare ${s.amountLater} il ${s.date} sulla carta che uso ora, ` +
+      `Autorizzo Portugal Active ad addebitare ${s.amountLater} ${itArt("il", s.date)} sulla carta che uso ora, ` +
       `come seconda e ultima parte di questo soggiorno e, se l'addebito viene rifiutato, ` +
       `a riprovare lo stesso importo fino al giorno ${s.deadline}.`,
     text: (s) =>
-      `Pagando, autorizza Portugal Active ad addebitare ${s.amountLater} il ${s.date} sulla carta che usa ora, ` +
+      `Pagando, autorizza Portugal Active ad addebitare ${s.amountLater} ${itArt("il", s.date)} sulla carta che usa ora, ` +
       `come seconda e ultima parte di questo soggiorno. Se l'addebito viene rifiutato, la avvisiamo via email, ` +
-      `riproviamo lo stesso importo il ${s.retries}, e ha ${s.noticeDays} giorni dall'avviso ` +
+      `riproviamo lo stesso importo ${s.retries}, e ha ${s.noticeDays} giorni dall'avviso ` +
       `per pagare con un altro metodo; altrimenti la prenotazione viene annullata e le rimborsiamo tutto quanto pagato. ` +
       `Può pagare prima, cambiare carta o annullare in qualsiasi momento, dal link nella sua conferma. ` +
       `Cancellazione gratuita fino al giorno ${s.deadline}.`,
@@ -308,13 +312,20 @@ function assertMandateValues(v: MandateValues): void {
   }
 }
 
+/** Cada data da lista das retentativas, como a frase a pede: em italiano
+ *  com o seu artigo ("il 13 novembre e l'11 dicembre"); nas outras, só a data. */
+const RETRY_DAY: Partial<Record<MandateLang, (day: string) => string>> = {
+  it: (day) => itArt("il", day),
+};
+
 export function renderTwoPartsMandate(lang: string | null | undefined, v: MandateValues): TwoPartsMandateText {
   assertMandateValues(v);
   const l = mandateLang(lang);
+  const retryDay = RETRY_DAY[l] ?? ((day: string) => day);
   const slots: MandateSlots = {
     amountLater: formatAmount(v.amountLaterCents, l),
     date: formatDay(v.chargeAt, l),
-    retries: joinList(v.retryAt.map((r) => formatDay(r, l)), l),
+    retries: joinList(v.retryAt.map((r) => retryDay(formatDay(r, l))), l),
     deadline: formatDeadline(v.freeCancelDeadlineAt, l),
     noticeDays: TWO_PARTS_RULES.noticeDays,
   };
@@ -331,7 +342,7 @@ export function renderTwoPartsMandate(lang: string | null | undefined, v: Mandat
    texto renderizado aqui, hash do que o hóspede viu, versão própria.
    ════════════════════════════════════════════════════════════════ */
 
-export const CARD_CHANGE_MANDATE_VERSION = "2026-10-28.v2";
+export const CARD_CHANGE_MANDATE_VERSION = "2026-10-29.v3";
 
 const CARD_CHANGE_TEMPLATES: Record<MandateLang, (s: { amountLater: string; date: string; deadline: string }) => string> = {
   pt: (s) =>
@@ -369,7 +380,7 @@ const CARD_CHANGE_DATE: Record<MandateLang, { on: (d: string) => string; today: 
   en: { on: (d) => `on ${d}`, today: "today" },
   fr: { on: (d) => `le ${d}`, today: "aujourd'hui" },
   es: { on: (d) => `el ${d}`, today: "hoy" },
-  it: { on: (d) => `il ${d}`, today: "oggi" },
+  it: { on: (d) => itArt("il", d), today: "oggi" },
   de: { on: (d) => `am ${d}`, today: "heute" },
   nl: { on: (d) => `op ${d}`, today: "vandaag" },
   sv: { on: (d) => `den ${d}`, today: "i dag" },

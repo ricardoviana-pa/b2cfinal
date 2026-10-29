@@ -21,6 +21,7 @@
 
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import { addItalianDateFormats } from "./italianDateFormats";
 
 const SUPPORTED = ["en", "pt", "fr", "es", "it", "fi", "de", "nl", "sv"] as const;
 type Lang = typeof SUPPORTED[number];
@@ -72,6 +73,8 @@ await i18n.use(initReactI18next).init({
   interpolation: { escapeValue: false },
   resources,
 });
+// "{{date, il}}" no it.json: l'8, l'11, il 15 (./italianDateFormats.ts).
+addItalianDateFormats(i18n);
 
 // Patch changeLanguage so a language switch fetches the bundle if not loaded yet.
 const origChange = i18n.changeLanguage.bind(i18n);
