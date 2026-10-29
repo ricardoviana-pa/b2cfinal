@@ -143,10 +143,11 @@ export default function FlexBlock({
           <p className="font-display text-[22px] text-pa-dark leading-snug">
             {t("checkout.flex.title", "Flex — guaranteed rebooking")}
           </p>
-          {/* A condição logo no título (auditoria do funil, n.º 14 b): "Remarque
-              quando quiser" chocava com a 1.ª regra, "até 7 dias antes". */}
+          {/* A frase aprovada na spec §6 (validada pelo André). Uma versão com a
+              condição ("até 7 dias antes da chegada", auditoria do funil, n.º 14 b)
+              espera o OK dele; a condição já está no 1.º benefício, logo abaixo. */}
           <p className="body-sm text-pa-earth mt-0.5">
-            {t("checkout.flex.tagline", { days: config.rescheduleDaysBefore, defaultValue: "Rebook up to {{days}} days before arrival. The amount you paid is never lost." })}
+            {t("checkout.flex.tagline", "Rebook whenever you need. The amount you paid is never lost.")}
           </p>
         </div>
         <div className="text-right shrink-0 hidden sm:block max-w-[150px]">

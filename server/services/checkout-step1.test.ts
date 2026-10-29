@@ -89,21 +89,19 @@ describe("a caixa de marketing volta como o hóspede a deixou", () => {
   });
 });
 
-describe("os textos do passo 1 não prometem um envio que não sai", () => {
-  it("o título deixou de prometer enviar a reserva, nas 9 línguas", () => {
-    const old: Record<string, RegExp> = {
-      en: /send your booking/i, pt: /enviamos a sua reserva/i, fr: /envoyons-nous votre réservation/i,
-      es: /enviamos su reserva/i, it: /inviamo la tua prenotazione/i, de: /senden wir ihre buchung/i,
-      nl: /sturen we uw boeking/i, sv: /skickar vi din bokning/i, fi: /lähetämme varauksesi/i,
-    };
-    for (const lang of LANGS) {
-      const title = locale(lang).checkout.emailTitle as string;
-      expect(title, lang).toBeTruthy();
-      expect(title, lang).not.toMatch(old[lang]);
-    }
+describe("os textos do email no passo 1", () => {
+  // Revisão do PR #176: o título novo ("O seu email") e a nota dos lembretes
+  // esperam o OK do André; o main vai direto para produção, por isso ficam
+  // os de produção até lá. As frases da nota já estão prontas nas 9 línguas.
+  it("título e rótulo como em produção; a nota ainda não se mostra", () => {
+    const page = read("client/src/pages/checkout/CheckoutPage.tsx");
+    expect(page).toMatch(/\{t\("checkout\.emailTitle", "Where should we send your booking\?"\)\}/);
+    expect(page).toMatch(/<label htmlFor="checkout-email" className="block caption font-medium text-pa-earth">\s*\{t\("checkout\.emailLabel", "Your email"\)\}/);
+    expect(page).not.toMatch(/t\("checkout\.(emailHoldNote|emailReminderNote)"/);
+    expect(locale("pt").checkout.emailTitle).toBe("Para onde enviamos a sua reserva?");
   });
 
-  it("a nota diz que o preço fica guardado e que pode haver lembretes (spec §4), nas 9 línguas", () => {
+  it("a nota (por ligar depois do OK do André) diz que o preço fica guardado e que pode haver lembretes, nas 9 línguas", () => {
     const reminder: Record<string, RegExp> = {
       en: /reminder/i, pt: /lembrete/i, fr: /rappel/i, es: /recordatorio/i, it: /promemoria/i,
       de: /erinnerung/i, nl: /herinnering/i, sv: /påminnelse/i, fi: /muistut/i,

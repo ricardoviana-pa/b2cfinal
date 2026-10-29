@@ -1753,11 +1753,11 @@
         "desc": "Envie-nos a sua lista. Fazemos as compras e deixamos tudo arrumado antes de chegar. A conta do supermercado é cobrada à parte, ao custo."
       }
     },
-    "emailTitle": "O seu email",
+    "emailTitle": "Para onde enviamos a sua reserva?",
     "perStay": "por estadia",
     "flex": {
       "title": "Flex, remarcação garantida",
-      "tagline": "Remarque até {{days}} dias antes da chegada. O valor que pagou nunca se perde.",
+      "tagline": "Remarque quando quiser. O valor que pagou nunca se perde.",
       "perBooking": "pagamento único, por reserva",
       "benefit1": "Remarque até {{days}} dias antes do check-in, sem custo",
       "benefit2": "O valor pago fica sempre protegido, nunca se perde",

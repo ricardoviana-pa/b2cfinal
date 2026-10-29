@@ -1211,13 +1211,6 @@ export default function CheckoutPage() {
     return { date: formatBookingDate(localYmd, lang), time };
   }, [intent?.expiresAt, lang]);
   const guaranteeLabel = priceHold ? t("checkout.priceGuaranteed", priceHold) : null;
-  // Passo 1 (auditoria do funil, n.º 2; spec §4): a razão verdadeira para o
-  // email, sem prometer um envio que não sai já. O captureLead não envia
-  // nada; os lembretes (1 h e 20 h) só saem se o hóspede não terminar, e
-  // nunca ao grupo de controlo — daí o "podemos".
-  const emailNote = priceHold
-    ? t("checkout.emailHoldNote", priceHold)
-    : t("checkout.emailReminderNote");
 
   // ── Passo do pagamento (auditoria do funil, out/2026, n.º 1, 4 e 11) ──
   // Nome, email e telefone validam-se no clique em Pagar: o erro fica no campo,
@@ -2019,18 +2012,18 @@ export default function CheckoutPage() {
                 />
               ) : null}
 
-              {/* Email capture. O título não promete um envio (o captureLead
-                  não envia nada) e a nota diz o que acontece de facto: o preço
-                  fica guardado até à expiração real e, se o hóspede não
-                  terminar, podem sair um ou dois lembretes (spec §4, auditoria
-                  do funil n.º 2 e críticos). */}
+              {/* Email capture. Título e rótulo como estão em produção: o
+                  título novo ("O seu email") e a nota do preço guardado e dos
+                  lembretes (auditoria do funil, n.º 2) esperam o OK do André
+                  (revisão do PR #176); ver as chaves checkout.emailHoldNote e
+                  checkout.emailReminderNote. */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
-                <div>
-                  <h2 className="font-display text-[19px] text-pa-dark leading-snug">
-                    <label htmlFor="checkout-email">{t("checkout.emailTitle", "Your email")}</label>
-                  </h2>
-                  <p id="checkout-email-note" className="caption text-pa-earth leading-snug mt-1">{emailNote}</p>
-                </div>
+                <h2 className="font-display text-[19px] text-pa-dark leading-snug">
+                  {t("checkout.emailTitle", "Where should we send your booking?")}
+                </h2>
+                <label htmlFor="checkout-email" className="block caption font-medium text-pa-earth">
+                  {t("checkout.emailLabel", "Your email")}
+                </label>
                 <input
                   id="checkout-email"
                   type="email"
@@ -2042,7 +2035,7 @@ export default function CheckoutPage() {
                   }}
                   onBlur={() => setEmailTouched(true)}
                   placeholder={t("checkout.emailPh", "name@email.com")}
-                  aria-describedby={isValidEmail(email) ? "checkout-email-note" : "checkout-email-note checkout-email-hint"}
+                  aria-describedby={isValidEmail(email) ? undefined : "checkout-email-hint"}
                   aria-invalid={(emailTouched && email.length > 0 && !isValidEmail(email)) || undefined}
                   className={cn(
                     "w-full h-[48px] border bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none",

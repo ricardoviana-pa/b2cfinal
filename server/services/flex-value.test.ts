@@ -169,12 +169,17 @@ describe("o checkout usa estas regras", () => {
     expect(page).toMatch(/if \(!flexSelected \|\| flexGifted \|\| !flexConfig \|\| flexOffered\) return;\s*setFlexSelected\(false\);\s*syncIntent\(\{ flex: false \}\);/);
   });
 
-  it("o título do Flex diz a condição (até X dias antes da chegada) nas 9 línguas", () => {
+  // Revisão do PR #176: a frase do Flex é texto jurídico validado pelo André
+  // (spec §6 e §15.9) e o main vai direto para produção. A versão com a
+  // condição ("Remarque até 7 dias antes da chegada…") fica para depois do
+  // OK dele; até lá, a aprovada. A condição está no 1.º benefício do bloco.
+  it("o título do Flex é a frase aprovada (spec §6) até ao OK do André, nunca 'seguro'", () => {
+    const pt = JSON.parse(read("client/src/i18n/locales/pt.json")).checkout.flex.tagline as string;
+    expect(pt).toBe("Remarque quando quiser. O valor que pagou nunca se perde.");
     for (const lang of ["en", "pt", "fr", "es", "it", "de", "nl", "sv", "fi"]) {
-      const tagline = JSON.parse(read(`client/src/i18n/locales/${lang}.json`)).checkout.flex.tagline as string;
-      expect(tagline, lang).toContain("{{days}}");
-      expect(tagline, lang).not.toMatch(/whenever|quando quiser|quand vous voulez|cuando quiera|quando vuoi|wann immer|wanneer u wilt|när du behöver|milloin tahansa/i);
-      expect(tagline, lang).not.toMatch(/insurance|seguro|assurance|versicherung|assicurazion|verzekering|försäkring|vakuutus/i);
+      const flex = JSON.parse(read(`client/src/i18n/locales/${lang}.json`)).checkout.flex;
+      expect(flex.tagline, lang).not.toMatch(/insurance|seguro|assurance|versicherung|assicurazion|verzekering|försäkring|vakuutus/i);
+      expect(flex.benefit1, lang).toContain("{{days}}");
     }
   });
 });

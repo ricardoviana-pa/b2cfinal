@@ -1750,11 +1750,11 @@
         "desc": "Lähetä meille listasi. Teemme ostokset ja järjestämme kaiken valmiiksi ennen saapumistasi. Kaupan lasku veloitetaan erikseen, omakustannehintaan."
       }
     },
-    "emailTitle": "Sähköpostisi",
+    "emailTitle": "Minne lähetämme varauksesi?",
     "perStay": "per majoitus",
     "flex": {
       "title": "Flex, taattu uudelleenvaraus",
-      "tagline": "Siirrä varausta {{days}} päivään asti ennen saapumista. Maksettu summa ei koskaan mene hukkaan.",
+      "tagline": "Siirrä varaustasi milloin tahansa. Maksettu summa ei koskaan mene hukkaan.",
       "perBooking": "kertamaksu, per varaus",
       "benefit1": "Siirrä varausta {{days}} päivään asti ennen sisäänkirjautumista, maksutta",
       "benefit2": "Maksettu summa pysyy suojattuna, se ei koskaan mene hukkaan",

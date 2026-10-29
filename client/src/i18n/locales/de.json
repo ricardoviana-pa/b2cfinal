@@ -1750,11 +1750,11 @@
         "desc": "Senden Sie uns Ihre Liste. Wir erledigen den Einkauf und richten alles vor Ihrer Ankunft her. Die Supermarktrechnung wird separat zum Selbstkostenpreis berechnet."
       }
     },
-    "emailTitle": "Ihre E-Mail",
+    "emailTitle": "Wohin senden wir Ihre Buchung?",
     "perStay": "pro Aufenthalt",
     "flex": {
       "title": "Flex, garantierte Umbuchung",
-      "tagline": "Buchen Sie bis {{days}} Tage vor der Anreise um. Der gezahlte Betrag geht nie verloren.",
+      "tagline": "Buchen Sie um, wann immer nötig. Der gezahlte Betrag geht nie verloren.",
       "perBooking": "einmalig, pro Buchung",
       "benefit1": "Umbuchen bis {{days}} Tage vor Check-in, kostenlos",
       "benefit2": "Der gezahlte Betrag bleibt geschützt, er geht nie verloren",

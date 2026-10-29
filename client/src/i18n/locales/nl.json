@@ -1750,11 +1750,11 @@
         "desc": "Stuur ons uw lijst. Wij doen de boodschappen en zetten alles klaar vóór uw aankomst. De supermarktrekening wordt apart en tegen kostprijs in rekening gebracht."
       }
     },
-    "emailTitle": "Uw e-mailadres",
+    "emailTitle": "Waar sturen we uw boeking naartoe?",
     "perStay": "per verblijf",
     "flex": {
       "title": "Flex, gegarandeerd omboeken",
-      "tagline": "Boek om tot {{days}} dagen vóór aankomst. Het betaalde bedrag gaat nooit verloren.",
+      "tagline": "Boek om wanneer u wilt. Het betaalde bedrag gaat nooit verloren.",
       "perBooking": "eenmalig, per boeking",
       "benefit1": "Boek om tot {{days}} dagen vóór check-in, kosteloos",
       "benefit2": "Het betaalde bedrag blijft beschermd, het gaat nooit verloren",

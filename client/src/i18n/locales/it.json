@@ -1750,11 +1750,11 @@
         "desc": "Inviaci la tua lista. Facciamo la spesa e lasciamo tutto sistemato prima del tuo arrivo. Il conto del supermercato viene addebitato a parte, al costo."
       }
     },
-    "emailTitle": "La sua email",
+    "emailTitle": "Dove inviamo la tua prenotazione?",
     "perStay": "per soggiorno",
     "flex": {
       "title": "Flex, nuova prenotazione garantita",
-      "tagline": "Cambi le date fino a {{days}} giorni prima dell'arrivo. L'importo pagato non si perde mai.",
+      "tagline": "Cambia date quando vuoi. L'importo pagato non si perde mai.",
       "perBooking": "pagamento unico, per prenotazione",
       "benefit1": "Cambia date fino a {{days}} giorni prima del check-in, senza costi",
       "benefit2": "L'importo pagato resta protetto, non si perde mai",

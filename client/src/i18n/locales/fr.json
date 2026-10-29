@@ -1750,11 +1750,11 @@
         "desc": "Envoyez-nous votre liste. Nous faisons les courses et laissons tout installé avant votre arrivée. La note du supermarché est facturée à part, au prix coûtant."
       }
     },
-    "emailTitle": "Votre email",
+    "emailTitle": "Où envoyons-nous votre réservation ?",
     "perStay": "par séjour",
     "flex": {
       "title": "Flex, nouvelle réservation garantie",
-      "tagline": "Changez de dates jusqu'à {{days}} jours avant l'arrivée. Le montant payé n'est jamais perdu.",
+      "tagline": "Changez de dates quand vous voulez. Le montant payé n'est jamais perdu.",
       "perBooking": "paiement unique, par réservation",
       "benefit1": "Changez de dates jusqu'à {{days}} jours avant l'arrivée, sans frais",
       "benefit2": "Le montant payé reste protégé, il n'est jamais perdu",

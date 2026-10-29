@@ -1750,11 +1750,11 @@
         "desc": "Skicka oss din lista. Vi handlar och ställer allt i ordning före ankomst. Matbutikens nota debiteras separat, till självkostnadspris."
       }
     },
-    "emailTitle": "Din e-post",
+    "emailTitle": "Vart skickar vi din bokning?",
     "perStay": "per vistelse",
     "flex": {
       "title": "Flex, garanterad ombokning",
-      "tagline": "Boka om upp till {{days}} dagar före ankomst. Beloppet du betalat går aldrig förlorat.",
+      "tagline": "Boka om när du behöver. Beloppet du betalat går aldrig förlorat.",
       "perBooking": "engångsbelopp, per bokning",
       "benefit1": "Boka om upp till {{days}} dagar före incheckning, utan kostnad",
       "benefit2": "Beloppet du betalat förblir skyddat, det går aldrig förlorat",

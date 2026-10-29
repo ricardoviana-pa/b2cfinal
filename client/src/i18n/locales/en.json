@@ -1750,11 +1750,11 @@
         "desc": "Send us your list. We do the shopping and leave everything set up before you arrive. The supermarket bill is charged separately, at cost."
       }
     },
-    "emailTitle": "Your email",
+    "emailTitle": "Where should we send your booking?",
     "perStay": "per stay",
     "flex": {
       "title": "Flex, guaranteed rebooking",
-      "tagline": "Rebook up to {{days}} days before arrival. The amount you paid is never lost.",
+      "tagline": "Rebook whenever you need. The amount you paid is never lost.",
       "perBooking": "one-time, per booking",
       "benefit1": "Rebook up to {{days}} days before check-in, at no cost",
       "benefit2": "The amount you paid stays protected, it is never lost",

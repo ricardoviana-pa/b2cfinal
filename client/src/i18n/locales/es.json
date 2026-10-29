@@ -1750,11 +1750,11 @@
         "desc": "Envíenos su lista. Hacemos la compra y dejamos todo colocado antes de su llegada. La cuenta del supermercado se cobra aparte, a precio de coste."
       }
     },
-    "emailTitle": "Su correo electrónico",
+    "emailTitle": "¿A dónde enviamos su reserva?",
     "perStay": "por estancia",
     "flex": {
       "title": "Flex, cambio de fechas garantizado",
-      "tagline": "Cambie de fechas hasta {{days}} días antes de la llegada. El importe pagado nunca se pierde.",
+      "tagline": "Cambie de fechas cuando quiera. El importe pagado nunca se pierde.",
       "perBooking": "pago único, por reserva",
       "benefit1": "Cambie de fechas hasta {{days}} días antes de la llegada, sin coste",
       "benefit2": "El importe pagado queda protegido, nunca se pierde",
