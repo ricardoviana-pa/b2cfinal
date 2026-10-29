@@ -11,7 +11,11 @@ import express, { type Express } from "express";
 import { HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
 import { serviceRouteSlug } from '@shared/serviceRoutes';
-import { POLICY_LANGS, cancellationPolicyCopy, cancellationPolicyMetaDescription, cancellationPolicySummary } from '@shared/cancellationPolicy';
+import { POLICY_LANGS, cancellationPolicyMetaDescription } from '@shared/cancellationPolicy';
+import { PROPERTY_DESCRIPTION, PROPERTY_TITLE, asSentence, propertyPageMeta, propertyPageName, truncateWords } from '@shared/propertyMeta';
+import { mergePropertyOverrides, propertyOverrideFor, propertyOverrideKey } from '@shared/propertyLocalization';
+import { buildPdpFaq, faqPageNode, interpolate, type FaqTranslate } from '@shared/pdpFaq';
+import { placePhrases } from '@shared/regionPhrases';
 import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
@@ -738,27 +742,8 @@ function decodeEntities(s: string): string {
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ');
 }
 
-/** Cut a snippet to `max` characters without leaving half a thought: end on
- *  the last whole sentence when one fills most of the budget, else at a word
- *  boundary with an ellipsis — never mid-word ("e as nossa", auditoria
- *  set/2026). */
-function truncateWords(s: string, max: number): string {
-  const clean = String(s ?? '').replace(/\s+/g, ' ').trim();
-  if (clean.length <= max) return clean;
-  const window = clean.slice(0, max);
-  const sentenceEnd = Math.max(window.lastIndexOf('. '), window.lastIndexOf('! '), window.lastIndexOf('? '));
-  if (sentenceEnd > max * 0.6) return window.slice(0, sentenceEnd + 1);
-  const cut = clean.slice(0, max - 1);
-  const at = cut.lastIndexOf(' ');
-  return (at > max * 0.6 ? cut.slice(0, at) : cut).replace(/[\s,;:–—-]+$/, '') + '…';
-}
-
-/** Close a free-text fragment (an imported tagline) with a full stop so the
- *  sentence that follows doesn't run into it ("beach close Book direct"). */
-function asSentence(s: string): string {
-  const clean = String(s ?? '').replace(/\s+/g, ' ').trim();
-  return !clean || /[.!?…]$/.test(clean) ? clean : `${clean}.`;
-}
+// truncateWords / asSentence live in shared/propertyMeta.ts: the client's
+// home-page meta must cut descriptions exactly as the server does.
 
 const DEFAULT_OG_IMAGE = 'https://www.portugalactive.com/hero/home-mirante-tennis-og.jpg';
 
@@ -852,43 +837,50 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
     ],
   };
 
-  // Mirror the client's "Good to know" FAQ so crawlers that don't execute JS
-  // (most AI crawlers) see the same FAQPage the hydrated page emits. en+pt
-  // templates, en fallback elsewhere — same pattern as collections meta.
-  const pt = lang === 'pt';
-  const faq: Array<{ q: string; a: string }> = [];
-  if (prop.maxGuests != null) {
-    faq.push(pt
-      ? { q: `Quantos hóspedes pode receber ${name}?`, a: `${name} recebe até ${prop.maxGuests} hóspedes em ${prop.bedrooms} quartos com ${prop.bathrooms} casas de banho.` }
-      : { q: `How many guests can ${name} sleep?`, a: `${name} sleeps up to ${prop.maxGuests} guests across ${prop.bedrooms} bedrooms with ${prop.bathrooms} bathrooms.` });
-  }
-  if (prop.petsAllowed === true) {
-    faq.push(pt
-      ? { q: 'Posso levar o meu animal de estimação?', a: `Sim — ${name} aceita animais de estimação. Avise-nos ao reservar; pode aplicar-se uma pequena taxa adicional.` }
-      : { q: 'Can I bring my pet?', a: `Yes — ${name} welcomes pets. Let us know when you book; a small additional fee may apply.` });
-  }
-  // No hardcoded night count — the synced terms value drifts from the
-  // calendar, which is the only per-season source of truth.
-  faq.push(pt
-    ? { q: 'Qual é a estadia mínima?', a: 'A estadia mínima varia com a época — o calendário mostra o requisito exato para as suas datas. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites.' }
-    : { q: 'What is the minimum stay?', a: 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.' });
-  // Same cancellation Q&A as the visible "Good to know" (shared source = Guesty's
-  // codes), in the same pt/en language as the rest of this FAQPage.
-  const faqLang = pt ? 'pt' : 'en';
-  faq.push({ q: cancellationPolicyCopy(faqLang).question, a: cancellationPolicySummary(faqLang) });
-  faq.push(pt
-    ? { q: 'Porquê reservar diretamente com a Portugal Active?', a: 'Reservar direto garante o melhor preço online sem taxas de serviço de OTAs, concierge dedicado por WhatsApp e uma equipa local que gere a casa de ponta a ponta.' }
-    : { q: 'Why book directly with Portugal Active?', a: 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.' });
-  const faqPage = {
-    '@type': 'FAQPage',
-    mainEntity: faq.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  };
+  // The visible "Good to know" list, built by the same function the page uses
+  // (shared/pdpFaq.ts) from the same catalogues, in the page's language. It
+  // used to be a server-only English/Portuguese FAQ with a "best rate" answer
+  // on every home (partner homes included) and a July/August rule no home has
+  // (auditoria out/2026, seo-health-faq-jsonld-drift).
+  const faq = buildPdpFaq(
+    { name: propertyPageName(prop) || name, checkInTime: prop.checkInTime, checkOutTime: prop.checkOutTime, petsAllowed: prop.petsAllowed },
+    lang,
+    localeTranslator(lang),
+  );
 
-  return { '@context': 'https://schema.org', '@graph': [vacationRental, breadcrumb, faqPage] };
+  return { '@context': 'https://schema.org', '@graph': [vacationRental, breadcrumb, faqPageNode(faq)] };
+}
+
+/* ── i18n catalogues on the server ────────────────────────────────────────
+   The client's locale files (client/src/i18n/locales/<lang>.json), read once.
+   Used where the bot HTML must say exactly what the hydrated page says — the
+   home-page FAQPage. Lookup order matches i18next's: the language, then
+   English, then the inline fallback. */
+const _localeCatalogues = new Map<string, Record<string, any> | null>();
+function localeCatalogue(lang: string): Record<string, any> | null {
+  if (!_localeCatalogues.has(lang)) {
+    let data: Record<string, any> | null = null;
+    try {
+      data = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'client', 'src', 'i18n', 'locales', `${lang}.json`), 'utf8'));
+    } catch { data = null; }
+    _localeCatalogues.set(lang, data);
+  }
+  return _localeCatalogues.get(lang) ?? null;
+}
+function lookupKey(cat: Record<string, any> | null, key: string): string | undefined {
+  let node: any = cat;
+  for (const part of key.split('.')) {
+    if (node == null || typeof node !== 'object') return undefined;
+    node = node[part];
+  }
+  return typeof node === 'string' ? node : undefined;
+}
+function localeTranslator(lang: string): FaqTranslate {
+  const l = ALL_LANGS.includes(lang) ? lang : 'en';
+  return (key, fallback, vars) => {
+    const raw = lookupKey(localeCatalogue(l), key) ?? (l !== 'en' ? lookupKey(localeCatalogue('en'), key) : undefined) ?? fallback;
+    return interpolate(raw, vars);
+  };
 }
 
 /** Safely convert any date-ish value to a YYYY-MM-DD string, or null. */
@@ -1107,6 +1099,52 @@ function buildPropertySeoBody(prop: any, lang: string): string {
   return `<article>${breadcrumb}<h1>${escText(name)}</h1>${loc}${img}${tagline}${desc}${amenityList}</article>`;
 }
 
+/** The English record with the language's override laid over it — the same
+ *  deep merge the page does (shared/propertyLocalization.ts). */
+function localizePropertyForLang(prop: any, lang: string): any {
+  if (!prop || lang === 'en') return prop;
+  return mergePropertyOverrides(prop, loadI18nOverrides('properties', lang)) ?? prop;
+}
+
+/** Meta, JSON-LD and crawlable body of /{lang}/homes/{slug}. Title and
+ *  description come from shared/propertyMeta.ts, which the hydrated page
+ *  calls with the same record — so the browser has nothing to rewrite. */
+function buildPropertyDynamicMeta(rawProp: any, lang: string): DynamicMeta {
+  const prop = localizePropertyForLang(rawProp, lang);
+  // The curated display name goes into title, og and the body — never the raw
+  // Guesty seoTitle ("<OTA title> — Portugal Active"), which produced the
+  // double brand (auditoria set/2026, N9). Imported Guesty SEO snippets can
+  // still carry retired names and inclusions, so they are not used either.
+  const meta = propertyPageMeta(prop, lang);
+  return {
+    title: meta.title,
+    description: meta.description,
+    image: meta.image,
+    url: `${BOT_BASE_URL}/${lang}${meta.path}`,
+    type: 'place',
+    // Server-render VacationRental + BreadcrumbList JSON-LD. domId matches the
+    // client `<StructuredData id={`property-${slug}`}>`.
+    schemaDomId: `sd-property-${prop.slug}`,
+    schemaGraph: buildPropertyGraph(prop, lang),
+    bodyHtml: buildPropertySeoBody(prop, lang),
+  };
+}
+
+/** SSR prefetch of a home page: the English record (what the tRPC query
+ *  returns, so client refetches agree with the cache) plus this home's
+ *  override for the page's language, which the page applies on its first
+ *  render — the server HTML is then in the page's language, not English
+ *  under a translated heading (auditoria out/2026). Read-only. */
+function buildPropertyPrefetch(slug: string, prop: any, lang: string): Record<string, unknown> {
+  const out: Record<string, unknown> = { propertyBySlug: { slug, data: prop } };
+  if (prop && lang !== 'en') {
+    const ov = propertyOverrideFor(prop, loadI18nOverrides('properties', lang));
+    const key = propertyOverrideKey(prop);
+    if (ov && key) out.propertyOverrides = { lang, slug, data: { [key]: ov } };
+  }
+  return out;
+}
+
 function buildExperienceSeoBody(exp: any, lang: string): string {
   const L = SEO_LABELS[lang] ?? SEO_LABELS.en;
   const name = exp.name || 'Experience';
@@ -1319,141 +1357,21 @@ const DESTINATION_DESCRIPTION: Record<string, Record<string, string>> = {
    from Drizzle. Only English SEO text lives in DB, so we wrap the English
    brand name / post title with per-language framing to localize meta for
    the 8 other languages. Proper names (property "Casa do Minho", post
-   titles) stay in the original language — only the framing is translated. */
+   titles) stay in the original language — only the framing is translated.
 
-/** Label for a destination slug in the visitor's language. Used in property
- *  meta (e.g. "in Minho Coast, Portugal"). Keeps region name untranslated
- *  where it's a proper noun (Minho, Alentejo, Algarve); translates "Coast",
- *  "Porto & Douro", "Lisbon". */
-const DEST_LABEL: Record<string, Record<string, string>> = {
-  douro: {
-    en: 'the Douro Valley', pt: 'Douro', es: 'el Duero', fr: 'la vallée du Douro',
-    de: 'Douro-Tal', it: 'Valle del Douro', nl: 'Douro-vallei', fi: 'Douron laakso',
-    sv: 'Dourodalen',
-  },
-  minho: {
-    en: 'Minho Coast', pt: 'Costa do Minho', es: 'Costa del Miño', fr: 'Côte du Minho',
-    de: 'Minho-Küste', it: 'Costa del Minho', nl: 'Minho-kust', fi: 'Minhon rannikko',
-    sv: 'Minhokusten',
-  },
-  porto: {
-    en: 'Porto & Douro', pt: 'Porto e Douro', es: 'Oporto y Duero', fr: 'Porto et Douro',
-    de: 'Porto & Douro', it: 'Porto e Douro', nl: 'Porto & Douro', fi: 'Porto ja Douro',
-    sv: 'Porto & Douro',
-  },
-  lisbon: {
-    en: 'Lisbon', pt: 'Lisboa', es: 'Lisboa', fr: 'Lisbonne', de: 'Lissabon',
-    it: 'Lisbona', nl: 'Lissabon', fi: 'Lissabon', sv: 'Lissabon',
-  },
-  alentejo: {
-    en: 'Alentejo', pt: 'Alentejo', es: 'Alentejo', fr: 'Alentejo', de: 'Alentejo',
-    it: 'Alentejo', nl: 'Alentejo', fi: 'Alentejo', sv: 'Alentejo',
-  },
-  algarve: {
-    en: 'Algarve', pt: 'Algarve', es: 'Algarve', fr: 'Algarve', de: 'Algarve',
-    it: 'Algarve', nl: 'Algarve', fi: 'Algarve', sv: 'Algarve',
-  },
-};
+   Home pages: PROPERTY_TITLE / PROPERTY_DESCRIPTION come from
+   shared/propertyMeta.ts, the builder the hydrated page uses too.
 
-function destLabel(slug: string | null | undefined, lang: string): string {
-  if (!slug) return '';
-  const key = slug.toLowerCase();
-  return DEST_LABEL[key]?.[lang] ?? DEST_LABEL[key]?.en ?? slug;
-}
+   Places inside a sentence come from shared/regionPhrases.ts, with the
+   article and preposition each language needs ("no Minho", "dans le Minho",
+   "an der Algarve"); the old label table interpolated "Minho Coast" after a
+   fixed preposition ("em Costa do Minho", "à Côte du Minho", "in Minho-Küste")
+   and called inland homes and activities coastal (auditoria out/2026,
+   i18n-copy-08). */
 
-/** Property title: "{name} | {bedrooms}-bedroom villa in {destination} | Portugal Active" (per-lang). */
-const PROPERTY_TITLE: Record<string, (p: { name: string; bedrooms?: number | null; destination: string }) => string> = {
-  en: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `${bedrooms}-Bedroom ` : '';
-    return `${name} | ${b}Luxury Villa in ${destLabel(destination, 'en')} | Portugal Active`;
-  },
-  pt: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `T${bedrooms} ` : '';
-    return `${name} | Casa de Luxo ${b}em ${destLabel(destination, 'pt')} | Portugal Active`;
-  },
-  es: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `de ${bedrooms} dormitorios ` : '';
-    return `${name} | Villa de Lujo ${b}en ${destLabel(destination, 'es')} | Portugal Active`;
-  },
-  fr: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `${bedrooms} chambres ` : '';
-    return `${name} | Villa de Luxe ${b}à ${destLabel(destination, 'fr')} | Portugal Active`;
-  },
-  de: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `${bedrooms}-Schlafzimmer-` : '';
-    return `${name} | ${b}Luxusvilla in ${destLabel(destination, 'de')} | Portugal Active`;
-  },
-  it: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `con ${bedrooms} camere da letto ` : '';
-    return `${name} | Villa di Lusso ${b}in ${destLabel(destination, 'it')} | Portugal Active`;
-  },
-  nl: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `met ${bedrooms} slaapkamers ` : '';
-    return `${name} | Luxevilla ${b}in ${destLabel(destination, 'nl')} | Portugal Active`;
-  },
-  fi: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `${bedrooms} makuuhuoneen ` : '';
-    return `${name} | ${b}Luksushuvila – ${destLabel(destination, 'fi')} | Portugal Active`;
-  },
-  sv: ({ name, bedrooms, destination }) => {
-    const b = bedrooms ? `med ${bedrooms} sovrum ` : '';
-    return `${name} | Lyxvilla ${b}i ${destLabel(destination, 'sv')} | Portugal Active`;
-  },
-};
-
-/** Property description template. Uses tagline if available, else generates
- *  a descriptive sentence. Closes with a localized CTA. Trimmed to 155 chars. */
-const PROPERTY_DESCRIPTION: Record<string, (p: { tagline?: string | null; bedrooms?: number | null; maxGuests?: number | null; destination: string; name: string }) => string> = {
-  en: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = (tagline && asSentence(tagline)) || `${bedrooms ? `${bedrooms}-bedroom ` : ''}luxury villa in ${destLabel(destination, 'en')}${maxGuests ? ` for up to ${maxGuests} guests` : ''}.`;
-    return `${name}. ${base} Book direct with Portugal Active.`;
-  },
-  // Imported taglines can remain English. On translated routes use the
-  // localised factual template instead of producing mixed-language snippets.
-  pt: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Casa de luxo ${bedrooms ? `T${bedrooms} ` : ''}em ${destLabel(destination, 'pt')}${maxGuests ? ` para até ${maxGuests} hóspedes` : ''}.`;
-    return `${name}. ${base} Reserve diretamente com a Portugal Active.`;
-  },
-  es: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Villa de lujo ${bedrooms ? `de ${bedrooms} dormitorios ` : ''}en ${destLabel(destination, 'es')}${maxGuests ? ` para hasta ${maxGuests} huéspedes` : ''}.`;
-    return `${name}. ${base} Reserve directamente con Portugal Active.`;
-  },
-  fr: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Villa de luxe ${bedrooms ? `${bedrooms} chambres ` : ''}à ${destLabel(destination, 'fr')}${maxGuests ? ` jusqu'à ${maxGuests} personnes` : ''}.`;
-    return `${name}. ${base} Réservez en direct avec Portugal Active.`;
-  },
-  de: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Luxusvilla ${bedrooms ? `mit ${bedrooms} Schlafzimmern ` : ''}in ${destLabel(destination, 'de')}${maxGuests ? ` für bis zu ${maxGuests} Gäste` : ''}.`;
-    return `${name}. ${base} Buchen Sie direkt bei Portugal Active.`;
-  },
-  it: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Villa di lusso ${bedrooms ? `con ${bedrooms} camere ` : ''}in ${destLabel(destination, 'it')}${maxGuests ? ` fino a ${maxGuests} ospiti` : ''}.`;
-    return `${name}. ${base} Prenota direttamente con Portugal Active.`;
-  },
-  nl: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Luxevilla ${bedrooms ? `met ${bedrooms} slaapkamers ` : ''}in ${destLabel(destination, 'nl')}${maxGuests ? ` tot ${maxGuests} gasten` : ''}.`;
-    return `${name}. ${base} Boek direct bij Portugal Active.`;
-  },
-  fi: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Luksushuvila ${bedrooms ? `${bedrooms} makuuhuoneella ` : ''}kohteessa ${destLabel(destination, 'fi')}${maxGuests ? `, jopa ${maxGuests} hengelle` : ''}.`;
-    return `${name}. ${base} Varaa suoraan Portugal Activesta.`;
-  },
-  sv: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = `Lyxvilla ${bedrooms ? `med ${bedrooms} sovrum ` : ''}i ${destLabel(destination, 'sv')}${maxGuests ? ` för upp till ${maxGuests} gäster` : ''}.`;
-    return `${name}. ${base} Boka direkt med Portugal Active.`;
-  },
-};
-
-/** "on the Minho Coast", "na Costa do Minho", "en la Costa del Miño" — not
- *  "in Minho Coast" / "em Costa do Minho" / "en Costa del Miño". */
-function enIn(label: string): string {
-  return /Coast$/.test(label) ? `on the ${label}` : `in ${label}`;
-}
-function ptIn(label: string): string {
-  return /^(Costa|Serra|Ria)\b/.test(label) ? `na ${label}` : `em ${label}`;
-}
-function esIn(label: string): string {
-  return /^(Costa|Sierra|Serra|Ría)\b/.test(label) ? `en la ${label}` : `en ${label}`;
+/** "{name} in the Minho" — the region phrase for a slug, or '' without one. */
+function inPlace(destination: string | null | undefined, lang: string): string {
+  return destination ? placePhrases(destination, lang).in : '';
 }
 
 /** Localised experience names usually say where they are already ("Canyoning
@@ -1467,29 +1385,27 @@ function experienceTitle(lang: string, e: { name: string; destination?: string |
 }
 
 /** Experience title template. */
-const EXPERIENCE_TITLE: Record<string, (e: { name: string; destination?: string | null }) => string> = {
-  en: ({ name, destination }) => destination ? `${name} ${enIn(destLabel(destination, 'en'))}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  pt: ({ name, destination }) => destination ? `${name} ${ptIn(destLabel(destination, 'pt'))}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  es: ({ name, destination }) => destination ? `${name} ${esIn(destLabel(destination, 'es'))}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  fr: ({ name, destination }) => destination ? `${name} à ${destLabel(destination, 'fr')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  de: ({ name, destination }) => destination ? `${name} in ${destLabel(destination, 'de')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  it: ({ name, destination }) => destination ? `${name} a ${destLabel(destination, 'it')}, Portogallo | Portugal Active` : `${name} | Portugal Active`,
-  nl: ({ name, destination }) => destination ? `${name} in ${destLabel(destination, 'nl')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  fi: ({ name, destination }) => destination ? `${name} – ${destLabel(destination, 'fi')}, Portugali | Portugal Active` : `${name} | Portugal Active`,
-  sv: ({ name, destination }) => destination ? `${name} i ${destLabel(destination, 'sv')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-};
+const COUNTRY: Record<string, string> = { it: 'Portogallo', fi: 'Portugali' };
+const EXPERIENCE_TITLE: Record<string, (e: { name: string; destination?: string | null }) => string> = Object.fromEntries(
+  ALL_LANGS.map((lang) => [lang, ({ name, destination }: { name: string; destination?: string | null }) => {
+    if (!destination) return `${name} | Portugal Active`;
+    // Finnish inflects the place itself; the dash keeps the name untouched.
+    const where = lang === 'fi' ? `– ${placePhrases(destination, lang).name}` : inPlace(destination, lang);
+    return `${name} ${where}, ${COUNTRY[lang] ?? 'Portugal'} | Portugal Active`;
+  }]),
+);
 
 /** Experience description: preserve tagline if present; otherwise generate. */
 const EXPERIENCE_DESCRIPTION: Record<string, (e: { name: string; tagline?: string | null; duration?: string | null; destination?: string | null }) => string> = {
-  en: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'en')}` : ''}. Guided by local experts. Book direct with Portugal Active.`,
-  pt: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` em ${destLabel(destination, 'pt')}` : ''}. Guiado por especialistas locais. Reserve direto com a Portugal Active.`,
-  es: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` en ${destLabel(destination, 'es')}` : ''}. Guiado por expertos locales. Reserva directa con Portugal Active.`,
-  fr: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` à ${destLabel(destination, 'fr')}` : ''}. Guidé par des experts locaux. Réservation directe avec Portugal Active.`,
-  de: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'de')}` : ''}. Geführt von lokalen Experten. Direkt bei Portugal Active buchen.`,
-  it: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` a ${destLabel(destination, 'it')}` : ''}. Guidato da esperti locali. Prenota diretto con Portugal Active.`,
-  nl: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'nl')}` : ''}. Begeleid door lokale experts. Direct boeken bij Portugal Active.`,
-  fi: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` kohteessa ${destLabel(destination, 'fi')}` : ''}. Paikallisten asiantuntijoiden opastama. Varaa suoraan Portugal Activesta.`,
-  sv: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` i ${destLabel(destination, 'sv')}` : ''}. Guidad av lokala experter. Boka direkt med Portugal Active.`,
+  en: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'en')}` : ''}. Guided by local experts. Book direct with Portugal Active.`,
+  pt: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'pt')}` : ''}. Guiado por especialistas locais. Reserve diretamente com a Portugal Active.`,
+  es: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'es')}` : ''}. Guiado por expertos locales. Reserve directamente con Portugal Active.`,
+  fr: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'fr')}` : ''}. Guidé par des experts locaux. Réservation directe avec Portugal Active.`,
+  de: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'de')}` : ''}. Geführt von lokalen Experten. Direkt bei Portugal Active buchen.`,
+  it: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'it')}` : ''}. Guidato da esperti locali. Prenoti direttamente con Portugal Active.`,
+  nl: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'nl')}` : ''}. Begeleid door lokale experts. Direct boeken bij Portugal Active.`,
+  fi: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` – ${placePhrases(destination, 'fi').name}` : ''}. Paikallisten asiantuntijoiden opastama. Varaa suoraan Portugal Activesta.`,
+  sv: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` ${inPlace(destination, 'sv')}` : ''}. Guidad av lokala experter. Boka direkt med Portugal Active.`,
 };
 
 /** Service title. */
@@ -1685,10 +1601,10 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
    *  prefetched — the full 66-property list dehydrates to ~1.3 MB, far too
    *  heavy to embed; the homepage LCP is the static hero (already SSR'd), so
    *  the property carousel / listing grid fill in client-side instead. */
-  async function buildPrefetch(strippedPath: string): Promise<Record<string, unknown> | undefined> {
+  async function buildPrefetch(strippedPath: string, lang: string): Promise<Record<string, unknown> | undefined> {
     const m = strippedPath.match(/^\/homes\/([^/]+)$/);
     if (m) {
-      return { propertyBySlug: { slug: m[1], data: await getPropertyBySlugCached(m[1]) } };
+      return buildPropertyPrefetch(m[1], await getPropertyBySlugCached(m[1]), lang);
     }
     // Blog articles: seed the handful of homes shown under the article, so
     // those links are in the served HTML. This is the whole point of the
@@ -1791,7 +1707,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
         try {
           let entry = _ssrRenderCache.get(reqPath);
           if (!entry || Date.now() - entry.at >= SSR_RENDER_TTL_MS) {
-            const prefetch = await buildPrefetch(strippedPath);
+            const prefetch = await buildPrefetch(strippedPath, extractLang(reqPath.split("?")[0]));
             const out = await render(reqPath, prefetch ? { prefetch } : undefined);
             entry = { appHtml: out.appHtml, dehydratedState: out.dehydratedState, at: Date.now() };
             // Simple FIFO cap — evict the oldest entry when full.
@@ -1957,40 +1873,8 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
       // Properties come from Guesty sync file or static JSON fallback.
       const homesMatch = p.match(/^\/homes\/([^/]+)$/);
       if (homesMatch) {
-        let prop = await getPropertyBySlugCached(homesMatch[1]);
-        // Descriptions come from Guesty in English; apply the per-locale
-        // overrides so bots get the localised meta + body too. Guesty homes are
-        // keyed by guestyId; partner (Tripwix) homes have none and are keyed by
-        // slug — the same fallback the client's mergePropertyOverrides uses.
-        if (prop && lang !== 'en') {
-          const ovs = loadI18nOverrides("properties", lang);
-          const ov = (prop.guestyId && ovs[prop.guestyId]) || ovs[prop.slug];
-          if (ov) prop = { ...prop, ...ov };
-        }
-        if (prop) {
-          // The curated display name goes into title, og and the body — never
-          // the raw Guesty seoTitle ("<OTA title> — Portugal Active"), which
-          // produced the double brand (auditoria set/2026, N9).
-          const displayName = getDisplayName(prop);
-          const titleFn = PROPERTY_TITLE[lang] ?? PROPERTY_TITLE.en;
-          const descFn = PROPERTY_DESCRIPTION[lang] ?? PROPERTY_DESCRIPTION.en;
-          const title = titleFn({ name: displayName, bedrooms: prop.bedrooms, destination: prop.destination });
-          // Use the same curated name and facts as the visible PDP. Imported
-          // Guesty SEO snippets can still contain retired names and inclusions.
-          const rawDesc = descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: displayName });
-          dynamicMeta = {
-            title,
-            description: truncateWords(rawDesc, 155),
-            image: Array.isArray(prop.images) && prop.images.length > 0 ? prop.images[0] : undefined,
-            url: `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`,
-            type: 'place',
-            // Server-render VacationRental + BreadcrumbList JSON-LD. domId
-            // matches the client `<StructuredData id={`property-${slug}`}>`.
-            schemaDomId: `sd-property-${prop.slug}`,
-            schemaGraph: buildPropertyGraph(prop, lang),
-            bodyHtml: buildPropertySeoBody(prop, lang),
-          };
-        }
+        const prop = await getPropertyBySlugCached(homesMatch[1]);
+        if (prop) dynamicMeta = buildPropertyDynamicMeta(prop, lang);
       }
 
       // /blog/:slug — from blog.json + per-locale overrides (NOT the DB, where
@@ -2182,11 +2066,16 @@ export const __testing = {
   injectMeta,
   injectSchemaGraph,
   PROPERTY_DESCRIPTION,
+  PROPERTY_TITLE,
   DESTINATION_DESCRIPTION,
   truncateWords,
   asSentence,
   localizeExperienceForMeta,
   experienceTitle,
+  EXPERIENCE_DESCRIPTION,
   DESTINATION_TITLE,
-  destLabel,
+  buildPropertyDynamicMeta,
+  buildPropertyPrefetch,
+  localizePropertyForLang,
+  localeTranslator,
 };

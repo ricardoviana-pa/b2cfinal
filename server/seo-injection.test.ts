@@ -65,7 +65,6 @@ const {
   injectSchemaGraph,
   DESTINATION_DESCRIPTION,
   DESTINATION_TITLE,
-  destLabel,
 } = __testing;
 
 /* ── Crawlable body builders ──────────────────────────────────────────── */
@@ -248,23 +247,5 @@ describe("DESTINATION_TITLE", () => {
   });
 });
 
-describe("destLabel", () => {
-  it("returns the localized region label for a known slug", () => {
-    expect(destLabel("minho", "en")).toBe("Minho Coast");
-    expect(destLabel("minho", "pt")).toBe("Costa do Minho");
-    expect(destLabel("porto", "fr")).toBe("Porto et Douro");
-  });
-
-  it("falls back to EN when the requested language is missing", () => {
-    expect(destLabel("alentejo", "xx" /* unsupported lang */)).toBe("Alentejo");
-  });
-
-  it("returns the raw slug when the destination is unknown", () => {
-    expect(destLabel("atlantis", "en")).toBe("atlantis");
-  });
-
-  it("returns empty string for nullish input", () => {
-    expect(destLabel(null, "en")).toBe("");
-    expect(destLabel(undefined, "en")).toBe("");
-  });
-});
+// destLabel ("Minho Coast" after a fixed preposition) was replaced by the
+// region phrases in shared/regionPhrases.ts — see seo-titles-regions.test.ts.

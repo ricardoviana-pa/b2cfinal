@@ -27,6 +27,7 @@ import { Link, useSearch } from 'wouter';
 import { editorialTripContext, withEditorialTrip } from '@shared/editorialTripContext';
 import { pushDL } from '@/lib/datalayer';
 import { useTranslation, Trans } from 'react-i18next';
+import { placeVars } from '@shared/regionPhrases';
 import { localizeDuration } from '@/lib/duration';
 import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Bike } from 'lucide-react';
 import type { Destination, Property, Product } from '@/lib/types';
@@ -37,12 +38,19 @@ import { PROPERTY_GROUPS } from '@/config/propertyGroups';
 
 /* ── 1. HERO EDITORIAL ────────────────────────────────────────────────── */
 
+/** Values for strings that put the destination in a sentence —
+ *  {{inPlace}} "no Algarve", {{toPlace}} "ao Algarve", {{thePlace}} "o Algarve" —
+ *  around the name the page shows (auditoria out/2026, i18n-copy-08). */
+function destVars(d: Destination, lang: string) {
+  return { name: d.name, ...placeVars(d.slug, lang, d.name) };
+}
+
 interface HeroEditorialProps {
   destination: Destination;
 }
 
 export function HeroEditorial({ destination: d }: HeroEditorialProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const heroImage = d.regionImage || d.coverImage;
   return <section className="page-hero">
     {heroImage ? <img src={cdnResize(heroImage, 1600)} srcSet={cdnSrcSet(heroImage, [768,1280,1920])} sizes="100vw" alt={`${d.name}, Portugal`} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" /> : <div className="absolute inset-0 placeholder-image" />}
@@ -51,7 +59,7 @@ export function HeroEditorial({ destination: d }: HeroEditorialProps) {
       <Link href="/destinations" className="inline-flex min-h-11 items-center text-sm text-white/80 mb-2">← {t('destinationsPage.backToDestinations')}</Link>
       <h1 className="headline-xl text-white mb-4">{d.name}</h1>
       {(d.heroSubtitle || d.tagline) && <p className="body-lg max-w-xl !text-white/90">{d.heroSubtitle || d.tagline}</p>}
-      <a href="#destination-homes" className="btn-white mt-6">{t(d.slug === 'esposende' ? 'planning.alternativeHomes' : 'destinationDetail.homesIn', { name: d.name })} <ArrowRight className="w-4 h-4" /></a>
+      <a href="#destination-homes" className="btn-white mt-6">{t(d.slug === 'esposende' ? 'planning.alternativeHomes' : 'destinationDetail.homesIn', destVars(d, i18n.language))} <ArrowRight className="w-4 h-4" /></a>
       {d.primaryAccolade && <p className="text-xs text-white/80 mt-5 max-w-xl">{d.primaryAccolade.text} · {d.primaryAccolade.source}</p>}
     </div>
   </section>;
@@ -60,7 +68,7 @@ export function HeroEditorial({ destination: d }: HeroEditorialProps) {
 /* ── 2. WHY THIS PLACE ────────────────────────────────────────────────── */
 
 export function WhyThisPlace({ destination: d }: { destination: Destination }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   if (!d.whyDescription) return null;
   return (
     <section className="section-padding bg-white">
@@ -71,7 +79,7 @@ export function WhyThisPlace({ destination: d }: { destination: Destination }) {
           </p>
         )}
         <h2 className="headline-lg text-[#1A1A18] mb-8">
-          {t('destinationDetail.whyTitle', { name: d.name })}
+          {t('destinationDetail.whyTitle', destVars(d, i18n.language))}
         </h2>
         {d.whyDescription.split('\n\n').map((para, i) => (
           <p key={i} className="body-lg mb-5 last:mb-0">{para}</p>
@@ -127,10 +135,10 @@ export function WhereToStay({ destination: d, properties, heading, intro, sectio
       <section id={sectionId} className="section-padding bg-white scroll-mt-24">
         <div className="container max-w-xl text-center">
           <h2 className="headline-lg text-[#1A1A18] mb-4">
-            {t('destinationDetail.newHomesComingSoon', { name: d.name })}
+            {t('destinationDetail.newHomesComingSoon', destVars(d, i18n.language))}
           </h2>
           <p className="body-lg">
-            {t('destinationDetail.newHomesComingSoonSubtitle', { name: d.name })}
+            {t('destinationDetail.newHomesComingSoonSubtitle', destVars(d, i18n.language))}
           </p>
         </div>
       </section>
@@ -142,7 +150,7 @@ export function WhereToStay({ destination: d, properties, heading, intro, sectio
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div className="max-w-2xl">
             <h2 className="headline-lg text-[#1A1A18]">
-              {heading || t(regionalAlternatives ? 'planning.alternativeHomes' : 'destinationDetail.homesIn', { name: d.name })}
+              {heading || t(regionalAlternatives ? 'planning.alternativeHomes' : 'destinationDetail.homesIn', destVars(d, i18n.language))}
             </h2>
             <p className="body-md mt-3">{intro || t(regionalAlternatives ? 'planning.noLocalHomes' : 'conversion.homesIntro')}</p>
             {trip.checkin && trip.checkout && <p className="text-sm leading-relaxed mt-3 text-pa-stone-aa">{t('planning.datesKept')} <time dateTime={trip.checkin}>{new Date(trip.checkin+'T12:00:00Z').toLocaleDateString(i18n.language,{timeZone:'UTC'})}</time> – <time dateTime={trip.checkout}>{new Date(trip.checkout+'T12:00:00Z').toLocaleDateString(i18n.language,{timeZone:'UTC'})}</time>. {t('planning.checkPrice')}</p>}
@@ -185,10 +193,10 @@ interface TheJournalProps {
 }
 
 export function TheJournal({ destination: d, articles }: TheJournalProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const search = useSearch();
   if (articles.length === 0) return null;
-  const heading = t('destinationGrowth.journalTitle', { name: d.name });
+  const heading = t('destinationGrowth.journalTitle', destVars(d, i18n.language));
   return (
     <section className="section-padding bg-[#FAFAF7]">
       <div className="container">
@@ -240,7 +248,7 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
 /* ── 5. WHAT TO SEE AND DO ────────────────────────────────────────────── */
 
 export function WhatToSeeAndDo({ destination: d }: { destination: Destination }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const intro = d.thingsToDoIntro;
   if (!d.thingsToDo || d.thingsToDo.length === 0) {
     if (d.insiderRecommendations && d.insiderRecommendations.length > 0) {
@@ -248,7 +256,7 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
         <section className="section-padding bg-[#F5F1EB]">
           <div className="container">
             <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.seeAndDoTitle')}</h2>
-            <p className="body-lg text-[#6B6860] mb-8">{t('destinationDetail.guide.conciergePicks', { name: d.name })}</p>
+            <p className="body-lg text-[#6B6860] mb-8">{t('destinationDetail.guide.conciergePicks', destVars(d, i18n.language))}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {d.insiderRecommendations.map((rec, i) => (
                 <div key={i} className="bg-white border border-[#E8E4DC] p-6">
@@ -273,7 +281,7 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
   return (
     <section className="section-padding bg-[#F5F1EB]">
       <div className="container">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.seeAndDoTitleNamed', { name: d.name })}</h2>
+        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.seeAndDoTitleNamed', destVars(d, i18n.language))}</h2>
         <p
           className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
           style={{ fontWeight: 300 }}
@@ -327,7 +335,7 @@ const SEASON_LABEL_KEY: Record<string, string> = {
 };
 
 export function WhenToVisit({ destination: d }: { destination: Destination }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // No structured seasons → fall back to the single-line bestTimeToVisit.
   if (!d.seasons) {
     if (!d.bestTimeToVisit) return null;
@@ -350,7 +358,7 @@ export function WhenToVisit({ destination: d }: { destination: Destination }) {
   return (
     <section className="section-padding bg-white">
       <div className="container max-w-5xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.whenToVisitTitleNamed', { name: d.name })}</h2>
+        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.whenToVisitTitleNamed', destVars(d, i18n.language))}</h2>
         {d.bestTimeToVisit && (
           <p className="body-lg text-[#6B6860] mb-10 max-w-2xl">{d.bestTimeToVisit}</p>
         )}
@@ -395,13 +403,13 @@ const TRANSPORT_META: Array<{ key: 'byAir' | 'byTrain' | 'byCar' | 'fromSpain' |
 ];
 
 export function HowToGetHere({ destination: d }: { destination: Destination }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   if (!d.transport) {
     if (!d.howToGetHere) return null;
     return (
       <section className="py-12 bg-[#FAFAF7]">
         <div className="container max-w-3xl mx-auto">
-          <h2 className="headline-lg text-[#1A1A18] mb-6">{t('destinationDetail.guide.getHereTitleNamed', { name: d.name })}</h2>
+          <h2 className="headline-lg text-[#1A1A18] mb-6">{t('destinationDetail.guide.getHereTitleNamed', destVars(d, i18n.language))}</h2>
           <p className="body-lg">{d.howToGetHere}</p>
         </div>
       </section>
@@ -413,7 +421,7 @@ export function HowToGetHere({ destination: d }: { destination: Destination }) {
   return (
     <section className="section-padding bg-[#FAFAF7]">
       <div className="container max-w-4xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-8">{t('destinationDetail.guide.getHereTitleNamed', { name: d.name })}</h2>
+        <h2 className="headline-lg text-[#1A1A18] mb-8">{t('destinationDetail.guide.getHereTitleNamed', destVars(d, i18n.language))}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {populated.map(({ key, Icon }) => (
             <div

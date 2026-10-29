@@ -22,6 +22,7 @@ import { httpBatchLink } from '@trpc/client';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { createInstance } from 'i18next';
 import { preloadContentOverrides } from '@/lib/localizeContent';
+import { propertyOverridesQueryKey } from '@/lib/localizeProperty';
 import type { ResourceKey } from "i18next";
 import superjson from 'superjson';
 import { trpc } from '@/lib/trpc';
@@ -48,6 +49,9 @@ export interface RenderPrefetch {
   guestFeedback?: unknown;
   /** Result of trpc.properties.getBySlugForSite for a single property page. */
   propertyBySlug?: { slug: string; data: unknown };
+  /** That home's override for the page's language ({ [guestyId|slug]: fields }),
+   *  so the server HTML and the first client render are translated. */
+  propertyOverrides?: { lang: string; slug: string; data: Record<string, unknown> };
   /** Result of trpc.properties.localities — tiny, seeds the search dropdowns. */
   localities?: unknown;
   /** Result of trpc.properties.relatedHomes for a blog article — a few slim
@@ -128,6 +132,12 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
     queryClient.setQueryData(
       getQueryKey(trpc.properties.getBySlugForSite, { slug: pf.propertyBySlug.slug }, 'query'),
       pf.propertyBySlug.data,
+    );
+  }
+  if (pf?.propertyOverrides) {
+    queryClient.setQueryData(
+      propertyOverridesQueryKey(pf.propertyOverrides.lang, pf.propertyOverrides.slug),
+      pf.propertyOverrides.data,
     );
   }
   if (pf?.localities !== undefined) {

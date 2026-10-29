@@ -11,6 +11,7 @@
    ========================================================================== */
 
 import { useTranslation } from "react-i18next";
+import { placeVars } from "@shared/regionPhrases";
 import { getDestinationPlanning } from "@/data/destination-planning";
 import { MinhoVisualGuide } from "./MinhoVisualGuide";
 import { DestinationVisualGuide } from "./DestinationVisualGuide";
@@ -209,6 +210,7 @@ export function DestinationPage({
           <summary>
             {t("destinationDetail.guide.getHereTitleNamed", {
               name: destination.name,
+              ...placeVars(destination.slug, i18n.language, destination.name),
             })}
           </summary>
           <HowToGetHere destination={destination} />

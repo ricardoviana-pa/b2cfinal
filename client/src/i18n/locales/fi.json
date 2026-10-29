@@ -1911,6 +1911,17 @@
     "qPets": "Voinko tuoda lemmikkini?",
     "aPets": "Kyllä — {{name}} toivottaa lemmikit tervetulleiksi. Kerro siitä varatessasi; pieni lisämaksu voi olla mahdollinen."
   },
+  "seoMeta": {
+    "photoAlt": "{{name}} – {{kind}}, Portugali – kuva {{n}}",
+    "photoAltHero": "{{name}} – {{kind}}, Portugali",
+    "photoAltOf": "{{name}} – {{place}} – kuva {{n}}/{{total}}",
+    "guestCount_one": "{{num}} vieras",
+    "guestCount_other": "{{num}} vierasta",
+    "bedroomCount_one": "{{num}} makuuhuone",
+    "bedroomCount_other": "{{num}} makuuhuonetta",
+    "bathroomCount_one": "{{num}} kylpyhuone",
+    "bathroomCount_other": "{{num}} kylpyhuonetta"
+  },
   "collections": {
     "eyebrow": "Kuratoitu kokoelma",
     "count": "{{count}} taloa tässä kokoelmassa",
