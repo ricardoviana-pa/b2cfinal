@@ -2150,6 +2150,50 @@
     "results": "{{count}} Häuser",
     "sort": "Häuser sortieren"
   },
+  "destinationSearch": {
+    "regions": "Regionen",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Douro-Tal",
+      "silver-coast": "Silberküste"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} Haus",
+    "homes_other": "{{count}} Häuser",
+    "available_one": "{{count}} verfügbar",
+    "available_other": "{{count}} verfügbar",
+    "toConfirm_one": "davon {{count}} noch zu bestätigen",
+    "toConfirm_other": "davon {{count}} noch zu bestätigen",
+    "unavailable_one": "{{count}} nicht verfügbar",
+    "unavailable_other": "{{count}} nicht verfügbar",
+    "showHomes_one": "{{count}} Haus anzeigen",
+    "showHomes_other": "{{count}} Häuser anzeigen"
+  },
+  "listingWhatsApp": {
+    "intro": "Hallo! Ich sehe mir Häuser auf der Website von Portugal Active an und hätte gern Hilfe bei der Auswahl.",
+    "introNoMatch": "Hallo! Ich habe auf der Website von Portugal Active kein Haus gefunden, das zu meinen Wünschen passt. Können Sie mir helfen?",
+    "introNoAvailability": "Hallo! Ich habe auf der Website von Portugal Active kein Haus gefunden, das zu meinen Reisedaten frei ist. Können Sie mir helfen?",
+    "destination": "Reiseziel: {{place}}",
+    "collection": "Kollektion: {{name}}",
+    "dates": "Reisedaten: {{from}} → {{to}}",
+    "guests": "Gäste: {{count}}",
+    "aria": "Unserem Concierge auf WhatsApp schreiben"
+  },
+  "listingReassurance": {
+    "cancellation": "Kostenlose Stornierung bei online bezahlten erstattbaren Tarifen bis zu dem Datum, das Sie vor der Zahlung sehen",
+    "whatsapp": "Fragen? Schreiben Sie unserem Concierge auf WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} Haus",
+    "kicker_other": "{{name}} · {{count}} Häuser",
+    "title": "Wählen Sie Ihr Zuhause",
+    "viewAll_one": "{{count}} Haus ansehen",
+    "viewAll_other": "Alle {{count}} Häuser ansehen"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Auf {{language}} verfasst"
+  },
   "pdpUx": {
     "navigation": "Dieses Haus entdecken",
     "bedrooms": "Schlafzimmer"

@@ -18,10 +18,16 @@ import { matchesCollection } from '@/lib/collectionFilters';
 import heatedPoolData from '@/data/heatedPool.json';
 const HEATED_POOL_SLUGS = new Set<string>((heatedPoolData as any).slugs || []);
 import { trpc } from '@/lib/trpc';
-import type { Property, FilterDestination, SortOption } from '@/lib/types';
-import { filterProperties, getUniqueLocalities } from '@/lib/utils';
+import type { Property, SortOption } from '@/lib/types';
+import { filterProperties } from '@/lib/utils';
 import { isChildUnit } from '@/config/propertyGroups';
-import { hasConfirmedQuote, sortSearchResults } from '@/lib/homeSearch';
+import { hasConfirmedQuote, listingQuoteGuests, listingQuotesKey, searchGuestsParam, sortSearchResults } from '@/lib/homeSearch';
+import { localityLabel, matchesSearchRegion, parseSearchRegion } from '@/lib/destinationSearch';
+import DestinationOptions, { regionLabel, useDestinationOptions } from '@/components/marketing/DestinationOptions';
+import ListingWhatsApp, { trackAttributes, type TrackContext } from '@/components/homes/ListingWhatsApp';
+import ListingReassurance from '@/components/homes/ListingReassurance';
+import { canPromiseFreeCancellation } from '@/lib/listingReassurance';
+import { conciergeWhatsAppHref, listingWhatsAppMessage } from '@/lib/whatsappMessage';
 import { parseHomeFacets, matchesFacets, matchesBudget, nightlyRate, countFacetOptions, activeFacetCount, FACET_PARAM_KEYS, FEATURE_KEYS, type FeatureKey } from '@/lib/homeFacets';
 import HomesFilterRail, { type CatalogueView, type FilterToken } from '@/components/homes/HomesFilterRail';
 import { openDatePickerWithin } from '@/lib/datePicker';
@@ -69,34 +75,10 @@ export default function Homes() {
   // ── PLP facets (kind · space · price · features) + list/map view ──
   const [view, setView] = useState<CatalogueView>('list');
   const showMap = view === 'map';
-  // SSR-prefetched tiny query (see Home.tsx) so the destination picker is
-  // populated immediately; falls back to deriving from the full list.
-  const { data: localityOptions } = trpc.properties.localities.useQuery();
-  const derivedCities = (localityOptions?.length
-    ? localityOptions
-    : getUniqueLocalities(allProperties)) as Array<{ label: string; value: string; group?: string; groupSlug?: string }>;
-  const cities = derivedCities;
-
-  // Same region grouping as the homepage picker (see Home.tsx).
-  const cityOptions = useMemo(() => {
-    const groups: Array<[string, typeof cities]> = [];
-    for (const c of cities) {
-      const g = c.groupSlug || c.group || '';
-      const last = groups[groups.length - 1];
-      if (last && last[0] === g) last[1].push(c);
-      else groups.push([g, [c]]);
-    }
-    return groups.map(([g, items], gi) =>
-      g ? (
-        <optgroup key={`g-${g}-${gi}`} label={t(`destinations.${g}`, { defaultValue: items[0]?.group || g })}>
-          <option value={`region:${g}`}>{t(`destinations.${g}`, { defaultValue: items[0]?.group || g })}</option>
-          {items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
-        </optgroup>
-      ) : (
-        items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)
-      ),
-    );
-  }, [cities, t]);
+  // The same destination choices as the homepage hero (regions first, with
+  // their number of homes; then municipalities under their region).
+  const { model: destinationModel, localities } = useDestinationOptions(propsData as Property[] | undefined);
+  const cityOptions = <DestinationOptions model={destinationModel} />;
   // "From €X" per card (lowest real bookable nightly), when no dates are picked.
   const fromListingIds = useMemo(
     () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
@@ -155,12 +137,10 @@ export default function Homes() {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
   }, [searchGuests]);
 
-  const toFilterDestination = (value: string): FilterDestination => {
-    if (value === 'minho' || value === 'porto' || value === 'lisbon' || value === 'alentejo' || value === 'algarve') return value;
-    return 'all';
-  };
-
-  const destination = toFilterDestination(searchDestinationFromUrl);
+  // Every region the pickers offer (douro and silver-coast included; they used
+  // to fall back to "all"). A region also covers its spokes, so "Porto and
+  // Douro" lists the Douro homes too — as the destination page does.
+  const destination = parseSearchRegion(searchDestinationFromUrl) ?? 'all';
   const location = searchLocationFromUrl || 'all';
   const sort = facets.sort;
   const setSort = (v: SortOption) => updateFilter('sort', v);
@@ -169,6 +149,10 @@ export default function Homes() {
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
   const [bookingCheckout, setBookingCheckout] = useState(searchCheckout);
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);
+  // The picker shows 2 by default; only a party size the guest set (here or in
+  // the URL) is written back — a default "2" turned into a "2+ guests" filter.
+  const [guestsChosen, setGuestsChosen] = useState(!!searchGuests);
+  const changeGuests = (update: (g: number) => number) => { setBookingGuests(update); setGuestsChosen(true); };
   const [guestyQuotes, setQuotes] = useState<Record<string, LiveQuote | null>>({});
   const [quotesLoading, setQuotesLoading] = useState(false);
   // Which search (dates + party) the quotes in state answer. Until it matches
@@ -178,7 +162,10 @@ export default function Homes() {
   const [quotesFor, setQuotesFor] = useState('');
   const [showAll, setShowAll] = useState(false);
   const utils = trpc.useUtils();
-  const effectiveGuests = searchGuestsCount > 0 ? searchGuestsCount : bookingGuests;
+  // Quotes, partner prices and the search hint answer the submitted search
+  // (the URL), or 2 guests when it names none. The stepper above is picker
+  // state until Search: a tap must not re-run the Guesty search (R1).
+  const effectiveGuests = listingQuoteGuests(searchGuestsCount);
   // Why an empty dated search came back empty (season rules, party size, length)
   // — so we can answer with the rule and the nearest dates instead of a dead end.
   /** "2027-07-03" → "3 Jul" in the active language. Raw ISO in a call to
@@ -240,10 +227,12 @@ export default function Homes() {
     setBookingCheckin(searchCheckin);
     setBookingCheckout(searchCheckout);
     setBookingGuests(searchGuests ? Math.max(1, Number(searchGuests) || 2) : 2);
+    setGuestsChosen(!!searchGuests);
   }, [searchDestinationFromUrl, searchLocationFromUrl, searchCheckin, searchCheckout, searchGuests]);
 
   const baseProperties = useMemo(() => {
-    const f = filterProperties(allProperties, 'all', destination, undefined, undefined, undefined, 'all', location);
+    const f = filterProperties(allProperties, 'all', 'all', undefined, undefined, undefined, 'all', location)
+      .filter((p) => location !== 'all' || destination === 'all' || matchesSearchRegion(p.destination, destination));
     // Hide listings that are child units of a multi-unit group — they show up
     // inside the parent's PDP, not as standalone PLP cards. The parent listing
     // stays in the list and renders with "X units" treatment.
@@ -255,7 +244,7 @@ export default function Homes() {
     [baseProperties, facets, searchGuestsCount, facetCtx],
   );
 
-  const partner = usePartnerPrices(candidateProperties, { checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests || 2 });
+  const partner = usePartnerPrices(candidateProperties, { checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests });
   const fromPrices = useMemo(() => ({ ...guestyFromPrices, ...partner.prices }), [guestyFromPrices, partner.prices]);
   const quotes: Record<string, LiveQuote | null> = useMemo(() => ({ ...guestyQuotes, ...partner.quotes }), [guestyQuotes, partner.quotes]);
   const priceCtx = useMemo(() => ({ quotes, fromPrices, nights: searchNights }), [quotes, fromPrices, searchNights]);
@@ -334,7 +323,7 @@ export default function Homes() {
 
   // When dates are set, split into available (with live pricing) and unavailable properties
   const hasDates = searchNights > 0;
-  const quotesKey = `${searchCheckin}|${searchCheckout}|${effectiveGuests || 2}`;
+  const quotesKey = listingQuotesKey(searchCheckin, searchCheckout, effectiveGuests);
   const quotesPending = hasDates && (quotesLoading || quotesFor !== quotesKey);
   const { availableProperties, unavailableProperties } = useMemo(() => {
     if (!hasDates || Object.keys(quotes).length === 0) {
@@ -396,7 +385,7 @@ export default function Homes() {
       .filter(p => p.isActive && p.guestyId)
       .map(p => ({ listingId: p.guestyId!, slug: p.slug }));
 
-    const key = `${searchCheckin}|${searchCheckout}|${effectiveGuests || 2}`;
+    const key = listingQuotesKey(searchCheckin, searchCheckout, effectiveGuests);
     if (listings.length === 0) {
       setQuotes({});
       setQuotesLoading(false);
@@ -414,7 +403,7 @@ export default function Homes() {
 
     utils.booking.getBatchQuotes
       .fetch(
-        { listings, checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests || 2 },
+        { listings, checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests },
       )
       .then((data) => {
         if (controller.signal.aborted) return;
@@ -472,7 +461,9 @@ export default function Homes() {
     else params.delete('checkin');
     if (bookingCheckout) params.set('checkout', bookingCheckout);
     else params.delete('checkout');
-    if (bookingGuests > 1) params.set('guests', String(bookingGuests));
+    // A chosen party of 1 too: the quotes follow the URL (2 when it has none).
+    const party = searchGuestsParam(bookingGuests, guestsChosen);
+    if (party) params.set('guests', party);
     else params.delete('guests');
 
     // GA4: search
@@ -507,7 +498,7 @@ export default function Homes() {
               className="flex items-center w-full max-w-[780px] rounded-xl bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-pa-sand/60"
               style={{ height: '52px' }}
             >
-              <div className="flex-1 relative h-full min-w-0">
+              <div className="flex-[1.4] relative h-full min-w-0">
                 <select
                   aria-label={t('home.searchDestination')}
                   value={bookingLocation || (bookingDestination ? `region:${bookingDestination}` : '')}
@@ -516,7 +507,7 @@ export default function Homes() {
                     setBookingLocation(next.location);
                     setBookingDestination(next.destination);
                   }}
-                  className="w-full h-full pl-6 pr-8 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer appearance-none truncate"
+                  className="w-full h-full pl-6 pr-8 bg-transparent text-pa-dark body-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-pa-gold cursor-pointer appearance-none truncate"
 
                 >
                   <option value="">{t('home.searchDestination')}</option>
@@ -540,7 +531,7 @@ export default function Homes() {
                     setBookingCheckin(e.target.value);
                     if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
                   }}
-                  className="pa-date-hit w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
+                  className="pa-date-hit w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-pa-gold cursor-pointer"
 
                 />
               </div>
@@ -557,7 +548,7 @@ export default function Homes() {
                   value={bookingCheckout}
                   onInput={e => setBookingCheckout(e.currentTarget.value)}
                   onChange={e => setBookingCheckout(e.target.value)}
-                  className="pa-date-hit w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
+                  className="pa-date-hit w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-pa-gold cursor-pointer"
 
                 />
               </div>
@@ -566,7 +557,7 @@ export default function Homes() {
                 <Users className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" aria-hidden />
                 <button
                   type="button"
-                  onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
+                  onClick={() => changeGuests(g => Math.max(1, g - 1))}
                   disabled={bookingGuests <= 1}
                   className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
@@ -578,7 +569,7 @@ export default function Homes() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
+                  onClick={() => changeGuests(g => Math.min(30, g + 1))}
                   disabled={bookingGuests >= 30}
                   className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
@@ -659,7 +650,7 @@ export default function Homes() {
                   <Users className="w-4 h-4 text-pa-stone shrink-0" aria-hidden />
                   <button
                     type="button"
-                    onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
+                    onClick={() => changeGuests(g => Math.max(1, g - 1))}
                     disabled={bookingGuests <= 1}
                     className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
                     aria-label={t('home.decreaseGuests', 'Decrease guests')}
@@ -669,7 +660,7 @@ export default function Homes() {
                   <span className="body-sm text-pa-dark tabular-nums flex-1 text-center">{bookingGuests} {t('home.searchGuests')}</span>
                   <button
                     type="button"
-                    onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
+                    onClick={() => changeGuests(g => Math.min(30, g + 1))}
                     disabled={bookingGuests >= 30}
                     className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
                     aria-label={t('home.increaseGuests', 'Increase guests')}
@@ -692,12 +683,21 @@ export default function Homes() {
       </section>
   );
 
-  // The count, the way the old status line said it, now on the rail.
-  const resultLabel = hasDates && !quotesPending
-    ? `${t('homes.filters.available', { count: availableProperties.length, defaultValue: '{{count}} available' })}${unconfirmedCount > 0 ? ` · ${t('searchUx.toConfirm', { count: unconfirmedCount })}` : ''}${unavailableProperties.length > 0 ? ` · ${unavailableProperties.length} ${t('homes.unavailableCount', 'unavailable')}` : ''}`
-    : t('searchUx.results', { count: filtered.length });
+  // The count on the rail: a short head ("63 available" / "85 homes") that
+  // fits a phone row, and the rest of a dated search as a detail ("including
+  // 27 to confirm · 12 unavailable") — the phone shows it on its own line, so
+  // the Filters badge and the Map switch keep their place (ux-home-plp-09).
+  // "To confirm" is part of "available", hence "including": 63 + 12 is the
+  // whole search, not 63 + 27 + 12.
+  const datedStatus = hasDates && !quotesPending;
+  const resultLabel = datedStatus
+    ? t('listingRail.available', { count: availableProperties.length })
+    : t('listingRail.homes', { count: filtered.length });
+  const toConfirmLabel = datedStatus && unconfirmedCount > 0 ? t('listingRail.toConfirm', { count: unconfirmedCount }) : '';
+  const unavailableLabel = datedStatus && unavailableProperties.length > 0 ? t('listingRail.unavailable', { count: unavailableProperties.length }) : '';
+  const resultDetail = [toConfirmLabel, unavailableLabel].filter(Boolean).join(' · ');
+  const resultFull = `${resultLabel}${toConfirmLabel ? `, ${toConfirmLabel}` : ''}${unavailableLabel ? ` · ${unavailableLabel}` : ''}`;
 
-  const titleCase = (v: string) => v.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   const featureLabel: Record<FeatureKey, string> = {
     pool: t('homes.filters.pool', 'Pool'),
     heatedPool: t('homes.filters.heatedPool', 'Heated pool'),
@@ -707,14 +707,34 @@ export default function Homes() {
   };
   const filterTokens: FilterToken[] = [
     collection && { key: 'collection', label: (collection as any)[i18n.language]?.title ?? collection.en.title, onRemove: () => updateFilter('collection', '') },
-    location !== 'all' && { key: 'location', label: titleCase(location), onRemove: () => { setBookingLocation(''); updateFilter('location', ''); } },
-    location === 'all' && destination !== 'all' && { key: 'destination', label: titleCase(destination), onRemove: () => { setBookingDestination(''); updateFilter('destination', ''); } },
+    location !== 'all' && { key: 'location', label: localityLabel(localities, location), onRemove: () => { setBookingLocation(''); updateFilter('location', ''); } },
+    location === 'all' && destination !== 'all' && { key: 'destination', label: regionLabel(t, destination), onRemove: () => { setBookingDestination(''); updateFilter('destination', ''); } },
     facets.kind !== 'all' && { key: 'kind', label: facets.kind === 'apartments' ? t('homes.filters.apartments', 'Apartments') : t('homes.filters.housesVillas', 'Houses & villas'), onRemove: () => updateFilter('type', '') },
     facets.bedrooms !== 'all' && { key: 'bedrooms', label: t('homes.filters.bedroomsCount', { range: facets.bedrooms.replace('-', '–'), defaultValue: '{{range}} bedrooms' }), onRemove: () => updateFilter('bedrooms', '') },
     searchGuestsCount > 0 && { key: 'sleeps', label: t('homes.filters.sleepsAtLeast', { count: searchGuestsCount, defaultValue: '{{count}}+ guests' }), onRemove: () => updateFilter('guests', '') },
     facets.budget !== 'all' && { key: 'budget', label: t(`homes.filters.${facets.budget}`), onRemove: () => updateFilter('budget', '') },
     ...FEATURE_KEYS.map((k) => facets.features[k] && { key: k, label: featureLabel[k], onRemove: () => updateFilter(k, '') }),
   ].filter((x): x is FilterToken => !!x);
+
+  // What the guest is looking at, for the concierge: place, collection, dates
+  // and party, in the page language (ux-home-plp-06). The same context goes to
+  // whatsapp_click as data-track-* attributes.
+  const collectionTitle = collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) as string : '';
+  const searchPlace = location !== 'all' ? localityLabel(localities, location) : destination !== 'all' ? regionLabel(t, destination) : '';
+  const conciergeContext = {
+    place: searchPlace || undefined,
+    collection: collectionTitle || undefined,
+    checkin: searchCheckin,
+    checkout: searchCheckout,
+    guests: searchGuestsCount || undefined,
+  };
+  const listingWhatsAppHref = conciergeWhatsAppHref(listingWhatsAppMessage(t, i18n.language, conciergeContext));
+  const trackContext: TrackContext = {
+    'item-list-id': collection ? `collection_${collection.slug}` : 'search_results',
+    'search-location': location !== 'all' ? location : destination !== 'all' ? destination : undefined,
+    'search-checkin': searchCheckin || undefined,
+    'search-checkout': searchCheckout || undefined,
+  };
 
   if (isLoading) {
     return (
@@ -775,6 +795,8 @@ export default function Homes() {
             guests={searchGuestsCount}
             counts={facetCounts}
             resultLabel={resultLabel}
+            resultDetail={resultDetail}
+            resultFull={resultFull}
             pending={quotesPending}
             activeCount={activeFilterCount}
             view={view}
@@ -810,7 +832,13 @@ export default function Homes() {
               </Suspense>
             </div>
           )}
-          <div className="min-w-0">
+          {/* data-listing-results: the WhatsApp float waits until its first card has scrolled away. */}
+          <div className="min-w-0" data-listing-results="">
+          <ListingReassurance
+            whatsappHref={listingWhatsAppHref}
+            context={trackContext}
+            showCancellation={canPromiseFreeCancellation({ homes: filtered, checkin: searchCheckin })}
+          />
           {/* All unavailable — nudge user */}
           {hasDates && !quotesPending && availableProperties.length === 0 && unavailableProperties.length > 0 && (
             <div className="text-center py-8 mb-8 bg-pa-warm rounded-lg">
@@ -936,9 +964,10 @@ export default function Homes() {
               )}
 
               <a
-                href={`https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
+                href={conciergeWhatsAppHref(listingWhatsAppMessage(t, i18n.language, { ...conciergeContext, guests: effectiveGuests, reason: 'noAvailability' }))}
                 target="_blank"
                 rel="noopener noreferrer"
+                {...trackAttributes('listing_no_availability', trackContext)}
                 className="btn-ghost inline-flex items-center gap-2"
               >
                 <MessageCircle className="w-4 h-4" />
@@ -1017,7 +1046,7 @@ export default function Homes() {
                   auditoria set/2026). Gone once the full grid is open. */}
               {!showAll && availableProperties.length > 12 && (
                 <nav aria-labelledby="more-homes-index" className="mt-10 border-t border-pa-sand pt-6">
-                  <h2 id="more-homes-index" className="caption uppercase tracking-wider text-pa-stone-aa mb-3">
+                  <h2 id="more-homes-index" className="caption uppercase tracking-wider text-pa-stone mb-3">
                     {t('homes.moreHomesIndex', 'More homes')}
                   </h2>
                   <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
@@ -1029,7 +1058,7 @@ export default function Homes() {
                         >
                           {getDisplayName(property)}
                         </Link>
-                        {property.locality && <span className="text-pa-stone-aa"> · {property.locality}</span>}
+                        {property.locality && <span className="text-pa-stone"> · {property.locality}</span>}
                       </li>
                     ))}
                   </ul>
@@ -1102,9 +1131,10 @@ export default function Homes() {
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <button onClick={clearFilters} className="btn-primary">{t('filters.clearAll')}</button>
                 <a
-                  href="https://wa.me/351927161771?text=Hi%2C%20I%27m%20looking%20for%20a%20property%20but%20can%27t%20find%20the%20right%20match.%20Can%20you%20help%3F"
+                  href={conciergeWhatsAppHref(listingWhatsAppMessage(t, i18n.language, { ...conciergeContext, reason: 'noMatch' }))}
                   target="_blank"
                   rel="noopener noreferrer"
+                  {...trackAttributes('listing_no_match', trackContext)}
                   className="btn-ghost inline-flex items-center gap-2"
                 >
                   <MessageCircle className="w-4 h-4" />
@@ -1116,7 +1146,7 @@ export default function Homes() {
 
           </div>
           {showMap && (
-            <div className="hidden lg:block lg:sticky lg:top-[calc(5rem+52px+1.25rem)] lg:h-[calc(100dvh-5rem-52px-2.5rem)]">
+            <div className="hidden lg:block lg:sticky lg:top-[calc(5rem+96px+1.25rem)] lg:h-[calc(100dvh-5rem-96px-2.5rem)] xl:top-[calc(5rem+52px+1.25rem)] xl:h-[calc(100dvh-5rem-52px-2.5rem)]">
               <Suspense fallback={<div className="h-full rounded-xl bg-pa-warm animate-pulse" />}>
                 <HomesMap
                   properties={hasDates && !quotesPending ? availableProperties : filtered}
@@ -1144,6 +1174,7 @@ export default function Homes() {
 
       <StayCollections />
       <Footer />
+      <ListingWhatsApp href={listingWhatsAppHref} context={trackContext} />
     </div>
   );
 }

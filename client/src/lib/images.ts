@@ -1,6 +1,7 @@
 /**
  * Central image registry — Portugal Active photography only (auditoria set/2026, N17).
  */
+import partnerRenditions from '@/data/partner-card-renditions.json';
 
 export const IMAGES = {
   // Hero images
@@ -97,6 +98,32 @@ export function guestySrcSet(url: string | undefined | null, widths: number[]): 
   return widths
     .map((w) => `${url.replace('/image/upload/', `/image/upload/w_${w},q_auto,f_auto/`)} ${w}w`)
     .join(', ');
+}
+
+/** Widths a property card asks Cloudinary for (Guesty photos). */
+export const CARD_IMAGE_WIDTHS = [400, 640, 768, 1080];
+
+/**
+ * srcSet for a partner home's cover (a static /homes/photos file): the
+ * card-sized copies next to it, written by scripts/partner-card-renditions.py
+ * and listed in data/partner-card-renditions.json, then the original at its
+ * own width. "" for any photo without copies — it keeps its single file.
+ * Without this a card drew the 1600 px cover in a 272–358 px box: 360–610 KB
+ * for the first two cards of a destination guide on a phone (revisão 2 do
+ * PR #175, perf-strip-full-size-partner-photos).
+ */
+export function partnerCoverSrcSet(url: string | undefined | null): string {
+  if (!url) return '';
+  const width = (partnerRenditions.covers as Record<string, number>)[url];
+  if (!width) return '';
+  const base = url.replace(/\.webp$/, '');
+  const copies = partnerRenditions.widths.filter((w) => w < width).map((w) => `${base}-${w}w.webp ${w}w`);
+  return [...copies, `${url} ${width}w`].join(', ');
+}
+
+/** A card photo's srcSet: Cloudinary widths for Guesty, the copies for a partner cover, else "". */
+export function cardSrcSet(url: string | undefined | null): string {
+  return guestySrcSet(url, CARD_IMAGE_WIDTHS) || partnerCoverSrcSet(url);
 }
 
 /**

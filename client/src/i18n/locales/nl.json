@@ -2150,6 +2150,50 @@
     "results": "{{count}} woningen",
     "sort": "Woningen sorteren"
   },
+  "destinationSearch": {
+    "regions": "Regio’s",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Dourovallei",
+      "silver-coast": "Zilverkust"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} woning",
+    "homes_other": "{{count}} woningen",
+    "available_one": "{{count}} beschikbaar",
+    "available_other": "{{count}} beschikbaar",
+    "toConfirm_one": "waarvan {{count}} nog te bevestigen",
+    "toConfirm_other": "waarvan {{count}} nog te bevestigen",
+    "unavailable_one": "{{count}} niet beschikbaar",
+    "unavailable_other": "{{count}} niet beschikbaar",
+    "showHomes_one": "Toon {{count}} woning",
+    "showHomes_other": "Toon {{count}} woningen"
+  },
+  "listingWhatsApp": {
+    "intro": "Hallo! Ik bekijk huizen op de website van Portugal Active en zou graag hulp krijgen bij het kiezen.",
+    "introNoMatch": "Hallo! Ik heb op de website van Portugal Active geen huis gevonden dat past bij wat ik zoek. Kunt u mij helpen?",
+    "introNoAvailability": "Hallo! Ik heb op de website van Portugal Active geen huis gevonden dat beschikbaar is op mijn data. Kunt u mij helpen?",
+    "destination": "Bestemming: {{place}}",
+    "collection": "Collectie: {{name}}",
+    "dates": "Data: {{from}} → {{to}}",
+    "guests": "Gasten: {{count}}",
+    "aria": "Onze concierge een bericht sturen via WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Gratis annuleren met online betaalde restitueerbare tarieven, tot de datum die u ziet voordat u betaalt",
+    "whatsapp": "Vragen? Stuur onze concierge een bericht via WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} woning",
+    "kicker_other": "{{name}} · {{count}} woningen",
+    "title": "Kies uw woning",
+    "viewAll_one": "Bekijk {{count}} woning",
+    "viewAll_other": "Bekijk alle {{count}} woningen"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Geschreven in het {{language}}"
+  },
   "pdpUx": {
     "navigation": "Ontdek deze woning",
     "bedrooms": "Slaapkamers"

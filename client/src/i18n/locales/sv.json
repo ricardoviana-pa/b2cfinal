@@ -2150,6 +2150,50 @@
     "results": "{{count}} boenden",
     "sort": "Sortera boenden"
   },
+  "destinationSearch": {
+    "regions": "Regioner",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Dourodalen",
+      "silver-coast": "Silverkusten"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} boende",
+    "homes_other": "{{count}} boenden",
+    "available_one": "{{count}} tillgänglig",
+    "available_other": "{{count}} tillgängliga",
+    "toConfirm_one": "varav {{count}} att bekräfta",
+    "toConfirm_other": "varav {{count}} att bekräfta",
+    "unavailable_one": "{{count}} inte tillgänglig",
+    "unavailable_other": "{{count}} inte tillgängliga",
+    "showHomes_one": "Visa {{count}} boende",
+    "showHomes_other": "Visa {{count}} boenden"
+  },
+  "listingWhatsApp": {
+    "intro": "Hej! Jag tittar på boenden på Portugal Actives webbplats och skulle gärna vilja ha hjälp att välja.",
+    "introNoMatch": "Hej! Jag hittade inget boende på Portugal Actives webbplats som passar det jag söker. Kan ni hjälpa mig?",
+    "introNoAvailability": "Hej! Jag hittade inget ledigt boende för mina datum på Portugal Actives webbplats. Kan ni hjälpa mig?",
+    "destination": "Resmål: {{place}}",
+    "collection": "Kollektion: {{name}}",
+    "dates": "Datum: {{from}} → {{to}}",
+    "guests": "Gäster: {{count}}",
+    "aria": "Skriv till vår concierge på WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Kostnadsfri avbokning med återbetalningsbara prisalternativ som betalas online, fram till datumet som visas innan du betalar",
+    "whatsapp": "Frågor? Skriv till vår concierge på WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} boende",
+    "kicker_other": "{{name}} · {{count}} boenden",
+    "title": "Välj ditt boende",
+    "viewAll_one": "Se {{count}} boende",
+    "viewAll_other": "Se alla {{count}} boenden"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Skrivet på {{language}}"
+  },
   "pdpUx": {
     "navigation": "Utforska boendet",
     "bedrooms": "Sovrum"

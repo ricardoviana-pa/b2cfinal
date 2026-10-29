@@ -2150,6 +2150,50 @@
     "results": "{{count}} case",
     "sort": "Ordina le case"
   },
+  "destinationSearch": {
+    "regions": "Regioni",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Valle del Douro",
+      "silver-coast": "Costa d’Argento"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} casa",
+    "homes_other": "{{count}} case",
+    "available_one": "{{count}} disponibile",
+    "available_other": "{{count}} disponibili",
+    "toConfirm_one": "di cui {{count}} da confermare",
+    "toConfirm_other": "di cui {{count}} da confermare",
+    "unavailable_one": "{{count}} non disponibile",
+    "unavailable_other": "{{count}} non disponibili",
+    "showHomes_one": "Mostra {{count}} casa",
+    "showHomes_other": "Mostra {{count}} case"
+  },
+  "listingWhatsApp": {
+    "intro": "Buongiorno! Sto guardando le case sul sito di Portugal Active e vorrei un aiuto per scegliere.",
+    "introNoMatch": "Buongiorno! Non ho trovato sul sito di Portugal Active una casa adatta a ciò che cerco. Potete aiutarmi?",
+    "introNoAvailability": "Buongiorno! Non ho trovato sul sito di Portugal Active una casa disponibile per le mie date. Potete aiutarmi?",
+    "destination": "Destinazione: {{place}}",
+    "collection": "Collezione: {{name}}",
+    "dates": "Date: {{from}} → {{to}}",
+    "guests": "Ospiti: {{count}}",
+    "aria": "Scrivere al nostro concierge su WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Cancellazione gratuita con le tariffe rimborsabili pagate online, fino alla data indicata prima di pagare",
+    "whatsapp": "Domande? Scriva al nostro concierge su WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} casa",
+    "kicker_other": "{{name}} · {{count}} case",
+    "title": "Scelga la sua casa",
+    "viewAll_one": "{{count}} casa",
+    "viewAll_other": "Tutte le {{count}} case"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Scritto in {{language}}"
+  },
   "pdpUx": {
     "navigation": "Esplora questa casa",
     "bedrooms": "Camere"

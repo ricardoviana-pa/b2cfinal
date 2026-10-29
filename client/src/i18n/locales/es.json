@@ -2150,6 +2150,50 @@
     "results": "{{count}} casas",
     "sort": "Ordenar casas"
   },
+  "destinationSearch": {
+    "regions": "Regiones",
+    "regionWithCount": "{{region}} ({{count}})",
+    "regionNames": {
+      "douro": "Valle del Duero",
+      "silver-coast": "Costa de Plata"
+    }
+  },
+  "listingRail": {
+    "homes_one": "{{count}} casa",
+    "homes_other": "{{count}} casas",
+    "available_one": "{{count}} disponible",
+    "available_other": "{{count}} disponibles",
+    "toConfirm_one": "de las cuales {{count}} por confirmar",
+    "toConfirm_other": "de las cuales {{count}} por confirmar",
+    "unavailable_one": "{{count}} no disponible",
+    "unavailable_other": "{{count}} no disponibles",
+    "showHomes_one": "Mostrar {{count}} casa",
+    "showHomes_other": "Mostrar {{count}} casas"
+  },
+  "listingWhatsApp": {
+    "intro": "¡Hola! Estoy viendo casas en la web de Portugal Active y me gustaría que me ayudaran a elegir.",
+    "introNoMatch": "¡Hola! No he encontrado en la web de Portugal Active una casa que se ajuste a lo que busco. ¿Pueden ayudarme?",
+    "introNoAvailability": "¡Hola! No he encontrado en la web de Portugal Active una casa disponible para mis fechas. ¿Pueden ayudarme?",
+    "destination": "Destino: {{place}}",
+    "collection": "Colección: {{name}}",
+    "dates": "Fechas: {{from}} → {{to}}",
+    "guests": "Huéspedes: {{count}}",
+    "aria": "Escribir a nuestro concierge por WhatsApp"
+  },
+  "listingReassurance": {
+    "cancellation": "Cancelación gratuita con las tarifas reembolsables pagadas en línea, hasta la fecha que se muestra antes de pagar",
+    "whatsapp": "¿Dudas? Escriba a nuestro concierge por WhatsApp"
+  },
+  "destinationStrip": {
+    "kicker_one": "{{name}} · {{count}} casa",
+    "kicker_other": "{{name}} · {{count}} casas",
+    "title": "Elija su casa",
+    "viewAll_one": "Ver {{count}} casa",
+    "viewAll_other": "Ver las {{count}} casas"
+  },
+  "reviewLanguage": {
+    "writtenIn": "Escrito en {{language}}"
+  },
   "pdpUx": {
     "navigation": "Explore esta casa",
     "bedrooms": "Dormitorios"

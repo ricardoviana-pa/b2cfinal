@@ -28,6 +28,7 @@ import type { DestinationPageProps } from "./DestinationPage";
 import { PORTUGAL_MAINLAND_OUTLINE } from "./PortugalMap";
 import { trackPlanning } from "./PlanningGuide";
 import { DestinationAccess } from "./DestinationAccess";
+import { DestinationHomesStrip } from "./DestinationHomesStrip";
 import {
   WhereToStay,
   TheJournal,
@@ -203,6 +204,18 @@ export function DestinationVisualGuide({
           ))}
         </div>
       </nav>
+
+      {/* The homes first, the guide after (ux-home-plp-04). Viana keeps its
+          own picks after the landscapes; Esposende without homes of its own
+          shows Minho alternatives only in the section at the end. */}
+      {d.slug !== "viana-do-castelo" && !alternatives && (
+        <DestinationHomesStrip
+          destination={d}
+          name={tx(e.name)}
+          properties={cityHomes}
+          viewAllHref={d.slug === "porto" ? "/homes?location=porto" : undefined}
+        />
+      )}
 
       <section
         id="destination-first-visit"
