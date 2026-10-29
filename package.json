@@ -36,7 +36,9 @@
     "report:recovery": "tsx scripts/recovery-report.ts",
     "report:funnel": "tsx scripts/checkout-funnel-report.ts",
     "report:leadtime": "tsx scripts/lead-time-report.ts",
-    "report:vitals": "tsx scripts/vitals-report.ts"
+    "report:vitals": "tsx scripts/vitals-report.ts",
+    "images:warm": "node scripts/warm-image-cache.mjs",
+    "photos:sheet": "node scripts/pdp-contact-sheet.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",

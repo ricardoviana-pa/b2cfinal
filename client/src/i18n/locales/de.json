@@ -568,7 +568,9 @@
     "showAllAmenitiesCount": "Alle {{count}} Ausstattungen anzeigen",
     "showAllPhotos": "Alle {{count}} Fotos anzeigen",
     "bedTotal_one": "{{count}} Bett",
-    "bedTotal_other": "{{count}} Betten"
+    "bedTotal_other": "{{count}} Betten",
+    "availabilityTitle": "Verfügbarkeit",
+    "availabilityHint": "Wählen Sie An- und Abreise: der Preis Ihres Aufenthalts erscheint in der Buchungskarte."
   },
   "priceBreakdown": {
     "title": "Preisübersicht",
@@ -1371,7 +1373,9 @@
     "verifiedGuest": "Verifizierter Gast",
     "verifiedNote": "Alle Bewertungen stammen aus abgeschlossenen Aufenthalten, gesammelt über unsere Buchungskanäle.",
     "previous": "Vorherige Bewertungen",
-    "next": "Nächste Bewertungen"
+    "next": "Nächste Bewertungen",
+    "readAll_one": "Bewertung lesen",
+    "readAll_other": "Alle {{count}} Bewertungen lesen"
   },
   "amenity": {
     "outdoorPool": "Außenbereich & Pool",
@@ -2034,7 +2038,8 @@
     "submitError": "Ihre Anfrage konnte nicht gesendet werden. Bitte erneut versuchen oder dem Concierge schreiben.",
     "sending": "Wird gesendet…",
     "submit": "Diese Daten anfragen",
-    "noCharge": "Keine Zahlung jetzt — der Concierge bestätigt zuerst Verfügbarkeit und Endbetrag."
+    "noCharge": "Keine Zahlung jetzt — der Concierge bestätigt zuerst Verfügbarkeit und Endbetrag.",
+    "pickDatesFirst": "Wählen Sie oben Ihre Daten: dann fragen wir Ihre Kontaktdaten ab und senden die Anfrage."
   },
   "login": {
     "benefitTrips": "Reisen verwalten",

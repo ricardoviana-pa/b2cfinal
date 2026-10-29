@@ -568,7 +568,9 @@
     "showAllAmenitiesCount": "Alle {{count}} voorzieningen tonen",
     "showAllPhotos": "Alle {{count}} foto's tonen",
     "bedTotal_one": "{{count}} bed",
-    "bedTotal_other": "{{count}} bedden"
+    "bedTotal_other": "{{count}} bedden",
+    "availabilityTitle": "Beschikbaarheid",
+    "availabilityHint": "Kies uw in- en uitcheckdatum: de prijs van uw verblijf verschijnt in de boekingskaart."
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",
@@ -1371,7 +1373,9 @@
     "verifiedGuest": "Geverifieerde gast",
     "verifiedNote": "Alle reviews komen van voltooide verblijven, verzameld via onze boekingskanalen.",
     "previous": "Vorige beoordelingen",
-    "next": "Volgende beoordelingen"
+    "next": "Volgende beoordelingen",
+    "readAll_one": "Beoordeling lezen",
+    "readAll_other": "Alle {{count}} beoordelingen lezen"
   },
   "amenity": {
     "outdoorPool": "Buiten & Zwembad",
@@ -2034,7 +2038,8 @@
     "submitError": "We konden uw aanvraag niet versturen. Probeer opnieuw of schrijf de concierge.",
     "sending": "Versturen…",
     "submit": "Deze data aanvragen",
-    "noCharge": "Nu geen betaling — de concierge bevestigt eerst beschikbaarheid en het eindtotaal."
+    "noCharge": "Nu geen betaling — de concierge bevestigt eerst beschikbaarheid en het eindtotaal.",
+    "pickDatesFirst": "Kies hierboven uw data: daarna vragen we uw gegevens en sturen we de aanvraag door."
   },
   "login": {
     "benefitTrips": "Beheer uw reizen",

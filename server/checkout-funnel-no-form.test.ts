@@ -136,6 +136,9 @@ describe("o pedido das casas parceiras não tem <form>", () => {
         propertySlug: "casa-parceira",
         fromPrice: 500,
         maxGuests: 8,
+        // os campos e o botão só aparecem depois de haver datas (PDP, out 2026)
+        initialCheckIn: "2027-06-19",
+        initialCheckOut: "2027-06-23",
         whatsappUrl: "https://wa.me/351000000000",
       }),
     );

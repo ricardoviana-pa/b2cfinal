@@ -76,15 +76,22 @@ export function PartnerBookingPanel({
   const showCalendar = datePicker.open;
 
   // The dates arrive from the URL when a guest clicks through from a dated
-  // search, but they are not there on the first render — useState would keep
-  // the empty value it was given and silently drop them, which is the whole
-  // reason someone searched by date. Seed once they show up, without stamping
-  // over anything the guest has since changed.
+  // search (not there on the first render), and from the availability
+  // calendar on the home's page: whenever the page hands down new initial
+  // dates, adopt them. The panel's own dates coming back (it reports them to
+  // the page, which passes them down again) change nothing.
+  const adoptedDatesRef = useRef(`${initialCheckIn ?? ''}|${initialCheckOut ?? ''}`);
   useEffect(() => {
-    if (initialCheckIn) setCheckIn((v) => v || initialCheckIn);
-    if (initialCheckOut) setCheckOut((v) => v || initialCheckOut);
+    const key = `${initialCheckIn ?? ''}|${initialCheckOut ?? ''}`;
+    if (key === adoptedDatesRef.current) return;
+    adoptedDatesRef.current = key;
+    if (initialCheckIn !== undefined && initialCheckIn !== checkIn) setCheckIn(initialCheckIn);
+    if (initialCheckOut !== undefined && initialCheckOut !== checkOut) setCheckOut(initialCheckOut);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialCheckIn, initialCheckOut]);
+  useEffect(() => {
     if (initialGuests) setGuests((v) => (v === 2 ? initialGuests : v));
-  }, [initialCheckIn, initialCheckOut, initialGuests]);
+  }, [initialGuests]);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -286,7 +293,7 @@ export function PartnerBookingPanel({
   return (
     <div ref={panelRef} className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
       {/* Price header — the widget's three states, same type ramp. */}
-      <div className="px-6 pt-6 pb-4">
+      <div className="px-5 pt-5 pb-3">
         {isFetching && datesValid ? (
           <div className="space-y-2 animate-pulse w-full">
             <div className="h-5 bg-black/5 rounded w-3/4" />
@@ -478,7 +485,7 @@ export function PartnerBookingPanel({
           </div>
         </div>
 
-        <div className="px-5 pt-5 pb-6 space-y-3">
+        <div className="px-5 pt-4 pb-5 space-y-3">
           {quoteNotice === 'error' && (
             <div data-booking-notice="" className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
@@ -562,6 +569,10 @@ export function PartnerBookingPanel({
             </div>
           )}
 
+          {/* The details and the request only once there are dates: before
+              that the panel was 857 px tall (four empty fields under a price
+              nobody had asked for yet) and rolled inside the card. */}
+          {checkIn && checkOut ? (<>
           <div className="flex items-center gap-2 pt-1">
             <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center shrink-0">
               <User className="w-2.5 h-2.5 text-white" />
@@ -579,7 +590,7 @@ export function PartnerBookingPanel({
               placeholder={t('partnerBooking.name', 'Full name *')}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
+              className="w-full h-11 border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
             />
             <input
               ref={emailRef}
@@ -588,7 +599,7 @@ export function PartnerBookingPanel({
               placeholder={t('partnerBooking.email', 'Email *')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
+              className="w-full h-11 border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
             />
             <PhoneInput
               value={phone}
@@ -635,6 +646,11 @@ export function PartnerBookingPanel({
             {t('partnerBooking.noCharge', 'No payment now — our concierge confirms availability and the final total first.')}
           </p>
           </ReserveCtaSlot>
+          </>) : (
+            <p className="text-[12px] text-pa-earth leading-relaxed pt-1">
+              {t('partnerBooking.pickDatesFirst', 'Pick your dates above: we then ask for your details and send the request to the home.')}
+            </p>
+          )}
 
           <a
             href={whatsappUrl}

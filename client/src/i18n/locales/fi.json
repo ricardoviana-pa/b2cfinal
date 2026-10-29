@@ -568,7 +568,9 @@
     "showAllAmenitiesCount": "Näytä kaikki {{count}} mukavuutta",
     "showAllPhotos": "Näytä kaikki {{count}} kuvaa",
     "bedTotal_one": "{{count}} vuode",
-    "bedTotal_other": "{{count}} vuodetta"
+    "bedTotal_other": "{{count}} vuodetta",
+    "availabilityTitle": "Saatavuus",
+    "availabilityHint": "Valitse saapumis- ja lähtöpäivä: majoituksen hinta näkyy varauskortissa."
   },
   "priceBreakdown": {
     "title": "Hintayhteenveto",
@@ -1371,7 +1373,9 @@
     "verifiedGuest": "Vahvistettu vieras",
     "verifiedNote": "Kaikki arvostelut ovat toteutuneista oleskeluista, kerätty varauskanaviemme kautta.",
     "previous": "Edelliset arvostelut",
-    "next": "Seuraavat arvostelut"
+    "next": "Seuraavat arvostelut",
+    "readAll_one": "Lue arvostelu",
+    "readAll_other": "Lue kaikki {{count}} arvostelua"
   },
   "amenity": {
     "outdoorPool": "Ulkotilat ja uima-allas",
@@ -2034,7 +2038,8 @@
     "submitError": "Pyyntöäsi ei voitu lähettää. Yritä uudelleen tai kirjoita conciergelle.",
     "sending": "Lähetetään…",
     "submit": "Pyydä näitä päiviä",
-    "noCharge": "Ei maksua nyt — concierge vahvistaa ensin saatavuuden ja lopullisen summan."
+    "noCharge": "Ei maksua nyt — concierge vahvistaa ensin saatavuuden ja lopullisen summan.",
+    "pickDatesFirst": "Valitse päivät yllä: sen jälkeen kysymme tietosi ja lähetämme pyynnön."
   },
   "login": {
     "benefitTrips": "Hallitse matkojasi",
