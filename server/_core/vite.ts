@@ -30,7 +30,8 @@ import { isNonIndexableHost } from "../lib/hosts.js";
 import { htmlCacheHeaders, isPrivateHtmlPath } from "../lib/htmlCache";
 import { noStoreIfTracked, ssrRenderUrl } from "../lib/trackingParams";
 import { GUESTY_IMAGE_ORIGIN, injectBeforeBodyEnd, injectIntoHead, needsGuestyPreconnect, routeAssets, routeModulePreloadScript, routeStyleTags, type ViteManifest } from "../lib/routeAssets";
-import { guestyIdsOf, readFromPricesForSsr, readPdpFromPriceForSsr } from "../lib/ssrFromPrices";
+import { SSR_UNPRICED_RENDER_TTL_MS, guestyIdsOf, readFromPricesForSsr, readPdpFromPriceForSsr, unpricedPdpListing } from "../lib/ssrFromPrices";
+import { onListingPriceChanged } from "../lib/listingPriceEvents";
 import { setStaticFileHeaders } from "../lib/security-headers";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
@@ -1619,11 +1620,25 @@ export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
 
 // Teto de entradas E de bytes: cada página pesa 100-480 KB (HTML + estado), e
 // 400 páginas num crawl chegavam aos 150-200 MB que faltaram a 28 out.
-const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedState: string; at: number }>(
+const _ssrRenderCache = new BoundedMap<string, {
+  appHtml: string;
+  dehydratedState: string;
+  at: number;
+  /** When this render may no longer be served (5 min; 60 s when `unpriced`). */
+  expiresAt: number;
+  /** The listing a property page was rendered WITHOUT a price for (lib/ssrFromPrices.ts unpricedPdpListing). */
+  unpriced?: string;
+}>(
   400,
   40 * 1024 * 1024,
   (e) => (e.appHtml.length + e.dehydratedState.length) * 2,
 );
+  // A calendar the job stored, or read back from the DB, prices a home that a
+  // cached render says has no price: those renders go at once, so the next
+  // request carries the price (revisão do PR #190). Priced renders stay.
+  onListingPriceChanged((listingId) => {
+    for (const [key, e] of _ssrRenderCache) if (e.unpriced === listingId) _ssrRenderCache.delete(key);
+  });
   async function getSsrRender(): Promise<SsrRender | null> {
     if (_ssrRender) return _ssrRender;
     if (_ssrUnavailable) return null;
@@ -1650,17 +1665,24 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
    *  prefetched — the full 66-property list dehydrates to ~1.3 MB, far too
    *  heavy to embed; the homepage LCP is the static hero (already SSR'd), so
    *  the property carousel / listing grid fill in client-side instead. */
-  async function buildPrefetch(strippedPath: string, lang: string): Promise<Record<string, unknown> | undefined> {
+  async function buildPrefetch(strippedPath: string, lang: string): Promise<{ prefetch?: Record<string, unknown>; unpriced?: string }> {
     const m = strippedPath.match(/^\/homes\/([^/]+)$/);
     if (m) {
       const prop = await getPropertyBySlugCached(m[1]);
       const out = buildPropertyPrefetch(m[1], prop, lang);
       // The booking card's "From €X" (lib/ssrFromPrices.ts): our homes from
       // lowest-nightly's memory, partner homes from the calendar the job
-      // stored (never a Tripwix call) — the same budget for both.
+      // stored (never a Tripwix call) — the same budget for both. A page
+      // rendered WITHOUT its price (seed missing or null) says so, and
+      // injectBody keeps that render only briefly.
       const fromPrices = await readPdpFromPriceForSsr(prop);
-      return fromPrices ? { ...out, fromPrices } : out;
+      return { prefetch: fromPrices ? { ...out, fromPrices } : out, unpriced: unpricedPdpListing(prop, fromPrices) };
     }
+    return { prefetch: await buildListPrefetch(strippedPath, lang) };
+  }
+
+  /** The prefetch of the blog, destination and catalogue routes (see buildPrefetch). */
+  async function buildListPrefetch(strippedPath: string, lang: string): Promise<Record<string, unknown> | undefined> {
     // Blog articles: seed the handful of homes shown under the article, so
     // those links are in the served HTML. This is the whole point of the
     // block — an article that only links to homes after hydration passes no
@@ -1791,10 +1813,22 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
         try {
           const renderUrl = ssrRenderUrl(reqPath);
           let entry = _ssrRenderCache.get(renderUrl);
-          if (!entry || Date.now() - entry.at >= SSR_RENDER_TTL_MS) {
-            const prefetch = await buildPrefetch(strippedPath, extractLang(renderUrl.split("?")[0]));
+          if (!entry || Date.now() >= entry.expiresAt) {
+            const { prefetch, unpriced } = await buildPrefetch(strippedPath, extractLang(renderUrl.split("?")[0]));
             const out = await render(renderUrl, prefetch ? { prefetch } : undefined);
-            entry = { appHtml: out.appHtml, dehydratedState: out.dehydratedState, at: Date.now() };
+            const at = Date.now();
+            // A property page rendered without its price is kept only as long
+            // as the edge keeps the HTML, and dropped the moment its price
+            // arrives (onListingPriceChanged above). Kept the full 5 min, the
+            // HTML said "Price on request" for a home whose calendar the job
+            // stored seconds after the render (revisão do PR #190).
+            entry = {
+              appHtml: out.appHtml,
+              dehydratedState: out.dehydratedState,
+              at,
+              expiresAt: at + (unpriced ? SSR_UNPRICED_RENDER_TTL_MS : SSR_RENDER_TTL_MS),
+              ...(unpriced ? { unpriced } : {}),
+            };
             // Simple FIFO cap — evict the oldest entry when full.
             if (_ssrRenderCache.size >= SSR_RENDER_CACHE_MAX) {
               const oldest = _ssrRenderCache.keys().next().value;
