@@ -534,3 +534,33 @@ describe('job start-up (restart / deploy: no burst)', () => {
     expect(startTripwixRefresh({ TRIPWIX_API_KEY: 'k', APP_ENV: 'preview' } as any)).toBe(false);
   });
 });
+
+describe('a stored calendar is announced to the price listeners (revisão do PR #190)', () => {
+  it('a calendar the job reads, and one read back from the DB after a restart; never a failed read or a bare backoff', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => (uidOf(url) === 'bad' ? new Response('{"detail":"Not found."}', { status: 404 }) : ok(calendar()))));
+    let mod = await load();
+    let events = await import('./lib/listingPriceEvents');
+    const seen: string[] = [];
+    let off = events.onListingPriceChanged((id) => seen.push(id));
+    expect(await mod.refreshTripwixCalendar('a')).toMatchObject({ action: 'refreshed' });
+    expect(await mod.refreshTripwixCalendar('bad')).toMatchObject({ action: 'failed', status: 404 });
+    expect(seen).toEqual(['a']);
+    off();
+    await vi.waitFor(() => expect(store.size).toBe(2)); // a's calendar, bad's backoff
+
+    // Restart: the calendar read back from the DB is news to the new process; a backoff is not a price.
+    vi.resetModules();
+    at(T0 + 10 * MIN);
+    mod = await load();
+    events = await import('./lib/listingPriceEvents');
+    const after: string[] = [];
+    off = events.onListingPriceChanged((id) => after.push(id));
+    await mod.hydrateTripwixCalendars(['a', 'bad', 'never-stored']);
+    expect(after).toEqual(['a']);
+    // Hydrating again changes nothing in memory, so nothing is announced.
+    await mod.hydrateTripwixCalendars(['a']);
+    expect(after).toEqual(['a']);
+    off();
+  });
+});

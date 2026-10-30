@@ -21,13 +21,20 @@
  * The SSR handler runs end to end on a small fixture build (as in
  * perf-ssr-html.test.ts): the real property store, a fake entry-server that
  * records the prefetch it is given, and the two price stores stubbed.
+ *
+ * Revisão do PR #190: a render made while the "from" was null (calendar not
+ * in this process's memory yet) was kept by the render cache for 5 min WITH
+ * the null seed, so the server HTML kept asserting "Price on request" for a
+ * home whose calendar the job stored seconds later. Now such a render is
+ * dropped the moment the calendar store announces the home
+ * (lib/listingPriceEvents.ts), and never lives past the edge's own 60 s.
  */
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import type { AddressInfo } from "node:net";
 import express from "express";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 /** Casa de Caiz (minimum stay 2) and Villa Arroz, as in client/src/data/tripwix-properties.json. */
 const CAIZ = "71776293-1e7f-4eb9-bd2c-d9733621716f";
@@ -44,7 +51,9 @@ vi.mock("./services/tripwix", async (importOriginal) => ({
 vi.mock("./services/lowest-nightly", () => ({ getLowestNightlyBatch: stores.guestyBatch }));
 
 import { serveStatic } from "./_core/vite";
-import { readPdpFromPriceForSsr } from "./lib/ssrFromPrices";
+import { SSR_UNPRICED_RENDER_TTL_MS, readPdpFromPriceForSsr, unpricedPdpListing } from "./lib/ssrFromPrices";
+import { notifyListingPriceChanged, onListingPriceChanged } from "./lib/listingPriceEvents";
+import { PUBLIC_HTML_CACHE_CONTROL } from "./lib/htmlCache";
 import { pickPdpLowestNightly } from "@/lib/ssrFromPrices";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
@@ -151,5 +160,108 @@ describe("the page reads the seed by the listing its lowestNightly query sends",
     expect(pickPdpLowestNightly(seed, { tripwixUid: "not-seeded" })).toBeUndefined();
     expect(pickPdpLowestNightly(seed, {})).toBeUndefined();
     expect(pickPdpLowestNightly(undefined, { tripwixUid: CAIZ })).toBeUndefined();
+  });
+});
+
+describe("a render without the price does not outlive the price (revisão do PR #190)", () => {
+  const rendersOf = (url: string) => renders().filter((r) => r.url === url);
+  const seedsOf = (url: string) => rendersOf(url).map((r) => r.prefetch?.fromPrices?.prices);
+  const answer = (value: number | null) => stores.partnerFrom.mockImplementation(async () => value);
+  afterEach(() => {
+    stores.partnerFrom.mockImplementation(async (uid: string) => (uid === CAIZ ? 795 : null));
+  });
+
+  it("the calendar the job stores drops the cached null render: the next request carries the price", async () => {
+    const url = "/fr/homes/casa-de-caiz";
+    answer(null);
+    await get(url);
+    expect(seedsOf(url)).toEqual([{ [CAIZ]: null }]);
+    // The price exists now, but nothing told the server: the cached render is served.
+    answer(795);
+    await get(url);
+    expect(rendersOf(url)).toHaveLength(1);
+    // What refreshTripwixCalendar / the DB hydrate announce when they store Caiz's calendar.
+    notifyListingPriceChanged(CAIZ);
+    await get(url);
+    expect(seedsOf(url)).toEqual([{ [CAIZ]: null }, { [CAIZ]: 795 }]);
+    // The priced render is cached again, and the home's next calendar leaves it alone.
+    notifyListingPriceChanged(CAIZ);
+    await get(url);
+    expect(rendersOf(url)).toHaveLength(2);
+  });
+
+  it("another home's calendar leaves the render alone", async () => {
+    const url = "/es/homes/casa-de-caiz";
+    answer(null);
+    await get(url);
+    answer(795);
+    notifyListingPriceChanged(ARROZ);
+    await get(url);
+    expect(seedsOf(url)).toEqual([{ [CAIZ]: null }]);
+  });
+
+  it("without any signal the null render lives 60 s (the edge's own s-maxage), a priced render the full 5 min", async () => {
+    const nullUrl = "/de/homes/casa-de-caiz";
+    const pricedUrl = "/it/homes/casa-de-caiz";
+    const realNow = Date.now;
+    let shift = 0;
+    const clock = vi.spyOn(Date, "now").mockImplementation(() => realNow() + shift);
+    try {
+      answer(null);
+      await get(nullUrl);
+      answer(795);
+      await get(pricedUrl);
+      expect(seedsOf(nullUrl)).toEqual([{ [CAIZ]: null }]);
+      expect(seedsOf(pricedUrl)).toEqual([{ [CAIZ]: 795 }]);
+      shift = SSR_UNPRICED_RENDER_TTL_MS - 10_000;
+      await get(nullUrl);
+      expect(rendersOf(nullUrl)).toHaveLength(1); // 50 s on: still the same render
+      shift = SSR_UNPRICED_RENDER_TTL_MS + 1_000;
+      await get(nullUrl);
+      await get(pricedUrl);
+      expect(seedsOf(nullUrl)).toEqual([{ [CAIZ]: null }, { [CAIZ]: 795 }]); // 61 s on: rendered again, with the price
+      expect(rendersOf(pricedUrl)).toHaveLength(1); // the priced render is kept
+    } finally {
+      clock.mockRestore();
+    }
+  });
+});
+
+describe("unpricedPdpListing: which render may not be kept", () => {
+  const caiz = { source: "tripwix", supplierUid: CAIZ, minNights: 2, isActive: true };
+
+  it("a null or missing seed names the listing; a price, or nothing to price, does not", () => {
+    expect(unpricedPdpListing(caiz, { prices: { [CAIZ]: null }, at: 1 })).toBe(CAIZ);
+    expect(unpricedPdpListing(caiz, undefined)).toBe(CAIZ);
+    expect(unpricedPdpListing(caiz, { prices: { [CAIZ]: 795 }, at: 1 })).toBeUndefined();
+    expect(unpricedPdpListing({ guestyId: "g1" }, { prices: { g1: null }, at: 1 })).toBe("g1");
+    expect(unpricedPdpListing({ guestyId: "g1" }, { prices: { g1: 120 }, at: 1 })).toBeUndefined();
+    expect(unpricedPdpListing(null, undefined)).toBeUndefined();
+    expect(unpricedPdpListing({ ...caiz, isActive: false }, undefined)).toBeUndefined();
+  });
+
+  it("the unpriced render lives exactly as long as the edge keeps the HTML", () => {
+    expect(SSR_UNPRICED_RENDER_TTL_MS).toBe(60_000);
+    expect(PUBLIC_HTML_CACHE_CONTROL).toContain("s-maxage=60");
+  });
+});
+
+describe("listingPriceEvents", () => {
+  it("reaches every listener, survives a failing one, and forgets the ones removed", () => {
+    const seen: string[] = [];
+    const offA = onListingPriceChanged((id) => seen.push(`a:${id}`));
+    const offBad = onListingPriceChanged(() => { throw new Error("boom"); });
+    const offB = onListingPriceChanged((id) => seen.push(`b:${id}`));
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      notifyListingPriceChanged("x");
+      offA();
+      notifyListingPriceChanged("y");
+    } finally {
+      warn.mockRestore();
+      offBad();
+      offB();
+    }
+    expect(seen).toEqual(["a:x", "b:x", "b:y"]);
   });
 });

@@ -26,6 +26,7 @@
  *   pedidos das parceiras nem o job (P173-R4).
  */
 import { getSettingsByKeys, upsertSetting } from "../db";
+import { notifyListingPriceChanged } from "../lib/listingPriceEvents";
 
 export type TripwixDay = { date: string; status: string; price: string | number | null };
 export type CalendarSnapshot = { days: TripwixDay[]; fetchedAt: number; source: 'live' | 'cached' };
@@ -318,11 +319,13 @@ export async function hydrateTripwixCalendars(uids: string[]): Promise<void> {
 function mergeStored(uid: string, stored: StoredEntry): void {
   const e = entries.get(uid) ?? newEntry();
   const cal = stored.calendar;
+  let merged = false;
   if (cal && cal.at > e.fetchedAt) {
     e.start = cal.start;
     e.end = cal.end;
     e.days = cal.days;
     e.fetchedAt = cal.at;
+    merged = true;
   }
   // O recuo de uma casa que falha sobrevive ao restart. Só antes de este
   // processo a tentar: o que ele viu depois é mais recente do que a BD.
@@ -337,6 +340,9 @@ function mergeStored(uid: string, stored: StoredEntry): void {
     e.persistedAt = storedAt;
   }
   entries.set(uid, e);
+  // Um calendário lido da BD (no arranque, ou tarde, depois do prazo) é
+  // novidade para este processo: as páginas que serviu sem preço caem.
+  if (merged) notifyListingPriceChanged(uid);
 }
 
 /** Guarda o estado da casa (calendário e recuo) quando mudou ou quando a cópia na BD tem mais de 1 h. */
@@ -495,6 +501,9 @@ export async function refreshTripwixCalendar(uid: string, name?: string): Promis
     e.nextAttemptAt = 0;
     e.lastError = null;
     persist(uid, e);
+    // O "desde" desta casa passa a existir, ou mudou: uma página servida sem
+    // ele não pode continuar em cache (lib/listingPriceEvents.ts).
+    notifyListingPriceChanged(uid);
     return { action: "refreshed", uid };
   }
   const statusText = outcome.status === null ? "sem resposta HTTP" : `HTTP ${outcome.status}`;

@@ -109,6 +109,30 @@ export async function readPdpFromPriceForSsr(
   return readFromPricesForSsr([listing.id], async ([uid]) => ({ [uid]: await partner(uid, listing.minNights) }), budgetMs);
 }
 
+/**
+ * How long the server may keep the render of a property page it could NOT
+ * price (server/_core/vite.ts _ssrRenderCache): the edge's own s-maxage
+ * (lib/htmlCache.ts), not the usual 5 min. Revisão do PR #190: a partner page
+ * rendered before the job stored its calendar (the first ~90 s after a boot
+ * whose DB read failed, a calendar published for the first time, a home back
+ * from the 48 h stale window) kept saying "Price on request" for up to 5 min
+ * after the price existed. The calendar store also announces the price the
+ * moment it has it (lib/listingPriceEvents.ts); this is the ceiling when
+ * nothing announces it — a seed over budget, or our own homes.
+ */
+export const SSR_UNPRICED_RENDER_TTL_MS = 60_000;
+
+/** The listing a property page was rendered WITHOUT a price for — the seed
+ *  is missing (over budget, store error) or null (not in this process's
+ *  memory yet) — or undefined when the page is priced, or has nothing to
+ *  price (unknown slug, partner home switched off). */
+export function unpricedPdpListing(prop: PdpPriceProp | null | undefined, seed: SsrFromPricesSeed | undefined): string | undefined {
+  const listing = pdpPriceListing(prop);
+  if (!listing) return undefined;
+  const v = seed?.prices?.[listing.id];
+  return typeof v === "number" && Number.isFinite(v) && v > 0 ? undefined : listing.id;
+}
+
 /** The Guesty listing ids of a list of property cards — the same filter the
  *  pages use for their lowestNightlyBatch input (partner homes have none). */
 export function guestyIdsOf(properties: ReadonlyArray<{ guestyId?: unknown }> | null | undefined): string[] {
