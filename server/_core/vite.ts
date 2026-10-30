@@ -5,6 +5,7 @@ import { servicePlanning } from '../../shared/servicePlanning';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
 import { articlePhotos, stripPhotoLines } from '../../shared/articlePhotos';
 import { reviewedArticleDate } from '../../shared/articleNavigation';
+import { displayedAggregate } from '../../shared/reviewStats';
 import { corporateSchema } from '../../shared/corporateSchema';
 import { deepMerge } from '../../client/src/lib/deepMerge';
 import { vacationRentalSchema } from '../../shared/vacationRentalSchema';
@@ -811,9 +812,12 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
     longitude: prop.address?.lng ?? prop.longitude,
     checkinTime: prop.checkInTime,
     checkoutTime: prop.checkOutTime,
-    aggregateRating: prop.averageRating && prop.reviewCount ? {
-      ratingValue: Number(prop.averageRating), reviewCount: Number(prop.reviewCount),
-    } : null,
+    // What the page shows (shared/reviewStats.ts): the real average of every
+    // review, one decimal, only from three reviews.
+    aggregateRating: (() => {
+      const agg = displayedAggregate(prop);
+      return agg.average === null ? null : { ratingValue: agg.average, reviewCount: agg.count };
+    })(),
   }, lang);
 
   const breadcrumb = {

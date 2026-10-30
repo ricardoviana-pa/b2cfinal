@@ -11,6 +11,7 @@
  */
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { isValidRating } from "../shared/reviewStats";
 
 const ROOT = process.cwd();
 const PROPS = join(ROOT, "client", "src", "data", "properties.json");
@@ -91,7 +92,7 @@ console.log(`Dump: ${raw.length} reviews.\n`);
 
 const bySlug = new Map<string, any[]>();
 const unmatched = new Map<string, number>();
-let dropped = { lowRating: 0, noText: 0, channel: 0 };
+let dropped = { noRating: 0, noText: 0, channel: 0 };
 const CHANNEL_RE = /\bairbnb\b|booking\.com|\bvrbo\b|\bexpedia\b|homeaway/i;
 
 /** Airbnb prefixes a body with the trip type; it is chrome, not the guest's words.
@@ -104,14 +105,15 @@ const looksLikeCity = (n: string) => /,$/.test(n.trim());
 for (const r of raw) {
   const rating = Number(r.rating || 0);
   const text = String(r.text || "").trim().replace(TRIP_LABEL, "").trim();
-  if (rating < 5) { dropped.lowRating++; continue; }
+  // Every rating is kept as given (29 out 2026); only a missing/invalid score is dropped.
+  if (!isValidRating(rating)) { dropped.noRating++; continue; }
   if (text.replace(/[^\p{L}]/gu, "").length < 12) { dropped.noText++; continue; }
   if (CHANNEL_RE.test(text)) { dropped.channel++; continue; }
   const slug = matchSlug(String(r.listing || ""));
   if (!slug) { unmatched.set(r.listing, (unmatched.get(r.listing) ?? 0) + 1); continue; }
   if (!bySlug.has(slug)) bySlug.set(slug, []);
   bySlug.get(slug)!.push({
-    rating: 5,
+    rating,
     text,
     // Blank rather than wrong: an unnamed card reads as a verified guest.
     guestName: looksLikeCity(String(r.guest || "")) ? "" : (String(r.guest || "").trim().split(/\s+/)[0] || ""),
@@ -120,7 +122,7 @@ for (const r of raw) {
   });
 }
 
-console.log(`Dropped: ${dropped.lowRating} below 5★, ${dropped.noText} too short, ${dropped.channel} name a channel.`);
+console.log(`Dropped: ${dropped.noRating} without a rating, ${dropped.noText} too short, ${dropped.channel} name a channel.`);
 if (unmatched.size) {
   console.log(`\nUNMATCHED listings (add to ALIASES):`);
   for (const [l, n] of [...unmatched.entries()].sort((a, b) => b[1] - a[1])) console.log(`  ${n}×  ${l}`);

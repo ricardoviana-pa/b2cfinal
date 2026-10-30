@@ -3,9 +3,9 @@
     "Curated reviews that Guesty does not hold — typically the Airbnb back-catalogue",
     "from before a listing was connected/reconnected. Merged into every sync, never",
     "overwritten by it. Key = guestyId (stable) or slug (readable).",
-    "Shape: { rating: 5, text: \"...\", guestName: \"Anna\", guestLocation: \"Paris, France\", date: \"2024-08-14\" }",
-    "Rules: rating must be 4 or 5; text is required; only 5-star reviews are shown on the PDP,",
-    "4-star ones still count toward the average. Never paste text that names the channel."
+    "Shape: { rating: 4, text: \"...\", guestName: \"Anna\", guestLocation: \"Paris, France\", date: \"2024-08-14\" }",
+    "Rules: rating is the guest's real rating, 1 to 5 (every rating is shown on the PDP and counts",
+    "toward the average, since 29 Oct 2026); text is required. Never paste text that names the channel."
   ],
   "7-suites-pool-geres-gateway-portugal-active-013634": [],
   "buganv-lias-house-7f571a": [
