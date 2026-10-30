@@ -87,14 +87,18 @@ export default function Homes() {
   // Starts from the prices the server put into the page (useFromPrices).
   const { data: guestyFromPrices } = useFromPrices(fromListingIds);
 
-  // ItemList + BreadcrumbList JSON-LD for the catalogue page
+  // ItemList + BreadcrumbList JSON-LD for the catalogue page. Names only from
+  // keys that exist in all nine languages: the list used to be named after a
+  // key no locale had, and the breadcrumbs were English literals
+  // (verificação em produção de 29 out 2026, Broad P2;
+  // server/i18n-used-keys.test.ts).
   const homesGraph = useMemo(() => {
     if (!allProperties.length) return null;
     return [
       {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
-        name: t('nav.homes'),
+        name: t('nav.properties'),
         description: t('conversion.homesIntro'),
         url: `https://www.portugalactive.com/${i18n.language.split('-')[0]}/homes`,
         numberOfItems: allProperties.length,
@@ -107,8 +111,8 @@ export default function Homes() {
         })),
       },
       buildBreadcrumbSchema([
-        { name: 'Home', item: '/' },
-        { name: 'Homes' },
+        { name: t('propertyDetail.breadcrumbHome'), item: '/' },
+        { name: t('propertyDetail.breadcrumbHomes') },
       ]),
     ];
   }, [allProperties, t, i18n.language]);

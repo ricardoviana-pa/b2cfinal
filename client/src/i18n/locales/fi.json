@@ -31,6 +31,13 @@
     "conciergeExclusive": "Yksinomaan vieraillemme",
     "office": "Toimisto"
   },
+  "promoBar": {
+    "defaultText": "Käytä koodia {code} kassalla",
+    "copied": "Koodi kopioitu",
+    "ariaLabel": "Voimassa oleva tarjous",
+    "copyAria": "kopioi koodi",
+    "dismiss": "Sulje"
+  },
   "destinations": {
     "minho": "Pohjois-Portugali · Minho",
     "porto": "Porto ja Douro",
@@ -1878,6 +1885,8 @@
     "perPersonDay": "per henkilö · päivä",
     "allDays": "Joka päivä",
     "airport": "Lentokenttä",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lissabon",
     "confirm24hNote": "Jos emme voi taata sitä, rivi hyvitetään automaattisesti.",
     "noChargeNow": "ei veloitusta nyt",
     "perPersonHour": "per lapsi · tunti",

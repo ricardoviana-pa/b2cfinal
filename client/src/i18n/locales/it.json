@@ -31,6 +31,13 @@
     "conciergeExclusive": "Esclusivo per i nostri ospiti",
     "office": "Ufficio"
   },
+  "promoBar": {
+    "defaultText": "Usa il codice {code} al momento del pagamento",
+    "copied": "Codice copiato",
+    "ariaLabel": "Promozione in corso",
+    "copyAria": "copia il codice",
+    "dismiss": "Chiudi"
+  },
   "destinations": {
     "minho": "Nord del Portogallo · Minho",
     "porto": "Porto e Douro",
@@ -1878,6 +1885,8 @@
     "perPersonDay": "a persona · giorno",
     "allDays": "Tutti i giorni",
     "airport": "Aeroporto",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lisbona",
     "confirm24hNote": "Se non possiamo garantirlo, la riga viene rimborsata automaticamente.",
     "noChargeNow": "nessun addebito ora",
     "perPersonHour": "per bambino · ora",

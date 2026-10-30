@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusive to our guests",
     "office": "Office"
   },
+  "promoBar": {
+    "defaultText": "Use code {code} at checkout",
+    "copied": "Code copied",
+    "ariaLabel": "Current promotion",
+    "copyAria": "copy code",
+    "dismiss": "Dismiss"
+  },
   "destinations": {
     "minho": "Northern Portugal · Minho",
     "porto": "Porto and Douro",
@@ -1878,6 +1885,8 @@
     "perPersonDay": "per person · day",
     "allDays": "Every day",
     "airport": "Airport",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lisbon",
     "confirm24hNote": "If we cannot secure it, the line is refunded automatically.",
     "noChargeNow": "no charge now",
     "perPersonHour": "per child · hour",

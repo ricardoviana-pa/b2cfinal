@@ -10,7 +10,7 @@ import { useParams, Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { loadPropertyOverrides, mergePropertyOverrides, propertyOverridesQueryKey } from '@/lib/localizeProperty';
-import { SSR_FROM_PRICES_KEY, pickLowestNightly, type SsrFromPrices } from '@/lib/ssrFromPrices';
+import { SSR_FROM_PRICES_KEY, pickPdpLowestNightly, type SsrFromPrices } from '@/lib/ssrFromPrices';
 import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import { countVars } from '@/lib/plural';
 import { propertyKindInline } from '@shared/propertyMeta';
@@ -790,13 +790,14 @@ export default function PropertyDetail() {
   // Partner (Tripwix) homes have no Guesty listing; they price off the
   // supplier's own calendar instead, through the same procedure.
   // Starts from the price the server put into the page (lib/ssrFromPrices.ts),
-  // so the booking card and the mobile bar show it in the server HTML.
+  // so the booking card and the mobile bar show it in the server HTML — for
+  // partner homes too, under their supplier uid (Property PP-3).
   const tripwixUid = (property as any)?.source === 'tripwix'
     ? ((property as any)?.supplierUid as string | undefined)
     : undefined;
-  const seededNightly = pickLowestNightly(
+  const seededNightly = pickPdpLowestNightly(
     queryClient.getQueryData<SsrFromPrices>(SSR_FROM_PRICES_KEY),
-    tripwixUid ? undefined : property?.guestyId,
+    { guestyId: property?.guestyId, tripwixUid },
   );
   const { data: lowestNightly } = trpc.booking.lowestNightly.useQuery(
     {

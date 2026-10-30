@@ -7,6 +7,7 @@ import { isImplicitSubmitKey } from '@/lib/implicitSubmit';
 import type { BookingSelection } from './BookingWidget';
 import { formatQuotedEur, intlLocale, formatBookingDate } from '@/lib/format';
 import { partnerCalendarView, partnerQuoteNotice, partnerRequestQuoteStatus } from '@/lib/partnerAvailability';
+import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import { useDateRangePicker } from './useDateRangePicker';
 import PhoneInput from './PhoneInput';
@@ -321,9 +322,12 @@ export function PartnerBookingPanel({
               className="text-[28px] text-[#1A1A18]"
               style={{ fontFamily: 'var(--font-display)' }}
             >
+              {/* No "from" yet (undefined: the seed was missing and the query
+                  is in flight) reads as on the cards and the phone bar,
+                  "Select dates for price"; only none (null) is "on request". */}
               {fromPrice
                 ? t('property.fromPerNight', { price: Math.round(fromPrice).toLocaleString(intlLocale(lang)) })
-                : t('property.priceOnRequest')}
+                : t(noPriceLabelKey(true, fromPrice))}
             </span>
             {fromPrice ? (
               <span className="text-[14px] text-[#726D63] ml-1">
