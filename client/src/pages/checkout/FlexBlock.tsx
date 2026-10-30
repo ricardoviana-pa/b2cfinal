@@ -126,8 +126,10 @@ export default function FlexBlock({
     <div
       ref={rootRef}
       className={cn(
-        "rounded-lg border bg-pa-warm p-5 transition-all",
-        selected ? "border-pa-gold ring-1 ring-pa-gold" : "border-pa-gold/50",
+        // Areia só quando escolhido (29 out 2026): em repouso é um cartão branco
+        // como os outros; o dourado do ícone e do botão continua a distingui-lo.
+        "rounded-lg border p-5 transition-all",
+        selected ? "border-pa-gold ring-1 ring-pa-gold bg-pa-warm" : "border-pa-gold/50 bg-white",
       )}
     >
       <div className="flex items-start gap-3">
@@ -180,7 +182,7 @@ export default function FlexBlock({
       </div>
 
       {/* Contextual coherence line — changes with the selected rate plan */}
-      <p className="mt-3 caption leading-relaxed text-pa-dark bg-pa-warm border border-pa-sand rounded-md px-3 py-2.5">
+      <p className="mt-3 caption leading-relaxed text-pa-dark border border-pa-sand rounded-md px-3 py-2.5">
         {contextualCopy}
       </p>
 

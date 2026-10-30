@@ -1885,6 +1885,11 @@
     "perPersonDay": "a persona · giorno",
     "allDays": "Tutti i giorni",
     "airport": "Aeroporto",
+    "sections": {
+      "noExtras": "Nessun extra",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extra"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lisbona",
     "confirm24hNote": "Se non possiamo garantirlo, la riga viene rimborsata automaticamente.",
