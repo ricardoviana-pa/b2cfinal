@@ -19,6 +19,10 @@ interface PhoneInputProps {
   /** Liga o campo à mensagem de erro (aria-describedby / aria-invalid). */
   describedBy?: string;
   invalid?: boolean;
+  /** País do campo (ISO2 em minúsculas, "pt"), na montagem e sempre que muda:
+   *  a bandeira escolhida ou o indicativo do número. É o país de faturação do
+   *  Klarna (shared/klarna.ts). */
+  onCountryChange?: (iso2: string) => void;
 }
 
 const SUPPORTED = new Set(defaultCountries.map((c) => parseCountry(c).iso2));
@@ -55,7 +59,7 @@ function subscribeLanguages(onChange: () => void) {
  * depois da hidratação, o campo ainda vazio passa para o país do browser
  * (useSyncExternalStore, sem diferenças entre o HTML do servidor e o React).
  */
-export default function PhoneInput({ id, value, onChange, onBlur, placeholder = "Phone number *", className, describedBy, invalid }: PhoneInputProps) {
+export default function PhoneInput({ id, value, onChange, onBlur, placeholder = "Phone number *", className, describedBy, invalid, onCountryChange }: PhoneInputProps) {
   const { i18n } = useTranslation();
   const languages = useSyncExternalStore(subscribeLanguages, browserLanguages, () => "");
   const defaultCountry = useMemo(
@@ -75,6 +79,12 @@ export default function PhoneInput({ id, value, onChange, onBlur, placeholder = 
 
   const live = useRef({ phone, dialCode: country.dialCode, setCountry });
   live.current = { phone, dialCode: country.dialCode, setCountry };
+  // O país do campo sobe para quem precisa dele (Klarna): na montagem e a cada mudança.
+  const onCountryChangeRef = useRef(onCountryChange);
+  onCountryChangeRef.current = onCountryChange;
+  useEffect(() => {
+    onCountryChangeRef.current?.(country.iso2);
+  }, [country.iso2]);
   const appliedDefault = useRef(defaultCountry);
   useEffect(() => {
     if (appliedDefault.current === defaultCountry) return;

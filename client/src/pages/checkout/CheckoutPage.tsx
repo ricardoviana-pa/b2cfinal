@@ -62,6 +62,7 @@ import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
 import PaymentMethodsNote from "@/components/booking/PaymentMethodsNote";
 import TwoPartsHint from "@/components/booking/TwoPartsHint";
+import { klarnaBillingCountry } from "@shared/klarna";
 
 type Step = "stay" | "customize" | "pay";
 
@@ -269,6 +270,10 @@ export default function CheckoutPage() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
+  // País do campo do telefone (bandeira ou indicativo): é o país de
+  // faturação do Klarna (shared/klarna.ts), com a língua do site e PT por trás.
+  const [phoneCountry, setPhoneCountry] = useState<string | null>(null);
+  const klarnaCountry = klarnaBillingCountry({ phoneCountry, phone, siteLang: lang });
   const [nif, setNif] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   // Passo do pagamento (auditoria do funil, n.º 1 e 11): os erros dos dados do
@@ -2097,7 +2102,7 @@ export default function CheckoutPage() {
                 )}
                 {/* Antes do portão do email: como se pode pagar e que ainda
                     não se cobra nada (auditoria do funil, crítico). */}
-                <PaymentMethodsNote className="border-t border-pa-sand pt-3" total={todayTotal} />
+                <PaymentMethodsNote className="border-t border-pa-sand pt-3" country={klarnaCountry} total={todayTotal} />
               </div>
             </>
           )}
@@ -2274,6 +2279,7 @@ export default function CheckoutPage() {
                     id={GUEST_FIELD_IDS.phone}
                     value={phone}
                     onChange={setPhone}
+                    onCountryChange={setPhoneCountry}
                     onBlur={() => setPhoneTouched(true)}
                     placeholder={t("bookingWidget.phonePh", "Phone number *")}
                     describedBy={phoneError ? "checkout-phone-error" : undefined}
@@ -2334,6 +2340,7 @@ export default function CheckoutPage() {
                     walletsReady={walletsReady}
                     conciergeHref={conciergeHref}
                     twoPartsSwitch={twoPartsSwitch}
+                    klarnaCountry={klarnaCountry}
                     onTwoPartsUnavailable={() => {
                       setPlan("full");
                       setMandateAccepted(false);

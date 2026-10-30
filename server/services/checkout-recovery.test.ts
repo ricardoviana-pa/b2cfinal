@@ -194,9 +194,36 @@ describe("funil de 4 contactos", () => {
     expect(mock.claimAlert).toHaveBeenCalledOnce();
     expect(mock.alert).toHaveBeenCalledWith(expect.objectContaining({ total: 4200 }));
   });
-  it("valor baixo não alerta o concierge", async () => {
+  it("valor baixo também alerta: o alerta é para todos os que param no pagamento (29 out 2026)", async () => {
     mock.candidates.mockResolvedValue([intent(2, { status: "payment_pending", guestPhone: "+351900000000", quote: { total: 900 } })]);
     await runCheckoutRecoverySweep();
+    expect(mock.alert).toHaveBeenCalledWith(expect.objectContaining({ total: 900, guestPhone: "+351900000000" }));
+  });
+  it("sem telefone (parou antes de o escrever): alerta só com o email, uma vez por checkout", async () => {
+    const row = intent(2, { status: "payment_pending", guestFirstName: "Ana", quote: { total: 1800 } });
+    mock.candidates.mockResolvedValue([row]);
+    await runCheckoutRecoverySweep();
+    expect(mock.claimAlert).toHaveBeenCalledWith(row.id);
+    expect(mock.alert).toHaveBeenCalledWith(expect.objectContaining({
+      intentId: row.id, guestEmail: "guest@example.test", guestPhone: null, guestName: "Ana", total: 1800,
+      resumeUrl: `https://www.portugalactive.com/pt/checkout/${row.id}`,
+    }));
+    // Outra passagem (ou outro worker) já reclamou o alerta: nada sai.
+    mock.alert.mockClear();
+    mock.claimAlert.mockResolvedValue(false);
+    await runCheckoutRecoverySweep();
+    expect(mock.alert).not.toHaveBeenCalled();
+  });
+  it("já alertado, fora do passo de pagamento ou fora da janela de 1 h a 48 h: sem alerta", async () => {
+    const expired = new Date(Date.now() - 3_600_000);
+    mock.candidates.mockResolvedValue([
+      intent(2, { id: "aaaaaaaa-0000-4000-8000-000000000001", status: "payment_pending", conciergeAlerted: true }),
+      intent(2, { id: "aaaaaaaa-0000-4000-8000-000000000002", status: "contact_captured" }),
+      intent(0.5, { id: "aaaaaaaa-0000-4000-8000-000000000003", status: "payment_pending" }),
+      intent(49, { id: "aaaaaaaa-0000-4000-8000-000000000004", status: "payment_pending", expiresAt: expired }),
+    ]);
+    await runCheckoutRecoverySweep();
+    expect(mock.claimAlert).not.toHaveBeenCalled();
     expect(mock.alert).not.toHaveBeenCalled();
   });
   it.each([false, 'unavailable'])("não alerta o concierge sem confirmar abandono: %s", async (eligible) => {
@@ -266,16 +293,71 @@ describe("contacto 1 no pagamento: o email depende de ter havido uma tentativa d
     }));
   });
 
-  it("PayPal ou Klarna tentados (só a Stripe sabe): o texto de sempre; o Klarna nunca, nem dentro do limite, enquanto o país de faturação for forçado a PT", async () => {
-    const { KLARNA_BILLING_COUNTRY_FORCED_PT } = await import("./recovery-funnel");
-    expect(KLARNA_BILLING_COUNTRY_FORCED_PT).toBe(true);
-    mock.candidates.mockResolvedValue([atPayment({ quote: { total: 900, currency: "EUR" } })]);
+  it("PayPal ou Klarna tentados (só a Stripe sabe): o texto de sempre, lido na Stripe pelo id do intent", async () => {
+    const row = atPayment({ quote: { total: 900, currency: "EUR" } });
+    mock.candidates.mockResolvedValue([row]);
     mock.attempt.mockResolvedValue(true);
-    mock.breakdown.mockResolvedValue({ totalCents: 95_000 });
     await runCheckoutRecoverySweep();
-    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 1, paymentAttempted: true, klarna: false }));
-    // Sem Klarna possível, nem se calcula o total para o limite dele.
-    expect(mock.breakdown).not.toHaveBeenCalled();
+    expect(mock.attempt).toHaveBeenCalledWith(row.id);
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 1, paymentAttempted: true }));
+  });
+
+  describe("o Klarna depois de uma tentativa: pelo país de faturação do hóspede e pelo tecto desse país (29 out 2026)", () => {
+    const tried = (over: Record<string, unknown> = {}) => atPayment({ quote: { total: 950, currency: "EUR" }, ...over });
+    const sentKlarna = () => mock.send.mock.calls[0][0].klarna;
+    beforeEach(() => mock.attempt.mockResolvedValue(true));
+
+    it("telefone português e total dentro do tecto de Portugal (1 000 €): sugerido, com o total do checkout", async () => {
+      mock.candidates.mockResolvedValue([tried({ guestPhone: "+351 912 345 678" })]);
+      mock.breakdown.mockResolvedValue({ totalCents: 95_000 });
+      await runCheckoutRecoverySweep();
+      expect(mock.breakdown).toHaveBeenCalledOnce();
+      expect(sentKlarna()).toBe(true);
+    });
+    it("telefone português acima de 1 000 €: não", async () => {
+      mock.candidates.mockResolvedValue([tried({ guestPhone: "+351 912 345 678", quote: { total: 1500, currency: "EUR" } })]);
+      mock.breakdown.mockResolvedValue({ totalCents: 150_000 });
+      await runCheckoutRecoverySweep();
+      expect(sentKlarna()).toBe(false);
+    });
+    it("telefone alemão a 2 700 €: dentro do tecto da Alemanha (5 000 €)", async () => {
+      mock.candidates.mockResolvedValue([tried({ guestPhone: "+49 170 1234567", quote: { total: 2700, currency: "EUR" } })]);
+      mock.breakdown.mockResolvedValue({ totalCents: 270_000 });
+      await runCheckoutRecoverySweep();
+      expect(sentKlarna()).toBe(true);
+    });
+    it("telefone britânico: a Klarna não cobra em euros a quem está no Reino Unido; nem se calcula o total", async () => {
+      mock.candidates.mockResolvedValue([tried({ guestPhone: "+44 7700 900123" })]);
+      await runCheckoutRecoverySweep();
+      expect(sentKlarna()).toBe(false);
+      expect(mock.breakdown).not.toHaveBeenCalled();
+    });
+    it("sem telefone, site em francês: o país da língua (França, tecto 3 000 €)", async () => {
+      mock.candidates.mockResolvedValue([tried({ guestPhone: null, locale: "fr", quote: { total: 2500, currency: "EUR" } })]);
+      mock.breakdown.mockResolvedValue({ totalCents: 250_000 });
+      await runCheckoutRecoverySweep();
+      expect(sentKlarna()).toBe(true);
+    });
+    it("sem telefone, site em inglês: Portugal por omissão (tecto 1 000 €)", async () => {
+      mock.candidates.mockResolvedValue([tried({ guestPhone: null, locale: "en", quote: { total: 2500, currency: "EUR" } })]);
+      mock.breakdown.mockResolvedValue({ totalCents: 250_000 });
+      await runCheckoutRecoverySweep();
+      expect(sentKlarna()).toBe(false);
+    });
+    it("sem tentativa de pagar: nunca, nem se calcula o total", async () => {
+      mock.attempt.mockResolvedValue(false);
+      mock.candidates.mockResolvedValue([tried({ guestPhone: "+351 912 345 678" })]);
+      await runCheckoutRecoverySweep();
+      expect(sentKlarna()).toBe(false);
+      expect(mock.breakdown).not.toHaveBeenCalled();
+    });
+    it("interruptor de emergência (KLARNA_BILLING_COUNTRY_FORCED_PT=true): nunca, nem se calcula o total", async () => {
+      vi.stubEnv("KLARNA_BILLING_COUNTRY_FORCED_PT", "true");
+      mock.candidates.mockResolvedValue([tried({ guestPhone: "+351 912 345 678" })]);
+      await runCheckoutRecoverySweep();
+      expect(sentKlarna()).toBe(false);
+      expect(mock.breakdown).not.toHaveBeenCalled();
+    });
   });
 
   it("Stripe sem resposta: conta como sem tentativa (o texto que não fala de falhas serve a todos)", async () => {
@@ -351,5 +433,73 @@ describe("contacto 3: o Flex só é oferecido quando acrescenta dias à tarifa",
     mock.candidates.mockResolvedValue([stage3()]);
     await runCheckoutRecoverySweep();
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: expect.objectContaining({ days: 7 }) }));
+  });
+});
+
+describe("contactos 2 e 3: cancelamento gratuito e duas partes por baixo do total (29 out 2026)", () => {
+  const chargeAt = "2099-01-15T10:00:00.000Z";
+  // Tarifa moderate, 3 000 € de estadia, parado no passo dos dados (não só no pagamento).
+  const moderate = {
+    ratePlanId: "rp-moderate",
+    quote: { total: 3000, currency: "EUR", ratePlanOptions: [
+      { ratePlanId: "rp-moderate", name: "Flexible", total: 3000, nightlyRate: 600, cleaningFee: 0, cancellationPolicy: ["MODERATE"] },
+    ] },
+  };
+  const expired = () => new Date(Date.now() - 3_600_000);
+
+  it("contacto 2, em qualquer passo: a política da tarifa e as duas partes como o checkout as oferece agora", async () => {
+    const row = intent(21, { recoveryStage: 1, status: "contact_captured", ...moderate });
+    mock.candidates.mockResolvedValue([row]);
+    mock.plan.mockResolvedValue({ available: true, depositCents: 150_000, balanceCents: 150_000, chargeAt });
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.plan).toHaveBeenCalledWith(expect.objectContaining({ id: row.id, ratePlanId: "rp-moderate" }));
+    expect(mock.attempt).not.toHaveBeenCalled();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
+      stage: 2, paymentStep: false,
+      cancellation: { policy: "moderate" },
+      twoParts: { todayCents: 150_000, laterCents: 150_000, chargeAt: new Date(chargeAt) },
+    }));
+  });
+
+  it.each([
+    ["sem oferta (tarifa, antecedência ou flag)", () => mock.plan.mockResolvedValue({ available: false, reason: "lead_time" })],
+    ["erro ao calcular", () => mock.plan.mockRejectedValue(new Error("listing facts unavailable"))],
+  ])("contacto 2, duas partes %s: a política vai, as duas partes não", async (_label, arrange) => {
+    arrange();
+    mock.candidates.mockResolvedValue([intent(21, { recoveryStage: 1, ...moderate })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 2, cancellation: { policy: "moderate" }, twoParts: null }));
+  });
+
+  it("contacto 3: as linhas calculam-se sobre a cotação refeita e gravada (nova tarifa, Flex oferecido)", async () => {
+    mock.consent.mockResolvedValue(true);
+    mock.beQuote.mockResolvedValue({
+      quoteId: "q-new", total: 2280, currency: "EUR", nights: 5, ratePlanId: "rp1",
+      pricing: { nightlyRate: 420, totalNights: 2100, cleaningFee: 180, taxesAndFees: 0 },
+      ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2280, nightlyRate: 420, cleaningFee: 180, taxesAndFees: 0, cancellationPolicy: ["FIRM"] }],
+    });
+    mock.plan.mockResolvedValue({ available: true, depositCents: 114_000, balanceCents: 114_000, chargeAt });
+    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: expired(), ratePlanId: "rp-old" })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    const seen = mock.plan.mock.calls[0][0];
+    expect(seen).toMatchObject({ guestyQuoteId: "q-new", ratePlanId: "rp1", flex: true, flexGiftReason: "recovery" });
+    expect(seen.quote.total).toBe(2280);
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
+      stage: 3,
+      cancellation: { policy: "firm" },
+      twoParts: { todayCents: 114_000, laterCents: 114_000, chargeAt: new Date(chargeAt) },
+      flexGift: expect.objectContaining({ days: 7 }),
+    }));
+  });
+
+  it("contacto 4: sem estas linhas, nem se pede a oferta", async () => {
+    mock.consent.mockResolvedValue(true);
+    mock.candidates.mockResolvedValue([intent(7 * 24 + 2, { recoveryStage: 3, expiresAt: expired(), ...moderate })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.plan).not.toHaveBeenCalled();
+    const sent = mock.send.mock.calls[0][0];
+    expect(sent.stage).toBe(4);
+    expect(sent.twoParts).toBeUndefined();
+    expect(sent.cancellation).toBeUndefined();
   });
 });

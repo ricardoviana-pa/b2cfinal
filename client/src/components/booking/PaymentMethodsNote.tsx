@@ -6,11 +6,14 @@
  * preencher seis campos.
  *
  * As marcas são as oficiais do rodapé (public/payments, ver SOURCES.txt),
- * mais pequenas; a da Klarna só quando o total cabe no limite dela. <img> com lazy loading em vez de SVG no JS: não pesa no
- * bundle da página da casa, onde o telemóvel já é lento.
+ * mais pequenas; a da Klarna só quando a Klarna se oferece no país de
+ * faturação do hóspede e o total cabe no tecto desse país (shared/klarna.ts).
+ * <img> com lazy loading em vez de SVG no JS: não pesa no bundle da página da
+ * casa, onde o telemóvel já é lento.
  */
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { KLARNA_DEFAULT_COUNTRY, KLARNA_PAY_IN_3_MAX_CENTS, klarnaAvailable, klarnaBillingCountry } from "@shared/klarna";
 
 /** Visa, Mastercard e Amex (cartão), Apple Pay e Google Pay, PayPal, Klarna. */
 export const PAYMENT_MARKS = [
@@ -24,16 +27,17 @@ export const PAYMENT_MARKS = [
 ] as const;
 
 /**
- * A Klarna confirma com o país de faturação PT (KlarnaCheckoutButton), e o
- * Pay in 3 para clientes portugueses vai até 1 000 € (docs/pagamento_duas_partes.md
- * §2.1). Acima disso a Klarna recusa quase sempre: a marca só se mostra quando
- * o total cabe no limite, para não prometer antes do email um método que falha
- * (revisão do PR #176). Sem total conhecido, não se promete.
+ * A Klarna confirma com o país de faturação do hóspede (KlarnaCheckoutButton),
+ * e o Pay in 3 tem um tecto por país (shared/klarna.ts; em Portugal 1 000 €,
+ * docs/pagamento_duas_partes.md §2.1). Acima disso a Klarna recusa quase
+ * sempre: a marca só se mostra quando o total cabe no tecto do país, para não
+ * prometer antes do email um método que falha (revisão do PR #176). Sem total
+ * conhecido, não se promete; sem país conhecido, Portugal.
  */
-export const KLARNA_MAX_EUR = 1000;
+export const KLARNA_MAX_EUR = KLARNA_PAY_IN_3_MAX_CENTS[KLARNA_DEFAULT_COUNTRY] / 100;
 
-export function paymentMarksFor(total: number | null | undefined) {
-  const klarna = typeof total === "number" && total > 0 && total <= KLARNA_MAX_EUR;
+export function paymentMarksFor(total: number | null | undefined, country: string | null = KLARNA_DEFAULT_COUNTRY) {
+  const klarna = typeof total === "number" && Number.isFinite(total) && klarnaAvailable(country ?? KLARNA_DEFAULT_COUNTRY, Math.round(total * 100));
   return PAYMENT_MARKS.filter((mark) => mark.alt !== "Klarna" || klarna);
 }
 
@@ -41,20 +45,24 @@ export default function PaymentMethodsNote({
   align = "start",
   className,
   total,
+  country,
 }: {
   align?: "start" | "center";
   className?: string;
   /** O total que a Klarna cobraria (EUR): decide se a marca da Klarna aparece. */
   total?: number | null;
+  /** País de faturação do Klarna (ISO2). Sem ele, o país da língua do site, senão PT. */
+  country?: string | null;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const klarnaCountry = country ?? klarnaBillingCountry({ siteLang: i18n.language });
   return (
     <div className={cn("flex flex-col gap-1.5", align === "center" ? "items-center text-center" : "items-start", className)}>
       <ul
         aria-label={t("payment.methodsAccepted", "Accepted payment methods")}
         className={cn("flex flex-wrap items-center gap-1", align === "center" && "justify-center")}
       >
-        {paymentMarksFor(total).map((mark) => (
+        {paymentMarksFor(total, klarnaCountry).map((mark) => (
           <li
             key={mark.alt}
             className="inline-flex h-[20px] w-[32px] shrink-0 items-center justify-center overflow-hidden rounded-[4px] ring-1 ring-inset ring-black/10"

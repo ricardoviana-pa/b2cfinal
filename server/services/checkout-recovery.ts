@@ -4,7 +4,10 @@
  *
  * Quatro contactos (1h, 20h, 72h, 7 dias), cada um com um argumento
  * diferente; 10% de grupo de controlo sem emails; alerta ao concierge para
- * abandonos de valor alto no passo de pagamento.
+ * todos os abandonos no passo de pagamento (com ou sem telefone; decisão do
+ * Ricardo, 29 out 2026). Os contactos 1 (no pagamento), 2 e 3 levam por baixo
+ * do total o cancelamento gratuito da tarifa e as duas partes como o checkout
+ * as oferece no momento do envio.
  *
  * Idempotência: cada contacto é reclamado com um UPDATE condicional em
  * `recovery_stage` ANTES de o email sair, por isso nunca se repete, mesmo com
@@ -37,11 +40,12 @@ import {
   calendarScarcity,
   flexExtraDays,
   klarnaCanPay,
-  KLARNA_BILLING_COUNTRY_FORCED_PT,
+  klarnaBillingCountryForcedPt,
   type RecoveryStage,
 } from "./recovery-funnel";
 import { FLEX_CONFIG, flexPriceFor } from "../config/checkout-extras";
 import { planPolicyCode } from "@shared/cancellationPolicy";
+import { isKlarnaCountry, klarnaBillingCountry } from "@shared/klarna";
 import { intentPolicyCode, withoutExpiredFullPaymentGift } from "./checkout-plan";
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -151,7 +155,14 @@ async function scarcityFor(intent: BookingIntent) {
  * não se vendem, ou null se o Guesty não respondeu (adiar, não perder).
  */
 async function requoteForStage3(intent: BookingIntent): Promise<
-  | { kind: "ok"; quote: QuoteSnap & { total: number }; expiresAt: Date; flexGift: { until: Date; value: number; days: number } | null }
+  | {
+      kind: "ok";
+      quote: QuoteSnap & { total: number };
+      expiresAt: Date;
+      flexGift: { until: Date; value: number; days: number } | null;
+      /** O que ficou gravado no intent: o email do contacto 3 lê o intent assim. */
+      patch: Record<string, unknown>;
+    }
   | { kind: "unavailable" }
   | null
 > {
@@ -201,7 +212,7 @@ async function requoteForStage3(intent: BookingIntent): Promise<
           days: FLEX_CONFIG.rescheduleDaysBefore,
         }
       : null;
-    const ok = await updateBookingIntent(intent.id, {
+    const patch: Record<string, unknown> = {
       quote: quote as any,
       guestyQuoteId: be.quoteId,
       ratePlanId: plan?.ratePlanId ?? be.ratePlanId,
@@ -209,9 +220,10 @@ async function requoteForStage3(intent: BookingIntent): Promise<
       // A origem da oferta fica gravada: o pagamento em duas partes retira o
       // Flex oferecido por pagamento integral, e nunca pode retirar este.
       ...(flexGift ? { flexGiftUntil: flexGift.until, flex: true, flexGiftReason: "recovery", flexGiftPrevFlex: null } : {}),
-    } as any);
+    };
+    const ok = await updateBookingIntent(intent.id, patch as any);
     if (!ok) return null;
-    return { kind: "ok", quote, expiresAt, flexGift };
+    return { kind: "ok", quote, expiresAt, flexGift, patch };
   } catch (err: any) {
     const { describeGuestyError } = await import("./guesty");
     const reason = describeGuestyError(err);
@@ -271,8 +283,9 @@ async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
 export interface PaymentStepFacts {
   /** Chegou a carregar em Pagar (houve uma cobrança tentada). */
   attempted: boolean;
-  /** Depois de uma tentativa: o Klarna pode ser sugerido. Hoje nunca
-   *  (KLARNA_BILLING_COUNTRY_FORCED_PT). */
+  /** Depois de uma tentativa: o Klarna pode ser sugerido, no país de
+   *  faturação do hóspede e dentro do tecto desse país (shared/klarna.ts);
+   *  nunca com o interruptor de emergência (país forçado a PT) ligado. */
   klarna: boolean;
   /** Política da tarifa, para a linha do cancelamento gratuito. */
   cancellation: { policy: unknown } | null;
@@ -280,6 +293,11 @@ export interface PaymentStepFacts {
    *  é a resposta a "um limite do banco": metade hoje, no mesmo cartão. */
   twoParts: RecoveryTwoParts | null;
 }
+
+/** As duas linhas por baixo do total nos contactos 2 e 3 (as mesmas do
+ *  contacto 1 no pagamento): o cancelamento gratuito da tarifa e as duas
+ *  partes como o checkout as oferece agora. */
+export type BookingLineFacts = Pick<PaymentStepFacts, "cancellation" | "twoParts">;
 
 /**
  * O hóspede chegou a tentar pagar? Cartão e wallets deixam o PI no intent (o
@@ -331,10 +349,14 @@ async function twoPartsOfferNow(intent: BookingIntent): Promise<RecoveryTwoParts
 /** Contacto 1 no passo de pagamento: que email sai e com que linhas. */
 export async function paymentStepFacts(intent: BookingIntent): Promise<PaymentStepFacts> {
   const attempted = await paymentWasAttempted(intent);
-  // O Klarna só depois de uma tentativa e nunca com o país de faturação
-  // forçado a PT: sugeri-lo a quem teve "um limite do banco" mandava a
-  // maioria (não clientes Klarna em Portugal) para outra recusa.
-  const klarna = attempted && !KLARNA_BILLING_COUNTRY_FORCED_PT && klarnaCanPay(await checkoutTotalCents(intent));
+  // O Klarna só depois de uma tentativa, no país de faturação que o checkout
+  // mandaria (telefone do hóspede → língua do site → PT) e dentro do tecto
+  // desse país. Com o interruptor de emergência (país forçado a PT) nunca:
+  // sugeri-lo a quem teve "um limite do banco" mandava a maioria (não
+  // clientes Klarna em Portugal) para outra recusa.
+  const country = klarnaBillingCountry({ phone: intent.guestPhone, siteLang: intent.locale });
+  const klarna = attempted && !klarnaBillingCountryForcedPt() && isKlarnaCountry(country) &&
+    klarnaCanPay(await checkoutTotalCents(intent), country);
   return {
     attempted,
     klarna,
@@ -343,23 +365,39 @@ export async function paymentStepFacts(intent: BookingIntent): Promise<PaymentSt
   };
 }
 
+/** Contactos 2 e 3: as duas razões para reservar já, calculadas no envio
+ *  sobre o intent como está (no contacto 3, já com a cotação refeita). */
+export async function bookingLineFacts(intent: BookingIntent): Promise<BookingLineFacts> {
+  return {
+    cancellation: { policy: intentPolicyCode(intent) },
+    twoParts: await twoPartsOfferNow(intent),
+  };
+}
+
+/**
+ * Alerta ao concierge devido? Para todos os que param no passo de pagamento
+ * (decisão do Ricardo, 29 out 2026): com ou sem telefone (o email chega
+ * sempre, é o que abre o checkout), acima de CONCIERGE_ALERT_MIN_TOTAL (hoje
+ * 0), uma vez por checkout (conciergeAlerted), entre 1 h e 48 h do abandono.
+ */
 function conciergeAlertDue(intent: BookingIntent, ageMs: number): boolean {
   const total = Number((intent.quote as QuoteSnap | null)?.total ?? 0);
   return intent.status === "payment_pending" && total >= CONCIERGE_ALERT_MIN_TOTAL &&
-    !intent.conciergeAlerted && !!intent.guestPhone &&
+    !intent.conciergeAlerted && !!intent.email &&
     ageMs >= RECOVERY_TIMING.stage1AfterMs && ageMs <= 48 * HOUR_MS;
 }
 
-/** Alerta ao concierge: abandono verificado no pagamento de valor alto (uma vez). */
+/** Alerta ao concierge: abandono verificado no pagamento (uma vez). Sem
+ *  telefone, o alerta pede o contacto por email. */
 async function maybeAlertConcierge(intent: BookingIntent, ageMs: number): Promise<void> {
-  if (!conciergeAlertDue(intent, ageMs) || !intent.guestPhone) return;
+  if (!conciergeAlertDue(intent, ageMs)) return;
   const total = Number((intent.quote as QuoteSnap | null)?.total ?? 0);
   if (!await claimConciergeAlert(intent.id)) return;
   await sendConciergeCallAlert({
     intentId: intent.id,
     guestName: [intent.guestFirstName, intent.guestLastName].filter(Boolean).join(" "),
     guestEmail: intent.email || "",
-    guestPhone: intent.guestPhone,
+    guestPhone: intent.guestPhone || null,
     propertyName: sanitizePropertyName(intent.propertyName || ""),
     checkIn: intent.checkIn,
     checkOut: intent.checkOut,
@@ -429,6 +467,9 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       let quote = intent.quote as QuoteSnap | null;
       let expiresAt = intent.expiresAt;
       let flexGift: { until: Date; value: number; days: number } | null = null;
+      // O intent como fica depois da preparação: no contacto 3, com a cotação
+      // refeita e o Flex oferecido já gravados (as linhas do email lêem-no assim).
+      let intentNow: BookingIntent = intent;
       if (target === 3) {
         const rq = await requoteForStage3(intent);
         if (!rq) { skip.deferred++; continue; }
@@ -438,6 +479,7 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
           quote = rq.quote;
           expiresAt = rq.expiresAt;
           flexGift = rq.flexGift;
+          intentNow = { ...intent, ...rq.patch } as BookingIntent;
         }
       }
       const scarcity = target === 2 ? await scarcityFor(intent) : null;
@@ -445,6 +487,11 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       // Contacto 1 no passo de pagamento: o texto depende de ter havido uma
       // tentativa de pagar; sem ela, o que o checkout ofereceria agora.
       const payFacts = target === 1 && intent.status === "payment_pending" ? await paymentStepFacts(intent) : null;
+      // Contactos 2 e 3: as mesmas duas linhas por baixo do total (cancelamento
+      // gratuito com data e duas partes), com as regras do contacto 1: só com
+      // a oferta do servidor e só quando os valores somam o total do cartão.
+      const bookingFacts = target === 2 || target === 3 ? await bookingLineFacts(intentNow) : null;
+      const lineFacts = payFacts ?? bookingFacts;
 
       // Claim before sending — losing an email beats repeating one.
       const claimed = await claimRecoveryStage(intent.id, stage, target);
@@ -470,8 +517,8 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
           paymentStep: intent.status === "payment_pending",
           paymentAttempted: payFacts?.attempted,
           klarna: payFacts?.klarna,
-          cancellation: payFacts?.cancellation,
-          twoParts: payFacts?.twoParts,
+          cancellation: lineFacts?.cancellation,
+          twoParts: lineFacts?.twoParts,
           scarcity,
           flexGift,
           alternatives: alt?.alternatives,

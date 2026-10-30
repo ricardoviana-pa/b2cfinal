@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   nextRecoveryStage, isRecoveryHoldout, flexGiftActive, calendarScarcity, hasEnoughLeadTime, RECOVERY_TIMING,
-  flexExtraDays, klarnaCanPay, KLARNA_MAX_CENTS,
+  flexExtraDays, klarnaCanPay, KLARNA_MAX_CENTS, KLARNA_BILLING_COUNTRY_FORCED_PT, klarnaBillingCountryForcedPt,
+  CONCIERGE_ALERT_MIN_TOTAL,
 } from "./recovery-funnel";
 import { computeChargeBreakdown } from "./checkout-pricing";
 import { FLEX_CONFIG } from "../config/checkout-extras";
@@ -79,13 +80,26 @@ describe("Flex: dias que acrescenta ao cancelamento gratuito da tarifa", () => {
   });
 });
 
-describe("Klarna: limite do Paga em 3 para clientes PT", () => {
-  it("até 1 000 € inclusive, sim; acima, não", () => {
+describe("Klarna: tecto do Paga em 3 por país de faturação", () => {
+  it("Portugal (por omissão): até 1 000 € inclusive, sim; acima, não", () => {
     expect(KLARNA_MAX_CENTS).toBe(100_000);
     expect(klarnaCanPay(99_900)).toBe(true);
     expect(klarnaCanPay(100_000)).toBe(true);
     expect(klarnaCanPay(100_001)).toBe(false);
     expect(klarnaCanPay(250_000)).toBe(false);
+    expect(klarnaCanPay(250_000, "PT")).toBe(false);
+  });
+  it("outros países: o tecto publicado de cada um; fora da tabela da Klarna em euros, nunca", () => {
+    expect(klarnaCanPay(250_000, "DE")).toBe(true);
+    expect(klarnaCanPay(500_000, "de")).toBe(true);
+    expect(klarnaCanPay(500_001, "DE")).toBe(false);
+    expect(klarnaCanPay(300_000, "FR")).toBe(true);
+    expect(klarnaCanPay(300_001, "FR")).toBe(false);
+    expect(klarnaCanPay(100_000, "GR")).toBe(true);
+    expect(klarnaCanPay(100_001, "GR")).toBe(false);
+    for (const country of ["GB", "SE", "DK", "BE", "FI", "US", "CH", "", null]) {
+      expect(klarnaCanPay(50_000, country), String(country)).toBe(false);
+    }
   });
   it("sem total conhecido (ou inválido), não se sugere", () => {
     expect(klarnaCanPay(null)).toBe(false);
@@ -93,5 +107,22 @@ describe("Klarna: limite do Paga em 3 para clientes PT", () => {
     expect(klarnaCanPay(0)).toBe(false);
     expect(klarnaCanPay(Number.NaN)).toBe(false);
     expect(klarnaCanPay(500.5)).toBe(false);
+    expect(klarnaCanPay(500.5, "DE")).toBe(false);
+  });
+  it("interruptor de emergência: por omissão desligado (país real do hóspede); só o ambiente o liga", () => {
+    expect(KLARNA_BILLING_COUNTRY_FORCED_PT).toBe(false);
+    expect(klarnaBillingCountryForcedPt({})).toBe(false);
+    expect(klarnaBillingCountryForcedPt({ KLARNA_BILLING_COUNTRY_FORCED_PT: "" })).toBe(false);
+    expect(klarnaBillingCountryForcedPt({ KLARNA_BILLING_COUNTRY_FORCED_PT: "false" })).toBe(false);
+    expect(klarnaBillingCountryForcedPt({ KLARNA_BILLING_COUNTRY_FORCED_PT: "0" })).toBe(false);
+    expect(klarnaBillingCountryForcedPt({ KLARNA_BILLING_COUNTRY_FORCED_PT: "true" })).toBe(true);
+    expect(klarnaBillingCountryForcedPt({ KLARNA_BILLING_COUNTRY_FORCED_PT: " TRUE " })).toBe(true);
+    expect(klarnaBillingCountryForcedPt({ KLARNA_BILLING_COUNTRY_FORCED_PT: "1" })).toBe(true);
+  });
+});
+
+describe("alerta ao concierge: para todos os que param no pagamento (29 out 2026)", () => {
+  it("sem mínimo de valor", () => {
+    expect(CONCIERGE_ALERT_MIN_TOTAL).toBe(0);
   });
 });

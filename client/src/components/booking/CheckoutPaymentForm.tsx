@@ -43,6 +43,7 @@ import { cardElementsOptions, expressCheckoutElementsOptions } from "./stripeEle
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 import PaymentErrorNotice, { type PaymentErrorView, type TwoPartsSwitch } from "./PaymentErrorNotice";
+import { klarnaAvailable, klarnaBillingCountry } from "@shared/klarna";
 
 type PaymentMethodId = "card" | "googlepay" | "paypal" | "klarna";
 
@@ -179,6 +180,10 @@ interface CheckoutPaymentFormProps {
   demo?: boolean;
   /** Demo (?declined=insufficient_funds): simula uma recusa, para rever o aviso. */
   demoDecline?: string | null;
+  /** País de faturação do Klarna (shared/klarna.ts: telefone do hóspede →
+   *  língua do site → PT). Decide se o separador da Klarna aparece (país e
+   *  tecto) e é o país com que a Klarna confirma. */
+  klarnaCountry?: string;
 }
 
 const isQuoteExpiredError = (e: unknown) =>
@@ -789,6 +794,14 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   useEffect(() => {
     if (props.plan === "two_parts") setWalletError(null);
   }, [props.plan]);
+  // Klarna só no país de faturação e até ao tecto que a Klarna aceita
+  // (shared/klarna.ts). Se deixar de estar disponível (telefone de outro país,
+  // um extra que passa o tecto), volta ao cartão em vez de um separador morto.
+  const klarnaCountry = props.klarnaCountry ?? klarnaBillingCountry({ siteLang: i18n.language });
+  const klarnaOk = klarnaAvailable(klarnaCountry, Math.round((props.otherMethodsTotal ?? props.total) * 100));
+  useEffect(() => {
+    if (!klarnaOk && paymentMethod === "klarna") setPaymentMethod("card");
+  }, [klarnaOk, paymentMethod]);
   const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery(undefined, {
     enabled: !demo,
   });
@@ -985,11 +998,12 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         </Elements>
       ))}
 
-      {/* Payment method selector — 3 icon cards (Google Pay hidden). Em duas
-          partes só há cartão: Klarna e PayPal cobram tudo hoje. */}
+      {/* Payment method selector — icon cards (Google Pay hidden; Klarna só
+          quando o país e o valor cabem no que ela aceita). Em duas partes só
+          há cartão: Klarna e PayPal cobram tudo hoje. */}
       {!twoParts && (
-      <div ref={methodsRef} tabIndex={-1} className="outline-none" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "9px" }}>
-        {PAYMENT_METHODS.filter(({ id }) => id !== "googlepay").map(({ id, label, Logo }) => (
+      <div ref={methodsRef} tabIndex={-1} className="outline-none" style={{ display: "grid", gridTemplateColumns: `repeat(${klarnaOk ? 3 : 2}, 1fr)`, gap: "9px" }}>
+        {PAYMENT_METHODS.filter(({ id }) => id !== "googlepay" && (id !== "klarna" || klarnaOk)).map(({ id, label, Logo }) => (
           <button
             key={id}
             type="button"
@@ -1085,12 +1099,13 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         </div>
       )}
 
-      {paymentMethod === "klarna" && !twoParts && (
+      {paymentMethod === "klarna" && !twoParts && klarnaOk && (
         <div className="space-y-3">
           {klarnaError && <PaymentErrorNotice error={klarnaError} {...noticeProps} />}
           {props.consent}
           <KlarnaCheckoutButton
             {...redirectCommon}
+            billingCountry={klarnaCountry}
             onError={onRedirectMethodError("klarna")}
             onDemo={() => demoPay(setKlarnaError)}
           />
