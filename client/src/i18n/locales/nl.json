@@ -1622,7 +1622,8 @@
     "backToStay": "Terug naar het verblijf",
     "payTitle": "Betaling",
     "paySubtitle": "Uw gegevens, daarna een veilige betaling.",
-    "nifPh": "Fiscaal nummer of btw-nummer, optioneel, voor uw factuur",
+    "nifPh": "Fiscaal of btw-nummer (optioneel)",
+    "nifNote": "Alleen als u dit op uw factuur wilt.",
     "directTitle": "Direct boeken bij Portugal Active",
     "refreshBeforePay": "Vernieuw de prijs hierboven voordat u betaalt.",
     "secureNote": "Versleutelde, veilige betaling",
@@ -1886,6 +1887,11 @@
     "perPersonDay": "per persoon · dag",
     "allDays": "Elke dag",
     "airport": "Luchthaven",
+    "sections": {
+      "noExtras": "Geen extra’s",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extra’s"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lissabon",
     "confirm24hNote": "Als we het niet kunnen garanderen, wordt de regel automatisch terugbetaald.",

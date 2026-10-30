@@ -1622,7 +1622,8 @@
     "backToStay": "Voltar à estadia",
     "payTitle": "Pagamento",
     "paySubtitle": "Os seus dados e um pagamento seguro.",
-    "nifPh": "NIF ou nº de IVA, opcional, para a sua fatura",
+    "nifPh": "NIF ou nº de IVA (opcional)",
+    "nifNote": "Só se quiser o NIF na fatura.",
     "directTitle": "Reserva direta com a Portugal Active",
     "refreshBeforePay": "Atualize o preço acima antes de pagar.",
     "secureNote": "Pagamento seguro e cifrado",
@@ -1886,6 +1887,11 @@
     "perPersonDay": "por pessoa · dia",
     "allDays": "Todos os dias",
     "airport": "Aeroporto",
+    "sections": {
+      "noExtras": "Sem extras",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extras"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lisboa",
     "confirm24hNote": "Se não conseguirmos garantir, devolvemos essa linha automaticamente.",

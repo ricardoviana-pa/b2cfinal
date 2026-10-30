@@ -53,15 +53,16 @@ describe("mergeManualReviews", () => {
     expect(reviewKey({ text: "Óptima estadia!" })).toBe(reviewKey({ text: "optima  estadia" }));
   });
 
-  it("rejects everything that is not a 5★ with real text", () => {
+  it("keeps every real rating with real text (all ratings count since 29 out 2026)", () => {
     const merged = mergeManualReviews([], [
-      { rating: 3, text: "Was ok" },
-      { rating: 4, text: "Good, but the pool was cold" }, // the site publishes 5★ only
+      { rating: 3, text: "Was ok", date: "2024-03-01" },
+      { rating: 4, text: "Good, but the pool was cold", date: "2024-02-01" },
       { rating: 5, text: "   " },                          // no text
       { rating: 10, text: "Ten point scale" },             // must be pre-normalised
+      { rating: 0, text: "No rating" },
       { rating: 5, text: "Keeper", date: "2024-01-01" },
     ]);
-    expect(merged.map(r => r.text)).toEqual(["Keeper"]);
+    expect(merged.map(r => [r.rating, r.text])).toEqual([[3, "Was ok"], [4, "Good, but the pool was cold"], [5, "Keeper"]]);
   });
 
   it("caps runaway text the same way the Guesty funnel does", () => {

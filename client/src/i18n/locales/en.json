@@ -1622,7 +1622,8 @@
     "backToStay": "Back to your stay",
     "payTitle": "Payment",
     "paySubtitle": "Your details, then a secure payment.",
-    "nifPh": "Tax ID or VAT number, optional, for your invoice",
+    "nifPh": "Tax ID or VAT no. (optional)",
+    "nifNote": "Only if you want it on your invoice.",
     "directTitle": "Booking direct with Portugal Active",
     "refreshBeforePay": "Refresh the price above before paying.",
     "secureNote": "Encrypted, secure payment",
@@ -1886,6 +1887,11 @@
     "perPersonDay": "per person · day",
     "allDays": "Every day",
     "airport": "Airport",
+    "sections": {
+      "noExtras": "No extras",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extras"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lisbon",
     "confirm24hNote": "If we cannot secure it, the line is refunded automatically.",

@@ -1622,7 +1622,8 @@
     "backToStay": "Zurück zum Aufenthalt",
     "payTitle": "Zahlung",
     "paySubtitle": "Ihre Angaben, dann eine sichere Zahlung.",
-    "nifPh": "Steuernummer oder USt-IdNr., optional, für Ihre Rechnung",
+    "nifPh": "Steuer- oder USt-IdNr. (optional)",
+    "nifNote": "Nur, wenn die Nummer auf Ihrer Rechnung stehen soll.",
     "directTitle": "Direkt buchen bei Portugal Active",
     "refreshBeforePay": "Aktualisieren Sie den Preis oben vor der Zahlung.",
     "secureNote": "Verschlüsselte, sichere Zahlung",
@@ -1886,6 +1887,11 @@
     "perPersonDay": "pro Person · Tag",
     "allDays": "Jeden Tag",
     "airport": "Flughafen",
+    "sections": {
+      "noExtras": "Keine Extras",
+      "extrasCount_one": "{{count}} Extra",
+      "extrasCount_other": "{{count}} Extras"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lissabon",
     "confirm24hNote": "Können wir es nicht garantieren, wird die Position automatisch erstattet.",

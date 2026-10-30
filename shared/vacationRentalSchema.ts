@@ -2,6 +2,8 @@
  * Rates require dates and a verified quote; imported base rates are not offers.
  * Missing source data stays missing rather than inventing rich-result fields.
  */
+import { REVIEW_CHANNEL_RE } from './reviewStats';
+
 export interface VacationRentalInput {
   id?: string | number | null;
   guestyId?: string | null;
@@ -97,8 +99,10 @@ export function vacationRentalSchema(i: VacationRentalInput, lang = 'en'): Recor
     ...(i.aggregateRating && finite(i.aggregateRating.ratingValue) && i.aggregateRating.ratingValue >= 1 && i.aggregateRating.ratingValue <= 5 && count(i.aggregateRating.reviewCount) && i.aggregateRating.reviewCount > 0 && {
       aggregateRating: { '@type': 'AggregateRating', ...i.aggregateRating, bestRating: 5, worstRating: 1 },
     }),
+    // The review nodes follow the page's white-label rule: a body that names
+    // the booking channel is not published to bots either (reviewStats.ts).
     ...(i.reviews?.length && { review: i.reviews
-      .filter(r => finite(r.rating) && r.rating >= 1 && r.rating <= 5 && r.guestName && r.text)
+      .filter(r => finite(r.rating) && r.rating >= 1 && r.rating <= 5 && r.guestName && r.text && !REVIEW_CHANNEL_RE.test(r.text))
       .slice(0, 5).map(r => ({
         '@type': 'Review', reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5, worstRating: 1 },
         author: { '@type': 'Person', name: r.guestName }, reviewBody: r.text.slice(0, 500),

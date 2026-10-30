@@ -307,3 +307,15 @@ Regra de disciplina: cada fase entra em produção sozinha. Não misturar fases 
 ## 17. Prompt inicial sugerido para o Claude Code
 
 "Lê docs/checkout_spec.md na íntegra, com atenção às alterações da v1.2. Executa apenas a fase que eu indicar. Antes de escrever código, lista os ficheiros que vais tocar e o plano. Não altera nada fora do âmbito da fase. No fim, mostra como validar cada critério de aceitação."
+
+---
+
+## 18. Alteração de 29 de outubro de 2026: uma página, três secções
+
+Decisão do Ricardo depois da auditoria do funil (pedido: "melhorar o checkout a nível de design e organização e tirar ruído", mantendo os extras mas simplificados; referência: o checkout da Indie Campers).
+
+* Os três passos passam a três secções numeradas na mesma página (`client/src/pages/checkout/CheckoutSection.tsx`): só a secção activa está aberta; uma concluída colapsa numa linha com ✓, resumo ("28 nov 2026 → 03 dez 2026 · 4 hóspedes · Tarifa Reembolsável"; "Self check-in · Berço de viagem · Trazer animal de estimação", ou a contagem a partir de três extras) e "Editar"; as seguintes ficam fechadas. O cabeçalho perde o stepper. O estado (`stay` → `customize` → `pay`), os estados do intent, a sincronização e os eventos não mudam. Isto substitui o "indicador dos 3 passos" da secção 3 e os critérios 1, 2, 5 e 6 de `docs/checkout_fase2_1_polish.md` (nav de capítulos, títulos de 48 px).
+* Secção Extras compacta (`CustomizeStep.tsx`): três grupos com a mesma anatomia de linha. A chegada (receção obrigatória, duas linhas rádio); Detalhes da estadia (berço, cadeira de bebé, animal, com kit e comida por progressive disclosure); Serviços opcionais com a lista curta aprovada a 23 set (chef, breakfast box, compras feitas) e o resto do catálogo, transfers e experiências (linhas com miniatura real) atrás de "Ver todos os serviços (N)". Um item escolhido no catálogo completo continua à vista com a lista fechada. A nota das cobranças fica sempre visível. O Flex mantém-se no fim da secção, sempre aberto, branco em repouso e areia quando escolhido.
+* Resumo com grupos rotulados (A SUA ESTADIA · EXTRAS OPCIONAIS · TOTAL), foto 3:2, total sem contagem animada. O self check-in incluído não ocupa linha.
+* Uma só anatomia de cartão seleccionável (tarifa, receção, plano de pagamento, método): 1 px areia em repouso, escuro com fundo areia quando escolhido. Areia deixa de ser decoração.
+* Chaves novas, nas 9 línguas: `checkout.sections.noExtras`, `checkout.sections.extrasCount_one/_other` (os nomes dos aeroportos usam `checkout.airportPorto/airportLisbon`, que entraram no main a 29 out). Nenhum texto existente mudou (os que esperam o OK do André continuam iguais).

@@ -10,6 +10,7 @@ import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { guestyClient, isGuestyConfigured } from "../lib/guesty";
 import { isPataias } from "./property-geography";
+import { isValidRating, normaliseRating, reviewAggregate } from "../../shared/reviewStats";
 
 // GitHub persistence config (set via env vars on Render)
 const GITHUB_PAT = process.env.GITHUB_PAT || "";
@@ -275,9 +276,9 @@ async function copyOverrides(): Promise<NonNullable<typeof _copyOverrides>> {
  * the same shape buildReviewsByListing produces. They are MERGED with (never
  * replaced by) whatever Guesty returns, so a later Guesty sync can only ever
  * add to the set. Content is copied from the host's own channel dashboards —
- * these are real stays, so they count toward averageRating/reviewCount. Note
- * that with the 5★-only bar the published average is 5.00 by construction: it
- * is the true average OF WHAT THE SITE CARRIES, not of every stay ever had.
+ * these are real stays, so they count toward averageRating/reviewCount, at
+ * whatever rating they were given (every rating counts since 29 out 2026; the
+ * 5★-only bar of 30 Aug 2026 is gone).
  */
 let _manualReviews: Record<string, any[]> | null = null;
 async function manualReviews(): Promise<Record<string, any[]>> {
@@ -319,8 +320,9 @@ export function mergeManualReviews(guestyReviews: any[], manual: any[] | undefin
   for (const m of manual) {
     const text = String(m?.text ?? "").trim();
     const rating = Number(m?.rating ?? 0);
-    // Same bar as the Guesty funnel: real text, and 5★ exactly.
-    if (!text || rating !== 5) continue;
+    // Same bar as the Guesty funnel: real text and a real rating (1–5, already
+    // on the five-point scale) — every rating, not only 5★.
+    if (!text || !isValidRating(rating)) continue;
     const key = reviewKey(m);
     if (key && seen.has(key)) continue;
     if (key) seen.add(key);
@@ -592,10 +594,10 @@ function reviewerLocation(review: any, raw: any): string | null {
   return loc ? String(loc).trim() : null;
 }
 
-/** Group reviews by listingId. Filters: guest-to-host only, public only,
- *  rating >= 4 (normalised to a 5-star scale), non-empty text. Sorted newest
- *  first. Exposes a privacy-safe payload (first name, optional photo/location;
- *  never the channel or full name). */
+/** Group reviews by listingId. Filters: guest-to-host only, public only, a
+ *  real rating (any value, normalised to the 5-star scale), non-empty text.
+ *  Sorted newest first. Exposes a privacy-safe payload (first name, optional
+ *  photo/location; never the channel or full name). */
 function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
   const byListing = new Map<string, any[]>();
   let loggedSample = false;
@@ -606,7 +608,7 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
   // Where reviews go. Guesty returns BOTH directions of every stay and every
   // rating, so a big raw number shrinks a lot before publication — this makes
   // the funnel visible instead of leaving "we have 1000+ on Airbnb" a mystery.
-  const drop = { total: 0, noListing: 0, hostToGuest: 0, private: 0, belowBar: 0, noText: 0, kept: 0 };
+  const drop = { total: 0, noListing: 0, hostToGuest: 0, private: 0, noRating: 0, noText: 0, kept: 0 };
 
   for (const review of reviews) {
     drop.total++;
@@ -640,10 +642,9 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
     if (isPrivate) { drop.private++; continue; }
 
     // Ratings arrive on two scales: Airbnb-style 1-5, and Booking.com-style
-    // 1-10. Work out WHICH before normalising, because the bar differs by
-    // scale. Detect by channel when the payload names one (a 5/10 would
-    // otherwise be indistinguishable from a perfect 5/5), and fall back to
-    // the value itself.
+    // 1-10. Work out WHICH before normalising. Detect by channel when the
+    // payload names one (a 5/10 would otherwise be indistinguishable from a
+    // perfect 5/5), and fall back to the value itself.
     const channelRaw = String(
       raw.channel ?? raw.channelName ?? raw.source ?? raw.platform ??
       review.channel ?? review.channelName ?? review.source ?? review.platform ?? "",
@@ -652,17 +653,14 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
     const isTenPointChannel = /booking|expedia|agoda|hotels?\.com|vrbo|homeaway/.test(channelRaw);
     const isTenPointScale = isTenPointChannel || rawRating > 5;
 
-    // 5★ only, by product decision (2026-08-30): the site publishes perfect
-    // stays and nothing else, so a 4★ is not merely hidden from the cards — it
-    // never enters the data, and therefore never moves averageRating or
-    // reviewCount. On 10-point channels the equivalent of 5/5 is 10/10.
-    const MIN_TEN_POINT = 10;
-    const MIN_FIVE_POINT = 5;
-    if (isTenPointScale ? rawRating < MIN_TEN_POINT : rawRating < MIN_FIVE_POINT) { drop.belowBar++; continue; }
+    // Every rating counts (Ricardo, 29 out 2026): a 4★ or a 3★ is published
+    // like a 5★ and moves averageRating/reviewCount — the page shows the real
+    // average of the home. Between 30 Aug and 29 Oct 2026 the site kept 5★
+    // only, so every home read "5.0". What is dropped here is only what is
+    // not a rating at all (0, missing, off the scale).
+    const rating = normaliseRating(rawRating, isTenPointScale);
+    if (rating === null) { drop.noRating++; continue; }
     if (channelRaw) channelCounts.set(channelRaw, (channelCounts.get(channelRaw) ?? 0) + 1);
-
-    let rating = isTenPointScale ? rawRating / 2 : rawRating;
-    rating = Math.round(rating * 10) / 10;
 
     const text = (raw.public_review || raw.publicReview || raw.comments || "").trim();
 
@@ -700,7 +698,7 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
   console.info(
     `[Guesty Sync] Review funnel — fetched ${drop.total}: ` +
     `${drop.hostToGuest} host-to-guest, ${drop.private} private/hidden, ` +
-    `${drop.belowBar} below the rating bar, ${drop.noText} without text, ` +
+    `${drop.noRating} without a rating, ${drop.noText} without text, ` +
     `${drop.noListing} unlinked → ${drop.kept} published`,
   );
 
@@ -988,16 +986,15 @@ function mapListingToProperty(
     checkOutTime: listing.defaultCheckOutTime || "11:00",
     areaSquareFeet: listing.areaSquareFeet || null,
     // Ship up to 40 review cards; averageRating/reviewCount reflect the FULL
-    // filtered subset (5★, guest-to-host, public) — never the sliced set and
-    // never the listing's global average.
+    // published set (every rating, guest-to-host, public, with text) — never
+    // the sliced set and never the listing's global average. The page shows
+    // the average only from three reviews (shared/reviewStats.ts).
     // 20 was chosen when no home came close to it; with the curated Airbnb
     // back-catalogue merged in, the well-reviewed homes now do, and the PDP
-    // only renders 6 until the guest asks for more anyway.
+    // only renders 4 until the guest asks for more anyway.
     reviews: reviews.slice(0, 40),
-    averageRating: reviews.length > 0
-      ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 100) / 100
-      : null,
-    reviewCount: reviews.length,
+    averageRating: reviewAggregate(reviews).average,
+    reviewCount: reviewAggregate(reviews).count,
   };
 }
 
@@ -1250,4 +1247,4 @@ async function pingIndexNowForChanges(
 }
 
 /** Pure helpers exposed for tests — see server/services/lastmod.test.ts. */
-export const __testing = { contentFingerprint, stampLastModified };
+export const __testing = { contentFingerprint, stampLastModified, buildReviewsByListing };

@@ -1622,7 +1622,8 @@
     "backToStay": "Tillbaka till vistelsen",
     "payTitle": "Betalning",
     "paySubtitle": "Dina uppgifter, sedan en säker betalning.",
-    "nifPh": "Skattenummer eller momsnummer, valfritt, för din faktura",
+    "nifPh": "Skatte- eller momsnr (valfritt)",
+    "nifNote": "Endast om du vill ha det på fakturan.",
     "directTitle": "Boka direkt hos Portugal Active",
     "refreshBeforePay": "Uppdatera priset ovan innan du betalar.",
     "secureNote": "Krypterad, säker betalning",
@@ -1886,6 +1887,11 @@
     "perPersonDay": "per person · dag",
     "allDays": "Varje dag",
     "airport": "Flygplats",
+    "sections": {
+      "noExtras": "Inga tillägg",
+      "extrasCount_one": "{{count}} tillägg",
+      "extrasCount_other": "{{count}} tillägg"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lissabon",
     "confirm24hNote": "Om vi inte kan garantera det återbetalas raden automatiskt.",
