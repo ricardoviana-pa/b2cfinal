@@ -45,6 +45,7 @@ import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
 import { payButtonGate, splitFullName, walletGuestDetails, walletsVisible, type WalletGuest } from "@/lib/checkoutPayment";
 import { EXPRESS_CHECKOUT_CONTACT_FIELDS, cardElementsOptions, expressCheckoutElementsOptions } from "./stripeElementsOptions";
+import { COMPANY_LEGAL_NAME, COMPANY_NIPC, companyAddressLine } from "@shared/company";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 import PaymentErrorNotice, { type PaymentErrorView, type TwoPartsSwitch } from "./PaymentErrorNotice";
@@ -408,25 +409,41 @@ function ExpressWalletInner({
         onReady={({ availablePaymentMethods }) => setAvailable(!!availablePaymentMethods)}
         onConfirm={handleConfirm}
       />
-      <WalletsAcceptLine lang={i18n.language} />
+      <WalletsAcceptLine lang={i18n.language} total={total} />
       {error && <PaymentErrorNotice error={error} {...noticeProps} plan="full" />}
       <div aria-hidden style={{ borderTop: "1px solid #E8E4DC" }} />
     </div>
   );
 }
 
-/** Debaixo dos botões das wallets: pagar é aceitar os Termos e a política de
- *  cancelamento (a caixa dos Termos só é obrigatória no cartão, PayPal e Klarna). */
-function WalletsAcceptLine({ lang }: { lang: string }) {
+/** Debaixo dos botões das wallets, no lugar da linha dos Termos: os factos
+ *  pré-contratuais que a folha da wallet não mostra (quem vende, com o NIPC, e
+ *  o total, tudo hoje: as wallets nunca pagam em duas partes) e que pagar é
+ *  aceitar os Termos e a política de cancelamento (a caixa dos Termos só é
+ *  obrigatória no cartão, PayPal e Klarna). A frase da política e a nota da
+ *  livre resolução ficam no bloco pré-contratual, uma vez por ecrã. */
+function WalletsAcceptLine({ lang, total }: { lang: string; total: number }) {
   const { t } = useTranslation();
   const link = "text-pa-dark underline hover:text-pa-gold-aa";
+  const address = companyAddressLine();
+  const amount = formatQuotedEur(total, lang);
   return (
-    <p className="caption text-pa-earth leading-snug" data-testid="wallets-accept-line">
-      {t("payment.walletsAcceptPrefix")}{" "}
-      <a href={`/${lang}/legal/terms`} target="_blank" rel="noopener noreferrer" className={link}>{t("bookingWidget.termsLink", "Terms & Conditions")}</a>
-      {" "}{t("bookingWidget.termsAnd", "and the")}{" "}
-      <a href={`/${lang}/legal/cancellation-policy`} target="_blank" rel="noopener noreferrer" className={link}>{t("bookingWidget.cancellationPolicyLink")}</a>.
-    </p>
+    <div className="space-y-1" data-testid="wallets-accept-line">
+      <p className="caption text-pa-stone-aa leading-snug">
+        {t("checkout.legal.operator", { company: COMPANY_LEGAL_NAME, nipc: COMPANY_NIPC })}
+        {address ? ` · ${address}` : ""}
+        {" · "}
+        <span className="text-pa-dark tabular-nums">
+          {t("checkout.legal.total", { total: amount })} · {t("checkout.legal.payFull", { amount })}
+        </span>
+      </p>
+      <p className="caption text-pa-earth leading-snug">
+        {t("payment.walletsAcceptPrefix")}{" "}
+        <a href={`/${lang}/legal/terms`} target="_blank" rel="noopener noreferrer" className={link}>{t("bookingWidget.termsLink", "Terms & Conditions")}</a>
+        {" "}{t("bookingWidget.termsAnd", "and the")}{" "}
+        <a href={`/${lang}/legal/cancellation-policy`} target="_blank" rel="noopener noreferrer" className={link}>{t("bookingWidget.cancellationPolicyLink")}</a>.
+      </p>
+    </div>
   );
 }
 
@@ -1002,7 +1019,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
               Google Pay
             </div>
           </div>
-          <WalletsAcceptLine lang={i18n.language} />
+          <WalletsAcceptLine lang={i18n.language} total={props.total} />
           <div aria-hidden style={{ borderTop: "1px solid #E8E4DC" }} />
         </div>
       ) : (

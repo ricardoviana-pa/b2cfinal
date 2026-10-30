@@ -45,7 +45,9 @@ describe("shared/company.ts: uma só fonte", () => {
     expect(email).toMatch(/\$\{companyLegalLine\(\)\}<\/p>\s*\n<\/td><\/tr>`;\s*\n\}/);
     const block = read("client/src/pages/checkout/PreContractualBlock.tsx");
     expect(block).toMatch(/from "@shared\/company"/);
-    for (const src of [footer, email, block, read("client/src/pages/checkout/CheckoutPage.tsx")]) {
+    const form = read("client/src/components/booking/CheckoutPaymentForm.tsx");
+    expect(form).toMatch(/from "@shared\/company"/);
+    for (const src of [footer, email, block, form, read("client/src/pages/checkout/CheckoutPage.tsx")]) {
       expect(src).not.toMatch(/515363685/);
       expect(src).not.toMatch(/Torres Viana/);
     }
@@ -73,6 +75,23 @@ describe("bloco pré-contratual acima do botão de pagar", () => {
     expect(form).toMatch(/consent=\{props\.consent\}/);
     expect(form).toMatch(/paymentMethod === "paypal" && !twoParts && \(\s*<div className="space-y-3">[\s\S]{0,160}?\{props\.consent\}\s*<PayPalCheckoutButton/);
     expect(form).toMatch(/paymentMethod === "klarna" && !twoParts && \(\s*<div className="space-y-3">[\s\S]{0,160}?\{props\.consent\}\s*<KlarnaCheckoutButton/);
+  });
+
+  it("as wallets (à cabeça do ecrã, pagam tudo hoje) levam os mesmos factos na sua linha dos Termos: empresa, NIPC e total", () => {
+    const form = read("client/src/components/booking/CheckoutPaymentForm.tsx");
+    const line = form.slice(form.indexOf("function WalletsAcceptLine("), form.indexOf("/** Policy acceptance object"));
+    expect(line).toMatch(/t\("checkout\.legal\.operator", \{ company: COMPANY_LEGAL_NAME, nipc: COMPANY_NIPC \}\)/);
+    expect(line).toMatch(/\{address \? ` · \$\{address\}` : ""\}/);
+    expect(line).toMatch(/t\("checkout\.legal\.total", \{ total: amount \}\)/);
+    expect(line).toMatch(/t\("checkout\.legal\.payFull", \{ amount \}\)/);
+    expect(line).toMatch(/payment\.walletsAcceptPrefix/);
+    expect(line).toMatch(/\/legal\/terms[\s\S]*\/legal\/cancellation-policy/);
+    // a frase da política e a nota da livre resolução ficam no bloco (uma vez por ecrã)
+    expect(line).not.toMatch(/CancellationPolicyLine|noWithdrawal/);
+    expect(line).not.toMatch(/text-\[#9E9A90\]|text-\[#8B7355\]|text-pa-gold["\s]/);
+    // a linha recebe o total que a wallet cobra, na Stripe e na demo
+    expect(form).toMatch(/<WalletsAcceptLine lang=\{i18n\.language\} total=\{total\} \/>/);
+    expect(form).toMatch(/<WalletsAcceptLine lang=\{i18n\.language\} total=\{props\.total\} \/>/);
   });
 
   it("empresa e NIPC, total, plano numa linha e a nota da livre resolução, em letra pequena", () => {
