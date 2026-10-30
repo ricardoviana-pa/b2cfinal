@@ -14,6 +14,7 @@ import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
 import { COMPLAINTS_BOOK_NAME, COMPLAINTS_BOOK_URL } from '@/lib/legalLinks';
 import { FOOTER_BOTTOM_INSET } from '@/lib/fixedBottom';
+import { COMPANY_LEGAL_NAME, COMPANY_NIPC, companyAddressLine } from '@shared/company';
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
@@ -241,9 +242,10 @@ export default function Footer() {
           {/* Livro de Reclamações Eletrónico: acesso visível e destacado em todas
               as páginas (DL 156/2005, alterado pelo DL 74/2017). O nome oficial
               fica em português em todas as línguas; nas outras segue a tradução.
-              A linha da identidade legal (denominação, NIPC, sede) entra aqui
-              quando o Ricardo enviar os dados. */}
-          <div className="mt-7 flex justify-center xl:justify-start">
+              Ao lado, a identidade legal (denominação e NIPC; a sede quando
+              estiver confirmada em shared/company.ts, a mesma fonte do checkout
+              e dos emails). */}
+          <div className="mt-7 flex flex-col items-center gap-3 xl:flex-row xl:items-center xl:justify-start xl:gap-5">
             <a
               href={COMPLAINTS_BOOK_URL}
               target="_blank"
@@ -258,6 +260,14 @@ export default function Footer() {
                 {language !== 'pt' && <span className="text-white/65"> · {t('legalFooter.complaintsBook')}</span>}
               </span>
             </a>
+            <p
+              className="text-center text-[11px] leading-snug text-white/65 xl:text-left"
+              style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+              data-testid="footer-legal-identity"
+            >
+              {t('legalFooter.operatedBy', { company: COMPANY_LEGAL_NAME, nipc: COMPANY_NIPC })}
+              {companyAddressLine() ? ` · ${companyAddressLine()}` : ''}
+            </p>
           </div>
 
           {/* Row 2: copyright + legal — single baseline, hairline divider.

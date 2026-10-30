@@ -827,7 +827,7 @@
     "processingFirst": "Traitement de la première partie…",
     "mandateMissing": "Cochez l'autorisation ci-dessus pour continuer.",
     "termsHint": "Cochez cette case pour payer.",
-    "walletsHint": "Pour payer avec {{wallets}}, complétez vos coordonnées et cochez la case des conditions ci-dessous.",
+    "walletsAcceptPrefix": "En payant, vous acceptez les",
     "errorActions": {
       "twoParts": "Payer plutôt en deux fois ({{amountNow}} aujourd'hui)",
       "otherMethod": "Utiliser une autre carte ou un autre moyen",
@@ -1250,7 +1250,8 @@
   },
   "legalFooter": {
     "complaintsBook": "Livre de réclamations",
-    "complaintsBookAria": "Livro de Reclamações, le livre de réclamations électronique officiel du Portugal (s'ouvre dans un nouvel onglet)"
+    "complaintsBookAria": "Livro de Reclamações, le livre de réclamations électronique officiel du Portugal (s'ouvre dans un nouvel onglet)",
+    "operatedBy": "Portugal Active est exploitée par {{company}} · NIPC {{nipc}}"
   },
   "blog": {
     "overline": "JOURNAL",
@@ -1949,6 +1950,16 @@
     "rate": {
       "twoPartsLine": "Vous pouvez aussi payer en deux fois : {{amountNow}} aujourd'hui et {{amountLater}} le {{date}}.",
       "twoPartsLinePlain": "Vous pouvez aussi payer en deux fois : {{amountNow}} aujourd'hui et {{amountLater}} le {{date}}."
+    },
+    "legal": {
+      "operator": "Portugal Active est exploitée par {{company}} · NIPC {{nipc}}",
+      "total": "Total {{total}}",
+      "payFull": "{{amount}} aujourd'hui",
+      "paySplit": "{{amountNow}} aujourd'hui · {{amountLater}} le {{date}}",
+      "noWithdrawal": "Hébergement à dates fixes : le droit de rétractation de 14 jours ne s'applique pas ; la politique d'annulation de votre tarif s'applique."
+    },
+    "rateCard": {
+      "noRefund": "Aucun remboursement en cas d'annulation"
     },
     "emailLineLabel": "Confirmation à",
     "emailChange": "modifier",

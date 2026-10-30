@@ -273,7 +273,7 @@ describe("paymentErrorActions: até três saídas, nunca uma dupla cobrança", (
 describe("textos do aviso nas 9 línguas", () => {
   const UI_KEYS = [
     "payment.termsHint",
-    "payment.walletsHint",
+    "payment.walletsAcceptPrefix",
     "payment.errorActions.twoParts",
     "payment.errorActions.otherMethod",
     "payment.errorActions.otherCard",

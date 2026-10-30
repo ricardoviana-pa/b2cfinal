@@ -91,7 +91,8 @@ describe("o nome do negócio que a Stripe mostra é o da marca, Portugal Active"
   it("o checkout monta os dois Elements com estas opções (não com literais próprios)", () => {
     expect(form).toMatch(/const paymentOptions = useMemo\(\(\) => paymentElementOptions\(\{ legacyApplePay: !intentId \}\), \[intentId\]\);/);
     expect(form).toMatch(/<PaymentElement options=\{paymentOptions\} \/>/);
-    expect(form).toMatch(/<ExpressCheckoutElement\s+options=\{EXPRESS_CHECKOUT_ELEMENT_OPTIONS\}\s+onReady=/);
+    // As opções de criação (nome, morada de faturação) mais os campos de contacto da folha (#196: email e telefone).
+    expect(form).toMatch(/<ExpressCheckoutElement\s+options=\{\{[\s\S]{0,400}?\.\.\.EXPRESS_CHECKOUT_ELEMENT_OPTIONS,[\s\S]{0,200}?\.\.\.EXPRESS_CHECKOUT_CONTACT_FIELDS,\s*\}\}\s+onReady=/);
     expect(form).not.toMatch(/options=\{\{\s*layout: "tabs"/);
     expect(form).not.toMatch(/paymentMethods: \{ applePay/);
   });

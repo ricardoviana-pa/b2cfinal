@@ -173,8 +173,9 @@ describe("Tab e leitor de ecrã: o RESERVE logo a seguir às tarifas (revisão d
 
   it("widget: entre as tarifas e o RESERVE não há nada que receba o foco; o resto (Alterar datas, concierge) vem depois", () => {
     const widget = read("client/src/components/booking/BookingWidget.tsx");
-    const plans = widget.indexOf("<div ref={ratePlansRef}");
-    const plansEnd = widget.indexOf("})()}", plans);
+    // As tarifas são o componente RatePlanCards (29 out 2026); o bloco fecha com ")}".
+    const plans = widget.indexOf("<RatePlanCards");
+    const plansEnd = widget.indexOf("            )}\n", widget.indexOf('twoPartsVariant="widget"', plans));
     const open = widget.indexOf("<ReserveCtaSlot footerRef={reserveFooterRef}>");
     const block = widget.indexOf('<div className="pa-reserve-cta bg-white space-y-2.5">');
     const note = widget.indexOf('<PaymentMethodsNote align="center" total={effectiveQuote?.total} />');
@@ -190,7 +191,7 @@ describe("Tab e leitor de ecrã: o RESERVE logo a seguir às tarifas (revisão d
     // só os serviços do fluxo antigo (sem checkout v2) podem ficar entre os dois
     const between = widget.slice(plansEnd, open).replace(/\{\/\*[\s\S]*?\*\/\}/g, "");
     expect(between).not.toMatch(/<(button|a|input|select|textarea|Link)\b/);
-    expect(between.replace(/\s+/g, " ")).toMatch(/^\}\)\(\)\} \{!checkoutV2Active && upsellItems\.length > 0 && \( <EnhanceYourStay[^]*?\/> \)\} $/);
+    expect(between.replace(/\s+/g, " ")).toMatch(/^ ?\)\} \{!checkoutV2Active && upsellItems\.length > 0 && \( <EnhanceYourStay[^]*?\/> \)\} $/);
   });
 });
 

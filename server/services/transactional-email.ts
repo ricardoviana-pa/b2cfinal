@@ -9,6 +9,7 @@ import { isPreviewDeployment } from "../lib/preview-isolation";
 import { getEmailSigner } from "@shared/concierges";
 import { FUNNEL_I18N } from "./recovery-copy";
 import { sanitizePropertyName } from "@shared/displayName";
+import { companyLegalLine } from "@shared/company";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import { originEmailSummary, type ServerVisitOrigin } from "./visit-origin";
 import { invoiceNif } from "./invoice-nif";
@@ -644,7 +645,9 @@ function legacyTagline(pt: boolean): string {
   return pt ? "A privacidade de uma casa. O serviço de um hotel." : "The privacy of a home. The service of a hotel.";
 }
 
-/** Rodapé de marca partilhado: hairline dourada, badge, contactos, tagline */
+/** Rodapé de marca partilhado: hairline dourada, badge, contactos, tagline e a
+ *  identidade legal (denominação, NIPC e, quando confirmada, a sede), a mesma
+ *  de shared/company.ts que o checkout e o rodapé do site mostram. */
 function brandFooter(tagline: string): string {
   return `
 <tr><td style="padding:30px 20px 36px;text-align:center;">
@@ -656,6 +659,7 @@ function brandFooter(tagline: string): string {
     &nbsp;·&nbsp;<a href="https://wa.me/351927161771" style="color:#8B7355;text-decoration:none;">WhatsApp</a>
   </p>
   <p style="font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:#9E9A90;margin:10px 0 0;">${tagline}</p>
+  <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:10px 0 0;">${companyLegalLine()}</p>
 </td></tr>`;
 }
 /** Signature block: the region's concierge when confirmed (name, photo, "your

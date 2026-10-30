@@ -4,9 +4,11 @@ import {
   conciergeWhatsAppHref,
   guestDetailsIssues,
   payButtonGate,
-  walletNames,
-  walletsUnlocked,
+  splitFullName,
+  walletGuestDetails,
+  walletsVisible,
 } from "@/lib/checkoutPayment";
+import { EXPRESS_CHECKOUT_CONTACT_FIELDS } from "@/components/booking/stripeElementsOptions";
 import { checkTaxId, isValidPortugueseNif, normalizeTaxId } from "@/lib/taxId";
 
 /**
@@ -48,19 +50,54 @@ describe("botão final: só ativo com as caixas marcadas (spec 4.1, pontos 4 e 5
   });
 });
 
-describe("Apple Pay / Google Pay: escondidos até os dados e os Termos estarem certos", () => {
-  it("só com os dados certos e os Termos aceites", () => {
-    expect(walletsUnlocked({ guestIssues: [], termsAccepted: true })).toBe(true);
-    expect(walletsUnlocked({ guestIssues: [], termsAccepted: false })).toBe(false);
-    expect(walletsUnlocked({ guestIssues: ["phone"], termsAccepted: true })).toBe(false);
+describe("Apple Pay / Google Pay à cabeça do pagamento (decisão do Ricardo, 29 out 2026)", () => {
+  const EMPTY = { firstName: "", lastName: "", email: "", phone: "" };
+  const SHEET = { name: "Ana Maria Silva", email: "ana@wallet.example", phone: "+351912345678" };
+
+  it("visíveis logo que a Stripe os reporta, sem esperar pelos campos nem pelos Termos; só saem em duas partes", () => {
+    expect(walletsVisible({ plan: undefined })).toBe(true);
+    expect(walletsVisible({ plan: null })).toBe(true);
+    expect(walletsVisible({ plan: "full" })).toBe(true);
+    expect(walletsVisible({ plan: "two_parts" })).toBe(false);
   });
 
-  it("a dica nomeia as wallets que o aparelho tem", () => {
-    expect(walletNames({ applePay: true, googlePay: false })).toBe("Apple Pay");
-    expect(walletNames({ applePay: false, googlePay: true })).toBe("Google Pay");
-    expect(walletNames({ applePay: true, googlePay: true })).toBe("Apple Pay / Google Pay");
-    expect(walletNames(null)).toBe("");
-    expect(walletNames(undefined)).toBe("");
+  it("a folha pede o email e o telefone (o nome vem com o pagador)", () => {
+    expect(EXPRESS_CHECKOUT_CONTACT_FIELDS).toEqual({ emailRequired: true, phoneNumberRequired: true });
+  });
+
+  it("página vazia: o hóspede é o da folha, com o nome dividido como o intent o guarda", () => {
+    expect(walletGuestDetails({ page: EMPTY, sheet: SHEET })).toEqual({
+      guest: { firstName: "Ana", lastName: "Maria Silva", email: "ana@wallet.example", phone: "+351912345678" },
+      missing: [],
+    });
+  });
+
+  it("o que a página já tem de válido mantém-se; só o que falta vem da folha", () => {
+    const page = { ...OK, phone: "+351" };
+    expect(walletGuestDetails({ page, sheet: SHEET })).toEqual({
+      guest: { firstName: "Ana", lastName: "Silva", email: "ana@example.com", phone: "+351912345678" },
+      missing: [],
+    });
+    expect(walletGuestDetails({ page: OK, sheet: SHEET }).guest).toEqual({
+      firstName: "Ana", lastName: "Silva", email: "ana@example.com", phone: "+351 912 345 678",
+    });
+  });
+
+  it("o telefone da folha aceita-se como a wallet o devolve (já verificado por ela)", () => {
+    const r = walletGuestDetails({ page: EMPTY, sheet: { ...SHEET, phone: "912345678" } });
+    expect(r.guest.phone).toBe("912345678");
+    expect(r.missing).toEqual([]);
+  });
+
+  it("sem dados na página nem na folha: falta tudo (a folha fecha e os campos ficam assinalados)", () => {
+    expect(walletGuestDetails({ page: EMPTY, sheet: null }).missing).toEqual(["firstName", "lastName", "email", "phone"]);
+    expect(walletGuestDetails({ page: EMPTY, sheet: { name: "Ana", email: "ana@", phone: "" } }).missing).toEqual(["email", "phone"]);
+  });
+
+  it("um só nome repete-se no apelido (o Guesty exige os dois)", () => {
+    expect(splitFullName("Ana")).toEqual({ firstName: "Ana", lastName: "Ana" });
+    expect(splitFullName("  Ana   Silva ")).toEqual({ firstName: "Ana", lastName: "Silva" });
+    expect(splitFullName("")).toEqual({ firstName: "", lastName: "" });
   });
 });
 

@@ -108,13 +108,15 @@ describe("preço do Flex: o mesmo número no ecrã e na cobrança", () => {
     { id: "plan-flex", name: "Reembolsável", policy: "FIRM", subTotal: 3180.4, cleaning: 180.25 },
     { id: "plan-nr", name: "Não-Reembolsável", policy: "SUPER_STRICT", subTotal: 2862.36, cleaning: 180.25 },
   ]);
-  // O intent nasce com a tarifa por omissão do Guesty (a mais barata: a não reembolsável);
-  // é esta a cotação que o checkout carrega uma vez e guarda como `quote`.
+  // Sem tarifa escolhida, o intent nasce com a reembolsável pré-selecionada
+  // (shared/ratePlanDefault.ts, decisão de 29 out 2026; antes era a por omissão
+  // do Guesty, a não reembolsável mais barata); é esta a cotação que o
+  // checkout carrega uma vez e guarda como `quote`.
   const created = canonicalStayQuote(raw, { ...stay, ratePlanId: undefined as unknown as string }, now);
   const pageQuote = created.quote as CheckoutQuoteSnapshot;
 
-  it("a cotação carregada é a da tarifa por omissão", () => {
-    expect(created.ratePlanId).toBe("plan-nr");
+  it("a cotação carregada é a da tarifa pré-selecionada: a reembolsável", () => {
+    expect(created.ratePlanId).toBe("plan-flex");
     expect(pageQuote.ratePlanOptions?.map((o) => o.ratePlanId).sort()).toEqual(["plan-flex", "plan-nr"]);
   });
 
@@ -128,13 +130,13 @@ describe("preço do Flex: o mesmo número no ecrã e na cobrança", () => {
 
   it("a conta antiga (noites da cotação carregada) divergia depois de trocar de tarifa", () => {
     const oldScreenFlex = Math.round((pageQuote.totalNights * FLEX_CONFIG.pricePercent) / 100);
-    expect(oldScreenFlex * 100).toBe(serverFlexCents(raw, "plan-nr"));
-    expect(oldScreenFlex * 100).not.toBe(serverFlexCents(raw, "plan-flex"));
+    expect(oldScreenFlex * 100).toBe(serverFlexCents(raw, "plan-flex"));
+    expect(oldScreenFlex * 100).not.toBe(serverFlexCents(raw, "plan-nr"));
   });
 
   it("sem tarifa correspondente usa a cotação tal como está, como o servidor", () => {
     const effective = effectiveQuote(pageQuote, "plan-gone");
-    expect(Math.round(flexPriceForPlan(effective, FLEX_CONFIG) * 100)).toBe(serverFlexCents(raw, "plan-nr"));
+    expect(Math.round(flexPriceForPlan(effective, FLEX_CONFIG) * 100)).toBe(serverFlexCents(raw, "plan-flex"));
   });
 
   it("sem noites, o valor fixo de recurso (como o flexPriceFor do servidor)", () => {

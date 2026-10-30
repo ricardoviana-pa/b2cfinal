@@ -58,6 +58,8 @@ async function draft(origin?: unknown) {
     ...(origin === undefined ? {} : { origin }) });
   return result.intentId!;
 }
+/** O que o checkout grava antes de qualquer cobrança (campos validados no clique, ou a folha da wallet). */
+const CONTACT = { guestFirstName: 'Synthetic', guestLastName: 'Guest', guestPhone: '+000000000' };
 function savedPayment(intentId: string, overrides: Record<string, unknown> = {}) {
   const pi = { id: 'pi_synthetic_saved', client_secret: 'synthetic_secret', amount: 214700,
     currency: 'eur', status: 'requires_payment_method', metadata: { flow: 'card_v2', intentId }, ...overrides };
@@ -249,9 +251,30 @@ describe('synthetic checkout integration — real router and settlement, no prov
 
   it('sequential settlement retries reuse the existing reservation', async () => {
     const id = await draft(); const pi = savedPayment(id, { status: 'succeeded' });
+    Object.assign(fake.intents.get(id), { email: 'guest@checkout.invalid', ...CONTACT });
     const first = await caller().finalizeCardCharge({ intentId: id, paymentIntentId: pi.id });
     expect(await caller().finalizeCardCharge({ intentId: id, paymentIntentId: pi.id })).toEqual(first);
     expect(fake.reserve).toHaveBeenCalledOnce();
+  });
+
+  // Apple Pay / Google Pay à cabeça (29 out 2026): o createCardCharge não exige
+  // os dados do hóspede (a folha da wallet dá-os e o checkout grava-os antes
+  // da cobrança); é o fecho que garante que nenhuma reserva nasce sem eles.
+  it('does not create a reservation for a paid intent without name, email and phone; settles once they are saved', async () => {
+    const id = await draft(); const pi = savedPayment(id, { status: 'succeeded' });
+    await expect(caller().finalizeCardCharge({ intentId: id, paymentIntentId: pi.id })).rejects.toThrow(/sem name, email, phone/);
+    expect(fake.reserve).not.toHaveBeenCalled(); expect(fake.guestEmail).not.toHaveBeenCalled();
+    // o telefone sozinho em falta também chumba (a folha da wallet pede-o)
+    await caller().captureLead({ intentId: id, email: 'guest@checkout.invalid', consent: false, locale: 'pt' });
+    await caller().updateIntent({ intentId: id, patch: { guestFirstName: 'Synthetic', guestLastName: 'Guest' } });
+    await expect(caller().finalizeCardCharge({ intentId: id, paymentIntentId: pi.id })).rejects.toThrow(/sem phone/);
+    expect(fake.reserve).not.toHaveBeenCalled();
+    // com os três (o que a folha devolve), o mesmo pagamento fecha
+    await caller().updateIntent({ intentId: id, patch: { guestPhone: '+000000000' } });
+    const done = await caller().finalizeCardCharge({ intentId: id, paymentIntentId: pi.id });
+    expect(done.reservationId).toBe('synthetic-reservation');
+    expect(fake.reserve).toHaveBeenCalledOnce();
+    expect(fake.reserve.mock.calls[0][0]).toMatchObject({ guestFirstName: 'Synthetic', guestLastName: 'Guest', guestEmail: 'guest@checkout.invalid', guestPhone: '+000000000' });
   });
 });
 
@@ -288,6 +311,7 @@ describe('provider callbacks and server confirmation', () => {
   it('concurrent settlement callbacks create one reservation and one confirmation', async () => {
     const id = await draft();
     await caller().captureLead({ intentId: id, email: 'guest@checkout.invalid', consent: false, locale: 'pt' });
+    await caller().updateIntent({ intentId: id, patch: CONTACT });
     const payment = await caller().createCardCharge({intentId:id});
     fake.payments.get(payment.paymentIntentId).status='succeeded';
     const results=await Promise.all(Array.from({length:4},()=>caller().finalizeCardCharge({intentId:id,paymentIntentId:payment.paymentIntentId})));
@@ -336,7 +360,7 @@ describe('visit origin on the reservation note (UTM, click type, referrer)', () 
   };
   async function payCard(id: string) {
     await caller().captureLead({ intentId: id, email: 'guest@checkout.invalid', consent: false, locale: 'pt' });
-    await caller().updateIntent({ intentId: id, patch: { guestFirstName: 'Synthetic', guestLastName: 'Guest', reception: { type: 'self' } } });
+    await caller().updateIntent({ intentId: id, patch: { ...CONTACT, reception: { type: 'self' } } });
     const payment = await caller().createCardCharge({ intentId: id });
     fake.payments.get(payment.paymentIntentId).status = 'succeeded';
     await caller().finalizeCardCharge({ intentId: id, paymentIntentId: payment.paymentIntentId });

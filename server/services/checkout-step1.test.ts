@@ -180,7 +180,7 @@ describe("italiano: os textos novos no registo formal (Lei), como as outras lín
     ...["declinedLimit", "declinedGeneric", "cardExpired", "cardNotSupported", "incorrectCvc", "incorrectNumber", "cardDetails",
       "bankUnavailable", "authenticationFailed", "twoPartsUnavailable", "prepareFailed", "priceChanged", "duplicateTransaction",
     ].map((k) => `payment.errors.${k}`),
-    "payment.termsHint", "payment.walletsHint", "payment.notChargedYet",
+    "payment.termsHint", "payment.walletsAcceptPrefix", "payment.notChargedYet",
     "checkout.fieldErrors.firstName", "checkout.fieldErrors.lastName", "checkout.nifInvalid",
     "checkout.emailHoldNote", "checkout.emailReminderNote",
   ];

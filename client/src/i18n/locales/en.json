@@ -862,7 +862,7 @@
     "processingFirst": "Processing the first part…",
     "mandateMissing": "Tick the authorisation above to continue.",
     "termsHint": "Tick this box to pay.",
-    "walletsHint": "To pay with {{wallets}}, complete your details and tick the terms box below.",
+    "walletsAcceptPrefix": "By paying you accept the",
     "errorActions": {
       "twoParts": "Pay in two parts instead ({{amountNow}} today)",
       "otherMethod": "Use another card or method",
@@ -1511,7 +1511,8 @@
   },
   "legalFooter": {
     "complaintsBook": "Complaints book",
-    "complaintsBookAria": "Livro de Reclamações, Portugal's official electronic complaints book (opens in a new tab)"
+    "complaintsBookAria": "Livro de Reclamações, Portugal's official electronic complaints book (opens in a new tab)",
+    "operatedBy": "Portugal Active is operated by {{company}} · NIPC {{nipc}}"
   },
   "blog": {
     "overline": "JOURNAL",
@@ -1949,6 +1950,16 @@
     "rate": {
       "twoPartsLine": "You can also pay in two parts: {{amountNow}} today and {{amountLater}} on {{date}}.",
       "twoPartsLinePlain": "You can also pay in two parts: {{amountNow}} today and {{amountLater}} on {{date}}."
+    },
+    "legal": {
+      "operator": "Portugal Active is operated by {{company}} · NIPC {{nipc}}",
+      "total": "Total {{total}}",
+      "payFull": "{{amount}} today",
+      "paySplit": "{{amountNow}} today · {{amountLater}} on {{date}}",
+      "noWithdrawal": "Accommodation with fixed dates: the 14-day right of withdrawal does not apply; the cancellation policy of your rate applies."
+    },
+    "rateCard": {
+      "noRefund": "No refund if you cancel"
     },
     "emailLineLabel": "Confirmation to",
     "emailChange": "change",

@@ -170,6 +170,19 @@ export function resolveRatePlanId(intent: any, quote: any): string {
   return String(match?.ratePlanId ?? "").trim();
 }
 
+/**
+ * O que falta ao intent para a reserva poder ser criada: nome, email e telefone
+ * (o que o checkout exige no clique em Pagar e o que a folha do Apple Pay /
+ * Google Pay devolve). Devolve os campos em falta; vazio = pode avançar.
+ */
+export function assertGuestContact(guest: { firstName?: unknown; email?: unknown; phone?: unknown }): Array<"name" | "email" | "phone"> {
+  const missing: Array<"name" | "email" | "phone"> = [];
+  if (!String(guest.firstName ?? "").trim()) missing.push("name");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(guest.email ?? "").trim())) missing.push("email");
+  if (!String(guest.phone ?? "").trim()) missing.push("phone");
+  return missing;
+}
+
 /** "28/06/2027" no calendário de Lisboa, para as notas do Guesty (ASCII). */
 function lisbonDayLabel(iso: string | undefined): string {
   const d = iso ? new Date(iso) : null;
@@ -361,6 +374,17 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
     // o Guesty em todas as reservas 2b).
     const firstName = String((m as any).guestFirstName ?? "").trim();
     const lastName = String((m as any).guestLastName ?? "").trim();
+    // Nome, email e telefone têm de estar no intent antes da reserva: o cartão
+    // valida-os no clique e as wallets gravam os da folha antes da cobrança
+    // (flushPendingSaves). Sem eles não se cria uma reserva "Guest -" sem
+    // contacto: o settle pára aqui, o alerta de pago-sem-reserva avisa quem
+    // pode completar o intent, e o sweep volta a tentar (nada foi criado).
+    const missingContact = assertGuestContact({ firstName, email: (m as any).email, phone: (m as any).guestPhone });
+    if (missingContact.length) {
+      throw new Error(
+        `intent ${intentId} sem ${missingContact.join(", ")} — pagamento recebido, reserva NÃO criada até o intent ter nome, email e telefone`,
+      );
+    }
     const q = ((m as any).quote ?? {}) as any;
     const ratePlanId = resolveRatePlanId(m, q);
     if (!ratePlanId) {

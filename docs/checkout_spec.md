@@ -263,6 +263,7 @@ Fechadas:
 * Pagamento único: tudo o que tem preço fixo cobra hoje num só total; só pedidos sob orçamento ficam fora.
 * Nem express separado nem etapas forçadas: uma decisão obrigatória (receção), um passo de personalização saltável, venda antes da chegada como terceiro momento.
 * Self check in incluído; receção presencial paga.
+* 29 out 2026 (Ricardo): Apple Pay / Google Pay à cabeça do passo 3, visíveis logo que a Stripe os reporta, sem esperar pelos campos nem pelos Termos (a folha da wallet pede email e telefone e traz o nome do pagador; debaixo dos botões, "ao pagar, aceita os Termos e a política" com a empresa, o NIPC e o total; só saem enquanto "duas partes" estiver escolhido). Tarifa reembolsável pré-selecionada onde quer que se escolha tarifa, widget, passo 1 e servidor (`shared/ratePlanDefault.ts`); a não reembolsável continua disponível. Tarifas em dois cartões de opção com valores e a poupança da não reembolsável (`RatePlanCards`). Bloco pré-contratual (DL 24/2014, arts. 4.º e 5.º) imediatamente acima do botão final, em todos os planos e métodos, com a identidade legal numa só fonte (`shared/company.ts`: "Ricardo Torres Viana LDA · NIPC 515363685"; a sede entra quando o Ricardo a confirmar), também no rodapé do site e dos emails.
 
 Em aberto para o Ricardo:
 1. Preço da receção presencial: 50 € em horário normal e 90 € após as 21h são propostas. Validar contra o custo real de deslocação da equipa no Minho.
