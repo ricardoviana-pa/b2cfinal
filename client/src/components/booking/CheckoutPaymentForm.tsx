@@ -11,8 +11,13 @@
  * - o botão final mostra sempre a ação e o valor e só fica ativo com os
  *   Termos (e, em duas partes, a autorização), que vêm em `consent`, mesmo
  *   acima dele; nome, email e telefone validam-se no clique (`validateGuest`);
- * - Apple Pay / Google Pay só aparecem com os dados certos e os Termos
- *   aceites (`walletsReady`): a folha abre no toque e já não deixa validar;
+ * - Apple Pay / Google Pay à cabeça do bloco, visíveis logo que a Stripe os
+ *   reporta (decisão do Ricardo, 29 out 2026). A folha da wallet pede email
+ *   e telefone e traz o nome do pagador: o que a página já tem de válido
+ *   mantém-se, o resto vem da folha e grava-se no intent antes da cobrança
+ *   (walletGuestDetails → onBeforePay(guest)). Debaixo dos botões, uma linha
+ *   diz que pagar é aceitar os Termos e a política: a caixa dos Termos só é
+ *   obrigatória no cartão, PayPal e Klarna. Só saem em "duas partes";
  * - uma recusa mostra um só aviso traduzido, com até três saídas.
  *
  * Sem <form> (verificação em produção, 29 out 2026): o GA4 (medição avançada,
@@ -38,8 +43,8 @@ import { trpc } from "@/lib/trpc";
 import { formatQuotedEur } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
-import { payButtonGate, walletNames } from "@/lib/checkoutPayment";
-import { cardElementsOptions, expressCheckoutElementsOptions } from "./stripeElementsOptions";
+import { payButtonGate, splitFullName, walletGuestDetails, walletsVisible, type WalletGuest } from "@/lib/checkoutPayment";
+import { EXPRESS_CHECKOUT_CONTACT_FIELDS, cardElementsOptions, expressCheckoutElementsOptions } from "./stripeElementsOptions";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 import PaymentErrorNotice, { type PaymentErrorView, type TwoPartsSwitch } from "./PaymentErrorNotice";
@@ -121,6 +126,10 @@ interface CheckoutPaymentFormProps {
   total: number;
   currency: string;
   guestName: string;
+  /** Checkout 2.0: nome e apelido tal como estão nos campos (o `guestName` é
+   *  a junção dos dois). Servem às wallets para saber o que a página já tem. */
+  guestFirstName?: string;
+  guestLastName?: string;
   guestEmail: string;
   guestPhone: string;
   propertyName: string;
@@ -141,8 +150,10 @@ interface CheckoutPaymentFormProps {
   onCancel?: () => void;
   /** Grava já qualquer estado pendente do intent (debounces) ANTES de criar a
    *  cobrança — o servidor cobra o que está na BD, não o que está no ecrã.
-   *  Se falhar, o pagamento aborta (auditoria set/2026, H3). */
-  onBeforePay?: () => Promise<void>;
+   *  Se falhar, o pagamento aborta (auditoria set/2026, H3). As wallets
+   *  passam o hóspede que a folha devolveu (nome, email, telefone), para o
+   *  intent ficar com ele antes do createCardCharge. */
+  onBeforePay?: (guest?: WalletGuest) => Promise<void>;
   /** Servidor recusou por quote expirada — o CheckoutPage acende o banner de refresh */
   onQuoteExpired?: () => void;
   /** Pagamento em duas partes: o plano escolhido no seletor. Só vem quando o
@@ -164,8 +175,6 @@ interface CheckoutPaymentFormProps {
   /** Checkout 2.0: valida nome, email e telefone no clique em Pagar. false =
    *  o erro fica no campo, que recebe o foco, e nada é criado nem cobrado. */
   validateGuest?: () => boolean;
-  /** Checkout 2.0: dados do hóspede certos e Termos aceites (Apple/Google Pay). */
-  walletsReady?: boolean;
   /** Aviso de erro: WhatsApp do concierge com a casa e as datas escritas. */
   conciergeHref?: string;
   /** Aviso de erro: "Pagar em duas partes (X hoje)", só numa recusa pelo
@@ -249,7 +258,8 @@ function ExpressWalletInner({
   onBeforePay,
   onQuoteExpired,
   withPlan,
-  ready,
+  page,
+  validateGuest,
   error,
   setError,
   noticeProps,
@@ -261,25 +271,26 @@ function ExpressWalletInner({
   withPlan?: boolean;
   paymentItems?: Array<Record<string, unknown>>;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
-  onBeforePay?: () => Promise<void>;
+  onBeforePay?: (guest?: WalletGuest) => Promise<void>;
   onQuoteExpired?: () => void;
-  /** Dados do hóspede certos e Termos aceites: só então os botões aparecem. */
-  ready: boolean;
+  /** O que a página já tem (campos do hóspede); o que for válido mantém-se. */
+  page: { firstName: string; lastName: string; email: string; phone: string };
+  /** Sem dados nem na folha nem na página: assinala os campos e dá-lhes o foco. */
+  validateGuest?: () => boolean;
   error: PaymentErrorView | null;
   setError: (e: PaymentErrorView | null) => void;
   noticeProps: ErrorNoticeProps;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const createCardCharge = trpc.checkout.createCardCharge.useMutation();
   const finalizeCardCharge = trpc.checkout.finalizeCardCharge.useMutation();
   const [available, setAvailable] = useState(false);
-  const [methods, setMethods] = useState<{ applePay?: boolean; googlePay?: boolean } | null>(null);
   const processingRef = useRef(false);
   const paymentInfoFiredRef = useRef(false);
-  const readyRef = useRef(ready);
-  readyRef.current = ready;
+  const pageRef = useRef(page);
+  pageRef.current = page;
 
   /** Fecha a folha da wallet com falha (erro antes do confirmPayment). */
   const closeSheet = (event: { paymentFailed?: (p?: { reason?: "fail" | "invalid_shipping_address" }) => void }) => {
@@ -289,10 +300,19 @@ function ExpressWalletInner({
   const handleConfirm = async (event: {
     expressPaymentType?: string;
     paymentFailed?: (p?: { reason?: "fail" | "invalid_shipping_address" }) => void;
+    billingDetails?: { name?: string | null; email?: string | null; phone?: string | null } | null;
   }) => {
-    // Os botões só aparecem com tudo certo; isto é só a rede de segurança.
-    if (!readyRef.current) { closeSheet(event); return; }
     if (!stripe || !elements || processingRef.current) return;
+    // O hóspede da reserva: a página, quando já tem os dados válidos; senão a
+    // folha (nome do pagador, email e telefone pedidos pela wallet). Sem tudo,
+    // a folha fecha com falha e os campos da página ficam assinalados.
+    const { guest, missing } = walletGuestDetails({ page: pageRef.current, sheet: event.billingDetails });
+    if (missing.length) {
+      closeSheet(event);
+      validateGuest?.();
+      setError({ message: t("payment.errors.requiredFields") });
+      return;
+    }
     processingRef.current = true;
     setError(null);
 
@@ -321,8 +341,9 @@ function ExpressWalletInner({
         processingRef.current = false;
         return;
       }
-      // Estado pendente (debounces de extras/dados) gravado ANTES da cobrança
-      await onBeforePay?.();
+      // Estado pendente (debounces de extras/dados) e o hóspede da folha
+      // gravados ANTES da cobrança: o servidor cobra e reserva o que está na BD.
+      await onBeforePay?.(guest);
       // PI lazy com o total canónico do servidor — nunca o valor do cliente.
       // wallet:true → PI automatic (a sessão do ECE é automatic; um PI types
       // seria recusado no confirm — visto no 1.º toque real de GPay).
@@ -374,30 +395,38 @@ function ExpressWalletInner({
     }
   };
 
-  const names = walletNames(methods);
   return (
-    <div style={{ display: available ? "block" : "none" }} className="space-y-3">
-      {/* Dados ou Termos em falta: uma linha no sítio onde os botões vão aparecer */}
-      {!ready && names && (
-        <p className="caption text-pa-earth leading-snug">{t("payment.walletsHint", { wallets: names })}</p>
-      )}
-      <div style={{ display: ready ? "block" : "none" }}>
-        <ExpressCheckoutElement
-          options={{
-            // Só wallets: cartão, PayPal e Klarna já têm caminho próprio em baixo
-            paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
-            layout: { maxColumns: 2, maxRows: 1 } as any,
-          }}
-          onReady={({ availablePaymentMethods }) => {
-            setAvailable(!!availablePaymentMethods);
-            setMethods(availablePaymentMethods ?? null);
-          }}
-          onConfirm={handleConfirm}
-        />
-      </div>
+    <div style={{ display: available ? "block" : "none" }} className="space-y-3" data-testid="checkout-wallets">
+      <ExpressCheckoutElement
+        options={{
+          // Só wallets: cartão, PayPal e Klarna já têm caminho próprio em baixo
+          paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
+          layout: { maxColumns: 2, maxRows: 1 } as any,
+          // A folha pede o email e o telefone da reserva (o nome vem com o pagador)
+          ...EXPRESS_CHECKOUT_CONTACT_FIELDS,
+        }}
+        onReady={({ availablePaymentMethods }) => setAvailable(!!availablePaymentMethods)}
+        onConfirm={handleConfirm}
+      />
+      <WalletsAcceptLine lang={i18n.language} />
       {error && <PaymentErrorNotice error={error} {...noticeProps} plan="full" />}
       <div aria-hidden style={{ borderTop: "1px solid #E8E4DC" }} />
     </div>
+  );
+}
+
+/** Debaixo dos botões das wallets: pagar é aceitar os Termos e a política de
+ *  cancelamento (a caixa dos Termos só é obrigatória no cartão, PayPal e Klarna). */
+function WalletsAcceptLine({ lang }: { lang: string }) {
+  const { t } = useTranslation();
+  const link = "text-pa-dark underline hover:text-pa-gold-aa";
+  return (
+    <p className="caption text-pa-earth leading-snug" data-testid="wallets-accept-line">
+      {t("payment.walletsAcceptPrefix")}{" "}
+      <a href={`/${lang}/legal/terms`} target="_blank" rel="noopener noreferrer" className={link}>{t("bookingWidget.termsLink", "Terms & Conditions")}</a>
+      {" "}{t("bookingWidget.termsAnd", "and the")}{" "}
+      <a href={`/${lang}/legal/cancellation-policy`} target="_blank" rel="noopener noreferrer" className={link}>{t("bookingWidget.cancellationPolicyLink")}</a>.
+    </p>
   );
 }
 
@@ -920,7 +949,14 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const guestLastName = nameParts.slice(1).join(" ") || guestFirstName;
   const twoParts = props.plan === "two_parts";
   const cardVisible = twoParts || (paymentMethod !== "paypal" && paymentMethod !== "klarna");
-  const walletsReady = props.walletsReady ?? true;
+  // Apple Pay / Google Pay à cabeça; só saem em duas partes (pagam tudo hoje).
+  const showWallets = !!props.intentId && walletsVisible({ plan: props.plan });
+  const pageGuest = {
+    firstName: props.guestFirstName ?? splitFullName(props.guestName).firstName,
+    lastName: props.guestLastName ?? (props.guestName.trim().includes(" ") ? splitFullName(props.guestName).lastName : ""),
+    email: props.guestEmail,
+    phone: props.guestPhone,
+  };
   const publishableKey = stripeConfig?.publishableKey ?? "";
 
   const redirectGuest = {
@@ -954,30 +990,34 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   return (
     <div className="space-y-4">
       {/* Bloco 3: Apple Pay / Google Pay (Express Checkout, conta de plataforma)
-          — só no checkout v2; o legacy nunca monta este bloco */}
-      {props.intentId && !twoParts && (demo ? (
-        <div className="space-y-3">
-          {walletsReady ? (
-            <div aria-hidden className="h-[44px] rounded border border-dashed border-pa-sand flex items-center justify-center caption text-pa-earth">
-              Apple Pay / Google Pay
+          à cabeça do bloco — só no checkout v2; o legacy nunca monta este bloco */}
+      {showWallets && (demo ? (
+        <div className="space-y-3" data-testid="checkout-wallets">
+          {/* Demo: os botões das wallets como a Stripe os desenha (pretos, lado a lado) */}
+          <div aria-hidden className="grid grid-cols-2 gap-2">
+            <div className="h-[44px] rounded-md bg-pa-dark flex items-center justify-center text-white text-[15px] font-medium tracking-tight">
+              Apple Pay
             </div>
-          ) : (
-            <p className="caption text-pa-earth leading-snug">{t("payment.walletsHint", { wallets: "Apple Pay / Google Pay" })}</p>
-          )}
+            <div className="h-[44px] rounded-md bg-pa-dark flex items-center justify-center text-white text-[15px] font-medium tracking-tight">
+              Google Pay
+            </div>
+          </div>
+          <WalletsAcceptLine lang={i18n.language} />
           <div aria-hidden style={{ borderTop: "1px solid #E8E4DC" }} />
         </div>
       ) : (
         <Elements stripe={stripePromise} options={expressElementsOptions}>
           <ExpressWalletInner
             withPlan={!!props.plan}
-            intentId={props.intentId}
+            intentId={props.intentId!}
             listingId={props.listingId}
             total={props.total}
             paymentItems={props.paymentItems}
             onSuccess={props.onSuccess}
             onBeforePay={props.onBeforePay}
             onQuoteExpired={props.onQuoteExpired}
-            ready={walletsReady}
+            page={pageGuest}
+            validateGuest={props.validateGuest}
             error={walletError}
             setError={setWalletError}
             noticeProps={noticeProps}

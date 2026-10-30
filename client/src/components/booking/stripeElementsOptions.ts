@@ -94,6 +94,16 @@ export function cardElementsOptions(total: number, currency: string | undefined,
 }
 
 /**
+ * O que a folha do Apple Pay / Google Pay pede ao hóspede (decisão do
+ * Ricardo, 29 out 2026: as wallets à cabeça, sem esperar pelos campos da
+ * página). A reserva precisa de nome, email e telefone: o nome vem sempre com
+ * o pagador; o email e o telefone têm de ser pedidos. No confirm chegam em
+ * `event.billingDetails` e gravam-se no intent antes de criar a cobrança
+ * (walletGuestDetails + flushPendingSaves).
+ */
+export const EXPRESS_CHECKOUT_CONTACT_FIELDS = { emailRequired: true, phoneNumberRequired: true } as const;
+
+/**
  * Elements do ExpressCheckoutElement (Apple Pay / Google Pay). Instância
  * separada do PaymentElement: sem paymentMethodCreation manual e sem
  * paymentMethodTypes (o ECE só mostra as wallets elegíveis no aparelho).

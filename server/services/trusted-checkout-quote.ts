@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { preferredRatePlanId } from '@shared/ratePlanDefault';
 import { guestyBEClient } from '../lib/guesty';
 import { parseBEQuote } from './guesty-booking';
 
@@ -13,7 +14,10 @@ export function canonicalStayQuote(raw: any, stay: StayIdentity, now = Date.now(
       raw?.checkInDateLocalized !== stay.checkIn || raw?.checkOutDateLocalized !== stay.checkOut ||
       Number(raw?.guestsCount) !== stay.guests || !Number.isFinite(expiresAt) || expiresAt <= now) throw invalid();
   const parsed = parseBEQuote(raw, stay.listingId, stay.checkIn, stay.checkOut);
-  const ratePlanId = stay.ratePlanId || parsed.ratePlanId;
+  // Sem tarifa no intent, a pré-selecionada é a reembolsável (a mesma regra
+  // do widget e do checkout, shared/ratePlanDefault.ts), não a por omissão
+  // do Guesty, que é quase sempre a não reembolsável.
+  const ratePlanId = stay.ratePlanId || preferredRatePlanId(parsed.ratePlanOptions, parsed.ratePlanId, stay.checkIn) || parsed.ratePlanId;
   const plan = parsed.ratePlanOptions?.find(p => p.ratePlanId === ratePlanId);
   const rawPlan = raw.rates.ratePlans.find((p: any) => String(p.ratePlan?._id || p._id || p.id || p.ratePlanId) === ratePlanId);
   const currency = (rawPlan?.ratePlan?.money || rawPlan?.money)?.currency;

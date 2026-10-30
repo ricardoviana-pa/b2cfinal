@@ -131,6 +131,7 @@ const intent = {
   email: "guest@example.com",
   guestFirstName: "Daniel",
   guestLastName: "Garcia",
+  guestPhone: "+351 912 345 678",
   quote: { total: 2524.07, totalNights: 2421, nights: 6, currency: "EUR" },
   reception: { type: "self" },
   extras: [],

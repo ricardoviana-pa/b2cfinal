@@ -826,7 +826,7 @@
     "processingFirst": "Första delen behandlas…",
     "mandateMissing": "Kryssa i godkännandet ovan för att fortsätta.",
     "termsHint": "Kryssa i rutan för att betala.",
-    "walletsHint": "För att betala med {{wallets}}, fyll i dina uppgifter och kryssa i rutan för villkoren längre ner.",
+    "walletsAcceptPrefix": "Genom att betala godkänner du",
     "errorActions": {
       "twoParts": "Betala i två delar i stället ({{amountNow}} i dag)",
       "otherMethod": "Använd ett annat kort eller betalsätt",
@@ -1249,7 +1249,8 @@
   },
   "legalFooter": {
     "complaintsBook": "Klagobok",
-    "complaintsBookAria": "Livro de Reclamações, Portugals officiella elektroniska klagobok (öppnas i en ny flik)"
+    "complaintsBookAria": "Livro de Reclamações, Portugals officiella elektroniska klagobok (öppnas i en ny flik)",
+    "operatedBy": "Portugal Active drivs av {{company}} · NIPC {{nipc}}"
   },
   "blog": {
     "overline": "JOURNAL",
@@ -1942,6 +1943,16 @@
     "rate": {
       "twoPartsLine": "Du kan också betala i två delar: {{amountNow}} i dag och {{amountLater}} den {{date}}.",
       "twoPartsLinePlain": "Du kan också betala i två delar: {{amountNow}} i dag och {{amountLater}} den {{date}}."
+    },
+    "legal": {
+      "operator": "Portugal Active drivs av {{company}} · NIPC {{nipc}}",
+      "total": "Totalt {{total}}",
+      "payFull": "{{amount}} i dag",
+      "paySplit": "{{amountNow}} i dag · {{amountLater}} den {{date}}",
+      "noWithdrawal": "Boende med fasta datum: den 14 dagar långa ångerrätten gäller inte; avbokningsvillkoren för ditt prisalternativ gäller."
+    },
+    "rateCard": {
+      "noRefund": "Ingen återbetalning vid avbokning"
     },
     "emailLineLabel": "Bekräftelse till",
     "emailChange": "ändra",

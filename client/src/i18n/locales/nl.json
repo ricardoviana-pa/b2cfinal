@@ -826,7 +826,7 @@
     "processingFirst": "Het eerste deel wordt verwerkt…",
     "mandateMissing": "Vink de machtiging hierboven aan om verder te gaan.",
     "termsHint": "Vink dit vakje aan om te betalen.",
-    "walletsHint": "Om met {{wallets}} te betalen, vult u uw gegevens aan en vinkt u hieronder het vakje voor de voorwaarden aan.",
+    "walletsAcceptPrefix": "Door te betalen accepteert u de",
     "errorActions": {
       "twoParts": "Liever in twee delen betalen (vandaag {{amountNow}})",
       "otherMethod": "Een andere kaart of betaalmethode gebruiken",
@@ -1249,7 +1249,8 @@
   },
   "legalFooter": {
     "complaintsBook": "Klachtenboek",
-    "complaintsBookAria": "Livro de Reclamações, het officiële elektronische klachtenboek van Portugal (opent in een nieuw tabblad)"
+    "complaintsBookAria": "Livro de Reclamações, het officiële elektronische klachtenboek van Portugal (opent in een nieuw tabblad)",
+    "operatedBy": "Portugal Active wordt geëxploiteerd door {{company}} · NIPC {{nipc}}"
   },
   "blog": {
     "overline": "JOURNAL",
@@ -1942,6 +1943,16 @@
     "rate": {
       "twoPartsLine": "U kunt ook in twee delen betalen: {{amountNow}} vandaag en {{amountLater}} op {{date}}.",
       "twoPartsLinePlain": "U kunt ook in twee delen betalen: {{amountNow}} vandaag en {{amountLater}} op {{date}}."
+    },
+    "legal": {
+      "operator": "Portugal Active wordt geëxploiteerd door {{company}} · NIPC {{nipc}}",
+      "total": "Totaal {{total}}",
+      "payFull": "{{amount}} vandaag",
+      "paySplit": "{{amountNow}} vandaag · {{amountLater}} op {{date}}",
+      "noWithdrawal": "Accommodatie met vaste data: het herroepingsrecht van 14 dagen is niet van toepassing; het annuleringsbeleid van uw tarief geldt."
+    },
+    "rateCard": {
+      "noRefund": "Geen terugbetaling bij annulering"
     },
     "emailLineLabel": "Bevestiging naar",
     "emailChange": "wijzigen",

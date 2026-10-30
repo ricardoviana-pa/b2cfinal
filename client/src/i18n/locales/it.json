@@ -826,7 +826,7 @@
     "processingFirst": "Elaborazione della prima parte…",
     "mandateMissing": "Spunti l'autorizzazione qui sopra per continuare.",
     "termsHint": "Spunti questa casella per pagare.",
-    "walletsHint": "Per pagare con {{wallets}}, completi i suoi dati e spunti la casella dei termini più sotto.",
+    "walletsAcceptPrefix": "Pagando, accetta i",
     "errorActions": {
       "twoParts": "Pagare in due parti ({{amountNow}} oggi)",
       "otherMethod": "Usare un'altra carta o un altro metodo",
@@ -1249,7 +1249,8 @@
   },
   "legalFooter": {
     "complaintsBook": "Libro dei reclami",
-    "complaintsBookAria": "Livro de Reclamações, il libro dei reclami elettronico ufficiale del Portogallo (si apre in una nuova scheda)"
+    "complaintsBookAria": "Livro de Reclamações, il libro dei reclami elettronico ufficiale del Portogallo (si apre in una nuova scheda)",
+    "operatedBy": "Portugal Active è gestita da {{company}} · NIPC {{nipc}}"
   },
   "blog": {
     "overline": "JOURNAL",
@@ -1942,6 +1943,16 @@
     "rate": {
       "twoPartsLine": "Può anche pagare in due parti: {{amountNow}} oggi e {{amountLater}} {{date, il}}.",
       "twoPartsLinePlain": "Può anche pagare in due parti: {{amountNow}} oggi e {{amountLater}} {{date, il}}."
+    },
+    "legal": {
+      "operator": "Portugal Active è gestita da {{company}} · NIPC {{nipc}}",
+      "total": "Totale {{total}}",
+      "payFull": "{{amount}} oggi",
+      "paySplit": "{{amountNow}} oggi · {{amountLater}} {{date, il}}",
+      "noWithdrawal": "Alloggio con date fisse: il diritto di recesso di 14 giorni non si applica; si applica la politica di cancellazione della sua tariffa."
+    },
+    "rateCard": {
+      "noRefund": "Nessun rimborso in caso di cancellazione"
     },
     "emailLineLabel": "Conferma a",
     "emailChange": "modifica",

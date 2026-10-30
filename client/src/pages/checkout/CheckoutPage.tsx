@@ -34,16 +34,17 @@ import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useVisitOriginSync } from "@/hooks/useVisitOriginSync";
 import { formatQuotedEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
-import { freeCancellationDeadline, isNonRefundablePlan, planPolicyCode, rateKind } from "@/lib/cancellation";
+import { freeCancellationDeadline, isNonRefundablePlan, planPolicyCode } from "@/lib/cancellation";
 import { freeCancellationDays } from "@shared/cancellationPolicy";
+import { preferredRatePlanId } from "@shared/ratePlanDefault";
 import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
-import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
+import RatePlanCards from "@/components/booking/RatePlanCards";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
 import { phoneIssue, phoneIssueMessage } from "@/lib/phone";
 import { consentChecked, consentToSend, stayContinueAction } from "@/lib/checkoutStay";
 import { flexAddsValue, flexExtraDays, flexPriceForPlan } from "@shared/flexValue";
-import { conciergeWhatsAppHref, guestDetailsIssues, walletsUnlocked, type GuestField } from "@/lib/checkoutPayment";
+import { conciergeWhatsAppHref, guestDetailsIssues, type GuestField, type WalletGuest } from "@/lib/checkoutPayment";
 import { checkTaxId, normalizeTaxId } from "@/lib/taxId";
 import { pushDL, pushEcommerce, buildPropertyItem } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
@@ -58,10 +59,10 @@ import CustomizeStep, {
 } from "./CustomizeStep";
 import FlexBlock, { type FlexConfig } from "./FlexBlock";
 import { MandateConsent, PaymentPlanSelector, planDate, type PaymentPlanChoice, type PaymentPlanOffer } from "./PaymentPlanSelector";
+import PreContractualBlock from "./PreContractualBlock";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
 import PaymentMethodsNote from "@/components/booking/PaymentMethodsNote";
-import TwoPartsHint from "@/components/booking/TwoPartsHint";
 
 type Step = "stay" | "customize" | "pay";
 
@@ -321,7 +322,16 @@ export default function CheckoutPage() {
     setGuests(intent.guests);
     setQuote((intent.quote as QuoteSnapshot) ?? null);
     setQuoteId(intent.guestyQuoteId ?? null);
-    setSelectedRatePlanId(intent.ratePlanId ?? null);
+    // A tarifa do intent (a que o hóspede escolheu no widget). Sem tarifa, ou
+    // com uma que já não está entre as mostradas, a reembolsável vem
+    // pré-selecionada (shared/ratePlanDefault.ts) e grava-se no intent.
+    {
+      const shown = (intent.quote as QuoteSnapshot | null)?.ratePlanOptions;
+      const keep = !!intent.ratePlanId && (!shown?.length || shown.some((o) => o.ratePlanId === intent.ratePlanId));
+      const seededPlan = keep ? (intent.ratePlanId as string) : (preferredRatePlanId(shown, intent.ratePlanId, intent.checkIn) ?? intent.ratePlanId ?? null);
+      setSelectedRatePlanId(seededPlan);
+      if (seededPlan && seededPlan !== intent.ratePlanId) syncIntent({ ratePlanId: seededPlan });
+    }
     if (intent.email) setEmail(intent.email);
     // Consentimento de marketing tal como o hóspede o deixou (null = não se
     // sabe), lido para o email do intent e só válido para esse email
@@ -557,9 +567,10 @@ export default function CheckoutPage() {
             dropCoupon();
           }
         }
-        // Re-resolve the plan selection on the quote that will be shown
+        // Re-resolve the plan selection on the quote that will be shown: the
+        // guest's choice if it survived; otherwise the refundable rate first.
         const planStill = next.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
-        const planNext = planStill?.ratePlanId ?? (d as any).ratePlanId ?? next.ratePlanOptions?.[0]?.ratePlanId ?? null;
+        const planNext = planStill?.ratePlanId ?? preferredRatePlanId(next.ratePlanOptions, (d as any).ratePlanId, ci) ?? (d as any).ratePlanId ?? null;
         setQuote(next);
         setQuoteId(liveQuoteId);
         setSelectedRatePlanId(planNext);
@@ -702,7 +713,7 @@ export default function CheckoutPage() {
         };
         const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
         setQuote(fresh);
-        setSelectedRatePlanId(stillThere?.ratePlanId ?? r.ratePlanId ?? fresh.ratePlanOptions?.[0]?.ratePlanId ?? null);
+        setSelectedRatePlanId(stillThere?.ratePlanId ?? preferredRatePlanId(fresh.ratePlanOptions, r.ratePlanId, checkIn) ?? r.ratePlanId ?? null);
         syncIntent({ quote: fresh });
         if (!code) setCouponInput("");
         if (code) pushDL({ event: "coupon_applied", coupon: code, property_id: intent.listingId });
@@ -1012,8 +1023,21 @@ export default function CheckoutPage() {
    *  o servidor cobra o que está na BD. Este flush grava o estado ATUAL de
    *  forma síncrona antes de criar a cobrança; se a gravação falhar, o
    *  pagamento aborta em vez de cobrar o estado antigo. */
-  const flushPendingSaves = useCallback(async () => {
+  /** Apple Pay / Google Pay: o hóspede que a folha devolveu (nome, email,
+   *  telefone), para a página de obrigado e o resumo o usarem mesmo que o
+   *  estado dos campos ainda não tenha chegado ao fecho do pagamento. */
+  const walletGuestRef = useRef<WalletGuest | null>(null);
+  const flushPendingSaves = useCallback(async (guest?: WalletGuest) => {
     if (!intentId || isDemo || !intent) return;
+    // Com um hóspede vindo da folha da wallet, é ele que fica no intent (e nos
+    // campos da página); sem ele, os campos da página como até aqui.
+    if (guest) {
+      walletGuestRef.current = guest;
+      setFirstName(guest.firstName);
+      setLastName(guest.lastName);
+      setEmail(guest.email);
+      setPhone(guest.phone);
+    }
     const patch: Record<string, unknown> = {
       flex: flexSelected,
       extras: selectedExtras.map(({ item, sel, amount }) => ({
@@ -1021,15 +1045,25 @@ export default function CheckoutPage() {
         amount, fulfillment: item.fulfillment,
       })),
       ...(receptionChoice ? { reception: receptionChoice } : {}),
-      ...(isValidEmail(email) ? { email } : {}),
-      ...(firstName.trim() && lastName.trim() && isValidPhone(phone)
+      ...(guest
         ? {
-            guestFirstName: firstName.trim(),
-            guestLastName: lastName.trim(),
-            guestPhone: phone,
+            email: guest.email,
+            guestFirstName: guest.firstName,
+            guestLastName: guest.lastName,
+            guestPhone: guest.phone,
             nif: normalizeTaxId(nif),
           }
-        : {}),
+        : {
+            ...(isValidEmail(email) ? { email } : {}),
+            ...(firstName.trim() && lastName.trim() && isValidPhone(phone)
+              ? {
+                  guestFirstName: firstName.trim(),
+                  guestLastName: lastName.trim(),
+                  guestPhone: phone,
+                  nif: normalizeTaxId(nif),
+                }
+              : {}),
+          }),
     };
     utils.checkout.getIntent.setData({ intentId }, (prev) =>
       prev?.intent ? { ...prev, intent: { ...prev.intent, ...patch } as typeof prev.intent } : prev,
@@ -1135,6 +1169,8 @@ export default function CheckoutPage() {
     (confirmationCode: string, reservationId?: string) => {
       if (!intent) return;
       const rid = reservationId || confirmationCode;
+      // Pago com Apple Pay / Google Pay: o hóspede é o da folha (walletGuestRef)
+      const paid = walletGuestRef.current;
       stashThankYou({
         reservationId: rid,
         confirmationCode,
@@ -1145,9 +1181,9 @@ export default function CheckoutPage() {
         checkIn,
         checkOut,
         guestsCount: guests,
-        guestName: `${firstName} ${lastName}`.trim(),
-        guestEmail: email,
-        guestPhone: phone,
+        guestName: paid ? `${paid.firstName} ${paid.lastName}`.trim() : `${firstName} ${lastName}`.trim(),
+        guestEmail: paid?.email || email,
+        guestPhone: paid?.phone || phone,
         // 2b: o cartão v2 cobra o que é devido hoje (estadia + serviços; em
         // duas partes só a 1.ª; com o Flex incluído, sem o Flex)
         totalCents: Math.round(payTotal * 100),
@@ -1215,8 +1251,6 @@ export default function CheckoutPage() {
   // ── Passo do pagamento (auditoria do funil, out/2026, n.º 1, 4 e 11) ──
   // Nome, email e telefone validam-se no clique em Pagar: o erro fica no campo,
   // o primeiro em falta recebe o foco e nada é criado nem cobrado.
-  const guestIssues = guestDetailsIssues({ firstName, lastName, email, phone });
-  const walletsReady = walletsUnlocked({ guestIssues, termsAccepted });
   const validateGuestForPay = useCallback((): boolean => {
     const issues = guestDetailsIssues({ firstName, lastName, email, phone });
     if (!issues.length) return true;
@@ -1573,90 +1607,33 @@ export default function CheckoutPage() {
     </div>
   );
 
-  const rateChoice = (
-(quote?.ratePlanOptions?.length ?? 0) > 1 && (
-                <div className="space-y-2">
-                  <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
-                  {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
-                    const isSelected = selectedRatePlanId === opt.ratePlanId;
-                    // "Reembolsável" só quando o Guesty o diz (código conhecido ou
-                    // nome "Reembolsável"); senão o neutro "Tarifa" (rateKind)
-                    const kind = rateKind(opt);
-                    const nonRef = kind === "non_refundable";
-                    const label =
-                      kind === "non_refundable"
-                        ? t("booking.nonRefundable")
-                        : kind === "refundable"
-                          ? t("booking.flexibleRate")
-                          : t("bookingConfirm.rate");
-                    const savings = maxTotal - opt.total;
-                    return (
-                      <label
-                        key={opt.ratePlanId}
-                        className={cn(
-                          "flex items-center gap-3 p-4 bg-white border rounded-lg cursor-pointer transition-all",
-                          isSelected ? "border-pa-dark ring-1 ring-pa-dark" : "border-pa-sand hover:border-pa-gold",
-                        )}
-                      >
-                        <input
-                          type="radio"
-                          name="checkoutRatePlan"
-                          checked={isSelected}
-                          onChange={() => {
-                            setSelectedRatePlanId(opt.ratePlanId);
-                            syncIntent({ ratePlanId: opt.ratePlanId });
-                            // A demo não manda eventos (como os outros pushDL deste ficheiro).
-                            if (!isDemo) {
-                              pushDL({
-                                event: "rate_plan_selected",
-                                rate_plan: nonRef ? "non_refundable" : "flexible",
-                                value: opt.total,
-                                property_id: intent.listingId,
-                              });
-                            }
-                          }}
-                          className="accent-black w-4 h-4 shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="body-sm text-pa-dark font-medium">{label}</p>
-                            {!nonRef && hasVerifiedRefundAdvantage(opt, quote!.ratePlanOptions!, checkIn) && (
-                              <span className="eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand rounded-sm">
-                                {t("bookingWidget.recommended", "Recommended")}
-                              </span>
-                            )}
-                          </div>
-                          <CancellationPolicyLine
-                            code={planPolicyCode(opt)}
-                            checkIn={checkIn}
-                            lang={lang}
-                            className="caption mt-0.5 text-pa-earth"
-                          />
-                          {!nonRef && (
-                            <TwoPartsHint
-                              variant="rate"
-                              checkIn={checkIn}
-                              policyCode={planPolicyCode(opt)}
-                              stayTotal={opt.total}
-                              className="caption mt-1 text-pa-dark leading-snug"
-                            />
-                          )}
-                        </div>
-                        <div className="text-right shrink-0">
-                          <span className="body-sm text-pa-dark font-medium tabular-nums">
-                            {formatQuotedEur(opt.total, lang)}
-                          </span>
-                          {savings > 0 && (
-                            <p className="caption text-pa-gold font-medium mt-0.5">
-                              {t("bookingWidget.save", "Save")} {formatQuotedEur(savings, lang)}
-                            </p>
-                          )}
-                        </div>
-                      </label>
-                    );
-                  }); })()}
-                </div>
-              )
+  // Tarifas em dois cartões de opção (RatePlanCards): nome, benefício com a
+  // data, total e a poupança da não reembolsável; a linha das duas partes
+  // debaixo da reembolsável quando a estadia a merece. A reembolsável vem
+  // pré-selecionada (shared/ratePlanDefault.ts).
+  const rateChoice = (quote?.ratePlanOptions?.length ?? 0) > 1 && (
+    <RatePlanCards
+      options={quote!.ratePlanOptions!}
+      selectedId={selectedRatePlanId}
+      checkIn={checkIn}
+      lang={lang}
+      name="checkoutRatePlan"
+      columns={2}
+      twoPartsVariant="rate"
+      onSelect={(opt, m) => {
+        setSelectedRatePlanId(opt.ratePlanId);
+        syncIntent({ ratePlanId: opt.ratePlanId });
+        // A demo não manda eventos (como os outros pushDL deste ficheiro).
+        if (!isDemo) {
+          pushDL({
+            event: "rate_plan_selected",
+            rate_plan: m.kind === "non_refundable" ? "non_refundable" : "flexible",
+            value: opt.total,
+            property_id: intent.listingId,
+          });
+        }
+      }}
+    />
   );
 
   // ── Passo do pagamento: erros nos campos (só depois de um clique em Pagar,
@@ -1672,15 +1649,25 @@ export default function CheckoutPage() {
   const phoneErrorText = phoneError ? phoneIssueMessage(phoneIssue(phone), t) : "";
   const nifIssue = checkTaxId(nif) === "pt_invalid";
 
-  // Autorização (duas partes), Termos e a frase de política: mesmo acima do
-  // botão final, que só fica ativo com as caixas marcadas (spec 4.1, pontos 4
-  // e 5, validada pelo André). Nenhuma vem pré-marcada; a dica fica junto à
-  // caixa por marcar.
+  // Autorização (duas partes), bloco pré-contratual (empresa, total, plano e a
+  // frase de política, a única do ecrã) e Termos: mesmo acima do botão final,
+  // que só fica ativo com as caixas marcadas (spec 4.1, pontos 4 e 5, validada
+  // pelo André). Nenhuma vem pré-marcada; a dica fica junto à caixa por marcar.
   const consentBlock = (
     <div className="space-y-3">
       {twoParts && offer && (
         <MandateConsent offer={offer} accepted={mandateAccepted} onChange={setMandateAccepted} />
       )}
+      <PreContractualBlock
+        lang={lang}
+        total={twoParts ? todayTotal : payTotal}
+        amountNow={payTotal}
+        amountLater={twoParts && offer ? offer.balanceCents / 100 : null}
+        laterDate={twoParts && offer ? planLaterDate : null}
+        policyCode={selectedPolicyCode}
+        checkIn={checkIn}
+        showPolicy={!!(selectedPolicyCode || effective?.cancellationPolicy?.length)}
+      />
       <div className="space-y-1">
         <label className="flex items-start gap-2 cursor-pointer select-none">
           <input
@@ -1702,15 +1689,6 @@ export default function CheckoutPage() {
           <p id="checkout-terms-hint" className="caption text-pa-earth leading-snug pl-6">{t("payment.termsHint")}</p>
         )}
       </div>
-      {/* Política em texto humano junto ao botão (spec §7, DL 24/2014): a única do passo */}
-      {selectedPolicyCode || effective?.cancellationPolicy?.length ? (
-        <CancellationPolicyLine
-          code={selectedPolicyCode}
-          checkIn={checkIn}
-          lang={lang}
-          className="caption text-pa-earth leading-snug"
-        />
-      ) : null}
     </div>
   );
 
@@ -2331,7 +2309,6 @@ export default function CheckoutPage() {
                     termsAccepted={termsAccepted}
                     consent={consentBlock}
                     validateGuest={validateGuestForPay}
-                    walletsReady={walletsReady}
                     conciergeHref={conciergeHref}
                     twoPartsSwitch={twoPartsSwitch}
                     onTwoPartsUnavailable={() => {
@@ -2357,6 +2334,8 @@ export default function CheckoutPage() {
                     propertyName={intent.propertyName || displayName}
                     destination={intent.destination || undefined}
                     guestName={`${firstName.trim()} ${lastName.trim()}`}
+                    guestFirstName={firstName.trim()}
+                    guestLastName={lastName.trim()}
                     guestEmail={email}
                     guestPhone={phone}
                     notes={extrasNote || undefined}

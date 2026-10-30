@@ -826,7 +826,7 @@
     "processingFirst": "Ensimmäistä osaa käsitellään…",
     "mandateMissing": "Merkitse yllä oleva valtuutus jatkaaksesi.",
     "termsHint": "Merkitse tämä ruutu maksaaksesi.",
-    "walletsHint": "{{wallets}} on käytettävissä, kun tietosi ovat valmiit ja ehtojen ruutu alempana on merkitty.",
+    "walletsAcceptPrefix": "Maksamalla hyväksytte",
     "errorActions": {
       "twoParts": "Maksa sen sijaan kahdessa osassa ({{amountNow}} tänään)",
       "otherMethod": "Käytä toista korttia tai maksutapaa",
@@ -1249,7 +1249,8 @@
   },
   "legalFooter": {
     "complaintsBook": "Valituskirja",
-    "complaintsBookAria": "Livro de Reclamações, Portugalin virallinen sähköinen valituskirja (avautuu uuteen välilehteen)"
+    "complaintsBookAria": "Livro de Reclamações, Portugalin virallinen sähköinen valituskirja (avautuu uuteen välilehteen)",
+    "operatedBy": "Portugal Activea ylläpitää {{company}} · NIPC {{nipc}}"
   },
   "blog": {
     "overline": "JOURNAL",
@@ -1942,6 +1943,16 @@
     "rate": {
       "twoPartsLine": "Voit myös maksaa kahdessa osassa: {{amountNow}} tänään ja {{amountLater}} {{date}}.",
       "twoPartsLinePlain": "Voit myös maksaa kahdessa osassa: {{amountNow}} tänään ja {{amountLater}} {{date}}."
+    },
+    "legal": {
+      "operator": "Portugal Activea ylläpitää {{company}} · NIPC {{nipc}}",
+      "total": "Yhteensä {{total}}",
+      "payFull": "{{amount}} tänään",
+      "paySplit": "{{amountNow}} tänään · {{amountLater}} {{date}}",
+      "noWithdrawal": "Majoitus kiinteillä päivämäärillä: 14 päivän peruuttamisoikeus ei koske varausta; hintavaihtoehtonne peruutusehdot ovat voimassa."
+    },
+    "rateCard": {
+      "noRefund": "Ei hyvitystä peruutuksen yhteydessä"
     },
     "emailLineLabel": "Vahvistus osoitteeseen",
     "emailChange": "muuta",

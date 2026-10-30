@@ -9,11 +9,12 @@ import { visitOriginPayload } from "@/lib/visitOrigin";
 import { adSignalsPayload, newMetaEventId } from "@/lib/adSignals";
 import { cn } from "@/lib/utils";
 import { pushDL, pushEcommerce, pushPurchaseOnce, buildPropertyItem, ADDON_PREFIX } from "@/lib/datalayer";
-import { isNonRefundablePlan as isNonRefundableRatePlan, cancellationPolicyPath, planPolicyCode, rateKind } from "@/lib/cancellation";
+import { isNonRefundablePlan as isNonRefundableRatePlan, planPolicyCode } from "@/lib/cancellation";
 import { freeCancellationDays, freeCancellationDeadline } from "@shared/cancellationPolicy";
+import { preferredRatePlanId } from "@shared/ratePlanDefault";
 import TwoPartsHint from "./TwoPartsHint";
 import CancellationPolicyLine from "./CancellationPolicyLine";
-import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
+import RatePlanCards from "./RatePlanCards";
 import { localizeProduct } from "@/lib/localizeProduct";
 import { Calendar, User, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
@@ -607,13 +608,12 @@ export default function BookingWidget({
       };
 
       setQuote(quoteData);
-      // Default the selection to a plan that is actually shown. Honour the
-      // backend default only if it survived the collapse, else pick the first
-      // (refundable) of the two.
+      // Tarifa pré-selecionada: a reembolsável, quando a estadia a oferece
+      // (shared/ratePlanDefault.ts; decisão do Ricardo, 29 out 2026). Antes
+      // vinha a tarifa por omissão do Guesty, quase sempre a não reembolsável.
       const shownPlans = quoteData.ratePlanOptions || [];
       const backendDefault = (d as any).ratePlanId as string | undefined;
-      const defaultPlan = shownPlans.find(o => o.ratePlanId === backendDefault) || shownPlans[0];
-      setSelectedRatePlanId(defaultPlan ? defaultPlan.ratePlanId : null);
+      setSelectedRatePlanId(preferredRatePlanId(shownPlans, backendDefault, checkIn));
 
       if (!beQuoteId || (quoteData.source !== "live" && quoteData.source !== "cached")) {
         // Price exists but no bookable BE quote — the UI shows the
@@ -1365,8 +1365,11 @@ export default function BookingWidget({
                   </p>
                 )}
                 {/* Duas partes: o hóspede sabe-o antes do checkout (só com a
-                    tarifa reembolsável elegível; sem oferta não há nada). */}
+                    tarifa reembolsável elegível; sem oferta não há nada). Com
+                    dois cartões de tarifa a linha vive debaixo do reembolsável
+                    (RatePlanCards); aqui só quando há uma tarifa única. */}
                 {(() => {
+                  if ((quote?.ratePlanOptions?.length ?? 0) > 1) return null;
                   const refundable = quote?.ratePlanOptions?.find((o) => !isNonRefundablePlan(o) && !o.priceOnRequest);
                   if (!refundable) return null;
                   return (
@@ -1382,100 +1385,34 @@ export default function BookingWidget({
               </div>
             </div>
 
-            {/* ── Rate Plan Options — always visible when there is a real
-                 choice; selection updates the totals and flows into the
-                 checkout intent (selectedRatePlanId ?? default). ── */}
-            {quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (() => {
-              const maxTotal = Math.max(...quote.ratePlanOptions!.map(o => o.total));
-              return (
-                <div ref={ratePlansRef} className="space-y-2">
-                  <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.ratePlan")}</p>
-                  {quote.ratePlanOptions!.map(opt => {
-                    // No explicit pick yet → highlight the quote's default plan
-                    const isSelected = (selectedRatePlanId ?? quote.ratePlanId) === opt.ratePlanId;
-                    const savings = maxTotal - opt.total;
-                    // Plans are collapsed to exactly one refundable + one non-refundable
-                    // (pickTwoRatePlans), so the label comes from the bucket — never the
-                    // raw Guesty plan name (F1). "Refundable" only when Guesty says so
-                    // (a known refundable code or its "Reembolsável" name); otherwise
-                    // the neutral "Rate". The sentence under it is the rule of the
-                    // plan's Guesty code, or "the terms of your rate" + link when unknown.
-                    const kind = rateKind(opt);
-                    const isNonRefundable = kind === "non_refundable";
-                    const planLabel =
-                      kind === "non_refundable"
-                        ? t("booking.nonRefundable")
-                        : kind === "refundable"
-                          ? t("booking.flexibleRate")
-                          : t("bookingConfirm.rate");
-                    return (
-                      <label
-                        key={opt.ratePlanId}
-                        ref={isSelected ? selectedPlanRef : undefined}
-                        className={cn(
-                          "flex items-center gap-3 p-3.5 border cursor-pointer transition-all",
-                          isSelected
-                            ? "border-black bg-white ring-1 ring-black"
-                            : "border-black/10 hover:border-black/30"
-                        )}
-                      >
-                        <input
-                          type="radio"
-                          name="ratePlan"
-                          checked={isSelected}
-                          onChange={() => {
-                            setSelectedRatePlanId(opt.ratePlanId);
-                            // GA4: rate_plan_selected — user-initiated only
-                            pushDL({
-                              event: "rate_plan_selected",
-                              rate_plan: isNonRefundable ? "non_refundable" : "flexible",
-                              value: opt.total,
-                              property_id: guestyId,
-                            });
-                          }}
-                          className="accent-black w-4 h-4 shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            {isNonRefundable ? (
-                              <a
-                                href={cancellationPolicyPath(lang, "non_refundable")}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={e => e.stopPropagation()}
-                                aria-label={`${planLabel} – ${t("bookingWidget.ratePlanPolicyAria")}`}
-                                className="body-sm text-black font-medium underline underline-offset-2 hover:text-black/70 transition-colors"
-                              >
-                                {planLabel}
-                              </a>
-                            ) : (
-                              <p className="body-sm text-black font-medium">{planLabel}</p>
-                            )}
-                            {!isNonRefundable && hasVerifiedRefundAdvantage(opt, quote.ratePlanOptions!, checkIn) && (
-                              <span className="eyebrow font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
-                            )}
-                          </div>
-                          <CancellationPolicyLine
-                            code={planPolicyCode(opt)}
-                            checkIn={checkIn}
-                            lang={lang}
-                            className="caption text-inherit mt-0.5 text-black/50"
-                          />
-                        </div>
-                        <div className="text-right shrink-0">
-                          <span className="body-sm text-black font-medium whitespace-nowrap tabular-nums">{formatQuotedEur(opt.total, lang)}</span>
-                          {savings > 0 && (
-                            <p className="caption text-pa-gold font-medium mt-0.5">
-                              {t("bookingWidget.save", { defaultValue: "Save" })} {formatQuotedEur(savings, lang)}
-                            </p>
-                          )}
-                        </div>
-                      </label>
-                    );
-                  })}
-                </div>
-              );
-            })()}
+            {/* ── Tarifas em dois cartões de opção (RatePlanCards): nome,
+                 benefício com a data, total, poupança da não reembolsável e a
+                 linha das duas partes debaixo da reembolsável. A escolha
+                 atualiza os totais e segue para o intent do checkout
+                 (selectedRatePlanId); a reembolsável vem pré-selecionada. ── */}
+            {quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (
+              <RatePlanCards
+                options={quote.ratePlanOptions}
+                selectedId={selectedRatePlanId ?? preferredRatePlanId(quote.ratePlanOptions, quote.ratePlanId, checkIn)}
+                checkIn={checkIn}
+                lang={lang}
+                name="ratePlan"
+                columns={1}
+                twoPartsVariant="widget"
+                containerRef={ratePlansRef}
+                selectedRef={selectedPlanRef}
+                onSelect={(opt, m) => {
+                  setSelectedRatePlanId(opt.ratePlanId);
+                  // GA4: rate_plan_selected — user-initiated only
+                  pushDL({
+                    event: "rate_plan_selected",
+                    rate_plan: m.kind === "non_refundable" ? "non_refundable" : "flexible",
+                    value: opt.total,
+                    property_id: guestyId,
+                  });
+                }}
+              />
+            )}
 
             {/* ── Enhance Your Stay — legacy flow only. With checkout_v2 the
                  widget keeps just dates/guests/quote/CTA (spec §3); services

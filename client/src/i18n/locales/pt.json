@@ -826,7 +826,7 @@
     "processingFirst": "A processar a primeira parte…",
     "mandateMissing": "Marque a autorização acima para continuar.",
     "termsHint": "Marque esta caixa para pagar.",
-    "walletsHint": "Para pagar com {{wallets}}, complete os seus dados e marque a caixa dos Termos mais abaixo.",
+    "walletsAcceptPrefix": "Ao pagar, aceita os",
     "errorActions": {
       "twoParts": "Pagar em duas partes ({{amountNow}} hoje)",
       "otherMethod": "Usar outro cartão ou método",
@@ -1249,7 +1249,8 @@
   },
   "legalFooter": {
     "complaintsBook": "Livro de Reclamações",
-    "complaintsBookAria": "Livro de Reclamações Eletrónico (abre num novo separador)"
+    "complaintsBookAria": "Livro de Reclamações Eletrónico (abre num novo separador)",
+    "operatedBy": "A Portugal Active é operada por {{company}} · NIPC {{nipc}}"
   },
   "blog": {
     "overline": "DIÁRIO",
@@ -1942,6 +1943,16 @@
     "rate": {
       "twoPartsLine": "Também pode pagar em duas partes: {{amountNow}} hoje e {{amountLater}} a {{date}}.",
       "twoPartsLinePlain": "Também pode pagar em duas partes: {{amountNow}} hoje e {{amountLater}} a {{date}}."
+    },
+    "legal": {
+      "operator": "A Portugal Active é operada por {{company}} · NIPC {{nipc}}",
+      "total": "Total {{total}}",
+      "payFull": "{{amount}} hoje",
+      "paySplit": "{{amountNow}} hoje · {{amountLater}} em {{date}}",
+      "noWithdrawal": "Alojamento com datas fixas: não há direito de livre resolução de 14 dias; aplica-se a política de cancelamento da sua tarifa."
+    },
+    "rateCard": {
+      "noRefund": "Sem reembolso em caso de cancelamento"
     },
     "emailLineLabel": "Confirmação para",
     "emailChange": "alterar",

@@ -826,7 +826,7 @@
     "processingFirst": "Der erste Teil wird verarbeitet…",
     "mandateMissing": "Bestätigen Sie oben die Autorisierung, um fortzufahren.",
     "termsHint": "Kreuzen Sie dieses Feld an, um zu bezahlen.",
-    "walletsHint": "Um mit {{wallets}} zu bezahlen, vervollständigen Sie Ihre Angaben und kreuzen Sie unten das Feld für die Bedingungen an.",
+    "walletsAcceptPrefix": "Mit der Zahlung akzeptieren Sie die",
     "errorActions": {
       "twoParts": "Stattdessen in zwei Teilen bezahlen (heute {{amountNow}})",
       "otherMethod": "Andere Karte oder Zahlungsart verwenden",
@@ -1249,7 +1249,8 @@
   },
   "legalFooter": {
     "complaintsBook": "Beschwerdebuch",
-    "complaintsBookAria": "Livro de Reclamações, das offizielle elektronische Beschwerdebuch Portugals (öffnet sich in einem neuen Tab)"
+    "complaintsBookAria": "Livro de Reclamações, das offizielle elektronische Beschwerdebuch Portugals (öffnet sich in einem neuen Tab)",
+    "operatedBy": "Portugal Active wird betrieben von {{company}} · NIPC {{nipc}}"
   },
   "blog": {
     "overline": "JOURNAL",
@@ -1942,6 +1943,16 @@
     "rate": {
       "twoPartsLine": "Sie können auch in zwei Teilen zahlen: {{amountNow}} heute und {{amountLater}} am {{date}}.",
       "twoPartsLinePlain": "Sie können auch in zwei Teilen zahlen: {{amountNow}} heute und {{amountLater}} am {{date}}."
+    },
+    "legal": {
+      "operator": "Portugal Active wird betrieben von {{company}} · NIPC {{nipc}}",
+      "total": "Gesamt {{total}}",
+      "payFull": "{{amount}} heute",
+      "paySplit": "{{amountNow}} heute · {{amountLater}} am {{date}}",
+      "noWithdrawal": "Unterkunft mit festen Daten: Das 14-tägige Widerrufsrecht gilt nicht; es gilt die Stornierungsrichtlinie Ihres Tarifs."
+    },
+    "rateCard": {
+      "noRefund": "Keine Erstattung bei Stornierung"
     },
     "emailLineLabel": "Bestätigung an",
     "emailChange": "ändern",

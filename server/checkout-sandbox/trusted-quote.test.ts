@@ -25,6 +25,19 @@ describe('supplier quote identity and price binding',()=>{
     const usd=raw();usd.rates.ratePlans[0].ratePlan.money.currency='USD';
     expect(()=>canonicalStayQuote(usd,stay,now)).toThrow();
   });
+  it('without a plan on the stay, preselects the cheapest open refundable rate (never the supplier default by name)',()=>{
+    // Decisão de 29 out 2026: a reembolsável vem pré-selecionada. O parse do
+    // Guesty escolhia por nome ("Flexible" ganhava à "Rembolsável Standard",
+    // mais barata e com a mesma política); a regra partilhada escolhe a
+    // reembolsável mais barata cuja janela ainda está aberta.
+    const plan=(id:string,name:string,policy:string,subTotalPrice:number)=>({ratePlan:{_id:id,name,cancellationPolicy:[policy],money:{currency:'EUR',subTotalPrice,fareCleaning:100}}});
+    const two={...raw(),rates:{ratePlans:[plan('nr','Não-Reembolsável','SUPER_STRICT',1100),plan('flex','Flexible','MODERATE',1234.56),plan('flex-std','Rembolsável Standard','MODERATE',1200)]}};
+    const picked=canonicalStayQuote(two,{...stay,ratePlanId:undefined},now);
+    expect(picked.ratePlanId).toBe('flex-std');
+    expect(picked.quote.total).toBe(1200);
+    // a escolha do hóspede continua a mandar
+    expect(canonicalStayQuote(two,{...stay,ratePlanId:'nr'},now).ratePlanId).toBe('nr');
+  });
   it('requires customer-visible total and currency to match before charging',()=>{
     expect(()=>assertQuotedTotal({total:1,currency:'EUR'},{total:1234.56,currency:'EUR'})).toThrow();
     expect(()=>assertQuotedTotal({total:1234.56,currency:'USD'},{total:1234.56,currency:'EUR'})).toThrow();
