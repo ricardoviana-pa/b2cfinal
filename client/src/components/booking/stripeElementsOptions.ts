@@ -6,7 +6,7 @@
  *
  * O setupFutureUsage espelha o do PaymentIntent (shared/stripeSetupFutureUsage).
  */
-import type { ClickResolveDetails, StripeExpressCheckoutElementOptions, StripePaymentElementOptions } from "@stripe/stripe-js";
+import type { StripeExpressCheckoutElementOptions, StripePaymentElementOptions } from "@stripe/stripe-js";
 import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
 
 /**
@@ -46,24 +46,31 @@ export function paymentElementOptions({ legacyApplePay }: { legacyApplePay: bool
 /**
  * Opções do ExpressCheckoutElement: só wallets (cartão, PayPal e Klarna já
  * têm caminho próprio em baixo). O nome do negócio também aqui: por omissão a
- * folha do Apple Pay e do Google Pay mostra o nome da conta Stripe. A Stripe
- * aceita-o ao criar o Element (tipado no @stripe/stripe-js 10.2.0; o 4.10
- * instalado ainda não o declara, daí a interseção) e no resolve do clique
- * (EXPRESS_CHECKOUT_CLICK_DETAILS, tipado nos dois). Vai pelos dois caminhos:
- * a folha das wallets não se verifica no Chrome sem Apple Pay nem Google Pay.
+ * folha do Apple Pay e do Google Pay mostra o nome da conta Stripe. Vai só
+ * pela opção de criação do Element, a que a Stripe documenta (tipada no
+ * @stripe/stripe-js 10.2.0; o 4.10 instalado ainda não a declara, daí a
+ * interseção). O mesmo campo no clique está deprecado, e um handler de clique
+ * poria a Stripe à espera antes de abrir a folha (revisão do #188).
+ *
+ * `billingAddressRequired: true` por extenso: segundo a Stripe, passar
+ * `business` (ou allowedShippingCountries, phoneNumberRequired,
+ * shippingAddressRequired, emailRequired, applePay ou lineItems) ao criar o
+ * Element muda a omissão de true para false. Sem isto a folha deixava de pedir
+ * a morada de faturação, que a Stripe usa na verificação de morada e no Radar
+ * (revisão do #188, R1). Assim o que muda é só o nome mostrado.
+ *
+ * A folha das wallets não se verifica no Chrome sem Apple Pay nem Google Pay:
+ * confirmar num telemóvel real depois do deploy.
  */
-export const EXPRESS_CHECKOUT_ELEMENT_OPTIONS: StripeExpressCheckoutElementOptions & { business: typeof STRIPE_BUSINESS } = {
+export const EXPRESS_CHECKOUT_ELEMENT_OPTIONS: StripeExpressCheckoutElementOptions & {
+  business: typeof STRIPE_BUSINESS;
+  billingAddressRequired: boolean;
+} = {
   paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
   layout: { maxColumns: 2, maxRows: 1 } as any,
   business: STRIPE_BUSINESS,
+  billingAddressRequired: true,
 };
-
-/**
- * O que o clique numa wallet resolve antes de a folha abrir: o mesmo nome.
- * Com um handler de clique a Stripe espera pelo resolve; é chamado de
- * imediato, no próprio clique (o Apple Pay exige a folha dentro do gesto).
- */
-export const EXPRESS_CHECKOUT_CLICK_DETAILS: ClickResolveDetails = { business: STRIPE_BUSINESS };
 
 /**
  * A letra do site dentro do iframe da Stripe (verificação em produção, 29 out

@@ -3,7 +3,6 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
 import {
-  EXPRESS_CHECKOUT_CLICK_DETAILS,
   EXPRESS_CHECKOUT_ELEMENT_OPTIONS,
   STRIPE_BUSINESS,
   STRIPE_CARD_APPEARANCE,
@@ -55,14 +54,44 @@ describe("o nome do negócio que a Stripe mostra é o da marca, Portugal Active"
       applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never",
     });
     expect(EXPRESS_CHECKOUT_ELEMENT_OPTIONS.layout).toEqual({ maxColumns: 2, maxRows: 1 });
-    // O clique na wallet resolve com o mesmo nome (o caminho que o stripe-js 4.10 tipa).
-    expect(EXPRESS_CHECKOUT_CLICK_DETAILS).toEqual({ business: STRIPE_BUSINESS });
+  });
+
+  /**
+   * Revisão do #188 (R1): segundo a documentação da Stripe, passar `business`
+   * (ou allowedShippingCountries, phoneNumberRequired, shippingAddressRequired,
+   * emailRequired, applePay ou lineItems) ao criar o Express Checkout Element
+   * faz o `billingAddressRequired` passar de true (o que o main tinha, só com
+   * paymentMethods e layout) para false. A folha do Apple Pay / Google Pay
+   * deixava de pedir a morada de faturação e a Stripe perdia a verificação de
+   * morada e os sinais do Radar. Fica explícito, para só mudar o nome mostrado.
+   */
+  it("a folha das wallets continua a pedir a morada de faturação (a Stripe desliga-a quando se passa `business`)", () => {
+    expect(EXPRESS_CHECKOUT_ELEMENT_OPTIONS.billingAddressRequired).toBe(true);
+    // As únicas chaves: as duas do main, o nome e a morada que o nome desligaria.
+    expect(Object.keys(EXPRESS_CHECKOUT_ELEMENT_OPTIONS).sort()).toEqual(["billingAddressRequired", "business", "layout", "paymentMethods"]);
+  });
+
+  /**
+   * Revisão do #188 (RISK-ECE-CLICK-RESOLVE): o nome vai só pela opção de
+   * criação do Element (a que a Stripe documenta); o `business` no resolve do
+   * clique está deprecado no stripe-js 10.2 e registar um handler de clique
+   * mete a Stripe à espera do resolve antes de abrir a folha, no caminho do
+   * dinheiro das wallets, que não se exercita localmente. Sem handler de
+   * clique, sem segundo caminho.
+   */
+  it("sem handler de clique nas wallets: o nome vai só pela opção de criação", () => {
+    const options = readSrc("client/src/components/booking/stripeElementsOptions.ts");
+    expect(options).not.toMatch(/EXPRESS_CHECKOUT_CLICK_DETAILS|ClickResolveDetails|\bresolve\(/);
+    const ece = form.match(/<ExpressCheckoutElement\b([\s\S]*?)\/>/);
+    expect(ece, "o checkout monta o ExpressCheckoutElement").not.toBeNull();
+    expect(ece![1]).not.toMatch(/onClick|resolve\(/);
+    expect(form).not.toMatch(/EXPRESS_CHECKOUT_CLICK_DETAILS/);
   });
 
   it("o checkout monta os dois Elements com estas opções (não com literais próprios)", () => {
     expect(form).toMatch(/const paymentOptions = useMemo\(\(\) => paymentElementOptions\(\{ legacyApplePay: !intentId \}\), \[intentId\]\);/);
     expect(form).toMatch(/<PaymentElement options=\{paymentOptions\} \/>/);
-    expect(form).toMatch(/<ExpressCheckoutElement\s+options=\{EXPRESS_CHECKOUT_ELEMENT_OPTIONS\}\s+onClick=\{\(event\) => event\.resolve\(EXPRESS_CHECKOUT_CLICK_DETAILS\)\}/);
+    expect(form).toMatch(/<ExpressCheckoutElement\s+options=\{EXPRESS_CHECKOUT_ELEMENT_OPTIONS\}\s+onReady=/);
     expect(form).not.toMatch(/options=\{\{\s*layout: "tabs"/);
     expect(form).not.toMatch(/paymentMethods: \{ applePay/);
   });

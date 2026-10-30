@@ -40,7 +40,6 @@ import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
 import { payButtonGate, walletNames } from "@/lib/checkoutPayment";
 import {
-  EXPRESS_CHECKOUT_CLICK_DETAILS,
   EXPRESS_CHECKOUT_ELEMENT_OPTIONS,
   cardElementsOptions,
   expressCheckoutElementsOptions,
@@ -388,11 +387,11 @@ function ExpressWalletInner({
         <p className="caption text-pa-earth leading-snug">{t("payment.walletsHint", { wallets: names })}</p>
       )}
       <div style={{ display: ready ? "block" : "none" }}>
-        {/* Só wallets, com o nome da marca (EXPRESS_CHECKOUT_ELEMENT_OPTIONS); o clique
-            resolve de imediato com o mesmo nome, para a folha da wallet o mostrar */}
+        {/* Só wallets, com o nome da marca e a morada de faturação pedida
+            (EXPRESS_CHECKOUT_ELEMENT_OPTIONS). Sem handler de clique: a folha abre
+            logo, sem a Stripe ficar à espera de nada (revisão do #188). */}
         <ExpressCheckoutElement
           options={EXPRESS_CHECKOUT_ELEMENT_OPTIONS}
-          onClick={(event) => event.resolve(EXPRESS_CHECKOUT_CLICK_DETAILS)}
           onReady={({ availablePaymentMethods }) => {
             setAvailable(!!availablePaymentMethods);
             setMethods(availablePaymentMethods ?? null);
