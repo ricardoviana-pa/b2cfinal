@@ -44,10 +44,9 @@ import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
 import DestinationOptions, { useDestinationOptions } from '@/components/marketing/DestinationOptions';
-import { HOME_FEATURED_ORDER, HOME_FEATURED_COUNT, catalogKey, curatedPosition } from '@/config/propertyOrder';
+import { selectFeaturedHomes } from '@/lib/featuredHomes';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { useFromPrices } from '@/hooks/useFromPrices';
-import { isChildUnit } from '@/config/propertyGroups';
 
 const destinations = destinationsData as unknown as Destination[];
 
@@ -186,42 +185,13 @@ export default function Home() {
   const s10Ref = useFadeIn();
 
   // Featured homes — the homepage strip follows HOME_FEATURED_ORDER
-  // (src/config/propertyOrder.ts): six partner homes leading, then the
-  // top of the commercial team's curated PLP order. The PLP keeps its
-  // own ranking (CURATED_PROPERTY_ORDER); only the homepage reads this
-  // list. Partner homes have no Guesty listing, so entries are matched
-  // on the catalogue key (guestyId for our homes, catalogue id for
-  // partner inventory).
-  //
-  // Multi-unit child units are filtered out so a group's units never
-  // surface individually in the strip (the parent listing — which
-  // PropertyCard auto-renders as a group card — is what represents
-  // the cluster). If fewer than HOME_FEATURED_COUNT entries exist in
-  // the current catalogue (e.g. a listing is temporarily unlisted in
-  // Guesty, or partner inventory is switched off), the slots are filled
-  // from our own homes in curated PLP order, then by price descending,
-  // skipping anything already chosen and any group child.
-  const featured = useMemo(() => {
-    const byKey = new Map(properties.map(p => [catalogKey(p), p]));
-    const pinned = HOME_FEATURED_ORDER
-      .map(key => byKey.get(key))
-      .filter((p): p is NonNullable<typeof p> => !!p && !isChildUnit(p.guestyId))
-      .slice(0, HOME_FEATURED_COUNT);
-    if (pinned.length >= HOME_FEATURED_COUNT) return pinned;
-    const pinnedSet = new Set(pinned.map(catalogKey));
-    const fillers = [...properties]
-      .filter(p => p.guestyId && !pinnedSet.has(catalogKey(p)) && !isChildUnit(p.guestyId))
-      .sort((a, b) => {
-        // Use the curated ranks as the tie-breaker so fillers still
-        // come in commercial-team order, falling back to price descending
-        // for anything completely off the ranking.
-        const pa = curatedPosition(a.guestyId);
-        const pb = curatedPosition(b.guestyId);
-        if (pa !== pb) return pa - pb;
-        return (b.priceFrom ?? 0) - (a.priceFrom ?? 0);
-      });
-    return [...pinned, ...fillers].slice(0, HOME_FEATURED_COUNT);
-  }, [properties]);
+  // (src/config/propertyOrder.ts): our homes and partner homes interleaved,
+  // Eben Lodge in slot 2. The PLP keeps its own ranking
+  // (CURATED_PROPERTY_ORDER); only the homepage reads this list. The
+  // selection (catalogue-key matching, no group children, fillers from the
+  // curated order when a home is missing) lives in lib/featuredHomes.ts so
+  // it is tested against the real catalogue.
+  const featured = useMemo(() => selectFeaturedHomes(properties), [properties]);
 
   const fromListingIds = useMemo(() => featured.filter(p => p.guestyId).map(p => p.guestyId!), [featured]);
   // Starts from the prices the server put into the page (useFromPrices).

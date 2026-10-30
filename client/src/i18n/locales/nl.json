@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusief voor onze gasten",
     "office": "Kantoor"
   },
+  "promoBar": {
+    "defaultText": "Gebruik code {code} bij het afrekenen",
+    "copied": "Code gekopieerd",
+    "ariaLabel": "Huidige actie",
+    "copyAria": "code kopiëren",
+    "dismiss": "Sluiten"
+  },
   "destinations": {
     "minho": "Noord-Portugal · Minho",
     "porto": "Porto en Douro",
@@ -568,7 +575,9 @@
     "showAllAmenitiesCount": "Alle {{count}} voorzieningen tonen",
     "showAllPhotos": "Alle {{count}} foto's tonen",
     "bedTotal_one": "{{count}} bed",
-    "bedTotal_other": "{{count}} bedden"
+    "bedTotal_other": "{{count}} bedden",
+    "availabilityTitle": "Beschikbaarheid",
+    "availabilityHint": "Kies uw in- en uitcheckdatum: de prijs van uw verblijf verschijnt in de boekingskaart."
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",
@@ -1371,7 +1380,9 @@
     "verifiedGuest": "Geverifieerde gast",
     "verifiedNote": "Alle reviews komen van voltooide verblijven, verzameld via onze boekingskanalen.",
     "previous": "Vorige beoordelingen",
-    "next": "Volgende beoordelingen"
+    "next": "Volgende beoordelingen",
+    "readAll_one": "Beoordeling lezen",
+    "readAll_other": "Alle {{count}} beoordelingen lezen"
   },
   "amenity": {
     "outdoorPool": "Buiten & Zwembad",
@@ -1610,7 +1621,8 @@
     "backToStay": "Terug naar het verblijf",
     "payTitle": "Betaling",
     "paySubtitle": "Uw gegevens, daarna een veilige betaling.",
-    "nifPh": "Fiscaal nummer of btw-nummer, optioneel, voor uw factuur",
+    "nifPh": "Fiscaal of btw-nummer (optioneel)",
+    "nifNote": "Alleen als u dit op uw factuur wilt.",
     "directTitle": "Direct boeken bij Portugal Active",
     "refreshBeforePay": "Vernieuw de prijs hierboven voordat u betaalt.",
     "secureNote": "Versleutelde, veilige betaling",
@@ -1874,6 +1886,13 @@
     "perPersonDay": "per persoon · dag",
     "allDays": "Elke dag",
     "airport": "Luchthaven",
+    "sections": {
+      "noExtras": "Geen extra’s",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extra’s"
+    },
+    "airportPorto": "Porto",
+    "airportLisbon": "Lissabon",
     "confirm24hNote": "Als we het niet kunnen garanderen, wordt de regel automatisch terugbetaald.",
     "noChargeNow": "nu geen kosten",
     "perPersonHour": "per kind · uur",
@@ -2034,7 +2053,8 @@
     "submitError": "We konden uw aanvraag niet versturen. Probeer opnieuw of schrijf de concierge.",
     "sending": "Versturen…",
     "submit": "Deze data aanvragen",
-    "noCharge": "Nu geen betaling — de concierge bevestigt eerst beschikbaarheid en het eindtotaal."
+    "noCharge": "Nu geen betaling — de concierge bevestigt eerst beschikbaarheid en het eindtotaal.",
+    "pickDatesFirst": "Kies hierboven uw data: daarna vragen we uw gegevens en sturen we de aanvraag door."
   },
   "login": {
     "benefitTrips": "Beheer uw reizen",

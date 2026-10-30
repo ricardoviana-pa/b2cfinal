@@ -105,7 +105,8 @@ export function PaymentPlanSelector({
     <label
       className={cn(
         "flex items-start gap-3 rounded-lg border p-4 cursor-pointer transition-colors",
-        plan === id ? "border-pa-gold bg-pa-warm" : "border-pa-sand bg-white hover:border-pa-stone-aa",
+        // A mesma anatomia dos cartões de tarifa e das linhas de receção (29 out 2026)
+        plan === id ? "border-pa-dark ring-1 ring-pa-dark bg-pa-warm" : "border-pa-sand bg-white hover:border-pa-dark",
       )}
     >
       <input

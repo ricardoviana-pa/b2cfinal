@@ -5,6 +5,7 @@ import { servicePlanning } from '../../shared/servicePlanning';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
 import { articlePhotos, stripPhotoLines } from '../../shared/articlePhotos';
 import { reviewedArticleDate } from '../../shared/articleNavigation';
+import { displayedAggregate } from '../../shared/reviewStats';
 import { corporateSchema } from '../../shared/corporateSchema';
 import { deepMerge } from '../../client/src/lib/deepMerge';
 import { vacationRentalSchema } from '../../shared/vacationRentalSchema';
@@ -29,7 +30,7 @@ import { isNonIndexableHost } from "../lib/hosts.js";
 import { htmlCacheHeaders, isPrivateHtmlPath } from "../lib/htmlCache";
 import { noStoreIfTracked, ssrRenderUrl } from "../lib/trackingParams";
 import { GUESTY_IMAGE_ORIGIN, injectBeforeBodyEnd, injectIntoHead, needsGuestyPreconnect, routeAssets, routeModulePreloadScript, routeStyleTags, type ViteManifest } from "../lib/routeAssets";
-import { guestyIdsOf, readFromPricesForSsr } from "../lib/ssrFromPrices";
+import { guestyIdsOf, readFromPricesForSsr, readPdpFromPriceForSsr } from "../lib/ssrFromPrices";
 import { setStaticFileHeaders } from "../lib/security-headers";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
@@ -811,9 +812,12 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
     longitude: prop.address?.lng ?? prop.longitude,
     checkinTime: prop.checkInTime,
     checkoutTime: prop.checkOutTime,
-    aggregateRating: prop.averageRating && prop.reviewCount ? {
-      ratingValue: Number(prop.averageRating), reviewCount: Number(prop.reviewCount),
-    } : null,
+    // What the page shows (shared/reviewStats.ts): the real average of every
+    // review, one decimal, only from three reviews.
+    aggregateRating: (() => {
+      const agg = displayedAggregate(prop);
+      return agg.average === null ? null : { ratingValue: agg.average, reviewCount: agg.count };
+    })(),
   }, lang);
 
   const breadcrumb = {
@@ -1651,9 +1655,10 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
     if (m) {
       const prop = await getPropertyBySlugCached(m[1]);
       const out = buildPropertyPrefetch(m[1], prop, lang);
-      // The booking card's "From €X" (lib/ssrFromPrices.ts). Partner homes
-      // price off their own calendar and keep fetching it as before.
-      const fromPrices = prop && prop.source !== "tripwix" ? await readFromPricesForSsr([prop.guestyId]) : undefined;
+      // The booking card's "From €X" (lib/ssrFromPrices.ts): our homes from
+      // lowest-nightly's memory, partner homes from the calendar the job
+      // stored (never a Tripwix call) — the same budget for both.
+      const fromPrices = await readPdpFromPriceForSsr(prop);
       return fromPrices ? { ...out, fromPrices } : out;
     }
     // Blog articles: seed the handful of homes shown under the article, so

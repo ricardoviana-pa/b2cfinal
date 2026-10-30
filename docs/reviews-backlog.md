@@ -1,15 +1,26 @@
 # Reviews — estado e backlog
 
-## Política: só 5 estrelas
+## Política: todas as avaliações contam (desde 29/10/2026)
 
-Desde 30/08/2026 o site publica **exclusivamente reviews de 5 estrelas**. As 4★
-deixaram de ser sincronizadas: não entram nos dados, não contam para `averageRating`
-nem para `reviewCount`. A barra está em `buildReviewsByListing` (guesty-sync.ts):
-`MIN_FIVE_POINT = 5`, `MIN_TEN_POINT = 10`.
+Decisão do Ricardo a 29/10/2026: a página de cada casa mostra **a média real de
+todas as avaliações** e lista as de qualquer classificação, com a classificação
+visível em cada cartão. Regras em `shared/reviewStats.ts`, partilhadas pela sync,
+pelos scripts, pela página e pelo JSON-LD:
 
-Consequência a ter presente: a média publicada é 5,00 em todas as casas por
-construção, e o `aggregateRating` do JSON-LD declara 5,0. É a média verdadeira do
-que o site carrega, não de todas as estadias.
+- a sync (`buildReviewsByListing`, guesty-sync.ts) guarda todas as avaliações de
+  hóspede públicas com texto, normalizadas para 1–5 (canais de 10 pontos ÷ 2);
+  `averageRating`/`reviewCount` são calculados sobre esse conjunto completo;
+- a página mostra a média com uma casa decimal e **só a partir de 3 avaliações**;
+  com 1 ou 2 mostra apenas a contagem. O `aggregateRating` do JSON-LD declara
+  exactamente os mesmos números (e não existe abaixo de 3);
+- ordem dos cartões: língua da página primeiro, depois inglês, depois as outras;
+  mais recentes primeiro dentro de cada grupo (como na faixa da página inicial).
+
+Entre 30/08 e 29/10/2026 o site publicou só 5★, pelo que todas as casas liam
+"5,0". Os dados comprometidos (`properties.json`) continuam a ter só 5★ até à
+próxima sync no Render reconstruir as avaliações com a nova regra; o back-catalogue
+do Airbnb em `reviews.manual.json` também foi colhido só com 5★ — repetir a recolha
+(secção seguinte) para trazer as 4★ e as restantes.
 
 ## Números
 

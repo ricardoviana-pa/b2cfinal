@@ -1,3 +1,5 @@
+> **Nota de 29 de outubro de 2026.** O passo Personalizar passou a uma secção compacta numa página de três secções (ver `docs/checkout_spec.md` §17). Os critérios 1, 2, 5 e 6 abaixo (nav de capítulos com scrollspy, títulos de 44 px ou mais, "Saltar personalização" na nav, máximo de 3 itens por capítulo) ficam substituídos; o resto continua válido.
+
 # Fase 2.1 revista: direção configurador para o passo Personalizar
 
 Brief de execução para Claude Code. Substitui integralmente a versão anterior deste ficheiro (a da grelha de cards fotográficos). Complementa docs/checkout_spec.md. Âmbito: apenas apresentação e conteúdo do passo 2; zero alterações de lógica de cobrança ou dados.

@@ -31,6 +31,13 @@
     "conciergeExclusive": "Yksinomaan vieraillemme",
     "office": "Toimisto"
   },
+  "promoBar": {
+    "defaultText": "Käytä koodia {code} kassalla",
+    "copied": "Koodi kopioitu",
+    "ariaLabel": "Voimassa oleva tarjous",
+    "copyAria": "kopioi koodi",
+    "dismiss": "Sulje"
+  },
   "destinations": {
     "minho": "Pohjois-Portugali · Minho",
     "porto": "Porto ja Douro",
@@ -568,7 +575,9 @@
     "showAllAmenitiesCount": "Näytä kaikki {{count}} mukavuutta",
     "showAllPhotos": "Näytä kaikki {{count}} kuvaa",
     "bedTotal_one": "{{count}} vuode",
-    "bedTotal_other": "{{count}} vuodetta"
+    "bedTotal_other": "{{count}} vuodetta",
+    "availabilityTitle": "Saatavuus",
+    "availabilityHint": "Valitse saapumis- ja lähtöpäivä: majoituksen hinta näkyy varauskortissa."
   },
   "priceBreakdown": {
     "title": "Hintayhteenveto",
@@ -1371,7 +1380,9 @@
     "verifiedGuest": "Vahvistettu vieras",
     "verifiedNote": "Kaikki arvostelut ovat toteutuneista oleskeluista, kerätty varauskanaviemme kautta.",
     "previous": "Edelliset arvostelut",
-    "next": "Seuraavat arvostelut"
+    "next": "Seuraavat arvostelut",
+    "readAll_one": "Lue arvostelu",
+    "readAll_other": "Lue kaikki {{count}} arvostelua"
   },
   "amenity": {
     "outdoorPool": "Ulkotilat ja uima-allas",
@@ -1610,7 +1621,8 @@
     "backToStay": "Takaisin majoitukseen",
     "payTitle": "Maksu",
     "paySubtitle": "Tietosi ja sitten turvallinen maksu.",
-    "nifPh": "Veronumero tai ALV-tunnus, valinnainen, laskuasi varten",
+    "nifPh": "Vero- tai ALV-tunnus (valinnainen)",
+    "nifNote": "Vain jos haluat sen laskulle.",
     "directTitle": "Varaa suoraan Portugal Activelta",
     "refreshBeforePay": "Päivitä yllä oleva hinta ennen maksamista.",
     "secureNote": "Salattu, turvallinen maksu",
@@ -1874,6 +1886,13 @@
     "perPersonDay": "per henkilö · päivä",
     "allDays": "Joka päivä",
     "airport": "Lentokenttä",
+    "sections": {
+      "noExtras": "Ei lisäpalveluita",
+      "extrasCount_one": "{{count}} lisäpalvelu",
+      "extrasCount_other": "{{count}} lisäpalvelua"
+    },
+    "airportPorto": "Porto",
+    "airportLisbon": "Lissabon",
     "confirm24hNote": "Jos emme voi taata sitä, rivi hyvitetään automaattisesti.",
     "noChargeNow": "ei veloitusta nyt",
     "perPersonHour": "per lapsi · tunti",
@@ -2034,7 +2053,8 @@
     "submitError": "Pyyntöäsi ei voitu lähettää. Yritä uudelleen tai kirjoita conciergelle.",
     "sending": "Lähetetään…",
     "submit": "Pyydä näitä päiviä",
-    "noCharge": "Ei maksua nyt — concierge vahvistaa ensin saatavuuden ja lopullisen summan."
+    "noCharge": "Ei maksua nyt — concierge vahvistaa ensin saatavuuden ja lopullisen summan.",
+    "pickDatesFirst": "Valitse päivät yllä: sen jälkeen kysymme tietosi ja lähetämme pyynnön."
   },
   "login": {
     "benefitTrips": "Hallitse matkojasi",

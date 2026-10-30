@@ -132,32 +132,41 @@ export function isCurated(guestyId: string | undefined): boolean {
 }
 
 /**
- * Homepage strip ("Editor's Picks"). Separate from the PLP ranking above:
- * Ricardo wants the homepage to open on six partner homes (Tripwix
- * inventory, 26 Sep 2026) and then continue with the top of the curated
- * PLP order, while the PLP itself keeps its commercial-team ranking.
+ * Homepage strip ("Editor's Picks"). Separate from the PLP ranking above,
+ * which keeps the commercial team's order.
+ *
+ * Ricardo, 29 out 2026: our homes and the partner homes (Tripwix inventory)
+ * interleaved so the twelve cards mix regions — Algarve, Douro, Lisbon,
+ * Comporta from the partners, Minho and Porto from our own — with Eben
+ * Lodge in slot 2. A partner home only earns a slot with a real "from"
+ * price and a calendar priced twelve months out (checked in production on
+ * 29 out: booking.partnerPrices + booking.partnerCalendar); Casa do
+ * Presidente and Alma da Comporta stop at 2027-03-04 and stayed out, the
+ * four 20%-commission homes (Caiz, Belvedere, Laura, Rolapipas) are in.
+ * Mirante 1 stays first: its tennis court is the site hero.
  *
  * Entries are catalogue keys (see `catalogKey`): the Guesty listingId for
  * our own homes, the `tripwix-<ref>` catalogue id for partner homes, which
  * have no Guesty listing. Multi-unit groups use the PARENT id, as above.
  *
- * To reorder or swap a home: edit the array, commit, push. If an entry is
- * missing from the live catalogue the homepage fills the slot from the
- * curated PLP order.
+ * To reorder or swap a home: edit the array, commit, push (the test in
+ * server/home-featured-order.test.ts checks every entry exists). If an
+ * entry is missing from the live catalogue the homepage fills the slot
+ * from the curated PLP order (lib/featuredHomes.ts).
  */
 export const HOME_FEATURED_ORDER: string[] = [
-  'tripwix-PT0009', // Mirante 1 (Albufeira)
-  'tripwix-PT0148', // Quinta Vale das Papas (Douro)
-  'tripwix-PT0164', // Villa Mare (Albufeira)
-  'tripwix-PT0175', // Alma da Comporta (Comporta)
-  'tripwix-PT0021', // Casa da Rocha (Central Algarve)
-  'tripwix-PT0186', // Quinta do Pinho (Douro)
-  '6a2ad70638d6620013badaef', // Carcavelos House by Portugal Active
-  '696533466d209c001510ecfe', // Eben Lodge (show off)
-  '69e7350685a8b000124854c5', // Alvarinho Villa 5 Suites & Heated Pool
-  '696533722def930014e914e2', // Abreu Retreat Palace - Luxury, Elegance & Leisure
-  '69c415ceab80a8001247452c', // Azenha do Tio Luis - Riverside Watermill (multi-unit)
-  '6965335cbf04fe00137431cb', // Lima River Houses (multi-unit)
+  'tripwix-PT0009', // Mirante 1 (Albufeira, Algarve) — site hero
+  '696533466d209c001510ecfe', // Eben Lodge (Carreço, Minho) — slot 2, Ricardo 29 out 2026
+  'tripwix-PT0277', // Casa de Caiz (Douro) — 20% commission
+  '6a2ad70638d6620013badaef', // Carcavelos Manor House (Vila Verde, Minho)
+  'tripwix-PT0253', // Villa Belvedere (West Algarve) — 20% commission
+  '69e7350685a8b000124854c5', // Alvarinho Villa 5 Suites & Heated Pool (Amarante, Porto)
+  'tripwix-PT0256', // Villa Laura (Estoril, Lisbon) — 20% commission
+  '696533722def930014e914e2', // Abreu Retreat Palace (Famalicão, Minho)
+  'tripwix-PT0023', // Casa do Rolapipas (Douro) — 20% commission
+  '69c415ceab80a8001247452c', // Azenha do Tio Luís - Riverside Watermill (Caminha, Minho; multi-unit)
+  'tripwix-PT0248', // Casa na Areia (Comporta)
+  '6965335cbf04fe00137431cb', // Lima River Houses (Viana do Castelo, Minho; multi-unit)
 ];
 
 /** Cards in the homepage strip: four rows of three on desktop, six of two on tablet. */

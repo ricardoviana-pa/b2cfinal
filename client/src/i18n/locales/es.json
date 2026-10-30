@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusivo para nuestros huéspedes",
     "office": "Oficina"
   },
+  "promoBar": {
+    "defaultText": "Utilice el código {code} al finalizar la reserva",
+    "copied": "Código copiado",
+    "ariaLabel": "Promoción en curso",
+    "copyAria": "copiar el código",
+    "dismiss": "Cerrar"
+  },
   "destinations": {
     "minho": "Norte de Portugal · Miño",
     "porto": "Oporto y Duero",
@@ -568,7 +575,9 @@
     "showAllAmenitiesCount": "Ver las {{count}} comodidades",
     "showAllPhotos": "Ver las {{count}} fotos",
     "bedTotal_one": "{{count}} cama",
-    "bedTotal_other": "{{count}} camas"
+    "bedTotal_other": "{{count}} camas",
+    "availabilityTitle": "Disponibilidad",
+    "availabilityHint": "Elija las fechas de entrada y salida: el precio de la estancia aparece en la tarjeta de reserva."
   },
   "priceBreakdown": {
     "title": "Resumen de precios",
@@ -1371,7 +1380,9 @@
     "verifiedGuest": "Huésped verificado",
     "verifiedNote": "Todas las reseñas proceden de estancias completadas, recogidas por nuestros canales de reserva.",
     "previous": "Reseñas anteriores",
-    "next": "Reseñas siguientes"
+    "next": "Reseñas siguientes",
+    "readAll_one": "Leer la opinión",
+    "readAll_other": "Leer las {{count}} opiniones"
   },
   "amenity": {
     "outdoorPool": "Exterior y Piscina",
@@ -1610,7 +1621,8 @@
     "backToStay": "Volver a la estancia",
     "payTitle": "Pago",
     "paySubtitle": "Sus datos y un pago seguro.",
-    "nifPh": "NIF o número de IVA, opcional, para su factura",
+    "nifPh": "NIF o nº de IVA (opcional)",
+    "nifNote": "Solo si desea que figure en su factura.",
     "directTitle": "Reserva directa con Portugal Active",
     "refreshBeforePay": "Actualice el precio de arriba antes de pagar.",
     "secureNote": "Pago cifrado y seguro",
@@ -1874,6 +1886,13 @@
     "perPersonDay": "por persona · día",
     "allDays": "Todos los días",
     "airport": "Aeropuerto",
+    "sections": {
+      "noExtras": "Sin extras",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extras"
+    },
+    "airportPorto": "Oporto",
+    "airportLisbon": "Lisboa",
     "confirm24hNote": "Si no podemos garantizarlo, la línea se reembolsa automáticamente.",
     "noChargeNow": "sin cobro ahora",
     "perPersonHour": "por niño · hora",
@@ -2034,7 +2053,8 @@
     "submitError": "No hemos podido enviar su solicitud. Inténtelo de nuevo o escriba al concierge.",
     "sending": "Enviando…",
     "submit": "Solicitar estas fechas",
-    "noCharge": "Sin pago ahora — el concierge confirma primero la disponibilidad y el total final."
+    "noCharge": "Sin pago ahora — el concierge confirma primero la disponibilidad y el total final.",
+    "pickDatesFirst": "Elija las fechas arriba: después le pedimos sus datos y enviamos la solicitud a la casa."
   },
   "login": {
     "benefitTrips": "Gestione sus viajes",

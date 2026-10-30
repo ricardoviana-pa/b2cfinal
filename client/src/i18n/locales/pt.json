@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusivo para os nossos hóspedes",
     "office": "Escritório"
   },
+  "promoBar": {
+    "defaultText": "Use o código {code} ao finalizar a reserva",
+    "copied": "Código copiado",
+    "ariaLabel": "Promoção em curso",
+    "copyAria": "copiar o código",
+    "dismiss": "Fechar"
+  },
   "destinations": {
     "minho": "Norte de Portugal · Minho",
     "porto": "Porto e Douro",
@@ -568,7 +575,9 @@
     "showAllAmenitiesCount": "Ver todas as {{count}} comodidades",
     "showAllPhotos": "Ver as {{count}} fotos",
     "bedTotal_one": "{{count}} cama",
-    "bedTotal_other": "{{count}} camas"
+    "bedTotal_other": "{{count}} camas",
+    "availabilityTitle": "Disponibilidade",
+    "availabilityHint": "Escolha as datas de entrada e saída: o preço da estadia aparece no cartão de reserva."
   },
   "priceBreakdown": {
     "title": "Resumo de preço",
@@ -1371,7 +1380,9 @@
     "proofStrip": "4.8/5 em mais de 2.000 avaliações de hóspedes",
     "verifiedNote": "Todas as reviews são de estadias concluídas, recolhidas pelos nossos canais de reserva.",
     "previous": "Avaliações anteriores",
-    "next": "Avaliações seguintes"
+    "next": "Avaliações seguintes",
+    "readAll_one": "Ler a avaliação",
+    "readAll_other": "Ler as {{count}} avaliações"
   },
   "amenity": {
     "outdoorPool": "Exterior e Piscina",
@@ -1610,7 +1621,8 @@
     "backToStay": "Voltar à estadia",
     "payTitle": "Pagamento",
     "paySubtitle": "Os seus dados e um pagamento seguro.",
-    "nifPh": "NIF ou nº de IVA, opcional, para a sua fatura",
+    "nifPh": "NIF ou nº de IVA (opcional)",
+    "nifNote": "Só se quiser o NIF na fatura.",
     "directTitle": "Reserva direta com a Portugal Active",
     "refreshBeforePay": "Atualize o preço acima antes de pagar.",
     "secureNote": "Pagamento seguro e cifrado",
@@ -1874,6 +1886,13 @@
     "perPersonDay": "por pessoa · dia",
     "allDays": "Todos os dias",
     "airport": "Aeroporto",
+    "sections": {
+      "noExtras": "Sem extras",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extras"
+    },
+    "airportPorto": "Porto",
+    "airportLisbon": "Lisboa",
     "confirm24hNote": "Se não conseguirmos garantir, devolvemos essa linha automaticamente.",
     "noChargeNow": "sem cobrança agora",
     "perPersonHour": "por criança · hora",
@@ -2034,7 +2053,8 @@
     "submitError": "Não conseguimos enviar o seu pedido. Tente novamente ou fale com o concierge.",
     "sending": "A enviar…",
     "submit": "Pedir estas datas",
-    "noCharge": "Sem pagamento agora — o concierge confirma primeiro a disponibilidade e o total final."
+    "noCharge": "Sem pagamento agora — o concierge confirma primeiro a disponibilidade e o total final.",
+    "pickDatesFirst": "Escolha as datas em cima: depois pedimos os seus dados e enviamos o pedido à casa."
   },
   "login": {
     "benefitTrips": "Gerir as suas viagens",
