@@ -26,7 +26,9 @@ interface PhoneInputProps {
 }
 
 const SUPPORTED = new Set(defaultCountries.map((c) => parseCountry(c).iso2));
-const isSupported = (iso2: string) => SUPPORTED.has(iso2);
+/** Países que o campo conhece (react-international-phone); a página do checkout usa-o para o mesmo país por omissão antes de o campo montar. */
+export const isPhoneCountrySupported = (iso2: string) => SUPPORTED.has(iso2);
+const isSupported = isPhoneCountrySupported;
 
 /** Línguas do browser como um só texto (estável para o useSyncExternalStore). */
 function browserLanguages(): string {

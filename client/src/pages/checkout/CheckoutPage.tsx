@@ -42,7 +42,7 @@ import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine"
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
-import { phoneIssue, phoneIssueMessage } from "@/lib/phone";
+import { defaultPhoneCountry, phoneIssue, phoneIssueMessage } from "@/lib/phone";
 import { consentChecked, consentToSend, stayContinueAction } from "@/lib/checkoutStay";
 import { flexAddsValue, flexExtraDays, flexPriceForPlan } from "@shared/flexValue";
 import { conciergeWhatsAppHref, guestDetailsIssues, walletsUnlocked, type GuestField } from "@/lib/checkoutPayment";
@@ -62,7 +62,7 @@ import FlexBlock, { type FlexConfig } from "./FlexBlock";
 import CheckoutSection, { type CheckoutSectionState } from "./CheckoutSection";
 import { MandateConsent, PaymentPlanSelector, planDate, type PaymentPlanChoice, type PaymentPlanOffer } from "./PaymentPlanSelector";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
-import PhoneInput from "@/components/booking/PhoneInput";
+import PhoneInput, { isPhoneCountrySupported } from "@/components/booking/PhoneInput";
 import PaymentMethodsNote from "@/components/booking/PaymentMethodsNote";
 import TwoPartsHint from "@/components/booking/TwoPartsHint";
 import { klarnaBillingCountry } from "@shared/klarna";
@@ -271,6 +271,16 @@ export default function CheckoutPage() {
   // País do campo do telefone (bandeira ou indicativo): é o país de
   // faturação do Klarna (shared/klarna.ts), com a língua do site e PT por trás.
   const [phoneCountry, setPhoneCountry] = useState<string | null>(null);
+  // O passo 1 (marcas de pagamento) e o passo 3 (separadores) têm de ler o
+  // mesmo país antes de o hóspede escrever (revisão do PR #194, B1): o campo
+  // do telefone só monta no passo 3, por isso a página semeia aqui o mesmo
+  // país por omissão que o PhoneInput vai aplicar (browser → língua do site).
+  // Só no browser: o HTML do servidor fica com a língua do site.
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    const languages = navigator.languages?.length ? navigator.languages : navigator.language ? [navigator.language] : [];
+    setPhoneCountry((current) => current ?? defaultPhoneCountry({ languages, siteLang: lang, supported: isPhoneCountrySupported }));
+  }, [lang]);
   const klarnaCountry = klarnaBillingCountry({ phoneCountry, phone, siteLang: lang });
   const [nif, setNif] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
