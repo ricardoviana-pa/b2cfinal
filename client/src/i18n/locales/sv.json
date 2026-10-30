@@ -801,6 +801,7 @@
       "declinedGeneric": "Betalningen nekades. Använd ett annat kort eller betalsätt.",
       "cardExpired": "Kortet har gått ut. Använd ett annat kort eller betalsätt.",
       "cardNotSupported": "Kortet godtar inte den här betalningen. Använd ett annat kort eller betalsätt.",
+      "klarnaUnavailable": "Klarna är inte tillgängligt för ditt land eller för det här beloppet. Välj ett annat betalsätt.",
       "incorrectCvc": "Säkerhetskoden (CVC) är inte korrekt. Kontrollera den och försök igen.",
       "incorrectNumber": "Kortnumret är inte korrekt. Kontrollera det och försök igen.",
       "cardDetails": "Vissa kortuppgifter är inte korrekta. Kontrollera numret, utgångsdatumet och säkerhetskoden och försök igen.",

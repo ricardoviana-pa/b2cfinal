@@ -12,17 +12,23 @@
  *   tentar de novo o mesmo cartão (e não revelam o motivo, como a Stripe pede);
  * - "já pago" / "ainda a processar" / "transação duplicada" nunca oferecem
  *   outro método nem as duas partes: pagar outra vez seria uma dupla cobrança;
- * - as duas partes só se oferecem depois de uma recusa por LIMITE do cartão
- *   (insufficient_funds e afins), com a oferta do servidor e o hóspede em
- *   "tudo agora". O cartão escrito fica no formulário ao mudar de plano, por
- *   isso a ação é uma nova tentativa com o mesmo cartão e um valor menor: só
- *   faz sentido quando o motivo foi o valor. Nunca depois de fraude, perda,
- *   roubo, do_not_honor, cartão expirado ou não aceite (revisão do PR #176).
+ * - as duas partes oferecem-se depois de uma recusa por LIMITE do cartão
+ *   (insufficient_funds e afins) e, desde 29 out 2026 (decisão do Ricardo),
+ *   também depois de uma recusa GENÉRICA (generic_decline, card_declined sem
+ *   motivo): os emissores escondem muitas vezes o limite atrás de uma recusa
+ *   sem motivo, e metade do valor no mesmo cartão é a saída mais comum. Com a
+ *   oferta do servidor e o hóspede em "tudo agora"; o cartão escrito fica no
+ *   formulário ao mudar de plano, por isso a ação é uma nova tentativa com o
+ *   mesmo cartão e um valor menor. Nunca depois de fraude, perda, roubo,
+ *   do_not_honor, cartão expirado, não aceite ou transação duplicada
+ *   (revisão do PR #176).
  */
 
 export type PaymentErrorKind =
-  /** O banco ou o fornecedor recusou: outro cartão ou método. */
+  /** O banco ou o fornecedor recusou com um motivo que exclui o mesmo cartão: outro cartão ou método. */
   | "decline"
+  /** Recusa sem motivo (generic_decline, card_declined): outro método e também as duas partes. */
+  | "decline_generic"
   /** Recusa pelo limite do cartão para este valor: também as duas partes. */
   | "decline_limit"
   /** Dados do cartão por corrigir (CVC, número, validade): corrigir e repetir. */
@@ -66,14 +72,20 @@ const IN_FLIGHT = new Set(["payment_intent_unexpected_state"]);
 /** A Stripe: "verifique se já existe um pagamento recente" — nunca outro método
  *  nem duas partes (pode haver um pagamento noutra janela para a mesma estadia). */
 const DUPLICATE = new Set(["duplicate_transaction"]);
+/** Recusa sem motivo: o emissor não disse porquê (muitas vezes é o limite,
+ *  escondido). Mesma mensagem que as recusas duras, mas com as duas partes como
+ *  saída (decisão do Ricardo, 29 out 2026). */
+export const GENERIC_DECLINE_CODES = ["generic_decline", "card_declined"] as const;
+const GENERIC_DECLINE = new Set<string>(GENERIC_DECLINE_CODES);
 /** Sem motivo revelado e sem "tente de novo" (a Stripe pede que fraude,
- *  perda e roubo pareçam uma recusa genérica). */
+ *  perda e roubo pareçam uma recusa genérica). Nunca as duas partes: o
+ *  motivo exclui o mesmo cartão, seja qual for o valor. */
 export const NO_RETRY_DECLINE_CODES = [
   "fraudulent", "lost_card", "stolen_card", "pickup_card", "restricted_card", "security_violation",
   "merchant_blacklist", "do_not_honor", "do_not_try_again", "revocation_of_all_authorizations",
   "revocation_of_authorization", "stop_payment_order", "not_permitted", "transaction_not_allowed",
   "invalid_account", "new_account_information_available", "no_action_taken", "call_issuer",
-  "generic_decline", "card_declined", "service_not_allowed", "testmode_decline",
+  "service_not_allowed", "testmode_decline",
   "invalid_pin", "incorrect_pin", "pin_try_exceeded", "offline_pin_required", "online_or_offline_pin_required",
   "payment_method_provider_decline",
 ] as const;
@@ -92,12 +104,16 @@ const SERVER_MESSAGES: Array<[RegExp, PaymentErrorInfo]> = [
   [/authori[sz]ation for the second payment/i, { key: "payment.mandateMissing", kind: "mandate_missing", retrySameCard: true }],
   [/could not be prepared/i, { key: "payment.errors.prepareFailed", kind: "retry", retrySameCard: true }],
   [/could not be saved/i, { key: "payment.errors.saveFailed", kind: "retry", retrySameCard: true }],
+  // routers/booking.ts (createKlarnaPaymentIntent): país de faturação ou valor fora do que a Klarna aceita
+  [/klarna is not available/i, { key: "payment.errors.klarnaUnavailable", kind: "decline", retrySameCard: false }],
   [/too many requests|rate limit|\b429\b/i, { key: "payment.errors.rateLimitError", kind: "retry", retrySameCard: true }],
   [/fetch|network|failed to load|timed? ?out/i, { key: "payment.errors.network", kind: "retry", retrySameCard: true }],
 ];
 
 const GENERIC: PaymentErrorInfo = { key: "payment.errors.genericRetry", kind: "generic", retrySameCard: true };
 const DECLINED: PaymentErrorInfo = { key: "payment.errors.declinedGeneric", kind: "decline", retrySameCard: false };
+/** A mesma frase, mas com as duas partes entre as saídas. */
+const DECLINED_GENERIC: PaymentErrorInfo = { key: "payment.errors.declinedGeneric", kind: "decline_generic", retrySameCard: false };
 
 /** Todas as chaves que este módulo pode devolver (o teste confirma-as nas 9 línguas). */
 export const PAYMENT_ERROR_KEYS = [
@@ -129,6 +145,7 @@ function fromStripeCode(c: string): PaymentErrorInfo | null {
   if (IN_FLIGHT.has(c)) return { key: "payment.errors.stillProcessing", kind: "blocked", retrySameCard: false };
   if (DUPLICATE.has(c)) return { key: "payment.errors.duplicateTransaction", kind: "blocked", retrySameCard: false };
   if (NO_RETRY.has(c)) return DECLINED;
+  if (GENERIC_DECLINE.has(c)) return DECLINED_GENERIC;
   return null;
 }
 
@@ -140,12 +157,18 @@ export function classifyPaymentError(e: unknown): PaymentErrorInfo {
   if (type === "validation_error") return { key: null, kind: "card_details", retrySameCard: true };
   const decline = str(err.decline_code);
   const code = str(err.code);
-  for (const c of [decline, code]) {
-    if (!c) continue;
-    const hit = fromStripeCode(c);
+  if (decline) {
+    const hit = fromStripeCode(decline);
+    if (hit) return hit;
+    // Um motivo que não conhecemos: recusa dura (sem duas partes), nunca
+    // "genérica" só porque o code por baixo é card_declined.
+    return DECLINED;
+  }
+  if (code) {
+    const hit = fromStripeCode(code);
     if (hit) return hit;
   }
-  // Recusa da Stripe com um decline_code que não conhecemos: recusa genérica.
+  // Recusa da Stripe sem código nenhum: recusa genérica dura.
   if (type === "card_error") return DECLINED;
   if (type === "api_connection_error") return { key: "payment.errors.network", kind: "retry", retrySameCard: true };
   if (type === "rate_limit_error") return { key: "payment.errors.rateLimitError", kind: "retry", retrySameCard: true };
@@ -186,6 +209,7 @@ export function paymentErrorActions(
 ): PaymentErrorActions {
   switch (info.kind) {
     case "decline_limit":
+    case "decline_generic":
       return { twoParts: ctx.twoPartsOffered && ctx.plan !== "two_parts", otherMethod: true, concierge: true };
     case "decline":
       return { twoParts: false, otherMethod: true, concierge: true };

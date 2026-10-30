@@ -801,6 +801,7 @@
       "declinedGeneric": "Die Zahlung wurde abgelehnt. Bitte verwenden Sie eine andere Karte oder Zahlungsart.",
       "cardExpired": "Diese Karte ist abgelaufen. Bitte verwenden Sie eine andere Karte oder Zahlungsart.",
       "cardNotSupported": "Diese Karte akzeptiert diese Zahlung nicht. Bitte verwenden Sie eine andere Karte oder Zahlungsart.",
+      "klarnaUnavailable": "Klarna ist für Ihr Land oder diesen Betrag nicht verfügbar. Bitte wählen Sie eine andere Zahlungsart.",
       "incorrectCvc": "Der Sicherheitscode (CVC) ist nicht korrekt. Bitte prüfen Sie ihn und versuchen Sie es erneut.",
       "incorrectNumber": "Die Kartennummer ist nicht korrekt. Bitte prüfen Sie sie und versuchen Sie es erneut.",
       "cardDetails": "Einige Kartendaten sind nicht korrekt. Prüfen Sie Nummer, Ablaufdatum und Sicherheitscode und versuchen Sie es erneut.",

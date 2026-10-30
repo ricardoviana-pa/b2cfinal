@@ -801,6 +801,7 @@
       "declinedGeneric": "O pagamento foi recusado. Use outro cartão ou método de pagamento.",
       "cardExpired": "Este cartão expirou. Use outro cartão ou método de pagamento.",
       "cardNotSupported": "Este cartão não aceita este pagamento. Use outro cartão ou método de pagamento.",
+      "klarnaUnavailable": "A Klarna não está disponível para o seu país ou para este valor. Escolha outro método de pagamento.",
       "incorrectCvc": "O código de segurança (CVC) não está correto. Verifique e tente novamente.",
       "incorrectNumber": "O número do cartão não está correto. Verifique e tente novamente.",
       "cardDetails": "Há dados do cartão que não estão corretos. Verifique o número, a validade e o código de segurança e tente novamente.",

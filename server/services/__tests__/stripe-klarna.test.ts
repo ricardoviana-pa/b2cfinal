@@ -65,6 +65,15 @@ describe("stripe-klarna service", () => {
         createKlarnaPaymentIntent({ amount: 1000, currency: "eur" })
       ).rejects.toThrow(/STRIPE_SECRET_KEY/);
     });
+
+    it("manda a língua da página da Klarna quando a recebe; sem ela, en-PT como até 29 out 2026", async () => {
+      const { createKlarnaPaymentIntent } = await import("../stripe-klarna");
+      mockPaymentIntentCreate.mockResolvedValue({ id: "pi_test_klarna_locale" });
+      await createKlarnaPaymentIntent({ amount: 5000, currency: "eur", preferredLocale: "pt-PT" });
+      expect(mockPaymentIntentCreate.mock.calls[0][0].payment_method_options).toEqual({ klarna: { preferred_locale: "pt-PT" } });
+      await createKlarnaPaymentIntent({ amount: 5000, currency: "eur" });
+      expect(mockPaymentIntentCreate.mock.calls[1][0].payment_method_options).toEqual({ klarna: { preferred_locale: "en-PT" } });
+    });
   });
 
   describe("getPaymentIntent", () => {

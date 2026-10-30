@@ -801,6 +801,7 @@
       "declinedGeneric": "De betaling is geweigerd. Gebruik een andere kaart of betaalmethode.",
       "cardExpired": "Deze kaart is verlopen. Gebruik een andere kaart of betaalmethode.",
       "cardNotSupported": "Deze kaart accepteert deze betaling niet. Gebruik een andere kaart of betaalmethode.",
+      "klarnaUnavailable": "Klarna is niet beschikbaar voor uw land of voor dit bedrag. Kies een andere betaalmethode.",
       "incorrectCvc": "De beveiligingscode (CVC) klopt niet. Controleer deze en probeer het opnieuw.",
       "incorrectNumber": "Het kaartnummer klopt niet. Controleer het en probeer het opnieuw.",
       "cardDetails": "Sommige kaartgegevens kloppen niet. Controleer het nummer, de vervaldatum en de beveiligingscode en probeer het opnieuw.",

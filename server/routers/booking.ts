@@ -1,6 +1,8 @@
 import { trustedWalletPrice, assertWalletConfirmation } from "../services/wallet-price-validation";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { router, publicProcedure } from "../_core/trpc";
+import { KLARNA_DEFAULT_COUNTRY, isKlarnaCountry, klarnaAvailable, klarnaPreferredLocale, normalizeCountry } from "@shared/klarna";
 import { checkAvailability, getQuoteWithDeadline, type QuoteResult } from "../services/guesty";
 import {
   isBEApiConfigured,
@@ -999,15 +1001,34 @@ export const bookingRouter = router({
         ratePlanId: z.string().optional(),
         /** Checkout 2.0: quando presente, o amount é validado e substituído pelo total canónico do servidor */
         intentId: z.string().max(64).optional(),
+        /** País de faturação lido do telefone do hóspede (shared/klarna.ts).
+         *  Validado aqui; clientes antigos sem o campo ficam em PT. */
+        billingCountry: z.string().regex(/^[A-Za-z]{2}$/).optional(),
+        /** Língua do site, para a página da Klarna sair na língua do hóspede. */
+        locale: z.string().max(12).optional(),
       })
     )
     .mutation(async ({ input }) => {
       const trusted = await trustedWalletPrice(input);
       const amountCents = trusted.amount;
+      // O servidor decide o país de faturação: o do checkout, validado contra
+      // os países e tectos em que a Klarna se oferece em EUR; "PT" para
+      // clientes antigos e com o interruptor de emergência ligado. A resposta
+      // devolve o país decidido e o browser confirma com ESSE.
+      const { klarnaBillingCountryForcedPt } = await import("../services/recovery-funnel");
+      const requested = normalizeCountry(input.billingCountry);
+      const billingCountry = klarnaBillingCountryForcedPt() || !requested ? KLARNA_DEFAULT_COUNTRY : requested;
+      if (!isKlarnaCountry(billingCountry)) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: `Klarna is not available for billing country ${billingCountry}` });
+      }
+      if (!klarnaAvailable(billingCountry, amountCents)) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: `Klarna is not available for this amount in ${billingCountry}` });
+      }
       const { createKlarnaPaymentIntent } = await import("../services/stripe-klarna");
       const pi = await createKlarnaPaymentIntent({
         amount: amountCents,
         currency: input.currency,
+        preferredLocale: klarnaPreferredLocale(input.locale, billingCountry),
         metadata: {
           source: "website-klarna",
           listingId: input.listingId,
@@ -1023,11 +1044,13 @@ export const bookingRouter = router({
           // re-priced, and the payment record is rejected ("Not paid").
           ratePlanId: trusted.ratePlanId,
           ...(input.intentId ? { intentId: input.intentId } : {}),
+          billingCountry,
         },
       });
       return {
         clientSecret: pi.client_secret!,
         paymentIntentId: pi.id,
+        billingCountry,
       };
     }),
 

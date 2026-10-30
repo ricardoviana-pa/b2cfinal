@@ -23,6 +23,7 @@
  */
 import { createHash } from "crypto";
 import { FREE_CANCELLATION_DAYS, type PolicyCode } from "@shared/cancellationPolicy";
+import { KLARNA_DEFAULT_COUNTRY, KLARNA_PAY_IN_3_MAX_CENTS, klarnaAvailable } from "@shared/klarna";
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -43,28 +44,40 @@ export const RECOVERY_TIMING = {
 
 export const HOLDOUT_PERCENT = 10;
 
-/** Alerta ao concierge: abandono no pagamento a partir deste total (EUR). */
-export const CONCIERGE_ALERT_MIN_TOTAL = 3000;
+/**
+ * Alerta ao concierge: abandono no pagamento a partir deste total (EUR).
+ * Era 3 000 € até 29 out 2026; decisão do Ricardo nesse dia: alerta para
+ * TODOS os que param no passo de pagamento (0 = sem mínimo). Um número só,
+ * para se poder voltar a subir sem mexer no código do funil.
+ */
+export const CONCIERGE_ALERT_MIN_TOTAL = 0;
 
 /**
- * Klarna no checkout: o país de faturação vai sempre PT
- * (KlarnaCheckoutButton, address.country). Assim, quem não é cliente Klarna
- * em Portugal (a maioria dos checkouts, em inglês) é recusado em qualquer
- * valor, e os portugueses acima do "Paga em 3" (até 1 000 €,
- * docs/pagamento_duas_partes.md 2.1). Enquanto for assim, o contacto 1 não
- * sugere o Klarna a quem teve "um limite do banco": a resposta é o pagamento
- * em duas partes, no mesmo cartão (auditoria 29 out, n.º 8, correção do
- * crítico). Quando o país passar a ser o do hóspede, pôr false: volta a
- * decidir o limite de valor (klarnaCanPay).
+ * Klarna no checkout: desde 29 out 2026 o país de faturação é o REAL do
+ * hóspede (shared/klarna.ts: telefone → língua do site → PT), e o contacto 1
+ * volta a poder sugerir o Klarna a quem tentou pagar, dentro do tecto do país
+ * (klarnaCanPay). Até aí ia sempre PT, e quem não era cliente Klarna em
+ * Portugal era recusado em qualquer valor (auditoria 29 out, n.º 8).
+ *
+ * Interruptor de emergência, sem deploy: KLARNA_BILLING_COUNTRY_FORCED_PT=true
+ * no ambiente volta a forçar PT na criação do PaymentIntent (routers/booking.ts)
+ * e cala a sugestão do Klarna no funil. Por omissão (vazio) vale a constante.
  */
-export const KLARNA_BILLING_COUNTRY_FORCED_PT = true;
+export const KLARNA_BILLING_COUNTRY_FORCED_PT = false;
 
-/** "Paga em 3" do Klarna para clientes portugueses: até 1 000 €. */
-export const KLARNA_MAX_CENTS = 100_000;
+export function klarnaBillingCountryForcedPt(env: NodeJS.ProcessEnv = process.env): boolean {
+  const raw = String(env.KLARNA_BILLING_COUNTRY_FORCED_PT ?? "").trim().toLowerCase();
+  if (!raw) return KLARNA_BILLING_COUNTRY_FORCED_PT;
+  return raw === "true" || raw === "1" || raw === "yes";
+}
 
-/** O Klarna aceita este total (cêntimos)? Sem total conhecido, não se sugere. */
-export function klarnaCanPay(totalCents: number | null | undefined): boolean {
-  return typeof totalCents === "number" && Number.isSafeInteger(totalCents) && totalCents > 0 && totalCents <= KLARNA_MAX_CENTS;
+/** "Paga em 3" do Klarna para clientes portugueses: até 1 000 € (tecto de PT em shared/klarna.ts). */
+export const KLARNA_MAX_CENTS = KLARNA_PAY_IN_3_MAX_CENTS[KLARNA_DEFAULT_COUNTRY];
+
+/** O Klarna aceita este total (cêntimos) neste país de faturação? Sem total
+ *  conhecido, ou num país onde a Klarna não se oferece, não se sugere. */
+export function klarnaCanPay(totalCents: number | null | undefined, country: unknown = KLARNA_DEFAULT_COUNTRY): boolean {
+  return klarnaAvailable(country, totalCents);
 }
 
 /**

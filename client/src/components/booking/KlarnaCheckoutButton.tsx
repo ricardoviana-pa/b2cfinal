@@ -4,6 +4,7 @@ import { loadStripe } from "@/lib/stripeLoader";
 import { trpc } from "@/lib/trpc";
 import { formatQuotedEur } from "@/lib/format";
 import { pushEcommerce } from "@/lib/datalayer";
+import { klarnaBillingCountry } from "@shared/klarna";
 
 interface KlarnaCheckoutButtonProps {
   amount: number;
@@ -37,6 +38,9 @@ interface KlarnaCheckoutButtonProps {
   paymentItems?: Array<Record<string, unknown>>;
   // Platform Stripe publishable key (NOT the per-listing connected account key)
   stripePublishableKey: string;
+  /** País de faturação do hóspede (shared/klarna.ts: telefone → língua → PT).
+   *  Vai ao servidor, que o valida e devolve o país com que se confirma. */
+  billingCountry?: string;
   /** Termos (checkout 2.0) por aceitar: o botão fica inativo. */
   disabled?: boolean;
   /** Checkout 2.0: valida nome, email e telefone no clique; false = nada é criado. */
@@ -110,7 +114,10 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
         })
       );
 
-      const { clientSecret } = await createKlarnaPI.mutateAsync({
+      // País de faturação real do hóspede (até 29 out 2026 ia sempre "PT", e
+      // quem não era cliente Klarna em Portugal era recusado em qualquer valor).
+      const billingCountry = props.billingCountry ?? klarnaBillingCountry({ siteLang: i18n.language });
+      const created = await createKlarnaPI.mutateAsync({
         amount: Math.round(props.amount * 100),
         currency: props.currency.toLowerCase(),
         listingId: props.listingId,
@@ -125,7 +132,13 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
         // Checkout 2.0: o servidor valida o amount contra o breakdown canónico
         // do intent (tolerância 1 EUR) e cobra sempre a matemática do servidor
         intentId: props.intentId,
+        billingCountry,
+        locale: i18n.language,
       });
+      const { clientSecret } = created;
+      // O servidor decide o país (valida-o, e pode forçar PT pelo interruptor
+      // de emergência): confirma-se com o que ele devolveu.
+      const confirmCountry = (created as { billingCountry?: string }).billingCountry || billingCountry;
 
       setStatusMsg(t("payment.redirecting"));
 
@@ -135,7 +148,7 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
           billing_details: {
             name: `${props.guestDetails.firstName} ${props.guestDetails.lastName}`,
             email: props.guestDetails.email,
-            address: { country: "PT" },
+            address: { country: confirmCountry },
           },
         },
         return_url: returnUrl,

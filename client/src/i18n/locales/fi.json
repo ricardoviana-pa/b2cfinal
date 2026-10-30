@@ -801,6 +801,7 @@
       "declinedGeneric": "Maksu hylättiin. Käytä toista korttia tai maksutapaa.",
       "cardExpired": "Kortti on vanhentunut. Käytä toista korttia tai maksutapaa.",
       "cardNotSupported": "Kortilla ei voi maksaa tätä maksua. Käytä toista korttia tai maksutapaa.",
+      "klarnaUnavailable": "Klarna ei ole käytettävissä maassasi tai tälle summalle. Valitse toinen maksutapa.",
       "incorrectCvc": "Turvakoodi (CVC) ei ole oikein. Tarkista se ja yritä uudelleen.",
       "incorrectNumber": "Kortin numero ei ole oikein. Tarkista se ja yritä uudelleen.",
       "cardDetails": "Osa kortin tiedoista ei ole oikein. Tarkista numero, voimassaoloaika ja turvakoodi ja yritä uudelleen.",
