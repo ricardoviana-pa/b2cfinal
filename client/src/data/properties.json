@@ -557,6 +557,41 @@
         ]
       },
       {
+        "rating": 3,
+        "text": "Espaço incrível. Processo de coordenação de check-in com a empresa coordenadora foi stressante, com a obrigatoriedade que tentaram impor de preenchimento de um questionário muito longo sobre cada um dos 9 ocupantes, solicitando selfies de cada um. Ameaçaram não dar instruções de check-in, apesar de ter explicado que não tinha a possibilidade de fazer check-in prévio, dada a complexidade do próprio sistema que implementaram. Solicitei mais que uma vez que me ligassem para agilizar compreensão, nã",
+        "guestDisplayName": "Tiago",
+        "guestName": "Tiago",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-14T23:04:06.806Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 1
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Ótimo",
         "guestDisplayName": "Marcos",
@@ -877,8 +912,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 22,
+    "averageRating": 4.91,
+    "reviewCount": 23,
     "lastModified": "2026-10-25",
     "contentHash": "6f10bae755bff9f30a9c56d1e1eb0a918025b985"
   },
@@ -1443,6 +1478,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Beautiful place!",
+        "guestDisplayName": "Bianca",
+        "guestName": "Bianca",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-03T09:41:38.374Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "The property is gorgeous, even more beautiful than the pictures. Really great for a family of 10 people. Well maintained and very high end.\n\nThe location appears remote on a map but in fact there are amenities all around, Uber is available, and Guimares is close and has lots of entertainment. We didn't mind the location as a trade-off for the size of the property.\n\nHost was very responsive, but check in procedure was very annoying, requiring me to obtain selfies with IDs from 10 guests prior to ",
         "guestDisplayName": "Ramsey",
@@ -1548,6 +1618,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Leuk huis, erg groot waardoor het binnen wat sfeerloos is. Prachtige tuin en gezellige buitenkeuken. Tennisbaan valt tegen, geen lijnen op de baan en alleen maar oude kapotte rackets aanwezig. Badkamers zijn verouderd.",
+        "guestDisplayName": "Igor",
+        "guestName": "Igor",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-19T14:56:12.764Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Great experience, mind-blowing place. The garden & pool make an amazing breath-taking combo, with giant trees and a lot of privacy, and the tennis court is a plus.",
         "guestDisplayName": "Jaime",
@@ -1588,8 +1693,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 9,
+    "averageRating": 4.82,
+    "reviewCount": 11,
     "lastModified": "2026-10-25",
     "contentHash": "dd1b797e5e9e3629aa72c3ec62baf71565639261"
   },
@@ -1808,6 +1913,76 @@
     "areaSquareFeet": 1076.39104,
     "reviews": [
       {
+        "rating": 3,
+        "text": "A casa é fantástica: ideal para 6 pessoas, com 3 quartos com ar condicionado, sala ampla, excelente espaço exterior, ótima piscina e decoração de muito bom gosto. Está muito bem equipada e fica a apenas 5 minutos de carro de Ponte de Lima. Um alojamento perfeito para uma semana em família.\n\nInfelizmente, o serviço ao cliente ficou muito aquém da qualidade da casa. Reservei 5 noites por 2.700 € e, algumas semanas depois, devido a um imprevisto familiar, pedi para antecipar a estadia um dia e term",
+        "guestDisplayName": "Tiago",
+        "guestName": "Tiago",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-26T22:41:35.596Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 1
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Wij hadden een leuk verblijf in dit huis en hebben veel uitstapjes in de omgeving gedaan. We waren geen fan van alle geurstokjes in huis. Het was ook niet tiptop schoon overal wat je wel zou verwachten in deze categorie huizen.",
+        "guestDisplayName": "Geert",
+        "guestName": "Geert",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-03T07:29:21.101Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Todo de 10!\nLa casa fantástica!\nLa piscina, increíble!\nTodo súper limpio y ordenado.\nCon todas las comodidades posibles.\nLa zona es genial, ya que en un radio de 1 hora, puedes visitar muchísimos lugares maravillosos. Nos encanta Portugal y esta zona en especial.\nRecomiendo esta casa, es incluso más bonita que en las fotos.",
         "guestDisplayName": "Luis",
@@ -1843,8 +2018,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 1,
+    "averageRating": 4,
+    "reviewCount": 3,
     "lastModified": "2026-10-25",
     "contentHash": "837961099a2dd1c2fd576e092576baade63eea45"
   },
@@ -2061,6 +2236,41 @@
     "areaSquareFeet": 2251,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Quem procura paz é sossego, esta aqui um óptimo local para passar um excelente tempo. \nA casa é lindíssima e oferece todas as condições. Fica isolada, o que para nós foi óptimo, mas se pretende ir a uma mercearia tem que se deslocar de carro uns 15m \nA casa oferece todas as comunidades, e é óptima para famílias.",
+        "guestDisplayName": "Marta",
+        "guestName": "Marta",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-11T21:40:28.133Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Adoramos ficar no Monte, sem dúvida que deu para desconectar e descontrair, o espaço está preparado e equipado com tudo o que precisamos para uns dias.",
         "guestDisplayName": "Vera",
@@ -2271,8 +2481,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 6,
+    "averageRating": 4.86,
+    "reviewCount": 7,
     "lastModified": "2026-10-25",
     "contentHash": "5d9aa6010b0af9fa4a5a97452a37cf4a66d0590b"
   },
@@ -3841,6 +4051,41 @@
     "areaSquareFeet": 1076,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Great place in great location! Lovely balcony good communication etc. \n\nKitchen a bit average, no tea towns etc. showers had no shower head holder!",
+        "guestDisplayName": "Maxwell",
+        "guestName": "Maxwell",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-17T14:04:27.166Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "We had a very nice stay at this apartment. It was very spacious, nicely decorated, and extremely well equipped, with plenty of plates, cups, and everything else we needed. The terrace was a great bonus, and the apartment is conveniently located close to the beach. Overall, a very comfortable and enjoyable place to stay — highly recommended!",
         "guestDisplayName": "Lukas",
@@ -3979,10 +4224,45 @@
             "score": 5
           }
         ]
+      },
+      {
+        "rating": 4,
+        "text": "A estadia foi, no geral, positiva. O alojamento estava muito bem equipado, com todos os utensílios necessários, a limpeza era excelente e a localização é muito boa.\n\nRecomendo!!",
+        "guestDisplayName": "Sandro",
+        "guestName": "Sandro",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-01-03T13:07:51.701Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 4,
+    "averageRating": 4.67,
+    "reviewCount": 6,
     "lastModified": "2026-10-25",
     "contentHash": "3abc5f6faf976c49942024e09bfd5c6c6acd25f2"
   },
@@ -4175,6 +4455,76 @@
     "areaSquareFeet": 914.9323857,
     "reviews": [
       {
+        "rating": 1,
+        "text": "The biggest problem was the extremely loud construction noise starting at 8 AM every morning. It was practically impossible to stay in the apartment during the day. This serious disturbance was never disclosed before booking.\n\nUpon arrival, we also couldn't open the door with the keys provided and waited an hour for assistance. The lock required a special trick that was never explained. A previous guest had reported the same issue.\n\nA faulty bathroom light caused further inconvenience.\n\nWe reque",
+        "guestDisplayName": "Ravi",
+        "guestName": "Ravi",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-17T10:26:40.292Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 1
+          },
+          {
+            "name": "checkin",
+            "score": 1
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 1
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Lovely apartment with everything you need and right in the centre of Porto. You can walk to almost everything within 15-20 minutes and the food market across the road was incredible. Unfortunately the downside was the building works going on in the adjoining building. It was very loud in the apartment from 8-8 every day but Sunday.",
+        "guestDisplayName": "Abigail",
+        "guestName": "Abigail",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-07T15:44:09.158Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Logement très agréable et bien équipé. La literie est très confortable, la climatisation est top pour dormir sereinement.\nLes chambres donnent sur une arrière cour donc calme, si ce n'est des travaux en ce moment dans le bâtiment voisin.\nL'emplacement est top, direct dans la rue Ste Catherine et tout le coeur de Porto peut se faire à pied.\nLogement idéale pour 2 couples car 2 salles d'eau.\nSeul bémol, le lit du canapé... qui a du être abimé et donc inutilisable",
         "guestDisplayName": "Cecile",
@@ -4280,6 +4630,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Alles bestens. Mit vier Erwachsenen hat man auf jeden Fall genug Platz in der Wohnung und gute Schlafmöglichkeiten. Die Lage ist top. Waren insgesamt sehr zufrieden. Einen Stern Abzug gab’s für den nicht angeschlossenen Geschirrspüler und die schlechte Schlafcouch (die für unsere Tochter gedacht war, dann aber bei uns im Bett geschlafen hat).",
+        "guestDisplayName": "Florian",
+        "guestName": "Florian",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-09T06:51:50.617Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Very convenient location in a walkable city. Tram station is very close and there are a lot of food options to choose from.",
         "guestDisplayName": "Andre",
@@ -4381,6 +4766,76 @@
           {
             "name": "value",
             "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Excellent location.",
+        "guestDisplayName": "Jerome",
+        "guestName": "Jerome",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-08T21:31:04.026Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "O apartamento era confortável com vários utensílios para uma boa estadia e a localização era ótima. Como sugestão acho que deveria ter um explicativo de utilização da lava louças e roupas.",
+        "guestDisplayName": "Ana Paula",
+        "guestName": "Ana Paula",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-14T07:35:47.628Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
           }
         ]
       },
@@ -4590,8 +5045,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 19,
+    "averageRating": 4.67,
+    "reviewCount": 24,
     "lastModified": "2026-10-25",
     "contentHash": "cdfaffdad60ead5ea93d71c1ace69d88194f7e8d"
   },
@@ -6134,6 +6589,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Die Wohnung liegt sehr nah zum Strand und man hat auch einen Blick auf Viana.",
+        "guestDisplayName": "Knut",
+        "guestName": "Knut",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-01T10:50:40.496Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Amazing!",
         "guestDisplayName": "Simão",
@@ -6359,8 +6849,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 18,
+    "averageRating": 4.95,
+    "reviewCount": 19,
     "lastModified": "2026-10-25",
     "contentHash": "fdb71c94ccaed942dd9e300c2490cb6a29eb1f2a"
   },
@@ -6704,6 +7194,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "La casa es muy bonita, está nueva y en una zona muy tranquila. Además, la atención y las respuestas fueron rápidas en todo momento.\n\nAun así, hubo varios detalles que no nos gustaron. Echamos en falta más toallas y, además, el papel higiénico que dejaron no nos llegó para toda la estancia, así que tuvimos que ir a comprar más. También una persiana eléctrica de una habitación no funcionaba desde el primer día y tardaron tres días en arreglarla, dejando media estancia prácticamente inutilizable. D",
+        "guestDisplayName": "Patricia",
+        "guestName": "Patricia",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-19T17:39:56.668Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Väldigt trevlig villa som hade allt vi önskade. Fina rum och stor öppen planlösning. Grillområdet var ett extra + som förgyllde vistelsen.",
         "guestDisplayName": "Albin",
@@ -6739,8 +7264,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 5,
+    "averageRating": 4.83,
+    "reviewCount": 6,
     "lastModified": "2026-10-25",
     "contentHash": "807a0c6a18633ee10d611a8e44c81a49057d23f1"
   },
@@ -7711,9 +8236,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 377,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0,
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "Muy buena atención.  El lugar esta perfecto para desconectar y relajarse. En el sitio nos atendió un chico muy amable que ayudo a resolver dudas.",
+        "guestDisplayName": "Yami",
+        "guestName": "Yami",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-04T20:36:12.961Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1,
     "lastModified": "2026-10-25",
     "contentHash": "81825490d943e7f2b042209f7b1d1d1411a38d5f"
   },
@@ -7976,6 +8537,76 @@
     "areaSquareFeet": 10763.91042,
     "reviews": [
       {
+        "rating": 3,
+        "text": "Peaceful and nice villa but the amenities like the shower arr not super modern",
+        "guestDisplayName": "Mehdi",
+        "guestName": "Mehdi",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-30T15:22:39.827Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "We had a great week at this property which its wonderful pool and garden and spacious living rooms. We can fully recommend this property for families. However, we also recommend Portugal Active to look more carefully into the some of the property items, which are clearly showing signs of wear and tear.",
+        "guestDisplayName": "Marcus",
+        "guestName": "Marcus",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-26T08:39:04.096Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Super séjour ! La maison est vraiment top et conforme à 100 % à la description. La clim marche super bien et un grand merci pour la piscine qui a été nettoyée dès le deuxième matin. L'emplacement est génial, à seulement 3 minutes de la plage, et Chafé est vraiment un super joli village. Le propriétaire est super sympa et l'équipe de Portugal Active est au top du service : super réactifs et communication impeccable du début à la fin. On recommande sans hésiter !",
         "guestDisplayName": "Benjamin",
@@ -8065,6 +8696,41 @@
           {
             "name": "checkin",
             "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Muy comodo el alojamiento y bonito, le falta un poco mas de detalle a la descripción, pero por lo demas increible",
+        "guestDisplayName": "Guillermo",
+        "guestName": "Guillermo",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-06T08:24:49.653Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
           },
           {
             "name": "communication",
@@ -8281,8 +8947,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 18,
+    "averageRating": 4.81,
+    "reviewCount": 21,
     "lastModified": "2026-10-25",
     "contentHash": "0c9913ec16c5ccb0138c1f3ab7e65383dee67204"
   },
@@ -9076,6 +9742,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "My stay at the Heritage loft has been lovely. Although it’s an apartment owned by an organisation, they have a very personal approach and have been very responsive. And although they were not familiar in the city, they took the time to find some recommendations in the area. The apartment was brand new and some devices weren’t even used before. When something was not working they responded quickly and tried to find a solution. Would definitely recommend!",
+        "guestDisplayName": "Nienke",
+        "guestName": "Nienke",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-03-26T09:23:59.727Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Espaço limpo e acolhedor, muito bem localizado.\nCorrespondeu às expectativas",
         "guestDisplayName": "Rafael",
@@ -9156,8 +9857,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 11,
+    "averageRating": 4.92,
+    "reviewCount": 12,
     "lastModified": "2026-10-25",
     "contentHash": "fe4163f69be4aed922e609a0d331f92158e782d1"
   },
@@ -10034,6 +10735,41 @@
     "areaSquareFeet": 538.195521,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Overall had a really enjoyable stay here! Please take note of the reviews regarding the noise from the upstairs flat which I assume is also a short term rental.  We were woken up a few times with people coming in and what felt like throwing things around the apartment in the middle of the night.  There was also nearby construction works during the day with a jackhammer - the hosts were good in attempting to place us elsewhere but only had availability 10km out of the city centre which didn't sui",
+        "guestDisplayName": "Ashleigh",
+        "guestName": "Ashleigh",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-30T15:57:47.502Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Appartement propre et très bien situé pour visiter Porto à pied.",
         "guestDisplayName": "Aurélie",
@@ -10174,6 +10910,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Clean and tidy. Hot tub was a nice extra and the outside area was lovely. Third bed is a pull out single under the one upstairs so take note of this as we didn’t think it was quite clear that’s what it was on booking and the upstairs area is pretty small. Noise travels, you can clearly hear people walking about in the apartment above. Wasn’t too much of an issue for us as we only heard them coming and going a few times. Otherwise great location lots of brunch spots nearby and walkable everywhere",
+        "guestDisplayName": "Kate",
+        "guestName": "Kate",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-15T16:51:48.132Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Good location, nice terrace and jacuzzi. Very convenient to relax after your visit!",
         "guestDisplayName": "Alberto",
@@ -10205,6 +10976,41 @@
           {
             "name": "value",
             "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "We very much enjoyed our stay in this lovely apartment. The space is clean and beautifully presented. It is a little walk away from the main centre of Porto, but that makes it much quieter and more relaxed. There are necessary amenities very near by.",
+        "guestDisplayName": "Kate",
+        "guestName": "Kate",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-01T09:17:27.831Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
           }
         ]
       },
@@ -10349,6 +11155,41 @@
         ]
       },
       {
+        "rating": 2,
+        "text": "Le logement est bien situé et l’hôte a été réactif lorsque nous avons signalé des problèmes, mais notre séjour a malheureusement été assez décevant. À notre arrivée, le ménage n’avait pas été fait entre deux voyageurs. Une personne est venue rapidement intervenir après notre message, mais le nettoyage est resté très superficiel et nous avons dû refaire une partie du ménage nous-mêmes. L’erreur de planning peut arriver, mais le logement aurait dû être réellement propre ensuite.\n\nLe principal prob",
+        "guestDisplayName": "Amance",
+        "guestName": "Amance",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-27T18:51:15.747Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 1
+          },
+          {
+            "name": "accuracy",
+            "score": 2
+          },
+          {
+            "name": "checkin",
+            "score": 1
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Logement parfait. Tout y est : accessoires de cuisine, condiments, eau fraîche préparée d'avance au frigo, jaccuzi opérationnel, shampooing et gel douche, etc. Tout est bien agencé, pratique, joli et calme ! Emplacement parfait, parking dans la rue (soit en stationnement en créneau, soit dans un parking sous-terrain), à produire centre ville (15min à pieds) et de très bons restaurants (directement dans la rue ou dans les rues voisines).\nPersonnel très réactif à toute heure de la semaine et du we",
         "guestDisplayName": "Laura",
@@ -10395,6 +11236,41 @@
           {
             "name": "cleanliness",
             "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "i really enjoyed my stay here. Such a lovely decorated place to stay. Walkable distance to shops and restaurants. Very easy check-in with clear instructions. Bed was very comfortable and had lots of access to charging ports. Would definitely stay again and would recommend it to others.",
+        "guestDisplayName": "Kennedy",
+        "guestName": "Kennedy",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-12T08:20:17.936Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
           },
           {
             "name": "accuracy",
@@ -10489,6 +11365,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Het was prima, op de bedden en de geluidsoverlast na",
+        "guestDisplayName": "Dennis",
+        "guestName": "Dennis",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-08T15:41:30.886Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 2
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "The apartment was in a quiet area of Porto, but the hustle and bustle was only a five minute walk away. Fab little apartment, clean and well equipped. Good powerful shower, however the water didn’t drain very fast. Small, well equipped kitchen, could have done with a draining board for washing up. Comfortable beds. One of the upstairs bed was quite squeaky though so every time my daughter rolled over in bed the whole house heard it. Could also hear the apartment above us as they walked around an",
         "guestDisplayName": "Sally",
@@ -10516,6 +11427,111 @@
           {
             "name": "location",
             "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "L emplacement et la propreté de l’appartement.",
+        "guestDisplayName": "Beatriz",
+        "guestName": "Beatriz",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-03-30T15:21:20.776Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 2
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "The place was beautiful and as expected. The sauna was a lovely touch!\nOne minor inconvenience was that the shower did not drain very well (so the shower became\nA puddle) and there seemed to be leaks under the sink, but apart from that it was a beautiful stay",
+        "guestDisplayName": "Bassaam",
+        "guestName": "Bassaam",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-02-20T10:03:55.136Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Logement idéal pour visiter Porto. Très lumineux et agréable. Je recommande pour une petite famille en séjour court.",
+        "guestDisplayName": "Paul",
+        "guestName": "Paul",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-02-15T20:59:05.574Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
           },
           {
             "name": "value",
@@ -10559,6 +11575,41 @@
         ]
       },
       {
+        "rating": 1,
+        "text": "wij hebben de woning voor 3 dagen gehuurd met jacuzzi. om te ontspannen er dreven groene algen in de jacuzzi. Ik neem aan dat het voor dat we er in zijn gegaan is schoongemaakt. maar de jacuzzi was 10 graden toen we aankwamen. Als je dan contact met ze opneemt gebeurt er kortom niks. Had de dagen ervoor een andere woning in Porto gehuurd midden in het centrum daar was het schoon geen jacuzzi. maar ook bijna 200 euro goedkoper dus ze rekenen 200 euro extra voor de jacuzzi. waar ik nu nog steeds h",
+        "guestDisplayName": "Nick",
+        "guestName": "Nick",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-01-11T11:18:24.933Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 2
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Nous avons passé un excellent séjour dans ce logement plein de charme et d’authenticité, en plein cœur de Porto. L’emplacement est idéal : à deux pas des commerces, des restaurants et des bars, ce qui permet de profiter pleinement de la ville tout en ayant tout à portée de main. L’appartement est très agréable et correspond parfaitement à l’esprit de Porto, avec beaucoup de caractère. Mention spéciale pour le jacuzzi, un vrai plus après une journée de visites, avec des instructions claires et fa",
         "guestDisplayName": "Louison",
@@ -10569,8 +11620,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 16,
+    "averageRating": 4.42,
+    "reviewCount": 26,
     "lastModified": "2026-10-25",
     "contentHash": "aacabbd0df58bc1e0f07143a83cd415293fdcd47"
   },
@@ -10804,6 +11855,41 @@
     "areaSquareFeet": 1614.586563,
     "reviews": [
       {
+        "rating": 3,
+        "text": "La casa está genial en términos generales,tanto por la estructura en sí misma como por ubicación,decoración etc,es recomendable. A mejorar el tema de las reparaciones (no tienen gente de confianza si se te rompe algo como a nosotros: el estor de la sala),el mantenimiento también,ya que llegamos y una cerradura estaba rota (quedamos todos los días con inseguridad,sin poder cerrar con llave) y las compensaciones (creo que deberían de hacer algo compensatorio en casos en los que los clientes tengan",
+        "guestDisplayName": "Maria Romina",
+        "guestName": "Maria Romina",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-07T09:50:00.781Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Ein sehr sauberes schönes Haus mit Aussicht auf das Meer.",
         "guestDisplayName": "Heidelore",
@@ -10874,6 +11960,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "The house is situated in a stunning location overlooking the Atlantic with a terrace that looks straight out to sea. In the evenings, you will be treated to displays of glowworms and the odd shooting star whizzing by overhead. The house itself is very comfortable and in pristine condition. I would recommend it to anyone in love with either Viana do Castelo or Caminha as a convenient base. Or, to those who enjoy hiking along the coast down stretches of the Caminho or enjoy the clean and laidback ",
+        "guestDisplayName": "Eliot",
+        "guestName": "Eliot",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-21T15:04:39.888Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Alojamiento muy limpio y bien ubicado, todo muy nuevo, el acceso la primera vez no es muy cómodo.",
         "guestDisplayName": "Marta",
@@ -10897,6 +12018,41 @@
           {
             "name": "communication",
             "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Wir hatten einen schönen Aufenthalt. Besonders gefallen hat uns:\n- Schöner Blick aufs Meer mit tollen Sonnenuntergängen von der Terrasse aus \n- Zwischenreinigung nach 1 Woche\n- gute Ausstattung \n- gemütliches Wohnzimmer \n- sehr sauber\n\nToll wären noch ein paar Haken in den Zimmern.",
+        "guestDisplayName": "Martin Und Stefanie",
+        "guestName": "Martin Und Stefanie",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-01T16:22:11.011Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
           },
           {
             "name": "location",
@@ -10971,6 +12127,41 @@
           {
             "name": "location",
             "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "The apartment has been recently renovated to a good standard and the photos are fairly accurate. However, there are several things which show that it’s managed by a company and lacking personal touch.\nFor instance - zero storage in one of the bedrooms - not even a door hook.\nMore importantly for a place that sleeps six lots of other things lacking.  2 wine glasses and nothing else resembling wine glasses - lots of shot glasses and massive tumblers.\nAnd zero cups or mugs or anything at all to mak",
+        "guestDisplayName": "Elaine",
+        "guestName": "Elaine",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-25T20:45:23.499Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 4
           },
           {
             "name": "value",
@@ -11134,8 +12325,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 13,
+    "averageRating": 4.71,
+    "reviewCount": 17,
     "lastModified": "2026-10-25",
     "contentHash": "de968fcf83fce2aa6d2a490cb37868429876ea36"
   },
@@ -11769,6 +12960,41 @@
     "areaSquareFeet": 16146,
     "reviews": [
       {
+        "rating": 3,
+        "text": "La propriété est magnifique et offre un très beau cadre. Nous avons néanmoins noté quelques écarts par rapport à l'annonce initiale, qui ont été régularisés grâce à l'intervention d'Airbnb. Petit point d'amélioration : la literie manque de confort par rapport aux prestations globales de la maison.",
+        "guestDisplayName": "Julien",
+        "guestName": "Julien",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-15T06:39:55.953Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Wonderful location for a family reunion. We had a great time in the self-contained compound. Kids had pool and toys to entertain themselves for hours and adults also enjoyed quality time in mixing areas on the grounds. Overall a great find in a special town.",
         "guestDisplayName": "Francis",
@@ -12024,8 +13250,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 13,
+    "averageRating": 4.86,
+    "reviewCount": 14,
     "lastModified": "2026-10-25",
     "contentHash": "b90dfe107adcd8af7d9d905221a2c26e5fe1916a"
   },
@@ -12294,6 +13520,111 @@
     "areaSquareFeet": 12110,
     "reviews": [
       {
+        "rating": 3,
+        "text": "A casa era muito boa e bastante confortável mas a comunicação foi bastante dececionante, muito difícil falar com o customer service mesmo quando tivemos um problema grave que foi falta de luz! Outro ponto a apontar foi a limpeza da estadia anterior foi feita depois do nosso check in o que não nos permitiu usufruir de uma das casa durante as 2h30 de limpeza e só conseguimos entrar às 18h30.",
+        "guestDisplayName": "Mariana",
+        "guestName": "Mariana",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-10T15:30:24.829Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 3,
+        "text": "Estancia agradable en general y buena comunicación con el equipo. Tuvimos alguna incidencia con el aire acondicionado, pero nos ayudaron a gestionarla",
+        "guestDisplayName": "Mary",
+        "guestName": "Mary",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-14T07:01:44.082Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Las instalaciones muy bien pero poco espacio en zonas comunes, al ir un grupo grande no teníamos mesa para sentarnos todos a comer.",
+        "guestDisplayName": "Nuria",
+        "guestName": "Nuria",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-06T11:42:12.234Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Perfecta para viajar un grupo grande de amigos o familia.",
         "guestDisplayName": "Juan",
@@ -12304,8 +13635,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 1,
+    "averageRating": 3.75,
+    "reviewCount": 4,
     "lastModified": "2026-10-25",
     "contentHash": "6c37d09b9dd4353779398dd3314f2ec02d0ffbe2"
   },
@@ -13157,6 +14488,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "What a wonderful experience! I thoroughly enjoyed my stay at Moledo Front Beach with Sunset Views and Pool. The accommodations were exceptionally clean, comfortable, and well-maintained, making it the perfect place to relax and enjoy my time in Portugal.\n\nThe customer service was excellent, with timely communication and prompt responses whenever needed. I especially appreciated the weekly cleaning service, which was such a thoughtful touch and made my extended stay even more enjoyable.\n\nThe prop",
+        "guestDisplayName": "Fatima",
+        "guestName": "Fatima",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-30T18:11:53.563Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Muito boa localização, perto da praia e de restaurantes. A casa é bem confortável e equipada com tudo o que é necessario. Recomendo.",
         "guestDisplayName": "Juan Pablo",
         "guestName": "Juan Pablo",
@@ -13187,6 +14553,76 @@
           {
             "name": "value",
             "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Localização perfeita. Tudo impecável.",
+        "guestDisplayName": "Susana",
+        "guestName": "Susana",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-29T15:57:22.885Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 3,
+        "text": "Muito boa localização é casa confortável apesar de faltar alguma manutenção como por exemplo a porta da rua não tinha puxador por fora e os estores da cozinha e da porta de entrada não funcionavam. O ar condicionado estava avariado. As garagens muito pequenas.",
+        "guestDisplayName": "Nuno",
+        "guestName": "Nuno",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-23T16:17:09.373Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 2
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 3
           }
         ]
       },
@@ -13261,8 +14697,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 3,
+    "averageRating": 4.5,
+    "reviewCount": 6,
     "lastModified": "2026-10-25",
     "contentHash": "be883e8dbe7a626f0407ce52277bfff121ddd5b9"
   },
@@ -13488,6 +14924,41 @@
     "areaSquareFeet": 10763.91042,
     "reviews": [
       {
+        "rating": 4,
+        "text": "We had a great stay at Montaria Lodge, and Sam was very helpful / quick to reply. You will probably be best to hire a car if staying here, we used the taxis arranged prior to arriving through Portugal active which was really convenient and the drivers were lovely. There isn’t aircon in the downstairs bedrooms, and the only downside was the flies & ants we couldn’t keep out of the kitchen - but they did drop us some fly spray as soon as we reported this problem",
+        "guestDisplayName": "Gabbie",
+        "guestName": "Gabbie",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-23T05:44:58.403Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Espaço calmo, com boas áreas. Perfeito para estadias com amigos e família. \nSempre que foi preciso o host respondeu a tudo com rapidez e simpatia.",
         "guestDisplayName": "João",
@@ -13698,8 +15169,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 16,
+    "averageRating": 4.94,
+    "reviewCount": 17,
     "lastModified": "2026-10-25",
     "contentHash": "fedf15afe33db9653aca88a205bb492f06167f0e"
   },
@@ -14980,7 +16451,7 @@
       "https://assets.guesty.com/image/upload/v1793209848/production/6957de4388cba42d9e7a905e/tz8jictp3ajrw5sjeb10.jpg",
       "https://assets.guesty.com/image/upload/v1793209843/production/6957de4388cba42d9e7a905e/fi7nlvsroqwdtnmxs4ao.jpg",
       "https://assets.guesty.com/image/upload/v1793209851/production/6957de4388cba42d9e7a905e/v3ay2y2jjnvavcvpzjjt.jpg",
-      "https://assets.guesty.com/image/upload/v1793205817/production/6957de4388cba42d9e7a905e/gdjlmpho7jomhs5mbzw5.jpg",
+      "https://assets.guesty.com/image/upload/v1793353282/production/6957de4388cba42d9e7a905e/omzjlogxnzqobkpyzkyh.jpg",
       "https://assets.guesty.com/image/upload/v1793205828/production/6957de4388cba42d9e7a905e/nv0onbr5wvt44fvvxftn.jpg",
       "https://assets.guesty.com/image/upload/v1793209849/production/6957de4388cba42d9e7a905e/shnb3yg1auvxv73fwjyr.jpg",
       "https://assets.guesty.com/image/upload/v1793209848/production/6957de4388cba42d9e7a905e/w28dykmf6l3o8p6y0fkr.jpg",
@@ -15427,6 +16898,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Villa agréable et bien équipée, confortable et bien adaptée pour un grand groupe, surtout pour la partie nuit avec des suites pour chaque couple avec enfants et sans enfants.\nQuelques petits soucis:\n- Le frigo est un peu petit et ne ferme pas bien.\n- Il y a un problème d'évacuation dans les douches du rez-de-chaussée\n- L'étanchéité de la paroi de la douche n'est pas parfaite d'une salle de bain du premier étage, le tapis de bains est trempé.\n- Il n'y a pas de rideau sur la piscine pour assurer l",
+        "guestDisplayName": "Jean-Claude",
+        "guestName": "Jean-Claude",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-14T11:46:48.054Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Muito agradável a estadia, voltaremos a repetir.",
         "guestDisplayName": "Carla",
@@ -15667,10 +17173,10 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 20,
-    "lastModified": "2026-10-29",
-    "contentHash": "c9431df0be4524cadd3976cc804bd416eca03105"
+    "averageRating": 4.95,
+    "reviewCount": 21,
+    "lastModified": "2026-10-30",
+    "contentHash": "7d76f0c0e918f535f4bd81b1b5124f234c78de45"
   },
   {
     "id": "guesty-6965333104b96f00147f5428",
@@ -16804,6 +18310,41 @@
     "areaSquareFeet": 5274,
     "reviews": [
       {
+        "rating": 2,
+        "text": "Let me start with the positives: the house itself is lovely, with a well-equipped kitchen, comfortable bedrooms, and excellent insulation—we stayed warm without needing heating.\n\nNow, the “experiences.” The “heated pool” is only heated if you pay extra (minimum 5 days even if you stay only 4), and even then, the advertised 28°C feels more aspirational than real, with the heat pump barely running.\n\nFor 14 people over 4 days, we were given 6 single-layer recycled toilet paper rolls and 6 dishwashe",
+        "guestDisplayName": "Omar",
+        "guestName": "Omar",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-08T20:04:44.798Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 2
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "The house is located in a really nice area - just a few minutes to the beach. Well equipped kitchen",
         "guestDisplayName": "Miriam",
@@ -17064,8 +18605,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 21,
+    "averageRating": 4.86,
+    "reviewCount": 22,
     "lastModified": "2026-10-25",
     "contentHash": "bd2081ef2a871449c90be4ef85d42cf2fce101b4"
   },
@@ -17382,6 +18923,41 @@
     "checkOutTime": "11:00",
     "areaSquareFeet": 3552.0904386,
     "reviews": [
+      {
+        "rating": 4,
+        "text": "Nos ha gustado la casa, solo teníamos una llave y un mando para el coche. Faltan detalles para colgar las toallas en los baños.",
+        "guestDisplayName": "Juan",
+        "guestName": "Juan",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-23T12:48:46.715Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
       {
         "rating": 5,
         "text": "Fantastic place, Very clean facilities in very good condition, a fantastic house to spend a few days with friends and family",
@@ -17723,8 +19299,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 19,
+    "averageRating": 4.95,
+    "reviewCount": 20,
     "lastModified": "2026-10-25",
     "contentHash": "f8b2d9d8a61cf24db5a0bf3baef1d5806a44be5c"
   },
@@ -18039,6 +19615,76 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Espaço muito agradável preparado para crianças. \nQuartos amplos com wcs privados \nEstava tudo bem higienizado.\nBoa biblioteca de livros e jogos.\nCaminhar sempre com calçado na relva pois tem espinhos.",
+        "guestDisplayName": "Filipa",
+        "guestName": "Filipa",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-22T09:45:06.879Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Obrigado Portugal Active pelo excelente suporte.",
+        "guestDisplayName": "Nuno Filipe",
+        "guestName": "Nuno Filipe",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-02-17T20:56:40.598Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "The kitchen and living room of this house are very spacious, and each bedroom has its own bathroom, making it perfect for family or friends to gather for a holiday. The swimming pool is 15 meters long, which is impressively large, and the kids absolutely loved it. In addition, the location is excellent — just 5 minutes to Lidl and a little over 10 minutes to reach the center of Viana do Castelo and the shopping mall. Overall, we had a wonderful holiday here.",
         "guestDisplayName": "Daniela",
@@ -18099,8 +19745,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 7,
+    "averageRating": 4.78,
+    "reviewCount": 9,
     "lastModified": "2026-10-25",
     "contentHash": "2efb4c0aeb9915e1401a6da8f5d06f396e38e419"
   },
@@ -18392,6 +20038,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Gorgeous villa with excellent facilities.\nHad a wonderful weekend away and the villa was a comfortable place to stay.\nLocal taxi drivers helped with transport around to local restaurants/ pubs / bars / beaches as the villa is located in a remote area. \nHosts - Portugal Active were absolutely fabulous with communication. \nI would recommend",
+        "guestDisplayName": "Natalie",
+        "guestName": "Natalie",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-29T12:33:16.957Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Eu e minha família que inclui 5 adultos, uma adolescente e um bebê de 3 semanas passamos um fim de semana ótimo nessa casa.",
         "guestDisplayName": "Luciana",
@@ -18462,6 +20143,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Très belle Villa avec des activités en supplément super mais un des lits était cassé.",
+        "guestDisplayName": "Léa",
+        "guestName": "Léa",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-25T09:01:31.057Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Un precio muy adecuado a la calidad del alojamiento, si ya las fotos parecía increíble en persona es inimaginable, una villa totalmente de lujo con piscina privada, instalaciones muy amplias y bonitas.\n\nEl anfitrión se comunicaba muy rápidamente conmigo para cualquier adversidad y la casa estaba ordenada y limpia.\n\nNo es mi primera vez viajando con Portugal Active y sin duda no será la última",
         "guestDisplayName": "Guillermo",
@@ -18493,6 +20209,41 @@
           {
             "name": "value",
             "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Très jolie maison spacieuse et moderne mais quelques détails n’étaient pas au point. Un volet roulant de chambre ne fermait pas et certaines baies vitrées ne s’ouvraient pas (dans le salon).",
+        "guestDisplayName": "Astrid",
+        "guestName": "Astrid",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-27T06:21:32.632Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
           }
         ]
       },
@@ -18629,6 +20380,41 @@
           {
             "name": "location",
             "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "This villa is very well equipped and immaculately clean, with comfy beds and lots of space. It is a nice villa but with a bit of attention could be perfect.\nThe pool was worth paying to have heated as my kids loved it. \nThe only negatives were the majority of the patio doors do not open and have all been damaged. The one that does open on balcony required my husband to close it for the outside. They need serious attention. Unfortunately while we were there the front door handle also came off, it",
+        "guestDisplayName": "Katie",
+        "guestName": "Katie",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-13T14:57:52.121Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
           },
           {
             "name": "value",
@@ -18797,8 +20583,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 19,
+    "averageRating": 4.83,
+    "reviewCount": 23,
     "lastModified": "2026-10-25",
     "contentHash": "bdd00ba8801cbf5445e39fa80788a5e7a8fcf8df"
   },
@@ -19247,6 +21033,41 @@
     "areaSquareFeet": 168,
     "reviews": [
       {
+        "rating": 2,
+        "text": "A estadia não correspondeu às minhas expectativas, o atendimento e apoio foi terrível. Já tinha estado no local há 6 anos, quando eram os donos que geriam o local e correu tudo lindamente. 6 anos depois o preço subiu exponencialmente e o atendimento foi terrível. Enviaram- me uma mensagem com instruções de check in e disponibilizaram-me um contacto  para o caso de eu precisar de apoio. A mensagem dizia: \n\"Se precisar de alguma coisa, estamos disponíveis através de uma mensagem e no W através do ",
+        "guestDisplayName": "Teresinha",
+        "guestName": "Teresinha",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-08T11:29:37.989Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 2
+          },
+          {
+            "name": "communication",
+            "score": 1
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 1
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Lugar idílico al lado del río con playa fluvial.",
         "guestDisplayName": "Felipe",
@@ -19317,8 +21138,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2,
+    "averageRating": 4,
+    "reviewCount": 3,
     "lastModified": "2026-10-25",
     "contentHash": "9dd151207c11d84d0dc703dedc73cb518eb94851"
   },
@@ -19488,6 +21309,41 @@
     "areaSquareFeet": 1808.3369472,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Amazing place",
+        "guestDisplayName": "Nuno",
+        "guestName": "Nuno",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-30T10:54:33.767Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Espaço muito bem cuidado, limpo e organizado.\nLocalização excelente, com muitas atividades para fazer nas proximidades.\nEquipa sempre ativa e de fácil comunicação.\nRecomendo completamente.",
         "guestDisplayName": "Milton",
@@ -19558,8 +21414,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2,
+    "averageRating": 4.67,
+    "reviewCount": 3,
     "lastModified": "2026-10-25",
     "contentHash": "b6f8d85c45be5b56fc823f8eb1555b82360ec54a"
   },
@@ -20616,6 +22472,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Le bateau est propre mais Dès notre arrivée et suite pas un manque d’eau , la pompe de distribution du bateau s’est arrêtée ! Nous ( 2 adultes et 2 filles ) privant de douche et laver la vaisselle ! J’ai dus faire le plein d’eau et attendre une réponse le lendemain matin pour arranger la situation! Je déplore le fait par exemple de b’avoir qu’un seul bol sachant que la location est de 4 personnes ! Sam a cependant été très cordiale ! Je pourrais éventuellement conseiller de mettre un micro-ondes",
+        "guestDisplayName": "Greg",
+        "guestName": "Greg",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-08T07:00:55.187Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 2
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Location of boat good  short walk around the marina to reach the centre. Secure location with keys to the boat and the jetty. Would recommend for a few nights if you want to try something different",
         "guestDisplayName": "Tina",
@@ -20686,8 +22577,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 5,
+    "averageRating": 4.83,
+    "reviewCount": 6,
     "lastModified": "2026-10-25",
     "contentHash": "d1b31a0ac620171b68e45caafb7d0a43dbba68de"
   },
@@ -20878,9 +22769,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 969,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0,
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "los dueños super agradáveis, mucha comodidad, excelente lugar para disfrutar en familia y amigos,espero repetir lo antes posible, muchas gracias por todo 😊muy recomendable...",
+        "guestDisplayName": "Bruna Fernanda",
+        "guestName": "Bruna Fernanda",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-04T21:23:51.071Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1,
     "lastModified": "2026-10-25",
     "contentHash": "80acba83d81ef5d414bf0045560337882b913cfb"
   },
@@ -21264,6 +23191,111 @@
     "areaSquareFeet": 7535,
     "reviews": [
       {
+        "rating": 4,
+        "text": "We enjoyed hosting a large group of family and friends at Quinta da Fonte. The surroundings and the grounds are stunning. The views were incredible, especially at sunset/rise, and the accommodations were large, and fit all 20+ of our group well. The team at Portugal Active was kind and helpful and responsive to lots of questions of varying difficulty.\n\nBut, there are a couple things we would've wanted to know ahead of time to make things less stressful. There is a (fantastic) restaurant on site.",
+        "guestDisplayName": "Ryan",
+        "guestName": "Ryan",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-27T10:07:45.457Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "El espacio es ideal para alojar a un grupo grande de amigos o familias. Hay muchas habitaciones con baños propios, cocina amplia y con mucho menaje, muchas zonas comunes para juntarse... Se nota que la casa es vieja pero está reformada, los muebles son antiguos y muchas habitaciones olían a humedad. Todo estaba limpio.\n\nLos exteriores están bien cuidados y son bonitos. La piscina está genial pero está algo lejos de la casa, hay que caminar cuesta arriba durante 2 minutos por un camino empinado. ",
+        "guestDisplayName": "Inés",
+        "guestName": "Inés",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-27T20:09:08.813Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Me and a large group of my friends, loved our stay at the Fountain Retreat. \nThe surroundings were gorgeous with a list of lovely amenities. \nThere were a few hiccups during the stay. They had forgot to turn the gas/boiler on during the first night but the team were responsive and got it fixed the next day. There were a few other fixable problems that I’m sure the team won’t let happen again. \nOnly thing to really note, if you are going in big groups (ours was of 28), is that at meal times the e",
+        "guestDisplayName": "Rohaan",
+        "guestName": "Rohaan",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-11T10:23:47.181Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Best place I’ve ever stayed. Had everything you could imagine and more. 10/10, would definitely stay again. \n\nAmazing bedrooms, kitchen, bbq area, swimming pool, tennis courts, the list goes on. Truly incredible!\n\nThank you",
         "guestDisplayName": "Salar",
@@ -21332,10 +23364,45 @@
             "score": 5
           }
         ]
+      },
+      {
+        "rating": 4,
+        "text": "A Portugal Active, representada pelo Sr. João Porto, tiveram o grande desafio de lidar com as circunstâncias que a propriedade sofreu com as tempestades! Mantiveram sempre em contacto connosco e deslocaram-se ao espaço para nos darem o apoio possível e para resolução imediata das quebras de electricidade e de tudo que implica a falha de luz! \nNa minha opinião, pouco mais poderiam fazer tendo em conta as condições climáticas do momento e pelo facto de que tais reparações têm de ser efetuadas com ",
+        "guestDisplayName": "Cristina",
+        "guestName": "Cristina",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-02-22T14:41:55.298Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2,
+    "averageRating": 4.33,
+    "reviewCount": 6,
     "lastModified": "2026-10-25",
     "contentHash": "3457804ee5bb1b6fcec3d633acb02f9263c37493"
   },
@@ -22256,6 +24323,76 @@
     "areaSquareFeet": 3768,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Buena estancia en general y buena relación calidad precio. Se echó en falta algún tipo de material de limpieza pero recomendable 100%.",
+        "guestDisplayName": "Tania",
+        "guestName": "Tania",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-01T06:31:15.574Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Très bon séjour à 12 personnes",
+        "guestDisplayName": "Lucas",
+        "guestName": "Lucas",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-13T09:25:36.486Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Muito bom",
         "guestDisplayName": "Mariana",
@@ -22341,8 +24478,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 6,
+    "averageRating": 4.75,
+    "reviewCount": 8,
     "lastModified": "2026-10-25",
     "contentHash": "59f9227e327fb2a518a37138af49e693d1aa8a0e"
   },
@@ -22803,6 +24940,41 @@
     "areaSquareFeet": 10625,
     "reviews": [
       {
+        "rating": 3,
+        "text": "The check in was awful. We arived at night, within the check in time. But we couldn't get inside because the lock was stuck (which later we found it wasn't the first time it happened). The host didn't respond to messages and their phone number didn't receive calls so we were forced to find a hostel for the night. They refunded the first night value though",
+        "guestDisplayName": "Pedro",
+        "guestName": "Pedro",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-16T18:52:34.121Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 1
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Tudo muito limpo, espaço bastante agradável e acolhedor, piscina com ótima vista e sossegada! O Sam foi sempre pro ativo a tentar ajudar! Recomendo!",
         "guestDisplayName": "Tiago",
@@ -22908,6 +25080,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Beautiful appartment.  Big balcony ... but sun only in the early morning.\nNot for families with young children; no high chair or babycrib avalable.  Nice location with shops and restaurants in walking distance.",
+        "guestDisplayName": "Guðmunda",
+        "guestName": "Guðmunda",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-10T16:05:53.515Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "What a beautiful home this was! Very modern and well decorated. Was also super clean and new and smelled amazing. The place was perfectly located with stores nearby. Looks exactly like the photos and was worth the price.\nThank you Portugal Active!",
         "guestDisplayName": "Jersy",
@@ -22943,8 +25150,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 4,
+    "averageRating": 4.5,
+    "reviewCount": 6,
     "lastModified": "2026-10-25",
     "contentHash": "e6168f23513d945cb54dcf6e9833d748fe505374"
   },
@@ -23232,6 +25439,41 @@
     "areaSquareFeet": 1668.4061151,
     "reviews": [
       {
+        "rating": 4,
+        "text": "The house is lovely, big airy rooms, efficient aircon, lovely outside space, well equipped kitchen. Easy enough to walk to bakery, supermarket & into town. Uphill and steps on the way back so either burn some calories or it’s easy to get an Uber!",
+        "guestDisplayName": "Jill",
+        "guestName": "Jill",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-24T18:33:23.483Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "We had a wonderful time at this beautiful place. Unfortunately we didn't have enough time to use the outside amenities. The views from the balconies are spectacular! The kitchen is very well organized and equipped wirh everything you need to make thr meals.",
         "guestDisplayName": "Mawlika",
@@ -23307,8 +25549,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 5,
+    "averageRating": 4.83,
+    "reviewCount": 6,
     "lastModified": "2026-10-25",
     "contentHash": "1d5c4c6558d1264c3b5da4932f3c0cbc5250d7d6"
   },
@@ -23553,6 +25795,41 @@
     "areaSquareFeet": 8072.932815,
     "reviews": [
       {
+        "rating": 3,
+        "text": "No geral a casa estava como anunciada mas houve alguns problemas. \nDizia que tinha carvão e não tinha, não tinham toalhas de mesa, cobraram taxas turísticas numa zona que não tem taxas turísticas e uma tomada de telefone estava com fios de fora que é ligeiramente perigoso para quem está com crianças.\nA casa é espaçosa e estava bem equipada, a piscina é suficiente e tinha jogos para passar o tempo.",
+        "guestDisplayName": "Hugo",
+        "guestName": "Hugo",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-10T10:42:14.612Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 2
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Excellent",
         "guestDisplayName": "Pedro Miguel",
@@ -23793,8 +26070,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 14,
+    "averageRating": 4.87,
+    "reviewCount": 15,
     "lastModified": "2026-10-25",
     "contentHash": "067aab93df1ee0a5cf1ef85bfb63dbadb0658c05"
   },
@@ -24312,6 +26589,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Great value for money, if you enjoy privacy and rest. \n\nOutstanding property",
+        "guestDisplayName": "Pedro",
+        "guestName": "Pedro",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-15T07:00:08.873Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Rien à redire, la maison était top!",
         "guestDisplayName": "Jason",
@@ -24452,8 +26764,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 10,
+    "averageRating": 4.91,
+    "reviewCount": 11,
     "lastModified": "2026-10-25",
     "contentHash": "3401901ac00cfc813f24ffe5f1bf9d50b2d86074"
   },
@@ -24871,10 +27183,45 @@
             "score": 5
           }
         ]
+      },
+      {
+        "rating": 2,
+        "text": "A moradia tem potencial e boa localização, mas a falta de manutenção e limpeza compromete totalmente a experiência. Os móveis da cozinha cheiram a mofo e encontrei uma travessa de barro coberta de bolor. Reportei a situação, mas a resposta foi vaga e nem sequer recebi um pedido de desculpas.\nA sala de jogos, fator decisivo na reserva, está imprópria: bilhar desnivelado, matraquilhos danificados, mobiliário de verão a obstruir o espaço e chão com buracos. Os jardins estão mal cuidados, a zona de ",
+        "guestDisplayName": "Nuno",
+        "guestName": "Nuno",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-03-30T12:29:03.237Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 2
+          },
+          {
+            "name": "accuracy",
+            "score": 2
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 5,
+    "averageRating": 4.5,
+    "reviewCount": 6,
     "lastModified": "2026-10-25",
     "contentHash": "b16be9e4baa822c9cef489564c7426435ad21ff7"
   },
@@ -25774,6 +28121,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Lovely place with all the amenities. The host was very responsive, and although we had some issues with hot water and heating, they were resolved quickly.",
+        "guestDisplayName": "Paulo",
+        "guestName": "Paulo",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-01-06T16:08:37.777Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "A casa era simplesmente fantástica com tudo o que necessitamos para ter uns dias relaxantes, o jacuzi era óptimo e a envolvência também!",
         "guestDisplayName": "Rute",
@@ -25794,8 +28176,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 5,
+    "averageRating": 4.83,
+    "reviewCount": 6,
     "lastModified": "2026-10-25",
     "contentHash": "2e9787952aaa396969b42c80cda5389f14276780"
   },
@@ -26032,6 +28414,41 @@
           {
             "name": "value",
             "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Grosszügige wohnung, 3 schlafzimmer\nRuhig, gut eingerichtet\nEtwas muffelig, tropfte aus türrahmen, geschirrspühler deckel defekt (mit berletzungsrisiko)",
+        "guestDisplayName": "Marc",
+        "guestName": "Marc",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-03T16:10:17.541Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 3
           }
         ]
       },
@@ -26351,8 +28768,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 10,
+    "averageRating": 4.91,
+    "reviewCount": 11,
     "lastModified": "2026-10-25",
     "contentHash": "c42401db9d84fca19bab6be82e96f0145d0492aa"
   },
@@ -26537,6 +28954,41 @@
     "areaSquareFeet": 1808.3369472,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Très bel endroit et logement très propre, notamment la literie et les serviettes, très confortables. Hôte réactif.\nA améliorer éventuellement : équiper un peu plus le logement.",
+        "guestDisplayName": "Guillaume",
+        "guestName": "Guillaume",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-01T05:53:56.478Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Nous avons adoré notre séjour ! Le logement était vraiment top, très agréable et idéalement situé. La localisation est géniale et le Rio juste à côté est magnifique, on a vraiment adoré pouvoir en profiter. 🥰\nL’hôte est également super : très réactif, toujours rapide à répondre et plein de bons conseils pour découvrir les alentours. Nous avons passé un excellent séjour et nous reviendrons avec grand plaisir. Je recommande à 100 % ! ✨",
         "guestDisplayName": "Nawel",
@@ -26570,10 +29022,45 @@
             "score": 5
           }
         ]
+      },
+      {
+        "rating": 4,
+        "text": "Nice domain, well maintained. Easy With the codes.",
+        "guestDisplayName": "Floris",
+        "guestName": "Floris",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-01T10:48:03.739Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 1,
+    "averageRating": 4.33,
+    "reviewCount": 3,
     "lastModified": "2026-10-25",
     "contentHash": "d7227de51344766fd338d020a7a2d9a146af4270"
   },
@@ -26835,6 +29322,76 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Logement très propre et très facile d'accès et bien agencé, juste dommage pour la petite terrasse. Difficile de manger dehors à 4 .",
+        "guestDisplayName": "Christine",
+        "guestName": "Christine",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-18T16:24:22.855Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "First of all, thanks for hosting our family! The house is nice, but we expected it to be in better shape. \n\nFrom the very first moment, we had issues with the internet connection. The team was nice, but it took me several international calls and almost 3 days to get it fixed, and then it was very weak, not even reaching the master bedroom. \n\nI understand it wouldn´t be easy to manage; anyway, I would appreciate a bit of flexibility, not about arrival or departure timing, but to get the access de",
+        "guestDisplayName": "Fran",
+        "guestName": "Fran",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-10T11:29:29.586Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Un alojamiento impresionante, cuidado, con unas prestaciones y unos servicios que superaban cualquier expectativa. La empresa responde rápido y siempre soluciona cualquier inconveniente, duda o incidencia posible. Un éxito",
         "guestDisplayName": "Marta",
@@ -26866,6 +29423,41 @@
           {
             "name": "value",
             "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "a parte qualche cialda di caffè non abbiamo trovato niente in dotazione almento per fare colazione il primo giorno, neanche una bottiglia d'acqua.\nLo stendibiancheria è troppo piccolo per le possibili 6 persone che possono abitare\nla wifi non ha funzionato perchè mancava il collegamento a internet",
+        "guestDisplayName": "Michele",
+        "guestName": "Michele",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-05T13:21:59.873Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 2
+          },
+          {
+            "name": "value",
+            "score": 3
           }
         ]
       },
@@ -26982,6 +29574,41 @@
         "guestPhoto": null,
         "guestLocation": null,
         "date": "2026-06-11T13:06:52.354Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Casa muito bem localizada e aconchegante, o único problema foi os bichos pequenos que havia pela casa.",
+        "guestDisplayName": "Nayara",
+        "guestName": "Nayara",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-17T14:42:40.610Z",
         "categories": [
           {
             "name": "cleanliness",
@@ -27185,8 +29812,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 11,
+    "averageRating": 4.73,
+    "reviewCount": 15,
     "lastModified": "2026-10-25",
     "contentHash": "623b0bca733795883f2d99f5e484f66cd2c44a46"
   },
@@ -27543,6 +30170,41 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "La valoración es de Vila Áurea en Vilanova de Anha. Muy Buena casa con buenas calidades de construcción y marca de electrodomésticos. Algo descuidada de limpieza,la piscina no estaba limpia (algas) , y algunas pequeñas deficiencias: la nevera no cerraba bien, una mesa de exterior rota, la tostadora no funcionaba, el horno tampoco. Nos cobraron una exageración por el cargador eléctrico del coche!! 0,8€ / KW",
+        "guestDisplayName": "Rafael",
+        "guestName": "Rafael",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-19T10:29:46.929Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "We were 6 colleagues who wanted to do a vacation and had the perfect time! The house is perfect for working and enjoying the pool or jacuzzi after work. The bedrooms and bathrooms were very clean and the kitchen had everything we needed. We would always come back. Special thanks to Ricardo who answered very quick and was a good guide during our stay. All in all highly recommended! :)",
         "guestDisplayName": "Tamara",
@@ -27693,8 +30355,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 18,
+    "averageRating": 4.95,
+    "reviewCount": 19,
     "lastModified": "2026-10-30",
     "contentHash": "66a3952fd9e187cc830680404822a9ab9786c036"
   },
@@ -27917,6 +30579,76 @@
     "areaSquareFeet": 1077,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Beau logement, belle vue sur le Douro, accès à la plage du Douro 5 minutes à pied, proche de Porto et de ses nombreuses activités.",
+        "guestDisplayName": "Franck",
+        "guestName": "Franck",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-23T10:49:10.414Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "rating": 3,
+        "text": "Logement typique portugais globalement propre et spacieux, superbe vue sur le Douro. Plage aménagée avec pataugeoire accessible à pieds par des escaliers. Commerces à proximité en voiture,  accès à Porto en métro facile. Maison sur les pentes du Douro avec des rues pavées très étroites et pentues, accès à la maison très étroit,  par contre on peut garer 2 ou 3 voitures dans le garage. Maison étagée,  avec la terrasse au rez-de-chaussée et cuisine à l'étage. Pas d'eau chaude dans la cuisine, très",
+        "guestDisplayName": "Anne-Claire",
+        "guestName": "Anne-Claire",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-18T17:40:57.842Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Logement correspondant à la description",
         "guestDisplayName": "Maël",
@@ -27948,6 +30680,41 @@
           {
             "name": "value",
             "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Conforme conversa tive checkin flexível, atendeu meu pedido… \nCasa como nas fotos, grande, vista linda…. porém móveis da sala muito antigos, desconforto do sofá… achei que pelo numero de pessoas que a casa comporta só 2 banheiros foi pouco…",
+        "guestDisplayName": "Carla",
+        "guestName": "Carla",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-28T07:46:29.211Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 2
+          },
+          {
+            "name": "value",
+            "score": 3
           }
         ]
       },
@@ -27987,8 +30754,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2,
+    "averageRating": 4.2,
+    "reviewCount": 5,
     "lastModified": "2026-10-25",
     "contentHash": "5c77d326f5674209f7f78a4e964ff09b927a6ee4"
   },
@@ -28181,6 +30948,76 @@
     "areaSquareFeet": 753.4737294,
     "reviews": [
       {
+        "rating": 2,
+        "text": "Por muito bom que fosse o sítio, a casa deixou muito a desejar, WiFi não funcionava, por consequente não havia televisão funcional, placa e fogão não funcionavam dando um erro e um barulho constante e chaleira também não trabalhava",
+        "guestDisplayName": "Guilherme",
+        "guestName": "Guilherme",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-02T12:07:50.964Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 2
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 1
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 1
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Gut, einfach, schön, perfekt für den camino costal",
+        "guestDisplayName": "Dario",
+        "guestName": "Dario",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-22T12:38:47.682Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Nice place!",
         "guestDisplayName": "Kira",
@@ -28249,10 +31086,45 @@
             "score": 4
           }
         ]
+      },
+      {
+        "rating": 4,
+        "text": "De uma forma geral correspodeu às expectativas. Um T1 com cerca de 40 anos, com cada de banho renovada. Algum pó nas dobras do sofá, resto da limpeza ok. Televisão não funcionava por falta de sinal da rede do edifício.",
+        "guestDisplayName": "Nuno",
+        "guestName": "Nuno",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-06T06:12:54.728Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2,
+    "averageRating": 4,
+    "reviewCount": 5,
     "lastModified": "2026-10-25",
     "contentHash": "5899fceb455ef4a4e573f4364e9c6f6db4a2de7d"
   },
@@ -28674,6 +31546,76 @@
         ]
       },
       {
+        "rating": 4,
+        "text": "Nice stay, no AC but fan worked a treat. Wifi didn’t work so TV didn’t work but host said it was due to heat.",
+        "guestDisplayName": "Sarah",
+        "guestName": "Sarah",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-10T11:37:13.245Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "nice beach and restaurants nearby",
+        "guestDisplayName": "Martin",
+        "guestName": "Martin",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-26T16:22:50.639Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Ótimo local para fim de semana. Ótimas instalações e confortável.",
         "guestDisplayName": "Tiago",
@@ -28814,8 +31756,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 10,
+    "averageRating": 4.83,
+    "reviewCount": 12,
     "lastModified": "2026-10-25",
     "contentHash": "72f3d6e6b4ebf2d3536b4e9b9297b30c245ae486"
   },
