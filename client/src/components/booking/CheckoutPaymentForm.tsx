@@ -1066,7 +1066,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
               background: paymentMethod === id ? "#F5F1EB" : "#ffffff",
               border: `1.5px solid ${
                 paymentMethod === id
-                  ? "#8B7355"
+                  ? "#1A1A18"
                   : hoveredMethod === id
                   ? "#D4D4DC"
                   : "#E8E4DC"
@@ -1082,7 +1082,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
               <Logo />
             </div>
             <span
-              className={paymentMethod === id ? "text-pa-gold-aa" : undefined}
+              className={paymentMethod === id ? "text-pa-dark" : undefined}
               style={{
                 fontSize: "12.5px",
                 fontWeight: paymentMethod === id ? 600 : 500,
