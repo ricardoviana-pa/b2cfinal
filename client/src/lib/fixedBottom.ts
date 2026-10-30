@@ -31,8 +31,15 @@
  *   [data-cookie-banner]).
  * - What cannot rise out of the way steps aside instead, through an attribute
  *   on <html>: the homepage's WhatsApp button at the hero on a computer while
- *   the banner is open (COOKIE_BANNER_OPEN_ATTR), and "back to top" on a phone
- *   while the language card sits above a booking bar (LANGUAGE_CARD_ATTR).
+ *   the banner is open (COOKIE_BANNER_OPEN_ATTR), "back to top" on a phone
+ *   while the language card sits above a booking bar (LANGUAGE_CARD_ATTR), on
+ *   a computer while a home's booking card reaches under its column
+ *   (BOOKING_CARD_UNDER_FLOATS_ATTR) and everywhere while a dialog, drawer or
+ *   sheet holds the page (body[data-scroll-locked], index.css), and the
+ *   language card below lg while the homepage's hero is on screen
+ *   (HOME_HERO_ATTR) and on a phone until the cookie choice is made
+ *   (lib/languageSuggestion.ts, languageCardWaits). Verificação final de
+ *   29 out 2026: P1, P2, P5, P6, PP-1, PP-2.
  */
 
 /** The banner's height while it is open, 0px otherwise (CookieBanner.tsx). */
@@ -79,12 +86,87 @@ export const WHATSAPP_RISE_LG = riseClearOfCookieBanner(WHATSAPP_BOTTOM_LG);
  */
 export const LANGUAGE_CARD_ATTR = 'data-language-card';
 
+/**
+ * Set on <html> while the homepage's hero is on screen (Home.tsx, with the
+ * pastHero state that already holds the WhatsApp button back below lg). The
+ * language card waits there too below lg: on a phone, with the banner under
+ * it, it landed on the hero's "Search homes" (verificação final, P5).
+ */
+export const HOME_HERO_ATTR = 'data-home-hero';
+
+/**
+ * Set on <html> while a home's booking card, on a computer, is on screen and
+ * reaches under the floats' column at the right edge (PropertyDetail.tsx,
+ * watchBookingCardUnderFloats). The card is as tall as the screen, so "back
+ * to top" cannot rise out of its way: at 1024–1100 px and 1280–1350 px wide
+ * it sat on the corner of CHECK AVAILABILITY, and on RESERVE while the card
+ * left at the end of its column (verificação final, P2 and PP-1). It steps
+ * aside instead (index.css, .back-to-top) and is back once the card has
+ * scrolled off: at the related homes and the footer.
+ */
+export const BOOKING_CARD_UNDER_FLOATS_ATTR = 'data-booking-card-under-floats';
+/** "Back to top" from md (App.tsx): 1.75rem from the right edge (md:right-7), 2.5rem wide (sm:w-10). */
+export const BACK_TO_TOP_RIGHT_LG = 28;
+export const BACK_TO_TOP_SIZE_LG = 40;
+/** Air the card keeps from the button's column before the button steps aside. */
+export const BOOKING_CARD_FLOATS_GAP = 8;
+/** Bottom of the button's band on a computer: `.back-to-top` bottom = 5rem + 56px (index.css). */
+export const BACK_TO_TOP_BOTTOM_LG = 136;
+/** Does a card whose right edge is at `cardRight` reach under the floats' column of a `viewportWidth` screen? */
+export function bookingCardUnderFloats(cardRight: number, viewportWidth: number, cardBottom?: number, viewportHeight?: number): boolean {
+  const horizontal = cardRight > viewportWidth - (BACK_TO_TOP_RIGHT_LG + BACK_TO_TOP_SIZE_LG + BOOKING_CARD_FLOATS_GAP);
+  // Also the button's band (revisão do PR #191, R2): on a tall screen the card
+  // can end far above it, and the button then overlaps nothing.
+  const vertical = cardBottom === undefined || viewportHeight === undefined
+    || cardBottom > viewportHeight - (BACK_TO_TOP_BOTTOM_LG + BACK_TO_TOP_SIZE_LG) - BOOKING_CARD_FLOATS_GAP;
+  return horizontal && vertical;
+}
+/**
+ * Marks <html> with BOOKING_CARD_UNDER_FLOATS_ATTR while `card` is on screen
+ * and reaches under the floats' column; follows the page scrolling (the card
+ * entering and leaving), the card resizing and the window resizing. Returns
+ * the cleanup, which also takes the mark back. Nothing on the server, below lg
+ * (the card is display:none there and never on screen) or without
+ * IntersectionObserver.
+ */
+export function watchBookingCardUnderFloats(card: HTMLElement | null): (() => void) | undefined {
+  if (!card || typeof IntersectionObserver === 'undefined') return undefined;
+  const root = document.documentElement;
+  let onScreen = false;
+  const sync = () => {
+    const rect = card.getBoundingClientRect();
+    if (onScreen && bookingCardUnderFloats(rect.right, window.innerWidth, rect.bottom, window.innerHeight)) root.setAttribute(BOOKING_CARD_UNDER_FLOATS_ATTR, '');
+    else root.removeAttribute(BOOKING_CARD_UNDER_FLOATS_ATTR);
+  };
+  const intersection = new IntersectionObserver((entries) => {
+    onScreen = entries[entries.length - 1].isIntersecting;
+    sync();
+  });
+  intersection.observe(card);
+  const resize = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(sync);
+  resize?.observe(card);
+  window.addEventListener('resize', sync);
+  // The card's bottom moves with the page when the sticky card leaves its column: one check per frame.
+  let frame = 0;
+  const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(() => { frame = 0; sync(); }); };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  return () => {
+    intersection.disconnect();
+    resize?.disconnect();
+    window.removeEventListener('resize', sync);
+    window.removeEventListener('scroll', onScroll);
+    if (frame) window.cancelAnimationFrame(frame);
+    root.removeAttribute(BOOKING_CARD_UNDER_FLOATS_ATTR);
+  };
+}
+
 /** Height of the page's own fixed bottom bar (0px or unset when there is none). */
 export const BOTTOM_BAR_H_VAR = '--bottom-bar-h';
 /**
  * Room for the floating buttons at the right edge on phones and tablets
- * ("back to top" reaches 176 px from the bottom, WhatsApp 144 px): set in
- * index.css, 0px from lg, where the last row keeps clear of them sideways.
+ * ("back to top" reaches 176 px from the bottom on a phone and 184 px from
+ * 640 px, WhatsApp 136 and 144 px): set in index.css, 0px from lg, where the
+ * last row keeps clear of them sideways.
  */
 export const FLOATS_CLEARANCE_VAR = '--floats-clearance';
 /**

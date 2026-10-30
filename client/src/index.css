@@ -831,6 +831,21 @@
     display: none;
   }
 
+  /* "Back to top" (App.tsx) sits right on top of the WhatsApp button: on a
+     phone that is 5.5rem + 48px = 5rem + 56px from the bottom. From 640 px
+     the WhatsApp button is 56 px tall (sm:h-14), and at the same 136 px the
+     arrow sat 8 px into it (verificação final de 29 out, P6): there it sits
+     on top of the taller button, at 144 px. From lg the WhatsApp button is
+     1.75rem from the bottom and the two are 52 px apart. */
+  .back-to-top {
+    bottom: calc(5rem + 56px + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 640px) and (max-width: 1023.98px) {
+    .back-to-top {
+      bottom: calc(5.5rem + 56px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
   /* "Back to top" (App.tsx) on a phone, while the language card sits above a
      home's or an experience's booking bar (LanguageSuggestion.tsx): the card
      is full width there and covers its place, so the button sat on the
@@ -843,13 +858,35 @@
     }
   }
 
+  /* "Back to top" on a computer, while a home's booking card is on screen and
+     reaches under its column (PropertyDetail.tsx, watchBookingCardUnderFloats
+     in lib/fixedBottom.ts): the card is as tall as the screen, so the button
+     cannot rise out of its way (the #179 translate only clears a RESERVE
+     footer while the card is stuck). At 1024–1100 and 1280–1350 px wide it
+     sat on the corner of CHECK AVAILABILITY, and on RESERVE while the card
+     left at the end of its column (verificação final de 29 out, P2 and
+     PP-1). It steps aside and is back at the related homes and the footer.
+     Here, in the utilities layer: in a components rule `display: none` would
+     lose to the button's own `flex` utility whatever its specificity. */
+  @media (min-width: 1024px) {
+    html[data-booking-card-under-floats] .back-to-top {
+      display: none;
+    }
+  }
+
   /* Below lg the floating buttons sit over the footer's right edge at the end
      of the page ("back to top" up to 5rem + 56px + 40px = 176px from the
-     bottom). The footer keeps this much free under its last row (plus its own
-     1.75rem padding and 4px of air): FOOTER_BOTTOM_INSET in lib/fixedBottom.ts.
-     From lg the last row keeps clear of them sideways (Footer.tsx, lg:pr-16). */
+     bottom on a phone, 5.5rem + 56px + 40px = 184px from 640 px). The footer
+     keeps this much free under its last row (plus its own 1.75rem padding and
+     4px of air): FOOTER_BOTTOM_INSET in lib/fixedBottom.ts. From lg the last
+     row keeps clear of them sideways (Footer.tsx, lg:pr-16). */
   :root {
     --floats-clearance: calc(9.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 640px) and (max-width: 1023.98px) {
+    :root {
+      --floats-clearance: calc(10rem + env(safe-area-inset-bottom, 0px));
+    }
   }
   @media (min-width: 1024px) {
     :root {
@@ -870,6 +907,16 @@
      (revisão do PR #178, R2). There only the menu stays under the banner. */
   body[data-scroll-locked] [data-cookie-banner] {
     z-index: 49;
+  }
+  /* "Back to top" (App.tsx) is page UI. While a dialog, drawer or sheet holds
+     the page it was painted over the sheet (z-[89] over z-50) — on a phone,
+     on the right end of the booking sheet's CHECK AVAILABILITY / RESERVE —
+     and took no taps, since <body> takes none. It steps aside until the layer
+     closes (verificação final de 29 out, PP-2). Utilities layer, like the
+     language-card rule above: in the components layer `display: none` would
+     lose to the button's own `flex` utility. */
+  body[data-scroll-locked] .back-to-top {
+    display: none;
   }
   @supports selector(:has(*)) {
     body:has(#mobile-menu-panel:not([inert])) [data-cookie-banner] {

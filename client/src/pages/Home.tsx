@@ -33,6 +33,7 @@ import BookingCTA from '@/components/property/BookingCTA';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import { HOME_HERO_ATTR } from '@/lib/fixedBottom';
 import PropertyCard from '@/components/property/PropertyCard';
 import { IMAGES, cdnResize, cdnSrcSet } from '@/lib/images';
 import StayCollections from '@/components/property/StayCollections';
@@ -135,6 +136,15 @@ export default function Home() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+  // While the hero is on screen <html> says so (HOME_HERO_ATTR): below lg the
+  // language card waits for it to scroll by too, like the WhatsApp button,
+  // instead of landing on the hero's search card (LanguageSuggestion.tsx).
+  useEffect(() => {
+    if (pastHero) return;
+    const root = document.documentElement;
+    root.setAttribute(HOME_HERO_ATTR, '');
+    return () => root.removeAttribute(HOME_HERO_ATTR);
+  }, [pastHero]);
 
   const [searchDest, setSearchDest] = useState('');
   const [searchCheckin, setSearchCheckin] = useState('');

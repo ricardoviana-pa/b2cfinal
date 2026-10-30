@@ -157,8 +157,12 @@ describe('only a language the page exists in', () => {
     const decide = card.slice(card.indexOf('const decide = () => {'), card.indexOf('const first = window.setTimeout(decide, 0);'));
     expect(decide).toMatch(/if \(!ownAlternates \|\| answered\.current\) return;/);
     expect(decide).toMatch(/const offered = pageOffersLanguage\(pageAlternates\(\), next\);\s*if \(offered === null\) return;/);
-    expect(decide.indexOf('if (offered === null) return;')).toBeLessThan(decide.indexOf('keepVisit();'));
     expect(decide).toMatch(/setTarget\(offered \? next : null\);/);
+    // Decided is not shown: the card may wait (the hero, the banner on a phone;
+    // verificação final de 29 out, P5). The visit's marker and the page it
+    // appeared on are written once it is on the page, never from decide().
+    expect(decide).not.toContain('keepVisit');
+    expect(card).toMatch(/if \(!visible\) return;\s*if \(shownOn\.current === null\) \{\s*shownOn\.current = location;\s*keepVisit\(\);\s*\}/);
     // decided after this render and again whenever the head changes, for a few seconds
     expect(card).toMatch(/const first = window\.setTimeout\(decide, 0\);/);
     expect(card).toMatch(/observer\.observe\(document\.head, \{ childList: true \}\);/);

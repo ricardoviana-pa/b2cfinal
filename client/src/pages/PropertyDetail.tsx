@@ -48,7 +48,7 @@ import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { hasSwimmingPool } from '@/lib/homeSearch';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
 import { formatQuotedEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
-import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight } from '@/lib/fixedBottom';
+import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight, watchBookingCardUnderFloats } from '@/lib/fixedBottom';
 import {
   StructuredData,
   buildVacationRentalSchema,
@@ -536,7 +536,11 @@ export default function PropertyDetail() {
   const PARTNER_HOMES_NOINDEX = false;
   const partnerNoindex = PARTNER_HOMES_NOINDEX && (property as any)?.source === 'tripwix';
 
-  usePageMeta({ ...pdpMeta, type: 'place', noindex: partnerNoindex });
+  // Sem casa (a carregar, erro ou slug desconhecido — um 404 no servidor) a
+  // página não se indexa nem tem versões noutras línguas: com os alternates
+  // da homepage que escrevia, o cartão de língua oferecia "Auf Deutsch
+  // ansehen" numa casa que não existe (verificação final de 29 out, P7).
+  usePageMeta({ ...pdpMeta, type: 'place', noindex: partnerNoindex || !property });
 
   // VacationRental + Breadcrumb JSON-LD (bundled via @graph by StructuredData).
   // VacationRental is Google's dedicated subtype for short-term rentals; it
@@ -637,6 +641,11 @@ export default function PropertyDetail() {
     () => (bookingCardEl && bookingScroller ? { card: bookingCardEl, scroller: bookingScroller } : null),
     [bookingCardEl, bookingScroller],
   );
+  // Enquanto o cartão está no ecrã e chega por baixo da coluna dos botões
+  // flutuantes (1024–1100 e 1280–1350 px de largura), o "voltar ao topo"
+  // afasta-se: o cartão tem a altura do ecrã e o botão não tem para onde subir
+  // (lib/fixedBottom.ts; verificação final de 29 out, P2 e PP-1).
+  useEffect(() => watchBookingCardUnderFloats(bookingCardEl), [bookingCardEl]);
   const [bookingSelection, setBookingSelection] = useState<BookingSelection | null>(null);
   const [showAllServices, setShowAllServices] = useState(false);
   useEffect(() => {
