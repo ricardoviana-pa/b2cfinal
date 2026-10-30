@@ -1,21 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import fs from 'node:fs';
 import postcss, { type AtRule, type Rule } from 'postcss';
-import {
-  BACK_TO_TOP_RIGHT_LG,
-  BACK_TO_TOP_SIZE_LG,
-  BOOKING_CARD_FLOATS_GAP,
-  BOOKING_CARD_UNDER_FLOATS_ATTR,
-  COOKIE_BANNER_LIFT,
-  COOKIE_BANNER_OPEN_ATTR,
-  FLOATS_CLEARANCE_VAR,
-  HOME_HERO_ATTR,
-  LANGUAGE_CARD_ATTR,
-  WHATSAPP_RISE_LG,
-  bookingCardUnderFloats,
-  watchBookingCardUnderFloats,
-} from '@/lib/fixedBottom';
-import { LG_MIN_WIDTH, SM_MIN_WIDTH, languageCardWaits } from '@/lib/languageSuggestion';
+import { BACK_TO_TOP_BOTTOM_LG, BACK_TO_TOP_RIGHT_LG, BACK_TO_TOP_SIZE_LG, BOOKING_CARD_FLOATS_GAP, BOOKING_CARD_UNDER_FLOATS_ATTR, COOKIE_BANNER_LIFT, COOKIE_BANNER_OPEN_ATTR, FLOATS_CLEARANCE_VAR, HOME_HERO_ATTR, LANGUAGE_CARD_ATTR, WHATSAPP_RISE_LG, bookingCardUnderFloats, watchBookingCardUnderFloats } from '@/lib/fixedBottom';
+import { HOME_HERO_SCROLL_RATIO, LG_MIN_WIDTH, SM_MIN_WIDTH, homeHeroOnScreen, isHomePath, languageCardWaits } from '@/lib/languageSuggestion';
 import { stripHreflang } from './_core/vite';
 
 // Verificação final em produção, 29 out 2026 (depois dos PRs #166–#186): o
@@ -144,6 +131,21 @@ describe('P2 / PP-1: on a computer «back to top» steps aside while a home’s 
     expect(1280 - BACK_TO_TOP_RIGHT_LG - BACK_TO_TOP_SIZE_LG).toBe(1212);
   });
 
+  it('and only while the card reaches the button’s band: a tall screen keeps the button (revisão, R2)', () => {
+    expect(BACK_TO_TOP_BOTTOM_LG).toBe(136);
+    expect(read('client/src/index.css')).toMatch(/\.back-to-top\s*\{\s*bottom:\s*calc\(5rem \+ 56px/);
+    // iPad Pro 12.9" portrait: 1024 px wide, 1366 tall; the sticky card ends at 785, the band starts at 1366 - 176 - 8 = 1182.
+    expect(bookingCardUnderFloats(992, 1024, 785, 1366)).toBe(false);
+    // 1024x768: the card ends at 752, inside the band (768 - 176 - 8 = 584).
+    expect(bookingCardUnderFloats(992, 1024, 752, 768)).toBe(true);
+    // Without a bottom (older callers) only the column counts, as before.
+    expect(bookingCardUnderFloats(992, 1024)).toBe(true);
+    // The watcher passes the bottom and re-checks on scroll (the card leaves its column with the page).
+    const lib = read('client/src/lib/fixedBottom.ts');
+    expect(lib).toMatch(/bookingCardUnderFloats\(rect\.right, window\.innerWidth, rect\.bottom, window\.innerHeight\)/);
+    expect(lib).toMatch(/addEventListener\('scroll', onScroll, \{ passive: true \}\)/);
+  });
+
   it('marks <html> while the card is on screen and under the column, follows the scroll and the window, and takes the mark back', () => {
     const attrs = new Map<string, string>();
     vi.stubGlobal('document', {
@@ -233,6 +235,30 @@ describe('PP-2: «back to top» steps aside while a dialog, drawer or sheet hold
   });
 });
 
+describe('P5 (revisão, R1): the hero rule is read from the route and the scroll, not from an attribute that lands late', () => {
+  it('knows the homepage in every language, and nothing else', () => {
+    for (const path of ['/', '/en', '/pt/', '/fi', '/de/']) expect(isHomePath(path), path).toBe(true);
+    for (const path of ['/en/homes', '/pt/experiences', '/xx', '/en/x', '/homes']) expect(isHomePath(path), path).toBe(false);
+  });
+
+  it('the hero is on screen at the top of the homepage, until 60% of the viewport is scrolled (Home’s own threshold)', () => {
+    expect(HOME_HERO_SCROLL_RATIO).toBe(0.6);
+    expect(read('client/src/pages/Home.tsx')).toMatch(/0\.6/);
+    expect(homeHeroOnScreen({ pathname: '/en', scrollY: 0, innerHeight: 844, heroAttr: false })).toBe(true);
+    expect(homeHeroOnScreen({ pathname: '/en', scrollY: 506, innerHeight: 844, heroAttr: false })).toBe(true);
+    expect(homeHeroOnScreen({ pathname: '/en', scrollY: 507, innerHeight: 844, heroAttr: false })).toBe(false);
+    expect(homeHeroOnScreen({ pathname: '/en/homes', scrollY: 0, innerHeight: 844, heroAttr: false })).toBe(false);
+    // The attribute still counts while Home says the hero is there.
+    expect(homeHeroOnScreen({ pathname: '/en/homes', scrollY: 0, innerHeight: 844, heroAttr: true })).toBe(true);
+  });
+
+  it('the card reads it in its first check and re-checks on scroll', () => {
+    const cmp = read('client/src/components/layout/LanguageSuggestion.tsx');
+    expect(cmp).toMatch(/homeHeroOnScreen\(\{ pathname: window\.location\.pathname, scrollY: window\.scrollY, innerHeight: window\.innerHeight, heroAttr: root\.hasAttribute\(HOME_HERO_ATTR\) \}\)/);
+    expect(cmp).toMatch(/addEventListener\('scroll', onScroll, \{ passive: true \}\)/);
+  });
+});
+
 describe('P5: the language card waits for the hero and, on a phone, for the cookie choice', () => {
   const base = { viewportWidth: 390, homeHeroOnScreen: false, cookieChoice: 'essential' as string | null, cookieBannerOpen: false };
 
@@ -281,7 +307,7 @@ describe('P5: the language card waits for the hero and, on a phone, for the cook
   });
 
   it('the card reads the page (hero mark, banner mark, cookie choice, width), follows their changes, and only counts as shown once on the page', () => {
-    expect(card).toMatch(/homeHeroOnScreen: root\.hasAttribute\(HOME_HERO_ATTR\)/);
+    expect(card).toMatch(/homeHeroOnScreen: homeHeroOnScreen\(\{ pathname: window\.location\.pathname, scrollY: window\.scrollY, innerHeight: window\.innerHeight, heroAttr: root\.hasAttribute\(HOME_HERO_ATTR\) \}\)/);
     expect(card).toMatch(/cookieBannerOpen: root\.hasAttribute\(COOKIE_BANNER_OPEN_ATTR\)/);
     expect(card).toMatch(/cookieChoice: getCookieChoice\(\)/);
     expect(card).toMatch(/viewportWidth: window\.innerWidth/);

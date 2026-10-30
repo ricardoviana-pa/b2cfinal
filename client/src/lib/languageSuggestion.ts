@@ -148,3 +148,28 @@ export const SUGGESTION_COPY: Record<SuggestedLanguage, { prompt: string; action
   sv: { prompt: 'Webbplatsen finns också på svenska.', action: 'Visa på svenska', dismiss: 'Fortsätt på engelska' },
   fi: { prompt: 'Sivusto on saatavilla myös suomeksi.', action: 'Näytä suomeksi', dismiss: 'Jatka englanniksi' },
 };
+
+/** Home's own "past the hero" threshold (Home.tsx pastHero): 60% of the viewport height. */
+export const HOME_HERO_SCROLL_RATIO = 0.6;
+
+/** "/" or "/<lang>" (with or without a trailing slash): the homepage, whose hero holds the search. */
+export function isHomePath(pathname: string): boolean {
+  const m = /^\/([a-z]{2})?\/?$/.exec(pathname || '/');
+  return !!m && (!m[1] || (SITE_LANGUAGES as readonly string[]).includes(m[1]));
+}
+
+/**
+ * Is the homepage hero on screen right now? Read from the route and the scroll,
+ * so it is right in the very first render: Home marks <html> with HOME_HERO_ATTR
+ * only once its subtree has hydrated, and the card decided before that
+ * (revisão do PR #191, R1: the card flashed over the hero and spent the visit's
+ * one card). The attribute stays as a second signal.
+ */
+export function homeHeroOnScreen({ pathname, scrollY, innerHeight, heroAttr }: {
+  pathname: string;
+  scrollY: number;
+  innerHeight: number;
+  heroAttr: boolean;
+}): boolean {
+  return heroAttr || (isHomePath(pathname) && scrollY <= innerHeight * HOME_HERO_SCROLL_RATIO);
+}

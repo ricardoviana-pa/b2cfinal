@@ -110,9 +110,16 @@ export const BACK_TO_TOP_RIGHT_LG = 28;
 export const BACK_TO_TOP_SIZE_LG = 40;
 /** Air the card keeps from the button's column before the button steps aside. */
 export const BOOKING_CARD_FLOATS_GAP = 8;
+/** Bottom of the button's band on a computer: `.back-to-top` bottom = 5rem + 56px (index.css). */
+export const BACK_TO_TOP_BOTTOM_LG = 136;
 /** Does a card whose right edge is at `cardRight` reach under the floats' column of a `viewportWidth` screen? */
-export function bookingCardUnderFloats(cardRight: number, viewportWidth: number): boolean {
-  return cardRight > viewportWidth - (BACK_TO_TOP_RIGHT_LG + BACK_TO_TOP_SIZE_LG + BOOKING_CARD_FLOATS_GAP);
+export function bookingCardUnderFloats(cardRight: number, viewportWidth: number, cardBottom?: number, viewportHeight?: number): boolean {
+  const horizontal = cardRight > viewportWidth - (BACK_TO_TOP_RIGHT_LG + BACK_TO_TOP_SIZE_LG + BOOKING_CARD_FLOATS_GAP);
+  // Also the button's band (revisão do PR #191, R2): on a tall screen the card
+  // can end far above it, and the button then overlaps nothing.
+  const vertical = cardBottom === undefined || viewportHeight === undefined
+    || cardBottom > viewportHeight - (BACK_TO_TOP_BOTTOM_LG + BACK_TO_TOP_SIZE_LG) - BOOKING_CARD_FLOATS_GAP;
+  return horizontal && vertical;
 }
 /**
  * Marks <html> with BOOKING_CARD_UNDER_FLOATS_ATTR while `card` is on screen
@@ -127,7 +134,8 @@ export function watchBookingCardUnderFloats(card: HTMLElement | null): (() => vo
   const root = document.documentElement;
   let onScreen = false;
   const sync = () => {
-    if (onScreen && bookingCardUnderFloats(card.getBoundingClientRect().right, window.innerWidth)) root.setAttribute(BOOKING_CARD_UNDER_FLOATS_ATTR, '');
+    const rect = card.getBoundingClientRect();
+    if (onScreen && bookingCardUnderFloats(rect.right, window.innerWidth, rect.bottom, window.innerHeight)) root.setAttribute(BOOKING_CARD_UNDER_FLOATS_ATTR, '');
     else root.removeAttribute(BOOKING_CARD_UNDER_FLOATS_ATTR);
   };
   const intersection = new IntersectionObserver((entries) => {
@@ -138,10 +146,16 @@ export function watchBookingCardUnderFloats(card: HTMLElement | null): (() => vo
   const resize = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(sync);
   resize?.observe(card);
   window.addEventListener('resize', sync);
+  // The card's bottom moves with the page when the sticky card leaves its column: one check per frame.
+  let frame = 0;
+  const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(() => { frame = 0; sync(); }); };
+  window.addEventListener('scroll', onScroll, { passive: true });
   return () => {
     intersection.disconnect();
     resize?.disconnect();
     window.removeEventListener('resize', sync);
+    window.removeEventListener('scroll', onScroll);
+    if (frame) window.cancelAnimationFrame(frame);
     root.removeAttribute(BOOKING_CARD_UNDER_FLOATS_ATTR);
   };
 }

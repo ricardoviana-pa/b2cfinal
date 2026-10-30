@@ -24,10 +24,7 @@ import { X } from 'lucide-react';
 import { pushDL } from '@/lib/datalayer';
 import { COOKIE_BANNER_OPEN_ATTR, HOME_HERO_ATTR, LANGUAGE_CARD_ATTR, RISE_ABOVE_COOKIE_BANNER } from '@/lib/fixedBottom';
 import { COOKIE_CHOICE_EVENT, getCookieChoice } from '@/lib/measurementConsent';
-import {
-  LANGUAGE_CHOICE_KEY, SUGGESTION_COPY, SUGGESTION_DECLINED_KEY, SUGGESTION_SHOWN_KEY,
-  hasBottomBookingBar, languageCardWaits, pageOffersLanguage, pathInLanguage, shownThisVisit, suggestedLanguage, type SuggestedLanguage,
-} from '@/lib/languageSuggestion';
+import { LANGUAGE_CHOICE_KEY, SUGGESTION_COPY, SUGGESTION_DECLINED_KEY, SUGGESTION_SHOWN_KEY, hasBottomBookingBar, languageCardWaits, pageOffersLanguage, pathInLanguage, shownThisVisit, suggestedLanguage, type SuggestedLanguage, homeHeroOnScreen } from '@/lib/languageSuggestion';
 
 function read(storage: () => Storage, key: string): string | null {
   try { return storage().getItem(key); } catch { return null; }
@@ -45,7 +42,7 @@ function cardWaitsNow(): boolean {
   const root = document.documentElement;
   return languageCardWaits({
     viewportWidth: window.innerWidth,
-    homeHeroOnScreen: root.hasAttribute(HOME_HERO_ATTR),
+    homeHeroOnScreen: homeHeroOnScreen({ pathname: window.location.pathname, scrollY: window.scrollY, innerHeight: window.innerHeight, heroAttr: root.hasAttribute(HOME_HERO_ATTR) }),
     cookieChoice: getCookieChoice(),
     cookieBannerOpen: root.hasAttribute(COOKIE_BANNER_OPEN_ATTR),
   });
@@ -82,10 +79,16 @@ export default function LanguageSuggestion() {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: [HOME_HERO_ATTR, COOKIE_BANNER_OPEN_ATTR] });
     window.addEventListener(COOKIE_CHOICE_EVENT, update);
     window.addEventListener('resize', update);
+    // The hero rule reads the scroll (see homeHeroOnScreen): re-check as the visitor scrolls, one check per frame.
+    let frame = 0;
+    const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(() => { frame = 0; update(); }); };
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       observer.disconnect();
       window.removeEventListener(COOKIE_CHOICE_EVENT, update);
       window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
 
