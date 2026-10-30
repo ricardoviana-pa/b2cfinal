@@ -165,3 +165,29 @@ describe("the listing card, rendered: a partner home with no 'from' reads 'Price
     expect(card(home(), null)).toContain(en.property.selectDatesForPrice);
   });
 });
+
+describe("the partner panel's price line: 'not computed yet' is not 'none' (verificação de 29 out 2026, Property PP-3)", () => {
+  // No dates: the line above the calendar is the "from" price, as on first paint.
+  const line = (fromPrice: number | null | undefined) =>
+    textOf(panel({ calendar: null, quote: undefined, checkIn: "", checkOut: "", fromPrice }).html);
+
+  it("no 'from' yet (seed missing, query in flight): 'Select dates for price', as the cards and the phone bar say", () => {
+    const t = line(undefined);
+    expect(t).toContain(en.property.selectDatesForPrice);
+    expect(t).toContain(en.partnerBooking.pickDates);
+    expect(t).not.toContain(en.property.priceOnRequest);
+  });
+  it("'from' came back as none: 'Price on request' and the concierge line, no promise of an exact total", () => {
+    const t = line(null);
+    expect(t).toContain(en.property.priceOnRequest);
+    expect(t).toContain(en.partnerBooking.onRequestHint);
+    expect(t).not.toContain(en.partnerBooking.pickDates);
+    expect(t).not.toContain(en.property.selectDatesForPrice);
+  });
+  it("a price: 'From €795 per night' and the dates hint", () => {
+    const t = line(795);
+    expect(t).toContain(`${en.property.fromPerNight.replace("{{price}}", "795")} ${en.partnerBooking.perNight}`);
+    expect(t).toContain(en.partnerBooking.pickDates);
+    expect(t).not.toContain(en.property.priceOnRequest);
+  });
+});

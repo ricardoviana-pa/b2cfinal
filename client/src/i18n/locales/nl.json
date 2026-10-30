@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusief voor onze gasten",
     "office": "Kantoor"
   },
+  "promoBar": {
+    "defaultText": "Gebruik code {code} bij het afrekenen",
+    "copied": "Code gekopieerd",
+    "ariaLabel": "Huidige actie",
+    "copyAria": "code kopiëren",
+    "dismiss": "Sluiten"
+  },
   "destinations": {
     "minho": "Noord-Portugal · Minho",
     "porto": "Porto en Douro",
@@ -564,7 +571,13 @@
     "allDestHomes": "Alle huizen {{inPlace}}",
     "ownershipTitle": "Meer dan een verblijf.",
     "ownershipBody": "Deze woning maakt ook deel uit van onze vastgoedcollectie. Ontdek de mogelijkheid om haar te kopen met het team dat haar kent.",
-    "ownershipAction": "Bekijk deze woning te koop"
+    "ownershipAction": "Bekijk deze woning te koop",
+    "showAllAmenitiesCount": "Alle {{count}} voorzieningen tonen",
+    "showAllPhotos": "Alle {{count}} foto's tonen",
+    "bedTotal_one": "{{count}} bed",
+    "bedTotal_other": "{{count}} bedden",
+    "availabilityTitle": "Beschikbaarheid",
+    "availabilityHint": "Kies uw in- en uitcheckdatum: de prijs van uw verblijf verschijnt in de boekingskaart."
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",
@@ -1367,7 +1380,9 @@
     "verifiedGuest": "Geverifieerde gast",
     "verifiedNote": "Alle reviews komen van voltooide verblijven, verzameld via onze boekingskanalen.",
     "previous": "Vorige beoordelingen",
-    "next": "Volgende beoordelingen"
+    "next": "Volgende beoordelingen",
+    "readAll_one": "Beoordeling lezen",
+    "readAll_other": "Alle {{count}} beoordelingen lezen"
   },
   "amenity": {
     "outdoorPool": "Buiten & Zwembad",
@@ -1382,7 +1397,9 @@
     "bathroom": "Badkamer",
     "familyFriendly": "Gezinsvriendelijk",
     "safety": "Veiligheid",
-    "other": "Overig"
+    "other": "Overig",
+    "accessibility": "Toegankelijkheid",
+    "nearby": "Activiteiten in de buurt"
   },
   "experience": {
     "from": "Vanaf",
@@ -1600,7 +1617,7 @@
     "emailLabel": "Uw e-mailadres",
     "emailPh": "naam@email.com",
     "emailSupport": "We houden uw prijs 24 uur vast en mailen de offerte. Data zijn pas na betaling gereserveerd.",
-    "newsletterOptIn": "Ik ga akkoord met het toesturen van mijn boeking en toekomstig contact.",
+    "newsletterOptIn": "Ik ontvang graag nieuws en aanbiedingen van Portugal Active (optioneel).",
     "backToStay": "Terug naar het verblijf",
     "payTitle": "Betaling",
     "paySubtitle": "Uw gegevens, daarna een veilige betaling.",
@@ -1869,6 +1886,8 @@
     "perPersonDay": "per persoon · dag",
     "allDays": "Elke dag",
     "airport": "Luchthaven",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lissabon",
     "confirm24hNote": "Als we het niet kunnen garanderen, wordt de regel automatisch terugbetaald.",
     "noChargeNow": "nu geen kosten",
     "perPersonHour": "per kind · uur",
@@ -2029,7 +2048,8 @@
     "submitError": "We konden uw aanvraag niet versturen. Probeer opnieuw of schrijf de concierge.",
     "sending": "Versturen…",
     "submit": "Deze data aanvragen",
-    "noCharge": "Nu geen betaling — de concierge bevestigt eerst beschikbaarheid en het eindtotaal."
+    "noCharge": "Nu geen betaling — de concierge bevestigt eerst beschikbaarheid en het eindtotaal.",
+    "pickDatesFirst": "Kies hierboven uw data: daarna vragen we uw gegevens en sturen we de aanvraag door."
   },
   "login": {
     "benefitTrips": "Beheer uw reizen",
@@ -2408,5 +2428,54 @@
       "network": "Verbindingsprobleem. Controleer uw internet en probeer het opnieuw.",
       "generic": "Dit is niet gelukt. Probeer het opnieuw of praat met uw concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Privézwembad",
+    "swimmingPool": "Zwembad",
+    "heatedPool": "Verwarmd zwembad",
+    "seaView": "Uitzicht op zee",
+    "nearOcean": "Dicht bij zee",
+    "mountainView": "Uitzicht op de bergen",
+    "riverView": "Uitzicht op rivier of meer",
+    "jacuzzi": "Jacuzzi",
+    "sauna": "Sauna",
+    "fireplace": "Open haard",
+    "bbq": "Barbecue",
+    "garden": "Tuin",
+    "terrace": "Terras",
+    "airConditioning": "Airconditioning",
+    "heating": "Verwarming",
+    "wifi": "Wifi",
+    "workspace": "Werkplek",
+    "kitchen": "Keuken",
+    "dishwasher": "Vaatwasser",
+    "washer": "Wasmachine",
+    "tv": "TV",
+    "crib": "Kinderbed",
+    "gym": "Fitnessruimte",
+    "evCharging": "Laadpunt voor elektrische auto's",
+    "parking": "Gratis parkeren"
+  },
+  "beds": {
+    "king_one": "{{count}} kingsize bed",
+    "king_other": "{{count}} kingsize bedden",
+    "queen_one": "{{count}} queensize bed",
+    "queen_other": "{{count}} queensize bedden",
+    "double_one": "{{count}} tweepersoonsbed",
+    "double_other": "{{count}} tweepersoonsbedden",
+    "single_one": "{{count}} eenpersoonsbed",
+    "single_other": "{{count}} eenpersoonsbedden",
+    "sofa_one": "{{count}} slaapbank",
+    "sofa_other": "{{count}} slaapbanken",
+    "bunk_one": "{{count}} stapelbed",
+    "bunk_other": "{{count}} stapelbedden",
+    "air_one": "{{count}} luchtbed",
+    "air_other": "{{count}} luchtbedden",
+    "floor_one": "{{count}} vloermatras",
+    "floor_other": "{{count}} vloermatrassen",
+    "crib_one": "{{count}} kinderbed",
+    "crib_other": "{{count}} kinderbedden",
+    "toddler_one": "{{count}} peuterbed",
+    "toddler_other": "{{count}} peuterbedden"
   }
 }

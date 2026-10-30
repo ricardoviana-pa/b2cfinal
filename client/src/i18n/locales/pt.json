@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusivo para os nossos hóspedes",
     "office": "Escritório"
   },
+  "promoBar": {
+    "defaultText": "Use o código {code} ao finalizar a reserva",
+    "copied": "Código copiado",
+    "ariaLabel": "Promoção em curso",
+    "copyAria": "copiar o código",
+    "dismiss": "Fechar"
+  },
   "destinations": {
     "minho": "Norte de Portugal · Minho",
     "porto": "Porto e Douro",
@@ -564,7 +571,13 @@
     "allDestHomes": "Todas as casas {{inPlace}}",
     "ownershipTitle": "Mais do que uma estadia.",
     "ownershipBody": "Esta casa também faz parte da nossa coleção imobiliária. Explore a possibilidade de a comprar com a equipa que a conhece.",
-    "ownershipAction": "Conheça esta casa à venda"
+    "ownershipAction": "Conheça esta casa à venda",
+    "showAllAmenitiesCount": "Ver todas as {{count}} comodidades",
+    "showAllPhotos": "Ver as {{count}} fotos",
+    "bedTotal_one": "{{count}} cama",
+    "bedTotal_other": "{{count}} camas",
+    "availabilityTitle": "Disponibilidade",
+    "availabilityHint": "Escolha as datas de entrada e saída: o preço da estadia aparece no cartão de reserva."
   },
   "priceBreakdown": {
     "title": "Resumo de preço",
@@ -1367,7 +1380,9 @@
     "proofStrip": "4.8/5 em mais de 2.000 avaliações de hóspedes",
     "verifiedNote": "Todas as reviews são de estadias concluídas, recolhidas pelos nossos canais de reserva.",
     "previous": "Avaliações anteriores",
-    "next": "Avaliações seguintes"
+    "next": "Avaliações seguintes",
+    "readAll_one": "Ler a avaliação",
+    "readAll_other": "Ler as {{count}} avaliações"
   },
   "amenity": {
     "outdoorPool": "Exterior e Piscina",
@@ -1382,7 +1397,9 @@
     "bathroom": "Casa de Banho",
     "familyFriendly": "Para Famílias",
     "safety": "Segurança",
-    "other": "Outros"
+    "other": "Outros",
+    "accessibility": "Acessibilidade",
+    "nearby": "Atividades por perto"
   },
   "experience": {
     "from": "Desde",
@@ -1600,7 +1617,7 @@
     "emailLabel": "O seu email",
     "emailPh": "nome@email.com",
     "emailSupport": "Guardamos o seu preço por 24 horas e enviamos o orçamento. As datas só ficam reservadas após o pagamento.",
-    "newsletterOptIn": "Autorizo o envio da minha reserva e contacto futuro.",
+    "newsletterOptIn": "Quero receber novidades e ofertas da Portugal Active (opcional).",
     "backToStay": "Voltar à estadia",
     "payTitle": "Pagamento",
     "paySubtitle": "Os seus dados e um pagamento seguro.",
@@ -1869,6 +1886,8 @@
     "perPersonDay": "por pessoa · dia",
     "allDays": "Todos os dias",
     "airport": "Aeroporto",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lisboa",
     "confirm24hNote": "Se não conseguirmos garantir, devolvemos essa linha automaticamente.",
     "noChargeNow": "sem cobrança agora",
     "perPersonHour": "por criança · hora",
@@ -2029,7 +2048,8 @@
     "submitError": "Não conseguimos enviar o seu pedido. Tente novamente ou fale com o concierge.",
     "sending": "A enviar…",
     "submit": "Pedir estas datas",
-    "noCharge": "Sem pagamento agora — o concierge confirma primeiro a disponibilidade e o total final."
+    "noCharge": "Sem pagamento agora — o concierge confirma primeiro a disponibilidade e o total final.",
+    "pickDatesFirst": "Escolha as datas em cima: depois pedimos os seus dados e enviamos o pedido à casa."
   },
   "login": {
     "benefitTrips": "Gerir as suas viagens",
@@ -2411,5 +2431,54 @@
       "network": "Problema de ligação. Verifique a internet e tente de novo.",
       "generic": "Não foi possível concluir. Tente de novo ou fale com o seu concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Piscina privada",
+    "swimmingPool": "Piscina",
+    "heatedPool": "Piscina aquecida",
+    "seaView": "Vista para o mar",
+    "nearOcean": "Perto do mar",
+    "mountainView": "Vista de montanha",
+    "riverView": "Vista de rio ou lago",
+    "jacuzzi": "Jacúzi",
+    "sauna": "Sauna",
+    "fireplace": "Lareira",
+    "bbq": "Churrasqueira",
+    "garden": "Jardim",
+    "terrace": "Terraço",
+    "airConditioning": "Ar condicionado",
+    "heating": "Aquecimento",
+    "wifi": "Wi-Fi",
+    "workspace": "Espaço de trabalho",
+    "kitchen": "Cozinha",
+    "dishwasher": "Máquina de lavar loiça",
+    "washer": "Máquina de lavar roupa",
+    "tv": "TV",
+    "crib": "Berço",
+    "gym": "Ginásio",
+    "evCharging": "Carregador para carros elétricos",
+    "parking": "Estacionamento gratuito"
+  },
+  "beds": {
+    "king_one": "{{count}} cama king",
+    "king_other": "{{count}} camas king",
+    "queen_one": "{{count}} cama queen",
+    "queen_other": "{{count}} camas queen",
+    "double_one": "{{count}} cama de casal",
+    "double_other": "{{count}} camas de casal",
+    "single_one": "{{count}} cama individual",
+    "single_other": "{{count}} camas individuais",
+    "sofa_one": "{{count}} sofá-cama",
+    "sofa_other": "{{count}} sofás-cama",
+    "bunk_one": "{{count}} beliche",
+    "bunk_other": "{{count}} beliches",
+    "air_one": "{{count}} colchão de ar",
+    "air_other": "{{count}} colchões de ar",
+    "floor_one": "{{count}} colchão de chão",
+    "floor_other": "{{count}} colchões de chão",
+    "crib_one": "{{count}} berço",
+    "crib_other": "{{count}} berços",
+    "toddler_one": "{{count}} cama de criança",
+    "toddler_other": "{{count}} camas de criança"
   }
 }

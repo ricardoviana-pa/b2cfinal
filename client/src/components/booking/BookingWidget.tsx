@@ -376,6 +376,26 @@ export default function BookingWidget({
   const datePicker = useDateRangePicker(!!checkIn);
   const showCalendar = datePicker.open;
 
+  // Dates chosen outside the widget — the availability calendar on the home's
+  // page — arrive as new initial dates: adopt them (the quote effect below
+  // then prices them). Nothing happens when they are the widget's own dates
+  // coming back (it reports them to the page, which passes them down again).
+  const adoptedDatesRef = useRef(`${initialCheckIn}|${initialCheckOut}`);
+  useEffect(() => {
+    const key = `${initialCheckIn}|${initialCheckOut}`;
+    if (key === adoptedDatesRef.current) return;
+    adoptedDatesRef.current = key;
+    if (initialCheckIn === checkIn && initialCheckOut === checkOut) return;
+    setCheckIn(initialCheckIn);
+    setCheckOut(initialCheckOut);
+    setQuote(null);
+    setError("");
+    setBeQuoteError("");
+    setStep("dates");
+    datePicker.close();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialCheckIn, initialCheckOut]);
+
   const widgetRef = useRef<HTMLDivElement>(null);
   // Cartão fixo do computador (null na gaveta do telemóvel): o RESERVE fica
   // logo a seguir às tarifas e o CSS prende-o ao fundo do cartão; o resto
@@ -973,7 +993,7 @@ export default function BookingWidget({
   return (
     <div ref={widgetRef} className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
       {/* Price header */}
-      <div className="px-6 pt-6 pb-4">
+      <div className="px-5 pt-5 pb-3">
         {hasLivePrice && effectiveQuote ? (
           <>
             <div className="flex items-baseline gap-2">
@@ -1127,8 +1147,10 @@ export default function BookingWidget({
           </div>
         )}
 
-        {/* Min nights info */}
-        {effectiveMinNights > 1 && (
+        {/* Min nights info — only while the price header is not already saying
+            it (it did both, one under the price and one under the dates:
+            auditoria 29 out 2026, o painel repetia "mínimo 2 noites"). */}
+        {effectiveMinNights > 1 && ((hasLivePrice && effectiveQuote) || (loading && checkIn && checkOut)) && (
           <p className="caption text-black/50 mt-2 flex items-center gap-1">
             <Calendar className="w-3 h-3" />
             {t("bookingWidget.minNightMinimum", { count: effectiveMinNights })}
@@ -1180,7 +1202,7 @@ export default function BookingWidget({
       </div>
 
       {/* Action area */}
-      <div className="px-5 pt-5 pb-6 space-y-3">
+      <div className="px-5 pt-4 pb-5 space-y-3">
         {/* Advance notice warning — ONLY for same-day check-in. We always
             accept 24h+ notice, so warning on tomorrow / 2-days-out just
             scared off bookings that would confirm fine. */}
@@ -1757,7 +1779,7 @@ export default function BookingWidget({
         )}
 
         {/* Trust signals */}
-        <div className="flex items-center justify-center gap-4 pt-3">
+        <div className="flex items-center justify-center gap-4 pt-1">
           <div className="flex items-center gap-1 caption text-black/25">
             <Shield className="w-3 h-3" /> {t("bookingWidget.secureBooking")}
           </div>
@@ -1784,7 +1806,7 @@ export default function BookingWidget({
             target="_blank"
             rel="noopener noreferrer"
             data-track-source="booking_widget"
-            className="flex items-center justify-center gap-1.5 caption text-pa-gold hover:text-black transition-colors pt-3 mt-1 border-t border-black/[0.06]"
+            className="flex items-center justify-center gap-1.5 caption text-pa-gold hover:text-black transition-colors pt-2.5 mt-0.5 border-t border-black/[0.06]"
           >
             {t("property.needHelpConcierge", "Need help? Talk to the concierge")}
           </a>
