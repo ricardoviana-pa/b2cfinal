@@ -136,18 +136,20 @@ export default function RatePlanCards<T extends RateCardOption>({
                     </p>
                   </div>
                 </div>
-                <div className="text-right shrink-0">
-                  <p className="body-md text-pa-dark font-medium tabular-nums leading-tight">{formatQuotedEur(m.total, lang)}</p>
-                  {m.savings > 0 && m.compareTotal != null && (
-                    <p className="caption mt-1 leading-snug flex items-center justify-end gap-1.5">
-                      <s className="text-pa-stone-aa tabular-nums">{formatQuotedEur(m.compareTotal, lang)}</s>
-                      <span className="inline-flex items-center rounded-full border border-pa-sand bg-pa-warm px-2 py-0.5 eyebrow font-medium tracking-[0.08em] uppercase text-pa-gold-aa whitespace-nowrap">
-                        {t("bookingWidget.save", "Save")} {formatQuotedEur(m.savings, lang)}
-                      </span>
-                    </p>
-                  )}
-                </div>
+                <p className="body-md text-pa-dark font-medium tabular-nums leading-tight shrink-0 text-right">{formatQuotedEur(m.total, lang)}</p>
               </div>
+              {/* A poupança numa linha própria, à direita, debaixo do benefício: dentro
+                  da coluna do preço empurrava o título para ~70 px a 360 px em alemão
+                  ("Nicht erstattungsfähig" entrava pelo preço) e dividia o benefício em
+                  três linhas. Assim o título e o benefício têm a largura toda. */}
+              {m.savings > 0 && m.compareTotal != null && (
+                <p className="caption -mt-1 leading-snug flex flex-wrap items-center justify-end gap-x-1.5 gap-y-1">
+                  <s className="text-pa-stone-aa tabular-nums">{formatQuotedEur(m.compareTotal, lang)}</s>
+                  <span className="inline-flex items-center rounded-full border border-pa-sand bg-pa-warm px-2 py-0.5 eyebrow font-medium tracking-[0.08em] uppercase text-pa-gold-aa whitespace-nowrap">
+                    {t("bookingWidget.save", "Save")} {formatQuotedEur(m.savings, lang)}
+                  </span>
+                </p>
+              )}
               {twoPartsVariant && m.twoPartsCandidate && (
                 <TwoPartsHint
                   variant={twoPartsVariant}
