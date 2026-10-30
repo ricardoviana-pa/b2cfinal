@@ -1886,6 +1886,11 @@
     "perPersonDay": "per person · dag",
     "allDays": "Varje dag",
     "airport": "Flygplats",
+    "sections": {
+      "noExtras": "Inga tillägg",
+      "extrasCount_one": "{{count}} tillägg",
+      "extrasCount_other": "{{count}} tillägg"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lissabon",
     "confirm24hNote": "Om vi inte kan garantera det återbetalas raden automatiskt.",

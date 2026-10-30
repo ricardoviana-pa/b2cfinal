@@ -1886,6 +1886,11 @@
     "perPersonDay": "pro Person · Tag",
     "allDays": "Jeden Tag",
     "airport": "Flughafen",
+    "sections": {
+      "noExtras": "Keine Extras",
+      "extrasCount_one": "{{count}} Extra",
+      "extrasCount_other": "{{count}} Extras"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lissabon",
     "confirm24hNote": "Können wir es nicht garantieren, wird die Position automatisch erstattet.",

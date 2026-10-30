@@ -88,8 +88,10 @@ export default function RatePlanCards<T extends RateCardOption>({
               data-testid="rate-card"
               data-selected={selected ? "true" : "false"}
               className={cn(
-                "relative flex flex-col gap-2.5 rounded-lg border bg-white p-4 cursor-pointer transition-colors",
-                selected ? "border-pa-dark ring-1 ring-pa-dark" : "border-pa-sand hover:border-pa-gold",
+                // Uma só anatomia de cartão seleccionável no checkout (tarifa, receção,
+                // plano, método; spec §18): 1 px areia em repouso, escuro + areia escolhido
+                "relative flex flex-col gap-2.5 rounded-lg border p-4 cursor-pointer transition-colors",
+                selected ? "border-pa-dark ring-1 ring-pa-dark bg-pa-warm" : "bg-white border-pa-sand hover:border-pa-dark",
               )}
             >
               <input
@@ -118,7 +120,7 @@ export default function RatePlanCards<T extends RateCardOption>({
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="body-sm text-pa-dark font-medium leading-snug">{label}</p>
                       {recommended && (
-                        <span className="eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold-aa border border-pa-sand rounded-sm">
+                        <span className={cn("eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 text-pa-gold-aa border border-pa-sand rounded-sm", selected ? "bg-white" : "bg-pa-warm")}>
                           {t("bookingWidget.recommended", "Recommended")}
                         </span>
                       )}
@@ -145,7 +147,7 @@ export default function RatePlanCards<T extends RateCardOption>({
               {m.savings > 0 && m.compareTotal != null && (
                 <p className="caption -mt-1 leading-snug flex flex-wrap items-center justify-end gap-x-1.5 gap-y-1">
                   <s className="text-pa-stone-aa tabular-nums">{formatQuotedEur(m.compareTotal, lang)}</s>
-                  <span className="inline-flex items-center rounded-full border border-pa-sand bg-pa-warm px-2 py-0.5 eyebrow font-medium tracking-[0.08em] uppercase text-pa-gold-aa whitespace-nowrap">
+                  <span className={cn("inline-flex items-center rounded-full border border-pa-sand px-2 py-0.5 eyebrow font-medium tracking-[0.08em] uppercase text-pa-gold-aa whitespace-nowrap", selected ? "bg-white" : "bg-pa-warm")}>
                     {t("bookingWidget.save", "Save")} {formatQuotedEur(m.savings, lang)}
                   </span>
                 </p>

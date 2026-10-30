@@ -7,9 +7,11 @@ import { effectiveQuote, type CheckoutQuoteSnapshot } from "@/lib/checkoutQuote"
  * guest lands here; every mutation is synced back via trpc.checkout.updateIntent,
  * which is what makes resume-by-link on another device work.
  *
- * Fase 1 ships two steps — "A sua estadia" (recap + rate plan + email capture)
- * and "Pagamento" (guest details + payment). Fase 2 inserts "Personalizar"
- * between them; the stepper is data-driven so that is a one-line change.
+ * The three steps ("A sua estadia", "Extras", "Pagamento") live on ONE page as
+ * numbered sections since 29 Oct 2026 (CheckoutSection.tsx): only the active
+ * one is open, completed ones collapse to a summary line with "Edit", the
+ * header has no stepper. The `step` state machine, the intent statuses, the
+ * sync and the analytics events are unchanged.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useLocation, Link } from "wouter";
@@ -34,7 +36,7 @@ import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useVisitOriginSync } from "@/hooks/useVisitOriginSync";
 import { formatQuotedEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
-import { freeCancellationDeadline, isNonRefundablePlan, planPolicyCode } from "@/lib/cancellation";
+import { freeCancellationDeadline, isNonRefundablePlan, planPolicyCode, rateKind } from "@/lib/cancellation";
 import { freeCancellationDays } from "@shared/cancellationPolicy";
 import { preferredRatePlanId } from "@shared/ratePlanDefault";
 import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
@@ -58,6 +60,7 @@ import CustomizeStep, {
   type ReceptionChoice,
 } from "./CustomizeStep";
 import FlexBlock, { type FlexConfig } from "./FlexBlock";
+import CheckoutSection, { type CheckoutSectionState } from "./CheckoutSection";
 import { MandateConsent, PaymentPlanSelector, planDate, type PaymentPlanChoice, type PaymentPlanOffer } from "./PaymentPlanSelector";
 import PreContractualBlock from "./PreContractualBlock";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
@@ -65,6 +68,23 @@ import PhoneInput from "@/components/booking/PhoneInput";
 import PaymentMethodsNote from "@/components/booking/PaymentMethodsNote";
 
 type Step = "stay" | "customize" | "pay";
+const STEP_ORDER: Step[] = ["stay", "customize", "pay"];
+
+/** Leva a secção que acabou de abrir para debaixo do cabeçalho fixo (uma
+ *  página, três secções): no telemóvel é a diferença entre ver o que abriu e
+ *  ver o topo da página. */
+function scrollToSection(key: Step) {
+  if (typeof window === "undefined") return;
+  window.requestAnimationFrame(() => {
+    const el = document.getElementById(`checkout-section-${key}`);
+    if (!el) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    const top = el.getBoundingClientRect().top + window.scrollY - 76;
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  });
+}
 
 /** Quote snapshot mirrored from the intent (euro floats, same shape as the server json column) */
 type QuoteSnapshot = CheckoutQuoteSnapshot;
@@ -124,28 +144,6 @@ function buildDemoIntent(): any {
     createdAt: new Date(),
     updatedAt: new Date(),
   };
-}
-
-/** Animated count-up for money totals (spec §9: "total com contagem animada"). */
-function useCountUp(value: number, duration = 400): number {
-  const [display, setDisplay] = useState(value);
-  const prevRef = useRef(value);
-  useEffect(() => {
-    const from = prevRef.current;
-    if (from === value) return;
-    prevRef.current = value;
-    const start = performance.now();
-    let raf: number;
-    const tick = (now: number) => {
-      const p = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setDisplay(p === 1 ? value : Math.round((from + (value - from) * eased) * 100) / 100);
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [value, duration]);
-  return display;
 }
 
 /** Máximo 2 tarifas visíveis: a reembolsável e a não reembolsável mais baratas.
@@ -424,7 +422,15 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!isDemo || caseSeeded.current || !extrasQuery.data) return;
     const params = new URLSearchParams(window.location.search);
-    if (params.get("case") !== "full") return;
+    const wantedStep = params.get("step");
+    if (params.get("case") !== "full") {
+      // ?step=customize|pay sem caso: abre a secção vazia (capturas de design)
+      if (wantedStep === "customize" || wantedStep === "pay") {
+        caseSeeded.current = true;
+        setStep(wantedStep);
+      }
+      return;
+    }
     caseSeeded.current = true;
     setReceptionChoice({ type: "hosted", late: true });
     setExtraSel({
@@ -630,7 +636,7 @@ export default function CheckoutPage() {
       pushDL({ event: "add_contact_info", property_id: intent.listingId, source: "checkout_v2" });
     }
     setStep("customize");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToSection("customize");
   }, [intent, email, lang, captureLead, utils, isDemo, newsletterOptIn, newsletterTouched, consentRestoredFor]);
 
   /** O "Continuar" do passo 1 (barra do telemóvel e cartão do email) nunca
@@ -918,7 +924,9 @@ export default function CheckoutPage() {
     return () => clearTimeout(h);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, todayTotal]);
-  const animatedTotal = useCountUp(twoParts ? todayTotal : payTotal);
+  // Sem contagem animada (29 out 2026): o número certo, sempre. A animação da
+  // spec §9 não acrescentava clareza e deixava totais a meio em capturas.
+  const displayedTotal = twoParts ? todayTotal : payTotal;
 
   // Flex contextual copy inputs: which rate family is selected + the concrete
   // free-cancellation date of the CURRENT selection (coherence with the policy)
@@ -993,7 +1001,7 @@ export default function CheckoutPage() {
       })),
     });
     setStep("pay");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToSection("pay");
   }, [intent, receptionChoice, selectedExtras, flexSelected, syncIntent]);
 
   /** "Saltar personalização": saltar tem de saltar. Sem escolha de receção,
@@ -1274,12 +1282,46 @@ export default function CheckoutPage() {
     [isDemo],
   );
 
-  const steps: Array<{ key: Step; label: string }> = [
-    { key: "stay", label: t("checkout.stepStay", "Your stay") },
-    { key: "customize", label: t("conversion.optionalStep") },
-    { key: "pay", label: t("checkout.stepPay", "Payment") },
-  ];
-  const stepIndex = steps.findIndex((s) => s.key === step);
+  // Uma página, três secções (29 out 2026): o estado continua a ser `step`.
+  // A secção activa está aberta; as anteriores colapsam numa linha com o
+  // resumo e "Editar" (o antigo clique no stepper); as seguintes ficam
+  // fechadas. O cabeçalho deixa de ter stepper: os números das secções dão
+  // o progresso na própria página.
+  const sectionState = (key: Step): CheckoutSectionState =>
+    key === step ? "open" : STEP_ORDER.indexOf(key) < STEP_ORDER.indexOf(step) ? "done" : "todo";
+  const editSection = (key: Step) => {
+    setStep(key);
+    scrollToSection(key);
+  };
+  const sectionTitles: Record<Step, string> = {
+    stay: t("checkout.stepStay", "Your stay"),
+    customize: t("conversion.optionalStep"),
+    pay: t("checkout.stepPay", "Payment"),
+  };
+  const selectedRateKind = selectedPlanOption ? rateKind(selectedPlanOption) : null;
+  // Tipo de tarifa desconhecido: a linha fica só com datas e hóspedes (um
+  // "· Tarifa" solto não diz nada)
+  const rateLabel = selectedRateKind === "non_refundable"
+    ? t("booking.nonRefundable")
+    : selectedRateKind === "refundable"
+      ? t("booking.flexibleRate")
+      : null;
+  const guestsLine = t("search.guestsCount", { count: guests });
+  const staySummary = [
+    `${formatBookingDate(checkIn, lang, true)} → ${formatBookingDate(checkOut, lang, true)}`,
+    guestsLine,
+    rateLabel,
+  ].filter(Boolean).join(" · ");
+  const extrasSummary = [
+    receptionChoice ? (receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")) : null,
+    // Até dois extras, os nomes; a partir de três, a contagem
+    selectedExtras.length === 0
+      ? t("checkout.sections.noExtras", "No extras")
+      : selectedExtras.length <= 2
+        ? selectedExtras.map(({ item }) => t(`checkout.extras.${item.sku}.name`)).join(" · ")
+        : t("checkout.sections.extrasCount", { count: selectedExtras.length }),
+    flexSelected && flexConfig ? "Flex" : null,
+  ].filter(Boolean).join(" · ");
 
   // ── Loading / not-found states ──
   if (intentQuery.isLoading && !isDemo) {
@@ -1355,40 +1397,52 @@ export default function CheckoutPage() {
     );
   }
 
-  // Resumo com hierarquia única (§7/§8): Estadia · Receção · Extras · Flex ·
-  // Total de hoje. Tudo o que tem preço fixo entra no total; os pedidos sob
-  // orçamento vivem numa secção própria (renderizada no summaryCard).
+  // Resumo com grupos rotulados (29 out 2026, à maneira da referência): A SUA
+  // ESTADIA · EXTRAS (receção paga, extras, Flex) · TOTAL. Hierarquia única
+  // (§7/§8): tudo o que tem preço fixo entra no total; os pedidos sob
+  // orçamento vivem numa secção própria (conciergeRequests). O self check-in
+  // incluído não ocupa linha a 0 €: já se lê na secção dos extras.
+  const summaryGroupLabel = "eyebrow tracking-[0.12em] uppercase text-pa-stone-aa";
+  // "5 noites × 500 €" só quando a conta bate certo ao euro (tarifas que
+  // variam por noite vêm com a média do Guesty e a multiplicação não fecha)
+  const nightlyMatches =
+    !!effective && effective.nightlyRate > 0 && Math.abs(effective.nightlyRate * effective.nights - effective.totalNights) < 1;
+  // Uma receção presencial só mostra valor quando a config do catálogo já
+  // carregou — evita somar 0 € durante o loading numa retoma a frio.
+  const hostedReceptionLine = receptionChoice?.type === "hosted" && !!receptionConfig;
+  const hasExtrasLines =
+    hostedReceptionLine || paidExtras.length > 0 || (flexSelected && !!flexConfig) || (flexIncludedByPlan && !!flexConfig);
   const summaryLines = effective && (
-    <div className="space-y-2">
-      <div className="flex justify-between body-sm text-inherit">
-        <span className="text-pa-earth">
-          {effective.nights} {t("bookingWidget.nightsLabel", "nights")}
-        </span>
-        <span className="text-pa-dark tabular-nums">{formatQuotedEur(effective.totalNights, lang)}</span>
-      </div>
-      {effective.cleaningFee > 0 && (
+    <div className="space-y-3">
+      <div className="space-y-1.5">
+        <p className={summaryGroupLabel}>{t("checkout.stepStay", "Your stay")}</p>
         <div className="flex justify-between body-sm text-inherit">
-          <span className="text-pa-earth">{t("property.cleaningFee")}</span>
-          <span className="text-pa-dark tabular-nums">{formatQuotedEur(effective.cleaningFee, lang)}</span>
-        </div>
-      )}
-      {effective.taxesAndFees > 0 && (
-        <div className="flex justify-between body-sm text-inherit">
-          <span className="text-pa-earth">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
-          <span className="text-pa-dark tabular-nums">{formatQuotedEur(effective.taxesAndFees, lang)}</span>
-        </div>
-      )}
-      {/* Receção (escolha obrigatória). Uma receção presencial só mostra valor
-          quando a config do catálogo já carregou — evita rotular como "Incluído"
-          e somar 0€ durante o loading numa retoma a frio. */}
-      {receptionChoice && (receptionChoice.type === "self" || receptionConfig) && (
-        <div className="flex justify-between body-sm text-inherit checkout-row-in">
           <span className="text-pa-earth">
-            {receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")}
+            {effective.nights} {t("bookingWidget.nightsLabel", "nights")}
+            {nightlyMatches ? <span className="text-pa-stone-aa"> × {formatQuotedEur(effective.nightlyRate, lang)}</span> : null}
           </span>
-          <span className={cn("tabular-nums", receptionAmt > 0 ? "text-pa-dark" : "text-pa-gold")}>
-            {receptionAmt > 0 ? formatQuotedEur(receptionAmt, lang) : t("checkout.included.badge")}
-          </span>
+          <span className="text-pa-dark tabular-nums">{formatQuotedEur(effective.totalNights, lang)}</span>
+        </div>
+        {effective.cleaningFee > 0 && (
+          <div className="flex justify-between body-sm text-inherit">
+            <span className="text-pa-earth">{t("property.cleaningFee")}</span>
+            <span className="text-pa-dark tabular-nums">{formatQuotedEur(effective.cleaningFee, lang)}</span>
+          </div>
+        )}
+        {effective.taxesAndFees > 0 && (
+          <div className="flex justify-between body-sm text-inherit">
+            <span className="text-pa-earth">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
+            <span className="text-pa-dark tabular-nums">{formatQuotedEur(effective.taxesAndFees, lang)}</span>
+          </div>
+        )}
+      </div>
+      {hasExtrasLines && (
+      <div className="border-t border-pa-sand pt-3 space-y-1.5">
+      <p className={summaryGroupLabel}>{t("conversion.optionalStep")}</p>
+      {hostedReceptionLine && (
+        <div className="flex justify-between body-sm text-inherit checkout-row-in">
+          <span className="text-pa-earth">{t("checkout.reception.hosted.name")}</span>
+          <span className="text-pa-dark tabular-nums">{formatQuotedEur(receptionAmt, lang)}</span>
         </div>
       )}
       {/* Extras com preço fixo — com remover inline (spec §8) */}
@@ -1399,7 +1453,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => toggleExtra(item)}
               aria-label={`${t("checkout.remove", "Remove")}: ${t(`checkout.extras.${item.sku}.name`)}`}
-              className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+              className="relative shrink-0 w-7 h-7 -ml-1.5 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors before:absolute before:-inset-2 before:content-['']"
             >
               <X className="w-3 h-3" />
             </button>
@@ -1431,7 +1485,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => { setFlexSelected(false); syncIntent({ flex: false }); }}
               aria-label={`${t("checkout.remove", "Remove")}: ${t("checkout.flex.title", "Flex")}`}
-              className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+              className="relative shrink-0 w-7 h-7 -ml-1.5 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors before:absolute before:-inset-2 before:content-['']"
             >
               <X className="w-3 h-3" />
             </button>
@@ -1451,25 +1505,28 @@ export default function CheckoutPage() {
           <span className="text-pa-gold tabular-nums shrink-0">{formatQuotedEur(0, lang)}</span>
         </div>
       )}
-      <div className="flex justify-between items-baseline border-t border-pa-sand pt-2.5">
-        <span className="body-sm font-medium text-pa-dark">{twoParts ? t("checkout.summary.total", "Total") : t("checkout.todayTotal", "Total today")}</span>
-        <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatQuotedEur(animatedTotal, lang)}</span>
       </div>
-      {twoParts && offer && (
-        <div className="space-y-1">
-          <div className="flex justify-between items-baseline body-sm">
-            <span className="font-medium text-pa-dark">{t("checkout.summary.today", "Today")}</span>
-            <span className="text-pa-dark tabular-nums">{formatQuotedEur(offer.depositCents / 100, lang)}</span>
-          </div>
-          <div className="flex justify-between items-baseline body-sm gap-2">
-            <span className="text-pa-earth">
-              {t("checkout.summary.later", { date: planLaterDate })} · {t("checkout.summary.sameCard", "same card")}
-            </span>
-            <span className="text-pa-earth tabular-nums shrink-0">{formatQuotedEur(offer.balanceCents / 100, lang)}</span>
-          </div>
-        </div>
       )}
-
+      <div className="border-t border-pa-sand pt-3 space-y-1.5">
+        <div className="flex justify-between items-baseline gap-3">
+          <span className="body-sm font-medium text-pa-dark">{twoParts ? t("checkout.summary.total", "Total") : t("checkout.todayTotal", "Total today")}</span>
+          <span className="checkout-total font-light text-pa-dark tabular-nums">{formatQuotedEur(displayedTotal, lang)}</span>
+        </div>
+        {twoParts && offer && (
+          <div className="space-y-1">
+            <div className="flex justify-between items-baseline body-sm">
+              <span className="font-medium text-pa-dark">{t("checkout.summary.today", "Today")}</span>
+              <span className="text-pa-dark tabular-nums">{formatQuotedEur(offer.depositCents / 100, lang)}</span>
+            </div>
+            <div className="flex justify-between items-baseline body-sm gap-2">
+              <span className="text-pa-earth">
+                {t("checkout.summary.later", { date: planLaterDate })} · {t("checkout.summary.sameCard", "same card")}
+              </span>
+              <span className="text-pa-earth tabular-nums shrink-0">{formatQuotedEur(offer.balanceCents / 100, lang)}</span>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 
@@ -1546,7 +1603,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => toggleExtra(item)}
               aria-label={`${t("checkout.remove", "Remove")}: ${t(`checkout.extras.${item.sku}.name`)}`}
-              className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+              className="relative shrink-0 w-7 h-7 -ml-1.5 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors before:absolute before:-inset-2 before:content-['']"
             >
               <X className="w-3 h-3" />
             </button>
@@ -1564,15 +1621,23 @@ export default function CheckoutPage() {
   const summaryCard = (
     <div className="bg-white border border-pa-sand rounded-lg overflow-hidden shadow-[0_4px_24px_rgba(26,26,24,0.06)]">
       {heroImage && (
-        <img src={heroImage} alt={displayName} className="w-full aspect-[4/3] object-cover" width={800} height={600} />
+        // Em ecrãs baixos (portáteis de 13"), com vários extras o cartão fixo
+        // passava a altura da janela e o Total saía do ecrã: aí a foto grande
+        // dá lugar a uma miniatura ao lado do nome.
+        <img src={heroImage} alt={displayName} className="w-full aspect-[3/2] object-cover [@media(max-height:820px)]:hidden" width={800} height={533} />
       )}
       <div className="p-5 space-y-4">
-        <div>
-          <p className="font-display body-lg text-pa-dark leading-snug">{displayName}</p>
-          {intent.destination && <p className="eyebrow tracking-[0.08em] uppercase text-pa-stone-aa mt-1">{intent.destination}</p>}
+        <div className="flex items-start gap-3">
+          {thumbImage ? (
+            <img src={thumbImage} alt="" width={56} height={56} className="hidden [@media(max-height:820px)]:block w-14 h-14 rounded-md object-cover shrink-0 bg-pa-warm" />
+          ) : null}
+          <div className="min-w-0">
+            <p className="font-display body-lg text-pa-dark leading-snug">{displayName}</p>
+            {intent.destination && <p className="eyebrow tracking-[0.08em] uppercase text-pa-stone-aa mt-1">{intent.destination}</p>}
+          </div>
         </div>
         <div className="body-sm text-pa-earth">
-          {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
+          {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guestsLine}
         </div>
         {summaryLines}
         {couponRow}
@@ -1583,6 +1648,19 @@ export default function CheckoutPage() {
         {guaranteeLabel && (
           <p className="flex items-start gap-1.5 caption text-pa-gold leading-snug">
             <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
+          </p>
+        )}
+        {/* Reserva directa como última legenda do cartão, só no passo 1
+            (29 out 2026): era um cartão à parte por baixo do resumo. */}
+        {step === "stay" && (
+          <p className="flex items-start gap-1.5 caption text-pa-earth leading-snug border-t border-pa-sand pt-3">
+            <ShieldCheck className="w-3.5 h-3.5 text-pa-gold-aa shrink-0 mt-0.5" />
+            <span>
+              {t("trust.compactLine", "Best rate guaranteed · no booking fees · WhatsApp concierge")}{" "}
+              <Link href="/best-rate-guarantee" className="text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark whitespace-nowrap">
+                {t("trust.guaranteeTerms", "How the guarantee works")}
+              </Link>
+            </span>
           </p>
         )}
       </div>
@@ -1638,6 +1716,9 @@ export default function CheckoutPage() {
 
   // ── Passo do pagamento: erros nos campos (só depois de um clique em Pagar,
   // ou do hóspede sair do campo), linha do email e aviso suave do NIF ──
+  // A dica do email só depois de um toque em Continuar sem email válido: antes
+  // disso o campo vazio com placeholder chega (29 out 2026, menos texto).
+  const emailHintVisible = emailNudge && !isValidEmail(email) && !quoteStale && !datesUnavailable;
   const firstNameError = showGuestErrors && !firstName.trim();
   const lastNameError = showGuestErrors && !lastName.trim();
   const emailInvalid = !isValidEmail(email);
@@ -1755,65 +1836,25 @@ export default function CheckoutPage() {
         .checkout-step-in { animation: checkoutStepIn 220ms ease-out; }
         @keyframes checkoutRowIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
         .checkout-row-in { animation: checkoutRowIn 200ms ease-out; }
+        .checkout-total { font-size: 1.375rem; line-height: 1.2; letter-spacing: -0.01em; }
+        /* O campo focado nunca fica atrás da barra fixa do telemóvel nem do teclado */
+        .checkout-page input, .checkout-page select { scroll-margin-bottom: 96px; }
         @media (prefers-reduced-motion: reduce) {
           .checkout-step-in, .checkout-row-in { animation: none; }
         }
       `}</style>
-      {/* ── Minimal top bar: logo · stepper · autosave + close ── */}
+      {/* ── Minimal top bar: logo · ajuda · fechar (sem stepper: as secções numeradas dão o progresso) ── */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-pa-sand">
         <div className="max-w-[1100px] mx-auto px-4 h-[60px] flex items-center justify-between gap-3 sm:gap-4">
           <Link href="/" className="shrink-0" aria-label="Portugal Active">
             {/* Mesmo tamanho do logótipo do cabeçalho do site (Header.tsx: h-8 md:h-10). */}
             <img src={IMAGES.logoColor} alt="Portugal Active" className="h-8 md:h-10 w-auto" />
           </Link>
-          {/* O WhatsApp do cabeçalho tira espaço aos passos (revisão do PR
-              #176: o círculo do passo atual chegava a 2 px a 360 px em DE e
-              FI). Os círculos nunca encolhem; as linhas entre eles aparecem a
-              partir de sm e os nomes dos outros passos só no computador (lg);
-              o nome do passo atual passa a duas linhas quando falta largura e
-              sai abaixo de 360 px (o título do passo, logo abaixo, diz-o). */}
-          <nav aria-label={t("checkout.stepsAria", "Checkout steps")} className="flex min-w-0 items-center gap-2 sm:gap-3">
-            {steps.map((s, i) => (
-              <div key={s.key} className={cn("flex items-center gap-2 sm:gap-3", i === stepIndex ? "min-w-0" : "shrink-0")}>
-                {i > 0 && <span aria-hidden className="hidden sm:block w-10 h-px bg-pa-sand" />}
-                <button
-                  type="button"
-                  disabled={i >= stepIndex}
-                  onClick={() => {
-                    // C3: retroceder por clique no indicador, mantendo o estado
-                    if (i < stepIndex) {
-                      setStep(s.key as Step);
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }
-                  }}
-                  className={cn("flex min-w-0 items-center gap-1.5", i < stepIndex && "cursor-pointer")}
-                >
-                  <span
-                    className={cn(
-                      "w-5 h-5 shrink-0 rounded-full caption text-inherit flex items-center justify-center border",
-                      i < stepIndex
-                        ? "bg-pa-dark border-pa-dark text-white"
-                        : i === stepIndex
-                          ? "border-pa-dark text-pa-dark"
-                          : "border-pa-sand text-pa-stone-aa",
-                    )}
-                  >
-                    {i < stepIndex ? <Check className="w-3 h-3" /> : i + 1}
-                  </span>
-                  <span
-                    className={cn(
-                      "eyebrow text-inherit tracking-[0.06em] uppercase",
-                      i === stepIndex
-                        ? "min-w-0 line-clamp-2 leading-[1.15] break-words text-left text-pa-dark font-medium max-[359px]:hidden!"
-                        : "hidden lg:inline text-pa-stone-aa",
-                    )}
-                  >
-                    {s.label}
-                  </span>
-                </button>
-              </div>
-            ))}
-          </nav>
+          {/* Sem stepper (29 out 2026): as secções numeradas da página dão o
+              progresso; para leitores de ecrã fica o passo actual. */}
+          <p className="sr-only" aria-live="polite">
+            {`${STEP_ORDER.indexOf(step) + 1}/${STEP_ORDER.length} · ${sectionTitles[step]}`}
+          </p>
           <div className="flex items-center gap-3 shrink-0">
             {/* L1: em mobile o aviso de reconexão era invisível — quando há
                 problema de gravação, mostra-se em todos os tamanhos */}
@@ -1846,7 +1887,7 @@ export default function CheckoutPage() {
 
       <main className="max-w-[1100px] mx-auto px-4 pt-8 lg:grid lg:grid-cols-[minmax(0,640px)_380px] lg:gap-12 lg:items-start">
         {/* ══════════ CONTENT COLUMN ══════════ */}
-        <section key={step} className="space-y-6 checkout-step-in">
+        <div className="space-y-4">
           {mobileContext}
           {isDemo && <p role="status" className="rounded-lg border border-pa-gold bg-pa-warm p-3 body-sm text-pa-dark">{t('conversion.demoNotice')}</p>}
           {/* Stale quote / unavailable banners */}
@@ -1875,7 +1916,7 @@ export default function CheckoutPage() {
                 <button
                   id="checkout-change-dates"
                   type="button"
-                  onClick={() => { setStep("stay"); setEditingStay(true); setDatesUnavailable(false); }}
+                  onClick={() => { setStep("stay"); setEditingStay(true); setDatesUnavailable(false); scrollToSection("stay"); }}
                   className="caption text-inherit font-medium text-red-700 underline underline-offset-2"
                 >
                   {t("bookingWidget.changeDates", "Change dates")}
@@ -1893,31 +1934,27 @@ export default function CheckoutPage() {
             </div>
           )}
 
-          {/* ── PASSO 1: A SUA ESTADIA ── */}
-          {step === "stay" && (
-            <>
-              <div>
-                <h1 className="headline-md text-pa-dark mb-1">{t("checkout.stayTitle", "Your stay")}</h1>
-                <p className="body-sm">{t("checkout.staySubtitle", "Confirm your dates and choose your rate.")}</p>
-              </div>
-
-              {/* Editable recap */}
-              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="grid grid-cols-3 gap-4 flex-1">
-                    <div>
-                      <p className="eyebrow tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("bookingWidget.checkInLabel")}</p>
-                      <p className="body-sm text-pa-dark">{formatBookingDate(checkIn, lang, true)}</p>
-                    </div>
-                    <div>
-                      <p className="eyebrow tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("bookingWidget.checkOutLabel")}</p>
-                      <p className="body-sm text-pa-dark">{formatBookingDate(checkOut, lang, true)}</p>
-                    </div>
-                    <div>
-                      <p className="eyebrow tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("booking.guestsLabel")}</p>
-                      <p className="body-sm text-pa-dark">{guests}</p>
-                    </div>
-                  </div>
+          {/* ── SECÇÃO 1: A SUA ESTADIA ── */}
+          <CheckoutSection
+            id="checkout-section-stay"
+            index={1}
+            title={sectionTitles.stay}
+            state={sectionState("stay")}
+            summary={staySummary}
+            editLabel={t("checkout.edit", "Edit")}
+            onEdit={() => editSection("stay")}
+          >
+            <div className="divide-y divide-pa-sand">
+              {/* Recap editável: datas e hóspedes */}
+              <div className="pb-5 space-y-4">
+                {/* Uma linha (29 out 2026), igual à linha da secção fechada: a
+                    grelha CHECK-IN / CHECK-OUT / HÓSPEDES repetia rótulos para
+                    três factos que se leem de uma vez. */}
+                <div className="flex items-center justify-between gap-3">
+                  <p className="body-md text-pa-dark flex-1 min-w-0">
+                    {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)}
+                    <span className="text-pa-earth"> · {guestsLine}</span>
+                  </p>
                   <button
                     type="button"
                     onClick={() => (editingStay ? finishStayEdit() : setEditingStay(true))}
@@ -1976,21 +2013,22 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              {/* Sem o resumo de preço só do telemóvel (auditoria do funil,
-                  n.º 2): repetia o "Ver detalhes" da barra e empurrava o email
-                  para baixo da dobra. A ordem da spec §4 fica: resumo da
-                  estadia, tarifa, email (as duas partes vivem no cartão da
-                  tarifa reembolsável). */}
-              {rateChoice}
-              {/* Uma só tarifa (sem cartões para escolher): a frase da política
-                  fica aqui, a única do ecrã (auditoria do funil, n.º 11). */}
-              {!rateChoice && (selectedPolicyCode || effective?.cancellationPolicy?.length) ? (
-                <CancellationPolicyLine
-                  code={selectedPolicyCode}
-                  checkIn={checkIn}
-                  lang={lang}
-                  className="caption text-pa-earth leading-snug"
-                />
+              {/* Tarifa. A ordem da spec §4 fica: resumo da estadia, tarifa,
+                  email (as duas partes vivem no cartão da tarifa reembolsável). */}
+              {rateChoice || selectedPolicyCode || effective?.cancellationPolicy?.length ? (
+                <div className="py-5">
+                  {rateChoice}
+                  {/* Uma só tarifa (sem cartões para escolher): a frase da política
+                      fica aqui, a única do ecrã (auditoria do funil, n.º 11). */}
+                  {!rateChoice && (selectedPolicyCode || effective?.cancellationPolicy?.length) ? (
+                    <CancellationPolicyLine
+                      code={selectedPolicyCode}
+                      checkIn={checkIn}
+                      lang={lang}
+                      className="caption text-pa-earth leading-snug"
+                    />
+                  ) : null}
+                </div>
               ) : null}
 
               {/* Email capture. Título e rótulo como estão em produção: o
@@ -1998,10 +2036,10 @@ export default function CheckoutPage() {
                   lembretes (auditoria do funil, n.º 2) esperam o OK do André
                   (revisão do PR #176); ver as chaves checkout.emailHoldNote e
                   checkout.emailReminderNote. */}
-              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
-                <h2 className="font-display text-[19px] text-pa-dark leading-snug">
+              <div className="pt-5 space-y-3">
+                <h3 className="font-display text-[19px] text-pa-dark leading-snug">
                   {t("checkout.emailTitle", "Where should we send your booking?")}
-                </h2>
+                </h3>
                 <label htmlFor="checkout-email" className="block caption font-medium text-pa-earth">
                   {t("checkout.emailLabel", "Your email")}
                 </label>
@@ -2016,7 +2054,7 @@ export default function CheckoutPage() {
                   }}
                   onBlur={() => setEmailTouched(true)}
                   placeholder={t("checkout.emailPh", "name@email.com")}
-                  aria-describedby={isValidEmail(email) ? undefined : "checkout-email-hint"}
+                  aria-describedby={emailHintVisible ? "checkout-email-hint" : undefined}
                   aria-invalid={(emailTouched && email.length > 0 && !isValidEmail(email)) || undefined}
                   className={cn(
                     "w-full h-[48px] border bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none",
@@ -2062,7 +2100,7 @@ export default function CheckoutPage() {
                   </p>
                 )}
                 {/* L2: o botão desativado sem dica era um toque morto */}
-                {!isValidEmail(email) && !quoteStale && !datesUnavailable && (
+                {emailHintVisible && (
                   <p
                     id="checkout-email-hint"
                     className={cn("caption", emailNudge ? "text-pa-dark font-medium" : "text-pa-stone-aa")}
@@ -2077,25 +2115,20 @@ export default function CheckoutPage() {
                     não se cobra nada (auditoria do funil, crítico). */}
                 <PaymentMethodsNote className="border-t border-pa-sand pt-3" total={todayTotal} />
               </div>
-            </>
-          )}
+            </div>
+          </CheckoutSection>
 
-          {/* ── PASSO 2: PERSONALIZAR (Fase 2) ── */}
-          {step === "customize" && (
-            <>
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setStep("stay")}
-                  className="caption text-pa-stone-aa hover:text-pa-dark transition-colors"
-                >
-                  ← {t("checkout.backToStay", "Back to your stay")}
-                </button>
-              </div>
-              {/* Sem o painel "Rever tarifa e condições de cancelamento": a
-                  tarifa escolhe-se no passo 1 (← acima) e a política já não se
-                  repete aqui (auditoria do funil, n.º 11). */}
-
+          {/* ── SECÇÃO 2: EXTRAS (compacta; CustomizeStep.tsx) ── */}
+          <CheckoutSection
+            id="checkout-section-customize"
+            index={2}
+            title={sectionTitles.customize}
+            state={sectionState("customize")}
+            summary={extrasSummary}
+            editLabel={t("checkout.edit", "Edit")}
+            onEdit={() => editSection("customize")}
+          >
+            <div className="space-y-6">
               {extrasQuery.isLoading ? (
                 <div className="flex items-center justify-center py-10 gap-2 caption text-pa-stone-aa">
                   <Loader2 className="w-4 h-4 animate-spin" /> {t("checkout.loading", "Preparing your checkout…")}
@@ -2150,27 +2183,22 @@ export default function CheckoutPage() {
                   ? t("checkout.continueWithExtras", { count: selectedExtras.length })
                   : t("checkout.continueWithoutExtras", "Continue without extras")}
               </button>
-            </>
-          )}
+              {/* Continuar sem escolher a receção assume o self check-in: dizê-lo */}
+              {!receptionChoice && <p className="caption text-pa-earth">{t("conversion.skipNote")}</p>}
+            </div>
+          </CheckoutSection>
 
-          {/* ── PASSO PAGAMENTO ── */}
-          {step === "pay" && (
-            <>
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setStep("customize")}
-                  className="caption text-pa-stone-aa hover:text-pa-dark transition-colors"
-                >
-                  ← {t("checkout.backToCustomize", "Back to personalization")}
-                </button>
-                <h1 className="headline-md text-pa-dark mb-1">{t("checkout.payTitle", "Payment")}</h1>
-                <p className="body-sm">{t("checkout.paySubtitle", "Your details, then a secure payment.")}</p>
-              </div>
-
+          {/* ── SECÇÃO 3: PAGAMENTO ── */}
+          <CheckoutSection
+            id="checkout-section-pay"
+            index={3}
+            title={sectionTitles.pay}
+            state={sectionState("pay")}
+          >
+            <div className="divide-y divide-pa-sand">
               {/* Guest details */}
-              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
-                <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold">
+              <div className="pb-5 space-y-3">
+                <p className="eyebrow tracking-[0.12em] uppercase text-pa-stone-aa">
                   {t("bookingWidget.guestInformation", "Guest information")}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
@@ -2286,17 +2314,19 @@ export default function CheckoutPage() {
               </div>
 
               {offer && !redirectFinalizing && (
-                <PaymentPlanSelector
-                  offer={offer}
-                  plan={plan}
-                  onPlanChange={(p) => { setPlan(p); if (p === "full") setMandateAccepted(false); }}
-                  lang={lang}
-                />
+                <div className="py-5">
+                  <PaymentPlanSelector
+                    offer={offer}
+                    plan={plan}
+                    onPlanChange={(p) => { setPlan(p); if (p === "full") setMandateAccepted(false); }}
+                    lang={lang}
+                  />
+                </div>
               )}
 
               {/* Payment: monta logo que há preço. Os Termos (e a autorização da
                   2.ª parte) e a frase da política ficam mesmo acima do botão. */}
-              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">
+              <div className="pt-5 space-y-4">
                 {redirectFinalizing ? (
                   <div className="flex items-center justify-center gap-3 py-8" role="status">
                     <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
@@ -2357,15 +2387,15 @@ export default function CheckoutPage() {
                   <Lock className="w-3 h-3" /> {t("checkout.secureNote", "Encrypted, secure payment")}
                 </p>
               </div>
-            </>
-          )}
-        </section>
+            </div>
+          </CheckoutSection>
+        </div>
 
         {/* Reserva direta (mobile): no fim de cada passo, sempre visível */}
         <div className="lg:hidden mt-8">{directBlock}</div>
 
         {/* ══════════ SUMMARY COLUMN (desktop) ══════════ */}
-        <aside className="hidden lg:block sticky top-[84px] space-y-4">{summaryCard}{directBlock}</aside>
+        <aside className="hidden lg:block sticky top-[84px] space-y-4">{summaryCard}</aside>
       </main>
 
       {/* Keeps in-flow content (desktop Continue CTA) scrollable clear of the
@@ -2384,7 +2414,7 @@ export default function CheckoutPage() {
               <div className="min-w-0">
                 <p className="font-display body-sm text-pa-dark leading-snug truncate">{displayName}</p>
                 <p className="caption text-pa-earth mt-0.5">
-                  {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {guests} {t("booking.guestsLabel", "guests")}
+                  {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {guestsLine}
                 </p>
               </div>
             </div>
@@ -2411,7 +2441,7 @@ export default function CheckoutPage() {
               <p className="body-lg font-medium text-pa-dark tabular-nums leading-tight">
                 {!effective ? "—" : twoParts && offer
                   ? t("checkout.bar.todayLabel", { amountNow: formatQuotedEur(offer.depositCents / 100, lang) })
-                  : formatQuotedEur(animatedTotal, lang)}
+                  : formatQuotedEur(displayedTotal, lang)}
               </p>
               {twoParts && offer && (
                 <p className="caption text-pa-earth tabular-nums leading-tight">
