@@ -1265,16 +1265,17 @@ export default function CheckoutPage() {
     pay: t("checkout.stepPay", "Payment"),
   };
   const selectedRateKind = selectedPlanOption ? rateKind(selectedPlanOption) : null;
-  const rateLabel = !selectedRateKind
-    ? null
-    : selectedRateKind === "non_refundable"
-      ? t("booking.nonRefundable")
-      : selectedRateKind === "refundable"
-        ? t("booking.flexibleRate")
-        : t("bookingConfirm.rate");
+  // Tipo de tarifa desconhecido: a linha fica só com datas e hóspedes (um
+  // "· Tarifa" solto não diz nada)
+  const rateLabel = selectedRateKind === "non_refundable"
+    ? t("booking.nonRefundable")
+    : selectedRateKind === "refundable"
+      ? t("booking.flexibleRate")
+      : null;
+  const guestsLine = t("search.guestsCount", { count: guests });
   const staySummary = [
     `${formatBookingDate(checkIn, lang, true)} → ${formatBookingDate(checkOut, lang, true)}`,
-    `${guests} ${t("booking.guestsLabel", "guests")}`,
+    guestsLine,
     rateLabel,
   ].filter(Boolean).join(" · ");
   const extrasSummary = [
@@ -1602,7 +1603,7 @@ export default function CheckoutPage() {
           </div>
         </div>
         <div className="body-sm text-pa-earth">
-          {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
+          {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guestsLine}
         </div>
         {summaryLines}
         {couponRow}
@@ -1976,7 +1977,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center justify-between gap-3">
                   <p className="body-md text-pa-dark flex-1 min-w-0">
                     {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)}
-                    <span className="text-pa-earth"> · {guests} {t("booking.guestsLabel")}</span>
+                    <span className="text-pa-earth"> · {guestsLine}</span>
                   </p>
                   <button
                     type="button"
@@ -2436,7 +2437,7 @@ export default function CheckoutPage() {
               <div className="min-w-0">
                 <p className="font-display body-sm text-pa-dark leading-snug truncate">{displayName}</p>
                 <p className="caption text-pa-earth mt-0.5">
-                  {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {guests} {t("booking.guestsLabel", "guests")}
+                  {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {guestsLine}
                 </p>
               </div>
             </div>

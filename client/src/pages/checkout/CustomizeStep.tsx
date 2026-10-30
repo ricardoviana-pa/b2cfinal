@@ -11,10 +11,13 @@
  *      linhas rádio no mesmo cartão (self check-in incluído / presencial).
  *   2. Detalhes da estadia: berço, cadeira de bebé e animal (o kit e a
  *      comida do animal só aparecem com a taxa escolhida, §5.0).
- *   3. Serviços opcionais: transfers (par Porto/Lisboa com um só selector de
- *      aeroporto) e as três linhas de maior rank da curadoria do servidor;
- *      o resto do catálogo e as experiências (linhas com miniatura real)
- *      ficam atrás de "Ver todos os serviços (N)".
+ *   3. Serviços opcionais: a lista curta aprovada a 23 set 2026 (chef,
+ *      breakfast box, compras feitas; sem nenhum destes no catálogo curado,
+ *      as três primeiras linhas por rank). Os transfers (par Porto/Lisboa
+ *      com um só selector de aeroporto), o resto do catálogo e as
+ *      experiências (linhas com miniatura real) ficam atrás de "Ver todos
+ *      os serviços (N)"; um item escolhido aí continua à vista com a lista
+ *      fechada.
  *
  * Saíram os capítulos editoriais (títulos de 48 px, overlines, nav sticky
  * com scrollspy, animações de entrada, carrossel com setas), a caixa de
@@ -573,12 +576,13 @@ export default function CustomizeStep({
     (a, b) => Number(!!b.photo) - Number(!!a.photo),
   );
   const hiddenRows = [...transferRows, ...looseTransfers, ...moreServices, ...experiences];
-  const hiddenCount = hiddenRows.length;
   // Regra "curados ∪ escolhidos": um item do catálogo completo que já foi
   // adicionado (retoma, ?case=full, ou escolhido e lista fechada a seguir)
   // continua à vista na lista curta, com os seus steppers.
   const expanded = showAll;
   const pinnedRows = expanded ? [] : hiddenRows.filter((i) => selection[i.sku] != null);
+  // O número do botão conta só o que ainda não está à vista
+  const hiddenCount = hiddenRows.length - pinnedRows.length;
   // A nota das cobranças (preço fechado hoje, confirmação com reembolso, sob
   // orçamento sem cobrança) fica sempre à vista: o chef, visível por defeito,
   // é um serviço com confirmação.
@@ -628,7 +632,7 @@ export default function CustomizeStep({
                           : "border-pa-sand bg-white text-pa-earth hover:border-pa-dark",
                       )}
                     >
-                      {ap === "porto" ? t("checkout.airport.porto", "Porto") : t("checkout.airport.lisbon", "Lisbon")}
+                      {ap === "porto" ? t("checkout.airports.porto", "Porto") : t("checkout.airports.lisbon", "Lisbon")}
                     </button>
                   ))}
                 </div>
@@ -653,7 +657,7 @@ export default function CustomizeStep({
             ))}
           </div>
 
-          {hiddenCount > 0 && (
+          {hiddenRows.length > 0 && (
             <button
               type="button"
               onClick={() => setShowAll((v) => !v)}

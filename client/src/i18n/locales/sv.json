@@ -1867,16 +1867,8 @@
     },
     "perPersonDay": "per person · dag",
     "allDays": "Varje dag",
-    "airport": {
-      "0": "F",
-      "1": "l",
-      "2": "y",
-      "3": "g",
-      "4": "p",
-      "5": "l",
-      "6": "a",
-      "7": "t",
-      "8": "s",
+    "airport": "Flygplats",
+    "airports": {
       "porto": "Porto",
       "lisbon": "Lissabon"
     },

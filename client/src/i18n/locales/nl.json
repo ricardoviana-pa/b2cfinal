@@ -1867,17 +1867,8 @@
     },
     "perPersonDay": "per persoon · dag",
     "allDays": "Elke dag",
-    "airport": {
-      "0": "L",
-      "1": "u",
-      "2": "c",
-      "3": "h",
-      "4": "t",
-      "5": "h",
-      "6": "a",
-      "7": "v",
-      "8": "e",
-      "9": "n",
+    "airport": "Luchthaven",
+    "airports": {
       "porto": "Porto",
       "lisbon": "Lissabon"
     },

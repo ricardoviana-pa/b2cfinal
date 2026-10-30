@@ -1867,16 +1867,8 @@
     },
     "perPersonDay": "pro Person · Tag",
     "allDays": "Jeden Tag",
-    "airport": {
-      "0": "F",
-      "1": "l",
-      "2": "u",
-      "3": "g",
-      "4": "h",
-      "5": "a",
-      "6": "f",
-      "7": "e",
-      "8": "n",
+    "airport": "Flughafen",
+    "airports": {
       "porto": "Porto",
       "lisbon": "Lissabon"
     },

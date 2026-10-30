@@ -1867,17 +1867,8 @@
     },
     "perPersonDay": "por persona · día",
     "allDays": "Todos los días",
-    "airport": {
-      "0": "A",
-      "1": "e",
-      "2": "r",
-      "3": "o",
-      "4": "p",
-      "5": "u",
-      "6": "e",
-      "7": "r",
-      "8": "t",
-      "9": "o",
+    "airport": "Aeropuerto",
+    "airports": {
       "porto": "Oporto",
       "lisbon": "Lisboa"
     },
