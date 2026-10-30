@@ -25,7 +25,7 @@ import type { inferRouterOutputs } from "@trpc/server";
 import type { Stripe, StripeElementLocale, StripeError } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 // A letra do site no iframe do cartão: a mesma do checkout (fontFamily sem var()).
-import { STRIPE_CARD_APPEARANCE, STRIPE_FONTS } from "@/components/booking/stripeElementsOptions";
+import { STRIPE_BUSINESS, STRIPE_CARD_APPEARANCE, STRIPE_FONTS } from "@/components/booking/stripeElementsOptions";
 import { ArrowLeft, CalendarClock, Check, Loader2, Lock, Mail, MessageCircle, XCircle } from "lucide-react";
 import type { AppRouter } from "../../../../server/routers";
 import { trpc } from "@/lib/trpc";
@@ -1379,6 +1379,8 @@ function CardChangeForm({
             wallets: { applePay: "never", googlePay: "never" },
             // A autorização é a nossa caixa, logo abaixo; sem o texto genérico da Stripe.
             terms: { card: "never" },
+            // O mesmo nome que a nossa caixa ("Autorizo a Portugal Active…"), nunca o da conta Stripe.
+            business: STRIPE_BUSINESS,
           }}
           onReady={() => setElementReady(true)}
         />
