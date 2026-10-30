@@ -67,6 +67,9 @@ export default function Collection() {
     title: copy ? `${copy.title} | Portugal Active` : 'Collection | Portugal Active',
     description: copy?.metaDescription ?? '',
     url: `/collections/${slug}`,
+    // Unknown slug: a 404 on the server (NotFound below), noindex here too,
+    // no alternates — its effect ran after NotFound's and wrote them back (P7).
+    noindex: !def || !copy,
   });
 
   const graph = useMemo(() => {

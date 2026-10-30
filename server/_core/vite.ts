@@ -5,6 +5,7 @@ import { servicePlanning } from '../../shared/servicePlanning';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
 import { articlePhotos, stripPhotoLines } from '../../shared/articlePhotos';
 import { reviewedArticleDate } from '../../shared/articleNavigation';
+import { displayedAggregate } from '../../shared/reviewStats';
 import { corporateSchema } from '../../shared/corporateSchema';
 import { deepMerge } from '../../client/src/lib/deepMerge';
 import { vacationRentalSchema } from '../../shared/vacationRentalSchema';
@@ -811,9 +812,12 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
     longitude: prop.address?.lng ?? prop.longitude,
     checkinTime: prop.checkInTime,
     checkoutTime: prop.checkOutTime,
-    aggregateRating: prop.averageRating && prop.reviewCount ? {
-      ratingValue: Number(prop.averageRating), reviewCount: Number(prop.reviewCount),
-    } : null,
+    // What the page shows (shared/reviewStats.ts): the real average of every
+    // review, one decimal, only from three reviews.
+    aggregateRating: (() => {
+      const agg = displayedAggregate(prop);
+      return agg.average === null ? null : { ratingValue: agg.average, reviewCount: agg.count };
+    })(),
   }, lang);
 
   const breadcrumb = {
@@ -1446,6 +1450,15 @@ function forceNoindex(html: string): string {
   return html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
 }
 
+/** A missing page has no language versions: its "alternates" are 404s too.
+ *  injectLocaleTags runs before the status is known and wrote the full
+ *  hreflang block on every 404; the language card read it and offered
+ *  "Auf Deutsch ansehen" on "Experience not found", spending the visit's one
+ *  card on a dead page (verificação final de 29 out 2026, P7). */
+export function stripHreflang(html: string): string {
+  return html.replace(/\s*<link\s+rel="alternate"\s+hreflang="[^"]*"[^>]*\/?>\s*/g, '\n');
+}
+
 /** The booking pages the client actually has; any other /booking/… is a 404
  *  (it answered 200, "index, follow"). All of them are noindex. */
 const BOOKING_ROUTE = /^\/booking\/(?:(?:confirmation|thank-you|balance)\/[^/]+|paypal-return|klarna-return)\/?$/;
@@ -1817,9 +1830,10 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
     /** Every HTML answer leaves through here. A 404 always says noindex: the
      *  cache-hit branch below used to return before that rewrite, so an
      *  unknown URL said "index, follow" from its second request on (review
-     *  of PR #177). Reads `status` when called, after the branches refine it. */
+     *  of PR #177). And it carries no hreflang alternates (stripHreflang).
+     *  Reads `status` when called, after the branches refine it. */
     const sendHtml = (body: string) => {
-      if (status === 404) body = forceNoindex(body);
+      if (status === 404) body = stripHreflang(forceNoindex(body));
       body = withRouteAssets(body, p, lang, status);
       setHtmlCacheHeaders(res, p, status);
       return res.status(status).set("Content-Type", "text/html").send(body);

@@ -11,6 +11,7 @@ import nl from "../../client/src/i18n/locales/nl.json";
 import sv from "../../client/src/i18n/locales/sv.json";
 import fi from "../../client/src/i18n/locales/fi.json";
 import {
+  GENERIC_DECLINE_CODES,
   LIMIT_DECLINE_CODES,
   NO_RETRY_DECLINE_CODES,
   PAYMENT_ERROR_KEYS,
@@ -49,14 +50,22 @@ describe("classifyPaymentError: códigos da Stripe", () => {
     expect(NO_RETRY_DECLINE_CODES as readonly string[]).not.toContain("duplicate_transaction");
   });
 
-  it.each(["fraudulent", "do_not_honor", "stolen_card", "lost_card", "pickup_card", "generic_decline"])(
-    "%s: recusa genérica, sem motivo revelado nem 'tente de novo'",
+  it.each(["fraudulent", "do_not_honor", "stolen_card", "lost_card", "pickup_card", "restricted_card"])(
+    "%s: recusa dura, sem motivo revelado nem 'tente de novo'",
     (code) => {
       expect(classifyPaymentError(card(code))).toEqual({ key: "payment.errors.declinedGeneric", kind: "decline", retrySameCard: false });
     },
   );
 
-  it("todos os códigos sem nova tentativa caem na recusa genérica", () => {
+  it.each(GENERIC_DECLINE_CODES)(
+    "%s: recusa sem motivo, a mesma frase, mas com as duas partes entre as saídas (decisão de 29 out 2026)",
+    (code) => {
+      expect(classifyPaymentError(card(code))).toEqual({ key: "payment.errors.declinedGeneric", kind: "decline_generic", retrySameCard: false });
+      expect(NO_RETRY_DECLINE_CODES as readonly string[]).not.toContain(code);
+    },
+  );
+
+  it("todos os códigos sem nova tentativa caem na recusa dura", () => {
     for (const code of NO_RETRY_DECLINE_CODES) {
       const info = classifyPaymentError(card(code));
       expect(info.retrySameCard, code).toBe(false);
@@ -64,10 +73,10 @@ describe("classifyPaymentError: códigos da Stripe", () => {
     }
   });
 
-  it("decline_code desconhecido ou ausente: recusa genérica", () => {
-    expect(classifyPaymentError(card("some_new_code")).key).toBe("payment.errors.declinedGeneric");
-    expect(classifyPaymentError(card(undefined)).key).toBe("payment.errors.declinedGeneric");
-    expect(classifyPaymentError({ type: "card_error", message: "x" }).key).toBe("payment.errors.declinedGeneric");
+  it("decline_code desconhecido: recusa dura; sem decline_code (só card_declined): recusa sem motivo", () => {
+    expect(classifyPaymentError(card("some_new_code"))).toEqual({ key: "payment.errors.declinedGeneric", kind: "decline", retrySameCard: false });
+    expect(classifyPaymentError(card(undefined))).toEqual({ key: "payment.errors.declinedGeneric", kind: "decline_generic", retrySameCard: false });
+    expect(classifyPaymentError({ type: "card_error", message: "x" })).toEqual({ key: "payment.errors.declinedGeneric", kind: "decline", retrySameCard: false });
   });
 
   it("cartão expirado ou não aceite: outro cartão ou método", () => {
@@ -123,6 +132,9 @@ describe("classifyPaymentError: mensagens do servidor (inglês técnico)", () =>
     ["payment could not be prepared; retry the same checkout", "payment.errors.prepareFailed", "retry"],
     ["payment could not be saved; retry the same checkout", "payment.errors.saveFailed", "retry"],
     ["checkout state could not be saved", "payment.errors.saveFailed", "retry"],
+    // routers/booking.ts (createKlarnaPaymentIntent): país ou valor fora do que a Klarna aceita
+    ["Klarna is not available for billing country GB", "payment.errors.klarnaUnavailable", "decline"],
+    ["Klarna is not available for this amount in PT", "payment.errors.klarnaUnavailable", "decline"],
     ["Failed to fetch", "payment.errors.network", "retry"],
     ["Stripe failed to load", "payment.errors.network", "retry"],
     ["invalid total", "payment.errors.genericRetry", "generic"],
@@ -164,17 +176,42 @@ describe("paymentErrorActions: até três saídas, nunca uma dupla cobrança", (
     expect(paymentErrorActions(decline, { twoPartsOffered: true, plan: "full" })).toEqual({ twoParts: true, otherMethod: true, concierge: true });
   });
 
-  it("duas partes só nas recusas pelo limite do cartão (o cartão escrito fica no formulário)", () => {
-    for (const c of LIMIT_DECLINE_CODES) {
-      expect(paymentErrorActions(classifyPaymentError(card(c)), { twoPartsOffered: true, plan: "full" }).twoParts, c).toBe(true);
+  it("duas partes nas recusas pelo limite do cartão e nas recusas sem motivo (o cartão escrito fica no formulário)", () => {
+    for (const c of [...LIMIT_DECLINE_CODES, ...GENERIC_DECLINE_CODES]) {
+      expect(paymentErrorActions(classifyPaymentError(card(c)), { twoPartsOffered: true, plan: "full" }), c).toEqual({
+        twoParts: true, otherMethod: true, concierge: true,
+      });
     }
+  });
+
+  it("recusa sem motivo: as duas partes só com a oferta do servidor e em 'tudo agora'", () => {
+    const generic = classifyPaymentError(card("generic_decline"));
+    expect(paymentErrorActions(generic, { twoPartsOffered: false, plan: "full" }).twoParts).toBe(false);
+    expect(paymentErrorActions(generic, { twoPartsOffered: true, plan: "two_parts" }).twoParts).toBe(false);
+    // O demo (?declined=generic_decline) constrói o mesmo erro que a Stripe devolve.
+    expect(read("client/src/components/booking/CheckoutPaymentForm.tsx")).toMatch(
+      /setError\(errorView\(\{ type: "card_error", code: "card_declined", decline_code: props\.demoDecline, message: "Your card was declined\." \}, t\)\)/,
+    );
+    expect(paymentErrorActions(classifyPaymentError({ type: "card_error", code: "card_declined", decline_code: "generic_decline", message: "Your card was declined." }), { twoPartsOffered: true, plan: "full" }).twoParts).toBe(true);
+  });
+
+  it("um motivo que não conhecemos por cima de card_declined: recusa dura, sem duas partes", () => {
+    expect(paymentErrorActions(classifyPaymentError(card("some_new_code")), { twoPartsOffered: true, plan: "full" })).toEqual({
+      twoParts: false, otherMethod: true, concierge: true,
+    });
   });
 
   it.each([
     "fraudulent", "lost_card", "stolen_card", "pickup_card", "restricted_card", "security_violation", "do_not_honor",
-    "expired_card", "card_not_supported", "currency_not_supported", "generic_decline", "card_declined", "do_not_try_again",
+    "expired_card", "card_not_supported", "currency_not_supported", "do_not_try_again",
   ])("%s: nunca 'pagar em duas partes' (seria repetir o mesmo cartão), mas outro método e concierge", (code) => {
     expect(paymentErrorActions(classifyPaymentError(card(code)), { twoPartsOffered: true, plan: "full" })).toEqual({
+      twoParts: false, otherMethod: true, concierge: true,
+    });
+  });
+
+  it("Klarna indisponível no país ou no valor: outro método e concierge, nunca duas partes", () => {
+    expect(paymentErrorActions(classifyPaymentError(server("Klarna is not available for billing country GB")), { twoPartsOffered: true, plan: "full" })).toEqual({
       twoParts: false, otherMethod: true, concierge: true,
     });
   });
@@ -277,6 +314,7 @@ describe("textos do aviso nas 9 línguas", () => {
       "payment.errors.cardDetails", "payment.errors.bankUnavailable", "payment.errors.authenticationFailed",
       "payment.errors.twoPartsUnavailable", "payment.errors.prepareFailed",
       "payment.errors.priceChanged", "payment.errors.duplicateTransaction",
+      "payment.errors.klarnaUnavailable",
     ];
     for (const key of fresh) expect(get(LOCALES[lang], key), `${lang}.${key}`).not.toMatch(BANNED);
   });

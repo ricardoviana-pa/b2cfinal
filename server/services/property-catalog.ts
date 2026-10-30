@@ -1,4 +1,5 @@
 import { detectReviewLanguage, type ReviewLanguage } from './review-language';
+import { REVIEW_CHANNEL_RE } from '../../shared/reviewStats';
 
 /** Public card payload. Full descriptions, room photos and review bodies stay on the PDP. */
 const CATALOG_FIELDS = [
@@ -59,7 +60,8 @@ export function recentGuestFeedback(properties: Record<string, any>[], locale?: 
     (Array.isArray(p.reviews) ? p.reviews : []).filter((r: any) =>
       Number.isFinite(r.rating) && r.rating >= 1 && r.rating <= 5 &&
       typeof r.text === 'string' && r.text.replace(/[^\p{L}]/gu, '').length >= 12 &&
-      !/\bairbnb\b|booking\.com|\bvrbo\b|\bexpedia\b|homeaway/i.test(r.text)
+      // The one channel-name rule for every surface (shared/reviewStats.ts).
+      !REVIEW_CHANNEL_RE.test(r.text)
     ).map((r: any) => {
       const language = detectReviewLanguage(r.text);
       const words = (r.text.match(/\p{L}+/gu) ?? []).length;

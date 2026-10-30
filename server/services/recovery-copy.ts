@@ -13,12 +13,13 @@
  * a maioria de quem lá pára nunca carregou em Pagar, e o texto das falhas
  * ("um cartão recusado, um limite do banco") falava de um problema que essa
  * pessoa não teve. Sem tentativa: "ficou alguma dúvida?", sem falar de falhas.
- * Com tentativa: o texto de sempre, sem o Klarna enquanto o país de faturação
- * for forçado a PT (recovery-funnel.ts). Nas duas, por baixo do total, o
- * cancelamento gratuito e as duas partes quando o checkout as oferece. O
- * WhatsApp é o de todos os emails (whatsappLine): um número central, sem
- * concierge por região. Para as duas partes nunca "sinal", "depósito" nem
- * "prestações" (nem os equivalentes noutras línguas).
+ * Com tentativa: o texto de sempre, com o Klarna só quando o país de
+ * faturação e o valor cabem no que a Klarna aceita (checkout-recovery.ts).
+ * Nas duas, e também nos contactos 2 e 3, por baixo do total, o cancelamento
+ * gratuito e as duas partes quando o checkout as oferece. O WhatsApp é o de
+ * todos os emails (whatsappLine): um número central, sem concierge por
+ * região. Para as duas partes nunca "sinal", "depósito" nem "prestações" (nem
+ * os equivalentes noutras línguas).
  */
 import { itArt, type EmailLang } from "./email-i18n";
 
@@ -30,8 +31,8 @@ export interface FunnelStrings {
   body1: (g: string, h: string) => string;
   personal1: string;
   // 1 · variante: chegou a pagar e não ficou (cobrança tentada). `klarna`:
-  // o Klarna pode ser sugerido (checkout-recovery.ts; hoje nunca, com o país
-  // de faturação forçado a PT); sem isso o Klarna não é sugerido.
+  // o Klarna pode ser sugerido (checkout-recovery.ts decide pelo país de
+  // faturação e pelo tecto do país); sem isso o Klarna não é sugerido.
   subject1Pay: (h: string) => string;
   preheader1Pay: (klarna?: boolean) => string;
   headline1Pay: string;

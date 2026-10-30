@@ -339,7 +339,12 @@ describe("o voltar ao topo fica acima do rodapé do RESERVE (BTT-1 / R2)", () =>
 
   it("o botão tem o gancho e a posição que o CSS supõe", () => {
     expect(backToTop).toMatch(/data-back-to-top=""/);
-    expect(backToTop).toMatch(/bottom: 'calc\(5rem \+ 56px/);
+    // O `bottom` vive em index.css (.back-to-top; verificação final de 29 out,
+    // P6: a 640–1023 px sobe 8 px): no computador vale a regra base, 5rem + 56px.
+    expect(backToTop).not.toMatch(/bottom:/);
+    const base = cssRules().find((r) => r.selector === ".back-to-top" && r.decls.bottom);
+    expect(base?.decls.bottom).toBe("calc(5rem + 56px + env(safe-area-inset-bottom, 0px))");
+    expect(base?.layer).toBe("utilities");
   });
 
   it("sem o banner: o fundo do botão fica pelo menos 8 px acima do rodapé, com uma ou duas linhas de marcas", () => {

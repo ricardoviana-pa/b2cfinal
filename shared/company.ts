@@ -11,7 +11,7 @@
 export const COMPANY_LEGAL_NAME = "Ricardo Torres Viana LDA";
 export const COMPANY_NIPC = "515363685";
 /** Sede (morada completa numa linha). Vazia até confirmação do Ricardo. */
-export const COMPANY_ADDRESS = "";
+export const COMPANY_ADDRESS = "Tv. Estrada Nova 187, 4900-336 Viana do Castelo";
 
 /** "Ricardo Torres Viana LDA · NIPC 515363685" (sem morada). */
 export function companyIdentityLine(): string {

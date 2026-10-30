@@ -44,11 +44,18 @@ import { formatQuotedEur } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
 import { payButtonGate, splitFullName, walletGuestDetails, walletsVisible, type WalletGuest } from "@/lib/checkoutPayment";
-import { EXPRESS_CHECKOUT_CONTACT_FIELDS, cardElementsOptions, expressCheckoutElementsOptions } from "./stripeElementsOptions";
+import {
+  EXPRESS_CHECKOUT_CONTACT_FIELDS,
+  EXPRESS_CHECKOUT_ELEMENT_OPTIONS,
+  cardElementsOptions,
+  expressCheckoutElementsOptions,
+  paymentElementOptions,
+} from "./stripeElementsOptions";
 import { COMPANY_LEGAL_NAME, COMPANY_NIPC, companyAddressLine } from "@shared/company";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 import PaymentErrorNotice, { type PaymentErrorView, type TwoPartsSwitch } from "./PaymentErrorNotice";
+import { klarnaAvailable, klarnaBillingCountry } from "@shared/klarna";
 
 type PaymentMethodId = "card" | "googlepay" | "paypal" | "klarna";
 
@@ -189,6 +196,10 @@ interface CheckoutPaymentFormProps {
   demo?: boolean;
   /** Demo (?declined=insufficient_funds): simula uma recusa, para rever o aviso. */
   demoDecline?: string | null;
+  /** País de faturação do Klarna (shared/klarna.ts: telefone do hóspede →
+   *  língua do site → PT). Decide se o separador da Klarna aparece (país e
+   *  tecto) e é o país com que a Klarna confirma. */
+  klarnaCountry?: string;
 }
 
 const isQuoteExpiredError = (e: unknown) =>
@@ -400,9 +411,10 @@ function ExpressWalletInner({
     <div style={{ display: available ? "block" : "none" }} className="space-y-3" data-testid="checkout-wallets">
       <ExpressCheckoutElement
         options={{
-          // Só wallets: cartão, PayPal e Klarna já têm caminho próprio em baixo
-          paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
-          layout: { maxColumns: 2, maxRows: 1 } as any,
+          // Só wallets, com o nome da marca e a morada de faturação pedida
+          // (EXPRESS_CHECKOUT_ELEMENT_OPTIONS, revisão do #188); sem handler de
+          // clique: a folha abre logo.
+          ...EXPRESS_CHECKOUT_ELEMENT_OPTIONS,
           // A folha pede o email e o telefone da reserva (o nome vem com o pagador)
           ...EXPRESS_CHECKOUT_CONTACT_FIELDS,
         }}
@@ -505,6 +517,8 @@ function PaymentFormInner({
   const paymentInfoFiredRef = useRef(false);
   const createReservation = trpc.booking.createBEInstantReservation.useMutation();
   const gate = payButtonGate({ termsAccepted: termsAccepted ?? true, plan, mandateAccepted });
+  // Legacy (sem intentId): o Apple Pay aparece como aba do PaymentElement.
+  const paymentOptions = useMemo(() => paymentElementOptions({ legacyApplePay: !intentId }), [intentId]);
   const setErrorText = (message: string) => setError(message ? { message } : null);
 
   const handleSubmit = async (e?: React.SyntheticEvent) => {
@@ -720,21 +734,10 @@ function PaymentFormInner({
   return (
     <div className="space-y-4" style={visible ? undefined : { display: "none" }}>
       <div className="p-4 bg-white border border-[#E8E4DC] rounded">
-        <PaymentElement
-          options={{
-            layout: "tabs",
-            // Wallets DESLIGADOS aqui: em modo auto o PaymentElement cria abas internas
-            // (Cartao + Google Pay) que duplicam o nosso seletor externo (bug 12 jul).
-            // Apple/Google Pay entram pelo padrao certo (Express Checkout Element
-            // separado, acima do seletor) na Fase 2b.
-            // Legacy (sem intentId): Apple Pay volta a aparecer aqui, como aba do
-            // PaymentElement, porque o legacy não tem o Express Checkout Element
-            // (auditoria set/2026, D4). No v2 fica "never" para não duplicar o
-            // botão do bloco 3. Google Pay continua fora nos dois (bug 12 jul).
-            wallets: { googlePay: "never", applePay: intentId ? "never" : "auto" },
-            fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
-          }}
-        />
+        {/* Opções em paymentElementOptions (stripeElementsOptions.ts): wallets
+            desligadas, só o Apple Pay do legacy (sem intentId), e o nome da marca
+            no texto da Stripe. */}
+        <PaymentElement options={paymentOptions} />
       </div>
 
       {error && <PaymentErrorNotice error={error} {...noticeProps} />}
@@ -835,6 +838,14 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   useEffect(() => {
     if (props.plan === "two_parts") setWalletError(null);
   }, [props.plan]);
+  // Klarna só no país de faturação e até ao tecto que a Klarna aceita
+  // (shared/klarna.ts). Se deixar de estar disponível (telefone de outro país,
+  // um extra que passa o tecto), volta ao cartão em vez de um separador morto.
+  const klarnaCountry = props.klarnaCountry ?? klarnaBillingCountry({ siteLang: i18n.language });
+  const klarnaOk = klarnaAvailable(klarnaCountry, Math.round((props.otherMethodsTotal ?? props.total) * 100));
+  useEffect(() => {
+    if (!klarnaOk && paymentMethod === "klarna") setPaymentMethod("card");
+  }, [klarnaOk, paymentMethod]);
   const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery(undefined, {
     enabled: !demo,
   });
@@ -1042,11 +1053,12 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         </Elements>
       ))}
 
-      {/* Payment method selector — 3 icon cards (Google Pay hidden). Em duas
-          partes só há cartão: Klarna e PayPal cobram tudo hoje. */}
+      {/* Payment method selector — icon cards (Google Pay hidden; Klarna só
+          quando o país e o valor cabem no que ela aceita). Em duas partes só
+          há cartão: Klarna e PayPal cobram tudo hoje. */}
       {!twoParts && (
-      <div ref={methodsRef} tabIndex={-1} className="outline-none" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "9px" }}>
-        {PAYMENT_METHODS.filter(({ id }) => id !== "googlepay").map(({ id, label, Logo }) => (
+      <div ref={methodsRef} tabIndex={-1} className="outline-none" style={{ display: "grid", gridTemplateColumns: `repeat(${klarnaOk ? 3 : 2}, 1fr)`, gap: "9px" }}>
+        {PAYMENT_METHODS.filter(({ id }) => id !== "googlepay" && (id !== "klarna" || klarnaOk)).map(({ id, label, Logo }) => (
           <button
             key={id}
             type="button"
@@ -1142,12 +1154,13 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         </div>
       )}
 
-      {paymentMethod === "klarna" && !twoParts && (
+      {paymentMethod === "klarna" && !twoParts && klarnaOk && (
         <div className="space-y-3">
           {klarnaError && <PaymentErrorNotice error={klarnaError} {...noticeProps} />}
           {props.consent}
           <KlarnaCheckoutButton
             {...redirectCommon}
+            billingCountry={klarnaCountry}
             onError={onRedirectMethodError("klarna")}
             onDemo={() => demoPay(setKlarnaError)}
           />

@@ -97,6 +97,40 @@ export function hasBottomBookingBar(path: string): boolean {
   return BOTTOM_BAR_PAGE.test(path);
 }
 
+/** Tailwind's sm and lg breakpoints: the widths the card's waiting rules read. */
+export const SM_MIN_WIDTH = 640;
+export const LG_MIN_WIDTH = 1024;
+
+/**
+ * Must the card wait, although the page offers the language (verificação
+ * final de 29 out 2026, P5)? It is fixed at the bottom of the screen, so it
+ * cannot rise out of the way of what is there; it waits instead
+ * (lib/fixedBottom.ts):
+ * - below lg, while the homepage's hero is on screen (HOME_HERO_ATTR): on a
+ *   phone it covered the hero's Check-in, Check-out and "Search homes", like
+ *   the WhatsApp button would, which already waits for the hero to scroll by;
+ * - on a phone, until the cookie choice is made: the card is full width
+ *   there and, stacked on the open banner, the two hid the first screen's
+ *   buttons. The choice, not only the banner, so the card does not flash
+ *   before the banner's 2 s timer opens it; also while the banner is reopened
+ *   from "Cookie settings".
+ * From lg the card sits in the left corner and the hero's search is a centred
+ * pill: nothing to wait for.
+ */
+export function languageCardWaits({ viewportWidth, homeHeroOnScreen, cookieChoice, cookieBannerOpen }: {
+  viewportWidth: number;
+  /** <html> carries HOME_HERO_ATTR. */
+  homeHeroOnScreen: boolean;
+  /** getCookieChoice(): null until the visitor chooses. */
+  cookieChoice: string | null;
+  /** <html> carries COOKIE_BANNER_OPEN_ATTR. */
+  cookieBannerOpen: boolean;
+}): boolean {
+  if (viewportWidth < LG_MIN_WIDTH && homeHeroOnScreen) return true;
+  if (viewportWidth < SM_MIN_WIDTH && (cookieChoice === null || cookieBannerOpen)) return true;
+  return false;
+}
+
 /** The same page in another language: /en/homes?x=1#y → /pt/homes?x=1#y. */
 export function pathInLanguage(pathname: string, search: string, hash: string, lang: SiteLanguage): string {
   const segments = pathname.split('/').filter(Boolean);
@@ -114,3 +148,28 @@ export const SUGGESTION_COPY: Record<SuggestedLanguage, { prompt: string; action
   sv: { prompt: 'Webbplatsen finns också på svenska.', action: 'Visa på svenska', dismiss: 'Fortsätt på engelska' },
   fi: { prompt: 'Sivusto on saatavilla myös suomeksi.', action: 'Näytä suomeksi', dismiss: 'Jatka englanniksi' },
 };
+
+/** Home's own "past the hero" threshold (Home.tsx pastHero): 60% of the viewport height. */
+export const HOME_HERO_SCROLL_RATIO = 0.6;
+
+/** "/" or "/<lang>" (with or without a trailing slash): the homepage, whose hero holds the search. */
+export function isHomePath(pathname: string): boolean {
+  const m = /^\/([a-z]{2})?\/?$/.exec(pathname || '/');
+  return !!m && (!m[1] || (SITE_LANGUAGES as readonly string[]).includes(m[1]));
+}
+
+/**
+ * Is the homepage hero on screen right now? Read from the route and the scroll,
+ * so it is right in the very first render: Home marks <html> with HOME_HERO_ATTR
+ * only once its subtree has hydrated, and the card decided before that
+ * (revisão do PR #191, R1: the card flashed over the hero and spent the visit's
+ * one card). The attribute stays as a second signal.
+ */
+export function homeHeroOnScreen({ pathname, scrollY, innerHeight, heroAttr }: {
+  pathname: string;
+  scrollY: number;
+  innerHeight: number;
+  heroAttr: boolean;
+}): boolean {
+  return heroAttr || (isHomePath(pathname) && scrollY <= innerHeight * HOME_HERO_SCROLL_RATIO);
+}

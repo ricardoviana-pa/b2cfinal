@@ -6,7 +6,71 @@
  *
  * O setupFutureUsage espelha o do PaymentIntent (shared/stripeSetupFutureUsage).
  */
+import type { StripeExpressCheckoutElementOptions, StripePaymentElementOptions } from "@stripe/stripe-js";
 import { CHECKOUT_SETUP_FUTURE_USAGE } from "@shared/stripeSetupFutureUsage";
+
+/**
+ * O nome do negócio que a Stripe escreve ao hóspede. Sem ele, a Stripe usa o
+ * nome da conta ("Ricardo Torres Viana, Lda"), que o site nunca mostra: o
+ * texto do cartão em carteira dizia "you allow Ricardo Torres Viana, Lda to
+ * charge your card for future payments" por cima da nossa própria autorização,
+ * "I authorise Portugal Active to charge…" (verificação em produção, 29 out
+ * 2026). Um só nome, o da marca, no PaymentElement, nas wallets e no cartão
+ * novo da página do saldo; o mandato das duas partes
+ * (server/services/two-parts-mandate.ts) nomeia o mesmo. Só muda o nome
+ * mostrado: quem recebe e o que sai no extrato do cartão ficam iguais.
+ */
+export const STRIPE_BUSINESS = { name: "Portugal Active" } as const;
+
+/**
+ * Opções do PaymentElement do checkout (o cartão). Wallets desligadas aqui:
+ * em modo auto o PaymentElement cria abas internas (Cartão + Google Pay) que
+ * duplicam o nosso seletor externo (bug 12 jul). Apple e Google Pay entram
+ * pelo ExpressCheckoutElement, acima do seletor. No legacy (sem intentId) o
+ * Apple Pay volta a aparecer aqui, como aba, porque o legacy não tem esse
+ * bloco (auditoria set/2026, D4); o Google Pay fica fora nos dois.
+ *
+ * Sem `terms: { card: "never" }`: no plano "tudo agora" o pagamento é criado
+ * com setup_future_usage off_session e o texto da Stripe é o único aviso de
+ * cartão em carteira do ecrã; a nossa caixa aí é só a dos Termos.
+ */
+export function paymentElementOptions({ legacyApplePay }: { legacyApplePay: boolean }): StripePaymentElementOptions {
+  return {
+    layout: "tabs",
+    wallets: { googlePay: "never", applePay: legacyApplePay ? "auto" : "never" },
+    fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
+    business: STRIPE_BUSINESS,
+  };
+}
+
+/**
+ * Opções do ExpressCheckoutElement: só wallets (cartão, PayPal e Klarna já
+ * têm caminho próprio em baixo). O nome do negócio também aqui: por omissão a
+ * folha do Apple Pay e do Google Pay mostra o nome da conta Stripe. Vai só
+ * pela opção de criação do Element, a que a Stripe documenta (tipada no
+ * @stripe/stripe-js 10.2.0; o 4.10 instalado ainda não a declara, daí a
+ * interseção). O mesmo campo no clique está deprecado, e um handler de clique
+ * poria a Stripe à espera antes de abrir a folha (revisão do #188).
+ *
+ * `billingAddressRequired: true` por extenso: segundo a Stripe, passar
+ * `business` (ou allowedShippingCountries, phoneNumberRequired,
+ * shippingAddressRequired, emailRequired, applePay ou lineItems) ao criar o
+ * Element muda a omissão de true para false. Sem isto a folha deixava de pedir
+ * a morada de faturação, que a Stripe usa na verificação de morada e no Radar
+ * (revisão do #188, R1). Assim o que muda é só o nome mostrado.
+ *
+ * A folha das wallets não se verifica no Chrome sem Apple Pay nem Google Pay:
+ * confirmar num telemóvel real depois do deploy.
+ */
+export const EXPRESS_CHECKOUT_ELEMENT_OPTIONS: StripeExpressCheckoutElementOptions & {
+  business: typeof STRIPE_BUSINESS;
+  billingAddressRequired: boolean;
+} = {
+  paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
+  layout: { maxColumns: 2, maxRows: 1 } as any,
+  business: STRIPE_BUSINESS,
+  billingAddressRequired: true,
+};
 
 /**
  * A letra do site dentro do iframe da Stripe (verificação em produção, 29 out

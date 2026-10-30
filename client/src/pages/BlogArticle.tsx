@@ -107,6 +107,8 @@ export default function BlogArticle() {
     image: article?.coverImage || article?.featuredImage,
     url: article ? `/blog/${article.slug}` : undefined,
     type: 'article',
+    // Unknown slug: a 404 on the server, noindex here, no alternates (P7).
+    noindex: !article,
   });
 
   const articleSchema = useMemo(() => {

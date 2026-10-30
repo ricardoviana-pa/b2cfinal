@@ -24,15 +24,16 @@ const placeholders = (s: string) =>
 const BANNED = /insurance|seguro|assurance|versicherung|assicurazion|verzekering|försäkring|vakuutus|\bhotel|sinal|dep[oó]sito|presta[cç][oõ]es/i;
 
 describe("shared/company.ts: uma só fonte", () => {
-  it("denominação e NIPC do Ricardo; a sede fica vazia até ele a confirmar", () => {
+  it("denominação e NIPC do Ricardo; a sede é a que ele confirmou a 29 out", () => {
     expect(COMPANY_LEGAL_NAME).toBe("Ricardo Torres Viana LDA");
     expect(COMPANY_NIPC).toBe("515363685");
     expect(COMPANY_NIPC).toMatch(/^\d{9}$/);
-    expect(COMPANY_ADDRESS).toBe("");
-    expect(companyAddressLine()).toBeNull();
+    // Sede dada pelo Ricardo a 29 out 2026.
+    expect(COMPANY_ADDRESS).toBe("Tv. Estrada Nova 187, 4900-336 Viana do Castelo");
+    expect(companyAddressLine()).toBe("Tv. Estrada Nova 187, 4900-336 Viana do Castelo");
     expect(companyIdentityLine()).toBe("Ricardo Torres Viana LDA · NIPC 515363685");
-    // sem sede confirmada a linha legal não inventa morada nenhuma
-    expect(companyLegalLine()).toBe(companyIdentityLine());
+    // a linha legal junta a sede confirmada à identidade
+    expect(companyLegalLine()).toBe("Ricardo Torres Viana LDA · NIPC 515363685 · Tv. Estrada Nova 187, 4900-336 Viana do Castelo");
   });
 
   it("o rodapé do site, o rodapé dos emails e o checkout leem daqui (nunca escrevem a empresa à mão)", () => {
@@ -74,7 +75,7 @@ describe("bloco pré-contratual acima do botão de pagar", () => {
     const form = read("client/src/components/booking/CheckoutPaymentForm.tsx");
     expect(form).toMatch(/consent=\{props\.consent\}/);
     expect(form).toMatch(/paymentMethod === "paypal" && !twoParts && \(\s*<div className="space-y-3">[\s\S]{0,160}?\{props\.consent\}\s*<PayPalCheckoutButton/);
-    expect(form).toMatch(/paymentMethod === "klarna" && !twoParts && \(\s*<div className="space-y-3">[\s\S]{0,160}?\{props\.consent\}\s*<KlarnaCheckoutButton/);
+    expect(form).toMatch(/paymentMethod === "klarna" && !twoParts && klarnaOk && \(\s*<div className="space-y-3">[\s\S]{0,160}?\{props\.consent\}\s*<KlarnaCheckoutButton/);
   });
 
   it("as wallets (à cabeça do ecrã, pagam tudo hoje) levam os mesmos factos na sua linha dos Termos: empresa, NIPC e total", () => {

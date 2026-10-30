@@ -210,6 +210,11 @@ export default function ExperienceDetail() {
     image: exp?.image,
     url: exp ? `/experiences/${exp.slug}` : undefined,
     type: 'article',
+    // An unknown slug is a 404 on the server and noindex here too: with no
+    // page there is no alternate in any language (the homepage's alternates
+    // written for it offered "Auf Deutsch ansehen" on "Experience not found";
+    // verificação final de 29 out, P7).
+    noindex: !exp,
   });
 
   /* ── JSON-LD structured data ── */

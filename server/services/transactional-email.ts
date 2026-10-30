@@ -601,15 +601,16 @@ interface CheckoutRecoveryData {
    *  "ficou alguma dúvida?", sem falar de cartões recusados. */
   paymentAttempted?: boolean;
   /** Contacto 1 depois de uma tentativa: o Klarna pode ser sugerido
-   *  (checkout-recovery.ts decide; hoje nunca, com o país de faturação do
-   *  Klarna forçado a PT). Sem isto o Klarna não é sugerido. */
+   *  (checkout-recovery.ts decide pelo país de faturação e pelo tecto do
+   *  país). Sem isto o Klarna não é sugerido. */
   klarna?: boolean;
-  /** Contacto 1 no pagamento (as duas variantes): política da tarifa
-   *  (planPolicyCode), para a linha do cancelamento gratuito (só quando ainda
-   *  há prazo). */
+  /** Contacto 1 no pagamento (as duas variantes) e contactos 2 e 3: política
+   *  da tarifa (planPolicyCode), para a linha do cancelamento gratuito (só
+   *  quando ainda há prazo). */
   cancellation?: EmailCancellation | null;
-  /** Contacto 1 no pagamento (as duas variantes): duas partes como o checkout
-   *  as oferece no envio. Ausente ou sem bater com o total do cartão: sem linha. */
+  /** Contacto 1 no pagamento (as duas variantes) e contactos 2 e 3: duas
+   *  partes como o checkout as oferece no envio. Ausente ou sem bater com o
+   *  total do cartão: sem linha. */
   twoParts?: RecoveryTwoParts | null;
   /** Contacto 2: escassez real do calendário (só quando é verdade) */
   scarcity?: { unavailable: number; total: number } | null;
@@ -819,15 +820,16 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(T.taxesLabel, eur(q.taxesAndFees, lang));
   if (gift) priceLines += line(F.flexIncluded, `<s style="color:${PA.stoneAA};">${eur(gift.value, lang)}</s> &nbsp;${eur(0, lang)}`, true);
   const total = q.total ?? data.total;
-  // Contacto 1 no pagamento, com ou sem tentativa: as duas razões para
-  // reservar já, por baixo do total. Depois de uma tentativa, as duas partes
-  // são também a resposta a "um limite do banco": metade hoje, no mesmo cartão.
-  // O cancelamento gratuito só com prazo por gozar (nunca na não reembolsável,
-  // nunca "as condições da sua tarifa"); as duas partes só como o checkout as
-  // oferece agora e a bater com o total do cartão.
-  const freeCancelLine = atPayment ? freeCancellationEmailLine(data.cancellation, lang, data.checkIn) : "";
+  // Contacto 1 no pagamento (com ou sem tentativa) e contactos 2 e 3: as duas
+  // razões para reservar já, por baixo do total. Depois de uma tentativa, as
+  // duas partes são também a resposta a "um limite do banco": metade hoje, no
+  // mesmo cartão. O cancelamento gratuito só com prazo por gozar (nunca na não
+  // reembolsável, nunca "as condições da sua tarifa"); as duas partes só como
+  // o checkout as oferece agora e a bater com o total do cartão.
+  const bookingLines = atPayment || data.stage === 2 || data.stage === 3;
+  const freeCancelLine = bookingLines ? freeCancellationEmailLine(data.cancellation, lang, data.checkIn) : "";
   const twoParts = data.twoParts;
-  const twoPartsText = atPayment && twoPartsMatchCard(twoParts, total)
+  const twoPartsText = bookingLines && twoPartsMatchCard(twoParts, total)
     ? F.twoPartsLine(eurCents(twoParts.todayCents, lang), eurCents(twoParts.laterCents, lang), lisbonDay(twoParts.chargeAt, lang))
     : "";
   const destination = data.destination ? data.destination.charAt(0).toUpperCase() + data.destination.slice(1) : "";
@@ -933,29 +935,45 @@ ${optout}
   await sendEmail(data.guestEmail, subject, html, BOOKING_NOTIFICATION_EMAIL);
 }
 
-/** Alerta interno: abandono no pagamento de valor alto — ligar ao hóspede. */
+/**
+ * Alerta interno: abandono no passo de pagamento, para todos (decisão do
+ * Ricardo, 29 out 2026). Com telefone, "ligar ao hóspede" (telefone e
+ * WhatsApp); sem telefone (parou antes de o escrever), "contactar o hóspede"
+ * por email, que é o que abre o checkout e por isso existe sempre.
+ */
 export async function sendConciergeCallAlert(d: {
-  intentId: string; guestName: string; guestEmail: string; guestPhone: string;
+  intentId: string; guestName: string; guestEmail: string;
+  /** Sem telefone: alerta só com o email. */
+  guestPhone?: string | null;
   propertyName: string; checkIn: string; checkOut: string; guests: number;
   total: number; locale?: string | null; resumeUrl: string;
 }): Promise<void> {
-  const wa = `https://wa.me/${d.guestPhone.replace(/[^0-9]/g, "")}`;
+  const phone = String(d.guestPhone ?? "").trim();
+  const wa = phone ? `https://wa.me/${phone.replace(/[^0-9]/g, "")}` : "";
+  const action = phone ? "Ligar ao hóspede" : "Contactar o hóspede por email";
+  const contactLine = phone
+    ? `Telefone: <a href="tel:${escapeHtml(phone)}">${escapeHtml(phone)}</a> · <a href="${wa}">WhatsApp</a><br>`
+    : `Sem telefone (parou antes de o escrever): contactar por email.<br>`;
   const html = wrapTemplate(`
 <tr><td style="padding:0 0 16px 0;">
-  <h1 style="font-family:Georgia,serif;font-size:22px;color:#1A1A18;margin:0;font-weight:400;">Ligar ao hóspede: reserva de ${Math.round(d.total).toLocaleString("pt-PT")} EUR parada no pagamento</h1>
+  <h1 style="font-family:Georgia,serif;font-size:22px;color:#1A1A18;margin:0;font-weight:400;">${action}: reserva de ${Math.round(d.total).toLocaleString("pt-PT")} EUR parada no pagamento</h1>
 </td></tr>
 <tr><td style="padding:0 0 12px 0;"><p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.6;margin:0;">
-  <strong>${d.guestName || "Hóspede"}</strong> chegou ao pagamento de <strong>${d.propertyName}</strong> (${d.checkIn} a ${d.checkOut}, ${d.guests} hóspedes) e não concluiu há mais de uma hora.
+  <strong>${escapeHtml(d.guestName || "Hóspede")}</strong> chegou ao pagamento de <strong>${escapeHtml(d.propertyName)}</strong> (${d.checkIn} a ${d.checkOut}, ${d.guests} hóspedes) e não concluiu há mais de uma hora.
 </p></td></tr>
 <tr><td style="padding:0 0 12px 0;"><p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.8;margin:0;">
-  Telefone: <a href="tel:${d.guestPhone}">${d.guestPhone}</a> · <a href="${wa}">WhatsApp</a><br>
-  Email: <a href="mailto:${d.guestEmail}">${d.guestEmail}</a> · Língua: ${d.locale || "en"}<br>
+  ${contactLine}
+  Email: <a href="mailto:${escapeHtml(d.guestEmail)}">${escapeHtml(d.guestEmail)}</a> · Língua: ${escapeHtml(d.locale || "en")}<br>
   Checkout do hóspede: <a href="${d.resumeUrl}">abrir</a>
 </p></td></tr>
 <tr><td style="padding:0 0 10px 0;"><p style="font-family:Arial,sans-serif;font-size:13px;color:#6B6860;line-height:1.6;margin:0;">
-  Contactar nas próximas 2 horas. O hóspede já recebeu o email automático "Ficou algo por resolver?". Um alerta por checkout.
+  Contactar nas próximas 2 horas. Fora do grupo de controlo, o hóspede recebe também os emails automáticos do funil. Um alerta por checkout.
 </p></td></tr>`);
-  await sendEmail(BOOKING_ALERT_EMAIL, `[CS] Ligar: ${d.propertyName} · ${Math.round(d.total)} EUR parado no pagamento`, html);
+  await sendEmail(
+    BOOKING_ALERT_EMAIL,
+    `[CS] ${phone ? "Ligar" : "Contactar"}: ${d.propertyName} · ${Math.round(d.total)} EUR parado no pagamento`,
+    html,
+  );
 }
 
 /* ================================================================

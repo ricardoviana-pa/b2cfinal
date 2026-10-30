@@ -43,7 +43,7 @@ import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine"
 import RatePlanCards from "@/components/booking/RatePlanCards";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
-import { phoneIssue, phoneIssueMessage } from "@/lib/phone";
+import { defaultPhoneCountry, phoneIssue, phoneIssueMessage } from "@/lib/phone";
 import { consentChecked, consentToSend, stayContinueAction } from "@/lib/checkoutStay";
 import { flexAddsValue, flexExtraDays, flexPriceForPlan } from "@shared/flexValue";
 import { conciergeWhatsAppHref, guestDetailsIssues, type GuestField, type WalletGuest } from "@/lib/checkoutPayment";
@@ -64,8 +64,9 @@ import CheckoutSection, { type CheckoutSectionState } from "./CheckoutSection";
 import { MandateConsent, PaymentPlanSelector, planDate, type PaymentPlanChoice, type PaymentPlanOffer } from "./PaymentPlanSelector";
 import PreContractualBlock from "./PreContractualBlock";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
-import PhoneInput from "@/components/booking/PhoneInput";
+import PhoneInput, { isPhoneCountrySupported } from "@/components/booking/PhoneInput";
 import PaymentMethodsNote from "@/components/booking/PaymentMethodsNote";
+import { klarnaBillingCountry } from "@shared/klarna";
 
 type Step = "stay" | "customize" | "pay";
 const STEP_ORDER: Step[] = ["stay", "customize", "pay"];
@@ -268,6 +269,20 @@ export default function CheckoutPage() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
+  // País do campo do telefone (bandeira ou indicativo): é o país de
+  // faturação do Klarna (shared/klarna.ts), com a língua do site e PT por trás.
+  const [phoneCountry, setPhoneCountry] = useState<string | null>(null);
+  // O passo 1 (marcas de pagamento) e o passo 3 (separadores) têm de ler o
+  // mesmo país antes de o hóspede escrever (revisão do PR #194, B1): o campo
+  // do telefone só monta no passo 3, por isso a página semeia aqui o mesmo
+  // país por omissão que o PhoneInput vai aplicar (browser → língua do site).
+  // Só no browser: o HTML do servidor fica com a língua do site.
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    const languages = navigator.languages?.length ? navigator.languages : navigator.language ? [navigator.language] : [];
+    setPhoneCountry((current) => current ?? defaultPhoneCountry({ languages, siteLang: lang, supported: isPhoneCountrySupported }));
+  }, [lang]);
+  const klarnaCountry = klarnaBillingCountry({ phoneCountry, phone, siteLang: lang });
   const [nif, setNif] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   // Passo do pagamento (auditoria do funil, n.º 1 e 11): os erros dos dados do
@@ -2113,7 +2128,7 @@ export default function CheckoutPage() {
                 )}
                 {/* Antes do portão do email: como se pode pagar e que ainda
                     não se cobra nada (auditoria do funil, crítico). */}
-                <PaymentMethodsNote className="border-t border-pa-sand pt-3" total={todayTotal} />
+                <PaymentMethodsNote className="border-t border-pa-sand pt-3" country={klarnaCountry} total={todayTotal} />
               </div>
             </div>
           </CheckoutSection>
@@ -2280,6 +2295,7 @@ export default function CheckoutPage() {
                     id={GUEST_FIELD_IDS.phone}
                     value={phone}
                     onChange={setPhone}
+                    onCountryChange={setPhoneCountry}
                     onBlur={() => setPhoneTouched(true)}
                     placeholder={t("bookingWidget.phonePh", "Phone number *")}
                     describedBy={phoneError ? "checkout-phone-error" : undefined}
@@ -2291,6 +2307,10 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   {/* Teclado de texto: um nº de IVA de outro país tem letras (DE…, ESB…, NL…B01) */}
+                  {/* O placeholder é só o nome do campo e "(opcional)": nos telemóveis o campo
+                      tem 260–290 px de texto a 16 px e a frase inteira ficava cortada nas 9
+                      línguas (verificação em produção, 29 out 2026). O "para quê" fica na nota
+                      por baixo, ligada por aria-describedby. */}
                   <input
                     id="checkout-nif"
                     type="text"
@@ -2299,13 +2319,14 @@ export default function CheckoutPage() {
                     autoCorrect="off"
                     spellCheck={false}
                     maxLength={20}
-                    aria-label={t("checkout.nifPh")}
-                    aria-describedby={nifIssue ? "checkout-nif-hint" : undefined}
+                    aria-label={t("checkout.nifPh", "Tax ID or VAT no. (optional)")}
+                    aria-describedby={nifIssue ? "checkout-nif-note checkout-nif-hint" : "checkout-nif-note"}
                     value={nif}
                     onChange={(e) => setNif(e.target.value)}
-                    placeholder={t("checkout.nifPh", "NIF — optional, for a Portuguese invoice")}
+                    placeholder={t("checkout.nifPh", "Tax ID or VAT no. (optional)")}
                     className={cn(INPUT_CLASS, "border-pa-sand")}
                   />
+                  <p id="checkout-nif-note" className="caption text-pa-stone-aa mt-1 leading-snug">{t("checkout.nifNote", "Only if you want it on your invoice.")}</p>
                   {/* Só um NIF português tem dígito de controlo; o aviso é suave e nunca bloqueia o pagamento */}
                   {nifIssue && (
                     <p id="checkout-nif-hint" className="caption text-pa-earth mt-1 leading-snug" role="status">{t("checkout.nifInvalid")}</p>
@@ -2341,6 +2362,7 @@ export default function CheckoutPage() {
                     validateGuest={validateGuestForPay}
                     conciergeHref={conciergeHref}
                     twoPartsSwitch={twoPartsSwitch}
+                    klarnaCountry={klarnaCountry}
                     onTwoPartsUnavailable={() => {
                       setPlan("full");
                       setMandateAccepted(false);

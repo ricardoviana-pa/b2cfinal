@@ -2,9 +2,13 @@
  * The review quoted under the home's key features (lib/featuredReview.ts) and
  * the curated photo order for the page's grid and bedroom cards
  * (config/propertyPhotos.ts).
+ *
+ * The quote is a ranking, not a 5★ bar (every rating is published since
+ * 29 out 2026): best rating first, newest among equals, nothing below 4★, and
+ * it carries its own rating so the page draws the right stars.
  */
 import { describe, expect, it } from 'vitest';
-import { excerpt, pickFeaturedReview } from '@/lib/featuredReview';
+import { MIN_FEATURED_RATING, excerpt, pickFeaturedReview } from '@/lib/featuredReview';
 import { curatedImageOrder, roomPhotoIndex } from '@/config/propertyPhotos';
 
 describe('featured review', () => {
@@ -16,11 +20,42 @@ describe('featured review', () => {
     { rating: 5, text: 'Perfect week for our family of ten: space for everyone, a kitchen that cooked for all of us and a pool the kids never left.', date: '2026-07-02' },
   ];
 
-  it('quotes the newest five-star review with real words, never a channel name or a four-star one', () => {
+  it('quotes the best-rated, newest review with real words, never a channel name, and carries its rating', () => {
     const r = pickFeaturedReview(reviews)!;
     expect(r.name).toBe('Sophie');
     expect(r.date).toBe('2026-08-14');
+    expect(r.rating).toBe(5);
     expect(r.text).toBe('The house is even better than the photos. The pool and the view over the valley were unforgettable, and the concierge arranged a chef for our last night.');
+  });
+
+  it('ranks the rating above the date: an older 5★ beats a newer 4★', () => {
+    const r = pickFeaturedReview([
+      { rating: 4, text: 'A lovely house with a wonderful pool, we would come back any time without a doubt.', date: '2026-09-20' },
+      { rating: 5, text: 'Perfect week for our family of ten: space for everyone, a kitchen that cooked for all of us and a pool the kids never left.', date: '2026-07-02' },
+    ])!;
+    expect(r.rating).toBe(5);
+    expect(r.date).toBe('2026-07-02');
+  });
+
+  it('falls back to the newest 4★ review when no 5★ one is quotable, with four stars', () => {
+    const r = pickFeaturedReview([
+      { rating: 5, text: 'Great.', date: '2026-10-01' },
+      { rating: 4, text: 'An older stay, still a lovely house with a wonderful pool and a kitchen made for long dinners.', date: '2026-05-02', guestDisplayName: 'Marta' },
+      { rating: 4, text: 'A lovely house with a wonderful pool, we would come back any time without a doubt.', date: '2026-09-20', guestDisplayName: 'Jonas' },
+      { rating: 3, text: 'The house is fine and the view is lovely, but the pool heating did not work for our whole week there.', date: '2026-09-28' },
+    ])!;
+    expect(r.name).toBe('Jonas');
+    expect(r.rating).toBe(4);
+  });
+
+  it(`quotes nothing below ${MIN_FEATURED_RATING}★, nor a rating that is not one`, () => {
+    expect(MIN_FEATURED_RATING).toBe(4);
+    expect(pickFeaturedReview([
+      { rating: 3, text: 'The house is fine and the view is lovely, but the pool heating did not work for our whole week there.', date: '2026-09-28' },
+      { rating: 3.5, text: 'Comfortable beds and a kind welcome; the kitchen could use more pans and the wifi dropped in the evenings.', date: '2026-08-01' },
+      { rating: 0, text: 'The house is even better than the photos. The pool and the view over the valley were unforgettable.', date: '2026-08-14' },
+      { text: 'The house is even better than the photos. The pool and the view over the valley were unforgettable.', date: '2026-08-14' },
+    ])).toBeNull();
   });
 
   it('cuts a long review at the end of a sentence, else at a clause with an ellipsis', () => {

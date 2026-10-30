@@ -226,6 +226,63 @@ describe("contacto 1 no pagamento: sem tentativa, a pergunta; com tentativa, o t
   });
 });
 
+describe("contactos 2 e 3: as mesmas duas linhas por baixo do total, nas 9 línguas (29 out 2026)", () => {
+  // Estadia de 1 500 €, tarifa moderate: cancelamento gratuito até 7 dias antes de 10 nov 2099.
+  const stay = { nights: 5, totalNights: 1350, cleaningFee: 150, taxesAndFees: 0, total: 1500 };
+  const chargeAt = new Date("2099-10-24T09:00:00Z");
+  const twoParts = { todayCents: 75_000, laterCents: 75_000, chargeAt };
+  const money = (cents: number, lang: EmailLang) => formatQuotedMoney(cents / 100, INTL_TAG[lang]);
+  const twoPartsText = (lang: EmailLang) =>
+    FUNNEL_I18N[lang].twoPartsLine(money(75_000, lang), money(75_000, lang), formatLisbonDay(chargeAt, lang));
+  const policyText = (lang: EmailLang) => describeCancellationPolicy("moderate", { lang, checkIn: base.checkIn }).text;
+  const send = (lang: EmailLang, stage: 2 | 3, over: Record<string, unknown> = {}) => email.sendCheckoutRecovery({
+    ...base, locale: lang, stage, quote: stay, expiresAt: new Date("2099-11-01T18:00:00Z"),
+    cancellation: { policy: "moderate" }, twoParts,
+    ...(stage === 3 ? { flexGift: { until: new Date("2099-11-02T18:00:00Z"), days: 7, value: 120 } } : {}),
+    ...over,
+  });
+
+  it.each(EMAIL_LANGS)("%s: contacto 2 com o cancelamento gratuito (com data) e as duas partes", async (lang) => {
+    await send(lang, 2);
+    const html = lastHtml();
+    expect(html).toContain(FUNNEL_I18N[lang].headline2);
+    expect(html).toContain(policyText(lang));
+    expect(html).toContain(twoPartsText(lang));
+  });
+
+  it.each(EMAIL_LANGS)("%s: contacto 3, com o Flex oferecido, as mesmas duas linhas", async (lang) => {
+    await send(lang, 3);
+    const html = lastHtml();
+    expect(html).toContain(FUNNEL_I18N[lang].giftTitle);
+    expect(html).toContain(policyText(lang));
+    expect(html).toContain(twoPartsText(lang));
+  });
+
+  it("as regras do contacto 1: sem oferta, sem a soma do cartão ou sem prazo de cancelamento, sem a linha respetiva", async () => {
+    for (const stage of [2, 3] as const) {
+      await send("pt", stage, { twoParts: null });
+      expect(lastHtml()).not.toContain("Ou em duas partes");
+      // 800 € hoje (metade mais 50 € de extras) e 750 € depois: 1 550 € contra os 1 500 € do cartão.
+      await send("pt", stage, { twoParts: { todayCents: 80_000, laterCents: 75_000, chargeAt } });
+      expect(lastHtml()).not.toContain("Ou em duas partes");
+      await send("pt", stage, { cancellation: { policy: "non_refundable" } });
+      const html = lastHtml();
+      expect(html).not.toContain("Cancelamento gratuito");
+      expect(html).toContain("Ou em duas partes, no mesmo cartão: ");
+    }
+  });
+
+  it("contacto 4 nunca leva estas linhas, mesmo que lhe cheguem", async () => {
+    await email.sendCheckoutRecovery({
+      ...base, locale: "pt", stage: 4, quote: stay, cancellation: { policy: "moderate" }, twoParts,
+      propertyUrl: "https://www.portugalactive.com/pt/homes/original",
+    });
+    const html = lastHtml();
+    expect(html).not.toContain("Ou em duas partes");
+    expect(html).not.toContain("Cancelamento gratuito");
+  });
+});
+
 describe("contacto 4: o cartão das alternativas não tem preço", () => {
   const alternatives = [
     { name: "Casa Alternativa Um", locality: "Caminha", imageUrl: "https://assets.example.test/alt-1.jpg", url: "https://www.portugalactive.com/pt/homes/alt-um" },

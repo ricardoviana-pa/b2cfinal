@@ -242,3 +242,14 @@ describe("caixa de marketing do passo 1: só marketing, nunca o envio da reserva
     expect(label).not.toMatch(BANNED);
   });
 });
+
+describe("país do Klarna igual no passo 1 e no passo 3 (revisão do PR #194, B1)", () => {
+  it("a página semeia o país do telefone com a mesma regra do campo, antes de ele montar", () => {
+    const page = read("client/src/pages/checkout/CheckoutPage.tsx");
+    expect(page).toMatch(/setPhoneCountry\(\(current\) => current \?\? defaultPhoneCountry\(\{ languages, siteLang: lang, supported: isPhoneCountrySupported \}\)\)/);
+    expect(page).toMatch(/import PhoneInput, \{ isPhoneCountrySupported \} from "@\/components\/booking\/PhoneInput";/);
+    const field = read("client/src/components/booking/PhoneInput.tsx");
+    expect(field).toMatch(/export const isPhoneCountrySupported = \(iso2: string\) => SUPPORTED\.has\(iso2\);/);
+    expect(field).toMatch(/defaultPhoneCountry\(\{ languages: languages \? languages\.split\(","\) : \[\], siteLang: i18n\.language, supported: isSupported \}\)/);
+  });
+});
