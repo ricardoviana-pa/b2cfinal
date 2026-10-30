@@ -1365,12 +1365,15 @@ export default function PropertyDetail() {
                   </ul>
                 )}
                 {/* One past guest, in the first screens: the reviews section
-                    is ~2 800 px down, after the map. Newest five-star review
-                    with real words (lib/featuredReview.ts), cut to a sentence. */}
+                    is ~2 800 px down, after the map. The best-rated, newest
+                    review with real words (lib/featuredReview.ts), cut to a
+                    sentence, under its own stars — never five by default. */}
                 {featuredReview && (
                   <figure className="mt-5 pt-5 border-t border-pa-sand">
-                    <div className="flex items-center gap-0.5 mb-2" aria-hidden="true">
-                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={12} className="text-pa-gold-aa fill-current" />)}
+                    <div className="flex items-center gap-0.5 mb-2" role="img" aria-label={`${featuredReview.rating}/5`}>
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} size={12} className={s <= Math.round(featuredReview.rating) ? 'text-pa-gold-aa fill-current' : 'text-pa-sand'} aria-hidden="true" />
+                      ))}
                     </div>
                     <blockquote className="font-display text-[1.125rem] lg:text-[1.3rem] leading-snug text-pa-dark">
                       “{featuredReview.text}”
@@ -1382,7 +1385,7 @@ export default function PropertyDetail() {
                       )}
                       {' · '}
                       <a href="#property-reviews" className="text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
-                        {t('reviews.readAll', { count: Number(property.reviewCount) || 1 })}
+                        {t('reviews.readAll', { count: reviewStats.count || 1 })}
                       </a>
                     </figcaption>
                   </figure>

@@ -37,7 +37,7 @@ function Stars({ value, className, labelled }: { value: number; className: strin
   return (
     <div className="flex gap-0.5" {...(labelled ? { role: 'img', 'aria-label': `${value}/5` } : { 'aria-hidden': true })}>
       {[1, 2, 3, 4, 5].map((star) => (
-        <svg key={star} className={`${className} ${star <= filled ? 'text-[#8B7355]' : 'text-[#E8E4DC]'}`} fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+        <svg key={star} className={`${className} ${star <= filled ? 'text-pa-gold-aa' : 'text-pa-sand'}`} fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
           <path d={STAR} />
         </svg>
       ))}

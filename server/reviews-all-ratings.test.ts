@@ -21,6 +21,7 @@ import {
 import { detectReviewLanguage } from '../shared/reviewLanguage';
 import { vacationRentalSchema } from '../shared/vacationRentalSchema';
 import { __testing, mergeManualReviews } from './services/guesty-sync';
+import { recentGuestFeedback } from './services/property-catalog';
 import ReviewsSection from '@/components/property/ReviewsSection';
 import en from '../client/src/i18n/locales/en.json';
 import pt from '../client/src/i18n/locales/pt.json';
@@ -109,6 +110,26 @@ describe('card order and eligibility', () => {
     ]);
     expect(kept.map(r => r.rating)).toEqual([2, 3.5]);
   });
+  it('reads the channel name however the guest spelt it, without catching "airy"', () => {
+    // "our original air bnb booking cancelled" reached a property page's
+    // featured quote (30 out 2026): the space is not a loophole.
+    const kept = publishableReviews([
+      { rating: 5, text: 'Portugal Active came to our rescue after our original air bnb booking cancelled with 5 days notice!' },
+      { rating: 5, text: 'Found it on Air-BnB, then booked direct; spotless house.' },
+      { rating: 5, text: 'AIRBNB superhost quality, honestly.' },
+      { rating: 4, text: 'Airy bedrooms and a quiet garden, a lovely stay.' },
+    ]);
+    expect(kept.map(r => r.text)).toEqual(['Airy bedrooms and a quiet garden, a lovely stay.']);
+    // The homepage rail applies the same rule.
+    const rail = recentGuestFeedback([{
+      id: 'x', slug: 'x', name: 'X', isActive: true,
+      reviews: [
+        { rating: 5, text: 'Our original air bnb booking was cancelled; this house saved the holiday week.', date: '2026-09-01' },
+        { rating: 4, text: 'Airy bedrooms and a quiet garden, a lovely stay for the whole family.', date: '2026-08-01' },
+      ],
+    }], 'en');
+    expect(rail.map(r => r.text)).toEqual(['Airy bedrooms and a quiet garden, a lovely stay for the whole family.']);
+  });
 });
 
 describe('the Guesty funnel', () => {
@@ -153,6 +174,18 @@ describe('JSON-LD', () => {
     const twelve = vacationRentalSchema({ ...base, aggregateRating: { ratingValue: agg.average!, reviewCount: agg.count } });
     expect(twelve.aggregateRating).toEqual({ '@type': 'AggregateRating', ratingValue: 4.7, reviewCount: 12, bestRating: 5, worstRating: 1 });
     expect((twelve.review as any[])[0].reviewRating.ratingValue).toBe(4);
+  });
+  it('keeps a review that names the booking channel out of the review nodes, count untouched', () => {
+    const schema = vacationRentalSchema({
+      ...base,
+      aggregateRating: { ratingValue: 4.5, reviewCount: 3 },
+      reviews: [
+        { rating: 5, text: 'Portugal Active came to our rescue after our original air bnb booking cancelled.', guestName: 'Kristina', date: '2026-08-10' },
+        { rating: 4, text: 'Fine stay overall.', guestName: 'Ana', date: '2026-01-01' },
+      ],
+    });
+    expect((schema.review as any[]).map(r => r.author.name)).toEqual(['Ana']);
+    expect((schema.aggregateRating as any).reviewCount).toBe(3);
   });
   it('the page and the server build it from the same helper', () => {
     expect(read('client/src/pages/PropertyDetail.tsx')).toMatch(/displayedAggregate\(/);

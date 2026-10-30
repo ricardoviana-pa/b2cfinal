@@ -18,8 +18,10 @@
 
 export const MIN_REVIEWS_FOR_AVERAGE = 3;
 
-/** White-label: a quote that names the booking channel is never shown. */
-export const REVIEW_CHANNEL_RE = /\bairbnb\b|booking\.com|\bvrbo\b|\bexpedia\b|homeaway/i;
+/** White-label: a quote that names the booking channel is never shown —
+ *  "Airbnb", "air bnb" and "AirBnB" alike (a guest wrote "our original air
+ *  bnb booking", and it reached the page's featured quote, 30 out 2026). */
+export const REVIEW_CHANNEL_RE = /\bair[\s-]?bnb\b|booking\.com|\bvrbo\b|\bexpedia\b|homeaway/i;
 
 export interface RatedReview {
   rating: number;

@@ -9,7 +9,7 @@
 - amenities-chave traduzidas (`amenityHighlight.*`, 9 línguas) e a lista completa num dialog; motor em `client/src/lib/amenities.ts`.
 
 **PR seguinte (`feat/pdp-conversion-2`)**:
-- uma review 5★ citada debaixo das amenities-chave (`lib/featuredReview.ts`);
+- uma review citada debaixo das amenities-chave (`lib/featuredReview.ts`): a de melhor classificação, a mais recente entre iguais, nunca abaixo de 4★, com as estrelas dela — não é um filtro de 5★ (desde 29 out todas as classificações são publicadas e a média junto ao título é a real; `shared/reviewStats.ts`);
 - calendário de disponibilidade visível na página (`components/property/AvailabilitySection.tsx`): dois meses no computador, um no telemóvel; uma estadia escolhida aqui vai para o cartão de reserva, que a cota;
 - painel das casas parceiras mais curto: os dados do hóspede e o botão só depois de haver datas;
 - fotos curadas por casa (`config/propertyPhotos.ts`): a ordem das cinco da grelha e uma foto por quarto.
