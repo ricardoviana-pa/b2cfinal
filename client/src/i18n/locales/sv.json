@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exklusivt för våra gäster",
     "office": "Kontor"
   },
+  "promoBar": {
+    "defaultText": "Använd koden {code} i kassan",
+    "copied": "Koden har kopierats",
+    "ariaLabel": "Aktuellt erbjudande",
+    "copyAria": "kopiera koden",
+    "dismiss": "Stäng"
+  },
   "destinations": {
     "minho": "Norra Portugal · Minho",
     "porto": "Porto och Douro",
@@ -568,7 +575,9 @@
     "showAllAmenitiesCount": "Visa alla {{count}} bekvämligheter",
     "showAllPhotos": "Visa alla {{count}} foton",
     "bedTotal_one": "{{count}} säng",
-    "bedTotal_other": "{{count}} sängar"
+    "bedTotal_other": "{{count}} sängar",
+    "availabilityTitle": "Tillgänglighet",
+    "availabilityHint": "Välj in- och utcheckning: priset för din vistelse visas i bokningsrutan."
   },
   "priceBreakdown": {
     "title": "Prissammanfattning",
@@ -1371,7 +1380,9 @@
     "verifiedGuest": "Verifierad gäst",
     "verifiedNote": "Alla omdömen kommer från genomförda vistelser, insamlade via våra bokningskanaler.",
     "previous": "Föregående omdömen",
-    "next": "Nästa omdömen"
+    "next": "Nästa omdömen",
+    "readAll_one": "Läs recensionen",
+    "readAll_other": "Läs alla {{count}} recensioner"
   },
   "amenity": {
     "outdoorPool": "Utomhus & Pool",
@@ -1606,7 +1617,7 @@
     "emailLabel": "Din e-post",
     "emailPh": "namn@email.com",
     "emailSupport": "Vi håller ditt pris i 24 timmar och mejlar offerten. Datumen säkras först efter betalning. Ingen skräppost.",
-    "newsletterOptIn": "Jag godkänner att min bokning skickas och framtida kontakt.",
+    "newsletterOptIn": "Jag vill få nyheter och erbjudanden från Portugal Active (valfritt).",
     "backToStay": "Tillbaka till vistelsen",
     "payTitle": "Betalning",
     "paySubtitle": "Dina uppgifter, sedan en säker betalning.",
@@ -1874,6 +1885,8 @@
     "perPersonDay": "per person · dag",
     "allDays": "Varje dag",
     "airport": "Flygplats",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lissabon",
     "confirm24hNote": "Om vi inte kan garantera det återbetalas raden automatiskt.",
     "noChargeNow": "ingen debitering nu",
     "perPersonHour": "per barn · timme",
@@ -2034,7 +2047,8 @@
     "submitError": "Vi kunde inte skicka din förfrågan. Försök igen eller skriv till vår concierge.",
     "sending": "Skickar…",
     "submit": "Efterfråga dessa datum",
-    "noCharge": "Ingen betalning nu — vår concierge bekräftar först tillgänglighet och sluttotal."
+    "noCharge": "Ingen betalning nu — vår concierge bekräftar först tillgänglighet och sluttotal.",
+    "pickDatesFirst": "Välj dina datum ovan: sedan ber vi om dina uppgifter och skickar förfrågan."
   },
   "login": {
     "benefitTrips": "Hantera dina resor",

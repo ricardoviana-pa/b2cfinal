@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusif pour nos hôtes",
     "office": "Bureau"
   },
+  "promoBar": {
+    "defaultText": "Utilisez le code {code} lors du paiement",
+    "copied": "Code copié",
+    "ariaLabel": "Promotion en cours",
+    "copyAria": "copier le code",
+    "dismiss": "Fermer"
+  },
   "destinations": {
     "minho": "Nord du Portugal · Minho",
     "porto": "Porto et Douro",
@@ -568,7 +575,9 @@
     "showAllAmenitiesCount": "Voir les {{count}} équipements",
     "showAllPhotos": "Voir les {{count}} photos",
     "bedTotal_one": "{{count}} lit",
-    "bedTotal_other": "{{count}} lits"
+    "bedTotal_other": "{{count}} lits",
+    "availabilityTitle": "Disponibilités",
+    "availabilityHint": "Choisissez vos dates d’arrivée et de départ : le prix du séjour s’affiche dans l’encart de réservation."
   },
   "priceBreakdown": {
     "title": "Récapitulatif du prix",
@@ -1371,7 +1380,9 @@
     "verifiedGuest": "Voyageur vérifié",
     "verifiedNote": "Tous les avis proviennent de séjours effectués, recueillis via nos canaux de réservation.",
     "previous": "Avis précédents",
-    "next": "Avis suivants"
+    "next": "Avis suivants",
+    "readAll_one": "Lire l’avis",
+    "readAll_other": "Lire les {{count}} avis"
   },
   "amenity": {
     "outdoorPool": "Extérieur et Piscine",
@@ -1606,7 +1617,7 @@
     "emailLabel": "Votre email",
     "emailPh": "nom@email.com",
     "emailSupport": "Nous gardons votre prix 24 heures et vous envoyons le devis. Les dates ne sont réservées qu'après paiement.",
-    "newsletterOptIn": "J'autorise l'envoi de ma réservation et un contact ultérieur.",
+    "newsletterOptIn": "Je souhaite recevoir les nouveautés et offres de Portugal Active (facultatif).",
     "backToStay": "Retour au séjour",
     "payTitle": "Paiement",
     "paySubtitle": "Vos coordonnées, puis un paiement sécurisé.",
@@ -1874,6 +1885,8 @@
     "perPersonDay": "par personne · jour",
     "allDays": "Tous les jours",
     "airport": "Aéroport",
+    "airportPorto": "Porto",
+    "airportLisbon": "Lisbonne",
     "confirm24hNote": "Si nous ne pouvons pas le garantir, la ligne est remboursée automatiquement.",
     "noChargeNow": "aucun débit maintenant",
     "perPersonHour": "par enfant · heure",
@@ -2034,7 +2047,8 @@
     "submitError": "Nous n’avons pas pu envoyer votre demande. Réessayez ou écrivez au concierge.",
     "sending": "Envoi…",
     "submit": "Demander ces dates",
-    "noCharge": "Aucun paiement maintenant — le concierge confirme d’abord la disponibilité et le total final."
+    "noCharge": "Aucun paiement maintenant — le concierge confirme d’abord la disponibilité et le total final.",
+    "pickDatesFirst": "Choisissez vos dates ci-dessus : nous vous demandons ensuite vos coordonnées et transmettons la demande."
   },
   "login": {
     "benefitTrips": "Gérez vos voyages",

@@ -376,6 +376,26 @@ export default function BookingWidget({
   const datePicker = useDateRangePicker(!!checkIn);
   const showCalendar = datePicker.open;
 
+  // Dates chosen outside the widget — the availability calendar on the home's
+  // page — arrive as new initial dates: adopt them (the quote effect below
+  // then prices them). Nothing happens when they are the widget's own dates
+  // coming back (it reports them to the page, which passes them down again).
+  const adoptedDatesRef = useRef(`${initialCheckIn}|${initialCheckOut}`);
+  useEffect(() => {
+    const key = `${initialCheckIn}|${initialCheckOut}`;
+    if (key === adoptedDatesRef.current) return;
+    adoptedDatesRef.current = key;
+    if (initialCheckIn === checkIn && initialCheckOut === checkOut) return;
+    setCheckIn(initialCheckIn);
+    setCheckOut(initialCheckOut);
+    setQuote(null);
+    setError("");
+    setBeQuoteError("");
+    setStep("dates");
+    datePicker.close();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialCheckIn, initialCheckOut]);
+
   const widgetRef = useRef<HTMLDivElement>(null);
   // Cartão fixo do computador (null na gaveta do telemóvel): o RESERVE fica
   // logo a seguir às tarifas e o CSS prende-o ao fundo do cartão; o resto

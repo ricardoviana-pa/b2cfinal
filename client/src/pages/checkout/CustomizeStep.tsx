@@ -797,7 +797,8 @@ export default function CustomizeStep({
                               : "border-pa-sand text-pa-earth hover:border-pa-dark",
                           )}
                         >
-                          {ap === "porto" ? t("checkout.airport.porto", "Porto") : t("checkout.airport.lisbon", "Lisbon")}
+                          {/* checkout.airport is the string "Airport": a key under it never resolved, so both read English in nine languages. */}
+                          {ap === "porto" ? t("checkout.airportPorto", "Porto") : t("checkout.airportLisbon", "Lisbon")}
                         </button>
                       ))}
                     </div>

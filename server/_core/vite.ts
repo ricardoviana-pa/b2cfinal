@@ -30,7 +30,7 @@ import { isNonIndexableHost } from "../lib/hosts.js";
 import { htmlCacheHeaders, isPrivateHtmlPath } from "../lib/htmlCache";
 import { noStoreIfTracked, ssrRenderUrl } from "../lib/trackingParams";
 import { GUESTY_IMAGE_ORIGIN, injectBeforeBodyEnd, injectIntoHead, needsGuestyPreconnect, routeAssets, routeModulePreloadScript, routeStyleTags, type ViteManifest } from "../lib/routeAssets";
-import { guestyIdsOf, readFromPricesForSsr } from "../lib/ssrFromPrices";
+import { guestyIdsOf, readFromPricesForSsr, readPdpFromPriceForSsr } from "../lib/ssrFromPrices";
 import { setStaticFileHeaders } from "../lib/security-headers";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
@@ -1646,9 +1646,10 @@ const _ssrRenderCache = new BoundedMap<string, { appHtml: string; dehydratedStat
     if (m) {
       const prop = await getPropertyBySlugCached(m[1]);
       const out = buildPropertyPrefetch(m[1], prop, lang);
-      // The booking card's "From €X" (lib/ssrFromPrices.ts). Partner homes
-      // price off their own calendar and keep fetching it as before.
-      const fromPrices = prop && prop.source !== "tripwix" ? await readFromPricesForSsr([prop.guestyId]) : undefined;
+      // The booking card's "From €X" (lib/ssrFromPrices.ts): our homes from
+      // lowest-nightly's memory, partner homes from the calendar the job
+      // stored (never a Tripwix call) — the same budget for both.
+      const fromPrices = await readPdpFromPriceForSsr(prop);
       return fromPrices ? { ...out, fromPrices } : out;
     }
     // Blog articles: seed the handful of homes shown under the article, so

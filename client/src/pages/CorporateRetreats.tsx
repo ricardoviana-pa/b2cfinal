@@ -20,7 +20,7 @@ export default function CorporateRetreats() {
   return <div className="min-h-screen bg-pa-paper">
     <StructuredData id="corporate" data={[
       ...corporateSchema(t('corporate', {returnObjects:true}) as CorporateCopy, i18n.language.split('-')[0]),
-      buildBreadcrumbSchema([{ name: t('nav.home'), item: '/' }, { name: t('nav.events'), item: '/events' }, { name: title }]),
+      buildBreadcrumbSchema([{ name: t('destinationDetail.breadcrumbHome'), item: '/' }, { name: t('nav.events'), item: '/events' }, { name: title }]),
     ]} />
     <Header variant="solid" />
     <section className="page-intro">

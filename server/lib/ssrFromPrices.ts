@@ -56,6 +56,59 @@ export async function readFromPricesForSsr(
   }
 }
 
+/** The partner "from" (services/tripwix.ts getTripwixLowestNightly): the
+ *  cheapest minimum stay in the calendar the job stored — memory, or one DB
+ *  read; never a Tripwix call on the request path. */
+export type PartnerFromLoader = (uid: string, minNights?: number) => Promise<number | null>;
+
+const defaultPartnerLoader: PartnerFromLoader = async (uid, minNights) => {
+  const { getTripwixLowestNightly } = await import("../services/tripwix");
+  return getTripwixLowestNightly(uid, minNights);
+};
+
+export interface PdpPriceProp {
+  source?: unknown;
+  guestyId?: unknown;
+  supplierUid?: unknown;
+  minNights?: unknown;
+  isActive?: unknown;
+}
+
+/** What a property page prices by, and which store answers: our homes by
+ *  Guesty listing id (lowest-nightly.ts), partner homes by supplier uid
+ *  (their stored calendar) — the listingId the page's lowestNightly query
+ *  sends, so the seed is found under the same key. */
+export function pdpPriceListing(prop: PdpPriceProp | null | undefined): { id: string; partner: boolean; minNights?: number } | undefined {
+  if (!prop) return undefined;
+  if (prop.source === "tripwix") {
+    // booking.lowestNightly answers null for a partner home that is switched off.
+    if (prop.isActive === false || typeof prop.supplierUid !== "string" || !prop.supplierUid) return undefined;
+    const minNights = typeof prop.minNights === "number" && Number.isFinite(prop.minNights) && prop.minNights > 0 ? prop.minNights : undefined;
+    return { id: prop.supplierUid, partner: true, minNights };
+  }
+  return typeof prop.guestyId === "string" && prop.guestyId ? { id: prop.guestyId, partner: false } : undefined;
+}
+
+/**
+ * The "From €X" of ONE property page, for the server HTML. Partner homes
+ * were left out (verificação em produção de 29 out 2026, Property PP-3): a
+ * home with a price said "Price on request · Pick your dates for the exact
+ * total" until the browser's query came back, 0.4–0.7 s after paint. Same
+ * budget as the lists; a null is seeded too, so a home with no price says
+ * "on request" at once instead of promising a total.
+ */
+export async function readPdpFromPriceForSsr(
+  prop: PdpPriceProp | null | undefined,
+  loaders: { guesty?: Loader; partner?: PartnerFromLoader } = {},
+  budgetMs = SSR_FROM_PRICES_BUDGET_MS,
+): Promise<SsrFromPricesSeed | undefined> {
+  const listing = pdpPriceListing(prop);
+  if (!listing) return undefined;
+  if (!listing.partner) return readFromPricesForSsr([listing.id], loaders.guesty ?? defaultLoader, budgetMs);
+  const partner = loaders.partner ?? defaultPartnerLoader;
+  return readFromPricesForSsr([listing.id], async ([uid]) => ({ [uid]: await partner(uid, listing.minNights) }), budgetMs);
+}
+
 /** The Guesty listing ids of a list of property cards — the same filter the
  *  pages use for their lowestNightlyBatch input (partner homes have none). */
 export function guestyIdsOf(properties: ReadonlyArray<{ guestyId?: unknown }> | null | undefined): string[] {

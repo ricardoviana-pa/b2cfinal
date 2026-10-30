@@ -227,3 +227,16 @@ describe("contexto e contacto humano em todos os passos", () => {
     expect(read("client/src/components/layout/CookieBanner.tsx")).toMatch(/setProperty\('--cookie-banner-h'/);
   });
 });
+
+describe("caixa de marketing do passo 1: só marketing, nunca o envio da reserva", () => {
+  // O Ricardo (29 out 2026) passou sem a marcar e estranhou: o texto antigo
+  // ("Autorizo o envio da minha reserva e contacto futuro") dava a entender
+  // que o email da reserva dependia da caixa. A confirmação vai sempre; a
+  // caixa é só a autorização de marketing, opcional e dita como tal.
+  it.each(LANGS)("%s: fala de novidades/ofertas, diz que é opcional e não fala do envio da reserva", (lang) => {
+    const label = locale(lang).checkout.newsletterOptIn as string;
+    expect(label).toMatch(/optional|opcional|facultatif|facoltativo|optioneel|valfritt|valinnainen/i);
+    expect(label).not.toMatch(/reserva|booking|réservation|prenotazione|Buchung|boeking|bokning|varauks/i);
+    expect(label).not.toMatch(BANNED);
+  });
+});
