@@ -1885,6 +1885,11 @@
     "perPersonDay": "por persona · día",
     "allDays": "Todos los días",
     "airport": "Aeropuerto",
+    "sections": {
+      "noExtras": "Sin extras",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extras"
+    },
     "airportPorto": "Oporto",
     "airportLisbon": "Lisboa",
     "confirm24hNote": "Si no podemos garantizarlo, la línea se reembolsa automáticamente.",

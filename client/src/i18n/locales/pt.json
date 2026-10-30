@@ -1885,6 +1885,11 @@
     "perPersonDay": "por pessoa · dia",
     "allDays": "Todos os dias",
     "airport": "Aeroporto",
+    "sections": {
+      "noExtras": "Sem extras",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extras"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lisboa",
     "confirm24hNote": "Se não conseguirmos garantir, devolvemos essa linha automaticamente.",

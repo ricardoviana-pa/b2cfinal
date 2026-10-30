@@ -1885,6 +1885,11 @@
     "perPersonDay": "per persoon · dag",
     "allDays": "Elke dag",
     "airport": "Luchthaven",
+    "sections": {
+      "noExtras": "Geen extra’s",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extra’s"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lissabon",
     "confirm24hNote": "Als we het niet kunnen garanderen, wordt de regel automatisch terugbetaald.",

@@ -1885,6 +1885,11 @@
     "perPersonDay": "per henkilö · päivä",
     "allDays": "Joka päivä",
     "airport": "Lentokenttä",
+    "sections": {
+      "noExtras": "Ei lisäpalveluita",
+      "extrasCount_one": "{{count}} lisäpalvelu",
+      "extrasCount_other": "{{count}} lisäpalvelua"
+    },
     "airportPorto": "Porto",
     "airportLisbon": "Lissabon",
     "confirm24hNote": "Jos emme voi taata sitä, rivi hyvitetään automaattisesti.",
