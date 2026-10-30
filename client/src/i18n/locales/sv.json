@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exklusivt för våra gäster",
     "office": "Kontor"
   },
+  "promoBar": {
+    "defaultText": "Använd koden {code} i kassan",
+    "copied": "Koden har kopierats",
+    "ariaLabel": "Aktuellt erbjudande",
+    "copyAria": "kopiera koden",
+    "dismiss": "Stäng"
+  },
   "destinations": {
     "minho": "Norra Portugal · Minho",
     "porto": "Porto och Douro",
@@ -564,7 +571,13 @@
     "allDestHomes": "Alla hem i {{destination}}",
     "ownershipTitle": "Mer än en vistelse.",
     "ownershipBody": "Det här huset ingår också i vårt fastighetsutbud. Utforska möjligheten att köpa det med teamet som känner det.",
-    "ownershipAction": "Upptäck det här huset till salu"
+    "ownershipAction": "Upptäck det här huset till salu",
+    "showAllAmenitiesCount": "Visa alla {{count}} bekvämligheter",
+    "showAllPhotos": "Visa alla {{count}} foton",
+    "bedTotal_one": "{{count}} säng",
+    "bedTotal_other": "{{count}} sängar",
+    "availabilityTitle": "Tillgänglighet",
+    "availabilityHint": "Välj in- och utcheckning: priset för din vistelse visas i bokningsrutan."
   },
   "priceBreakdown": {
     "title": "Prissammanfattning",
@@ -1367,7 +1380,9 @@
     "verifiedGuest": "Verifierad gäst",
     "verifiedNote": "Alla omdömen kommer från genomförda vistelser, insamlade via våra bokningskanaler.",
     "previous": "Föregående omdömen",
-    "next": "Nästa omdömen"
+    "next": "Nästa omdömen",
+    "readAll_one": "Läs recensionen",
+    "readAll_other": "Läs alla {{count}} recensioner"
   },
   "amenity": {
     "outdoorPool": "Utomhus & Pool",
@@ -1382,7 +1397,9 @@
     "bathroom": "Badrum",
     "familyFriendly": "Barnvänligt",
     "safety": "Säkerhet",
-    "other": "Övrigt"
+    "other": "Övrigt",
+    "accessibility": "Tillgänglighet",
+    "nearby": "Aktiviteter i närheten"
   },
   "experience": {
     "from": "Från",
@@ -1600,7 +1617,7 @@
     "emailLabel": "Din e-post",
     "emailPh": "namn@email.com",
     "emailSupport": "Vi håller ditt pris i 24 timmar och mejlar offerten. Datumen säkras först efter betalning. Ingen skräppost.",
-    "newsletterOptIn": "Jag godkänner att min bokning skickas och framtida kontakt.",
+    "newsletterOptIn": "Jag vill få nyheter och erbjudanden från Portugal Active (valfritt).",
     "backToStay": "Tillbaka till vistelsen",
     "payTitle": "Betalning",
     "paySubtitle": "Dina uppgifter, sedan en säker betalning.",
@@ -1868,10 +1885,13 @@
     "perPersonDay": "per person · dag",
     "allDays": "Varje dag",
     "airport": "Flygplats",
-    "airports": {
-      "porto": "Porto",
-      "lisbon": "Lissabon"
+    "sections": {
+      "noExtras": "Inga tillägg",
+      "extrasCount_one": "{{count}} tillägg",
+      "extrasCount_other": "{{count}} tillägg"
     },
+    "airportPorto": "Porto",
+    "airportLisbon": "Lissabon",
     "confirm24hNote": "Om vi inte kan garantera det återbetalas raden automatiskt.",
     "noChargeNow": "ingen debitering nu",
     "perPersonHour": "per barn · timme",
@@ -1937,12 +1957,7 @@
     "nifInvalid": "Det här portugisiska NIF-numret ser inte rätt ut: kontrollera de 9 siffrorna. För ett momsnummer från ett annat land, börja med landskoden (till exempel ES).",
     "emailHoldNote": "Vi håller det här priset till {{date}}, {{time}}. Om du inte slutför nu kan vi skicka dig en eller två påminnelser via e-post. Ingen spam.",
     "emailReminderNote": "Om du inte slutför nu kan vi skicka dig en eller två påminnelser via e-post. Ingen spam.",
-    "conciergeMessage": "Hej, jag har en fråga om min bokning: {{property}}, {{checkIn}} till {{checkOut}}, gäster: {{guests}}.",
-    "sections": {
-      "noExtras": "Inga tillägg",
-      "extrasCount_one": "{{count}} tillägg",
-      "extrasCount_other": "{{count}} tillägg"
-    }
+    "conciergeMessage": "Hej, jag har en fråga om min bokning: {{property}}, {{checkIn}} till {{checkOut}}, gäster: {{guests}}."
   },
   "host": {
     "hostedBy": "Värd: Portugal Active",
@@ -2037,7 +2052,8 @@
     "submitError": "Vi kunde inte skicka din förfrågan. Försök igen eller skriv till vår concierge.",
     "sending": "Skickar…",
     "submit": "Efterfråga dessa datum",
-    "noCharge": "Ingen betalning nu — vår concierge bekräftar först tillgänglighet och sluttotal."
+    "noCharge": "Ingen betalning nu — vår concierge bekräftar först tillgänglighet och sluttotal.",
+    "pickDatesFirst": "Välj dina datum ovan: sedan ber vi om dina uppgifter och skickar förfrågan."
   },
   "login": {
     "benefitTrips": "Hantera dina resor",
@@ -2416,5 +2432,54 @@
       "network": "Anslutningsproblem. Kontrollera internetanslutningen och försök igen.",
       "generic": "Det gick inte att slutföra. Försök igen eller prata med din concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Privat pool",
+    "swimmingPool": "Pool",
+    "heatedPool": "Uppvärmd pool",
+    "seaView": "Havsutsikt",
+    "nearOcean": "Nära havet",
+    "mountainView": "Bergsutsikt",
+    "riverView": "Utsikt över flod eller sjö",
+    "jacuzzi": "Jacuzzi",
+    "sauna": "Bastu",
+    "fireplace": "Öppen spis",
+    "bbq": "Grill",
+    "garden": "Trädgård",
+    "terrace": "Terrass",
+    "airConditioning": "Luftkonditionering",
+    "heating": "Uppvärmning",
+    "wifi": "Wifi",
+    "workspace": "Arbetsplats",
+    "kitchen": "Kök",
+    "dishwasher": "Diskmaskin",
+    "washer": "Tvättmaskin",
+    "tv": "TV",
+    "crib": "Spjälsäng",
+    "gym": "Gym",
+    "evCharging": "Elbilsladdning",
+    "parking": "Gratis parkering"
+  },
+  "beds": {
+    "king_one": "{{count}} king-säng",
+    "king_other": "{{count}} king-sängar",
+    "queen_one": "{{count}} queen-säng",
+    "queen_other": "{{count}} queen-sängar",
+    "double_one": "{{count}} dubbelsäng",
+    "double_other": "{{count}} dubbelsängar",
+    "single_one": "{{count}} enkelsäng",
+    "single_other": "{{count}} enkelsängar",
+    "sofa_one": "{{count}} bäddsoffa",
+    "sofa_other": "{{count}} bäddsoffor",
+    "bunk_one": "{{count}} våningssäng",
+    "bunk_other": "{{count}} våningssängar",
+    "air_one": "{{count}} luftmadrass",
+    "air_other": "{{count}} luftmadrasser",
+    "floor_one": "{{count}} golvmadrass",
+    "floor_other": "{{count}} golvmadrasser",
+    "crib_one": "{{count}} spjälsäng",
+    "crib_other": "{{count}} spjälsängar",
+    "toddler_one": "{{count}} juniorsäng",
+    "toddler_other": "{{count}} juniorsängar"
   }
 }

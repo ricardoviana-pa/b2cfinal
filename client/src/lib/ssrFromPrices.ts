@@ -45,15 +45,38 @@ export function pickFromPrices(
   return { data, updatedAt: incomplete ? 0 : seed.at };
 }
 
-/** The same seed in the shape of booking.lowestNightly (one PDP). */
+export interface SeededLowestNightly {
+  data: { from: number | null; source: 'fallback' | 'calendar' | 'none'; currency: 'EUR' };
+  updatedAt: number;
+}
+
+/** The same seed in the shape of booking.lowestNightly (one PDP): for our
+ *  homes as getDisplayedLowestNightly() answers, for a partner home as the
+ *  procedure's tripwix branch does (source 'calendar'). */
 export function pickLowestNightly(
   seed: SsrFromPrices | undefined,
   listingId: string | undefined,
-): { data: { from: number | null; source: 'fallback' | 'none'; currency: 'EUR' }; updatedAt: number } | undefined {
+  partner = false,
+): SeededLowestNightly | undefined {
   if (!listingId) return undefined;
   const picked = pickFromPrices(seed, [listingId]);
   if (!picked) return undefined;
   const from = picked.data[listingId];
-  // Same shape as getDisplayedLowestNightly() on the server.
-  return { data: { from, source: from === null ? 'none' : 'fallback', currency: 'EUR' }, updatedAt: picked.updatedAt };
+  return { data: { from, source: from === null ? 'none' : partner ? 'calendar' : 'fallback', currency: 'EUR' }, updatedAt: picked.updatedAt };
+}
+
+/**
+ * The property page's seed, under the listing its lowestNightly query sends:
+ * a partner (Tripwix) home by its supplier uid, our homes by Guesty id. The
+ * page used to read partner homes by Guesty id, which they do not have, so
+ * their card said "Price on request" in the server HTML and until the query
+ * came back (verificação em produção de 29 out 2026, Property PP-3).
+ */
+export function pickPdpLowestNightly(
+  seed: SsrFromPrices | undefined,
+  home: { guestyId?: string | null; tripwixUid?: string | null },
+): SeededLowestNightly | undefined {
+  return home.tripwixUid
+    ? pickLowestNightly(seed, home.tripwixUid, true)
+    : pickLowestNightly(seed, home.guestyId ?? undefined);
 }

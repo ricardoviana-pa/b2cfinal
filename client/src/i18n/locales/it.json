@@ -31,6 +31,13 @@
     "conciergeExclusive": "Esclusivo per i nostri ospiti",
     "office": "Ufficio"
   },
+  "promoBar": {
+    "defaultText": "Usa il codice {code} al momento del pagamento",
+    "copied": "Codice copiato",
+    "ariaLabel": "Promozione in corso",
+    "copyAria": "copia il codice",
+    "dismiss": "Chiudi"
+  },
   "destinations": {
     "minho": "Nord del Portogallo · Minho",
     "porto": "Porto e Douro",
@@ -564,7 +571,13 @@
     "allDestHomes": "Tutte le case {{inPlace}}",
     "ownershipTitle": "Più di un soggiorno.",
     "ownershipBody": "Questa casa fa anche parte della nostra collezione immobiliare. Valuti la possibilità di acquistarla con il team che la conosce.",
-    "ownershipAction": "Scopra questa casa in vendita"
+    "ownershipAction": "Scopra questa casa in vendita",
+    "showAllAmenitiesCount": "Mostra tutti i {{count}} servizi",
+    "showAllPhotos": "Mostra tutte le {{count}} foto",
+    "bedTotal_one": "{{count}} letto",
+    "bedTotal_other": "{{count}} letti",
+    "availabilityTitle": "Disponibilità",
+    "availabilityHint": "Scegli le date di check-in e check-out: il prezzo del soggiorno compare nel riquadro di prenotazione."
   },
   "priceBreakdown": {
     "title": "Riepilogo prezzo",
@@ -1367,7 +1380,9 @@
     "verifiedGuest": "Ospite verificato",
     "verifiedNote": "Tutte le recensioni provengono da soggiorni conclusi, raccolte tramite i nostri canali di prenotazione.",
     "previous": "Recensioni precedenti",
-    "next": "Recensioni successive"
+    "next": "Recensioni successive",
+    "readAll_one": "Leggi la recensione",
+    "readAll_other": "Leggi tutte le {{count}} recensioni"
   },
   "amenity": {
     "outdoorPool": "Esterno e Piscina",
@@ -1382,7 +1397,9 @@
     "bathroom": "Bagno",
     "familyFriendly": "Per famiglie",
     "safety": "Sicurezza",
-    "other": "Altro"
+    "other": "Altro",
+    "accessibility": "Accessibilità",
+    "nearby": "Attività nelle vicinanze"
   },
   "experience": {
     "from": "Da",
@@ -1600,7 +1617,7 @@
     "emailLabel": "La tua email",
     "emailPh": "nome@email.com",
     "emailSupport": "Blocchiamo il tuo prezzo per 24 ore e ti inviamo il preventivo. Le date si riservano solo dopo il pagamento.",
-    "newsletterOptIn": "Autorizzo l'invio della mia prenotazione e contatti futuri.",
+    "newsletterOptIn": "Desidero ricevere novità e offerte di Portugal Active (facoltativo).",
     "backToStay": "Torna al soggiorno",
     "payTitle": "Pagamento",
     "paySubtitle": "I tuoi dati e un pagamento sicuro.",
@@ -1868,10 +1885,13 @@
     "perPersonDay": "a persona · giorno",
     "allDays": "Tutti i giorni",
     "airport": "Aeroporto",
-    "airports": {
-      "porto": "Porto",
-      "lisbon": "Lisbona"
+    "sections": {
+      "noExtras": "Nessun extra",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extra"
     },
+    "airportPorto": "Porto",
+    "airportLisbon": "Lisbona",
     "confirm24hNote": "Se non possiamo garantirlo, la riga viene rimborsata automaticamente.",
     "noChargeNow": "nessun addebito ora",
     "perPersonHour": "per bambino · ora",
@@ -1937,12 +1957,7 @@
     "nifInvalid": "Questo NIF portoghese non sembra corretto: controlli le 9 cifre. Per una partita IVA di un altro paese, inizi con il codice del paese (per esempio ES).",
     "emailHoldNote": "Teniamo questo prezzo fino {{date, al}}, {{time}}. Se non completa ora, potremmo inviarle uno o due promemoria via email. Niente spam.",
     "emailReminderNote": "Se non completa ora, potremmo inviarle uno o due promemoria via email. Niente spam.",
-    "conciergeMessage": "Buongiorno, ho una domanda sulla mia prenotazione: {{property}}, {{checkIn, dal}} {{checkOut, al}}, ospiti: {{guests}}.",
-    "sections": {
-      "noExtras": "Nessun extra",
-      "extrasCount_one": "{{count}} extra",
-      "extrasCount_other": "{{count}} extra"
-    }
+    "conciergeMessage": "Buongiorno, ho una domanda sulla mia prenotazione: {{property}}, {{checkIn, dal}} {{checkOut, al}}, ospiti: {{guests}}."
   },
   "host": {
     "hostedBy": "Accoglienza a cura di Portugal Active",
@@ -2037,7 +2052,8 @@
     "submitError": "Non siamo riusciti a inviare la sua richiesta. Riprovi o scriva al concierge.",
     "sending": "Invio…",
     "submit": "Richiedi queste date",
-    "noCharge": "Nessun pagamento ora — il concierge conferma prima disponibilità e totale finale."
+    "noCharge": "Nessun pagamento ora — il concierge conferma prima disponibilità e totale finale.",
+    "pickDatesFirst": "Scegli le date qui sopra: poi chiediamo i tuoi dati e inviamo la richiesta alla casa."
   },
   "login": {
     "benefitTrips": "Gestisca i suoi viaggi",
@@ -2416,5 +2432,54 @@
       "network": "Problema di connessione. Controlli la connessione internet e riprovi.",
       "generic": "Non è stato possibile completare l'operazione. Riprovi o parli con il suo concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Piscina privata",
+    "swimmingPool": "Piscina",
+    "heatedPool": "Piscina riscaldata",
+    "seaView": "Vista mare",
+    "nearOcean": "Vicino al mare",
+    "mountainView": "Vista montagna",
+    "riverView": "Vista fiume o lago",
+    "jacuzzi": "Jacuzzi",
+    "sauna": "Sauna",
+    "fireplace": "Camino",
+    "bbq": "Barbecue",
+    "garden": "Giardino",
+    "terrace": "Terrazza",
+    "airConditioning": "Aria condizionata",
+    "heating": "Riscaldamento",
+    "wifi": "Wi-Fi",
+    "workspace": "Postazione di lavoro",
+    "kitchen": "Cucina",
+    "dishwasher": "Lavastoviglie",
+    "washer": "Lavatrice",
+    "tv": "TV",
+    "crib": "Culla",
+    "gym": "Palestra",
+    "evCharging": "Ricarica per auto elettriche",
+    "parking": "Parcheggio gratuito"
+  },
+  "beds": {
+    "king_one": "{{count}} letto king",
+    "king_other": "{{count}} letti king",
+    "queen_one": "{{count}} letto queen",
+    "queen_other": "{{count}} letti queen",
+    "double_one": "{{count}} letto matrimoniale",
+    "double_other": "{{count}} letti matrimoniali",
+    "single_one": "{{count}} letto singolo",
+    "single_other": "{{count}} letti singoli",
+    "sofa_one": "{{count}} divano letto",
+    "sofa_other": "{{count}} divani letto",
+    "bunk_one": "{{count}} letto a castello",
+    "bunk_other": "{{count}} letti a castello",
+    "air_one": "{{count}} materasso ad aria",
+    "air_other": "{{count}} materassi ad aria",
+    "floor_one": "{{count}} materasso a terra",
+    "floor_other": "{{count}} materassi a terra",
+    "crib_one": "{{count}} culla",
+    "crib_other": "{{count}} culle",
+    "toddler_one": "{{count}} lettino",
+    "toddler_other": "{{count}} lettini"
   }
 }

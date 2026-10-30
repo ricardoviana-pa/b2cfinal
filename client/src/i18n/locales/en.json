@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exclusive to our guests",
     "office": "Office"
   },
+  "promoBar": {
+    "defaultText": "Use code {code} at checkout",
+    "copied": "Code copied",
+    "ariaLabel": "Current promotion",
+    "copyAria": "copy code",
+    "dismiss": "Dismiss"
+  },
   "destinations": {
     "minho": "Northern Portugal · Minho",
     "porto": "Porto and Douro",
@@ -564,7 +571,13 @@
     "allDestHomes": "All {{destination}} homes",
     "ownershipTitle": "More than a stay.",
     "ownershipBody": "This home is also in our real estate collection. Explore ownership with the team that knows it.",
-    "ownershipAction": "Explore this home for sale"
+    "ownershipAction": "Explore this home for sale",
+    "showAllAmenitiesCount": "Show all {{count}} amenities",
+    "showAllPhotos": "Show all {{count}} photos",
+    "bedTotal_one": "{{count}} bed",
+    "bedTotal_other": "{{count}} beds",
+    "availabilityTitle": "Availability",
+    "availabilityHint": "Choose your check-in and check-out dates: the price of your stay appears in the booking card."
   },
   "priceBreakdown": {
     "title": "Price summary",
@@ -1293,7 +1306,9 @@
     "bathroom": "Bathroom",
     "familyFriendly": "Family Friendly",
     "safety": "Safety",
-    "other": "Other"
+    "other": "Other",
+    "accessibility": "Accessibility",
+    "nearby": "Nearby activities"
   },
   "bedType": {
     "KingBed": "King Bed",
@@ -1326,7 +1341,9 @@
     "proofStrip": "4.8/5 across 2,000+ guest reviews",
     "verifiedNote": "All reviews are from completed stays, collected through our booking channels.",
     "previous": "Previous reviews",
-    "next": "Next reviews"
+    "next": "Next reviews",
+    "readAll_one": "Read the review",
+    "readAll_other": "Read all {{count}} reviews"
   },
   "experience": {
     "from": "From",
@@ -1600,7 +1617,7 @@
     "emailLabel": "Your email",
     "emailPh": "name@email.com",
     "emailSupport": "We hold your price for 24 hours and email you the quote. Dates are only secured after payment.",
-    "newsletterOptIn": "Send me my booking and keep me updated.",
+    "newsletterOptIn": "Keep me posted on new homes and offers (optional).",
     "backToStay": "Back to your stay",
     "payTitle": "Payment",
     "paySubtitle": "Your details, then a secure payment.",
@@ -1868,10 +1885,13 @@
     "perPersonDay": "per person · day",
     "allDays": "Every day",
     "airport": "Airport",
-    "airports": {
-      "porto": "Porto",
-      "lisbon": "Lisbon"
+    "sections": {
+      "noExtras": "No extras",
+      "extrasCount_one": "{{count}} extra",
+      "extrasCount_other": "{{count}} extras"
     },
+    "airportPorto": "Porto",
+    "airportLisbon": "Lisbon",
     "confirm24hNote": "If we cannot secure it, the line is refunded automatically.",
     "noChargeNow": "no charge now",
     "perPersonHour": "per child · hour",
@@ -1937,12 +1957,7 @@
     "nifInvalid": "This Portuguese NIF does not look right: check the 9 digits. For a VAT number from another country, start with its country code (for example ES).",
     "emailHoldNote": "We hold this price until {{date}}, {{time}}. If you don't finish now, we may email you a reminder or two. No spam.",
     "emailReminderNote": "If you don't finish now, we may email you a reminder or two. No spam.",
-    "conciergeMessage": "Hello, I have a question about my booking: {{property}}, {{checkIn}} to {{checkOut}}, guests: {{guests}}.",
-    "sections": {
-      "noExtras": "No extras",
-      "extrasCount_one": "{{count}} extra",
-      "extrasCount_other": "{{count}} extras"
-    }
+    "conciergeMessage": "Hello, I have a question about my booking: {{property}}, {{checkIn}} to {{checkOut}}, guests: {{guests}}."
   },
   "host": {
     "hostedBy": "Hosted by Portugal Active",
@@ -2037,7 +2052,8 @@
     "submitError": "We could not send your request. Please try again, or message the concierge.",
     "sending": "Sending…",
     "submit": "Request these dates",
-    "noCharge": "No payment now — our concierge confirms availability and the final total first."
+    "noCharge": "No payment now — our concierge confirms availability and the final total first.",
+    "pickDatesFirst": "Pick your dates above: we then ask for your details and send the request to the home."
   },
   "login": {
     "benefitTrips": "Manage your trips",
@@ -2416,5 +2432,54 @@
       "network": "Connection problem. Check your internet and try again.",
       "generic": "This could not be completed. Try again or talk to your concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Private pool",
+    "swimmingPool": "Swimming pool",
+    "heatedPool": "Heated pool",
+    "seaView": "Sea view",
+    "nearOcean": "Near the ocean",
+    "mountainView": "Mountain view",
+    "riverView": "River or lake view",
+    "jacuzzi": "Jacuzzi",
+    "sauna": "Sauna",
+    "fireplace": "Fireplace",
+    "bbq": "BBQ",
+    "garden": "Garden",
+    "terrace": "Terrace",
+    "airConditioning": "Air conditioning",
+    "heating": "Heating",
+    "wifi": "Wifi",
+    "workspace": "Workspace",
+    "kitchen": "Kitchen",
+    "dishwasher": "Dishwasher",
+    "washer": "Washing machine",
+    "tv": "TV",
+    "crib": "Crib",
+    "gym": "Gym",
+    "evCharging": "EV charging",
+    "parking": "Free parking"
+  },
+  "beds": {
+    "king_one": "{{count}} king bed",
+    "king_other": "{{count}} king beds",
+    "queen_one": "{{count}} queen bed",
+    "queen_other": "{{count}} queen beds",
+    "double_one": "{{count}} double bed",
+    "double_other": "{{count}} double beds",
+    "single_one": "{{count}} single bed",
+    "single_other": "{{count}} single beds",
+    "sofa_one": "{{count}} sofa bed",
+    "sofa_other": "{{count}} sofa beds",
+    "bunk_one": "{{count}} bunk bed",
+    "bunk_other": "{{count}} bunk beds",
+    "air_one": "{{count}} air mattress",
+    "air_other": "{{count}} air mattresses",
+    "floor_one": "{{count}} floor mattress",
+    "floor_other": "{{count}} floor mattresses",
+    "crib_one": "{{count}} crib",
+    "crib_other": "{{count}} cribs",
+    "toddler_one": "{{count}} toddler bed",
+    "toddler_other": "{{count}} toddler beds"
   }
 }

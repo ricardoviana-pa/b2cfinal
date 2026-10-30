@@ -58,6 +58,9 @@ interface AvailabilityCalendarProps {
   /** The line under the grid when the months in view have dates on request
    *  (the partner panel's, which knows why). Default: the general note. */
   unknownNote?: ReactNode;
+  /** In the page itself (the availability section), not in a picker: always
+   *  the grid, never the phone's full-screen dialog. */
+  inline?: boolean;
 }
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -138,9 +141,10 @@ export default function AvailabilityCalendar({
   missingStatus,
   missingUntil,
   unknownNote,
+  inline,
 }: AvailabilityCalendarProps) {
   const { t, i18n } = useTranslation();
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile() && !inline;
   const [mobileOpen, setMobileOpen] = useState(false);
   // On a phone the calendar only mounts once the guest has tapped the date
   // field, so open the full-screen picker straight away: the intermediate

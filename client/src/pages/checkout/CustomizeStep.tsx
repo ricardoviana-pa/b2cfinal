@@ -632,7 +632,7 @@ export default function CustomizeStep({
                           : "border-pa-sand bg-white text-pa-earth hover:border-pa-dark",
                       )}
                     >
-                      {ap === "porto" ? t("checkout.airports.porto", "Porto") : t("checkout.airports.lisbon", "Lisbon")}
+                      {ap === "porto" ? t("checkout.airportPorto", "Porto") : t("checkout.airportLisbon", "Lisbon")}
                     </button>
                   ))}
                 </div>

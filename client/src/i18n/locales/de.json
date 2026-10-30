@@ -31,6 +31,13 @@
     "conciergeExclusive": "Exklusiv für unsere Gäste",
     "office": "Büro"
   },
+  "promoBar": {
+    "defaultText": "Verwenden Sie den Code {code} beim Bezahlen",
+    "copied": "Code kopiert",
+    "ariaLabel": "Aktuelle Aktion",
+    "copyAria": "Code kopieren",
+    "dismiss": "Schließen"
+  },
   "destinations": {
     "minho": "Nordportugal · Minho",
     "porto": "Porto und Douro",
@@ -564,7 +571,13 @@
     "allDestHomes": "Alle Häuser {{inPlace}}",
     "ownershipTitle": "Mehr als ein Aufenthalt.",
     "ownershipBody": "Dieses Haus gehört auch zu unserem Immobilienportfolio. Entdecken Sie die Möglichkeit, es mit dem Team zu kaufen, das es kennt.",
-    "ownershipAction": "Dieses Haus zum Kauf entdecken"
+    "ownershipAction": "Dieses Haus zum Kauf entdecken",
+    "showAllAmenitiesCount": "Alle {{count}} Ausstattungen anzeigen",
+    "showAllPhotos": "Alle {{count}} Fotos anzeigen",
+    "bedTotal_one": "{{count}} Bett",
+    "bedTotal_other": "{{count}} Betten",
+    "availabilityTitle": "Verfügbarkeit",
+    "availabilityHint": "Wählen Sie An- und Abreise: der Preis Ihres Aufenthalts erscheint in der Buchungskarte."
   },
   "priceBreakdown": {
     "title": "Preisübersicht",
@@ -1367,7 +1380,9 @@
     "verifiedGuest": "Verifizierter Gast",
     "verifiedNote": "Alle Bewertungen stammen aus abgeschlossenen Aufenthalten, gesammelt über unsere Buchungskanäle.",
     "previous": "Vorherige Bewertungen",
-    "next": "Nächste Bewertungen"
+    "next": "Nächste Bewertungen",
+    "readAll_one": "Bewertung lesen",
+    "readAll_other": "Alle {{count}} Bewertungen lesen"
   },
   "amenity": {
     "outdoorPool": "Außenbereich & Pool",
@@ -1382,7 +1397,9 @@
     "bathroom": "Badezimmer",
     "familyFriendly": "Familienfreundlich",
     "safety": "Sicherheit",
-    "other": "Sonstiges"
+    "other": "Sonstiges",
+    "accessibility": "Barrierefreiheit",
+    "nearby": "Aktivitäten in der Nähe"
   },
   "experience": {
     "from": "Ab",
@@ -1600,7 +1617,7 @@
     "emailLabel": "Ihre E-Mail",
     "emailPh": "name@email.com",
     "emailSupport": "Wir halten Ihren Preis 24 Stunden und senden Ihnen das Angebot. Die Daten sind erst nach Zahlung reserviert.",
-    "newsletterOptIn": "Ich stimme dem Versand meiner Buchung und künftiger Kontaktaufnahme zu.",
+    "newsletterOptIn": "Ich möchte Neuigkeiten und Angebote von Portugal Active erhalten (optional).",
     "backToStay": "Zurück zum Aufenthalt",
     "payTitle": "Zahlung",
     "paySubtitle": "Ihre Angaben, dann eine sichere Zahlung.",
@@ -1868,10 +1885,13 @@
     "perPersonDay": "pro Person · Tag",
     "allDays": "Jeden Tag",
     "airport": "Flughafen",
-    "airports": {
-      "porto": "Porto",
-      "lisbon": "Lissabon"
+    "sections": {
+      "noExtras": "Keine Extras",
+      "extrasCount_one": "{{count}} Extra",
+      "extrasCount_other": "{{count}} Extras"
     },
+    "airportPorto": "Porto",
+    "airportLisbon": "Lissabon",
     "confirm24hNote": "Können wir es nicht garantieren, wird die Position automatisch erstattet.",
     "noChargeNow": "jetzt keine Belastung",
     "perPersonHour": "pro Kind · Stunde",
@@ -1937,12 +1957,7 @@
     "nifInvalid": "Diese portugiesische NIF scheint nicht korrekt zu sein: Prüfen Sie die 9 Ziffern. Für eine USt-IdNr. aus einem anderen Land beginnen Sie mit dem Ländercode (zum Beispiel ES).",
     "emailHoldNote": "Wir halten diesen Preis bis {{date}}, {{time}}. Wenn Sie jetzt nicht abschließen, senden wir Ihnen eventuell ein oder zwei Erinnerungen per E-Mail. Kein Spam.",
     "emailReminderNote": "Wenn Sie jetzt nicht abschließen, senden wir Ihnen eventuell ein oder zwei Erinnerungen per E-Mail. Kein Spam.",
-    "conciergeMessage": "Hallo, ich habe eine Frage zu meiner Buchung: {{property}}, {{checkIn}} bis {{checkOut}}, Gäste: {{guests}}.",
-    "sections": {
-      "noExtras": "Keine Extras",
-      "extrasCount_one": "{{count}} Extra",
-      "extrasCount_other": "{{count}} Extras"
-    }
+    "conciergeMessage": "Hallo, ich habe eine Frage zu meiner Buchung: {{property}}, {{checkIn}} bis {{checkOut}}, Gäste: {{guests}}."
   },
   "host": {
     "hostedBy": "Ihr Gastgeber: Portugal Active",
@@ -2037,7 +2052,8 @@
     "submitError": "Ihre Anfrage konnte nicht gesendet werden. Bitte erneut versuchen oder dem Concierge schreiben.",
     "sending": "Wird gesendet…",
     "submit": "Diese Daten anfragen",
-    "noCharge": "Keine Zahlung jetzt — der Concierge bestätigt zuerst Verfügbarkeit und Endbetrag."
+    "noCharge": "Keine Zahlung jetzt — der Concierge bestätigt zuerst Verfügbarkeit und Endbetrag.",
+    "pickDatesFirst": "Wählen Sie oben Ihre Daten: dann fragen wir Ihre Kontaktdaten ab und senden die Anfrage."
   },
   "login": {
     "benefitTrips": "Reisen verwalten",
@@ -2416,5 +2432,54 @@
       "network": "Verbindungsproblem. Prüfen Sie Ihr Internet und versuchen Sie es erneut.",
       "generic": "Das konnte nicht abgeschlossen werden. Versuchen Sie es erneut oder sprechen Sie mit Ihrem Concierge."
     }
+  },
+  "amenityHighlight": {
+    "privatePool": "Privater Pool",
+    "swimmingPool": "Pool",
+    "heatedPool": "Beheizter Pool",
+    "seaView": "Meerblick",
+    "nearOcean": "Nah am Meer",
+    "mountainView": "Bergblick",
+    "riverView": "Fluss- oder Seeblick",
+    "jacuzzi": "Whirlpool",
+    "sauna": "Sauna",
+    "fireplace": "Kamin",
+    "bbq": "Grill",
+    "garden": "Garten",
+    "terrace": "Terrasse",
+    "airConditioning": "Klimaanlage",
+    "heating": "Heizung",
+    "wifi": "WLAN",
+    "workspace": "Arbeitsplatz",
+    "kitchen": "Küche",
+    "dishwasher": "Geschirrspüler",
+    "washer": "Waschmaschine",
+    "tv": "TV",
+    "crib": "Kinderbett",
+    "gym": "Fitnessraum",
+    "evCharging": "E-Auto-Ladestation",
+    "parking": "Kostenlose Parkplätze"
+  },
+  "beds": {
+    "king_one": "{{count}} Kingsize-Bett",
+    "king_other": "{{count}} Kingsize-Betten",
+    "queen_one": "{{count}} Queensize-Bett",
+    "queen_other": "{{count}} Queensize-Betten",
+    "double_one": "{{count}} Doppelbett",
+    "double_other": "{{count}} Doppelbetten",
+    "single_one": "{{count}} Einzelbett",
+    "single_other": "{{count}} Einzelbetten",
+    "sofa_one": "{{count}} Schlafsofa",
+    "sofa_other": "{{count}} Schlafsofas",
+    "bunk_one": "{{count}} Etagenbett",
+    "bunk_other": "{{count}} Etagenbetten",
+    "air_one": "{{count}} Luftmatratze",
+    "air_other": "{{count}} Luftmatratzen",
+    "floor_one": "{{count}} Bodenmatratze",
+    "floor_other": "{{count}} Bodenmatratzen",
+    "crib_one": "{{count}} Kinderbett",
+    "crib_other": "{{count}} Kinderbetten",
+    "toddler_one": "{{count}} Kleinkindbett",
+    "toddler_other": "{{count}} Kleinkindbetten"
   }
 }
