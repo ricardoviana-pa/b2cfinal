@@ -9223,6 +9223,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Nous avons passé un agréable séjour, quartier calme, a proximité des commerces et de la gare.",
+        "guestDisplayName": "Nicole",
+        "guestName": "Nicole",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-31T18:05:48.927Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Foi uma experiência linda e especial, conseguimos usufruir de todos os espaços da casa, tivemos dias memoráveis e sentimo-nos realmente em casa.",
         "guestDisplayName": "Julaide Da Silva",
         "guestName": "Julaide Da Silva",
@@ -9293,7 +9328,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2,
+    "reviewCount": 3,
     "lastModified": "2026-10-25",
     "contentHash": "fd55906d672769088d77f48bb8a850ec82c418dc"
   },
@@ -15864,6 +15899,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Ein wunderbarer Platz zum Entspannen. Das Haus ist toll eingerichtet. Der Ausblick ein Gedicht. Wir haben die Zeit, das Haus, den Pool, das Meer und die Umgebung mit ihren tollen Zielen sehr genossen.",
+        "guestDisplayName": "Lars",
+        "guestName": "Lars",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-11-01T22:19:00.000Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Lugar tranquilo y con zonas cercanas para disfrutar, la casa con todas las comodidades, con zonas amplias y zonas y rincones por si quieres intimidad, la verdad que merece mucho la pena. Nos facilitaron otra casa, la tener una incidencia la que habiamos alquilado, asi que el servicio de diez.",
         "guestDisplayName": "Antonio José",
         "guestName": "Antonio José",
@@ -15969,7 +16039,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3,
+    "reviewCount": 4,
     "lastModified": "2026-10-25",
     "contentHash": "0c91be192e0ebcf7ab29a37c091d852b8409671a"
   },
