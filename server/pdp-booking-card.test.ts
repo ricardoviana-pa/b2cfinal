@@ -94,14 +94,15 @@ function desktopRule(selector: string): CssRule | undefined {
   return cssRules().find((r) => r.desktop && r.selector === selector);
 }
 
-describe("o cartão do computador: o RESERVE num rodapé que não rola (W1, W4)", () => {
-  it("o cartão tem a altura do ecrã menos o banner dos cookies, guarda em baixo a altura do rodapé e já não rola ele próprio", () => {
+describe("o cartão do computador: curto, com o RESERVE logo a seguir às tarifas e o detalhe do preço depois (W1, W4; 3 nov 2026)", () => {
+  it("o cartão tem no máximo a altura do ecrã menos o banner dos cookies e já não rola ele próprio", () => {
     const card = desktopRule(".property-sticky-card");
     expect(card).toBeDefined();
     expect(card!.decls["max-height"]).toBe("calc(100vh - 116px - var(--cookie-banner-h, 0px))");
     expect(card!.decls.display).toBe("flex");
     expect(card!.decls["flex-direction"]).toBe("column");
-    expect(card!.decls["padding-bottom"]).toBe("var(--pa-booking-footer-h, 0px)");
+    // o rodapé do RESERVE segue em fluxo, antes do detalhe do preço: o cartão não lhe guarda espaço
+    expect(card!.decls["padding-bottom"]).toBeUndefined();
     expect(card!.decls["overflow-y"]).toBeUndefined();
     expect(card!.decls.overflow).toBeUndefined();
     // o banner publica a altura nesta variável (0px quando fecha)
@@ -110,14 +111,15 @@ describe("o cartão do computador: o RESERVE num rodapé que não rola (W1, W4)"
     expect(read("client/src/components/booking/bookingCardSlot.tsx")).toMatch(/BOOKING_FOOTER_HEIGHT_VAR = '--pa-booking-footer-h'/);
   });
 
-  it("só a parte de cima rola; o rodapé fica preso ao fundo do cartão, fora dela, sem as margens do space-y", () => {
+  it("só a parte de cima rola; o RESERVE segue em fluxo (sem posicionamento) e o detalhe do preço vem depois dele", () => {
     expect(desktopRule(".property-sticky-card > .pa-booking-scroll")?.decls).toMatchObject({ "overflow-y": "auto", "min-height": "0", flex: "0 1 auto" });
-    const footer = desktopRule(".property-sticky-card .pa-booking-footer");
-    expect(footer?.decls).toMatchObject({ position: "absolute", left: "0", right: "0", bottom: "0", margin: "0" });
-    // em utilities, para ganhar à margem que o space-y-3 do widget põe nos filhos
-    expect(footer?.layer).toBe("utilities");
-    // e nada entre o rodapé e o cartão é posicionado: o cartão (sticky) é o seu bloco de contenção
-    expect(desktopRule(".property-sticky-card > .pa-booking-scroll")?.decls.position).toBeUndefined();
+    // 3 nov 2026: com o rodapé preso ao fundo de um cartão com a altura do ecrã, o RESERVE ficava abaixo da dobra
+    // enquanto a página não rolava. Agora o bloco fica no fluxo, logo a seguir às tarifas, e o detalhe do preço depois.
+    expect(desktopRule(".property-sticky-card .pa-booking-footer")).toBeUndefined();
+    expect(desktopRule("[data-back-to-top]")).toBeUndefined();
+    expect(read("client/src/components/booking/bookingCardSlot.tsx")).toMatch(/className="pa-booking-footer space-y-3"/);
+    const widget = read("client/src/components/booking/BookingWidget.tsx");
+    expect(widget.indexOf("</ReserveCtaSlot>")).toBeLessThan(widget.indexOf("{/* ── Price Breakdown Card ── */}"));
     expect(cssRules().some((r) => r.desktop && /\.booking-widget/.test(r.selector) && r.decls.position)).toBe(false);
   });
 
@@ -297,68 +299,6 @@ describe("casas parceiras: o pedido, renderizado, no cartão do computador", () 
     expect(isImplicitSubmitKey({ key: "Enter", target: el("BUTTON", "button") })).toBe(false);
     expect(isImplicitSubmitKey({ key: "Enter", target: el("UL") })).toBe(false);
     expect(isImplicitSubmitKey({ key: "Enter", isComposing: true, target: el("INPUT", "text") })).toBe(false);
-  });
-});
-
-/**
- * O "voltar ao topo" (App.tsx) fixo a 5rem + 56px do fundo, à direita. Até
- * ~1300 px de largura cai sobre a ponta direita do cartão; com o rodapé mais
- * alto (marcas de pagamento em duas linhas, com a Klarna) tapava o RESERVE,
- * com ou sem o banner dos cookies, mesmo com o PR #178 (revisão do PR #179,
- * BTT-1 / R2). Alturas do rodapé medidas no build local: Carcavelos 125,5 px,
- * Alvarinho (pt, 1024 px, Klarna) 149,5 px, Casa de Caiz 117,5 px; com o erro
- * do envio, ~180 px.
- */
-describe("o voltar ao topo fica acima do rodapé do RESERVE (BTT-1 / R2)", () => {
-  const rem = 16;
-  /** O translate do [data-back-to-top] (index.css), em px, para um rodapé desta altura. */
-  function lift(footerH: number): number {
-    const rule = desktopRule("[data-back-to-top]");
-    expect(rule, "regra [data-back-to-top] no computador").toBeDefined();
-    const value = rule!.decls.translate.trim();
-    const x = value.slice(0, value.indexOf(" "));
-    const y = value.slice(value.indexOf(" ") + 1);
-    expect(x).toBe("0");
-    const js = y
-      .replace("var(--pa-booking-footer-h, 0px)", `${footerH}px`)
-      .replace(/(\d+(?:\.\d+)?)rem/g, (_m, n) => `${Number(n) * rem}px`)
-      .replace(/(-?\d+(?:\.\d+)?)px/g, "$1")
-      .replace(/calc\(/g, "(")
-      .replace(/max\(/g, "Math.max(");
-    return -Function(`return ${js};`)();
-  }
-  // O que o App.tsx diz do botão: 5rem + 56px acima do fundo, 40 px de altura.
-  const app = read("client/src/App.tsx");
-  const backToTop = app.slice(app.indexOf("function BackToTop()"), app.indexOf("function OfflineBanner()"));
-  const BTT_BOTTOM = 5 * rem + 56;
-  /** Folga entre o fundo do botão e o topo do rodapé (px), com o cartão fixo. */
-  const clearance = (footerH: number, banner = 0, bannerLift = 0) => {
-    const cardBottomFromScreenBottom = 116 - 100 + banner; // max-height calc(100vh - 116px - banner), top 100px
-    const footerTop = cardBottomFromScreenBottom + footerH;
-    const buttonBottom = BTT_BOTTOM + bannerLift + lift(footerH);
-    return buttonBottom - footerTop;
-  };
-
-  it("o botão tem o gancho e a posição que o CSS supõe", () => {
-    expect(backToTop).toMatch(/data-back-to-top=""/);
-    // O `bottom` vive em index.css (.back-to-top; verificação final de 29 out,
-    // P6: a 640–1023 px sobe 8 px): no computador vale a regra base, 5rem + 56px.
-    expect(backToTop).not.toMatch(/bottom:/);
-    const base = cssRules().find((r) => r.selector === ".back-to-top" && r.decls.bottom);
-    expect(base?.decls.bottom).toBe("calc(5rem + 56px + env(safe-area-inset-bottom, 0px))");
-    expect(base?.layer).toBe("utilities");
-  });
-
-  it("sem o banner: o fundo do botão fica pelo menos 8 px acima do rodapé, com uma ou duas linhas de marcas", () => {
-    for (const h of [117.5, 125.5, 149.5, 180]) expect(clearance(h), `rodapé de ${h} px`).toBeGreaterThanOrEqual(8);
-  });
-
-  it("com o banner aberto e o botão subido por ele (PR #178: a altura do banner menos 1 px), também", () => {
-    for (const h of [117.5, 125.5, 149.5, 180]) expect(clearance(h, 77, 76), `rodapé de ${h} px`).toBeGreaterThanOrEqual(8);
-  });
-
-  it("fora da página da casa (sem rodapé) o botão fica onde estava", () => {
-    expect(lift(0)).toBe(0);
   });
 });
 
