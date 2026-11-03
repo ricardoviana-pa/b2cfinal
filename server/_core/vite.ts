@@ -1,5 +1,6 @@
 import { buildDestinationGraph } from '../../shared/destinationSchema';
 import { BoundedMap } from "../lib/boundedMap";
+import { languageEntryHtml, shouldSelectLanguage } from "../lib/languageEntry";
 import { experienceSearchCopy } from '../../shared/experienceSearchCopy';
 import { servicePlanning } from '../../shared/servicePlanning';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
@@ -1505,7 +1506,7 @@ export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
     // Otherwise "/" is served as the raw shell with a 200 before the
     // bare-path redirect middleware runs — forcing a client-side
     // LocaleRouter redirect to /en (a full second app boot, ~4s on mobile).
-    // With index:false, "/" falls through to the 301 → /en redirect.
+    // With index:false, "/" reaches the minimal automatic-language entry.
     index: false,
     // Nor add a slash to a bare page path that happens to match a folder of
     // client/public (/homes, /destinations, /experiences…): that was an extra
@@ -1534,25 +1535,25 @@ export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
     return pathname;
   }
 
-  // Redirect bare paths to locale-prefixed paths for SEO
+  // First visits use navigator.languages; explicit URLs are never redirected.
+  // A tiny entry page also sees existing localStorage language choices, which
+  // a server-only Accept-Language redirect would otherwise override.
   app.use("*", async (req, res, next) => {
     const p = req.originalUrl.split("?")[0];
-    const segments = p.split('/').filter(Boolean);
-
-    // If first segment is a supported locale, continue
-    if (segments[0] && SUPPORTED_LANGS.includes(segments[0].toLowerCase())) {
-      return next();
-    }
-
-    // If it's an asset, API, or static file request, skip
-    if (p.startsWith('/assets/') || p.startsWith('/api/') || p.includes('.')) {
-      return next();
-    }
-
-    // Redirect to /en/ prefixed version
+    if (!shouldSelectLanguage(p)) return next();
     const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
-    noStoreIfTracked(res, query);
-    return res.redirect(301, `/en${p === '/' ? '' : p}${query}`);
+    res.set({
+      'Cache-Control': 'private, no-store',
+      'CDN-Cache-Control': 'no-store',
+      'Cloudflare-CDN-Cache-Control': 'no-store',
+      'Vary': 'Accept-Language, Cookie, User-Agent',
+    });
+    // Preserve the established crawler/x-default destination. Localized page
+    // canonical/hreflang tags and HTML caching remain unchanged.
+    if (BOT_UA_RE.test(req.headers['user-agent'] || '')) {
+      return res.redirect(301, `/en${p === '/' ? '' : p}${query}`);
+    }
+    return res.type('html').status(200).end(languageEntryHtml(p, query, req.headers['accept-language'], req.headers.cookie));
   });
 
   /** Extract the locale prefix from a path. Returns 'en' as fallback. */
@@ -1669,6 +1670,11 @@ const _ssrRenderCache = new BoundedMap<string, {
     if (m) {
       const prop = await getPropertyBySlugCached(m[1]);
       const out = buildPropertyPrefetch(m[1], prop, lang);
+      if (prop?.guestyId) {
+        const { getPropertyGroupUnits } = await import('../services/property-group-units');
+        const units = await getPropertyGroupUnits(prop.guestyId);
+        if (units.length) out.groupUnits = { input: { parentGuestyId: prop.guestyId }, data: units };
+      }
       // The booking card's "From €X" (lib/ssrFromPrices.ts): our homes from
       // lowest-nightly's memory, partner homes from the calendar the job
       // stored (never a Tripwix call) — the same budget for both. A page

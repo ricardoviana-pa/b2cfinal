@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { Globe, Check } from "lucide-react";
+import { rememberLanguage } from "@/lib/languagePreference";
 
 const LANGUAGES = [
   { code: "en", label: "EN", name: "English" },
@@ -95,7 +96,7 @@ export default function LanguageSwitcher({
               const newUrl = `/${lang.code}${restPath}${window.location.search}${window.location.hash}`;
 
               // Persist choice in localStorage before navigating
-              try { localStorage.setItem('i18nextLng', lang.code); } catch {}
+              rememberLanguage(lang.code);
 
               // Full page navigation — re-mounts Router with new base path,
               // avoids wouter's ~ prefix conflicts from out-of-band pushState

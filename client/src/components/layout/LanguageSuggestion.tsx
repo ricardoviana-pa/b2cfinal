@@ -22,6 +22,7 @@ import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { pushDL } from '@/lib/datalayer';
+import { rememberLanguage } from '@/lib/languagePreference';
 import { COOKIE_BANNER_OPEN_ATTR, HOME_HERO_ATTR, LANGUAGE_CARD_ATTR, RISE_ABOVE_COOKIE_BANNER } from '@/lib/fixedBottom';
 import { COOKIE_CHOICE_EVENT, getCookieChoice } from '@/lib/measurementConsent';
 import { LANGUAGE_CHOICE_KEY, SUGGESTION_COPY, SUGGESTION_DECLINED_KEY, SUGGESTION_SHOWN_KEY, hasBottomBookingBar, languageCardWaits, pageOffersLanguage, pathInLanguage, shownThisVisit, suggestedLanguage, type SuggestedLanguage, homeHeroOnScreen } from '@/lib/languageSuggestion';
@@ -186,7 +187,7 @@ export default function LanguageSuggestion() {
           href={href}
           onClick={() => {
             answered.current = true;
-            write(() => localStorage, LANGUAGE_CHOICE_KEY, target);
+            rememberLanguage(target);
             pushDL({ event: 'language_suggestion', suggestion_action: 'switch', suggested_language: target });
           }}
           className="font-medium underline underline-offset-4 decoration-pa-gold hover:text-pa-gold-aa"
@@ -199,6 +200,7 @@ export default function LanguageSuggestion() {
         onClick={() => {
           answered.current = true;
           write(() => localStorage, SUGGESTION_DECLINED_KEY, target);
+          rememberLanguage('en');
           pushDL({ event: 'language_suggestion', suggestion_action: 'dismiss', suggested_language: target });
           setTarget(null);
         }}
