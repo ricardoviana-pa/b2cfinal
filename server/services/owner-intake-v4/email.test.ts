@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { managementCompletedMail, managementStartMail, sendV4Mail, welcomeMail } from "./email";
+import { ownerNotificationMail } from "../owner-intake/email";
+import { syntheticOwner } from "../owner-intake/__tests__/fixtures";
 import { detailsInput, recordInput, SYNTHETIC_TOKEN } from "./fixtures.test-utils";
 const transport = vi.fn();
 beforeEach(() => {
@@ -11,6 +13,24 @@ beforeEach(() => {
 afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 const url = `https://www.portugalactive.com/management/complete/?lang=pt#token=${SYNTHETIC_TOKEN}`;
 describe("v4 branded transactional messages", () => {
+  it("uses the dedicated management sender for every v4 event without changing the booking sender", async () => {
+    const bookingSender = "Portugal Active <booking@portugalactive.com>";
+    vi.stubEnv("EMAIL_FROM", bookingSender);
+    const r = recordInput(); r.details = detailsInput(); r.status = "awaiting_photos";
+    const messages = [welcomeMail(r, url), managementStartMail(r), managementCompletedMail(r, [])];
+    for (const message of messages) {
+      expect(message.from).toBe("Portugal Active · Management <management@portugalactive.com>");
+      await sendV4Mail(`synthetic-sender-${messages.indexOf(message)}`, message, []);
+    }
+    for (const [, request] of transport.mock.calls) {
+      expect(JSON.parse(request.body).from).toBe("Portugal Active · Management <management@portugalactive.com>");
+      expect(JSON.parse(request.body).from).not.toContain("booking@");
+    }
+    expect(process.env.EMAIL_FROM).toBe(bookingSender);
+    expect(ownerNotificationMail(syntheticOwner(), []).from).toBe(bookingSender);
+    expect(messages[0].to).toBe(r.contact.email); expect(messages[0].replyTo).toBe("management@portugalactive.com");
+    expect(messages[1].to).toBe("management@portugalactive.com"); expect(messages[1].replyTo).toBe(r.contact.email);
+  });
   it.each(["pt", "en", "fr", "de", "nl", "es", "it", "he", "ar", "zh"])("welcomes the owner in %s with the private continuation link", language => {
     const r = recordInput(); r.context.language = language; const mail = welcomeMail(r, url);
     expect(mail.to).toBe(r.contact.email); expect(mail.replyTo).toBe("management@portugalactive.com");
