@@ -35,6 +35,34 @@ describe("single structured management notification", () => {
     expect(mail.subject).toContain("Qualificação pendente"); expect(mail.text).toContain("não foram recolhidos");
     expect(mail.text).not.toContain("30.000");
   });
+  it("uses the official PNG logo with readable branding when images are blocked", () => {
+    const mail = ownerNotificationMail(validateOwnerIntake(syntheticOwner()).fields, []);
+    expect(mail.html).toContain('src="https://www.portugalactive.com/brand/pa-logo-dark.png"');
+    expect(mail.html).toContain('alt="Portugal Active"');
+    expect(mail.html).toContain("PORTUGAL ACTIVE · EQUIPA COMERCIAL");
+    expect(mail.html).toContain('width="166" height="104"');
+    expect(mail.html).not.toMatch(/<script|<iframe|<form/i);
+  });
+  it("puts qualification before detailed copy without repeating a long description", () => {
+    const input = { ...syntheticOwner(), description: "A unique synthetic description that should appear only once in HTML.", forSale: "yes", saleInterest: "yes" };
+    const mail = ownerNotificationMail(validateOwnerIntake(input).fields, []);
+    expect(mail.html.indexOf("Entrada no mercado")).toBeLessThan(mail.html.indexOf("Contacto do proprietário"));
+    expect(mail.html.indexOf("Contacto do proprietário")).toBeLessThan(mail.html.indexOf("Sobre a casa"));
+    expect(mail.html.split(input.description)).toHaveLength(2);
+    expect(mail.html).toContain("À venda: Sim");
+    expect(mail.html).toContain("Interesse em vender com a PA: Sim");
+    expect(mail.html).not.toContain("Número de licença:");
+    expect(mail.html).not.toContain("Ocupação — detalhes:");
+  });
+  it("keeps optional photos neutral and attachment names readable and escaped", () => {
+    const noPhotos = ownerNotificationMail(validateOwnerIntake(syntheticOwner()).fields, []);
+    expect(noPhotos.text).toContain("Sem fotografias ou documentos — envio opcional");
+    expect(noPhotos.text).not.toMatch(/pretende enviar|enviará mais tarde/i);
+    const withFiles = ownerNotificationMail(validateOwnerIntake(syntheticOwner()).fields, ["Planta & áreas.pdf", "Piscina <exemplo>.jpg"]);
+    expect(withFiles.html).toContain("Planta &amp; áreas.pdf");
+    expect(withFiles.html).toContain("Piscina &lt;exemplo&gt;.jpg");
+    expect(withFiles.text).toContain("Planta & áreas.pdf, Piscina <exemplo>.jpg");
+  });
   it("sends real bounded file bytes only to management, with stable provider idempotency and a timeout", async () => {
     transport.mockImplementation(async () => new Response(JSON.stringify({ id: "synthetic-provider-id" }), { status: 200 }));
     const input = validateOwnerIntake(syntheticOwner());
