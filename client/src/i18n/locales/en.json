@@ -1549,7 +1549,7 @@
     "ctaConcierge": "Talk to our concierge",
     "relatedStories": "Related Stories",
     "relatedHomes": "Stay nearby",
-    "relatedHomesSub": "Homes we manage in this part of the country.",
+    "relatedHomesSub": "Homes for your stay in this region.",
     "bedroomCount_one": "{{count}} bedroom",
     "bedroomCount_other": "{{count}} bedrooms"
   },
