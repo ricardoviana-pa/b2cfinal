@@ -3,6 +3,7 @@ import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
 import { getPropertiesForSite, getSiteLocalities, getPropertiesForDestination, catalogProperties } from "../services/properties-store";
+import { getPropertyGroupUnits } from '../services/property-group-units';
 
 const propertyInput = z.object({
   name: z.string().min(1),
@@ -48,6 +49,14 @@ export const propertiesRouter = router({
     ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
     return catalogProperties(await getPropertiesForSite()).map(toCatalogCard);
   }),
+
+  /** Small multi-unit section, also present in the group's server-rendered page. */
+  groupUnits: publicProcedure
+    .input(z.object({ parentGuestyId: z.string().min(1).max(80) }))
+    .query(async ({ ctx, input }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
+      return getPropertyGroupUnits(input.parentGuestyId);
+    }),
 
   /** Homepage reviews; with `locale`, the page's language first (ux-home-plp-07). */
   guestFeedback: publicProcedure

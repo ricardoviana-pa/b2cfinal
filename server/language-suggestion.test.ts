@@ -5,8 +5,8 @@ import { blogLanguageRedirect, blogLanguages } from '@shared/blogPublication';
 import blogData from '../client/src/data/blog.json';
 
 // Auditoria 29 out, i18n-copy-07: "/" and unprefixed links always open the
-// English site. No Accept-Language redirect (crawlers keep /en); instead a
-// small, dismissible suggestion, remembered on the device.
+// English site. Since 3 Nov 2026, unprefixed entries choose automatically;
+// explicit English pages retain this optional, dismissible suggestion.
 
 const base = { pageLang: 'en', path: '/', stored: null, declined: null };
 
@@ -93,11 +93,13 @@ describe('once per visit, across tabs', () => {
   });
 });
 
-describe('no redirect, nothing for crawlers', () => {
-  it('the root still 301s to /en for everyone (x-default); the suggestion only runs in the browser after mount', () => {
+describe('explicit-language pages retain an optional suggestion', () => {
+  it('crawlers keep the English x-default; automatic detection only applies to unprefixed entry paths', () => {
     const vite = fs.readFileSync(new URL('./_core/vite.ts', import.meta.url), 'utf8');
     expect(vite).toMatch(/return res\.redirect\(301, `\/en\$\{p === '\/' \? '' : p\}\$\{query\}`\);/);
-    expect(vite).not.toMatch(/accept-language/i);
+    expect(vite).toContain('if (!shouldSelectLanguage(p)) return next();');
+    expect(vite).toContain("if (BOT_UA_RE.test(req.headers['user-agent'] || ''))");
+    expect(vite).toContain('languageEntryHtml(p, query,');
     const card = fs.readFileSync(new URL('../client/src/components/layout/LanguageSuggestion.tsx', import.meta.url), 'utf8');
     expect(card).toMatch(/useState<SuggestedLanguage \| null>\(null\)/);
     expect(card).toMatch(/useEffect\(/);

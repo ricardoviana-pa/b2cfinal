@@ -13,6 +13,7 @@
 import { useEffect, useMemo, type ReactNode } from 'react';
 import { Router } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { detectPreferredLanguage } from '@/lib/languagePreference';
 
 const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
 const DEFAULT_LANG = 'en';
@@ -25,18 +26,6 @@ function extractLocale(pathname: string): { lang: string; rest: string } {
     return { lang: first, rest: '/' + segments.slice(1).join('/') || '/' };
   }
   return { lang: '', rest: pathname };
-}
-
-/** Detect preferred language: localStorage > browser > default */
-function detectLanguage(): string {
-  const stored = localStorage.getItem('i18nextLng');
-  if (stored) {
-    const base = stored.split('-')[0]?.toLowerCase() || '';
-    if (SUPPORTED_LANGS.includes(base)) return base;
-  }
-  const browserLang = navigator.language?.split('-')[0]?.toLowerCase() || '';
-  if (SUPPORTED_LANGS.includes(browserLang)) return browserLang;
-  return DEFAULT_LANG;
 }
 
 export default function LocaleRouter({ children, ssrPath }: { children: ReactNode; ssrPath?: string }) {
@@ -56,7 +45,7 @@ export default function LocaleRouter({ children, ssrPath }: { children: ReactNod
     // On the server the bare-path → /{lang} redirect is handled by the
     // request middleware, so there is nothing to do here.
     if (typeof window === 'undefined') return null;
-    const preferred = detectLanguage();
+    const preferred = detectPreferredLanguage();
     const newPath = `/${preferred}${rest === '/' ? '' : rest}${window.location.search}${window.location.hash}`;
     window.location.replace(newPath);
     return null;

@@ -772,11 +772,11 @@ export default function PropertyDetail() {
   );
 
   // The whole catalogue (≈18 KB, 110 KB of JSON) is only needed for the related
-  // homes at the bottom and, on a multi-unit home, for its units near the top.
+  // homes at the bottom. Multi-unit homes use their own small, SSR-seeded query.
   // It used to be fetched right after hydration in the same batched request as
   // the "from" price below, which then waited for it (auditoria out/2026,
-  // performance-09-from-price-latency). Now: at once on a multi-unit home,
-  // otherwise when the related-homes block comes within ~1.5 screens.
+  // performance-09-from-price-latency). Now it starts only when the
+  // related-homes block comes within ~1.5 screens.
   const [catalogWanted, setCatalogWanted] = useState(false);
   const relatedSentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -792,8 +792,12 @@ export default function PropertyDetail() {
   }, [catalogWanted, property?.slug]);
   const { data: allPropsData } = trpc.properties.catalogForSite.useQuery(undefined, {
     staleTime: 5 * 60 * 1000,
-    enabled: catalogWanted || !!propertyGroup,
+    enabled: catalogWanted,
   });
+  const { data: groupUnits } = trpc.properties.groupUnits.useQuery(
+    { parentGuestyId: propertyGroup?.parentGuestyId ?? '' },
+    { staleTime: 5 * 60 * 1000, enabled: !!propertyGroup },
+  );
   // "From €X per night" = lowest REAL bookable nightly (next 90 days), not the
   // Guesty basePrice placeholder. Cached server-side; lazy per viewed listing.
   // Partner (Tripwix) homes have no Guesty listing; they price off the
@@ -1420,10 +1424,10 @@ export default function PropertyDetail() {
                   (parent + children) with photo, specs, and live quote, each
                   linking to the unit's own PDP. Single-unit properties skip
                   this entirely. */}
-              {propertyGroup && allPropsData && (
+              {propertyGroup && groupUnits && (
                 <PropertyUnitsSection
                   group={propertyGroup}
-                  allProperties={allPropsData as Property[]}
+                  allProperties={groupUnits as Property[]}
                   checkin={initialCheckin}
                   checkout={initialCheckout}
                   guests={initialGuests}

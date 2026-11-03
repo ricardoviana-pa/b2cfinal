@@ -80,6 +80,20 @@ afterAll(() => {
 const get = (p: string) => fetch(base + p, { redirect: "manual" });
 
 describe("SSR HTML handler", () => {
+  it("seeds only the multi-unit group's cards on its property page", async () => {
+    const { PROPERTY_GROUPS } = await import('../client/src/config/propertyGroups');
+    const { getPropertiesForSite } = await import('./services/properties-store');
+    const group = PROPERTY_GROUPS[0];
+    const property = (await getPropertiesForSite()).find(p => p.guestyId === group.parentGuestyId)!;
+    const url = `/pt/homes/${property.slug}`;
+    expect((await get(url)).status).toBe(200);
+    const prefetch = renders().find(r => r.url === url)?.prefetch;
+    expect(prefetch?.groupUnits.input).toEqual({ parentGuestyId: group.parentGuestyId });
+    expect(prefetch?.groupUnits.data.map((p: any) => p.guestyId)).toEqual(group.unitGuestyIds);
+    expect(prefetch?.catalogForSite).toBeUndefined();
+    expect(prefetch?.listForSite).toBeUndefined();
+  });
+
   it("renders a page once for every ad click, from the URL without tracking parameters", async () => {
     const a = await get("/en/homes?gclid=AAA&gad_source=1");
     const b = await get("/en/homes?gclid=BBB&utm_source=google&utm_medium=cpc");
@@ -150,19 +164,49 @@ describe("SSR HTML handler", () => {
     expect(r?.prefetch?.fromPrices?.prices).toEqual({ [home.guestyId]: 150 });
   });
 
-  it("a bare-path redirect that copies a gclid is one hop and not stored by shared caches", async () => {
-    // /homes is also a folder of the build (homes/photos): no extra
-    // trailing-slash redirect from the static middleware first.
+  it("a bare-path entry preserves tracking and trip context without booting the app or being cached", async () => {
+    // /homes is also a folder of the build: no trailing-slash redirect first.
     const res = await get("/homes?gclid=XYZ");
-    expect(res.status).toBe(301);
-    expect(res.headers.get("location")).toBe("/en/homes?gclid=XYZ");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("location")).toBeNull();
     expect(res.headers.get("cache-control")).toBe("private, no-store");
+    expect(res.headers.get("cdn-cache-control")).toBe("no-store");
+    expect(res.headers.get("cloudflare-cdn-cache-control")).toBe("no-store");
+    const html = await res.text();
+    expect(html).toContain('/en/homes?gclid=XYZ');
+    expect(html).toContain('location.search+location.hash');
+    expect(html).not.toContain('/assets/');
+    expect(html).not.toContain('rendered ');
     const plain = await get("/homes?guests=2");
-    expect(plain.status).toBe(301);
-    expect(plain.headers.get("location")).toBe("/en/homes?guests=2");
-    expect(plain.headers.get("cache-control")).not.toBe("private, no-store");
-    // Files inside that folder are still served.
+    expect(plain.status).toBe(200);
+    expect(plain.headers.get("cache-control")).toBe("private, no-store");
+    expect(await plain.text()).toContain('/en/homes?guests=2');
     expect((await get("/homes/photos/x.webp")).status).toBe(200);
+  });
+
+  it("the no-JS entry selects browser preferences, with a manual cookie taking priority", async () => {
+    const french = await fetch(base + '/?guests=3', { headers: { 'accept-language': 'en;q=0.2,fr-CA;q=0.9' }, redirect: 'manual' });
+    expect(french.status).toBe(200);
+    expect(await french.text()).toContain('<noscript><meta http-equiv="refresh" content="0;url=/fr?guests=3"></noscript>');
+    const chosen = await fetch(base + '/', { headers: { 'accept-language': 'fr', cookie: 'pa-site-language=pt' }, redirect: 'manual' });
+    expect(await chosen.text()).toContain('content="0;url=/pt"');
+  });
+
+  it("an explicit locale keeps its SSR, canonical and cache policy despite different preferences", async () => {
+    const res = await fetch(base + '/pt/homes', { headers: { 'accept-language': 'de-DE', cookie: 'pa-site-language=fr' }, redirect: 'manual' });
+    const html = await res.text();
+    expect(res.status).toBe(200);
+    expect(html).toContain('rendered /pt/homes</main>');
+    expect(html).toContain('https://www.portugalactive.com/pt/homes');
+    expect(html).not.toContain('navigator.languages&&navigator.languages.length');
+    expect(res.headers.get('cache-control')).toContain('public');
+  });
+
+  it("crawlers retain the stable English x-default without caching a language entry", async () => {
+    const res = await fetch(base + '/?utm_source=search', { headers: { 'user-agent': 'Googlebot', 'accept-language': 'pt' }, redirect: 'manual' });
+    expect(res.status).toBe(301);
+    expect(res.headers.get('location')).toBe('/en?utm_source=search');
+    expect(res.headers.get('cache-control')).toBe('private, no-store');
   });
 
   it("private and missing pages: no-store, no CDN header; 404s preload only the language", async () => {

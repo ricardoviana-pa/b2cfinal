@@ -1,21 +1,16 @@
 /**
- * Language suggestion (auditoria 29 out, i18n-copy-07). The bare domain and
- * any unprefixed link land on /en (server 301, the x-default for crawlers),
- * so a visitor whose browser prefers Portuguese or German reads English.
- * Never redirect by Accept-Language — crawlers must keep seeing /en — but
- * offer the visitor's language in one small, dismissible card, remembered
- * on this device.
+ * A suggestion on explicitly English pages. Unprefixed entries now choose
+ * the browser language automatically (3 Nov 2026); localized URLs retain
+ * their language, so their visitors may still use this optional suggestion.
  *
  * The card speaks the language it offers (the visitor may not read English),
  * so its copy lives here, eight short lines, instead of in eight locale
  * bundles that would each have to be downloaded to say one sentence.
  */
-export const SITE_LANGUAGES = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'] as const;
-export type SiteLanguage = (typeof SITE_LANGUAGES)[number];
+import { SITE_LANGUAGES, siteLanguage, type SiteLanguage } from '@shared/siteLanguage';
+export { SITE_LANGUAGES, siteLanguage, LANGUAGE_CHOICE_KEY, type SiteLanguage } from '@shared/siteLanguage';
 export type SuggestedLanguage = Exclude<SiteLanguage, 'en'>;
 
-/** Written by the language switcher (and by this card) when a visitor picks a language. */
-export const LANGUAGE_CHOICE_KEY = 'i18nextLng';
 /** The language the visitor said no to; not offered again on this device. */
 export const SUGGESTION_DECLINED_KEY = 'pa-lang-suggestion-declined';
 /**
@@ -40,11 +35,6 @@ export function shownThisVisit(stored: string | null | undefined, now: number): 
 
 /** Booking, payment and account pages: a reload to switch language there could lose the form. */
 const QUIET_PATHS = /^\/(checkout|booking|account|login|admin|owners-portal)(\/|$)/;
-
-export function siteLanguage(value: string | null | undefined): SiteLanguage | null {
-  const base = String(value ?? '').trim().toLowerCase().split(/[-_]/)[0];
-  return (SITE_LANGUAGES as readonly string[]).includes(base) ? (base as SiteLanguage) : null;
-}
 
 export function suggestedLanguage({ pageLang, path, stored, declined, browser }: {
   /** Language of the page being viewed. */
