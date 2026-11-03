@@ -16,12 +16,13 @@
  * import the TypeScript store) and can be run by hand:
  *   npm run brand:facts
  *
- * The count is rounded DOWN to the ten with a "+" suffix ("90+"): a claim that
- * is always true, never one the site has to walk back after a delisting.
+ * Catalogue diagnostics retain the rounded count. The public manifest uses
+ * HOME_COUNT_LABEL, the separately approved brand figure.
  */
 
 import fs from "node:fs";
 import path from "node:path";
+import { HOME_COUNT_LABEL } from "../shared/brandFacts";
 import { getPropertiesForSite } from "../server/services/properties-store";
 
 const ROOT = process.cwd();
@@ -51,10 +52,10 @@ function llmsTxt(facts: typeof FACTS & { HOME_COUNT: number; HOME_COUNT_LABEL: s
   const regions = facts.REGIONS.join(", ");
   return `# Portugal Active — Luxury Villas & Private Homes in Portugal
 
-> Portugal Active offers a collection of holiday homes and travel experiences in Portugal. The public catalogue combines directly managed homes and partner properties. Location, configuration, included services, availability and booking method vary by listing.
+> Portugal Active offers a collection of holiday homes and travel experiences in Portugal. Location, configuration, included services, availability and booking method vary by listing.
 
 ## What we do
-- Holiday homes and partner properties in ${regions}. Some listings are individual units within a larger property; check the configuration.
+- Holiday homes in ${regions}. Some listings are individual units within a larger property; check the configuration.
 - Guest support and optional services: consult the property and booking terms for scope and availability.
 - Private chef and in-home dining may be available by arrangement; they are not universally included.
 - Curated experiences: horseback riding, canyoning, surfing, sailing, e-bike tours, stand-up paddle, hiking
@@ -63,10 +64,10 @@ function llmsTxt(facts: typeof FACTS & { HOME_COUNT: number; HOME_COUNT_LABEL: s
 
 ## Key facts
 - Founded ${facts.FOUNDED} in Viana do Castelo, Portugal
-- ${facts.HOME_COUNT_LABEL} public catalogue listings, including directly managed homes and partner properties; this is not a count of unique whole properties available for particular dates.
+- A collection of ${facts.HOME_COUNT_LABEL} villas and private homes in Portugal. Availability and booking conditions depend on the home and dates.
 - Regions: ${regions}
 - Website in ${facts.LANGUAGES} languages: English, Portuguese, Spanish, French, Italian, German, Dutch, Swedish, Finnish
-- Check the property page for direct booking or partner enquiry. Only the dated quote establishes the total and terms; an enquiry is not a confirmed stay.
+- Check the property page for online booking or an availability request. Only the dated quote establishes the total and terms; an enquiry is not a confirmed stay.
 
 ## Contact
 - [Website](https://www.portugalactive.com)
@@ -119,7 +120,7 @@ async function main() {
     && prev.ownHomeCount === generated.ownHomeCount && prev.partnerHomeCount === generated.partnerHomeCount;
   if (!unchanged) fs.writeFileSync(outJson, JSON.stringify(generated, null, 2) + "\n");
 
-  const facts = { ...FACTS, HOME_COUNT: generated.homeCount, HOME_COUNT_LABEL: generated.homeCountLabel };
+  const facts = { ...FACTS, HOME_COUNT: generated.homeCount, HOME_COUNT_LABEL };
   const next = llmsTxt(facts);
   for (const rel of [["client", "public", "llms.txt"], ["client", "public", ".well-known", "llms.txt"]]) {
     const llmsPath = path.join(ROOT, ...rel);

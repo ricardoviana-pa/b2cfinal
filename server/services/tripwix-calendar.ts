@@ -585,12 +585,16 @@ export async function refreshNextTripwixCalendar(homes: Array<{ uid: string; nam
 /** Estado para o resumo horário do job. */
 export function tripwixCalendarSummary(homes: Array<{ uid: string; name?: string }>) {
   const now = Date.now();
+  const today = ymd(now);
   let withData = 0;
   let stale = 0;
   let toFill = 0;
   const failing: string[] = [];
   /** Casas com calendário que acaba bem antes do ano pedido (dias seguintes "a pedido" no site). */
   const short: string[] = [];
+  // A successful read is not proof of a usable price: a complete feed may
+  // contain only booked nights (Vale da Raposa, audit 3 Nov 2026).
+  const noAvailablePrices: string[] = [];
   for (const home of homes) {
     const e = entries.get(home.uid);
     if (e?.days && now - e.fetchedAt <= MAX_STALE_MS) {
@@ -598,11 +602,14 @@ export function tripwixCalendarSummary(homes: Array<{ uid: string; name?: string
       if (now - e.fetchedAt > 2 * REFRESH_EVERY_MS) stale++;
       const shortEnd = shortCalendarEnd(e.days, e.end);
       if (shortEnd) short.push(`${home.name ?? home.uid} (até ${shortEnd})`);
+      if (!e.days.some((d) => d.date >= today && d.status === "available" && normalPrice(d.price) !== null)) {
+        noAvailablePrices.push(home.name ?? home.uid);
+      }
     }
     if (needsFill(home.uid, now)) toFill++;
     if (e && e.failures > 0) failing.push(`${home.name ?? home.uid} (${e.lastError}; ${e.failures}×)`);
   }
-  return { total: homes.length, withData, stale, toFill, failing, short, readsLastHour: tripwixReadsInLastHour(), throttledUntil };
+  return { total: homes.length, withData, stale, toFill, failing, short, noAvailablePrices, readsLastHour: tripwixReadsInLastHour(), throttledUntil };
 }
 
 /* ════════════════════════════════════════════════════════════════

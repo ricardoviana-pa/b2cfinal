@@ -17,12 +17,12 @@
    - The product is a villa / home. "Hotel" only as the comparison ("the service of a hotel", "hotel standards"), never as the noun for what we rent (no "private hotels")
    - Services delivered by "our in house team" / "PA trained professionals"
    - Housekeeping is an add on, never "included"
-   - CTA buttons: UPPERCASE, letter-spacing 1.5px
+   - CTA buttons follow the shared button style; editorial text links use sentence case
    - Paragraphs max 3 lines
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
-import { HOME_COUNT_LABEL, OWN_HOME_COUNT_LABEL } from '@shared/brandFacts';
+import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
@@ -107,8 +107,8 @@ export default function Home() {
   usePageMeta({
     // Must match the server-side PAGE_META '/' entry in server/_core/vite.ts —
     // usePageMeta appends " | Portugal Active", so pass the title without it.
-    title: 'Luxury Villas & Private Homes in Portugal',
-    description: `${HOME_COUNT_LABEL} luxury villas and private homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. The privacy of a home, the service of a hotel. Book direct.`,
+    title: t('home.metaTitle'),
+    description: t('home.metaDescription', { homes: HOME_COUNT_LABEL }),
     url: '/',
   });
   // FAQPage schema only — the Organization schema is global (index.html),
@@ -385,10 +385,6 @@ export default function Home() {
               <span className="text-white/25">·</span>
               <span className="body-sm text-white/60 font-medium font-body" >
                 {t('conversion.directSupport')}
-              </span>
-              <span className="text-white/25">·</span>
-              <span className="body-sm text-white/60 font-medium font-body" >
-                {t('home.proofManaged', { own: OWN_HOME_COUNT_LABEL, defaultValue: '{{own}} run by our own team' })}
               </span>
             </div>
 

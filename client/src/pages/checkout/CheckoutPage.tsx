@@ -1,4 +1,5 @@
 import { effectiveQuote, type CheckoutQuoteSnapshot } from "@/lib/checkoutQuote";
+import { QuoteRequestGate } from "@/lib/quoteRequest";
 /**
  * Checkout 2.0 — Fase 1 (docs/checkout_spec.md §3, §4, §16).
  *
@@ -296,6 +297,9 @@ export default function CheckoutPage() {
   // não fazia nada — 10 out 2026). Só vira requote quando a estadia fecha.
   const [stayDraft, setStayDraft] = useState<{ checkIn: string; checkOut: string } | null>(null);
   const [requoting, setRequoting] = useState(false);
+  const requoteRequests = useRef(new QuoteRequestGate());
+  useEffect(() => () => requoteRequests.current.invalidate(), []);
+  const [quoteRefreshFailed, setQuoteRefreshFailed] = useState(false);
   const [quoteStale, setQuoteStale] = useState(false);
   const [datesUnavailable, setDatesUnavailable] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -308,6 +312,9 @@ export default function CheckoutPage() {
   const [couponOpen, setCouponOpen] = useState(false);
   const [couponInput, setCouponInput] = useState("");
   const [couponBusy, setCouponBusy] = useState(false);
+  const couponBusyRef = useRef(false);
+  const couponRequests = useRef(new QuoteRequestGate());
+  useEffect(() => () => couponRequests.current.invalidate(), []);
   const [couponError, setCouponError] = useState(false);
   /** M14: código que deixou de se aplicar depois de mudar datas — nota visível */
   const [couponDropped, setCouponDropped] = useState<string | null>(null);
@@ -502,8 +509,19 @@ export default function CheckoutPage() {
   const requote = useCallback(
     async (ci: string, co: string, g: number) => {
       if (!intent) return;
+      const isCurrentRequest = requoteRequests.current.begin(`${ci}|${co}|${g}`);
+      couponRequests.current.invalidate();
+      couponBusyRef.current = false;
+      setCouponBusy(false);
       setRequoting(true);
+      setQuoteStale(true);
+      setQuoteRefreshFailed(false);
       setDatesUnavailable(false);
+      // Keep the attempted stay visible and retryable if the price service
+      // is slow or unavailable; never silently retry the previous dates.
+      setCheckIn(ci);
+      setCheckOut(co);
+      setGuests(g);
       try {
         const d = await utils.booking.getQuote.fetch({
           listingId: intent.listingId,
@@ -511,11 +529,15 @@ export default function CheckoutPage() {
           checkOut: co,
           guests: g,
         });
+        if (!isCurrentRequest()) return;
         const liveQuoteId: string | undefined = (d as any).quoteId;
         const source = (d as any).source;
         const total = d.pricing?.total ?? 0;
         if (!liveQuoteId || (source !== "live" && source !== "cached") || total <= 0) {
-          setDatesUnavailable(true);
+          // The supplier fallback also means a timeout/outage, not proof
+          // that the dates are occupied. Offer a retry without inventing it.
+          setDatesUnavailable((d as any).unavailable === true);
+          setQuoteRefreshFailed((d as any).unavailable !== true);
           return;
         }
         const fresh: QuoteSnapshot = {
@@ -532,20 +554,6 @@ export default function CheckoutPage() {
           // duplicadas e o requote mostrava-as todas (bug 12 jul)
           ratePlanOptions: collapseRatePlans((d as any).ratePlanOptions, ci),
         };
-        // AUDIT A3: menos noites → clamp dos dias selecionados nos extras
-        setExtraSel((prev) => {
-          const next: typeof prev = {};
-          for (const [sku, sel] of Object.entries(prev)) {
-            next[sku] = sel.days ? { ...sel, days: Math.min(sel.days, Math.max(1, fresh.nights)) } : sel;
-          }
-          return next;
-        });
-        // AUDIT A4: estadia caiu abaixo do limiar do Flex → desmarcar (o bloco
-        // desaparece e deixava o valor preso no total sem forma de o tirar)
-        if (flexConfig && fresh.total < flexConfig.minTotal && flexSelected) {
-          setFlexSelected(false);
-          syncIntent({ flex: false });
-        }
         // AUDIT A5: o cupão vivia na quote antiga — re-aplicar na nova; se o
         // código já não for válido, o campo reaparece em vez de fingir desconto.
         // The re-apply is awaited BEFORE the screen and the intent change: setting the undiscounted
@@ -569,6 +577,7 @@ export default function CheckoutPage() {
               checkOut: co,
               coupon: prevCoupon,
             });
+            if (!isCurrentRequest()) return;
             if (r.ok) {
               setCouponDropped(null);
               next = {
@@ -585,8 +594,24 @@ export default function CheckoutPage() {
               dropCoupon();
             }
           } catch {
+            if (!isCurrentRequest()) return;
             dropCoupon();
           }
+        }
+        if (!isCurrentRequest()) return;
+        // AUDIT A3: menos noites → clamp dos dias selecionados nos extras
+        setExtraSel((prev) => {
+          const next: typeof prev = {};
+          for (const [sku, sel] of Object.entries(prev)) {
+            next[sku] = sel.days ? { ...sel, days: Math.min(sel.days, Math.max(1, fresh.nights)) } : sel;
+          }
+          return next;
+        });
+        // AUDIT A4: estadia caiu abaixo do limiar do Flex → desmarcar (o bloco
+        // desaparece e deixava o valor preso no total sem forma de o tirar)
+        if (flexConfig && fresh.total < flexConfig.minTotal && flexSelected) {
+          setFlexSelected(false);
+          syncIntent({ flex: false });
         }
         // Re-resolve the plan selection on the quote that will be shown: the
         // guest's choice if it survived; otherwise the refundable rate first.
@@ -608,9 +633,9 @@ export default function CheckoutPage() {
           quote: next,
         });
       } catch {
-        setDatesUnavailable(true);
+        if (isCurrentRequest()) setQuoteRefreshFailed(true);
       } finally {
-        setRequoting(false);
+        if (isCurrentRequest()) setRequoting(false);
       }
     },
     [intent, selectedRatePlanId, syncIntent, utils, applyCouponMut],
@@ -662,7 +687,7 @@ export default function CheckoutPage() {
       emailValid: isValidEmail(email),
       quoteStale,
       datesUnavailable,
-      saving: captureLead.isPending || contactSavingRef.current,
+      saving: requoting || captureLead.isPending || contactSavingRef.current,
     });
     if (action === "busy") return;
     setSheetOpen(false);
@@ -685,7 +710,11 @@ export default function CheckoutPage() {
    */
   const applyCoupon = useCallback(
     async (code: string) => {
-      if (!intent) return;
+      if (!intent || requoting || quoteStale || datesUnavailable || quoteRefreshFailed || couponBusyRef.current) return;
+      const quoteStillCurrent = requoteRequests.current.capture();
+      const couponStillCurrent = couponRequests.current.begin(`${quoteId}|${checkIn}|${checkOut}`);
+      const isCurrentRequest = () => quoteStillCurrent() && couponStillCurrent();
+      couponBusyRef.current = true;
       setCouponBusy(true);
       setCouponError(false);
       try {
@@ -718,6 +747,7 @@ export default function CheckoutPage() {
           checkOut,
           coupon: code,
         });
+        if (!isCurrentRequest()) return;
         if (!r.ok) { setCouponError(true); return; }
         const fresh: QuoteSnapshot = {
           nightlyRate: r.pricing.nightlyRate,
@@ -739,12 +769,15 @@ export default function CheckoutPage() {
         if (!code) setCouponInput("");
         if (code) pushDL({ event: "coupon_applied", coupon: code, property_id: intent.listingId });
       } catch {
-        setCouponError(true);
+        if (isCurrentRequest()) setCouponError(true);
       } finally {
-        setCouponBusy(false);
+        if (couponStillCurrent()) {
+          couponBusyRef.current = false;
+          setCouponBusy(false);
+        }
       }
     },
-    [intent, isDemo, quoteId, checkIn, checkOut, selectedRatePlanId, applyCouponMut, syncIntent],
+    [intent, isDemo, quoteId, checkIn, checkOut, selectedRatePlanId, applyCouponMut, syncIntent, requoting, quoteStale, datesUnavailable, quoteRefreshFailed],
   );
 
   // ── Reception: mandatory choice (§5.2). Persisted on the intent. ──
@@ -1052,6 +1085,9 @@ export default function CheckoutPage() {
   const walletGuestRef = useRef<WalletGuest | null>(null);
   const flushPendingSaves = useCallback(async (guest?: WalletGuest) => {
     if (!intentId || isDemo || !intent) return;
+    // Read the synchronous ref: a wallet/card callback may have been captured
+    // before a coupon started. Never begin a new charge against that price.
+    if (couponBusyRef.current) throw new Error("price is being updated; please try again");
     // Com um hóspede vindo da folha da wallet, é ele que fica no intent (e nos
     // campos da página); sem ele, os campos da página como até aqui.
     if (guest) {
@@ -1565,7 +1601,7 @@ export default function CheckoutPage() {
           <button
             type="button"
             onClick={() => applyCoupon("")}
-            disabled={couponBusy}
+            disabled={couponBusy || requoting || quoteStale || datesUnavailable || quoteRefreshFailed}
             aria-label={t("checkout.remove", "Remove")}
             className="caption text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
           >
@@ -1586,7 +1622,7 @@ export default function CheckoutPage() {
             <button
               type="button"
               onClick={() => applyCoupon(couponInput.trim())}
-              disabled={couponBusy || !couponInput.trim() || (!isDemo && !quoteId)}
+              disabled={couponBusy || requoting || quoteStale || datesUnavailable || quoteRefreshFailed || !couponInput.trim() || (!isDemo && !quoteId)}
               className="pa-action shrink-0 h-[38px] px-4 rounded-md border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
             >
               {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
@@ -1909,7 +1945,11 @@ export default function CheckoutPage() {
           {quoteStale && !datesUnavailable && (
             <div className="flex items-start justify-between gap-4 p-4 bg-pa-warm border border-pa-sand rounded-lg">
               <p className="body-sm text-pa-earth leading-snug">
-                {t("checkout.quoteExpiredBanner", "This price has expired. Refresh to see the current price for your dates — your details are kept.")}
+                {requoting
+                  ? t("checkout.refreshingPrice", "Updating your price…")
+                  : quoteRefreshFailed
+                    ? t("checkout.quoteRefreshFailed", "We could not refresh the price just now. Please try again — your details are kept.")
+                    : t("checkout.quoteExpiredBanner", "This price has expired. Refresh to see the current price for your dates — your details are kept.")}
               </p>
               <button
                 id="checkout-refresh-price"
@@ -2347,13 +2387,13 @@ export default function CheckoutPage() {
 
               {/* Payment: monta logo que há preço. Os Termos (e a autorização da
                   2.ª parte) e a frase da política ficam mesmo acima do botão. */}
-              <div className="pt-5 space-y-4">
+              <div className="pt-5 space-y-4" inert={couponBusy || undefined} aria-busy={couponBusy || undefined}>
                 {redirectFinalizing ? (
                   <div className="flex items-center justify-center gap-3 py-8" role="status">
                     <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
                     <p className="body-sm text-pa-dark">{t("checkout.confirmingPayment", "Payment received — confirming your booking…")}</p>
                   </div>
-                ) : quoteId && effective && !quoteStale ? (
+                ) : quoteId && effective && !quoteStale && !requoting && !datesUnavailable && !quoteRefreshFailed ? (
                   <CheckoutPaymentForm
                     demo={isDemo}
                     demoDecline={demoDecline}
@@ -2403,7 +2443,7 @@ export default function CheckoutPage() {
                   />
                 ) : (
                   // Sem preço confirmado não há botão: o banner acima diz como o atualizar.
-                  <p className="caption text-pa-earth" role="status">{t("checkout.refreshBeforePay", "Refresh the price above before paying.")}</p>
+                  <p className="caption text-pa-earth" role="status">{requoting || couponBusy ? t("checkout.refreshingPrice", "Updating your price…") : t("checkout.refreshBeforePay", "Refresh the price above before paying.")}</p>
                 )}
                 <p className="flex items-center justify-center gap-1.5 caption text-pa-stone-aa">
                   <Lock className="w-3 h-3" /> {t("checkout.secureNote", "Encrypted, secure payment")}

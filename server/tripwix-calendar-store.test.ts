@@ -83,6 +83,27 @@ describe('guest requests never call the partner API', () => {
 });
 
 describe('the background job', () => {
+  it('distinguishes calendars with data from calendars with future available prices', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      const uid = uidOf(url);
+      if (uid === 'missing') return new Response('{}', { status: 404 });
+      if (uid === 'past') return ok([{ date: '2026-10-28', status: 'available', price: 1000 }]);
+      return ok(calendar(uid === 'unpriced' ? 0 : 1000, () => uid === 'booked' ? 'booked' : 'available'));
+    }));
+    const { refreshTripwixCalendar, tripwixCalendarSummary } = await load();
+    const homes = ['booked', 'unpriced', 'past', 'available', 'missing'].map((uid) => ({ uid, name: `Home ${uid}` }));
+    for (const h of homes) await refreshTripwixCalendar(h.uid, h.name);
+    const summary = tripwixCalendarSummary(homes);
+    expect(summary.withData).toBe(4);
+    expect(summary.noAvailablePrices).toEqual(['Home booked', 'Home unpriced', 'Home past']);
+    expect(summary.failing).toHaveLength(1);
+    // An expired cache is a separate no-calendar condition, never a claim
+    // that the property itself has no dates available.
+    at(T0 + 49 * 60 * MIN);
+    expect(tripwixCalendarSummary(homes).noAvailablePrices).toEqual([]);
+  });
+
   it('reads one home per step, never-read homes first, and at most 35 per hour', async () => {
     const fetcher = vi.fn(async () => ok(calendar()));
     vi.stubGlobal('fetch', fetcher);

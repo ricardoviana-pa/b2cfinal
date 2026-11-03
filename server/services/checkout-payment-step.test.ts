@@ -152,8 +152,22 @@ describe("passo do pagamento: guardas no código (regras do André e da auditori
     expect(page).not.toMatch(/setMandateAccepted\(true\)/);
   });
 
+  it("um cupão pendente bloqueia novas interações sem desmontar a cobrança ou a confirmação em curso", () => {
+    // Regression: conditionally removing CheckoutPaymentForm on couponBusy
+    // destroyed its submittedRef/processingRef and recreated an enabled form.
+    const paymentRegion = page.slice(page.indexOf("{/* Payment: monta"), page.indexOf("{/* Reserva direta (mobile)"));
+    expect(paymentRegion).toContain('inert={couponBusy || undefined} aria-busy={couponBusy || undefined}');
+    const formCondition = paymentRegion.slice(0, paymentRegion.indexOf("<CheckoutPaymentForm"));
+    expect(formCondition).not.toMatch(/&& !couponBusy/);
+    // An already captured wallet/card callback must read the live ref before
+    // it can start another payment, rather than a stale render's boolean.
+    const beforePay = page.slice(page.indexOf("const flushPendingSaves ="), page.indexOf("/** Ops manifest"));
+    expect(beforePay).toMatch(/if \(couponBusyRef\.current\) throw new Error/);
+    expect(beforePay.indexOf("couponBusyRef.current")).toBeLessThan(beforePay.indexOf("updateIntent.mutateAsync"));
+  });
+
   it("o bloco de pagamento monta com preço válido, não atrás dos dados do hóspede", () => {
-    expect(page).toMatch(/quoteId && effective && !quoteStale \? \(\s*<CheckoutPaymentForm/);
+    expect(page).toMatch(/quoteId && effective && !quoteStale && !requoting && !datesUnavailable && !quoteRefreshFailed \? \(\s*<CheckoutPaymentForm/);
     expect(page).not.toMatch(/checkout\.missing\.prefix/);
     expect(page).toMatch(/termsAccepted=\{termsAccepted\}/);
     expect(page).toMatch(/validateGuest=\{validateGuestForPay\}/);

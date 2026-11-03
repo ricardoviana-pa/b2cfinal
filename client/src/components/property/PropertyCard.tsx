@@ -334,7 +334,9 @@ export default function PropertyCard({
                   if (nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0) {
                     return (
                       <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
-                        {formatTotal(liveQuote.total)} {liveQuote.source === 'partner_calendar' && !liveQuote.feesKnown ? t('partnerBooking.accommodationLabel') : t('property.totalLabel')}
+                        {isPartner
+                          ? `${formatTotal(liveQuote.total)} ${liveQuote.source === 'partner_calendar' && !liveQuote.feesKnown ? t('partnerBooking.accommodationLabel') : t('property.totalLabel')}`
+                          : t('homes.fromTotal', { price: formatTotal(liveQuote.total) })}
                       </span>
                     );
                   }
@@ -381,7 +383,9 @@ export default function PropertyCard({
                   if (liveQuote && liveQuote.total > 0) {
                     return (
                       <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
-                        {formatTotal(liveQuote.total)} {liveQuote.source === 'partner_calendar' && !liveQuote.feesKnown ? t('partnerBooking.accommodationLabel') : t('property.totalLabel')}
+                        {isPartner
+                          ? `${formatTotal(liveQuote.total)} ${liveQuote.source === 'partner_calendar' && !liveQuote.feesKnown ? t('partnerBooking.accommodationLabel') : t('property.totalLabel')}`
+                          : t('homes.fromTotal', { price: formatTotal(liveQuote.total) })}
                       </span>
                     );
                   }

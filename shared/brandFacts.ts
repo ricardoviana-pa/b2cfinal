@@ -6,10 +6,10 @@
  * drift between surfaces again (auditoria set/2026, I1/T1: the home count was
  * 50+, 60+ and 70 on the same site).
  *
- * HOME_COUNT comes from the data: scripts/brand-facts.mjs counts the public
- * list the site renders (own homes + partner inventory, after the exclusion
- * rules) before every build and writes brandFacts.generated.json. The label
- * rounds DOWN to the ten with a "+" ("90+"): always true, never overstated.
+ * HOME_COUNT preserves the complete data-derived public catalogue size.
+ * HOME_COUNT_LABEL is the public brand figure approved by Ricardo on
+ * 3 November 2026. Marketing uses 70 without exposing the source split;
+ * search results continue to show their actual counts.
  *
  * Locale strings that need the count interpolate `{{homes}}` and pass
  * HOME_COUNT_LABEL at the call site; strings with an SLA say "2 hours"
@@ -20,15 +20,14 @@ import generated from "./brandFacts.generated.json";
 
 /** Public homes right now (own + partner), from the data. */
 export const HOME_COUNT: number = generated.homeCount;
-/** Rounded down to the ten, with "+": "90+". Use this in copy. */
-export const HOME_COUNT_LABEL: string = generated.homeCountLabel;
+/** Public brand figure approved by Ricardo on 3 November 2026.
+ * Catalogue/result counts remain data-derived; marketing does not expose the supplier split. */
+export const HOME_COUNT_LABEL = "70";
 export const OWN_HOME_COUNT: number = generated.ownHomeCount;
 export const PARTNER_HOME_COUNT: number = generated.partnerHomeCount;
 /**
  * Homes our own team runs end to end (no partner inventory), same rounding:
- * "70+". Every claim about who runs, prepares or checks the homes uses this
- * one, never HOME_COUNT_LABEL: the partner homes are run by the supplier
- * (auditoria 29 out 2026, ux-home-plp-02).
+ * "70+". Retained for internal audits; public brand copy uses HOME_COUNT_LABEL.
  */
 export const OWN_HOME_COUNT_LABEL: string = homeCountLabel(OWN_HOME_COUNT);
 

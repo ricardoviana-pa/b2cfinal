@@ -1,4 +1,5 @@
 import { accommodationSubtotal } from "@shared/booking-money";
+import { QuoteRequestGate } from "@/lib/quoteRequest";
 import { useState, useCallback, useRef, useEffect, useLayoutEffect, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useMeasurementConsent } from "@/hooks/useMeasurementConsent";
@@ -346,6 +347,8 @@ export default function BookingWidget({
   const [step, setStep] = useState<Step>("dates");
   const [quote, setQuote] = useState<QuoteData | null>(null);
   const [selectedRatePlanId, setSelectedRatePlanId] = useState<string | null>(null);
+  const selectedRatePlanRef = useRef(selectedRatePlanId);
+  selectedRatePlanRef.current = selectedRatePlanId;
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedUpsells, setSelectedUpsells] = useState<Set<string>>(new Set());
@@ -360,8 +363,15 @@ export default function BookingWidget({
   const [beQuoteError, setBeQuoteError] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
-  const quoteRequestRef = useRef(0);
+  const quoteRequests = useRef(new QuoteRequestGate());
+  const quoteSelection = `${guestyId}|${checkIn}|${checkOut}|${guests}`;
+  // A late response must not switch back to the quote step and cancel the
+  // 450 ms debounce for the dates/party the guest has just chosen.
+  quoteRequests.current.select(quoteSelection);
+  useEffect(() => { setLoading(false); }, [quoteSelection]);
+  useEffect(() => () => quoteRequests.current.invalidate(), []);
   const lastQuoteKeyRef = useRef("");
+  const pricedSelectionRef = useRef("");
   /** Uma falha de quote é quase sempre transitória (rate limit/timeout do BE):
    *  um retry automático por combinação de datas antes do estado de falha. */
   const autoRetriedKeyRef = useRef<string | null>(null);
@@ -437,7 +447,6 @@ export default function BookingWidget({
   const { data: isBECheckoutAvailable } = trpc.booking.isBECheckoutAvailable.useQuery();
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const canPayOnSite = isBECheckoutAvailable && !!stripeConfig?.publishableKey;
-  const createBEQuote = trpc.booking.createBEQuote.useMutation();
 
   // Checkout 2.0: server flag OR local ?checkoutv2=1 override (for dev testing)
   const [, navigate] = useLocation();
@@ -475,11 +484,12 @@ export default function BookingWidget({
    */
   const hasLivePrice = useMemo(() => {
     return (
+      pricedSelectionRef.current === quoteSelection &&
       !!quote?.quoteId &&
       (quote.source === "live" || quote.source === "cached") &&
       (effectiveQuote?.total ?? 0) > 0
     );
-  }, [quote, effectiveQuote]);
+  }, [quote, effectiveQuote, quoteSelection]);
 
   // Report the price actually on screen, including a first consent given after
   // the quote arrived. No historical clicks or hidden/stale quotes are replayed.
@@ -517,13 +527,13 @@ export default function BookingWidget({
     }
     const quoteKey = `${guestyId}|${checkIn}|${checkOut}|${guests}|${canPayOnSite ? 1 : 0}`;
     // Prevent re-fetching when we already have a result for these params
-    if (lastQuoteKeyRef.current === quoteKey && quoteRef.current) {
+    if (lastQuoteKeyRef.current === quoteKey && pricedSelectionRef.current === quoteSelection && quoteRef.current) {
       setStep("quote");
       return;
     }
     lastQuoteKeyRef.current = quoteKey;
 
-    const requestId = ++quoteRequestRef.current;
+    const isCurrentRequest = quoteRequests.current.begin(quoteSelection);
     setLoading(true);
     setError("");
     setBeQuoteError("");
@@ -532,8 +542,10 @@ export default function BookingWidget({
     const scheduleAutoRetry = (): boolean => {
       if (autoRetriedKeyRef.current === quoteKey) return false;
       autoRetriedKeyRef.current = quoteKey;
-      quoteRequestRef.current++; // impede o finally deste pedido de apagar o loading
+      quoteRequests.current.invalidate(); // mantém o spinner durante a espera
+      const retryIsCurrent = quoteRequests.current.begin(quoteSelection);
       setTimeout(() => {
+        if (!retryIsCurrent()) return;
         lastQuoteKeyRef.current = "";
         void fetchQuoteRef.current();
       }, 2_000);
@@ -549,7 +561,7 @@ export default function BookingWidget({
           setTimeout(() => reject(new Error(i18n.t("errors.quoteTimeout"))), 20000);
         }),
       ]);
-      if (quoteRequestRef.current !== requestId) return;
+      if (!isCurrentRequest()) return;
 
       const effectiveNightly = d.pricing?.nightlyRate ?? 0;
       const effectiveTotal = d.pricing?.total ?? 0;
@@ -607,6 +619,7 @@ export default function BookingWidget({
         ratePlanOptions: pickTwoRatePlans((d as any).ratePlanOptions, checkIn),
       };
 
+      pricedSelectionRef.current = quoteSelection;
       setQuote(quoteData);
       // Tarifa pré-selecionada: a reembolsável, quando a estadia a oferece
       // (shared/ratePlanDefault.ts; decisão do Ricardo, 29 out 2026). Antes
@@ -630,7 +643,7 @@ export default function BookingWidget({
 
       setStep("quote");
     } catch (err: any) {
-      if (quoteRequestRef.current !== requestId) return;
+      if (!isCurrentRequest()) return;
       if (scheduleAutoRetry()) return;
       // Keep lastQuoteKeyRef set to prevent infinite retry loop for the same params.
       // Any pricing failure surfaces the standardized "contact concierge" state — never an estimate.
@@ -646,11 +659,11 @@ export default function BookingWidget({
       setQuote(null);
       setStep("quote");
     } finally {
-      if (quoteRequestRef.current === requestId) {
+      if (isCurrentRequest()) {
         setLoading(false);
       }
     }
-  }, [checkIn, checkOut, guests, guestyId, effectiveMinNights, canPayOnSite, utils, nights, propertyName, destination]);
+  }, [checkIn, checkOut, guests, guestyId, effectiveMinNights, canPayOnSite, utils, nights, propertyName, destination, quoteSelection]);
 
   const fetchQuoteRef = useRef(fetchQuote);
   fetchQuoteRef.current = fetchQuote;
@@ -663,12 +676,12 @@ export default function BookingWidget({
   }, []);
 
   useEffect(() => {
-    if (!checkIn || !checkOut || (nights > 0 && nights < effectiveMinNights) || step !== "dates") return;
+    if (!checkIn || !checkOut || (nights > 0 && nights < effectiveMinNights) || step !== "dates" || loading) return;
     const timer = setTimeout(() => {
       fetchQuoteRef.current();
     }, 450);
     return () => clearTimeout(timer);
-  }, [checkIn, checkOut, guests, nights, effectiveMinNights, step]);
+  }, [checkIn, checkOut, guests, nights, effectiveMinNights, step, loading]);
 
   // Fetch calendar availability on mount (and when guestyId changes).
   // Depend on the root `utils` proxy (memoized by tRPC), matching every other
@@ -1423,6 +1436,9 @@ export default function BookingWidget({
                   !(quote?.quoteCreatedAt && Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)
                 ) {
                   const base = effectiveQuote ?? quote;
+                  const quoteStillCurrent = quoteRequests.current.capture();
+                  const reservedRatePlan = selectedRatePlanId;
+                  const isCurrentSelection = () => quoteStillCurrent() && selectedRatePlanRef.current === reservedRatePlan;
                   createIntent
                     .mutateAsync({
                       listingId: guestyId,
@@ -1462,6 +1478,7 @@ export default function BookingWidget({
                       },
                     })
                     .then(({ intentId }) => {
+                      if (!isCurrentSelection()) return;
                       if (intentId) {
                         try { sessionStorage.setItem(`checkout_created_${intentId}`, "1"); } catch { /* ok */ }
                         navigate(`/checkout/${intentId}`);
@@ -1472,6 +1489,7 @@ export default function BookingWidget({
                       }
                     })
                     .catch(() => {
+                      if (!isCurrentSelection()) return;
                       setError("");
                       setTermsAccepted(false);
                       setStep("payment");
@@ -1480,45 +1498,18 @@ export default function BookingWidget({
                 }
                 // Check if BE quote has expired (24h validity)
                 if (quote?.quoteCreatedAt && (Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)) {
-                  // Auto-retry: clear expired quote and re-fetch
-                  setQuote(prev => prev ? { ...prev, quoteId: undefined, quoteCreatedAt: undefined } : null);
+                  // Refresh the complete quote through the normal pricing path.
+                  // Replacing only its ID kept the old totals and could make the
+                  // payment fail with a price mismatch. Let the guest review the
+                  // fresh price and rate before continuing.
+                  lastQuoteKeyRef.current = "";
+                  quoteRef.current = null;
+                  setQuote(null);
+                  setSelectedRatePlanId(null);
                   setBeQuoteError("");
                   setError("");
-                  // Trigger new BE quote fetch
-                  const beRefreshTimeout = setTimeout(() => {
-                    setBeQuoteError(t("bookingWidget.quoteExpired", { defaultValue: "Quote expired. Please try again." }));
-                  }, 12000);
-                  createBEQuote.mutateAsync({
-                    listingId: guestyId, checkIn, checkOut, guests,
-                    guestEmail: "guest@example.com",
-                  }).then((be: any) => {
-                    clearTimeout(beRefreshTimeout);
-                    if (!be?.quoteId) return;
-                    setQuote(prev => prev ? {
-                      ...prev,
-                      quoteId: be.quoteId,
-                      quoteCreatedAt: Date.now(),
-                      ratePlanId: be.ratePlanId,
-                      currency: be.currency || prev.currency,
-                      cancellationPolicy: be.cancellationPolicy,
-                      taxesAndFees: (be.pricing as any)?.taxesAndFees ?? 0,
-                      ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
-                        ...opt,
-                        total: opt.total > 0 ? opt.total : prev.total,
-                        nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
-                        cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
-                        taxesAndFees: opt.taxesAndFees ?? 0,
-                      })),
-                    } : null);
-                    if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);
-                    // Auto-proceed to payment after refresh
-                    setError("");
-                    setTermsAccepted(false);
-                    setStep("payment");
-                  }).catch(() => {
-                    clearTimeout(beRefreshTimeout);
-                    setBeQuoteError(t("bookingWidget.quoteRefreshFailed", { defaultValue: "Could not refresh pricing. Please contact our concierge." }));
-                  });
+                  setStep("dates");
+                  void fetchQuoteRef.current();
                   return;
                 }
                 setError("");
