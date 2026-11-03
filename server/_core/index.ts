@@ -23,6 +23,10 @@ import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhoo
 import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
 import { registerVitalsRoute } from "../routes/vitals";
 import { registerHealthRoutes } from "../routes/health";
+import { registerOwnerEnquiryRoutes } from "../routes/owner-enquiries";
+import { initialiseOwnerIntakeSchema } from "../services/owner-intake/store";
+import { isOwnerIntakeProduction } from "../services/owner-intake/email";
+import { startOwnerNotificationSweep } from "../services/owner-intake/service";
 import { permissionsPolicyHeader, registerSecurityTxtRoutes } from "../lib/security-headers";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -148,6 +152,8 @@ async function startServer() {
   });
   // Contacto de segurança (RFC 9116)
   registerSecurityTxtRoutes(app);
+  // Separate bounded parser/rate limiter; private files never become public assets.
+  registerOwnerEnquiryRoutes(app);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -505,6 +511,15 @@ ${allUrls.join("\n")}
     console.info(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
+  // Owner enquiries: additive schema must be ready before acknowledging requests.
+  if (isOwnerIntakeProduction()) {
+    try {
+      if (!await initialiseOwnerIntakeSchema()) console.warn("[Owner intake] schema unavailable; readiness remains closed");
+    } catch {
+      console.warn("[Owner intake] schema unavailable; readiness remains closed");
+    }
+  }
+
   // Auto-migrate: ensure new tables exist (idempotent, safe to run on every deploy)
   try {
     const { getDb } = await import("../db");
@@ -793,6 +808,7 @@ ${allUrls.join("\n")}
 
   server.listen(port, () => {
     console.info(`Server running on http://localhost:${port}/`);
+    startOwnerNotificationSweep();
 
     // Apple Pay: garante o domínio registado na conta Stripe da plataforma
     // (idempotente; dev regista dev., produção regista o domínio live)
