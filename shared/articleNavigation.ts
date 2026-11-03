@@ -19,6 +19,13 @@ export function articleHeadings(content: string) {
   });
 }
 
+/** Use the article's main section level without changing its visible headings. */
+export function articleContents(content: string) {
+  const headings = articleHeadings(content);
+  const sections = headings.filter(heading => heading.level === 2);
+  return sections.length ? sections : headings.filter(heading => heading.level === 3);
+}
+
 export function reviewedArticleDate(
   article: {
     modifiedDate?: string;

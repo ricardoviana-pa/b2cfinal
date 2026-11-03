@@ -4,7 +4,7 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { getDisplayName } from '@shared/displayName';
-import { articleHeadings, reviewedArticleDate } from '@shared/articleNavigation';
+import { articleContents, reviewedArticleDate } from '@shared/articleNavigation';
 import { pushDL } from '@/lib/datalayer';
 import { useParams, Link, useSearch } from 'wouter';
 import { withEditorialTrip } from '@shared/editorialTripContext';
@@ -98,6 +98,7 @@ export default function BlogArticle() {
   const article = useMemo(() => mergeBlogOverride(rawArticle, blogOverrides), [rawArticle, blogOverrides]);
   const redirect = rawArticle ? blogLanguageRedirect(rawArticle, i18n.language) : null;
   const reviewed = article ? reviewedArticleDate(article,i18n.language) : undefined;
+  const contents = useMemo(() => article ? articleContents(article.content) : [], [article]);
   const editorialCta = reviewed ? article?.cta : undefined;
   useEffect(() => { if (redirect) window.location.replace(redirect + window.location.search); }, [redirect]);
   usePageMeta({
@@ -240,7 +241,7 @@ export default function BlogArticle() {
       {/* Article Content */}
       <section className="pb-16">
         <div className="container max-w-3xl mx-auto">
-          {reviewed && <nav aria-label={t('planning.inThisGuide')} className="bg-pa-warm border-y border-pa-sand p-6 mb-10"><h2 className="text-base font-medium mb-3">{t('planning.inThisGuide')}</h2><ol className="grid sm:grid-cols-2 gap-x-7 gap-y-1">{articleHeadings(article.content).filter(h=>h.level===2).map(h=><li key={h.id}><a href={`#${h.id}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4" onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:h.id,action:'chapter'})}>{h.title}</a></li>)}</ol></nav>}
+          {reviewed && contents.length > 0 && <nav aria-label={t('planning.inThisGuide')} className="bg-pa-warm border-y border-pa-sand p-6 mb-10"><h2 className="text-base font-medium mb-3">{t('planning.inThisGuide')}</h2><ol className="grid sm:grid-cols-2 gap-x-7 gap-y-1">{contents.map(h=><li key={h.id}><a href={`#${h.id}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4" onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:h.id,action:'chapter'})}>{h.title}</a></li>)}</ol></nav>}
           <ArticleBody content={article.content} onLink={action=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'body',action})} />
         </div>
       </section>
