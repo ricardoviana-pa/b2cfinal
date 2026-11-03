@@ -1,3 +1,5 @@
+import { HOME_COUNT_LABEL } from '@shared/brandFacts';
+
 /**
  * What usePageMeta writes into <head>, as a pure function — so a test can
  * prove that the hydrated page asks for exactly what the server injected
@@ -7,7 +9,7 @@
 
 export const SITE_BASE_URL = 'https://www.portugalactive.com';
 export const BASE_TITLE = 'Luxury Villas & Private Homes in Portugal | Portugal Active';
-export const BASE_DESC = 'Luxury villas and private homes in Portugal, run end to end by our own in-house team: concierge, private chef and housekeeping. Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Book direct.';
+export const BASE_DESC = `Discover ${HOME_COUNT_LABEL} villas and private homes in Portugal. Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Book direct.`;
 export const BASE_IMAGE = 'https://www.portugalactive.com/hero/home-mirante-tennis-og.jpg';
 
 export interface PageMetaOpts {

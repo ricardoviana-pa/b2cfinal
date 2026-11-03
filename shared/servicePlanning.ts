@@ -23,7 +23,7 @@ const privateChef: Record<string, ServicePlanning> = {
     questions: [
       { q: 'How much does a private chef cost?', a: 'The starting price below comes from our current service catalogue. Your total depends on the menu, party size, location and agreed service. Ask for a proposal showing drinks, staff, travel and any other charges.' },
       { q: 'Can children and dietary requirements be accommodated?', a: 'Include children’s ages and any allergies or dietary requirements in your request. The chef confirms suitable menu options and preparation arrangements for your group.' },
-      { q: 'Can a chef come to any holiday home?', a: 'Send us the property name or location so we can check coverage, kitchen facilities and access. For a partner property or another host’s home, the host must also allow the service.' },
+      { q: 'Can a chef come to any holiday home?', a: 'Send us the property name or location so we can check coverage, kitchen facilities and access. The service must be compatible with the home’s access arrangements and house rules.' },
       { q: 'Are drinks and clearing up included?', a: 'These are agreed in the proposal. Confirm the drinks, table service, kitchen clean-up and any equipment before booking so the evening is organised as you expect.' },
     ],
     guideLabel: 'Read our guide to planning a private chef dinner',
@@ -42,7 +42,7 @@ const privateChef: Record<string, ServicePlanning> = {
     questions: [
       { q: 'Quanto custa contratar um chef privado?', a: 'O preço desde apresentado abaixo vem do catálogo atual do serviço. O total depende da ementa, grupo, localização e serviço acordado. Peça uma proposta que detalhe bebidas, equipa, deslocação e outros encargos.' },
       { q: 'É possível adaptar a ementa a crianças e necessidades alimentares?', a: 'Indique as idades das crianças, alergias e necessidades alimentares no pedido. O chef confirma as opções e condições de preparação adequadas ao grupo.' },
-      { q: 'O chef pode ir a qualquer casa de férias?', a: 'Envie o nome da casa ou a localização para verificarmos a cobertura, os equipamentos da cozinha e o acesso. Numa casa de parceiro ou de outro anfitrião, o serviço também precisa de ser permitido pelo anfitrião.' },
+      { q: 'O chef pode ir a qualquer casa de férias?', a: 'Envie o nome da casa ou a localização para verificarmos a cobertura, os equipamentos da cozinha e o acesso. O serviço deve respeitar as condições de acesso e as regras da casa.' },
       { q: 'As bebidas e a arrumação estão incluídas?', a: 'Esses detalhes ficam definidos na proposta. Confirme bebidas, serviço de mesa, limpeza da cozinha e equipamentos antes de reservar.' },
     ],
     guideLabel: 'Leia o guia para preparar um jantar com chef privado',

@@ -62,7 +62,8 @@ function logSummary(homes: Home[]): void {
   const filling = s.toFill ? `; ${s.toFill} por preencher` : "";
   // Leituras boas que acabam bem antes do ano pedido: o site mostra o resto "a pedido".
   const short = s.short.length ? `; calendário curto (resto "a pedido"): ${s.short.join("; ")}` : "";
-  console.info(`[Tripwix] calendários: ${s.withData}/${s.total} com dados (${s.stale} com mais de 2 h)${filling}; leituras na última hora: ${s.readsLastHour}${paused}${failing}${short}`);
+  const noPrice = s.noAvailablePrices.length ? `; sem noites futuras livres com preço: ${s.noAvailablePrices.join("; ")}` : "";
+  console.info(`[Tripwix] calendários: ${s.withData}/${s.total} com dados (${s.stale} com mais de 2 h)${filling}; leituras na última hora: ${s.readsLastHour}${paused}${failing}${short}${noPrice}`);
 }
 
 /**

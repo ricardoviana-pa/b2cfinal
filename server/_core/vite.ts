@@ -10,7 +10,7 @@ import { corporateSchema } from '../../shared/corporateSchema';
 import { deepMerge } from '../../client/src/lib/deepMerge';
 import { vacationRentalSchema } from '../../shared/vacationRentalSchema';
 import express, { type Express } from "express";
-import { HOME_COUNT_LABEL, OWN_HOME_COUNT_LABEL } from "@shared/brandFacts";
+import { HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
 import { serviceRouteSlug } from '@shared/serviceRoutes';
 import { legalPageMetaEntries, pageMetaEntries } from '@shared/legalPageMeta';
@@ -553,23 +553,23 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
   },
   '/about': {
     en: { title: 'About Portugal Active | Villas Run with the Service of a Hotel',
-          description: 'We run {{ownHomes}} luxury villas and private homes across Portugal: bookings, concierge, housekeeping. The privacy of a home, the service of a hotel, since 2017.' },
+          description: "{{homes}} villas and private homes across Portugal. Discover your next stay." },
     pt: { title: 'Sobre a Portugal Active | Casas de Luxo com Serviço de Hotel',
-          description: 'Operamos {{ownHomes}} casas de luxo em todo Portugal: reservas, concierge, limpeza. A privacidade de uma casa, o serviço de um hotel, desde 2017.' },
+          description: "{{homes}} casas em Portugal. Encontre a sua próxima estadia." },
     es: { title: 'Sobre Portugal Active | Villas con Servicio de Hotel en Portugal',
-          description: 'Operamos {{ownHomes}} villas y casas de lujo en todo Portugal: reservas, concierge, limpieza. La privacidad de una casa, el servicio de un hotel, desde 2017.' },
+          description: "{{homes}} villas y casas en Portugal. Descubre tu próxima estancia." },
     fr: { title: 'À propos de Portugal Active | Villas avec Service Hôtelier au Portugal',
-          description: "Nous gérons {{ownHomes}} villas de luxe au Portugal : réservations, conciergerie, ménage. L'intimité d'une maison, le service d'un hôtel, depuis 2017." },
+          description: "{{homes}} villas et maisons à travers le Portugal. Découvrez votre prochain séjour." },
     de: { title: 'Über Portugal Active | Villen mit Hotelservice in Portugal',
-          description: 'Wir betreiben {{ownHomes}} Luxusvillen in ganz Portugal: Buchungen, Concierge, Reinigung. Die Privatsphäre eines Hauses, der Service eines Hotels, seit 2017.' },
+          description: "{{homes}} Villen und Ferienhäuser in Portugal. Entdecken Sie Ihren nächsten Aufenthalt." },
     it: { title: 'Chi siamo | Portugal Active | Ville con Servizio Hotel in Portogallo',
-          description: 'Gestiamo {{ownHomes}} ville e case di lusso in tutto il Portogallo: prenotazioni, concierge, pulizie. La privacy di una casa, il servizio di un hotel, dal 2017.' },
+          description: "{{homes}} ville e case in Portogallo. Scopri il tuo prossimo soggiorno." },
     nl: { title: "Over Portugal Active | Villa's met Hotelservice in Portugal",
-          description: "Wij beheren {{ownHomes}} luxevilla's in heel Portugal: boekingen, conciërge, schoonmaak. De privacy van een huis, de service van een hotel, sinds 2017." },
+          description: "{{homes}} villa’s en vakantiehuizen in Portugal. Ontdek je volgende verblijf." },
     fi: { title: 'Tietoa Portugal Activesta | Huvilat hotellin palvelulla Portugalissa',
-          description: 'Operoimme {{ownHomes}} luksushuvilaa ympäri Portugalia: varaukset, concierge, siivous. Kodin yksityisyys, hotellin palvelu, vuodesta 2017.' },
+          description: "{{homes}} huvilaa ja lomakotia Portugalissa. Löydä seuraava lomasi." },
     sv: { title: 'Om Portugal Active | Villor med Hotellservice i Portugal',
-          description: 'Vi driver {{ownHomes}} lyxvillor och semesterhus över hela Portugal: bokningar, concierge, städning. Ett hems avskildhet, ett hotells service, sedan 2017.' },
+          description: "{{homes}} villor och semesterhus i Portugal. Upptäck din nästa vistelse." },
   },
   '/contact': {
     en: { title: 'Contact Portugal Active | Plan Your Stay in Portugal',
@@ -710,10 +710,9 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
 };
 
 /** Look up localized meta for a static path with graceful fallback to English. */
-/** Brand numbers inside PAGE_META are tokens filled from shared/brandFacts: {{homes}} is every
- *  public listing, {{ownHomes}} the homes our own team runs ("We run …", ux-home-plp-02). */
+/** Marketing descriptions use the approved public figure, independent of live result counts. */
 function fillBrandTokens(m: MetaEntry): MetaEntry {
-  const fill = (t: string) => t.replace(/\{\{homes\}\}/g, HOME_COUNT_LABEL).replace(/\{\{ownHomes\}\}/g, OWN_HOME_COUNT_LABEL);
+  const fill = (t: string) => t.replace(/\{\{homes\}\}/g, HOME_COUNT_LABEL).replace(/\{\{ownHomes\}\}/g, HOME_COUNT_LABEL);
   return { title: fill(m.title), description: fill(m.description) };
 }
 

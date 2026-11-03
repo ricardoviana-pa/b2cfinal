@@ -5,9 +5,11 @@
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { getDisplayName } from '@/lib/format';
+import { propertyTripHref } from '@shared/editorialTripContext';
 import { Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { useMeasurementConsent } from '@/hooks/useMeasurementConsent';
 import { IMAGES } from '@/lib/images';
 import { Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle } from 'lucide-react';
@@ -56,7 +58,7 @@ interface LiveQuote {
 export default function Homes() {
   const measurementAllowed = useMeasurementConsent();
   const { t, i18n } = useTranslation();
-  usePageMeta({ title: 'Villa Rentals & Holiday Homes in Portugal', description: 'Browse luxury villas and holiday homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct.', image: IMAGES.heroHomes, url: '/homes' });
+  usePageMeta({ title: t('homes.metaTitle'), description: t('homes.metaDescription', { homes: HOME_COUNT_LABEL }), image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
   const searchString = useSearch();
   const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
@@ -1057,7 +1059,7 @@ export default function Homes() {
                     {availableProperties.slice(12).map((property) => (
                       <li key={property.id} className="break-inside-avoid py-1">
                         <Link
-                          href={`/homes/${property.slug}`}
+                          href={propertyTripHref(property.slug, { checkin: searchCheckin, checkout: searchCheckout, guests: searchGuestsCount || undefined })}
                           className="text-pa-dark underline-offset-4 hover:underline"
                         >
                           {getDisplayName(property)}

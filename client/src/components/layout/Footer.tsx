@@ -126,7 +126,7 @@ export default function Footer() {
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <Link href="/">
-              <img src={IMAGES.logoWhite} alt="Portugal Active – luxury villa management in Portugal" className="h-5 lg:h-6 w-auto object-contain mb-5" />
+              <img src={IMAGES.logoWhite} alt="Portugal Active — luxury villas in Portugal" className="h-5 lg:h-6 w-auto object-contain mb-5" />
             </Link>
             <p
               className="text-[13px] text-white/65 mb-5 leading-relaxed max-w-[260px]"
