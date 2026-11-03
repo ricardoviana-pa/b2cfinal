@@ -1329,62 +1329,6 @@ export default function BookingWidget({
         {/* Step: QUOTE — confirmed live price breakdown + booking */}
         {step === "quote" && hasLivePrice && effectiveQuote && (
           <>
-            {/* ── Price Breakdown Card ── */}
-            <div ref={breakdownRef} className="bg-black/[0.02] border border-black/10 overflow-hidden">
-              <div className="p-5 space-y-3">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="body-sm text-black/50">
-                      {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
-                    </span>
-                    <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.totalNights, lang)}</span>
-                  </div>
-                  {effectiveQuote.cleaningFee > 0 && (
-                    <div className="flex justify-between items-center">
-                      <span className="body-sm text-black/50">{t("property.cleaningFee")}</span>
-                      <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.cleaningFee, lang)}</span>
-                    </div>
-                  )}
-                  {(effectiveQuote.taxesAndFees ?? 0) > 0 && (
-                    <div className="flex justify-between items-center">
-                      <span className="body-sm text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
-                      <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.taxesAndFees!, lang)}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="border-t border-black/10 pt-3 flex justify-between items-baseline">
-                  <span className="body-sm font-medium text-black">{t("property.total")}</span>
-                  <span className="text-[24px] font-light text-black tabular-nums tracking-tight">
-                    {formatQuotedEur(effectiveQuote.total, lang)}
-                  </span>
-                </div>
-                {selectedUpsells.size > 0 && (
-                  <p className="caption text-black/35 pt-1">
-                    + {t("bookingWidget.servicesSelected", { count: selectedUpsells.size })}
-                  </p>
-                )}
-                {/* Duas partes: o hóspede sabe-o antes do checkout (só com a
-                    tarifa reembolsável elegível; sem oferta não há nada). Com
-                    dois cartões de tarifa a linha vive debaixo do reembolsável
-                    (RatePlanCards); aqui só quando há uma tarifa única. */}
-                {(() => {
-                  if ((quote?.ratePlanOptions?.length ?? 0) > 1) return null;
-                  const refundable = quote?.ratePlanOptions?.find((o) => !isNonRefundablePlan(o) && !o.priceOnRequest);
-                  if (!refundable) return null;
-                  return (
-                    <TwoPartsHint
-                      variant="widget"
-                      checkIn={checkIn}
-                      policyCode={planPolicyCode({ name: refundable.name, cancellationPolicy: refundable.cancellationPolicy, cancellationFee: refundable.cancellationFee })}
-                      stayTotal={refundable.total}
-                      className="caption text-black/60 leading-snug pt-1"
-                    />
-                  );
-                })()}
-              </div>
-            </div>
-
             {/* ── Tarifas em dois cartões de opção (RatePlanCards): nome,
                  benefício com a data, total, poupança da não reembolsável e a
                  linha das duas partes debaixo da reembolsável. A escolha
@@ -1605,6 +1549,66 @@ export default function BookingWidget({
               </div>
             )}
             </ReserveCtaSlot>
+
+            {/* ── Detalhe do preço depois do RESERVE (3 nov 2026): o botão fica
+                 mais perto do topo do cartão e à vista antes de a página rolar;
+                 o total já está no cabeçalho do cartão. ── */}
+            {/* ── Price Breakdown Card ── */}
+            <div ref={breakdownRef} className="bg-black/[0.02] border border-black/10 overflow-hidden">
+              <div className="p-5 space-y-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="body-sm text-black/50">
+                      {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
+                    </span>
+                    <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.totalNights, lang)}</span>
+                  </div>
+                  {effectiveQuote.cleaningFee > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="body-sm text-black/50">{t("property.cleaningFee")}</span>
+                      <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.cleaningFee, lang)}</span>
+                    </div>
+                  )}
+                  {(effectiveQuote.taxesAndFees ?? 0) > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="body-sm text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
+                      <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.taxesAndFees!, lang)}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="border-t border-black/10 pt-3 flex justify-between items-baseline">
+                  <span className="body-sm font-medium text-black">{t("property.total")}</span>
+                  <span className="text-[24px] font-light text-black tabular-nums tracking-tight">
+                    {formatQuotedEur(effectiveQuote.total, lang)}
+                  </span>
+                </div>
+                {selectedUpsells.size > 0 && (
+                  <p className="caption text-black/35 pt-1">
+                    + {t("bookingWidget.servicesSelected", { count: selectedUpsells.size })}
+                  </p>
+                )}
+                {/* Duas partes: o hóspede sabe-o antes do checkout (só com a
+                    tarifa reembolsável elegível; sem oferta não há nada). Com
+                    dois cartões de tarifa a linha vive debaixo do reembolsável
+                    (RatePlanCards); aqui só quando há uma tarifa única. */}
+                {(() => {
+                  if ((quote?.ratePlanOptions?.length ?? 0) > 1) return null;
+                  const refundable = quote?.ratePlanOptions?.find((o) => !isNonRefundablePlan(o) && !o.priceOnRequest);
+                  if (!refundable) return null;
+                  return (
+                    <TwoPartsHint
+                      variant="widget"
+                      checkIn={checkIn}
+                      policyCode={planPolicyCode({ name: refundable.name, cancellationPolicy: refundable.cancellationPolicy, cancellationFee: refundable.cancellationFee })}
+                      stayTotal={refundable.total}
+                      className="caption text-black/60 leading-snug pt-1"
+                    />
+                  );
+                })()}
+              </div>
+            </div>
+
           </>
         )}
 

@@ -59,7 +59,7 @@ export function ReserveCtaSlot({ children, footerRef }: { children: ReactNode; f
   }, [inCard, ref]);
   if (!slot) return <>{children}</>;
   return (
-    <div ref={ref} className="pa-booking-footer space-y-3 border border-black/10 bg-white px-5 py-3 shadow-sm">
+    <div ref={ref} className="pa-booking-footer space-y-3">
       {children}
     </div>
   );
