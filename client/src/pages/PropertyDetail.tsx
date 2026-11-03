@@ -1150,11 +1150,19 @@ export default function PropertyDetail() {
         </div>
       )}
 
+    </>
+  );
+
+  /* Porquê reservar direto e quem recebe: conteúdo da página, não do cartão de
+     reserva. Dentro do cartão fixo do computador faziam-no mais alto que o ecrã
+     e empurravam o RESERVE para fora (3 nov 2026). */
+  const trustPanel = (
+    <>
       {/* Why book direct — the guest arrived from an OTA with that tab still
           open. Four generic badges ("best rate guaranteed") carried no weight;
           a claim only converts sceptics when it names its mechanism. Every line
           here is unconditionally true (F1 honesty rule). */}
-      <div className="mt-5 pt-4 border-t border-pa-sand">
+      <div>
         <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-2.5">
           {t('trust.directHeadline', 'Why book direct')}
         </p>
@@ -1188,7 +1196,7 @@ export default function PropertyDetail() {
       {/* Quem recebe é a Portugal Active, em todas as casas (próprias ou de
           parceiros): sem nome de pessoa nem "equipa local em X". O Ricardo,
           29 out 2026: "Portugal Active é Portugal Active". */}
-      <p className="mt-4 pt-4 border-t border-pa-sand body-sm text-pa-dark leading-tight">
+      <p className="mt-4 body-sm text-pa-dark leading-tight">
         {t('host.hostedBy', 'Hosted by Portugal Active')} ·{' '}
         <Link href="/about" className="caption text-pa-gold-aa hover:underline">
           {t('host.meetUs', 'Meet us')}
@@ -1728,7 +1736,9 @@ export default function PropertyDetail() {
                 </section>
               )}
 
-
+              <section className="py-6 lg:py-8 border-t border-pa-sand" data-testid="property-trust">
+                {trustPanel}
+              </section>
             </div>
 
             {/* Booking — desktop only: a sticky sidebar on the right. On mobile

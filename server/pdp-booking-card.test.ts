@@ -171,7 +171,7 @@ describe("Tab e leitor de ecrã: o RESERVE logo a seguir às tarifas (revisão d
     expect(outside).toBe('<div><button type="button">Reserve</button></div>');
   });
 
-  it("widget: entre as tarifas e o RESERVE não há nada que receba o foco; o resto (Alterar datas, concierge) vem depois", () => {
+  it("widget: entre as tarifas e o RESERVE não há nada que receba o foco; o concierge vem depois (sem \"Alterar datas\": as datas são clicáveis, 3 nov 2026)", () => {
     const widget = read("client/src/components/booking/BookingWidget.tsx");
     // As tarifas são o componente RatePlanCards (29 out 2026); o bloco fecha com ")}".
     const plans = widget.indexOf("<RatePlanCards");
@@ -181,11 +181,13 @@ describe("Tab e leitor de ecrã: o RESERVE logo a seguir às tarifas (revisão d
     const note = widget.indexOf('<PaymentMethodsNote align="center" total={effectiveQuote?.total} />');
     const err = widget.indexOf("{beQuoteError}");
     const close = widget.indexOf("</ReserveCtaSlot>");
-    const changeDates = widget.indexOf('{t("bookingWidget.changeDates")}', close);
     const concierge = widget.indexOf('t("property.needHelpConcierge"', close);
+    // "Alterar datas" e "Reserva segura" saíram do cartão: as datas são clicáveis e as marcas de pagamento já dizem o resto.
+    expect(widget.indexOf('{t("bookingWidget.changeDates")}', close)).toBe(-1);
+    expect(widget).not.toMatch(/bookingWidget\.secureBooking/);
     expect(plans).toBeGreaterThan(-1);
     expect(open).toBeGreaterThan(-1);
-    const order = [plans, plansEnd, open, block, note, err, close, changeDates, concierge];
+    const order = [plans, plansEnd, open, block, note, err, close, concierge];
     expect(order).toEqual([...order].sort((a, b) => a - b));
     expect(widget.indexOf("<ReserveCtaSlot", open + 1)).toBe(-1);
     // só os serviços do fluxo antigo (sem checkout v2) podem ficar entre os dois

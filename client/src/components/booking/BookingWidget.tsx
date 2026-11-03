@@ -1605,10 +1605,6 @@ export default function BookingWidget({
               </div>
             )}
             </ReserveCtaSlot>
-
-            <button onClick={resetDates} className="w-full caption text-black/30 hover:text-black transition py-1">
-              {t("bookingWidget.changeDates")}
-            </button>
           </>
         )}
 
@@ -1715,12 +1711,6 @@ export default function BookingWidget({
           </div>
         )}
 
-        {/* Trust signals */}
-        <div className="flex items-center justify-center gap-4 pt-1">
-          <div className="flex items-center gap-1 caption text-black/25">
-            <Shield className="w-3 h-3" /> {t("bookingWidget.secureBooking")}
-          </div>
-        </div>
 
         {/* Política humana com data concreta — sem legalês nem salto para FAQs.
             Sem tarifa escolhida, não se mostra nada (o passo 1 do checkout
