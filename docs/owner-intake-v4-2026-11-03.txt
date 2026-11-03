@@ -1,0 +1,46 @@
+Owner intake v4 — 3 November 2026
+
+Requested by Ricardo: contact-first two-stage intake, optional photographs,
+transactional welcome with a link to finish the SAME enquiry, measurement and
+capacity for up to 100 enquiries/day. No sales portal or reminder campaign.
+
+New API: /api/owner-enquiries/v4
+POST /start persists contact, property type/locality, privacy acknowledgement,
+public page context, optional consented campaign attribution, welcome and sales
+notification in one transaction. Duplicate request UUID + identical input returns
+the same reference and continuation token, with no additional email jobs.
+GET/PATCH /draft, PUT/DELETE /files/:uuid and POST /complete require the random
+256-bit bearer token. The email link carries it in the fragment. It expires after
+30 days. Its lookup is hashed; the frozen private welcome outbox necessarily
+retains the original link for reliable retries. Tokens/PII are never logged.
+Email remains fixed after capture; other contact fields are editable inline.
+
+Qualification and files update the original reference. Empty media is accepted;
+an image or link is required to leave awaiting_photos, and commercial review must
+still establish whether those images are accessible and sufficient. A PDF alone
+does not imply photographs. Files are private database blobs, not public assets.
+Uploads are binary and individually bounded (5 MiB each, 8 files/15 MiB active).
+Removed file UUIDs cannot be revived by an in-flight PUT. Frozen notification
+snapshots retain their referenced bytes; historical uploads are bounded too.
+
+Captures and small updates have their own admission lane. Parsing counts actual
+bytes even without Content-Length, with memory/concurrency budgets and explicit
+Retry-After on 429. Legacy v3 remains supported with its more costly base64 bound.
+Email delivery is asynchronous from a durable outbox, at most 2 concurrent jobs
+and 15 MiB attachment bytes in progress. Provider idempotency keys and immutable
+payloads protect ambiguous retries. Unconfirmed attempts require review before
+the provider's idempotency window ends. Explicit quota rejections respect backoff.
+
+Deployment is additive: four new owner_v4_* tables; no old lead tables removed or
+rewritten. Deploy backend first, verify /v4/health, then publish the B2B Worker.
+Rollback the B2B UI to its previous continuous-v3 version if needed; keep the v4
+backend/outbox available for already-issued links and accepted enquiries.
+Do not restore the old Worker that forwarded directly to ActiveCampaign/Make.
+
+Validation uses synthetic data, mocked SQL/provider integrations and isolated
+HTTP load tests. It must not load production credentials/data into local DEV.
+Production reception tests are separate authorized administrative verification.
+Render inspected for this release: 1 instance, 1 CPU / 2 GB; no plan upgrade.
+Local load results are not production latency/capacity certification. Resend's
+sending-only key cannot verify daily/monthly quotas; ensure allowance for welcome,
+sales notifications, completion updates and the existing B2C email traffic.
