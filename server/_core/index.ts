@@ -27,6 +27,9 @@ import { registerOwnerEnquiryRoutes } from "../routes/owner-enquiries";
 import { initialiseOwnerIntakeSchema } from "../services/owner-intake/store";
 import { isOwnerIntakeProduction } from "../services/owner-intake/email";
 import { startOwnerNotificationSweep } from "../services/owner-intake/service";
+import { registerOwnerV4Routes } from "../routes/owner-enquiries-v4";
+import { initialiseV4Schema } from "../services/owner-intake-v4/store";
+import { startV4Sweep } from "../services/owner-intake-v4/service";
 import { permissionsPolicyHeader, registerSecurityTxtRoutes } from "../lib/security-headers";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -153,6 +156,7 @@ async function startServer() {
   // Contacto de segurança (RFC 9116)
   registerSecurityTxtRoutes(app);
   // Separate bounded parser/rate limiter; private files never become public assets.
+  registerOwnerV4Routes(app);
   registerOwnerEnquiryRoutes(app);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
@@ -515,6 +519,7 @@ ${allUrls.join("\n")}
   if (isOwnerIntakeProduction()) {
     try {
       if (!await initialiseOwnerIntakeSchema()) console.warn("[Owner intake] schema unavailable; readiness remains closed");
+      if (!await initialiseV4Schema()) console.warn("[Owner intake v4] schema unavailable; readiness remains closed");
     } catch {
       console.warn("[Owner intake] schema unavailable; readiness remains closed");
     }
@@ -809,6 +814,7 @@ ${allUrls.join("\n")}
   server.listen(port, () => {
     console.info(`Server running on http://localhost:${port}/`);
     startOwnerNotificationSweep();
+    startV4Sweep();
 
     // Apple Pay: garante o domínio registado na conta Stripe da plataforma
     // (idempotente; dev regista dev., produção regista o domínio live)
