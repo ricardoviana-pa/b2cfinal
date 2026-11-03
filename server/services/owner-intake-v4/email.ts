@@ -3,7 +3,7 @@ import { ownerEmailConfigured, ownerNotificationMail } from "../owner-intake/ema
 import type { OwnerMail } from "../owner-intake/store";
 import type { V4Record } from "./types";
 const e = (v: string) => v.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
-const from = () => process.env.EMAIL_FROM || "Portugal Active <booking@portugalactive.com>";
+const OWNER_V4_FROM = "Portugal Active · Management <management@portugalactive.com>";
 const labels: Record<string, string> = { villa: "Moradia", apartment: "Apartamento", farmhouse: "Quinta", hostel: "Hostel", guesthouse: "Guesthouse", boutiqueHotel: "Hotel boutique", other: "Outro" };
 const welcomeCopy: Record<string, [string, string, string, string, string, string]> = {
   pt: ["Recebemos o seu pedido", "Vamos conhecer melhor a sua propriedade.", "O seu contacto ficou guardado. Este link permite consultar, completar ou atualizar os dados da propriedade, agora ou mais tarde.", "Completar ou consultar pedido", "Pode enviar fotografias agora ou mais tarde. Precisamos de imagens da propriedade para avançar com a avaliação. Se já completou os dados e enviou imagens, não precisa repetir.", "Este link é pessoal e válido por 30 dias. Não o partilhe. Para falar connosco, responda a este email."],
@@ -28,14 +28,14 @@ export function welcomeMail(record: V4Record, completionUrl: string): OwnerMail 
   const lang = welcomeCopy[record.context.language] ? record.context.language : "en";
   const c = welcomeCopy[lang];
   const text = `${record.contact.name},\n\n${c[1]}\n${c[2]}\n\n${c[3]}: ${completionUrl}\n\n${c[4]}\n\n${c[5]}\n\nPortugal Active\n${record.id}`;
-  return { from: from(), to: record.contact.email, replyTo: OWNER_SALES_EMAIL, subject: `Portugal Active · ${c[0]}`,
+  return { from: OWNER_V4_FROM, to: record.contact.email, replyTo: OWNER_SALES_EMAIL, subject: `Portugal Active · ${c[0]}`,
     text, html: shell(c[0], `<p style="margin-top:0">${e(record.contact.name)},</p><h1 style="font-size:27px;line-height:1.25">${e(c[1])}</h1><p>${e(c[2])}</p><p style="margin:26px 0"><a href="${e(completionUrl)}" style="display:inline-block;padding:13px 20px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">${e(c[3])}</a></p><p>${e(c[4])}</p><p style="font-size:12px;color:#676d62">${e(c[5])}</p><p style="font-size:11px;color:#676d62">${e(record.id)}</p>`, lang) };
 }
 export function managementStartMail(record: V4Record): OwnerMail {
   const p = record.contact;
   const source = attribution(record);
   const lines = [`Novo contacto — qualificação por completar`, `Referência: ${record.id}`, `Nome: ${p.name}`, `Email: ${p.email}`, `Telefone: ${p.phone}`, `Tipo: ${labels[p.type] || p.type}`, `Localidade: ${p.locality}`, `Idioma: ${record.context.language}`, `Origem: ${record.context.page_path} · ${record.context.placement}`, "Privacidade aceite para tratar este pedido. Sem subscrição de marketing.", ...(source ? [`Campanha: ${source}`] : [])];
-  return { from: from(), to: OWNER_SALES_EMAIL, replyTo: p.email, subject: `[Por completar] ${p.locality} · ${p.name} · Portugal Active`, text: lines.join("\n"),
+  return { from: OWNER_V4_FROM, to: OWNER_SALES_EMAIL, replyTo: p.email, subject: `[Por completar] ${p.locality} · ${p.name} · Portugal Active`, text: lines.join("\n"),
     html: shell("Novo contacto de proprietário", `<p style="font-size:12px;color:#8b7355;text-transform:uppercase">Contacto recebido · Qualificação por completar</p><h1 style="font-size:27px;line-height:1.25">Uma nova propriedade para conhecer.</h1><p><strong>${e(p.locality)}</strong><br>${e(labels[p.type] || p.type)}</p><p><strong>${e(p.name)}</strong><br><a href="mailto:${e(p.email)}" style="color:#304838">${e(p.email)}</a><br><a href="tel:${e(p.phone.replace(/[^+0-9]/g, ""))}" style="color:#304838">${e(p.phone)}</a></p><p>O contacto ficou guardado. O proprietário pode completar a qualificação através do link pessoal de continuação. Este pedido mantém a mesma referência quando for atualizado.</p><p style="font-size:12px;color:#676d62">Idioma: ${e(record.context.language)} · ${e(record.context.page_path)} · ${e(record.context.placement)}<br>Privacidade aceite para tratar este pedido. Sem subscrição de marketing.${source ? `<br>Campanha: ${e(source)}` : ""}<br>Referência: ${e(record.id)}</p>`) };
 }
 export function managementCompletedMail(record: V4Record, files: { name: string; mimeType: string }[]): OwnerMail {
@@ -49,7 +49,7 @@ export function managementCompletedMail(record: V4Record, files: { name: string;
   const state = record.status === "awaiting_photos" ? "Aguarda fotografias — avaliação por iniciar" : "Dados e imagens recebidos — confirmar suficiência antes de avaliar";
   const source = attribution(record);
   const banner = `<div style="padding:12px 18px;background:#e9efe7;color:#304838;font-family:Arial,sans-serif;font-size:13px"><strong>${state}</strong><br>Localidade: ${e(p.locality)}${source ? `<br>Campanha: ${e(source)}` : ""}</div>`;
-  return { ...base, subject: `[${record.status === "awaiting_photos" ? "Aguarda fotos" : "Dados e imagens"}] ${p.locality} · ${p.name} · Portugal Active`,
+  return { ...base, from: OWNER_V4_FROM, subject: `[${record.status === "awaiting_photos" ? "Aguarda fotos" : "Dados e imagens"}] ${p.locality} · ${p.name} · Portugal Active`,
     html: base.html.replace(/(<body[^>]*>)/, `$1${banner}`).replaceAll("Sem fotografias ou documentos — envio opcional", "Fotografias em falta — necessárias para avançar com a avaliação"), text: `${state}\nLocalidade: ${p.locality}${source ? `\nCampanha: ${source}` : ""}\n\n${base.text.replaceAll("Sem fotografias ou documentos — envio opcional", "Fotografias em falta — necessárias para avançar com a avaliação")}` };
 }
 type OwnerV4RecordDetails = Omit<OwnerIntakeInput, "name" | "email" | "phone" | "type">;
