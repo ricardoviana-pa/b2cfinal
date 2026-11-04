@@ -119,4 +119,42 @@ describe("properties store cache", () => {
     expect((await getSiteLocalities())[0]).toMatchObject({ group: "Norte" });
     expect(__testing.loadCount()).toBe(1);
   });
+
+  it.each(['esposende', 'viana-do-castelo', 'caminha'])("an empty %s locality never inherits the Minho hub's homes", async slug => {
+    write(files().fallback, [home('valley'), home('fao', { locality: 'Fão' }), home('inactive', { locality: slug, isActive: false })]);
+    write(files().tripwix, []);
+    write(files().destinations, [
+      { slug: 'minho', name: 'Minho', region: 'minho' },
+      { slug, name: slug, region: 'minho' },
+      { slug: 'regional-spoke', name: 'Regional guide', region: 'minho' },
+    ]);
+    __testing.reset();
+    expect(await getPropertiesForDestination(slug)).toEqual([]);
+    expect((await getPropertiesForDestination('minho')).map(p => p.slug)).toEqual(['valley', 'fao']);
+    expect((await getPropertiesForDestination('regional-spoke')).map(p => p.slug)).toEqual(['valley', 'fao']);
+  });
+
+  it("an Esposende destination and locality search share the same exact public pool", async () => {
+    write(files().fallback, ['Esposende', 'Fão', 'Ofir', 'Apúlia', 'Marinhas'].map((locality, i) => home(`area-${i}`, { locality })));
+    write(files().tripwix, []);
+    write(files().destinations, [{ slug: 'minho', region: 'minho' }, { slug: 'esposende', region: 'minho' }]);
+    __testing.reset();
+    expect((await getPropertiesForDestination('esposende')).map(p => p.slug)).toEqual(['area-0']);
+    expect(await getPropertiesForDestination('not-published')).toEqual([]);
+  });
+
+  it("Douro keeps its own destination pool before locality, and never falls back to Porto", async () => {
+    write(files().fallback, [
+      home('porto', { destination: 'porto', locality: 'Porto' }),
+      home('douro', { destination: 'douro', locality: 'Santa Marta de Penaguião' }),
+    ]);
+    write(files().tripwix, []);
+    write(files().destinations, [{ slug: 'porto', region: 'porto' }, { slug: 'douro', region: 'porto' }]);
+    __testing.reset();
+    expect((await getPropertiesForDestination('douro')).map(p => p.slug)).toEqual(['douro']);
+    expect((await getPropertiesForDestination('porto')).map(p => p.slug)).toEqual(['porto', 'douro']);
+    write(files().fallback, [home('porto', { destination: 'porto', locality: 'Porto' })]);
+    __testing.reset();
+    expect(await getPropertiesForDestination('douro')).toEqual([]);
+  });
 });

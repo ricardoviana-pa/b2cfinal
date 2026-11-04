@@ -9,6 +9,7 @@ import { trpc } from '../client/src/lib/trpc';
 import { mergeBlogOverride } from '../client/src/lib/localizeBlog';
 import { BLOG_LANGUAGES, isBlogLanguagePublished } from '../shared/blogPublication';
 import { journalCard, journalLocale } from '../shared/journal';
+import { reviewedArticleDate } from '../shared/articleNavigation';
 import { getJournalArticle, getJournalArticlePage, getJournalIndex } from './services/journal';
 import { __testing } from './_core/vite';
 import { blogRouter } from './routers/blog';
@@ -82,6 +83,58 @@ describe('Journal delivery by article and language', () => {
     for (const card of data) expect(appHtml).toContain(`href="/pt/blog/${card.slug}?checkin=2027-05-10&amp;checkout=2027-05-17&amp;guests=4"`);
     expect(appHtml).not.toContain('token=private');
   });
+
+  it.each([
+    { slug: 'viana-do-castelo-guide', destination: 'viana-do-castelo', filter: 'location=viana-do-castelo' },
+    { slug: 'complete-guide-north-portugal', destination: 'minho', filter: 'destination=minho' },
+    { slug: 'esposende-guide', destination: 'esposende', filter: 'location=esposende' },
+  ].flatMap(guide => (['en', 'pt'] as const).map(locale => ({ ...guide, locale }))))(
+    '$locale $slug keeps the intro and destination CTA local, with only safe trip fields',
+    async ({ slug: articleSlug, destination, filter, locale }) => {
+      const data = await getJournalArticlePage(articleSlug, locale);
+      expect(data.article).not.toBeNull();
+      expect(data.article!.cta?.action).toBe('homes');
+      expect(data.article!.cta?.href).toBe(`/homes?${filter}`);
+      const { appHtml } = await render(`/${locale}/blog/${articleSlug}?checkin=2027-05-10&checkout=2027-05-17&guests=4&token=private`, {
+        prefetch: { journalArticle: { input: { locale, slug: articleSlug }, data } },
+      });
+      const trip = 'checkin=2027-05-10&amp;checkout=2027-05-17&amp;guests=4';
+      const intro = appHtml.slice(appHtml.indexOf('<h1'), appHtml.indexOf('<section class="pb-12"'));
+      expect(intro).toContain(data.article!.cta!.label);
+      expect(intro).toContain(`href="/${locale}/homes?${filter}&amp;${trip}"`);
+      expect(appHtml).toContain(`href="/${locale}/destinations/${destination}?${trip}"`);
+      expect(appHtml).not.toContain('token=private');
+    },
+  );
+
+  it.each(BLOG_LANGUAGES.filter(language => !['en', 'pt'].includes(language)))(
+    '%s adds a localized Minho homes link without claiming a content review, and redirects unpublished Esposende',
+    async language => {
+      const locale = journalLocale(language);
+      const articleSlug = 'complete-guide-north-portugal';
+      const data = await getJournalArticlePage(articleSlug, locale);
+      expect(data.article).not.toBeNull();
+      expect(data.redirect).toBeNull();
+      const overrides = JSON.parse(fs.readFileSync(`client/src/data/blog.i18n/${locale}.json`, 'utf8'));
+      const base = source.find((article: any) => article.slug === articleSlug);
+      expect(data.article!.content).toBe(mergeBlogOverride(base, overrides)!.content);
+      expect(reviewedArticleDate(data.article!, locale)).toBeUndefined();
+      const { appHtml } = await render(`/${locale}/blog/${articleSlug}?checkin=2027-05-10&checkout=2027-05-17&guests=4&token=private`, {
+        prefetch: { journalArticle: { input: { locale, slug: articleSlug }, data } },
+      });
+      const intro = appHtml.slice(appHtml.indexOf('<h1'), appHtml.indexOf('<section class="pb-12"'));
+      const labels = JSON.parse(fs.readFileSync(`client/src/i18n/locales/${locale}.json`, 'utf8'));
+      expect(intro).toContain(labels.blogArticle.ctaExplore);
+      expect(intro).toContain(`href="/${locale}/homes?destination=minho&amp;checkin=2027-05-10&amp;checkout=2027-05-17&amp;guests=4"`);
+      expect(intro).not.toContain(base.cta.label);
+      expect(intro).not.toContain(labels.planning.updated);
+      expect(appHtml).not.toContain('token=private');
+      expect(await getJournalArticlePage('esposende-guide', locale)).toEqual({
+        article: null, relatedArticles: [], redirect: '/en/blog/esposende-guide',
+      });
+      expect((await getJournalIndex(locale)).some(article => article.slug === 'esposende-guide')).toBe(false);
+    },
+  );
 
   it('does not present loading as an article-not-found page', async () => {
     const { appHtml } = await render('/pt/blog/viana-do-castelo-guide');

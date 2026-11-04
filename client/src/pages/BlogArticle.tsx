@@ -23,6 +23,14 @@ import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import JournalRequestState from '@/components/blog/JournalRequestState';
 import { trpc } from '@/lib/trpc';
 
+// These reviewed planning guides have a specific search and destination page.
+// Keep Esposende local rather than inheriting the broader Minho article tag.
+const GUIDE_DESTINATIONS: Partial<Record<string, { slug: string; name?: string; homesHref: string }>> = {
+  'viana-do-castelo-guide': { slug: 'viana-do-castelo', name: 'Viana do Castelo', homesHref: '/homes?location=viana-do-castelo' },
+  'complete-guide-north-portugal': { slug: 'minho', homesHref: '/homes?destination=minho' },
+  'esposende-guide': { slug: 'esposende', name: 'Esposende', homesHref: '/homes?location=esposende' },
+};
+
 /* ── Video embed: supports Vimeo (primary) and YouTube (fallback) ── */
 function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: string; title: string }) {
   const [embedFailed, setEmbedFailed] = useState(false);
@@ -100,6 +108,15 @@ export default function BlogArticle() {
   const reviewed = article ? reviewedArticleDate(article,i18n.language) : undefined;
   const contents = useMemo(() => article ? articleContents(article.content) : [], [article]);
   const editorialCta = reviewed ? article?.cta : undefined;
+  const guideDestination = article ? GUIDE_DESTINATIONS[article.slug] : undefined;
+  const destinationGuide = guideDestination ?? (article?.destinationTag === 'minho-coast' ? GUIDE_DESTINATIONS['complete-guide-north-portugal'] : undefined);
+  const introHomesCta = guideDestination && (
+    ['en', 'pt'].includes(journalLocale(i18n.language)) && editorialCta?.action === 'homes'
+      ? editorialCta
+      : article?.slug === 'complete-guide-north-portugal'
+        ? { href: guideDestination.homesHref, label: t('blogArticle.ctaExplore') }
+        : undefined
+  );
   useEffect(() => { if (redirect) window.location.replace(redirect + window.location.search); }, [redirect]);
   usePageMeta({
     title: article?.seoTitle || article?.title,
@@ -176,11 +193,11 @@ export default function BlogArticle() {
           <p className="eyebrow mb-4">{blogCategoryLabel(article.category, t)}</p>
           <h1 className="text-[#1A1A18] mb-6">{article.title}</h1>
           {reviewed && <p className="body-lg mb-6">{article.excerpt}</p>}
-          {article.slug === 'viana-do-castelo-guide' && ['en', 'pt'].includes(journalLocale(i18n.language)) && editorialCta && (
-            <Link href={withEditorialTrip(editorialCta.href, search)}
+          {introHomesCta && (
+            <Link href={withEditorialTrip(introHomesCta.href, search)}
               className="inline-flex min-h-11 items-center text-sm text-pa-gold-aa underline underline-offset-4 mb-6"
-              onClick={() => pushDL({ event: 'editorial_guide', article_slug: article.slug, language: journalLocale(i18n.language), section: 'intro', action: 'homes', target_path: editorialCta.href.split(/[?#]/)[0] })}>
-              {editorialCta.label}
+              onClick={() => pushDL({ event: 'editorial_guide', article_slug: article.slug, language: journalLocale(i18n.language), section: 'intro', action: 'homes', target_path: introHomesCta.href.split(/[?#]/)[0] })}>
+              {introHomesCta.label}
             </Link>
           )}
           <div className="flex flex-wrap items-center gap-4 text-sm text-[#726D63]">
@@ -278,18 +295,18 @@ export default function BlogArticle() {
             {editorialCta?.body ?? (article.commercialIntent === 'corporate' ? t('corporate.brief') : t('blogArticle.ctaBody'))}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href={withEditorialTrip(editorialCta?.href ?? (article.commercialIntent === 'corporate' ? '/contact?subject=events&intent=corporate' : article.slug === 'viana-do-castelo-guide' ? '/homes?location=viana-do-castelo' : article.destinationTag === 'minho-coast' ? '/homes?destination=minho' : '/homes'), search)} onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'cta',action:editorialCta?.action ?? 'homes'})} className="btn-white inline-flex items-center gap-2">
+            <Link href={withEditorialTrip(editorialCta?.href ?? (article.commercialIntent === 'corporate' ? '/contact?subject=events&intent=corporate' : destinationGuide?.homesHref ?? '/homes'), search)} onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'cta',action:editorialCta?.action ?? 'homes'})} className="btn-white inline-flex items-center gap-2">
               {editorialCta?.label ?? (article.commercialIntent === 'corporate' ? t('destinationGrowth.corporateCta') : t('blogArticle.ctaExplore'))} <ArrowRight size={14} />
             </Link>
             <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost-light inline-flex items-center gap-2">
               {t('blogArticle.ctaConcierge')}
             </a>
           </div>
-          {article.commercialIntent !== 'corporate' && (article.slug === 'viana-do-castelo-guide' || article.destinationTag === 'minho-coast') && <Link
-            href={withEditorialTrip(`/destinations/${article.slug === 'viana-do-castelo-guide' ? 'viana-do-castelo' : 'minho'}`, search)}
-            onClick={() => pushDL({event:'destination_planning',destination:article.slug === 'viana-do-castelo-guide' ? 'viana-do-castelo' : 'minho',language:i18n.language.split('-')[0],section:'journal',action:'guide'})}
+          {article.commercialIntent !== 'corporate' && destinationGuide && <Link
+            href={withEditorialTrip(`/destinations/${destinationGuide.slug}`, search)}
+            onClick={() => pushDL({event:'destination_planning',destination:destinationGuide.slug,language:i18n.language.split('-')[0],section:'journal',action:'guide'})}
             className="inline-flex min-h-11 items-center gap-2 mt-5 text-sm text-white underline underline-offset-4">
-            {t('destinationGrowth.guide')} · {article.slug === 'viana-do-castelo-guide' ? 'Viana do Castelo' : t('destinations.minho')}<ArrowRight size={14} />
+            {t('destinationGrowth.guide')} · {destinationGuide.name ?? t('destinations.minho')}<ArrowRight size={14} />
           </Link>}
         </div>
       </section>

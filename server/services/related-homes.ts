@@ -72,14 +72,21 @@ function byCuratedThenSortOrder(a: any, b: any): number {
   return (a?.sortOrder ?? 9999) - (b?.sortOrder ?? 9999);
 }
 
+/** Keep the direct operation first, then the guide's geographically varied picks. */
+function byGuidePicks(ids: string[]) {
+  const position = (p: any) => { const n = ids.indexOf(p.guestyId); return n < 0 ? Infinity : n; };
+  return (a: any, b: any) => compareEditorialOperation(a, b) ||
+    (position(a) !== position(b) ? position(a) - position(b) : byCuratedThenSortOrder(a, b));
+}
+
 /**
  * Choose the homes to show under an article.
  *
  * Pure — no I/O — so the matching rules can be tested directly.
  *
  * Falls back to the curated top homes when the article's region has no
- * inventory or when the article carries no region at all. The Viana guide
- * has a strict local scope and does not use that broad fallback.
+ * inventory or when the article carries no region at all. The reviewed Viana,
+ * Esposende and North Portugal guides keep their local or regional scope.
  */
 export function pickRelatedHomes(
   properties: any[],
@@ -92,20 +99,31 @@ export function pickRelatedHomes(
   const children = new Set(PROPERTY_GROUPS.filter(g => present.has(g.parentGuestyId))
     .flatMap(g => g.unitGuestyIds.filter(id => id !== g.parentGuestyId)));
   const withSlug = active.filter(p => !p.guestyId || !children.has(p.guestyId));
-  if (articleSlug === 'viana-do-castelo-guide') {
-    // Same locality as the guide's "view homes" search. No unrelated Minho
-    // town is presented as Viana when this selection is empty.
-    const local = withSlug.filter(p => localitySlug(p.locality) === 'viana-do-castelo');
-    const picks = [
+  const guideLocality = articleSlug === 'viana-do-castelo-guide' ? 'viana-do-castelo'
+    : articleSlug === 'esposende-guide' ? 'esposende' : null;
+  if (guideLocality) {
+    // Same locality as the guide's "view homes" search. Do not fill an empty
+    // selection with homes from a different Minho town.
+    const local = withSlug.filter(p => localitySlug(p.locality) === guideLocality);
+    const picks = guideLocality === 'viana-do-castelo' ? [
       '69653354109993001383ef5f', // Beach Farm
       '6965331fec80690013738c68', // Villa Aura
       '6adf6ec753313e00790e647f', // Central Pearl Duplex
       '6965332327950e001416f0b2', // Cabedelo Beach Lodge
+    ] : [];
+    return local.sort(byGuidePicks(picks)).slice(0, limit).map(toSlim);
+  }
+  if (articleSlug === 'complete-guide-north-portugal') {
+    // Coast, Lima valley, mountain base and northern riverside. Picks must
+    // still belong to the public Minho pool; missing ones are not revived.
+    const picks = [
+      '696533466d209c001510ecfe', // Eben Lodge — Carreço
+      '69653365bf04fe0013743511', // São Julião Retreat — Ponte de Lima
+      '6a7079007df813008d013634', // Gerês Gateway — Vieira do Minho
+      '69c415ceab80a8001247452c', // Riverfront Watermill — Caminha
     ];
-    const position = (p: any) => { const n = picks.indexOf(p.guestyId); return n < 0 ? Infinity : n; };
-    return local.sort((a, b) => compareEditorialOperation(a, b) ||
-      (position(a) !== position(b) ? position(a) - position(b) : byCuratedThenSortOrder(a, b)))
-      .slice(0, limit).map(toSlim);
+    return withSlug.filter(p => p.destination === 'minho')
+      .sort(byGuidePicks(picks)).slice(0, limit).map(toSlim);
   }
   const destination = destinationTag ? TAG_TO_DESTINATION[destinationTag.toLowerCase()] : undefined;
 

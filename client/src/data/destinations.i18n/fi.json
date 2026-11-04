@@ -915,7 +915,7 @@
     "howToGetHere": "Porton lentokenttä (OPO) noin 35 min A28:aa pitkin. Braga 30 min itään. Viana do Castelo 25 min pohjoiseen. Ei rautatietä: lähimmät asemat ovat Barcelosissa ja Viana do Castelossa.",
     "bestTimeToVisit": "Kesäkuu ja syyskuu. Lämpimät päivät, pitkät rannat, joilla on tilaa, ja iltapäivän tuuli, joka sopii purjelautailuun ja leijasurffaukseen. Heinä- ja elokuu täyttä kesää varten.",
     "whatToExpect": "Rauhallinen rantakaupunki joen suulla, rannikon luonnonpuiston sisällä. Dyynejä, mäntyjä ja leveitä rantoja, ei jyrkänteitä eikä yöelämää.",
-    "whereToStayIntro": "Nykyisessä valikoimassamme ei ole koteja Esposendessa. Alla on vaihtoehtoja muualla Minhossa, ja kunkin kodin paikkakunta on ilmoitettu. Suunnittele tämän oppaan avulla vierailu Esposendeen ja tarkista matka valitsemastasi tukikohdasta.",
+    "whereToStayIntro": "Löydä majoituksesi Esposendesta. Shoreline Escapessa on kolme makuuhuonetta enintään seitsemälle vieraalle. Tutustu huonejärjestykseen ja valitse päivämäärät nähdäksesi saatavuuden ja hinnan.",
     "journalSectionTitle": "Päiväkirjasta: tarinoita Esposendesta",
     "thingsToDoIntro": "Esposende on pitkien kävelyjen ja verkkaisten päivien paikka, ei nähtävyyslistojen. Rannikko on syy tulla, ja se muuttuu pohjoisesta etelään: joen suu ja kaupunki, mäntymetsä ja dyynit, sitten vanha merilevänkerääjien kylä Apúlia. Näin me sen jakaisimme.",
     "thingsToDo": [
@@ -1086,7 +1086,7 @@
       },
       {
         "question": "Sopiiko Esposende lapsiperheille?",
-        "answer": "Sopii. Rannat ovat pitkiä eivätkä ruuhkaisia, suistossa vesi on tyynempää, ja kaupunki on pieni ja helppo kiertää. Päärannoilla on uimakaudella hengenpelastajat. Tällä hetkellä ehdotetut majoitukset sijaitsevat muualla Minhossa; tarkista kunkin kodin sijainti ennen varaamista."
+        "answer": "Perhelomaa varten Shoreline Escapessa on kolme makuuhuonetta enintään seitsemälle vieraalle. Arvioi vuodejärjestystä, portaita ja kulkumatkoja ryhmän tarpeiden mukaan ja valitse päivämäärät nähdäksesi saatavuuden ja varausehdot."
       },
       {
         "question": "Keitä olivat Apúlian sargaceirot?",

@@ -4,7 +4,7 @@
  * auto-updated by the sync process via GitHub API).
  */
 
-import { localitySlug } from "../../shared/destinationNavigation";
+import { isLocalityDestination, localitySlug } from "../../shared/destinationNavigation";
 import { readFile, stat } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
@@ -376,7 +376,8 @@ function toCard(p: any): any {
  * A spoke with homes of its own (douro) lists those. A town spoke whose homes
  * are tagged by region but carry the town as their locality (viana-do-castelo,
  * caminha, esposende) lists the homes in that locality. Only a spoke with
- * neither falls back to its region.
+ * neither falls back to its region unless its search link uses an exact
+ * locality: those pages stay empty rather than show a different area.
  *
  * Slim records (~1.5 KB each) so the list can be SSR-prefetched and the
  * cards and the count are in the served HTML.
@@ -393,7 +394,7 @@ export async function getPropertiesForDestination(slug: string): Promise<any[]> 
   const list = isHub
     ? all.filter((p) => regionOf(p.destination) === d.region)
     : own.length > 0 ? own
-    : inLocality.length > 0 ? inLocality
+    : inLocality.length > 0 || isLocalityDestination(slug) ? inLocality
     : all.filter((p) => p.destination === d.region);
   return list.map(toCard);
 }

@@ -5,9 +5,13 @@
 // its "view all" points at the locality rather than the whole region.
 const LOCALITY_SPOKES = new Set(['viana-do-castelo', 'caminha', 'douro', 'esposende']);
 
+export function isLocalityDestination(slug: string): boolean {
+  return LOCALITY_SPOKES.has(slug);
+}
+
 /** Published city guides use locality search; region guides use region search. */
 export function destinationHomesHref(d: { slug: string; region: string }): string {
-  return LOCALITY_SPOKES.has(d.slug)
+  return isLocalityDestination(d.slug)
     ? `/homes?location=${encodeURIComponent(d.slug)}`
     : `/homes?destination=${encodeURIComponent(d.region)}`;
 }

@@ -1,6 +1,7 @@
 {
   "minho": [
     "complete-guide-north-portugal",
+    "esposende-guide",
     "when-to-visit-north-portugal",
     "wine-guide-douro-vinho-verde"
   ],
@@ -25,5 +26,10 @@
   "alentejo": [
     "private-chef-portugal-villa",
     "private-villa-vs-luxury-hotel-portugal"
+  ],
+  "esposende": [
+    "esposende-guide",
+    "complete-guide-north-portugal",
+    "when-to-visit-north-portugal"
   ]
 }
