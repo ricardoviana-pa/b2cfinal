@@ -6,18 +6,17 @@
    channel this site can grow without buying a single click.
    ========================================================================== */
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
-import { matchesCollection } from '@/lib/collectionFilters';
+import { collectionUnitOptionCount, selectCollectionHomes } from '@/lib/collectionHomes';
 import { getDisplayName } from '@/lib/format';
 import { useMemo } from 'react';
 import { Link, useParams, useSearch } from 'wouter';
 import { editorialTripContext, withEditorialTrip } from '@shared/editorialTripContext';
-import { collectionPlanning } from '@/data/collectionPlanning';
+import { collectionPlanning, collectionUnitOptionsLabel } from '@/data/collectionPlanning';
 import FaqItem from '@/components/ui/FaqItem';
 import { useTranslation } from 'react-i18next';
 import { trpc } from '@/lib/trpc';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import type { Property } from '@/lib/types';
-import { isChildUnit } from '@/config/propertyGroups';
 import collectionsData from '@/data/collections.json';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -52,10 +51,8 @@ export default function Collection() {
 
   const homes = useMemo(() => {
     if (!def || !propsData) return [] as Property[];
-    return (propsData as Property[])
-      .filter(p => p.isActive !== false && !isChildUnit(p.guestyId))
-      .filter(p => matchesCollection(p, def));
-  }, [propsData, def]);
+    return selectCollectionHomes(propsData as Property[], def, trip.guests);
+  }, [propsData, def, trip.guests]);
 
   const fromIds = useMemo(() => homes.filter(h => h.guestyId).map(h => h.guestyId!), [homes]);
   // Starts from the prices the server put into the page (useFromPrices).
@@ -151,6 +148,7 @@ export default function Collection() {
               checkin={trip.checkin}
               checkout={trip.checkout}
               guests={trip.guests}
+              groupContextLabel={def.slug === 'large-group-villas' ? collectionUnitOptionsLabel(lang, collectionUnitOptionCount(property)) : undefined}
               fromPrice={property.supplierUid ? partner.prices[property.supplierUid] : fromPrices?.[property.guestyId ?? '']}
               {...cardPriority('collection', idx)}
             />
