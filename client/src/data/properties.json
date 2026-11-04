@@ -5716,6 +5716,7 @@
         "Baking sheet",
         "Bed linens",
         "Cleaning Disinfection",
+        "Clothing storage",
         "Coffee",
         "Coffee maker",
         "Cookware",
@@ -5752,7 +5753,7 @@
         "TV",
         "Toaster",
         "Towels provided",
-        "Washer in common space",
+        "Washer",
         "Wine glasses",
         "Wireless Internet"
       ],
@@ -5812,8 +5813,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-10-27",
-    "contentHash": "c1132ab081ec289e39992333fb43a6463301310b"
+    "lastModified": "2026-11-04",
+    "contentHash": "3428a4fa4b734a02e3d26645c37914202c9f8d37"
   },
   {
     "id": "guesty-696533d2ec19770014fd1b52",
@@ -15218,13 +15219,13 @@
     "tagline": "Discover the tranquillity of Mountain House with Pool by Portugal Active, a countryside retreat in Monção, ideal for those looking to unwind and enjoy…",
     "tier": "select",
     "destination": "minho",
-    "locality": "Portugal",
+    "locality": "Viana do Castelo",
     "bedrooms": 1,
     "bathrooms": 1,
     "maxGuests": 4,
     "priceFrom": 70,
     "pricePerNight": 70,
-    "cleaningFee": 0,
+    "cleaningFee": 98,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -15338,6 +15339,7 @@
         "TV",
         "Toaster",
         "Towels provided",
+        "Washer",
         "Washer in common space",
         "Wine glasses",
         "Wireless Internet"
@@ -15363,7 +15365,7 @@
     "address": {
       "full": "",
       "street": "Rua João Pereira Caldas 905",
-      "city": "",
+      "city": "Viana do Castelo",
       "state": "Viana do Castelo",
       "zipcode": "",
       "country": "Portugal",
@@ -15394,12 +15396,12 @@
     "propertyType": "Apartment",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": null,
+    "areaSquareFeet": 270,
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-11-03",
-    "contentHash": "0471f5d8262b7a55eb2d46c9a7b24685f9165c6e"
+    "lastModified": "2026-11-04",
+    "contentHash": "3895920c771216fa68598152d27fe005270550ad"
   },
   {
     "id": "guesty-6aa7db4f41acf8000fde5087",
@@ -17931,6 +17933,581 @@
     "reviewCount": 13,
     "lastModified": "2026-10-25",
     "contentHash": "34891c244fd20d0fbcc0087c4e2a4cd9433b3abe"
+  },
+  {
+    "id": "guesty-696532eee44e1a0015bb2460",
+    "slug": "portugal-active-beach-flat-bb2460",
+    "name": "Portugal Active Beach Flat",
+    "tagline": "A quiet beach flat by Cabedelo, steps from the surf and sand.",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "maxGuests": 4,
+    "priceFrom": 90,
+    "pricePerNight": 90,
+    "cleaningFee": 70,
+    "minNights": 2,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/01abff78-8d17-41-_NGT1",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/5a36f0db-93da-49-Oe3Zb",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/d5322936-b56e-43-3_jOu",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/1eb95fd3-1b07-4b-B9YIi",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/4de65601-d3e2-49-kbfSw",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/3e21011c-15b6-4b-Kf4xO",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/e920024f-29c8-43-zYXJn",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/dd6b0a55-ff25-48-cjltp",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/61926758-59df-4b-2j2-X",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/7d0301c2-0ce3-4b-80EYj",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/d1cec8ab-ba2a-41-59VgK",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/0d6ff6e9-c37b-4a-5gRET",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/64a7c440-d273-4d-R8_5j",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/b8ab0854-761b-4e-ofP9C",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/05e9c5f5-a7d1-49-XguMu",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/eebd0d02-dbd5-44-QElLb",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/d66e70c5-eb1f-46-m8zcO",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/efd1fbf4-9319-46-wqGBy",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/a0bc533c-38ed-47-Vmy8z",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/e3072840-2af9-45-63YRG",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/f5518e4d-a91a-44-T2ZhQ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/dbc7dd47-7421-40-mzDax",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/ffdcc94e-a8bf-4a-wrxLx",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/fc00e5a2-47a3-42-NXyxj",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/84e01bbd-9eeb-47-1oExv",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/619854de-00b1-42-7Snf5",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/57a0ed92-66ca-4f-XW1lg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/84a4f60e-566d-4e-TRqJx",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/99128717-2a84-4a-cLsm3"
+    ],
+    "description": "The apartment covers 80 square metres on a single level, with one bedroom and an open-plan kitchen kept bright and unfussy. A private garden with outdoor furniture sits alongside a terrace, and air conditioning and heating cover both ends of the year. The kitchen is fully equipped for home cooking.\n\nIt sits in a quiet corner of Viana do Castelo, right next to Cabedelo Beach — the surf, sand and sea a short walk from the door. Porto Airport is 60 km south, close enough for an easy transfer without the crowds of a city stay.\n\nMornings start with coffee on the terrace before the short walk down to Cabedelo for a swim or a surf. Afternoons suit cycling along the coast or reading in the garden, and evenings settle back onto the terrace as the light fades over the beach.\n\nIt suits couples or small families after a simple beach base rather than a resort, with Portugal Active's local team available for anything from private chef bookings to airport transfers.",
+    "descriptionSections": null,
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "Babysitter recommendations",
+        "Baking sheet",
+        "Beach",
+        "Beach Front",
+        "Beach access",
+        "Beach essentials",
+        "Bed linens",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Cycling",
+        "Desk",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Fire extinguisher",
+        "First aid kit",
+        "Fishing",
+        "Free parking on street",
+        "Freezer",
+        "Garden View",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Horseback Riding",
+        "Hot water",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Laundromat nearby",
+        "Long term stays allowed",
+        "Microwave",
+        "Museums",
+        "Near Ocean",
+        "Ocean Front",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Pets allowed",
+        "Private entrance",
+        "Refrigerator",
+        "Room-darkening shades",
+        "Safe",
+        "Shampoo",
+        "Shopping",
+        "Shower gel",
+        "Single level home",
+        "Smoke detector",
+        "Sound system",
+        "Stereo system",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Town",
+        "Washer",
+        "Washer in common space",
+        "Water Parks",
+        "Water Sports",
+        "Waterfront",
+        "Window guards",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "petsAllowed": true,
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "696532eee44e1a0015bb2460",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Portugal Active Beach Flat",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Portugal Active Beach Flat — Portugal Active",
+    "seoDescription": "Bright and inviting 1 bedroom apartment by Cabedelo Beach in Viana do Castelo. With garden, terrace, AC, WiFi and a full kitchen, it’s the perfect retreat for u",
+    "address": {
+      "full": "",
+      "street": "Rua Fernão Martins da Costa 3 R/C",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo District",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.68254186880869,
+      "lng": -8.830086071877977
+    },
+    "licenseNumber": null,
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 861.1128336,
+    "reviews": [
+      {
+        "rating": 3,
+        "text": "Eine wirklich sehr gute Lage, um schnell zum Strand zu kommen. Die Unterkunft ist allerdings sehr viel kleiner als erwartet bzw. als auf den Bildern dargestellt. Zudem müssten einige Dinge zeitnah an der Unterkunft gemacht werden - Steckdosen fallen raus, Löcher in der Wand mit Bildern kaschiert, Waschtisch im Bad aufgequollen, Küchenzeile instabil, Terrassentisch mit kaputtem Bein, Kühlschrank rostig und Licht defekt...  Wenn man sich dessen bewusst ist, dann ist es eine schöne Unterkunft, die ",
+        "guestDisplayName": "Pia",
+        "guestName": "Pia",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-10-14T07:15:43.203Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 2
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 2,
+        "text": "Ik wilde een half uur of liever een uur  eerder inchecken ivm werk. Mijn camper was kapot in de garage dus had geen verblijfplaats. Was niet mogelijk ivm vertrek andere gasten/schoonmaak. Gevraagd om te laten weten als schoonmaak eerder klaar was maar niets gehoord. Zelf voor de deur gewacht en was wel eerder klaar. Jammer dat ze me niet tegemoet kwamen. De woning lijkt niet op de fotos zijn helemaal geen planten meer behalve een paar dode. Was lang niet zo gezellig als op de foto's en heel veel",
+        "guestDisplayName": "Lianne",
+        "guestName": "Lianne",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-24T11:23:19.870Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 2
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "La casa estupenda, sin escaleras (planta baja), con una terraza con sillas y mesas para disfrutar desayunos o cenas, la casa bien equipada con aire acondicionado, bonita, moderna, talvez algunos mantenimientos de cosas mal atornilladas o detalles así. Tienen lavaplatos y lavadora con jabón disponible, así como en el baño, todo limpio, agradable muy bien comunicado. Plaza de garaje a aire libre privada a 30 metros de la casa. Nos encantó.\nLa zona tranquila para familias, un par de restaurantes ce",
+        "guestDisplayName": "Anselmo",
+        "guestName": "Anselmo",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-02T09:09:29.038Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Nice place to spend a good time, near to the beach and few minutes of the center of the city by car. We enjoyed!",
+        "guestDisplayName": "Mário",
+        "guestName": "Mário",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-21T16:17:02.584Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "对于需要去海滩风筝冲浪和冲浪的玩家来说，位置非常方便。也有小庭院可以用！装修可能时间稍长了，但整体还算比较方便！房东基本上响应积极！",
+        "guestDisplayName": "Fujun",
+        "guestName": "Fujun",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-29T05:18:25.281Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Decent 1 bedroom walking distance from the beach. Main bed is comfortable, good a/c",
+        "guestDisplayName": "Benjamin Et Louise",
+        "guestName": "Benjamin Et Louise",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-26T18:07:28.976Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Great location, cosy space 👍",
+        "guestDisplayName": "Ian",
+        "guestName": "Ian",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-30T06:43:43.784Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Buena ubicación cerca de la playa",
+        "guestDisplayName": "Javier",
+        "guestName": "Javier",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-12T18:02:14.149Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "espaço muito agradável e convidativo à permanência",
+        "guestDisplayName": "Carla",
+        "guestName": "Carla",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-03-17T11:48:55.484Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Il n’y a rien le logement était plus que propre terres bien situé et nous avons passé un agréable séjour",
+        "guestDisplayName": "Mike Et Margaux",
+        "guestName": "Mike Et Margaux",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-01-03T13:13:54.581Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Alles wunderbar. Habe es nicht sofort gefunden aber es war dann nicht so schwer. Sonst alles wunderbar. Batterien der Fernbedienung von der Klima waren leer. Hab ich getauscht. Preis Leistung war super.",
+        "guestDisplayName": "Alois",
+        "guestName": "Alois",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-11-24T10:18:15.344Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 4.45,
+    "reviewCount": 11,
+    "lastModified": "2026-11-04",
+    "contentHash": "56ffb76d7cbe934db0162378ae304fd10268c2a6"
   },
   {
     "id": "guesty-696533266dec35001492fdbb",
@@ -20863,6 +21440,190 @@
     "contentHash": "2f2e3dd4b4bf11ce2e0760f1cbabe459ad4bf8fb"
   },
   {
+    "id": "guesty-6aea178a27ee7a007329b59d",
+    "slug": "puddle-house-with-pool-by-portugal-active-29b59d",
+    "name": "Puddle House with Pool by Portugal Active",
+    "tagline": "Discover the tranquillity of Puddle House with Pool by Portugal Active, a countryside retreat in Monção, ideal for those looking to unwind and enjoy n…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "maxGuests": 4,
+    "priceFrom": 70,
+    "pricePerNight": 70,
+    "cleaningFee": 98,
+    "minNights": 1,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1793727512/production/6957de4388cba42d9e7a905e/a02q3yagt7m9mf23c8rn.jpg",
+      "https://assets.guesty.com/image/upload/v1793727246/production/6957de4388cba42d9e7a905e/scngvicyvndfdiurkbqo.jpg",
+      "https://assets.guesty.com/image/upload/v1793727282/production/6957de4388cba42d9e7a905e/sv0qujqx9x2wtiwycomh.jpg",
+      "https://assets.guesty.com/image/upload/v1793727248/production/6957de4388cba42d9e7a905e/ia5sewv3e7f13vk5nxjy.jpg",
+      "https://assets.guesty.com/image/upload/v1793727271/production/6957de4388cba42d9e7a905e/qxutlzys2aqnzxnanpyu.jpg",
+      "https://assets.guesty.com/image/upload/v1793727275/production/6957de4388cba42d9e7a905e/oi9z7zpzklgritovbyqy.jpg",
+      "https://assets.guesty.com/image/upload/v1793727242/production/6957de4388cba42d9e7a905e/qpaklqca42oreeukfmil.jpg",
+      "https://assets.guesty.com/image/upload/v1793727260/production/6957de4388cba42d9e7a905e/nsuijxg2ocovauz1tla9.jpg",
+      "https://assets.guesty.com/image/upload/v1793727288/production/6957de4388cba42d9e7a905e/v21rgqefvsgxojebpsf7.jpg",
+      "https://assets.guesty.com/image/upload/v1793727248/production/6957de4388cba42d9e7a905e/pdfbklh5myoppzdes2lt.jpg",
+      "https://assets.guesty.com/image/upload/v1793727253/production/6957de4388cba42d9e7a905e/nrbaqt4uc65nfuoocegq.jpg",
+      "https://assets.guesty.com/image/upload/v1793727247/production/6957de4388cba42d9e7a905e/djxdmttaqmanwvoauhid.jpg",
+      "https://assets.guesty.com/image/upload/v1793727294/production/6957de4388cba42d9e7a905e/jcwbtip14kmyddqkngjw.jpg",
+      "https://assets.guesty.com/image/upload/v1793727260/production/6957de4388cba42d9e7a905e/kw8erlamvibmjfrz82gq.jpg",
+      "https://assets.guesty.com/image/upload/v1793727290/production/6957de4388cba42d9e7a905e/ao1wf0rsais12dbpkfcn.jpg",
+      "https://assets.guesty.com/image/upload/v1793727262/production/6957de4388cba42d9e7a905e/yrymjgsq2u1dkxqomdf0.jpg",
+      "https://assets.guesty.com/image/upload/v1793727291/production/6957de4388cba42d9e7a905e/jyfxjf76v6nk6tmmyplm.jpg",
+      "https://assets.guesty.com/image/upload/v1793727268/production/6957de4388cba42d9e7a905e/acfzrbzfti1dwjnenucn.jpg",
+      "https://assets.guesty.com/image/upload/v1793727233/production/6957de4388cba42d9e7a905e/ehbdnldeb4eirrjvsqpe.jpg",
+      "https://assets.guesty.com/image/upload/v1793727250/production/6957de4388cba42d9e7a905e/we8jee4zpsomw7cowwlj.jpg",
+      "https://assets.guesty.com/image/upload/v1793727257/production/6957de4388cba42d9e7a905e/klswxmgiqtrbvuovlpry.jpg",
+      "https://assets.guesty.com/image/upload/v1793727279/production/6957de4388cba42d9e7a905e/ile7tmod8rjxycyafdys.jpg",
+      "https://assets.guesty.com/image/upload/v1793727279/production/6957de4388cba42d9e7a905e/klcj9ihv2puvo7vmw7ae.jpg",
+      "https://assets.guesty.com/image/upload/v1793727262/production/6957de4388cba42d9e7a905e/clsftcctyoxkhpxilv6g.jpg",
+      "https://assets.guesty.com/image/upload/v1793727294/production/6957de4388cba42d9e7a905e/itui5bbkq3wokmpkgiqp.jpg",
+      "https://assets.guesty.com/image/upload/v1793727246/production/6957de4388cba42d9e7a905e/hplqduqfkbutqi5xu3yy.jpg",
+      "https://assets.guesty.com/image/upload/v1793727273/production/6957de4388cba42d9e7a905e/hmyityuyhwkte5oh6oye.jpg",
+      "https://assets.guesty.com/image/upload/v1793727268/production/6957de4388cba42d9e7a905e/e0hxigvvpqhpv4nfsa3t.jpg",
+      "https://assets.guesty.com/image/upload/v1793727272/production/6957de4388cba42d9e7a905e/rlh4nzz60dgn7khbdjth.jpg",
+      "https://assets.guesty.com/image/upload/v1793727279/production/6957de4388cba42d9e7a905e/jeofq71dokyaarv4if2g.jpg",
+      "https://assets.guesty.com/image/upload/v1793727288/production/6957de4388cba42d9e7a905e/vfkt3pi0ytstdnaztcah.jpg",
+      "https://assets.guesty.com/image/upload/v1793727273/production/6957de4388cba42d9e7a905e/uzfdheqixc4wplyfvzfo.jpg",
+      "https://assets.guesty.com/image/upload/v1793727279/production/6957de4388cba42d9e7a905e/wmh7ql6arp06syuizxic.jpg",
+      "https://assets.guesty.com/image/upload/v1793727284/production/6957de4388cba42d9e7a905e/jj3ttp2ra7rrl8losnju.jpg",
+      "https://assets.guesty.com/image/upload/v1793727277/production/6957de4388cba42d9e7a905e/ltjls1chlhsn7mtee8nd.jpg",
+      "https://assets.guesty.com/image/upload/v1793727245/production/6957de4388cba42d9e7a905e/y9ahdyexoebxcbqh1dpt.jpg",
+      "https://assets.guesty.com/image/upload/v1793727236/production/6957de4388cba42d9e7a905e/mprpcsyqkzcwdelvyirl.jpg",
+      "https://assets.guesty.com/image/upload/v1793727232/production/6957de4388cba42d9e7a905e/cepmlyxkysjzs1l5gjxv.jpg",
+      "https://assets.guesty.com/image/upload/v1793727297/production/6957de4388cba42d9e7a905e/eoj3sgyb2cfztl7nfyi8.jpg",
+      "https://assets.guesty.com/image/upload/v1793727251/production/6957de4388cba42d9e7a905e/qbo6x2p1jlrvticxvuvh.jpg",
+      "https://assets.guesty.com/image/upload/v1793727253/production/6957de4388cba42d9e7a905e/la74mkbuoe1ubr2wfiyr.jpg",
+      "https://assets.guesty.com/image/upload/v1793727254/production/6957de4388cba42d9e7a905e/gigqw4odvo591ttkbqs1.jpg",
+      "https://assets.guesty.com/image/upload/v1793727260/production/6957de4388cba42d9e7a905e/xap0x1tvg6ea29oqyuxl.jpg",
+      "https://assets.guesty.com/image/upload/v1793727284/production/6957de4388cba42d9e7a905e/mrxqcwx4kfpjpydf6zgn.jpg",
+      "https://assets.guesty.com/image/upload/v1793727293/production/6957de4388cba42d9e7a905e/tc5elndvvx52kncsm4z5.jpg",
+      "https://assets.guesty.com/image/upload/v1793727286/production/6957de4388cba42d9e7a905e/qykndv9ixfimfcngkq7l.jpg",
+      "https://assets.guesty.com/image/upload/v1793727286/production/6957de4388cba42d9e7a905e/smqkwuylwqexdi5cixai.jpg",
+      "https://assets.guesty.com/image/upload/v1793726826/production/6957de4388cba42d9e7a905e/onh4dassah85dmw2fytn.jpg",
+      "https://assets.guesty.com/image/upload/v1793726825/production/6957de4388cba42d9e7a905e/qnyn9npk94ahrfgofdcx.jpg",
+      "https://assets.guesty.com/image/upload/v1793726830/production/6957de4388cba42d9e7a905e/u0rla1cjtdprh6ymt7a1.jpg",
+      "https://assets.guesty.com/image/upload/v1793726831/production/6957de4388cba42d9e7a905e/lal0m1gp36kd2bjqlynw.jpg"
+    ],
+    "description": "Discover the tranquillity of Puddle House with Pool by Portugal Active, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature. This cosy apartment combines modern comfort with the charm of rural surroundings, featuring a kitchenette and a practical workspace. Outdoors, you can enjoy the swimming pool, garden and barbecue area, perfect for relaxing and spending quality time together. An ideal retreat for a relaxing holiday or an extended stay.\n\nWelcome to Puddle House with Pool by Portugal Active, a peaceful retreat in Monção where you can slow down, enjoy nature and find the perfect balance between work and relaxation.\nThe apartment has been thoughtfully designed to provide a comfortable and welcoming stay. The main bedroom features a double bed, storage space and a dedicated workspace, making it ideal for those who wish to work remotely in a peaceful setting. The living room offers a cosy space to unwind, with a double sofa bed that can accommodate up to two additional guests, making the apartment suitable for up to 4 people.\nThe kitchenette is equipped with essential appliances and utensils, including a hob, microwave and coffee machine, allowing you to prepare simple meals during your stay. The apartment also features a private bathroom with a shower and hairdryer.\nOutside, you can enjoy the garden, take a refreshing dip in the swimming pool, relax on the sun loungers or make use of the barbecue area. When the apartments are booked individually, these outdoor areas are shared with guests staying in the other apartments.\nFor families or groups of friends, there is also the option to book the entire property, which can accommodate up to 12 people, allowing everyone to enjoy a shared experience in a peaceful natural setting.\n\nLocated in the heart of the Alto Minho region, Puddle House with Pool by Portugal Active, part of Quinta da Teimosa, offers an ideal setting for those seeking the perfect balance between the tranquillity of the countryside and the opportunity to explore the region.\nMonção is renowned for its lush green landscapes, its winemaking tradition centred around the famous Alvarinho wine, and its rich local cuisine. Just a 5 to 10-minute drive away, you can explore the town's historic centre, stroll along its old town walls, visit the Museu do Alvarinho or discover traditional restaurants where you can sample local specialities, such as the famous Cordeiro à Moda de Monção (Monção-style lamb). The Monção thermal baths, perfect for a relaxing break, are also just a short drive away.\nThe proximity to the River Minho offers plenty of opportunities for peaceful walks, cycling and enjoying the surrounding nature. The Spanish border is also just around 10 minutes away, where you can visit Salvaterra de Miño and discover the flavours and culture of Galicia.\nAn ideal location from which to explore the best of the Alto Minho, enjoy nature and discover the charms of Portugal and neighbouring Galicia.\n\nGuests have access to all the property's communal areas, including the swimming pool, garden and indoor facilities. However, please note that the outdoor areas may be shared with other guests if the entire property is not booked exclusively.\nOur concierge service is available 24 hours a day, 7 days a week, to assist with any requests, from arranging local excursions to booking private chef services. To ensure availability, please request any services at least 72 hours in advance.\n\nImportant notes:\n- During the high season (May to October), the swimming pool and garden are regularly maintained to ensure the best possible experience for our guests.\n- The swimming pool is closed from November to April.\n\nPuddle House with Pool by Portugal Active, located within Quinta da Teimosa by Portugal Active, is situated in Monção, in the heart of the Alto Minho region. The most convenient way to reach the property is by car, allowing you to explore the region with complete freedom and flexibility. Free on-site parking is available for the convenience of our guests.\nThe property is set in a peaceful area, approximately a 5 to 10-minute drive from the historic centre of Monção, where you can discover the famous Monção thermal baths, stroll through the town's charming streets, visit traditional restaurants and explore the local shops.\nApproximately an hour's drive away is Viana do Castelo, a charming coastal city well worth a visit. It features a beautiful historic centre, lovely beaches, the iconic Sanctuary of Santa Luzia and magnificent views over the River Lima and the Atlantic Ocean.\nFor those travelling by air, the nearest airport is Francisco Sá Carneiro Airport in Porto, approximately an hour and a half away by car. We recommend hiring a car to discover the charms of the Alto Minho region and make the most of everything it has to offer.\n\nExclusive Concierge Services by Portugal Active\n\nEnhance your stay with our exclusive services:\n✔️ Luxury transfers: Private chauffeur from the airport directly to your apartment.\n✔️ Personalized experience: From a Private Chef to a Personal Trainer, we shape every detail to your liking.\n✔️ Daily cleaning and babysitting: Services for a worry‑free stay.\n✔️ Local team available: A member of the Portugal Active team will always be within reach throughout your stay.\n\nAdventure Experiences\n✔️ Horseback riding: Ride through scenic trails and beaches on horseback, in a unique experience along the Minho coastline.\n✔️ Guided hikes, dives, and lunches: Explore stunning landscapes, dive into a secret lagoon, and savor traditional tapas.\n✔️ E‑Bike Wild Tour: Discover the hidden corners of Viana do Castelo on an e‑bike, at your own pace.\n✔️ Surf and water sports: Kitesurf, stand up paddle, windsurf, and bodyboard at Cabedelo Beach.\n\nBook your stay. Portugal Active, your private hotel.",
+    "descriptionSections": {
+      "summary": "Discover the tranquillity of Puddle House with Pool by Portugal Active, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature. This cosy apartment combines modern comfort with the charm of rural surroundings, featuring a kitchenette and a practical workspace. Outdoors, you can enjoy the swimming pool, garden and barbecue area, perfect for relaxing and spending quality time together. An ideal retreat for a relaxing holiday or an extended stay.",
+      "space": "Welcome to Puddle House with Pool by Portugal Active, a peaceful retreat in Monção where you can slow down, enjoy nature and find the perfect balance between work and relaxation.\nThe apartment has been thoughtfully designed to provide a comfortable and welcoming stay. The main bedroom features a double bed, storage space and a dedicated workspace, making it ideal for those who wish to work remotely in a peaceful setting. The living room offers a cosy space to unwind, with a double sofa bed that can accommodate up to two additional guests, making the apartment suitable for up to 4 people.\nThe kitchenette is equipped with essential appliances and utensils, including a hob, microwave and coffee machine, allowing you to prepare simple meals during your stay. The apartment also features a private bathroom with a shower and hairdryer.\nOutside, you can enjoy the garden, take a refreshing dip in the swimming pool, relax on the sun loungers or make use of the barbecue area. When the apartments are booked individually, these outdoor areas are shared with guests staying in the other apartments.\nFor families or groups of friends, there is also the option to book the entire property, which can accommodate up to 12 people, allowing everyone to enjoy a shared experience in a peaceful natural setting.",
+      "access": "Guests have access to all the property's communal areas, including the swimming pool, garden and indoor facilities. However, please note that the outdoor areas may be shared with other guests if the entire property is not booked exclusively.\nOur concierge service is available 24 hours a day, 7 days a week, to assist with any requests, from arranging local excursions to booking private chef services. To ensure availability, please request any services at least 72 hours in advance.\n\nImportant notes:\n- During the high season (May to October), the swimming pool and garden are regularly maintained to ensure the best possible experience for our guests.\n- The swimming pool is closed from November to April.",
+      "neighborhood": "Located in the heart of the Alto Minho region, Puddle House with Pool by Portugal Active, part of Quinta da Teimosa, offers an ideal setting for those seeking the perfect balance between the tranquillity of the countryside and the opportunity to explore the region.\nMonção is renowned for its lush green landscapes, its winemaking tradition centred around the famous Alvarinho wine, and its rich local cuisine. Just a 5 to 10-minute drive away, you can explore the town's historic centre, stroll along its old town walls, visit the Museu do Alvarinho or discover traditional restaurants where you can sample local specialities, such as the famous Cordeiro à Moda de Monção (Monção-style lamb). The Monção thermal baths, perfect for a relaxing break, are also just a short drive away.\nThe proximity to the River Minho offers plenty of opportunities for peaceful walks, cycling and enjoying the surrounding nature. The Spanish border is also just around 10 minutes away, where you can visit Salvaterra de Miño and discover the flavours and culture of Galicia.\nAn ideal location from which to explore the best of the Alto Minho, enjoy nature and discover the charms of Portugal and neighbouring Galicia.",
+      "gettingAround": "Puddle House with Pool by Portugal Active, located within Quinta da Teimosa by Portugal Active, is situated in Monção, in the heart of the Alto Minho region. The most convenient way to reach the property is by car, allowing you to explore the region with complete freedom and flexibility. Free on-site parking is available for the convenience of our guests.\nThe property is set in a peaceful area, approximately a 5 to 10-minute drive from the historic centre of Monção, where you can discover the famous Monção thermal baths, stroll through the town's charming streets, visit traditional restaurants and explore the local shops.\nApproximately an hour's drive away is Viana do Castelo, a charming coastal city well worth a visit. It features a beautiful historic centre, lovely beaches, the iconic Sanctuary of Santa Luzia and magnificent views over the River Lima and the Atlantic Ocean.\nFor those travelling by air, the nearest airport is Francisco Sá Carneiro Airport in Porto, approximately an hour and a half away by car. We recommend hiring a car to discover the charms of the Alto Minho region and make the most of everything it has to offer.",
+      "notes": "",
+      "interaction": "The Portugal Active team is committed to ensuring your stay is both memorable and enjoyable. We are always available to support, guide, and accompany you throughout your visit. From the moment you arrive, we’re here to make you feel at home.\nWe offer an excellent selection of experiences to elevate your vacation, including adventure tours, private chefs, massages, babysitting services, and much more. Whatever your needs may be, we’re here to help you create unforgettable memories. If you have any questions, feel free to contact us at any time."
+    },
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Bed linens",
+        "Cleaning Disinfection",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Desk",
+        "Dining table",
+        "Dishes and silverware",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Fire extinguisher",
+        "First aid kit",
+        "Free parking on premises",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Hot water",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Mini fridge",
+        "Outdoor seating (furniture)",
+        "Rural",
+        "Shampoo",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "Swimming pool",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Washer in common space",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "petsAllowed": false,
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6aea178a27ee7a007329b59d",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Puddle House with Pool by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Puddle House with Pool by Portugal Active — Portugal Active",
+    "seoDescription": "Discover the tranquillity of Puddle House with Pool by Portugal Active, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature. Thi",
+    "address": {
+      "full": "",
+      "street": "Rua João Pereira Caldas 905",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 42.0422738,
+      "lng": -8.4719608
+    },
+    "licenseNumber": null,
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 270,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0,
+    "lastModified": "2026-11-04",
+    "contentHash": "0871ecfc85650e388dc2083e262748483ca08ace"
+  },
+  {
     "id": "guesty-6aabba70fb0419001219e9a3",
     "slug": "quinta-da-teimosa-by-portugal-active-19e9a3",
     "name": "Quinta da Teimosa by Portugal Active",
@@ -20871,7 +21632,7 @@
     "destination": "minho",
     "locality": "Monção",
     "bedrooms": 3,
-    "bathrooms": 3.5,
+    "bathrooms": 3,
     "maxGuests": 12,
     "priceFrom": 500,
     "pricePerNight": 500,
@@ -20880,119 +21641,109 @@
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1790003455/production/6957de4388cba42d9e7a905e/krxx7mjntuvqtoaqve3w.jpg",
+      "https://assets.guesty.com/image/upload/v1793193875/production/6957de4388cba42d9e7a905e/d26wvbvghcan3pvpr9nr.jpg",
       "https://assets.guesty.com/image/upload/v1793193880/production/6957de4388cba42d9e7a905e/pmgmma7ddom3wlbvpbny.jpg",
       "https://assets.guesty.com/image/upload/v1793193874/production/6957de4388cba42d9e7a905e/hcqly29mfxkieuh5ecrk.jpg",
-      "https://assets.guesty.com/image/upload/v1793193875/production/6957de4388cba42d9e7a905e/d26wvbvghcan3pvpr9nr.jpg",
-      "https://assets.guesty.com/image/upload/v1793193873/production/6957de4388cba42d9e7a905e/pslc2submpithxyhrfqn.jpg",
-      "https://assets.guesty.com/image/upload/v1793190499/production/6957de4388cba42d9e7a905e/osnop0ua4zcpiowpv7sd.jpg",
+      "https://assets.guesty.com/image/upload/v1793810622/production/6957de4388cba42d9e7a905e/mx2ksgxepkaezlggavi5.jpg",
+      "https://assets.guesty.com/image/upload/v1793808268/production/6957de4388cba42d9e7a905e/ybuzojshlavc3ahomdcs.jpg",
+      "https://assets.guesty.com/image/upload/v1793808256/production/6957de4388cba42d9e7a905e/kcbrstt7algo39q3rowi.jpg",
       "https://assets.guesty.com/image/upload/v1789642667/production/6957de4388cba42d9e7a905e/phq8blvzt8mukggoc51o.jpg",
-      "https://assets.guesty.com/image/upload/v1789642670/production/6957de4388cba42d9e7a905e/h8tuuk5yxd8csqqf7srs.jpg",
-      "https://assets.guesty.com/image/upload/v1793190500/production/6957de4388cba42d9e7a905e/yh2tupkatpphgm64jphn.jpg",
-      "https://assets.guesty.com/image/upload/v1793189576/production/6957de4388cba42d9e7a905e/f8ezfvh8rxvw977v4m9q.jpg",
-      "https://assets.guesty.com/image/upload/v1793190655/production/6957de4388cba42d9e7a905e/scgdkdjbcuv2veb8bkm6.jpg",
-      "https://assets.guesty.com/image/upload/v1793189576/production/6957de4388cba42d9e7a905e/xhh6veylx0attdbqehz8.jpg",
-      "https://assets.guesty.com/image/upload/v1793190655/production/6957de4388cba42d9e7a905e/rfhue9zvxwmhjhx6cyxo.jpg",
-      "https://assets.guesty.com/image/upload/v1793189576/production/6957de4388cba42d9e7a905e/faha47mz9tjgtbiyyb0f.jpg",
-      "https://assets.guesty.com/image/upload/v1793189576/production/6957de4388cba42d9e7a905e/jzvrx6i3nwkuzwy59k9f.jpg",
-      "https://assets.guesty.com/image/upload/v1793189576/production/6957de4388cba42d9e7a905e/q8jcou51xvdlhptjunzm.jpg",
-      "https://assets.guesty.com/image/upload/v1793189579/production/6957de4388cba42d9e7a905e/vdyria7bfr6fgkovvlf5.jpg",
-      "https://assets.guesty.com/image/upload/v1793190655/production/6957de4388cba42d9e7a905e/onh7nic7pykpxulnfyrp.jpg",
-      "https://assets.guesty.com/image/upload/v1793190655/production/6957de4388cba42d9e7a905e/c55yljjothkf8wsuymfv.jpg",
-      "https://assets.guesty.com/image/upload/v1793190655/production/6957de4388cba42d9e7a905e/ll3ilvg8h5z5sxemjlhy.jpg",
-      "https://assets.guesty.com/image/upload/v1793190655/production/6957de4388cba42d9e7a905e/ekunrlewafc3kfow5tlz.jpg",
-      "https://assets.guesty.com/image/upload/v1793189580/production/6957de4388cba42d9e7a905e/xbk072tgqwdcsmi9xifl.jpg",
-      "https://assets.guesty.com/image/upload/v1793189581/production/6957de4388cba42d9e7a905e/wagbrngge5s6wqoeacrg.jpg",
-      "https://assets.guesty.com/image/upload/v1793189582/production/6957de4388cba42d9e7a905e/nhkcictj5c81nt3cxgvh.jpg",
-      "https://assets.guesty.com/image/upload/v1793189582/production/6957de4388cba42d9e7a905e/dtogta9cljekwt68hcoo.jpg",
-      "https://assets.guesty.com/image/upload/v1793190657/production/6957de4388cba42d9e7a905e/t1ib1yospf7ca6nrnoqw.jpg",
-      "https://assets.guesty.com/image/upload/v1793189583/production/6957de4388cba42d9e7a905e/f34qlpunsqdlskkf6fmc.jpg",
-      "https://assets.guesty.com/image/upload/v1793190657/production/6957de4388cba42d9e7a905e/kn1zee6twosbp6gf5my9.jpg",
-      "https://assets.guesty.com/image/upload/v1793190657/production/6957de4388cba42d9e7a905e/josqdzj5h4jkbwckvza2.jpg",
-      "https://assets.guesty.com/image/upload/v1793190658/production/6957de4388cba42d9e7a905e/zvnke8jg7dmfmc1tb4sn.jpg",
-      "https://assets.guesty.com/image/upload/v1793190658/production/6957de4388cba42d9e7a905e/ifd5wn7zdm66stcf5j7s.jpg",
-      "https://assets.guesty.com/image/upload/v1793190658/production/6957de4388cba42d9e7a905e/ht4nfgpkkjfcritglhkl.jpg",
-      "https://assets.guesty.com/image/upload/v1793190499/production/6957de4388cba42d9e7a905e/rvxyfraphb9my23wpkna.jpg",
-      "https://assets.guesty.com/image/upload/v1793189730/production/6957de4388cba42d9e7a905e/khmglpb5jgbdekixpn3k.jpg",
-      "https://assets.guesty.com/image/upload/v1793189730/production/6957de4388cba42d9e7a905e/qkatw5ojsd9nrqgzp8fe.jpg",
-      "https://assets.guesty.com/image/upload/v1793189730/production/6957de4388cba42d9e7a905e/wsst7foevo09ldb7grmr.jpg",
-      "https://assets.guesty.com/image/upload/v1793189730/production/6957de4388cba42d9e7a905e/jxh3g2dlgprd9qdftatt.jpg",
-      "https://assets.guesty.com/image/upload/v1793189736/production/6957de4388cba42d9e7a905e/puouoiuvshxzavow9hdp.jpg",
-      "https://assets.guesty.com/image/upload/v1793189736/production/6957de4388cba42d9e7a905e/rjyuu4atifigvkgc4tql.jpg",
-      "https://assets.guesty.com/image/upload/v1793190777/production/6957de4388cba42d9e7a905e/df906kimcjevvzsp3phv.jpg",
-      "https://assets.guesty.com/image/upload/v1793190777/production/6957de4388cba42d9e7a905e/ngtz4m4td9mfhx4vyn5q.jpg",
-      "https://assets.guesty.com/image/upload/v1793189732/production/6957de4388cba42d9e7a905e/dvyac9ev6glumripyfgh.jpg",
-      "https://assets.guesty.com/image/upload/v1793189734/production/6957de4388cba42d9e7a905e/acfw2o8q0looskx1xrdx.jpg",
-      "https://assets.guesty.com/image/upload/v1793190777/production/6957de4388cba42d9e7a905e/njeug25d8nsbr1f93b5a.jpg",
-      "https://assets.guesty.com/image/upload/v1793189733/production/6957de4388cba42d9e7a905e/xqv9y6mcmxrlfc3mxxn5.jpg",
-      "https://assets.guesty.com/image/upload/v1793190777/production/6957de4388cba42d9e7a905e/joclk2q55asggs1otan2.jpg",
-      "https://assets.guesty.com/image/upload/v1793189733/production/6957de4388cba42d9e7a905e/qqcn4ahe8e4rixj8qdhn.jpg",
-      "https://assets.guesty.com/image/upload/v1793190777/production/6957de4388cba42d9e7a905e/vud24uradrsp920wgxse.jpg",
-      "https://assets.guesty.com/image/upload/v1793189733/production/6957de4388cba42d9e7a905e/kiyi7jcqnr0ik6uywwau.jpg",
-      "https://assets.guesty.com/image/upload/v1793190777/production/6957de4388cba42d9e7a905e/u5xuu4kcmvcyfqedialh.jpg",
-      "https://assets.guesty.com/image/upload/v1793190498/production/6957de4388cba42d9e7a905e/di3fqdbpx47kidktjzrj.jpg",
-      "https://assets.guesty.com/image/upload/v1793189910/production/6957de4388cba42d9e7a905e/e1accx80zh00a5tzqm5d.jpg",
-      "https://assets.guesty.com/image/upload/v1793190860/production/6957de4388cba42d9e7a905e/eexrvmom97jgvultsl80.jpg",
-      "https://assets.guesty.com/image/upload/v1793189910/production/6957de4388cba42d9e7a905e/kutzllu6tmpuyrdas357.jpg",
-      "https://assets.guesty.com/image/upload/v1793189910/production/6957de4388cba42d9e7a905e/vvrbbzjgtjn0gqpsrtau.jpg",
-      "https://assets.guesty.com/image/upload/v1793190861/production/6957de4388cba42d9e7a905e/mgirbphb5okar3n1rql7.jpg",
-      "https://assets.guesty.com/image/upload/v1793190860/production/6957de4388cba42d9e7a905e/ypaloqj086jfdpfriooz.jpg",
-      "https://assets.guesty.com/image/upload/v1793189913/production/6957de4388cba42d9e7a905e/npyfsfjzagywgbu59trc.jpg",
-      "https://assets.guesty.com/image/upload/v1793190860/production/6957de4388cba42d9e7a905e/sfj4ez1gmgixkkhj0jzo.jpg",
-      "https://assets.guesty.com/image/upload/v1793190860/production/6957de4388cba42d9e7a905e/ptk6ttjzjl2nhg1yb66c.jpg",
-      "https://assets.guesty.com/image/upload/v1793190860/production/6957de4388cba42d9e7a905e/rll2mdcxlntraymwpgeo.jpg",
-      "https://assets.guesty.com/image/upload/v1793189913/production/6957de4388cba42d9e7a905e/kasbipbebitlvh4pgzm6.jpg",
-      "https://assets.guesty.com/image/upload/v1793190863/production/6957de4388cba42d9e7a905e/ewxbdoxwvvucmq1qhdrr.jpg",
-      "https://assets.guesty.com/image/upload/v1793189913/production/6957de4388cba42d9e7a905e/htsmsbpodjxn5tspyx9k.jpg",
-      "https://assets.guesty.com/image/upload/v1793189914/production/6957de4388cba42d9e7a905e/jdhbepdxhnpwxxrtmwpq.jpg",
-      "https://assets.guesty.com/image/upload/v1793189914/production/6957de4388cba42d9e7a905e/tujumwzf2jqbadvmgdf3.jpg",
-      "https://assets.guesty.com/image/upload/v1793189916/production/6957de4388cba42d9e7a905e/nmyub7b3bntnui43zvm9.jpg",
-      "https://assets.guesty.com/image/upload/v1793189916/production/6957de4388cba42d9e7a905e/nafn8jtzxdy7qjatjadg.jpg",
-      "https://assets.guesty.com/image/upload/v1793190863/production/6957de4388cba42d9e7a905e/qafdgh7cnz1pqufgyn1e.jpg",
-      "https://assets.guesty.com/image/upload/v1793190863/production/6957de4388cba42d9e7a905e/gy1odyqs5lhuyrgoeunc.jpg",
-      "https://assets.guesty.com/image/upload/v1793190493/production/6957de4388cba42d9e7a905e/ibjaae3k9kimqpgdjp1n.jpg",
-      "https://assets.guesty.com/image/upload/v1793190493/production/6957de4388cba42d9e7a905e/lpxzua9hrksznshlysa5.jpg",
-      "https://assets.guesty.com/image/upload/v1793190493/production/6957de4388cba42d9e7a905e/ocajwwmfecpg8mne3dxx.jpg",
-      "https://assets.guesty.com/image/upload/v1793190493/production/6957de4388cba42d9e7a905e/kea3uj4ebjxwldicinyy.jpg",
-      "https://assets.guesty.com/image/upload/v1793190493/production/6957de4388cba42d9e7a905e/sdruaeqtecpqczfiyosz.jpg",
-      "https://assets.guesty.com/image/upload/v1793190495/production/6957de4388cba42d9e7a905e/tohtrvfizmtiv8jkpsag.jpg",
-      "https://assets.guesty.com/image/upload/v1793190496/production/6957de4388cba42d9e7a905e/orehftrctxdstz9ulrte.jpg",
-      "https://assets.guesty.com/image/upload/v1793191154/production/6957de4388cba42d9e7a905e/toy4u9pou6hh44eotbk9.jpg",
-      "https://assets.guesty.com/image/upload/v1793190496/production/6957de4388cba42d9e7a905e/semzpzghq1yqkpk3bqac.jpg",
-      "https://assets.guesty.com/image/upload/v1793191154/production/6957de4388cba42d9e7a905e/pqqzjv3lspydv6dlx9mh.jpg",
-      "https://assets.guesty.com/image/upload/v1793190496/production/6957de4388cba42d9e7a905e/rx0ns7o0unqef0qxllur.jpg",
-      "https://assets.guesty.com/image/upload/v1793191155/production/6957de4388cba42d9e7a905e/x7fp7cmr5dmi3hquf2gn.jpg",
-      "https://assets.guesty.com/image/upload/v1793191155/production/6957de4388cba42d9e7a905e/laeatob8iee9r8mid7jj.jpg",
-      "https://assets.guesty.com/image/upload/v1793191155/production/6957de4388cba42d9e7a905e/z90mtlbulwdghvrnnxc6.jpg",
-      "https://assets.guesty.com/image/upload/v1793190497/production/6957de4388cba42d9e7a905e/fugyclc9tvpxkqzyztjq.jpg",
-      "https://assets.guesty.com/image/upload/v1793190498/production/6957de4388cba42d9e7a905e/bxx2griqpaun1dm1jng7.jpg",
-      "https://assets.guesty.com/image/upload/v1793191157/production/6957de4388cba42d9e7a905e/vq0eluiclanidqstjaw6.jpg",
-      "https://assets.guesty.com/image/upload/v1793191157/production/6957de4388cba42d9e7a905e/ntlkbemzfnmzhfjjpzhx.jpg",
-      "https://assets.guesty.com/image/upload/v1793190500/production/6957de4388cba42d9e7a905e/zjoasodxbhkefmxq5n2j.jpg",
-      "https://assets.guesty.com/image/upload/v1793191157/production/6957de4388cba42d9e7a905e/fu0wroo564hdjmtdjdaz.jpg",
-      "https://assets.guesty.com/image/upload/v1793190501/production/6957de4388cba42d9e7a905e/gyvcrdfg07koewfnqga6.jpg",
-      "https://assets.guesty.com/image/upload/v1789642674/production/6957de4388cba42d9e7a905e/d4us74vrditkv8fwvzao.jpg",
-      "https://assets.guesty.com/image/upload/v1789642675/production/6957de4388cba42d9e7a905e/edv9qhmhtfmssdsb8d0y.jpg",
-      "https://assets.guesty.com/image/upload/v1789642670/production/6957de4388cba42d9e7a905e/iykmmtnpim5ytl5rrxqb.jpg",
-      "https://assets.guesty.com/image/upload/v1793191157/production/6957de4388cba42d9e7a905e/mewfafcypqkxjnyjev3k.jpg",
-      "https://assets.guesty.com/image/upload/v1793190501/production/6957de4388cba42d9e7a905e/joeyoavuf3eju08i46ta.jpg",
-      "https://assets.guesty.com/image/upload/v1793190502/production/6957de4388cba42d9e7a905e/vt7mwshjkrggcynemumh.jpg",
-      "https://assets.guesty.com/image/upload/v1789642667/production/6957de4388cba42d9e7a905e/vepo63tkb28chtmbrge8.jpg",
-      "https://assets.guesty.com/image/upload/v1789642671/production/6957de4388cba42d9e7a905e/pionfqn9yaksqrsrmxzu.jpg",
-      "https://assets.guesty.com/image/upload/v1789642675/production/6957de4388cba42d9e7a905e/jbs4lyifvyyuq9duf1qc.jpg",
-      "https://assets.guesty.com/image/upload/v1789642672/production/6957de4388cba42d9e7a905e/uebufqjocxr2hutjduzj.jpg",
-      "https://assets.guesty.com/image/upload/v1789642673/production/6957de4388cba42d9e7a905e/rlrt2rpdb2iam7paqf1w.jpg",
-      "https://assets.guesty.com/image/upload/v1789642796/production/6957de4388cba42d9e7a905e/eqdf8aego1vcdauaoo52.jpg",
-      "https://assets.guesty.com/image/upload/v1789642795/production/6957de4388cba42d9e7a905e/aznuljpiaxsqyn3uiq69.jpg",
-      "https://assets.guesty.com/image/upload/v1789642796/production/6957de4388cba42d9e7a905e/qnqghar8mfccf7kdxmas.jpg",
-      "https://assets.guesty.com/image/upload/v1789642796/production/6957de4388cba42d9e7a905e/ygdlewgs63wlgxk62scp.jpg"
+      "https://assets.guesty.com/image/upload/v1793807164/production/6957de4388cba42d9e7a905e/fnm2fbu7vjggrp5icg0h.jpg",
+      "https://assets.guesty.com/image/upload/v1793808248/production/6957de4388cba42d9e7a905e/ldx2rzvwbwoarnvnz90q.jpg",
+      "https://assets.guesty.com/image/upload/v1793807155/production/6957de4388cba42d9e7a905e/x2jp6bhu9abinv4j9wpb.jpg",
+      "https://assets.guesty.com/image/upload/v1793807154/production/6957de4388cba42d9e7a905e/a6lsuh6cpvypz2kkewcc.jpg",
+      "https://assets.guesty.com/image/upload/v1793807163/production/6957de4388cba42d9e7a905e/vgnjtvuozst9rwicsmku.jpg",
+      "https://assets.guesty.com/image/upload/v1793807153/production/6957de4388cba42d9e7a905e/rkbhoqbmh2qj1ggj2mm4.jpg",
+      "https://assets.guesty.com/image/upload/v1793807176/production/6957de4388cba42d9e7a905e/gfowipkvhswb7hoydpfo.jpg",
+      "https://assets.guesty.com/image/upload/v1793807160/production/6957de4388cba42d9e7a905e/p4foqce0wjfj1iamsmq0.jpg",
+      "https://assets.guesty.com/image/upload/v1793807171/production/6957de4388cba42d9e7a905e/ib9skoy1prwsdq2xinnw.jpg",
+      "https://assets.guesty.com/image/upload/v1793807162/production/6957de4388cba42d9e7a905e/u64g8lone3zcyupyn734.jpg",
+      "https://assets.guesty.com/image/upload/v1793807170/production/6957de4388cba42d9e7a905e/n7ebwo1lqhep8w6qous0.jpg",
+      "https://assets.guesty.com/image/upload/v1793807160/production/6957de4388cba42d9e7a905e/bcwizym4aaqkc3puagdp.jpg",
+      "https://assets.guesty.com/image/upload/v1793807165/production/6957de4388cba42d9e7a905e/csiqeamhzdd29n9rm2e5.jpg",
+      "https://assets.guesty.com/image/upload/v1793807169/production/6957de4388cba42d9e7a905e/pqjvkagedyzmqblicnjw.jpg",
+      "https://assets.guesty.com/image/upload/v1793807177/production/6957de4388cba42d9e7a905e/a7gsywv1nhjjag5bblaq.jpg",
+      "https://assets.guesty.com/image/upload/v1793807172/production/6957de4388cba42d9e7a905e/n43bbalg5ctrktlsomgm.jpg",
+      "https://assets.guesty.com/image/upload/v1793807167/production/6957de4388cba42d9e7a905e/sbv6mixp4vdidkym6nwx.jpg",
+      "https://assets.guesty.com/image/upload/v1793807173/production/6957de4388cba42d9e7a905e/unmlr0yhuchuseyjusby.jpg",
+      "https://assets.guesty.com/image/upload/v1793808281/production/6957de4388cba42d9e7a905e/dwnhea8c54y4cqwajhpj.jpg",
+      "https://assets.guesty.com/image/upload/v1793807173/production/6957de4388cba42d9e7a905e/uajkrxpvcd3kvsponsqc.jpg",
+      "https://assets.guesty.com/image/upload/v1793807177/production/6957de4388cba42d9e7a905e/opgsmmpvymzdhuorutkv.jpg",
+      "https://assets.guesty.com/image/upload/v1793807176/production/6957de4388cba42d9e7a905e/mzn8hsl1vfel4vzefu8h.jpg",
+      "https://assets.guesty.com/image/upload/v1793807173/production/6957de4388cba42d9e7a905e/ojhodvwg06ilqep0zsow.jpg",
+      "https://assets.guesty.com/image/upload/v1793807178/production/6957de4388cba42d9e7a905e/zaiahjt7yd7ir8fvrxh2.jpg",
+      "https://assets.guesty.com/image/upload/v1793807156/production/6957de4388cba42d9e7a905e/qvqh3fdqxjej0fsf4jkx.jpg",
+      "https://assets.guesty.com/image/upload/v1793807173/production/6957de4388cba42d9e7a905e/e6rulscjwcbdauwgmclm.jpg",
+      "https://assets.guesty.com/image/upload/v1793808245/production/6957de4388cba42d9e7a905e/vpbsmuovjjpvyx0ccdqc.jpg",
+      "https://assets.guesty.com/image/upload/v1793808251/production/6957de4388cba42d9e7a905e/hetrshdc4zbsklbu40ip.jpg",
+      "https://assets.guesty.com/image/upload/v1793808262/production/6957de4388cba42d9e7a905e/qhyxsn3vntatqdj4oy1x.jpg",
+      "https://assets.guesty.com/image/upload/v1793808263/production/6957de4388cba42d9e7a905e/cbzjvxj4pfdgljb3dkav.jpg",
+      "https://assets.guesty.com/image/upload/v1793807347/production/6957de4388cba42d9e7a905e/xd2tntfhzhtuxklokw86.jpg",
+      "https://assets.guesty.com/image/upload/v1793807345/production/6957de4388cba42d9e7a905e/jacd92lsb31ocswz30sr.jpg",
+      "https://assets.guesty.com/image/upload/v1793807360/production/6957de4388cba42d9e7a905e/wmcynhqqbdrf0tvyzn1s.jpg",
+      "https://assets.guesty.com/image/upload/v1793808243/production/6957de4388cba42d9e7a905e/bxim2yy9kaj2wolbfivh.jpg",
+      "https://assets.guesty.com/image/upload/v1793808256/production/6957de4388cba42d9e7a905e/prwuvv5ixpsqiflrjmn9.jpg",
+      "https://assets.guesty.com/image/upload/v1793807343/production/6957de4388cba42d9e7a905e/a7ixubalphckc1tn3b5f.jpg",
+      "https://assets.guesty.com/image/upload/v1793807343/production/6957de4388cba42d9e7a905e/ajtui9lyzysdaj9cwzho.jpg",
+      "https://assets.guesty.com/image/upload/v1793807369/production/6957de4388cba42d9e7a905e/krp1vo8yitm8agexgtzv.jpg",
+      "https://assets.guesty.com/image/upload/v1793807350/production/6957de4388cba42d9e7a905e/xzdno6jqpvdbs0rjxf7d.jpg",
+      "https://assets.guesty.com/image/upload/v1793807360/production/6957de4388cba42d9e7a905e/btwbp0kbjwxvv5q2xojv.jpg",
+      "https://assets.guesty.com/image/upload/v1793807352/production/6957de4388cba42d9e7a905e/xbaagh7sjkvrzuko1coe.jpg",
+      "https://assets.guesty.com/image/upload/v1793807349/production/6957de4388cba42d9e7a905e/qb2uajcyloqmirxteicb.jpg",
+      "https://assets.guesty.com/image/upload/v1793807354/production/6957de4388cba42d9e7a905e/xougj1nryua7nt1fxmvt.jpg",
+      "https://assets.guesty.com/image/upload/v1793807352/production/6957de4388cba42d9e7a905e/iuh095sou82mguiasu5b.jpg",
+      "https://assets.guesty.com/image/upload/v1793807362/production/6957de4388cba42d9e7a905e/jpjrxijruqlocij1xhec.jpg",
+      "https://assets.guesty.com/image/upload/v1793807357/production/6957de4388cba42d9e7a905e/naw4xtur05z3dyvrmru9.jpg",
+      "https://assets.guesty.com/image/upload/v1793807355/production/6957de4388cba42d9e7a905e/dojp14w3efufuibtjadl.jpg",
+      "https://assets.guesty.com/image/upload/v1793807357/production/6957de4388cba42d9e7a905e/na4i8nhude7qhguwzdrv.jpg",
+      "https://assets.guesty.com/image/upload/v1793807360/production/6957de4388cba42d9e7a905e/q44nr7x7680rqrqkdo6b.jpg",
+      "https://assets.guesty.com/image/upload/v1793808252/production/6957de4388cba42d9e7a905e/lkpyacbljjscxmgdw5ra.jpg",
+      "https://assets.guesty.com/image/upload/v1793808249/production/6957de4388cba42d9e7a905e/pjwmnsc5gclrsitxhewa.jpg",
+      "https://assets.guesty.com/image/upload/v1793808259/production/6957de4388cba42d9e7a905e/qzlycfkzsouxpfzkfhti.jpg",
+      "https://assets.guesty.com/image/upload/v1793808262/production/6957de4388cba42d9e7a905e/yfygb0acrnmwczpaoivs.jpg",
+      "https://assets.guesty.com/image/upload/v1793808263/production/6957de4388cba42d9e7a905e/vjnuskrpucuvhynic0b9.jpg",
+      "https://assets.guesty.com/image/upload/v1793808265/production/6957de4388cba42d9e7a905e/hcjqf1icweguh1sgkvfi.jpg",
+      "https://assets.guesty.com/image/upload/v1793808239/production/6957de4388cba42d9e7a905e/rtr2bjxkzmwcvtxnconm.jpg",
+      "https://assets.guesty.com/image/upload/v1793808245/production/6957de4388cba42d9e7a905e/e1dyjruevi139kafvbqu.jpg",
+      "https://assets.guesty.com/image/upload/v1793808239/production/6957de4388cba42d9e7a905e/lhtm1aurpsnpxcxjmuol.jpg",
+      "https://assets.guesty.com/image/upload/v1793808241/production/6957de4388cba42d9e7a905e/ysjisqjnq8lh9mtkjrsu.jpg",
+      "https://assets.guesty.com/image/upload/v1793808228/production/6957de4388cba42d9e7a905e/tzxpphe1xrbcfv08aonl.jpg",
+      "https://assets.guesty.com/image/upload/v1793808249/production/6957de4388cba42d9e7a905e/ntoqa2wniqkmspy9fw60.jpg",
+      "https://assets.guesty.com/image/upload/v1793808251/production/6957de4388cba42d9e7a905e/x02bik4afx3ddzydkfua.jpg",
+      "https://assets.guesty.com/image/upload/v1793808232/production/6957de4388cba42d9e7a905e/e5seyzxug3ctnqc4exmo.jpg",
+      "https://assets.guesty.com/image/upload/v1793808272/production/6957de4388cba42d9e7a905e/vmlxx6rcklxn3ugsj05k.jpg",
+      "https://assets.guesty.com/image/upload/v1793808276/production/6957de4388cba42d9e7a905e/q0ncwc3ccg5mte5qrzu9.jpg",
+      "https://assets.guesty.com/image/upload/v1793808238/production/6957de4388cba42d9e7a905e/hiy6rvhd6fjaaa7vlwf6.jpg",
+      "https://assets.guesty.com/image/upload/v1793808275/production/6957de4388cba42d9e7a905e/romgqfvyda8q1oikvqy5.jpg",
+      "https://assets.guesty.com/image/upload/v1793808240/production/6957de4388cba42d9e7a905e/qz7akgiugu6yjvdze6dt.jpg",
+      "https://assets.guesty.com/image/upload/v1793808275/production/6957de4388cba42d9e7a905e/teulktogxsdeypijtlsz.jpg",
+      "https://assets.guesty.com/image/upload/v1793808270/production/6957de4388cba42d9e7a905e/h6h9zuugnqgjyvpreyjf.jpg",
+      "https://assets.guesty.com/image/upload/v1793808268/production/6957de4388cba42d9e7a905e/w2g5e5okgexbs6ut9obu.jpg",
+      "https://assets.guesty.com/image/upload/v1793808271/production/6957de4388cba42d9e7a905e/wrcolmwsy2snj0eg6732.jpg",
+      "https://assets.guesty.com/image/upload/v1793808269/production/6957de4388cba42d9e7a905e/q1nfy3bqkmkcuodczfce.jpg",
+      "https://assets.guesty.com/image/upload/v1793808273/production/6957de4388cba42d9e7a905e/dppkovbefzefdnyf0gop.jpg",
+      "https://assets.guesty.com/image/upload/v1793808273/production/6957de4388cba42d9e7a905e/hhexcqn3ldj9yywblvi4.jpg",
+      "https://assets.guesty.com/image/upload/v1793808275/production/6957de4388cba42d9e7a905e/w2q6yzbdck7selp5xste.jpg",
+      "https://assets.guesty.com/image/upload/v1793808275/production/6957de4388cba42d9e7a905e/tecqtfmnethsqs0d9eiz.jpg",
+      "https://assets.guesty.com/image/upload/v1793808274/production/6957de4388cba42d9e7a905e/uzlxisr5x3ybuyyd32nh.jpg",
+      "https://assets.guesty.com/image/upload/v1793808245/production/6957de4388cba42d9e7a905e/ipku0yydceonrscgdqp9.jpg",
+      "https://assets.guesty.com/image/upload/v1793808255/production/6957de4388cba42d9e7a905e/cbtywljt9jnbqpihok03.jpg",
+      "https://assets.guesty.com/image/upload/v1793808589/production/6957de4388cba42d9e7a905e/tvjvjed0elkrvxhomhjl.jpg",
+      "https://assets.guesty.com/image/upload/v1793808257/production/6957de4388cba42d9e7a905e/fivmo5ru44tf1voytykb.jpg",
+      "https://assets.guesty.com/image/upload/v1793808589/production/6957de4388cba42d9e7a905e/xvdwqaaxtqvarwyei2cj.jpg",
+      "https://assets.guesty.com/image/upload/v1793808589/production/6957de4388cba42d9e7a905e/et0id8dz176qxzfwoj0f.jpg",
+      "https://assets.guesty.com/image/upload/v1793807485/production/6957de4388cba42d9e7a905e/zoqcxyer5wqoqkl3u1jq.jpg",
+      "https://assets.guesty.com/image/upload/v1793807482/production/6957de4388cba42d9e7a905e/f7lfkbyh245rglrcoaut.jpg",
+      "https://assets.guesty.com/image/upload/v1793807481/production/6957de4388cba42d9e7a905e/ko3e0exqayxpobeneb0g.jpg",
+      "https://assets.guesty.com/image/upload/v1793807481/production/6957de4388cba42d9e7a905e/gqsolcegkwijbhltw4uv.jpg"
     ],
-    "description": "Quinta da Teimosa by Portugal Active is a serene retreat where three independent apartments blend into a warm and peaceful setting. With views over the vineyard, an outdoor pool, a garden and quiet lounging areas, this space invites you to slow down and enjoy nature at a gentle pace. A place designed to offer well‑being, comfort and truly relaxing moments.\n\nQuinta da Teimosa by Portugal Active was created for those seeking to slow down and enjoy peaceful days in a warm and welcoming environment. The property brings together three independent apartments, each with its own identity: Casa da Montanha, Casa da Poça and Casa da Vinha. These three spaces form a harmonious ensemble designed to offer privacy, comfort and a continuous sense of well‑being.\nEach apartment blends simplicity with comfort: a double bedroom that invites rest, a functional kitchenette for preparing small meals at ease, a private bathroom and a cosy living room with a double sofa bed, ideal for quiet moments. Each unit also includes a small dining area, perfect for enjoying the slow rhythm of the day.\nOutdoors, the atmosphere becomes even more serene. The property offers open views over the vineyard, creating a sense of space and tranquillity that accompanies every moment spent outside. The exterior features a well‑kept garden, a refreshing swimming pool, a barbecue area for relaxed meals and a service bathroom designed for added convenience.\nTo ensure a comfortable stay, each apartment is equipped with air conditioning, wireless internet and free on‑site parking, allowing everything to flow naturally and without worries.\nA place where time slows down and every detail contributes to a calm, harmonious and deeply relaxing experience.\n\nQuinta da Teimosa by Portugal Active is located in Monção, in the heart of Alto Minho, a region known for its lush green landscapes and the winemaking tradition of Alvarinho wine. Its privileged location allows you to easily explore the authenticity of northern Portugal. Just a short drive away, around 10 minutes, you will find Monção’s historic centre, where you can stroll along the village walls, visit the Alvarinho Museum or enjoy the local gastronomy in traditional restaurants serving the famous Cordeiro à Moda de Monção. For moments of thermal relaxation, the Monção Thermal Baths are situated about 15 minutes away.\nThe proximity to the Minho River offers opportunities for peaceful walks by the water or leisurely bike rides. The Spanish border is only 10 minutes away, allowing quick visits to Salvaterra de Miño to discover the culture and flavours of Galicia.\n\nGuests have exclusive access to the entire property, including the swimming pool, the garden and all indoor amenities. Portugal Active’s concierge service is available 24 hours a day, 7 days a week, to assist with any request — from organising local tours to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nImportant notes:\n- During the high season (May to October), the pool and garden undergo regular maintenance to ensure the best possible experience for guests.\n- The pool is out of service from November to April.\n\nQuinta da Teimosa by Portugal Active is located in Monção, in the Alto Minho region, and is most conveniently reached by car. We offer free on‑site parking to ensure maximum comfort for our guests.\nThe property is situated about ten minutes by car from Monção’s historic centre and from the Monção Thermal Baths.\nFor travellers arriving by plane, Francisco Sá Carneiro Airport in Porto is the closest arrival point, located approximately an hour and a half away via the motorway. We recommend renting a car to explore the region with freedom and comfort.\n\nExclusive Concierge Services by Portugal Active\n\nEnhance your stay with our exclusive services:\n✔️ Luxury transfers: Private chauffeur from the airport directly to your apartment.\n✔️ Personalized experience: From a Private Chef to a Personal Trainer, we shape every detail to your liking.\n✔️ Daily cleaning and babysitting: Services for a worry‑free stay.\n✔️ Local team available: A member of the Portugal Active team will always be within reach throughout your stay.\n\nAdventure Experiences\n✔️ Horseback riding: Ride through scenic trails and beaches on horseback, in a unique experience along the Minho coastline.\n✔️ Guided hikes, dives, and lunches: Explore stunning landscapes, dive into a secret lagoon, and savor traditional tapas.\n✔️ E‑Bike Wild Tour: Discover the hidden corners of Viana do Castelo on an e‑bike, at your own pace.\n✔️ Surf and water sports: Kitesurf, stand up paddle, windsurf, and bodyboard at Cabedelo Beach.\n\nBook your stay. Portugal Active, your private hotel.",
+    "description": "Quinta da Teimosa by Portugal Active is a serene retreat where three independent apartments blend into a warm and peaceful setting. With views over the vineyard, an outdoor pool, a garden and quiet lounging areas, this space invites you to slow down and enjoy nature at a gentle pace. A place designed to offer well‑being, comfort and truly relaxing moments.\n\nQuinta da Teimosa by Portugal Active was created for those seeking to slow down and enjoy peaceful days in a warm and welcoming environment. The property brings together three independent apartments, each with its own identity: Casa da Montanha, Casa da Poça and Casa da Vinha. These three spaces form a harmonious ensemble designed to offer privacy, comfort and a continuous sense of well‑being.\nEach apartment blends simplicity with comfort: a double bedroom that invites rest, a functional kitchenette for preparing small meals at ease, a private bathroom and a cosy living room with a double sofa bed, ideal for quiet moments. Each unit also includes a small dining area, perfect for enjoying the slow rhythm of the day.\nOutdoors, the atmosphere becomes even more serene. The property offers open views over the vineyard, creating a sense of space and tranquillity that accompanies every moment spent outside. The exterior features a well‑kept garden, a refreshing swimming pool, a barbecue area for relaxed meals and a service bathroom designed for added convenience.\nTo ensure a comfortable stay, each apartment is equipped with air conditioning, wireless internet and free on‑site parking, allowing everything to flow naturally and without worries.\nA place where time slows down and every detail contributes to a calm, harmonious and deeply relaxing experience.\n\nLocated in the heart of Alto Minho, Quinta da Teimosa offers a privileged location for those seeking the perfect balance between the tranquillity of the countryside and the opportunity to explore the region.\nMonção is renowned for its lush green landscapes, its winemaking tradition centred around the famous Alvarinho wine, and its rich gastronomy. Just a 5 to 10-minute drive away, you can explore the town's historic centre, stroll along its ancient walls, visit the Alvarinho Museum or discover traditional restaurants where you can sample local specialities, such as the famous Cordeiro à Moda de Monção (Monção-style lamb). The Monção Thermal Baths, ideal for moments of relaxation, are also just a short drive away.\nThe proximity to the River Minho offers excellent opportunities for peaceful walks, cycling and enjoying moments surrounded by nature. Just around 10 minutes away, you will also find the Spanish border, where you can visit Salvaterra de Miño and discover the flavours and culture of Galicia.\nAn ideal location to explore the best of Alto Minho, enjoy nature and discover the charms of Portugal and neighbouring Galicia.\n\nGuests have exclusive access to the entire property, including the swimming pool, the garden and all indoor amenities. Portugal Active’s concierge service is available 24 hours a day, 7 days a week, to assist with any request — from organising local tours to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nImportant notes:\n- During the high season (May to October), the pool and garden undergo regular maintenance to ensure the best possible experience for guests.\n- The pool is out of service from November to April.\n\nQuinta da Teimosa by Portugal Active is located in Monção, in the heart of the Alto Minho region. The most convenient way to reach the property is by private vehicle, allowing you to explore the region with complete freedom and comfort. We offer free on-site parking for the convenience of our guests.\nThe property is situated in a peaceful area, approximately a 5 to 10-minute drive from the historic centre of Monção, where you can discover the famous Monção Thermal Baths, stroll through the town's charming streets, visit traditional restaurants and explore the local shops.\nApproximately an hour's drive away is Viana do Castelo, a coastal city well worth visiting, with its historic centre, beautiful beaches, the iconic Sanctuary of Santa Luzia and magnificent views over the Lima River and the Atlantic Ocean.\nFor those travelling by plane, the nearest airport is Francisco Sá Carneiro Airport in Porto, located approximately an hour and a half away by car. We recommend renting a car to discover the charms of the Alto Minho region and make the most of everything the area has to offer.\n\nExclusive Concierge Services by Portugal Active\n\nEnhance your stay with our exclusive services:\n✔️ Luxury transfers: Private chauffeur from the airport directly to your apartment.\n✔️ Personalized experience: From a Private Chef to a Personal Trainer, we shape every detail to your liking.\n✔️ Daily cleaning and babysitting: Services for a worry‑free stay.\n✔️ Local team available: A member of the Portugal Active team will always be within reach throughout your stay.\n\nAdventure Experiences\n✔️ Horseback riding: Ride through scenic trails and beaches on horseback, in a unique experience along the Minho coastline.\n✔️ Guided hikes, dives, and lunches: Explore stunning landscapes, dive into a secret lagoon, and savor traditional tapas.\n✔️ E‑Bike Wild Tour: Discover the hidden corners of Viana do Castelo on an e‑bike, at your own pace.\n✔️ Surf and water sports: Kitesurf, stand up paddle, windsurf, and bodyboard at Cabedelo Beach.\n\nBook your stay. Portugal Active, your private hotel.",
     "descriptionSections": {
       "summary": "Quinta da Teimosa by Portugal Active is a serene retreat where three independent apartments blend into a warm and peaceful setting. With views over the vineyard, an outdoor pool, a garden and quiet lounging areas, this space invites you to slow down and enjoy nature at a gentle pace. A place designed to offer well‑being, comfort and truly relaxing moments.",
       "space": "Quinta da Teimosa by Portugal Active was created for those seeking to slow down and enjoy peaceful days in a warm and welcoming environment. The property brings together three independent apartments, each with its own identity: Casa da Montanha, Casa da Poça and Casa da Vinha. These three spaces form a harmonious ensemble designed to offer privacy, comfort and a continuous sense of well‑being.\nEach apartment blends simplicity with comfort: a double bedroom that invites rest, a functional kitchenette for preparing small meals at ease, a private bathroom and a cosy living room with a double sofa bed, ideal for quiet moments. Each unit also includes a small dining area, perfect for enjoying the slow rhythm of the day.\nOutdoors, the atmosphere becomes even more serene. The property offers open views over the vineyard, creating a sense of space and tranquillity that accompanies every moment spent outside. The exterior features a well‑kept garden, a refreshing swimming pool, a barbecue area for relaxed meals and a service bathroom designed for added convenience.\nTo ensure a comfortable stay, each apartment is equipped with air conditioning, wireless internet and free on‑site parking, allowing everything to flow naturally and without worries.\nA place where time slows down and every detail contributes to a calm, harmonious and deeply relaxing experience.",
       "access": "Guests have exclusive access to the entire property, including the swimming pool, the garden and all indoor amenities. Portugal Active’s concierge service is available 24 hours a day, 7 days a week, to assist with any request — from organising local tours to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nImportant notes:\n- During the high season (May to October), the pool and garden undergo regular maintenance to ensure the best possible experience for guests.\n- The pool is out of service from November to April.",
-      "neighborhood": "Quinta da Teimosa by Portugal Active is located in Monção, in the heart of Alto Minho, a region known for its lush green landscapes and the winemaking tradition of Alvarinho wine. Its privileged location allows you to easily explore the authenticity of northern Portugal. Just a short drive away, around 10 minutes, you will find Monção’s historic centre, where you can stroll along the village walls, visit the Alvarinho Museum or enjoy the local gastronomy in traditional restaurants serving the famous Cordeiro à Moda de Monção. For moments of thermal relaxation, the Monção Thermal Baths are situated about 15 minutes away.\nThe proximity to the Minho River offers opportunities for peaceful walks by the water or leisurely bike rides. The Spanish border is only 10 minutes away, allowing quick visits to Salvaterra de Miño to discover the culture and flavours of Galicia.",
-      "gettingAround": "Quinta da Teimosa by Portugal Active is located in Monção, in the Alto Minho region, and is most conveniently reached by car. We offer free on‑site parking to ensure maximum comfort for our guests.\nThe property is situated about ten minutes by car from Monção’s historic centre and from the Monção Thermal Baths.\nFor travellers arriving by plane, Francisco Sá Carneiro Airport in Porto is the closest arrival point, located approximately an hour and a half away via the motorway. We recommend renting a car to explore the region with freedom and comfort.",
+      "neighborhood": "Located in the heart of Alto Minho, Quinta da Teimosa offers a privileged location for those seeking the perfect balance between the tranquillity of the countryside and the opportunity to explore the region.\nMonção is renowned for its lush green landscapes, its winemaking tradition centred around the famous Alvarinho wine, and its rich gastronomy. Just a 5 to 10-minute drive away, you can explore the town's historic centre, stroll along its ancient walls, visit the Alvarinho Museum or discover traditional restaurants where you can sample local specialities, such as the famous Cordeiro à Moda de Monção (Monção-style lamb). The Monção Thermal Baths, ideal for moments of relaxation, are also just a short drive away.\nThe proximity to the River Minho offers excellent opportunities for peaceful walks, cycling and enjoying moments surrounded by nature. Just around 10 minutes away, you will also find the Spanish border, where you can visit Salvaterra de Miño and discover the flavours and culture of Galicia.\nAn ideal location to explore the best of Alto Minho, enjoy nature and discover the charms of Portugal and neighbouring Galicia.",
+      "gettingAround": "Quinta da Teimosa by Portugal Active is located in Monção, in the heart of the Alto Minho region. The most convenient way to reach the property is by private vehicle, allowing you to explore the region with complete freedom and comfort. We offer free on-site parking for the convenience of our guests.\nThe property is situated in a peaceful area, approximately a 5 to 10-minute drive from the historic centre of Monção, where you can discover the famous Monção Thermal Baths, stroll through the town's charming streets, visit traditional restaurants and explore the local shops.\nApproximately an hour's drive away is Viana do Castelo, a coastal city well worth visiting, with its historic centre, beautiful beaches, the iconic Sanctuary of Santa Luzia and magnificent views over the Lima River and the Atlantic Ocean.\nFor those travelling by plane, the nearest airport is Francisco Sá Carneiro Airport in Porto, located approximately an hour and a half away by car. We recommend renting a car to discover the charms of the Alto Minho region and make the most of everything the area has to offer.",
       "notes": "",
       "interaction": "The Portugal Active team is committed to ensuring your stay is both memorable and enjoyable. We are always available to support, guide, and accompany you throughout your visit. From the moment you arrive, we’re here to make you feel at home.\nWe offer an excellent selection of experiences to elevate your vacation, including adventure tours, private chefs, massages, babysitting services, and much more. Whatever your needs may be, we’re here to help you create unforgettable memories. If you have any questions, feel free to contact us at any time."
     },
@@ -21134,8 +21885,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-11-03",
-    "contentHash": "aa073bd4ca2fc67b80fe545325ff01afb104a889"
+    "lastModified": "2026-11-04",
+    "contentHash": "00294521dc06ea5b281e4bd584142de9750b6075"
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -30673,6 +31424,194 @@
     "contentHash": "66a3952fd9e187cc830680404822a9ab9786c036"
   },
   {
+    "id": "guesty-6aeb0c8885edf50014362275",
+    "slug": "vineyard-house-by-portugal-active-362275",
+    "name": "Vineyard House by Portugal Active",
+    "tagline": "Discover the tranquillity of Vineyard House by Portugal Active, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature. T…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "maxGuests": 4,
+    "priceFrom": 70,
+    "pricePerNight": 70,
+    "cleaningFee": 98,
+    "minNights": 1,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1793789569/production/6957de4388cba42d9e7a905e/mqdzxybzart68jfhzhvu.jpg",
+      "https://assets.guesty.com/image/upload/v1793789552/production/6957de4388cba42d9e7a905e/c1au7c7eun3zcjom9kfu.jpg",
+      "https://assets.guesty.com/image/upload/v1793790006/production/6957de4388cba42d9e7a905e/nqtbpvzxoycowke1zxo6.jpg",
+      "https://assets.guesty.com/image/upload/v1793790006/production/6957de4388cba42d9e7a905e/zexrnsk6sqnlwq38qmp4.jpg",
+      "https://assets.guesty.com/image/upload/v1793789586/production/6957de4388cba42d9e7a905e/ive9aa1sewxxgp7zj4kj.jpg",
+      "https://assets.guesty.com/image/upload/v1793790004/production/6957de4388cba42d9e7a905e/cngurgjrosvebben4mqh.jpg",
+      "https://assets.guesty.com/image/upload/v1793790023/production/6957de4388cba42d9e7a905e/toavfm2intdc790mazu8.jpg",
+      "https://assets.guesty.com/image/upload/v1793789568/production/6957de4388cba42d9e7a905e/g8etfpebq7tvplq1lztu.jpg",
+      "https://assets.guesty.com/image/upload/v1793790005/production/6957de4388cba42d9e7a905e/ai1cedjhlvc4fvd3h6gr.jpg",
+      "https://assets.guesty.com/image/upload/v1793790024/production/6957de4388cba42d9e7a905e/afiadul1i2jvfxali4ff.jpg",
+      "https://assets.guesty.com/image/upload/v1793789569/production/6957de4388cba42d9e7a905e/hrzn0sjxwpzqgzhq6wq5.jpg",
+      "https://assets.guesty.com/image/upload/v1793789553/production/6957de4388cba42d9e7a905e/iwere0huqlhxfrpcxs4o.jpg",
+      "https://assets.guesty.com/image/upload/v1793789555/production/6957de4388cba42d9e7a905e/ptnx7kbvhjs6ju1hiwtn.jpg",
+      "https://assets.guesty.com/image/upload/v1793789566/production/6957de4388cba42d9e7a905e/g3uxh0yj9fbbwaj7rchb.jpg",
+      "https://assets.guesty.com/image/upload/v1793789568/production/6957de4388cba42d9e7a905e/x98gw7frppuvbia5lrtz.jpg",
+      "https://assets.guesty.com/image/upload/v1793790012/production/6957de4388cba42d9e7a905e/kaie4hp8mxvsvthbcqul.jpg",
+      "https://assets.guesty.com/image/upload/v1793789571/production/6957de4388cba42d9e7a905e/dtfnjkdtdv7uo1u1ndfv.jpg",
+      "https://assets.guesty.com/image/upload/v1793789590/production/6957de4388cba42d9e7a905e/byghyrshdaes07qk9aet.jpg",
+      "https://assets.guesty.com/image/upload/v1793789596/production/6957de4388cba42d9e7a905e/nekrivr4nuareq8xmogn.jpg",
+      "https://assets.guesty.com/image/upload/v1793789574/production/6957de4388cba42d9e7a905e/gmyqsgvnabebmzgan9y8.jpg",
+      "https://assets.guesty.com/image/upload/v1793790006/production/6957de4388cba42d9e7a905e/z2jcrnw30d6olscvwovl.jpg",
+      "https://assets.guesty.com/image/upload/v1793789562/production/6957de4388cba42d9e7a905e/bgbfezhftbgjugd39iwf.jpg",
+      "https://assets.guesty.com/image/upload/v1793789565/production/6957de4388cba42d9e7a905e/nwfzrkq7zw4kvjqoouos.jpg",
+      "https://assets.guesty.com/image/upload/v1793789593/production/6957de4388cba42d9e7a905e/hjfgdu73skz2nppjtu7g.jpg",
+      "https://assets.guesty.com/image/upload/v1793789597/production/6957de4388cba42d9e7a905e/qfxe9vqlev6y9deeibi4.jpg",
+      "https://assets.guesty.com/image/upload/v1793789592/production/6957de4388cba42d9e7a905e/p3dae0w0f9wijdejwerg.jpg",
+      "https://assets.guesty.com/image/upload/v1793789590/production/6957de4388cba42d9e7a905e/roavcjrxbeyix5poaubh.jpg",
+      "https://assets.guesty.com/image/upload/v1793789558/production/6957de4388cba42d9e7a905e/msyrb22jzrmhuyxxfhwn.jpg",
+      "https://assets.guesty.com/image/upload/v1793789583/production/6957de4388cba42d9e7a905e/hwwlna0sbwimje52ajj2.jpg",
+      "https://assets.guesty.com/image/upload/v1793790013/production/6957de4388cba42d9e7a905e/rw0cpvqhdpz65wtq7ysy.jpg",
+      "https://assets.guesty.com/image/upload/v1793789587/production/6957de4388cba42d9e7a905e/lnq56esdgm8ua8dbalyf.jpg",
+      "https://assets.guesty.com/image/upload/v1793789585/production/6957de4388cba42d9e7a905e/fnsrlcjwmclqvq1ofmxc.jpg",
+      "https://assets.guesty.com/image/upload/v1793789587/production/6957de4388cba42d9e7a905e/yqsntm42kpthb9aadkgw.jpg",
+      "https://assets.guesty.com/image/upload/v1793789588/production/6957de4388cba42d9e7a905e/u80yj7uvkn8slpxpbhud.jpg",
+      "https://assets.guesty.com/image/upload/v1793789589/production/6957de4388cba42d9e7a905e/vg8pwmjnichoa6nm0jsk.jpg",
+      "https://assets.guesty.com/image/upload/v1793789587/production/6957de4388cba42d9e7a905e/epl0sjdrww33e1d2yl8m.jpg",
+      "https://assets.guesty.com/image/upload/v1793790021/production/6957de4388cba42d9e7a905e/hddlieq82wx3ivd46cuh.jpg",
+      "https://assets.guesty.com/image/upload/v1793789552/production/6957de4388cba42d9e7a905e/lfkoy5kcqek5jdptsooe.jpg",
+      "https://assets.guesty.com/image/upload/v1793790014/production/6957de4388cba42d9e7a905e/kjxg2td8u1u2kxonebys.jpg",
+      "https://assets.guesty.com/image/upload/v1793790011/production/6957de4388cba42d9e7a905e/x1wx35ellzyghjvze5ud.jpg",
+      "https://assets.guesty.com/image/upload/v1793789555/production/6957de4388cba42d9e7a905e/mhcmb8ygluz14mznwgy7.jpg",
+      "https://assets.guesty.com/image/upload/v1793790014/production/6957de4388cba42d9e7a905e/vmilrp7yr2cfzsmuulie.jpg",
+      "https://assets.guesty.com/image/upload/v1793790016/production/6957de4388cba42d9e7a905e/sorbazm98geygaj3hyxx.jpg",
+      "https://assets.guesty.com/image/upload/v1793790015/production/6957de4388cba42d9e7a905e/jgxiced1ggluffs6jmap.jpg",
+      "https://assets.guesty.com/image/upload/v1793789568/production/6957de4388cba42d9e7a905e/hsscgshtxzvad3sqhaim.jpg",
+      "https://assets.guesty.com/image/upload/v1793789593/production/6957de4388cba42d9e7a905e/es6p4se71lywnouc8evj.jpg",
+      "https://assets.guesty.com/image/upload/v1793790010/production/6957de4388cba42d9e7a905e/swhaqy26pvckc97od0ue.jpg",
+      "https://assets.guesty.com/image/upload/v1793789600/production/6957de4388cba42d9e7a905e/o9jvtzdk14xtplpzzjd1.jpg",
+      "https://assets.guesty.com/image/upload/v1793790017/production/6957de4388cba42d9e7a905e/lupsvx64reow9zznkf2g.jpg",
+      "https://assets.guesty.com/image/upload/v1793790009/production/6957de4388cba42d9e7a905e/t2ajgcqgovut3lhtz7ty.jpg",
+      "https://assets.guesty.com/image/upload/v1793789521/production/6957de4388cba42d9e7a905e/dlaatxs5acfxjicghq4b.jpg",
+      "https://assets.guesty.com/image/upload/v1793789515/production/6957de4388cba42d9e7a905e/h9jkkve49tsxkirmluaa.jpg",
+      "https://assets.guesty.com/image/upload/v1793789516/production/6957de4388cba42d9e7a905e/tltgcxla5gdargupfo2l.jpg",
+      "https://assets.guesty.com/image/upload/v1793789515/production/6957de4388cba42d9e7a905e/dynbljdvhoodokddhzcc.jpg"
+    ],
+    "description": "Discover the tranquillity of Vineyard House by Portugal Active, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature. This cosy apartment combines modern comfort with the charm of rural surroundings, featuring a kitchenette and a practical workspace. Outdoors, you can enjoy the swimming pool, garden and barbecue area, perfect for relaxing and spending quality time together. An ideal retreat for a relaxing holiday or an extended stay.\n\nWelcome to Vineyard House by Portugal Active, a peaceful retreat in Monção where you can slow down, enjoy nature and find the perfect balance between work and relaxation.\nThe apartment has been thoughtfully designed to provide a comfortable and welcoming stay. The main bedroom features a double bed, storage space and a dedicated workspace, making it ideal for those who wish to work remotely in a peaceful setting. The living room offers a cosy space to unwind, with a double sofa bed that can accommodate up to two additional guests, making the apartment suitable for up to 4 people.\nThe kitchenette is equipped with essential appliances and utensils, including a hob, microwave and coffee machine, allowing you to prepare simple meals during your stay. The apartment also features a private bathroom with a shower and hairdryer.\nOutside, you can enjoy the garden, take a refreshing dip in the swimming pool, relax on the sun loungers or make use of the barbecue area. When the apartments are booked individually, these outdoor areas are shared with guests staying in the other apartments.\nFor families or groups of friends, there is also the option to book the entire property, which can accommodate up to 12 people, allowing everyone to enjoy a shared experience in a peaceful natural setting.\n\nLocated in the heart of the Alto Minho region, Vineyard House by Portugal Active, part of Quinta da Teimosa, offers an ideal setting for those seeking the perfect balance between the tranquillity of the countryside and the opportunity to explore the region.\nMonção is renowned for its lush green landscapes, its winemaking tradition centred around the famous Alvarinho wine, and its rich local cuisine. Just a 5 to 10-minute drive away, you can explore the town's historic centre, stroll along its old town walls, visit the Museu do Alvarinho or discover traditional restaurants where you can sample local specialities, such as the famous Cordeiro à Moda de Monção (Monção-style lamb). The Monção thermal baths, perfect for a relaxing break, are also just a short drive away.\nThe proximity to the River Minho offers plenty of opportunities for peaceful walks, cycling and enjoying the surrounding nature. The Spanish border is also just around 10 minutes away, where you can visit Salvaterra de Miño and discover the flavours and culture of Galicia.\nAn ideal location from which to explore the best of the Alto Minho, enjoy nature and discover the charms of Portugal and neighbouring Galicia.\n\nGuests have access to all the property's communal areas, including the swimming pool, garden and indoor facilities. However, please note that the outdoor areas may be shared with other guests if the entire property is not booked exclusively.\nOur concierge service is available 24 hours a day, 7 days a week, to assist with any requests, from arranging local excursions to booking private chef services. To ensure availability, please request any services at least 72 hours in advance.\n\nImportant notes:\n- During the high season (May to October), the swimming pool and garden are regularly maintained to ensure the best possible experience for our guests.\n- The swimming pool is closed from November to April.\n\nVineyard House by Portugal Active, located within Quinta da Teimosa by Portugal Active, is situated in Monção, in the heart of the Alto Minho region. The most convenient way to reach the property is by car, allowing you to explore the region with complete freedom and flexibility. Free on-site parking is available for the convenience of our guests.\nThe property is set in a peaceful area, approximately a 5 to 10-minute drive from the historic centre of Monção, where you can discover the famous Monção thermal baths, stroll through the town's charming streets, visit traditional restaurants and explore the local shops.\nApproximately an hour's drive away is Viana do Castelo, a charming coastal city well worth a visit. It features a beautiful historic centre, lovely beaches, the iconic Sanctuary of Santa Luzia and magnificent views over the River Lima and the Atlantic Ocean.\nFor those travelling by air, the nearest airport is Francisco Sá Carneiro Airport in Porto, approximately an hour and a half away by car. We recommend hiring a car to discover the charms of the Alto Minho region and make the most of everything it has to offer.\n\nExclusive Concierge Services by Portugal Active\n\nEnhance your stay with our exclusive services:\n✔️ Luxury transfers: Private chauffeur from the airport directly to your apartment.\n✔️ Personalized experience: From a Private Chef to a Personal Trainer, we shape every detail to your liking.\n✔️ Daily cleaning and babysitting: Services for a worry‑free stay.\n✔️ Local team available: A member of the Portugal Active team will always be within reach throughout your stay.\n\nAdventure Experiences\n✔️ Horseback riding: Ride through scenic trails and beaches on horseback, in a unique experience along the Minho coastline.\n✔️ Guided hikes, dives, and lunches: Explore stunning landscapes, dive into a secret lagoon, and savor traditional tapas.\n✔️ E‑Bike Wild Tour: Discover the hidden corners of Viana do Castelo on an e‑bike, at your own pace.\n✔️ Surf and water sports: Kitesurf, stand up paddle, windsurf, and bodyboard at Cabedelo Beach.\n\nBook your stay. Portugal Active, your private hotel.",
+    "descriptionSections": {
+      "summary": "Discover the tranquillity of Vineyard House by Portugal Active, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature. This cosy apartment combines modern comfort with the charm of rural surroundings, featuring a kitchenette and a practical workspace. Outdoors, you can enjoy the swimming pool, garden and barbecue area, perfect for relaxing and spending quality time together. An ideal retreat for a relaxing holiday or an extended stay.",
+      "space": "Welcome to Vineyard House by Portugal Active, a peaceful retreat in Monção where you can slow down, enjoy nature and find the perfect balance between work and relaxation.\nThe apartment has been thoughtfully designed to provide a comfortable and welcoming stay. The main bedroom features a double bed, storage space and a dedicated workspace, making it ideal for those who wish to work remotely in a peaceful setting. The living room offers a cosy space to unwind, with a double sofa bed that can accommodate up to two additional guests, making the apartment suitable for up to 4 people.\nThe kitchenette is equipped with essential appliances and utensils, including a hob, microwave and coffee machine, allowing you to prepare simple meals during your stay. The apartment also features a private bathroom with a shower and hairdryer.\nOutside, you can enjoy the garden, take a refreshing dip in the swimming pool, relax on the sun loungers or make use of the barbecue area. When the apartments are booked individually, these outdoor areas are shared with guests staying in the other apartments.\nFor families or groups of friends, there is also the option to book the entire property, which can accommodate up to 12 people, allowing everyone to enjoy a shared experience in a peaceful natural setting.",
+      "access": "Guests have access to all the property's communal areas, including the swimming pool, garden and indoor facilities. However, please note that the outdoor areas may be shared with other guests if the entire property is not booked exclusively.\nOur concierge service is available 24 hours a day, 7 days a week, to assist with any requests, from arranging local excursions to booking private chef services. To ensure availability, please request any services at least 72 hours in advance.\n\nImportant notes:\n- During the high season (May to October), the swimming pool and garden are regularly maintained to ensure the best possible experience for our guests.\n- The swimming pool is closed from November to April.",
+      "neighborhood": "Located in the heart of the Alto Minho region, Vineyard House by Portugal Active, part of Quinta da Teimosa, offers an ideal setting for those seeking the perfect balance between the tranquillity of the countryside and the opportunity to explore the region.\nMonção is renowned for its lush green landscapes, its winemaking tradition centred around the famous Alvarinho wine, and its rich local cuisine. Just a 5 to 10-minute drive away, you can explore the town's historic centre, stroll along its old town walls, visit the Museu do Alvarinho or discover traditional restaurants where you can sample local specialities, such as the famous Cordeiro à Moda de Monção (Monção-style lamb). The Monção thermal baths, perfect for a relaxing break, are also just a short drive away.\nThe proximity to the River Minho offers plenty of opportunities for peaceful walks, cycling and enjoying the surrounding nature. The Spanish border is also just around 10 minutes away, where you can visit Salvaterra de Miño and discover the flavours and culture of Galicia.\nAn ideal location from which to explore the best of the Alto Minho, enjoy nature and discover the charms of Portugal and neighbouring Galicia.",
+      "gettingAround": "Vineyard House by Portugal Active, located within Quinta da Teimosa by Portugal Active, is situated in Monção, in the heart of the Alto Minho region. The most convenient way to reach the property is by car, allowing you to explore the region with complete freedom and flexibility. Free on-site parking is available for the convenience of our guests.\nThe property is set in a peaceful area, approximately a 5 to 10-minute drive from the historic centre of Monção, where you can discover the famous Monção thermal baths, stroll through the town's charming streets, visit traditional restaurants and explore the local shops.\nApproximately an hour's drive away is Viana do Castelo, a charming coastal city well worth a visit. It features a beautiful historic centre, lovely beaches, the iconic Sanctuary of Santa Luzia and magnificent views over the River Lima and the Atlantic Ocean.\nFor those travelling by air, the nearest airport is Francisco Sá Carneiro Airport in Porto, approximately an hour and a half away by car. We recommend hiring a car to discover the charms of the Alto Minho region and make the most of everything it has to offer.",
+      "notes": "",
+      "interaction": "The Portugal Active team is committed to ensuring your stay is both memorable and enjoyable. We are always available to support, guide, and accompany you throughout your visit. From the moment you arrive, we’re here to make you feel at home.\nWe offer an excellent selection of experiences to elevate your vacation, including adventure tours, private chefs, massages, babysitting services, and much more. Whatever your needs may be, we’re here to help you create unforgettable memories. If you have any questions, feel free to contact us at any time."
+    },
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Bed linens",
+        "Cleaning Disinfection",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Desk",
+        "Dining table",
+        "Dishes and silverware",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Fire extinguisher",
+        "First aid kit",
+        "Free parking on premises",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Hot water",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Mini fridge",
+        "Outdoor pool",
+        "Outdoor seating (furniture)",
+        "Rural",
+        "Shampoo",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Washer",
+        "Washer in common space",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "petsAllowed": false,
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6aeb0c8885edf50014362275",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Vineyard House by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Vineyard House by Portugal Active — Portugal Active",
+    "seoDescription": "Discover the tranquillity of Vineyard House by Portugal Active, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature. This cosy a",
+    "address": {
+      "full": "",
+      "street": "Rua João Pereira Caldas 905",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 42.0422738,
+      "lng": -8.4719608
+    },
+    "licenseNumber": null,
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 290,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0,
+    "lastModified": "2026-11-04",
+    "contentHash": "4750c04777dcfb71e06cefef98f5710867f3c2a5"
+  },
+  {
     "id": "guesty-6a341163c50f210012f12b80",
     "slug": "douro-garden-by-portugal-active-f12b80",
     "name": "Waterfront Villa by Douro w/ BBQ & River Views",
@@ -30689,18 +31628,21 @@
     "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1781882810/production/6957de4388cba42d9e7a905e/f2clbcw0hk1xovxww83k.jpg",
-      "https://assets.guesty.com/image/upload/v1781882810/production/6957de4388cba42d9e7a905e/q4kidyexc2nchrllcgat.jpg",
-      "https://assets.guesty.com/image/upload/v1781882842/production/6957de4388cba42d9e7a905e/wtcbprigppxwhhtrax2w.jpg",
-      "https://assets.guesty.com/image/upload/v1781882817/production/6957de4388cba42d9e7a905e/iwnly9gkzuzdlgbq2ngb.jpg",
       "https://assets.guesty.com/image/upload/v1781882810/production/6957de4388cba42d9e7a905e/lyrmxdsxm9cfkjul75e3.jpg",
+      "https://assets.guesty.com/image/upload/v1781882810/production/6957de4388cba42d9e7a905e/f2clbcw0hk1xovxww83k.jpg",
+      "https://assets.guesty.com/image/upload/v1781882842/production/6957de4388cba42d9e7a905e/wtcbprigppxwhhtrax2w.jpg",
+      "https://assets.guesty.com/image/upload/v1781882810/production/6957de4388cba42d9e7a905e/q4kidyexc2nchrllcgat.jpg",
       "https://assets.guesty.com/image/upload/v1781882816/production/6957de4388cba42d9e7a905e/jj2its3fmvvwuwmvurop.jpg",
+      "https://assets.guesty.com/image/upload/v1781882837/production/6957de4388cba42d9e7a905e/t5xyvngaybbe6cwv9c7w.jpg",
+      "https://assets.guesty.com/image/upload/v1781882837/production/6957de4388cba42d9e7a905e/bieqxfw37qpjuxf7pfdq.jpg",
+      "https://assets.guesty.com/image/upload/v1781886903/production/6957de4388cba42d9e7a905e/li9cyf3luxpa4hjb0ocp.jpg",
       "https://assets.guesty.com/image/upload/v1781882840/production/6957de4388cba42d9e7a905e/ffdkvkojiulfpycoqpkc.jpg",
       "https://assets.guesty.com/image/upload/v1781882825/production/6957de4388cba42d9e7a905e/nlzyeqddnhoawc88ndgr.jpg",
       "https://assets.guesty.com/image/upload/v1781882838/production/6957de4388cba42d9e7a905e/ixeh2ryz0d8twjcdruoq.jpg",
       "https://assets.guesty.com/image/upload/v1781882826/production/6957de4388cba42d9e7a905e/abnlc8ieufkwgni7qlyp.jpg",
-      "https://assets.guesty.com/image/upload/v1781882759/production/6957de4388cba42d9e7a905e/phadsfs48yj4fjghvvop.jpg",
+      "https://assets.guesty.com/image/upload/v1781882817/production/6957de4388cba42d9e7a905e/iwnly9gkzuzdlgbq2ngb.jpg",
       "https://assets.guesty.com/image/upload/v1781882820/production/6957de4388cba42d9e7a905e/x14e1zvgo79qatyfz1ow.jpg",
+      "https://assets.guesty.com/image/upload/v1781882759/production/6957de4388cba42d9e7a905e/phadsfs48yj4fjghvvop.jpg",
       "https://assets.guesty.com/image/upload/v1781882839/production/6957de4388cba42d9e7a905e/p6nfwuszgh11cmeymi8n.jpg",
       "https://assets.guesty.com/image/upload/v1781882840/production/6957de4388cba42d9e7a905e/oz2ytwhqtctvhywctgak.jpg",
       "https://assets.guesty.com/image/upload/v1781882821/production/6957de4388cba42d9e7a905e/cgobkg5lepft5wtrcipa.jpg",
@@ -30739,13 +31681,10 @@
       "https://assets.guesty.com/image/upload/v1781886906/production/6957de4388cba42d9e7a905e/cimll2ztcs6qsgkkq8eu.jpg",
       "https://assets.guesty.com/image/upload/v1781882833/production/6957de4388cba42d9e7a905e/biobangkwtwllazlgpgr.jpg",
       "https://assets.guesty.com/image/upload/v1781886902/production/6957de4388cba42d9e7a905e/wyi4fkthhkezfpuygdpv.jpg",
+      "https://assets.guesty.com/image/upload/v1781886903/production/6957de4388cba42d9e7a905e/snghfmxsedkj0oxulfxo.jpg",
       "https://assets.guesty.com/image/upload/v1781882817/production/6957de4388cba42d9e7a905e/txycbpe3p3hy7otsordk.jpg",
-      "https://assets.guesty.com/image/upload/v1781882837/production/6957de4388cba42d9e7a905e/t5xyvngaybbe6cwv9c7w.jpg",
-      "https://assets.guesty.com/image/upload/v1781886903/production/6957de4388cba42d9e7a905e/li9cyf3luxpa4hjb0ocp.jpg",
-      "https://assets.guesty.com/image/upload/v1781882837/production/6957de4388cba42d9e7a905e/bieqxfw37qpjuxf7pfdq.jpg",
       "https://assets.guesty.com/image/upload/v1781882809/production/6957de4388cba42d9e7a905e/g37uzzzsnwef7sqlnhxb.jpg",
       "https://assets.guesty.com/image/upload/v1781886903/production/6957de4388cba42d9e7a905e/vpf3zkdpzeakiiw6oiuq.jpg",
-      "https://assets.guesty.com/image/upload/v1781886903/production/6957de4388cba42d9e7a905e/snghfmxsedkj0oxulfxo.jpg",
       "https://assets.guesty.com/image/upload/v1781882832/production/6957de4388cba42d9e7a905e/jo8dlws0qbzhbyigzojt.jpg",
       "https://assets.guesty.com/image/upload/v1781883610/production/6957de4388cba42d9e7a905e/pegcgvaknh3jopxvfgwi.jpg",
       "https://assets.guesty.com/image/upload/v1781883610/production/6957de4388cba42d9e7a905e/xjionlz0twyofdfn7b5b.jpg",
@@ -30763,7 +31702,6 @@
         "Bathtub",
         "Bed linens",
         "Cable TV",
-        "City View",
         "Cleaning Disinfection",
         "Cleaning products",
         "Clothing storage",
@@ -30787,6 +31725,7 @@
         "Hangers",
         "Heating",
         "High touch surfaces disinfected",
+        "Horseback Riding",
         "Hot water",
         "Internet",
         "Iron",
@@ -30800,7 +31739,9 @@
         "Private entrance",
         "Refrigerator",
         "River",
+        "Rural",
         "Shampoo",
+        "Shopping",
         "Shower gel",
         "Stove",
         "Suitable for children (2-12 years)",
@@ -30809,10 +31750,12 @@
         "Toaster",
         "Towels provided",
         "Washer",
+        "Water Sports",
         "Water View",
         "Waterfront",
         "Wine glasses",
-        "Wireless Internet"
+        "Wireless Internet",
+        "Zoo"
       ],
       "bedrooms": [],
       "kitchen": [],
@@ -30831,7 +31774,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Waterfront Villa by Douro w/ BBQ & River Views — Portugal Active",
-    "seoDescription": "Discover Douro Garden by Portugal Active, a charming villa located in Avintes, where modern comfort meets the natural beauty of the Douro River. \nFeaturing four",
+    "seoDescription": "Discover Waterfront Villa by Douro w/ BBQ & River Views, a charming villa located in Avintes, where modern comfort meets the natural beauty of the Douro River. ",
     "address": {
       "full": "",
       "street": "Rua Restauradores 15",
@@ -31068,8 +32011,8 @@
     ],
     "averageRating": 4.2,
     "reviewCount": 5,
-    "lastModified": "2026-10-25",
-    "contentHash": "5c77d326f5674209f7f78a4e964ff09b927a6ee4"
+    "lastModified": "2026-11-04",
+    "contentHash": "860ff48eb1bb7676098f7b1b37c996d559fdd546"
   },
   {
     "id": "guesty-696533af4fe6a100145fecb6",
