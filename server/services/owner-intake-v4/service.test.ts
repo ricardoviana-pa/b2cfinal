@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-const fake = vi.hoisted(() => ({ configured: vi.fn(), claim: vi.fn(), files: vi.fn(), sent: vi.fn(), failed: vi.fn(), pending: vi.fn(), init: vi.fn(), send: vi.fn() }));
+const fake = vi.hoisted(() => ({ configured: vi.fn(), claim: vi.fn(), files: vi.fn(), sent: vi.fn(), failed: vi.fn(), pending: vi.fn(), init: vi.fn(), send: vi.fn(), reminders: vi.fn(), prepareReminder: vi.fn(), crmAllows: vi.fn() }));
+vi.mock("../owner-crm/service", () => ({ ownerCrmAllowsPhotoReminder: fake.crmAllows }));
 vi.mock("../owner-intake/email", () => ({ ownerEmailConfigured: fake.configured, isOwnerIntakeProduction: () => true }));
-vi.mock("./store", () => ({ claimV4: fake.claim, v4MailFiles: fake.files, sentV4: fake.sent, failedV4: fake.failed, pendingV4: fake.pending, initialiseV4Schema: fake.init }));
+vi.mock("./store", () => ({ claimV4: fake.claim, v4MailFiles: fake.files, sentV4: fake.sent, failedV4: fake.failed, pendingV4: fake.pending, initialiseV4Schema: fake.init, queueV4PhotoReminders: fake.reminders, prepareV4ReminderDelivery: fake.prepareReminder }));
 vi.mock("./email", async importOriginal => ({ ...await importOriginal<any>(), sendV4Mail: fake.send }));
 import { deliverV4, runBoundedDeliveries, sweepV4 } from "./service";
 import { V4DeliveryError } from "./email";
@@ -11,11 +12,33 @@ beforeEach(() => {
   for (const mock of Object.values(fake)) mock.mockReset();
   fake.configured.mockReturnValue(true); fake.files.mockResolvedValue([]); fake.sent.mockResolvedValue(undefined); fake.failed.mockResolvedValue(undefined);
   fake.send.mockResolvedValue("synthetic-provider"); fake.pending.mockResolvedValue([]);
+  fake.reminders.mockResolvedValue(0); fake.prepareReminder.mockResolvedValue(true);
+  fake.crmAllows.mockResolvedValue(true);
   fake.claim.mockResolvedValue({ id: "synthetic", enquiryId: "synthetic", attempts: 1, leaseAt: lease, payload: { mail: { html: "frozen" }, fileIds: [] } });
 });
 afterEach(() => { vi.useRealTimers(); });
 async function finish<T>(promise: Promise<T>) { await vi.runAllTimersAsync(); return promise; }
 describe("v4 bounded durable delivery", () => {
+  it("rechecks a reminder immediately before sending and suppresses it after photos arrive", async () => {
+    const item = { id: "synthetic:photo-reminder", enquiryId: "synthetic", kind: "photo_reminder", attempts: 1, leaseAt: lease, payload: { mail: { html: "reminder" }, fileIds: [] } };
+    fake.claim.mockResolvedValue(item); fake.prepareReminder.mockResolvedValue(false);
+    await finish(deliverV4(item.id));
+    expect(fake.prepareReminder).toHaveBeenCalledWith(item, expect.any(Date), true);
+    expect(fake.send).not.toHaveBeenCalled(); expect(fake.sent).not.toHaveBeenCalled(); expect(fake.failed).not.toHaveBeenCalled();
+    fake.prepareReminder.mockResolvedValue(true);
+    await finish(deliverV4(item.id));
+    expect(fake.send).toHaveBeenCalledTimes(1);
+  });
+  it("cancels a reminder for a closed deal and defers without sending when CRM status is unknown", async () => {
+    const item = { id: "synthetic:photo-reminder", enquiryId: "synthetic", kind: "photo_reminder", attempts: 1, leaseAt: lease, payload: { mail: { html: "reminder" }, fileIds: [] } };
+    fake.claim.mockResolvedValue(item); fake.crmAllows.mockResolvedValue(false); fake.prepareReminder.mockResolvedValue(false);
+    await finish(deliverV4(item.id));
+    expect(fake.prepareReminder).toHaveBeenCalledWith(item, expect.any(Date), false); expect(fake.send).not.toHaveBeenCalled();
+    fake.crmAllows.mockRejectedValue(new Error("synthetic CRM outage"));
+    await finish(deliverV4(item.id));
+    expect(fake.failed).toHaveBeenCalledWith(item, "CRM_REMINDER_STATUS_UNAVAILABLE", expect.any(Date), false, true);
+    expect(fake.send).not.toHaveBeenCalled();
+  });
   it("bounds both delivery concurrency and the total file bytes in memory", async () => {
     const pending = [10, 10, 0, 5, 0].map((attachmentBytes, id) => ({ id, attachmentBytes }));
     let active = 0, bytes = 0, maxActive = 0, maxBytes = 0; const visited: number[] = [];

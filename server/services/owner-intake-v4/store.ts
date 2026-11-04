@@ -5,7 +5,8 @@ import { isOwnerIntakeProduction } from "../owner-intake/email";
 import { OWNER_FILE_COUNT_LIMIT, OWNER_TOTAL_FILE_LIMIT } from "../../../shared/owner-intake";
 import { OWNER_V4_TOKEN_DAYS, OWNER_V4_FILE_HISTORY_BYTES, OWNER_V4_FILE_HISTORY_COUNT, type OwnerV4Draft, type OwnerV4MediaMutation, type OwnerV4Mutation, type OwnerV4Receipt, type OwnerV4Start, type OwnerV4StartReceipt } from "../../../shared/owner-intake-v4";
 import { OwnerIntakeError, completeDetails, fingerprint, mediaSchema, newToken, parse, tokenHash, type V4File } from "./validation";
-import { managementCompletedMail, managementMediaMail, managementStartMail, welcomeMail } from "./email";
+import { managementCompletedMail, managementMediaMail, managementStartMail, welcomeMail, photoReminderMail } from "./email";
+import { PHOTO_REMINDER_DELAY_MS, PHOTO_REMINDER_KIND, PHOTO_REMINDER_QUIET_MS, photoRemindersEnabled, reminderEligible, reminderFrom, reminderWelcomeReady } from "./reminder";
 import type { V4Record, V4FileMetadata, V4Outbox, V4OutboxPayload } from "./types";
 
 export const V4_SCHEMA = [
@@ -291,11 +292,92 @@ export async function removeV4File(auth: V4Record, id: string, now = new Date())
   });
 }
 
+/** One frozen reminder per enquiry. The row lock serialises scheduling with uploads. */
+export async function queueV4PhotoReminders(now = new Date()) {
+  if (!photoRemindersEnabled()) return 0;
+  const db = await database();
+  const due = new Date(now.getTime() - PHOTO_REMINDER_DELAY_MS);
+  const quiet = new Date(now.getTime() - PHOTO_REMINDER_QUIET_MS);
+  const minimumExpiry = new Date(now.getTime() + 3600_000);
+  const candidates = rows<{ id: string }>(await db.execute(sql`SELECT e.id FROM owner_v4_enquiries e
+    INNER JOIN owner_v4_outbox w ON w.id = CONCAT(e.id, ':welcome') AND w.status = 'sent' AND w.firstAttemptAt <= ${quiet}
+    WHERE e.capturedAt >= ${reminderFrom()} AND e.capturedAt <= ${due} AND e.updatedAt <= ${quiet}
+      AND e.tokenExpiresAt > ${minimumExpiry} AND e.status IN ('awaiting_details', 'awaiting_photos')
+      AND COALESCE(JSON_UNQUOTE(JSON_EXTRACT(e.details, '$.photosLink')), '') = ''
+      AND NOT EXISTS (SELECT 1 FROM owner_v4_files f WHERE f.enquiryId = e.id AND f.active = 1 AND f.mimeType LIKE 'image/%')
+      AND NOT EXISTS (SELECT 1 FROM owner_v4_outbox r WHERE r.id = CONCAT(e.id, ':photo-reminder'))
+    ORDER BY (LOWER(JSON_UNQUOTE(JSON_EXTRACT(e.contact, '$.name'))) LIKE '%qa%') ASC, e.capturedAt, e.id LIMIT 100`));
+  let queued = 0;
+  for (const candidate of candidates) {
+    queued += await db.transaction(async tx => {
+      const found = rows<any>(await tx.execute(sql`SELECT * FROM owner_v4_enquiries WHERE id = ${candidate.id} FOR UPDATE`))[0];
+      if (!found) return 0;
+      const r = record(found); const files = await fileMetadata(tx, r.id);
+      if (!reminderEligible(r, files, now)) return 0;
+      const existing = rows<any>(await tx.execute(sql`SELECT id FROM owner_v4_outbox WHERE id = ${`${r.id}:photo-reminder`} LIMIT 1`))[0];
+      if (existing) return 0;
+      const welcome = rows<any>(await tx.execute(sql`SELECT status, firstAttemptAt, payload FROM owner_v4_outbox WHERE id = ${`${r.id}:welcome`} LIMIT 1`))[0];
+      if (!reminderWelcomeReady(welcome && { status: welcome.status, firstAttemptAt: date(welcome.firstAttemptAt), acceptedAt: obj<V4OutboxPayload>(welcome.payload).acceptedAt }, now)) return 0;
+      const completionUrl = obj<V4OutboxPayload>(welcome.payload).completionUrl;
+      if (!validReminderUrl(r, completionUrl)) return 0;
+      await outbox(tx, `${r.id}:photo-reminder`, r.id, PHOTO_REMINDER_KIND,
+        { mail: photoReminderMail(r, completionUrl!), fileIds: [], completionUrl }, 0, now);
+      return 1;
+    });
+  }
+  return queued;
+}
+function validReminderUrl(r: V4Record, value?: string) {
+  try {
+    if (!value) return false;
+    const url = new URL(value);
+    return url.origin === "https://www.portugalactive.com" && url.pathname === "/management/complete/"
+      && url.hash.startsWith("#token=") && tokenHash(url.hash.slice(7)) === r.tokenHash;
+  } catch { return false; }
+}
+/** Recheck immediately before dispatch, after provider pacing. Never send stale queued requests. */
+export async function prepareV4ReminderDelivery(item: V4Outbox, now = new Date(), crmAllows = true) {
+  if (item.kind !== PHOTO_REMINDER_KIND) return true;
+  const db = await database();
+  return db.transaction(async tx => {
+    // Same lock order as scheduling/uploads: verify the delivery lease after any wait.
+    const found = rows<any>(await tx.execute(sql`SELECT * FROM owner_v4_enquiries WHERE id = ${item.enquiryId} FOR UPDATE`))[0];
+    const current = rows<any>(await tx.execute(sql`SELECT status, leaseAt FROM owner_v4_outbox WHERE id = ${item.id} LIMIT 1 FOR UPDATE`))[0];
+    if (!current || current.status !== "sending" || !item.leaseAt || date(current.leaseAt)?.getTime() !== item.leaseAt.getTime()) return false;
+    const r = found ? record(found) : null;
+    const files = r ? await fileMetadata(tx, r.id) : [];
+    // Recent activity postpones the existing reminder; it does not schedule another one.
+    const eligibilityTime = r ? new Date(Math.max(now.getTime(), r.updatedAt.getTime() + PHOTO_REMINDER_QUIET_MS)) : now;
+    const eligible = crmAllows && r && reminderEligible(r, files, eligibilityTime)
+      && r.contact.email.toLowerCase() === item.payload.mail.to.toLowerCase()
+      && validReminderUrl(r, item.payload.completionUrl);
+    if (!eligible) {
+      await tx.execute(sql`UPDATE owner_v4_outbox SET status = 'cancelled', lastError = 'REMINDER_NO_LONGER_NEEDED', leaseAt = NULL, nextAttemptAt = NULL
+        WHERE id = ${item.id} AND status = 'sending' AND leaseAt = ${item.leaseAt}`);
+      return false;
+    }
+    if (!photoRemindersEnabled() || (r && r.updatedAt.getTime() > now.getTime() - PHOTO_REMINDER_QUIET_MS)) {
+      // Disabling the feature pauses unsent reminders; do not lose a prior ambiguous acceptance window.
+      await tx.execute(sql`UPDATE owner_v4_outbox SET status = 'pending', leaseAt = NULL, nextAttemptAt = ${new Date(Math.max(now.getTime() + 15 * 60_000, r ? r.updatedAt.getTime() + PHOTO_REMINDER_QUIET_MS : 0))},
+        firstAttemptAt = CASE WHEN firstAttemptAt = ${item.leaseAt} THEN NULL ELSE firstAttemptAt END
+        WHERE id = ${item.id} AND status = 'sending' AND leaseAt = ${item.leaseAt}`);
+      return false;
+    }
+    const welcome = rows<any>(await tx.execute(sql`SELECT status, firstAttemptAt, payload FROM owner_v4_outbox WHERE id = ${`${item.enquiryId}:welcome`} LIMIT 1`))[0];
+    if (!reminderWelcomeReady(welcome && { status: welcome.status, firstAttemptAt: date(welcome.firstAttemptAt), acceptedAt: obj<V4OutboxPayload>(welcome.payload).acceptedAt }, now)) {
+      await tx.execute(sql`UPDATE owner_v4_outbox SET status = 'cancelled', lastError = 'REMINDER_WELCOME_UNCONFIRMED', leaseAt = NULL, nextAttemptAt = NULL
+        WHERE id = ${item.id} AND status = 'sending' AND leaseAt = ${item.leaseAt}`);
+      return false;
+    }
+    return true;
+  });
+}
+
 export async function pendingV4(now = new Date()) {
   const db = await database(); const stale = new Date(now.getTime() - 5 * 60_000);
   return rows<{ id: string; attachmentBytes: number }>(await db.execute(sql`SELECT id, attachmentBytes FROM owner_v4_outbox
     WHERE (status IN ('pending', 'failed') AND (nextAttemptAt IS NULL OR nextAttemptAt <= ${now}))
-      OR (status = 'sending' AND leaseAt < ${stale}) ORDER BY createdAt, id LIMIT 40`));
+      OR (status = 'sending' AND leaseAt < ${stale}) ORDER BY CASE WHEN kind = 'photo_reminder' THEN 1 ELSE 0 END, createdAt, id LIMIT 40`));
 }
 export async function claimV4(id: string, now = new Date()): Promise<V4Outbox | null> {
   const db = await database(); const stale = new Date(now.getTime() - 5 * 60_000); const oldest = new Date(now.getTime() - 20 * 3600_000);
@@ -317,9 +399,9 @@ export async function v4MailFiles(item: V4Outbox) {
   }
   return files;
 }
-export async function sentV4(item: V4Outbox, providerId: string) {
+export async function sentV4(item: V4Outbox, providerId: string, now = new Date()) {
   const db = await database();
-  await db.execute(sql`UPDATE owner_v4_outbox SET status = 'sent', providerId = ${providerId}, lastError = NULL, leaseAt = NULL, nextAttemptAt = NULL WHERE id = ${item.id} AND status = 'sending' AND leaseAt = ${item.leaseAt}`);
+  await db.execute(sql`UPDATE owner_v4_outbox SET status = 'sent', providerId = ${providerId}, payload = JSON_SET(payload, '$.acceptedAt', ${now.toISOString()}), lastError = NULL, leaseAt = NULL, nextAttemptAt = NULL WHERE id = ${item.id} AND status = 'sending' AND leaseAt = ${item.leaseAt}`);
 }
 export async function failedV4(item: V4Outbox, code: string, next: Date, permanent = false, confirmedRejected = false) {
   const db = await database();
@@ -331,5 +413,5 @@ export async function failedV4(item: V4Outbox, code: string, next: Date, permane
 }
 export async function v4AttentionRequired(now = new Date()) {
   const db = await database(); const stale = new Date(now.getTime() - 30 * 60_000);
-  return rows<{ id: string }>(await db.execute(sql`SELECT id FROM owner_v4_outbox WHERE status = 'needs_review' OR (status <> 'sent' AND createdAt < ${stale}) LIMIT 1`)).length > 0;
+  return rows<{ id: string }>(await db.execute(sql`SELECT id FROM owner_v4_outbox WHERE status = 'needs_review' OR (status NOT IN ('sent', 'cancelled') AND createdAt < ${stale} AND (kind <> 'photo_reminder' OR nextAttemptAt IS NULL OR nextAttemptAt <= ${now})) LIMIT 1`)).length > 0;
 }

@@ -1,0 +1,71 @@
+# Owner enquiries → Pipedrive
+
+Production-only reconciliation of the owner intake stores introduced on 3 November
+2026. It does not reactivate ActiveCampaign or Make, send email, alter advertising
+conversions, or export customer data to development.
+
+Configuration (Render production service only):
+
+- `OWNER_CRM_ENABLED=true`
+- `PIPEDRIVE_API_TOKEN` (secret, header authentication; never logged)
+- `PIPEDRIVE_OWNER_ID=22976488`
+- `PIPEDRIVE_STAGE_ID=1`
+- `OWNER_AUTOMATION_FROM=2026-11-03T00:00:00Z` (inclusive default)
+- `OWNER_AUTOMATION_TEST_IDS` optional comma-separated explicitly authorized QA UUIDs
+
+The company host, pipeline 1, owner and Inbound stage are deliberately fixed to the
+verified Portugal Active account. The API token does not authorize another host.
+Disabling `OWNER_CRM_ENABLED` stops CRM writes without affecting form capture or
+email delivery. Database changes are additive tables only.
+
+`startOwnerCrmSweep()` runs every minute after intake schema initialization.
+Both `owner_enquiries` (v3/legacy) and `owner_v4_enquiries` are reconciled, oldest
+first, with up to 20 candidates per source per sweep. Production records stay in
+production. A database lease and durable operation keys coordinate processes and
+restarts. Snapshots are current and the full note is overwritten only on the one
+integration-owned note; sales notes and deal owner/stage/value/status stay intact.
+All fields from the form, attribution, and current attachments are represented.
+Removed attachments are not deleted from the CRM's historical file record.
+
+Person identity uses an exact email search. Multiple exact matches require review.
+An enquiry retains its person mapping even if its contact email is corrected later;
+the note shows the latest details without changing sales-owned contact fields.
+Each enquiry has a full UUID marker in its initial deal title and managed note.
+An existing open opportunity in any pipeline or an active Leads Inbox item for that
+person without an already-bound deal is held for review. A reviewer can bind a verified existing deal by setting the corresponding
+`enquiry:v4:<uuid>:deal` (or `v3`) operation to `done` with the verified remote ID;
+alternatively create a distinct reviewed deal with the exact marker. This is an
+administrative production action, never a public endpoint or an automated guess.
+
+Every non-idempotent create is recorded as `attempting` **before** calling Pipedrive.
+A lost/ambiguous response is resolved by searching the exact email, UUID marker,
+note marker, or SHA-256 attachment filename. If the remote item cannot be found,
+the item is held rather than posted again. An explicit rejection such as HTTP429
+can safely retry. A restart cannot turn an uncertain create into a fresh one.
+File content is rehashed immediately before upload and identical bytes share a
+single per-enquiry operation even if the owner uploaded another local file UUID.
+
+`ownerCrmStatus()` provides aggregate ledger counts; the ledger's `lastError` is
+a short code without customer fields or provider bodies. `review` is actionable,
+not a successful import. Review items reconcile hourly, transient failures every
+five minutes, and newer form updates are picked up on the next sweep.
+`ownerCrmHealth()` also detects source enquiries left without a CRM link for more
+than fifteen minutes, not only failures already present in the ledger. It is read-only
+and returns booleans without personal data. Explicitly allowlisted QA UUIDs can
+re-enter reconciliation even if they were previously excluded.
+
+`ownerCrmAllowsPhotoReminder()` consults the linked deal immediately before a
+reminder. Closed, deleted or archived deals suppress the reminder. An unavailable
+CRM status throws a sanitized error so the caller defers instead of sending.
+
+Official API references checked 4 November 2026:
+https://developers.pipedrive.com/docs/api/v1/Persons
+https://developers.pipedrive.com/docs/api/v1/Deals
+https://developers.pipedrive.com/docs/api/v1/Notes
+https://developers.pipedrive.com/docs/api/v1/Files
+https://developers.pipedrive.com/docs/api/v1/Leads
+
+Tests use injected synthetic clients and in-memory durable operation state. They
+cover replay, concurrent create reservation, email reuse/correction, existing-deal
+holds, ambiguous creates, delayed reconciliation, explicit quota rejection, file
+integrity and deduplication, HTML escaping, and production isolation.

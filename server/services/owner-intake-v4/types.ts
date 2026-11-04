@@ -11,6 +11,7 @@ export interface V4Record {
 }
 export interface V4OutboxPayload {
   mail: OwnerMail; fileIds: string[]; completionUrl?: string;
+  acceptedAt?: string; // Delivery metadata only; never changes the frozen provider request.
   // Private notification journal; the frozen provider payload is never edited.
   mediaFingerprint?: string; mediaLink?: string; notificationRevision?: number;
 }

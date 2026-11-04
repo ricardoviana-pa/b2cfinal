@@ -6,6 +6,7 @@ import { ownerBodyHandler, parseOwnerBody } from "../lib/owner-admission";
 import { authenticateV4, startV4, draftV4, mutateV4, submitV4Media, addV4File, removeV4File, v4SchemaReady, v4AttentionRequired } from "../services/owner-intake-v4/store";
 import { bearerToken, mediaSchema, mutationSchema, OwnerIntakeError, parse, startSchema, uuid, validateFile } from "../services/owner-intake-v4/validation";
 import { kickV4 } from "../services/owner-intake-v4/service";
+import { ownerCrmHealth } from "../services/owner-crm/service";
 import type { V4Record } from "../services/owner-intake-v4/types";
 const BASE = "/api/owner-enquiries/v4";
 type AuthRequest = Request & { ownerV4?: V4Record };
@@ -36,8 +37,12 @@ export function registerOwnerV4Routes(app: Express) {
     const storageReady = await v4SchemaReady(); const emailConfigured = ownerEmailConfigured();
     let deliveryAttentionRequired = false;
     if (storageReady) { try { deliveryAttentionRequired = await v4AttentionRequired(); } catch { deliveryAttentionRequired = true; } }
-    const ready = storageReady && emailConfigured;
-    res.status(ready && !deliveryAttentionRequired ? 200 : 503).json({ ready, schemaVersion: "owner-intake-v4", storageReady, emailConfigured, deliveryAttentionRequired });
+    const crm = await ownerCrmHealth();
+    const crmReady = !crm.enabled || (crm.configured && crm.storageReady);
+    const ready = storageReady && emailConfigured && crmReady;
+    res.status(ready && !deliveryAttentionRequired && !crm.attentionRequired ? 200 : 503).json({ ready, schemaVersion: "owner-intake-v4", storageReady, emailConfigured, deliveryAttentionRequired,
+      crmEnabled: crm.enabled, crmConfigured: crm.configured, crmAttentionRequired: crm.attentionRequired,
+      photoRemindersEnabled: isOwnerIntakeProduction() && process.env.OWNER_PHOTO_REMINDERS_ENABLED === "true" });
   }));
   const captureLimit = rateLimit({ windowMs: 10 * 60_000, limit: 15, keyGenerator: visitor, standardHeaders: "draft-7", legacyHeaders: false, message: { success: false, code: "RATE_LIMITED" } });
   const tokenLimit = rateLimit({ windowMs: 10 * 60_000, limit: 120, keyGenerator: req => (req as AuthRequest).ownerV4!.id,
