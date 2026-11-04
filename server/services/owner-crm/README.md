@@ -57,6 +57,46 @@ re-enter reconciliation even if they were previously excluded.
 `ownerCrmAllowsPhotoReminder()` consults the linked deal immediately before a
 reminder. Closed, deleted or archived deals suppress the reminder. An unavailable
 CRM status throws a sanitized error so the caller defers instead of sending.
+The same preflight also checks the existing "Fotos do Imóvel estão adequadas"
+field (SIM=51), active non-inline image files, and photo-labelled links or albums
+and listings explicitly described as photographs in notes. PDF documents,
+signature images, generic hyperlinks and the private upload CTA are not photo
+evidence. An inability to check files/notes defers the reminder.
+
+Dedicated property fields were added on 4 November: Morada, Código Postal,
+Concelho, Tipo de Propriedade, Tipologia and the existing Bedrooms text field.
+The declaration `6+` stays `6+` in Bedrooms and never becomes the enum's exactly
+six. A stale integration-owned numeric typology can be cleared for that range;
+a sales-owned value is preserved. Net annual income expectations are not written
+to deal revenue/value fields.
+
+`owner_crm_field_state` is an additive ledger for each enquiry's last-written
+values, protected commercial fields, and pending write intent. New deals retain
+their initial field ownership before CREATE. Later synchronization fills empty
+fields or updates fields still equal to the recorded integration-written value.
+A differing commercial value, including a deliberate deletion, is protected and
+not reclaimed merely because a later form happens to match it. A pre-existing
+value equal to the form does not establish integration ownership.
+
+The intent is durable before PATCH; lost responses reconcile against current
+fields before another write. Pipedrive exposes no conditional custom-field PATCH,
+so the worker re-reads immediately before mutation and excludes any detected
+concurrent edits. An edit in the unavoidable interval between that read and the
+provider applying PATCH cannot be atomically prevented by this API.
+
+The `property-fields:v1` completed-operation marker makes earlier synchronized
+enquiries eligible for one mapping pass without resending email or recreating
+CRM records. Health detects a mapping pass left unfinished. Historical photo-only
+follow-ups use their CRM provenance instead of claiming a new privacy checkbox;
+imports originating from v3 preserve its full original marker in the managed note.
+Historical provenance comes from the private import journal and immutable server
+privacy version, never from public attribution alone. Once a v3 enquiry has a
+verified v4 continuation, future v3 passes are skipped so they cannot overwrite the
+newer managed note. Field ownership can carry forward only when the original
+durable deal binding matches the continuation's deal ID.
+Read-only duplicate checks and attachment validation run before reserving a remote
+create; transient preflight failures therefore remain retryable without an ambiguous
+create hold. Uncertainty after the actual provider POST remains held for reconciliation.
 
 Official API references checked 4 November 2026:
 https://developers.pipedrive.com/docs/api/v1/Persons

@@ -6,7 +6,7 @@ export interface V4Record {
   attribution: OwnerV4Attribution | null; details: Partial<OwnerV4Details> | null; status: OwnerV4Status;
   tokenHash: string; tokenExpiresAt: Date; revision: number; completedFingerprint: string | null;
   capturedAt: Date; updatedAt: Date; qualificationCompletedAt: Date | null; mediaReceivedAt: Date | null;
-  privacyAcknowledgedAt: Date; privacyNoticeVersion: "owner-intake-v4";
+  privacyAcknowledgedAt: Date | null; privacyNoticeVersion: "owner-intake-v4" | "owner-crm-photo-followup";
   awaitingPhotosAt: Date | null; completionCount: number; mediaFileCount: number;
 }
 export interface V4OutboxPayload {

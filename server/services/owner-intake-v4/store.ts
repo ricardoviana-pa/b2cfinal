@@ -6,16 +6,24 @@ import { OWNER_FILE_COUNT_LIMIT, OWNER_TOTAL_FILE_LIMIT } from "../../../shared/
 import { OWNER_V4_TOKEN_DAYS, OWNER_V4_FILE_HISTORY_BYTES, OWNER_V4_FILE_HISTORY_COUNT, type OwnerV4Draft, type OwnerV4MediaMutation, type OwnerV4Mutation, type OwnerV4Receipt, type OwnerV4Start, type OwnerV4StartReceipt } from "../../../shared/owner-intake-v4";
 import { OwnerIntakeError, completeDetails, fingerprint, mediaSchema, newToken, parse, tokenHash, type V4File } from "./validation";
 import { managementCompletedMail, managementMediaMail, managementStartMail, welcomeMail, photoReminderMail } from "./email";
-import { PHOTO_REMINDER_DELAY_MS, PHOTO_REMINDER_KIND, PHOTO_REMINDER_QUIET_MS, photoRemindersEnabled, reminderEligible, reminderFrom, reminderWelcomeReady } from "./reminder";
+import { PHOTO_REMINDER_DELAY_MS, PHOTO_REMINDER_KIND, PHOTO_REMINDER_QUIET_MS, HISTORICAL_PHOTO_KIND, photoRemindersEnabled, photoRequestEligible, reminderEligible, reminderFrom, reminderWelcomeReady } from "./reminder";
 import type { V4Record, V4FileMetadata, V4Outbox, V4OutboxPayload } from "./types";
 
 export const V4_SCHEMA = [
+  `CREATE TABLE IF NOT EXISTS owner_crm_photo_requests (
+    dealId bigint NOT NULL PRIMARY KEY, enquiryId varchar(36) NOT NULL,
+    personId bigint NOT NULL, originalRequestedAt datetime(3) NOT NULL,
+    originalSourceKey varchar(48) NULL, batchId varchar(80) NOT NULL,
+    recipientHash char(64) NOT NULL, createdAt datetime(3) NOT NULL,
+    UNIQUE INDEX idx_owner_crm_photo_enquiry (enquiryId),
+    INDEX idx_owner_crm_photo_batch (batchId, recipientHash)
+  )`,
   `CREATE TABLE IF NOT EXISTS owner_v4_enquiries (
     id varchar(36) NOT NULL PRIMARY KEY, startFingerprint char(64) NOT NULL,
     contact json NOT NULL, context json NOT NULL, attribution json NULL, details json NULL,
     status varchar(24) NOT NULL DEFAULT 'awaiting_details', tokenHash char(64) NOT NULL,
     tokenExpiresAt datetime(3) NOT NULL, revision int NOT NULL DEFAULT 0, completedFingerprint char(64) NULL,
-    capturedAt datetime(3) NOT NULL, updatedAt datetime(3) NOT NULL, privacyAcknowledgedAt datetime(3) NOT NULL,
+    capturedAt datetime(3) NOT NULL, updatedAt datetime(3) NOT NULL, privacyAcknowledgedAt datetime(3) NULL,
     privacyNoticeVersion varchar(40) NOT NULL, qualificationCompletedAt datetime(3) NULL,
     mediaReceivedAt datetime(3) NULL, awaitingPhotosAt datetime(3) NULL, completionCount int NOT NULL DEFAULT 0,
     mediaFileCount int NOT NULL DEFAULT 0, UNIQUE INDEX idx_owner_v4_token (tokenHash), INDEX idx_owner_v4_captured (capturedAt)
@@ -45,15 +53,29 @@ const affected = (result: unknown) => Number((result as [{ affectedRows: number 
 const obj = <T>(value: T | string): T => typeof value === "string" ? JSON.parse(value) : value;
 const date = (value: any) => value ? new Date(value) : null;
 function record(row: any): V4Record { return { ...row, contact: obj(row.contact), context: obj(row.context), attribution: obj(row.attribution),
-  details: obj(row.details), tokenExpiresAt: new Date(row.tokenExpiresAt), capturedAt: new Date(row.capturedAt), updatedAt: new Date(row.updatedAt), privacyAcknowledgedAt: new Date(row.privacyAcknowledgedAt),
+  details: obj(row.details), tokenExpiresAt: new Date(row.tokenExpiresAt), capturedAt: new Date(row.capturedAt), updatedAt: new Date(row.updatedAt), privacyAcknowledgedAt: date(row.privacyAcknowledgedAt),
   qualificationCompletedAt: date(row.qualificationCompletedAt), mediaReceivedAt: date(row.mediaReceivedAt), awaitingPhotosAt: date(row.awaitingPhotosAt) }; }
 async function database() {
   if (!isOwnerIntakeProduction()) throw new OwnerIntakeError("INTAKE_UNAVAILABLE");
   const db = await getDb(); if (!db) throw new OwnerIntakeError("INTAKE_UNAVAILABLE"); return db;
 }
+const privacyColumnMigrations = new WeakMap<Executor, Promise<void>>();
+/** One bounded, data-preserving compatibility change per database connection/boot. */
+function ensureV4PrivacyNullable(db: Executor) {
+  const existing = privacyColumnMigrations.get(db); if (existing) return existing;
+  const migration = (async () => {
+    const column = rows<{ isNullable: string }>(await db.execute(sql`SELECT IS_NULLABLE AS isNullable FROM information_schema.COLUMNS
+      WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'owner_v4_enquiries' AND COLUMN_NAME = 'privacyAcknowledgedAt' LIMIT 1`))[0];
+    if (!column || !["YES", "NO"].includes(column.isNullable)) throw new OwnerIntakeError("INTAKE_UNAVAILABLE");
+    if (column.isNullable === "NO") await db.execute(sql`ALTER TABLE owner_v4_enquiries MODIFY COLUMN privacyAcknowledgedAt datetime(3) NULL`);
+  })().catch(error => { privacyColumnMigrations.delete(db); throw error; });
+  privacyColumnMigrations.set(db, migration); return migration;
+}
 export async function initialiseV4Schema() {
   if (!isOwnerIntakeProduction()) return false;
-  const db = await database(); for (const statement of V4_SCHEMA) await db.execute(sql.raw(statement)); return v4SchemaReady();
+  const db = await database();
+  for (const statement of V4_SCHEMA) await db.execute(sql.raw(statement));
+  await ensureV4PrivacyNullable(db); return v4SchemaReady();
 }
 export async function v4SchemaReady() {
   try {
@@ -331,13 +353,14 @@ function validReminderUrl(r: V4Record, value?: string) {
   try {
     if (!value) return false;
     const url = new URL(value);
-    return url.origin === "https://www.portugalactive.com" && url.pathname === "/management/complete/"
-      && url.hash.startsWith("#token=") && tokenHash(url.hash.slice(7)) === r.tokenHash;
+    return url.origin === "https://www.portugalactive.com" && !url.username && !url.password && url.pathname === "/management/complete/"
+      && /^#token=[a-zA-Z0-9_-]{43}$/.test(url.hash) && tokenHash(url.hash.slice(7)) === r.tokenHash;
   } catch { return false; }
 }
 /** Recheck immediately before dispatch, after provider pacing. Never send stale queued requests. */
 export async function prepareV4ReminderDelivery(item: V4Outbox, now = new Date(), crmAllows = true) {
-  if (item.kind !== PHOTO_REMINDER_KIND) return true;
+  const historical = item.kind === HISTORICAL_PHOTO_KIND;
+  if (item.kind !== PHOTO_REMINDER_KIND && !historical) return true;
   const db = await database();
   return db.transaction(async tx => {
     // Same lock order as scheduling/uploads: verify the delivery lease after any wait.
@@ -348,7 +371,8 @@ export async function prepareV4ReminderDelivery(item: V4Outbox, now = new Date()
     const files = r ? await fileMetadata(tx, r.id) : [];
     // Recent activity postpones the existing reminder; it does not schedule another one.
     const eligibilityTime = r ? new Date(Math.max(now.getTime(), r.updatedAt.getTime() + PHOTO_REMINDER_QUIET_MS)) : now;
-    const eligible = crmAllows && r && reminderEligible(r, files, eligibilityTime)
+    const eligible = crmAllows && r && item.id === `${r.id}:photo-reminder`
+      && (historical ? photoRequestEligible(r, files, now) : reminderEligible(r, files, eligibilityTime))
       && r.contact.email.toLowerCase() === item.payload.mail.to.toLowerCase()
       && validReminderUrl(r, item.payload.completionUrl);
     if (!eligible) {
@@ -356,13 +380,15 @@ export async function prepareV4ReminderDelivery(item: V4Outbox, now = new Date()
         WHERE id = ${item.id} AND status = 'sending' AND leaseAt = ${item.leaseAt}`);
       return false;
     }
-    if (!photoRemindersEnabled() || (r && r.updatedAt.getTime() > now.getTime() - PHOTO_REMINDER_QUIET_MS)) {
+    if (!photoRemindersEnabled() || (!historical && r && r.updatedAt.getTime() > now.getTime() - PHOTO_REMINDER_QUIET_MS)) {
       // Disabling the feature pauses unsent reminders; do not lose a prior ambiguous acceptance window.
-      await tx.execute(sql`UPDATE owner_v4_outbox SET status = 'pending', leaseAt = NULL, nextAttemptAt = ${new Date(Math.max(now.getTime() + 15 * 60_000, r ? r.updatedAt.getTime() + PHOTO_REMINDER_QUIET_MS : 0))},
+      await tx.execute(sql`UPDATE owner_v4_outbox SET status = 'pending', leaseAt = NULL, nextAttemptAt = ${new Date(Math.max(now.getTime() + 15 * 60_000, !historical && r ? r.updatedAt.getTime() + PHOTO_REMINDER_QUIET_MS : 0))},
         firstAttemptAt = CASE WHEN firstAttemptAt = ${item.leaseAt} THEN NULL ELSE firstAttemptAt END
         WHERE id = ${item.id} AND status = 'sending' AND leaseAt = ${item.leaseAt}`);
       return false;
     }
+    // Historic follow-ups are an explicit operational request; no welcome was sent for them.
+    if (historical) return true;
     const welcome = rows<any>(await tx.execute(sql`SELECT status, firstAttemptAt, payload FROM owner_v4_outbox WHERE id = ${`${item.enquiryId}:welcome`} LIMIT 1`))[0];
     if (!reminderWelcomeReady(welcome && { status: welcome.status, firstAttemptAt: date(welcome.firstAttemptAt), acceptedAt: obj<V4OutboxPayload>(welcome.payload).acceptedAt }, now)) {
       await tx.execute(sql`UPDATE owner_v4_outbox SET status = 'cancelled', lastError = 'REMINDER_WELCOME_UNCONFIRMED', leaseAt = NULL, nextAttemptAt = NULL
@@ -377,7 +403,7 @@ export async function pendingV4(now = new Date()) {
   const db = await database(); const stale = new Date(now.getTime() - 5 * 60_000);
   return rows<{ id: string; attachmentBytes: number }>(await db.execute(sql`SELECT id, attachmentBytes FROM owner_v4_outbox
     WHERE (status IN ('pending', 'failed') AND (nextAttemptAt IS NULL OR nextAttemptAt <= ${now}))
-      OR (status = 'sending' AND leaseAt < ${stale}) ORDER BY CASE WHEN kind = 'photo_reminder' THEN 1 ELSE 0 END, createdAt, id LIMIT 40`));
+      OR (status = 'sending' AND leaseAt < ${stale}) ORDER BY CASE WHEN kind IN ('photo_reminder', 'historical_photos') THEN 1 ELSE 0 END, createdAt, id LIMIT 40`));
 }
 export async function claimV4(id: string, now = new Date()): Promise<V4Outbox | null> {
   const db = await database(); const stale = new Date(now.getTime() - 5 * 60_000); const oldest = new Date(now.getTime() - 20 * 3600_000);
@@ -413,5 +439,5 @@ export async function failedV4(item: V4Outbox, code: string, next: Date, permane
 }
 export async function v4AttentionRequired(now = new Date()) {
   const db = await database(); const stale = new Date(now.getTime() - 30 * 60_000);
-  return rows<{ id: string }>(await db.execute(sql`SELECT id FROM owner_v4_outbox WHERE status = 'needs_review' OR (status NOT IN ('sent', 'cancelled') AND createdAt < ${stale} AND (kind <> 'photo_reminder' OR nextAttemptAt IS NULL OR nextAttemptAt <= ${now})) LIMIT 1`)).length > 0;
+  return rows<{ id: string }>(await db.execute(sql`SELECT id FROM owner_v4_outbox WHERE status = 'needs_review' OR (status NOT IN ('sent', 'cancelled') AND createdAt < ${stale} AND (kind NOT IN ('photo_reminder', 'historical_photos') OR nextAttemptAt IS NULL OR nextAttemptAt <= ${now})) LIMIT 1`)).length > 0;
 }

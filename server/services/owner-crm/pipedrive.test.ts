@@ -3,7 +3,7 @@ import { PipedriveGateway } from "./pipedrive";
 import type { CrmEnquiry } from "./types";
 const config = { token: "synthetic-token", stageId: 1, ownerId: 22976488 };
 const result = (data: unknown, additional_data: unknown = {}) => new Response(JSON.stringify({ success: true, data, additional_data }), { status: 200 });
-const e = { name: "Synthetic owner", email: "owner@example.com", phone: "+351900000000", locality: "Synthetic town", attribution: { campaign: "synthetic" } } as CrmEnquiry;
+const e = { name: "Synthetic owner", email: "owner@example.com", phone: "+351900000000", locality: "Synthetic town", details: {}, attribution: { campaign: "synthetic" } } as CrmEnquiry;
 describe("Pipedrive HTTP contract", () => {
   it("uses fixed PA host and header authentication, no key in URL or body", async () => {
     const fetcher = vi.fn(async () => result({ items: [{ item: { id: 7, emails: ["OWNER@example.com"] } }] }));
@@ -82,8 +82,25 @@ describe("Pipedrive HTTP contract", () => {
     expect(await new PipedriveGateway(config, vi.fn(async () => result(deal))).dealAllowsReminder(22)).toBe(false);
   });
   it("permits open deal reminders and defers when CRM status cannot be fetched", async () => {
-    expect(await new PipedriveGateway(config, vi.fn(async () => result({ status: "open", is_archived: false, is_deleted: false }))).dealAllowsReminder(22)).toBe(true);
+    expect(await new PipedriveGateway(config, vi.fn().mockResolvedValueOnce(result({ status: "open", is_archived: false, is_deleted: false })).mockResolvedValueOnce(result([])).mockResolvedValueOnce(result([]))).dealAllowsReminder(22)).toBe(true);
     await expect(new PipedriveGateway(config, vi.fn(async () => new Response("private-error", { status: 503 }))).dealAllowsReminder(22)).rejects.toThrow("CRM_REMINDER_STATUS_UNAVAILABLE");
     expect(await new PipedriveGateway(config, vi.fn(async () => new Response("not found", { status: 404 }))).dealAllowsReminder(22)).toBe(false);
+  });
+  it("suppresses reminders for photographs uploaded directly by sales to CRM", async () => {
+    const fetcher = vi.fn().mockResolvedValueOnce(result({ status: "open" })).mockResolvedValueOnce(result([{ active_flag: true, inline_flag: false, file_type: "img", name: "house.png" }]));
+    expect(await new PipedriveGateway(config, fetcher).dealAllowsReminder(22)).toBe(false); expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+  it("suppresses reminders when photos are already approved in the verified CRM field", async () => {
+    const fetcher = vi.fn(async () => result({ status: "open", custom_fields: { "3d8606f82d5ea8c0d16dd16cfca6bfbe04c126c7": 51 } }));
+    expect(await new PipedriveGateway(config, fetcher).dealAllowsReminder(22)).toBe(false); expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+  it("suppresses reminders for an existing explicit album note; PDF and signatures alone do not qualify", async () => {
+    const fetcher = vi.fn().mockResolvedValueOnce(result({ status: "open" })).mockResolvedValueOnce(result([{ file_type: "pdf" }, { file_type: "img", inline_flag: true }]))
+      .mockResolvedValueOnce(result([{ content: '<p>Fotografias: <a href="https://drive.google.com/drive/folders/synthetic">Álbum</a></p>' }]));
+    expect(await new PipedriveGateway(config, fetcher).dealAllowsReminder(22)).toBe(false);
+  });
+  it("defers instead of sending when existing CRM file evidence cannot be checked", async () => {
+    const fetcher = vi.fn().mockResolvedValueOnce(result({ status: "open" })).mockResolvedValueOnce(new Response("unavailable", { status: 503 }));
+    await expect(new PipedriveGateway(config, fetcher).dealAllowsReminder(22)).rejects.toThrow("CRM_REMINDER_STATUS_UNAVAILABLE");
   });
 });

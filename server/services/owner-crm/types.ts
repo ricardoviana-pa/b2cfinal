@@ -5,14 +5,20 @@ export interface CrmEnquiry {
   name: string; email: string; phone: string; locality: string; type: string;
   details: Record<string, unknown>; context: Record<string, unknown>; attribution: Record<string, unknown>;
   status: string; qualified: boolean; files: CrmFile[];
+  privacyNoticeVersion?: string; originalSourceKey?: string; originalRequestedAt?: Date;
 }
 export interface CrmOperation { key: string; status: "ready" | "attempting" | "done"; remoteId: number | null }
+export type CrmFieldValue = string | number | null;
+export type CrmFields = Record<string, CrmFieldValue>;
+export interface CrmFieldState { lastWritten: CrmFields; protected: string[]; pending: { before: CrmFields; desired: CrmFields } | null }
 export interface CrmLedger {
   operation(key: string): Promise<CrmOperation>;
   attempting(key: string): Promise<boolean>;
   confirmed(key: string, remoteId: number): Promise<void>;
   rejected(key: string): Promise<void>;
   checkpoint(): Promise<void>;
+  fieldState(key: string): Promise<CrmFieldState>;
+  saveFieldState(key: string, state: CrmFieldState): Promise<void>;
 }
 export interface CrmGateway {
   findPersons(email: string): Promise<number[]>;
@@ -20,6 +26,8 @@ export interface CrmGateway {
   findDeals(marker: string, personId: number): Promise<number[]>;
   otherOpenDeals(personId: number, marker: string): Promise<Array<number | string>>;
   createDeal(e: CrmEnquiry, personId: number, marker: string): Promise<number>;
+  readDealFields(dealId: number): Promise<Record<string, unknown>>;
+  updateDealFields(dealId: number, fields: CrmFields): Promise<void>;
   findNotes(dealId: number, marker: string): Promise<number[]>;
   createNote(dealId: number, content: string): Promise<number>;
   updateNote(noteId: number, content: string): Promise<void>;

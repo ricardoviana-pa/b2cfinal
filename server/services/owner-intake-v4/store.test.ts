@@ -4,10 +4,11 @@ import type { SQL } from "drizzle-orm";
 const fake = vi.hoisted(() => ({ db: vi.fn(), production: vi.fn(() => true) }));
 vi.mock("../../db", () => ({ getDb: fake.db }));
 vi.mock("../owner-intake/email", async importOriginal => ({ ...await importOriginal<any>(), isOwnerIntakeProduction: fake.production }));
-import { addV4File, authenticateV4, claimV4, draftV4, failedV4, mutateV4, removeV4File, startV4, submitV4Media, v4MailFiles } from "./store";
+import { addV4File, authenticateV4, initialiseV4Schema, claimV4, draftV4, failedV4, mutateV4, removeV4File, startV4, submitV4Media, v4MailFiles } from "./store";
 import { detailsInput, pngBytes, startInput, testNow } from "./fixtures.test-utils";
 import { tokenHash, validateFile } from "./validation";
 import type { V4Outbox } from "./types";
+import { buildHistoricalPhotoRequest } from "./historical-photo";
 const dialect = new MySqlDialect(); const ok = (affectedRows = 1) => [{ affectedRows }, []];
 const fileId = (i: number) => `aaaaaaaa-aaaa-4aaa-8aaa-${String(i).padStart(12, "0")}`;
 beforeEach(() => { fake.db.mockReset(); fake.production.mockReturnValue(true); });
@@ -80,6 +81,44 @@ function memoryStore({ failOutbox = false, failMediaOutbox = false, failFile = f
 }
 async function captured() { const m = memoryStore(); const result = await startV4(startInput(), testNow); return { m, result, auth: await authenticateV4(result.continuationToken, testNow) }; }
 
+describe("v4 historical privacy compatibility", () => {
+  it("relaxes only the privacy timestamp once per connection while preserving existing rows", async () => {
+    const statements: string[] = [];
+    const execute = vi.fn(async (q: SQL) => {
+      const text = dialect.sqlToQuery(q).sql; statements.push(text);
+      if (text.includes("information_schema.COLUMNS")) return [[{ isNullable: "NO" }], []];
+      return ok();
+    });
+    fake.db.mockResolvedValue({ execute });
+    expect(await initialiseV4Schema()).toBe(true); expect(await initialiseV4Schema()).toBe(true);
+    expect(statements.filter(q => q.includes("information_schema.COLUMNS"))).toHaveLength(1);
+    expect(statements.filter(q => q.startsWith("ALTER TABLE"))).toEqual(["ALTER TABLE owner_v4_enquiries MODIFY COLUMN privacyAcknowledgedAt datetime(3) NULL"]);
+    expect(statements.some(q => /^(UPDATE|DELETE|DROP|TRUNCATE)/.test(q))).toBe(false);
+  });
+  it("does not alter an already compatible schema and retries a failed migration check safely", async () => {
+    let fail = true; const statements: string[] = [];
+    const execute = vi.fn(async (q: SQL) => {
+      const text = dialect.sqlToQuery(q).sql; statements.push(text);
+      if (text.includes("information_schema.COLUMNS")) {
+        if (fail) { fail = false; throw new Error("synthetic metadata unavailable"); }
+        return [[{ isNullable: "YES" }], []];
+      }
+      return ok();
+    });
+    fake.db.mockResolvedValue({ execute });
+    await expect(initialiseV4Schema()).rejects.toThrow("synthetic metadata unavailable");
+    expect(await initialiseV4Schema()).toBe(true); expect(await initialiseV4Schema()).toBe(true);
+    expect(statements.filter(q => q.includes("information_schema.COLUMNS"))).toHaveLength(2);
+    expect(statements.some(q => q.startsWith("ALTER TABLE"))).toBe(false);
+  });
+  it("preserves null imported privacy dates and original form acceptance dates", async () => {
+    const { m, result, auth } = await captured();
+    expect(auth.privacyAcknowledgedAt).toEqual(testNow);
+    const stored = m.state().enquiries.get(result.reference); stored.privacyAcknowledgedAt = null; stored.privacyNoticeVersion = "owner-crm-photo-followup";
+    expect(await authenticateV4(result.continuationToken, testNow)).toMatchObject({ privacyAcknowledgedAt: null, privacyNoticeVersion: "owner-crm-photo-followup" });
+    expect(m.state().outbox.size).toBe(2);
+  });
+});
 describe("v4 atomic capture and bearer ownership", () => {
   it("commits one contact and two frozen messages, with only a hash in the lead", async () => {
     const { m, result } = await captured(); const stored = m.state().enquiries.get(result.reference);
@@ -353,6 +392,42 @@ describe("v4 separate binary files and bounded private storage", () => {
     await expect(addV4File(auth, validateFile(fileId(1), "late.png", "image/png", pngBytes()), testNow)).rejects.toThrow("FILE_ID_CONFLICT");
     expect((await draftV4(auth)).files).toHaveLength(0);
     expect(await addV4File(auth, validateFile(fileId(2), "selected-again.png", "image/png", pngBytes()), testNow)).toMatchObject({ success: true });
+  });
+});
+describe("imported CRM requests use the focused photo journey", () => {
+  async function historical() {
+    const m = memoryStore();
+    const plan = buildHistoricalPhotoRequest({ dealId: 123, personId: 456, name: "Synthetic owner", email: "owner@example.test", language: "pt",
+      requestedAt: new Date(+testNow - 86400_000), propertyType: "villa", details: { address: "Verified synthetic street" } }, testNow);
+    m.state().enquiries.set(plan.record.id, plan.record);
+    m.state().outbox.set(plan.outbox.id, { ...plan.outbox, payload: JSON.stringify(plan.outbox.payload), status: "pending", createdAt: testNow });
+    const token = new URL(plan.completionUrl).hash.slice(7);
+    return { m, plan, auth: await authenticateV4(token, testNow) };
+  }
+  it("opens an incomplete import and accepts photographs without requiring contact or full-property fields", async () => {
+    const { m, plan, auth } = await historical();
+    const before = await draftV4(auth);
+    expect(before).toMatchObject({ reference: plan.record.id, status: "awaiting_details", contact: { phone: "", locality: "" }, details: { address: "Verified synthetic street" }, files: [] });
+    expect(before).not.toHaveProperty("tokenHash"); expect(before).not.toHaveProperty("privacyAcknowledgedAt");
+    await addV4File(auth, validateFile(fileId(81), "exterior.png", "image/png", pngBytes()), testNow);
+    expect(await submitV4Media(auth, { mutationId: fileId(82) }, testNow)).toMatchObject({ reference: plan.record.id, status: "awaiting_details", success: true });
+    expect(await draftV4(auth)).toMatchObject({ mediaConfirmationRequired: false, files: [{ name: "exterior.png" }] });
+    const stored = m.state().enquiries.get(plan.record.id);
+    expect(stored).toMatchObject({ privacyAcknowledgedAt: null, qualificationCompletedAt: null, completionCount: 0 });
+    const messages = [...m.state().outbox.values()];
+    expect(messages.map(row => row.kind)).toEqual(["historical_photos", "media"]);
+    expect(JSON.parse(messages[1].payload).mail.text).toContain("Fotografias recebidas");
+    expect(JSON.parse(messages[1].payload).mail.text).toContain("Continuação de um pedido comercial já existente no CRM");
+  });
+  it("accepts a photo album link on the same import and deduplicates repeat confirmations", async () => {
+    const { m, plan, auth } = await historical();
+    const link = { mutationId: fileId(83), photosLink: "https://example.test/verified-album" };
+    expect(await submitV4Media(auth, link, testNow)).toMatchObject({ reference: plan.record.id, duplicate: false });
+    expect(await submitV4Media(auth, link, testNow)).toMatchObject({ duplicate: true });
+    expect(await submitV4Media(auth, { ...link, mutationId: fileId(84) }, testNow)).toMatchObject({ duplicate: true });
+    expect(m.state().enquiries.size).toBe(1); expect(m.state().outbox.size).toBe(2);
+    expect((await draftV4(auth)).details?.photosLink).toBe(link.photosLink);
+    expect(m.state().enquiries.get(plan.record.id).completionCount).toBe(0);
   });
 });
 describe("v4 durable delivery claim", () => {

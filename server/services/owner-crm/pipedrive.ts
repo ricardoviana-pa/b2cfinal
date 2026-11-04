@@ -1,9 +1,9 @@
-import { CrmError, type CrmEnquiry, type CrmFile, type CrmGateway } from "./types";
+import { CrmError, type CrmEnquiry, type CrmFile, type CrmFields, type CrmGateway } from "./types";
+import { desiredPropertyFields } from "./fields";
+import { CRM_PHOTOS_ADEQUATE_FIELD, crmFileHasPhotos, crmNoteHasPhotoLink } from "./photo-evidence";
 
 export interface PipedriveConfig { token: string; ownerId: number; stageId: number }
 const API = "https://portugalactive.pipedrive.com/api";
-// Verified existing account options; no field/schema creation or later overwrites.
-const propertyTypeOption: Record<string, number> = { villa: 151, apartment: 152, farmhouse: 153, hostel: 154, guesthouse: 155, boutiqueHotel: 156, other: 157 };
 const id = (payload: any) => {
   const value = Number(payload?.data?.id);
   if (!Number.isSafeInteger(value) || value < 1) throw new CrmError("CREATE_UNCONFIRMED", true);
@@ -70,8 +70,15 @@ export class PipedriveGateway implements CrmGateway {
       person_id: personId, owner_id: this.config.ownerId, pipeline_id: 1, stage_id: this.config.stageId, status: "open", currency: "EUR",
       custom_fields: { "3a4458a2c4f594775453a118d0573b7279866105": 37, "687102d74877dfa1e2d679cd1c671cabcecf7edd": "Portugal Active · Management",
         "6c2d373ce54c79d3b0cda47281273511c38d8fee": String(e.attribution.campaign || "Website Management"),
-        ...(propertyTypeOption[e.type] ? { "bbcf4de8b2feb36dc3041087ae7e114918450d4e": propertyTypeOption[e.type] } : {}),
-        ...(e.source === "v4" && e.locality ? { "2c10ff14f44288ca9f891a7abb4e52a0efe667a7": e.locality } : {}) } }));
+        ...desiredPropertyFields(e) } }));
+  }
+  async readDealFields(dealId: number) {
+    const response = await this.request(`/v2/deals/${dealId}`);
+    if (!response.data || typeof response.data.custom_fields !== "object" || response.data.custom_fields === null) throw new CrmError("CRM_FIELDS_UNAVAILABLE");
+    return response.data.custom_fields as Record<string, unknown>;
+  }
+  async updateDealFields(dealId: number, fields: CrmFields) {
+    if (Object.keys(fields).length) await this.request(`/v2/deals/${dealId}`, "PATCH", { custom_fields: fields });
   }
   async findNotes(dealId: number, marker: string) {
     return (await this.list("/v1/notes", { deal_id: dealId })).filter(n => String(n.content || "").includes(marker)).map(n => Number(n.id));
@@ -85,7 +92,12 @@ export class PipedriveGateway implements CrmGateway {
     try {
       const result = await this.request(`/v2/deals/${dealId}`); const deal = result.data;
       if (!deal || !["open", "won", "lost", "deleted"].includes(deal.status)) throw new CrmError("CRM_REMINDER_STATUS_UNKNOWN");
-      return deal.status === "open" && !deal.is_archived && !deal.is_deleted;
+      if (deal.status !== "open" || deal.is_archived || deal.is_deleted) return false;
+      const adequate = deal.custom_fields?.[CRM_PHOTOS_ADEQUATE_FIELD];
+      if (Number(typeof adequate === "object" && adequate ? adequate.id : adequate) === 51) return false;
+      if ((await this.list(`/v1/deals/${dealId}/files`)).some(crmFileHasPhotos)) return false;
+      if ((await this.list("/v1/notes", { deal_id: dealId })).some(note => crmNoteHasPhotoLink(note.content))) return false;
+      return true;
     } catch (error) {
       if (error instanceof CrmError && error.code === "PIPEDRIVE_HTTP_404") return false;
       throw new CrmError("CRM_REMINDER_STATUS_UNAVAILABLE");
