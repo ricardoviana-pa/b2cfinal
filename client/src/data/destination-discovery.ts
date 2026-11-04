@@ -18,7 +18,7 @@ export const destinationDiscovery: Record<string, {
 }> = {
   minho: {
     interests: ['beach', 'nature', 'wine', 'family'],
-    line: ['Praias atlânticas, rios e aldeias de montanha. Dias ao ar livre, com Viana do Castelo como ponto de partida.', 'Atlantic beaches, rivers and mountain villages. Days outdoors, with Viana do Castelo as a starting point.'],
+    line: ['Praias atlânticas, vales e montanha. Escolha a base que aproxima a sua casa dos dias que quer viver.', 'Atlantic beaches, valleys and mountains. Choose a home close to the kind of days you want to enjoy.'],
     airport: ['Porto (OPO) · alternativa: Vigo (VGO)', 'Porto (OPO) · alternative: Vigo (VGO)'],
     stay: ['5–7 noites para combinar costa e vales', '5–7 nights to pair the coast with the valleys'],
     access: ['Carro para explorar; shuttle por marcação', 'A car for exploring; pre-booked airport shuttle'],
@@ -64,9 +64,9 @@ export const destinationDiscovery: Record<string, {
 // Only homes returned for the current destination are eligible for selection.
 export const featuredDestinationHomes: Record<string, Array<{ id: string; reason: Copy }>> = {
   minho: [
-    { id: '69653354109993001383ef5f', reason: ['Para viver o Atlântico: vista mar, piscina privada e jacuzzi em Carreço.', 'For Atlantic days: sea views, a private pool and a jacuzzi in Carreço.'] },
-    { id: '6965331fec80690013738c68', reason: ['Para combinar casa e cidade: piscina, sauna e ginásio em Viana.', 'For home comforts and city outings: a pool, sauna and gym in Viana.'] },
-    { id: '6a7079007df813008d013634', reason: ['Para dias de montanha em grupo: sete suites e piscina em Vieira do Minho.', 'For mountain days together: seven suites and a pool in Vieira do Minho.'] },
+    { id: '696533466d209c001510ecfe', reason: ['Uma base em Carreço para dias na costa a norte de Viana.', 'A base in Carreço for days on the coast north of Viana.'] },
+    { id: '69653365bf04fe0013743511', reason: ['Em Ponte de Lima, para combinar a vila com passeios pelo vale.', 'In Ponte de Lima, for time in town and outings through the valley.'] },
+    { id: '6a7079007df813008d013634', reason: ['Em Vieira do Minho, para organizar saídas de montanha em grupo.', 'In Vieira do Minho, for planning mountain outings together.'] },
   ],
   'viana-do-castelo': [
     { id: '69653354109993001383ef5f', reason: ['Para acordar de frente para o mar: piscina privada e jacuzzi em Carreço.', 'For waking up to the sea: a private pool and jacuzzi in Carreço.'] },

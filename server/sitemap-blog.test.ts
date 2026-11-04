@@ -14,7 +14,7 @@ describe('Journal sitemap lastmod', () => {
   it.each(refreshedGuides)('reflects the review only in the updated editions of %s', (slug) => {
     const article = blog.articles.find((entry) => entry.slug === slug)!;
     for (const lang of ['en', 'pt']) {
-      expect(articleSitemapLastmod(article, lang, '2026-11-04')).toBe(slug === 'viana-do-castelo-guide' ? '2026-11-04' : '2026-10-14');
+      expect(articleSitemapLastmod(article, lang, '2026-11-04')).toBe(['viana-do-castelo-guide', 'complete-guide-north-portugal'].includes(slug) ? '2026-11-04' : '2026-10-14');
     }
     for (const lang of ['fr', 'es', 'it', 'fi', 'de', 'nl', 'sv']) {
       expect(articleSitemapLastmod(article, lang, '2026-11-03')).toBe('2026-03-30');

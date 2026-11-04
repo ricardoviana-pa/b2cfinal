@@ -140,7 +140,7 @@ describe('the repository catalogue', () => {
 
   it('a destination page and its "view all" listing agree on the homes (the strip count)', async () => {
     const homes = catalogProperties(await getPropertiesForSite()) as Property[];
-    for (const slug of ['algarve', 'lisbon', 'alentejo', 'douro', 'caminha']) {
+    for (const slug of ['algarve', 'lisbon', 'alentejo', 'minho', 'douro', 'caminha', 'esposende', 'viana-do-castelo']) {
       const pageHomes = listedDestinationHomes(await getPropertiesForDestination(slug) as Property[]);
       const href = destinationHomesHref({ slug, region: regionOfDestination(slug) });
       const listing = listingResults(homes, new URL(href, 'https://x.test').searchParams);

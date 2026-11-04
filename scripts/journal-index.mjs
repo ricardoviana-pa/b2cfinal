@@ -12,11 +12,13 @@ for (const slug of wanted) {
 mkdirSync(new URL('journal-index/', data), { recursive: true });
 for (const lang of ['en', 'pt', 'es', 'fr', 'de', 'it', 'nl', 'sv', 'fi']) {
   const overrides = lang === 'en' ? {} : read(`blog.i18n/${lang}.json`);
-  const index = Object.fromEntries(articles.filter(a => wanted.has(a.slug)).map(a => {
+  const index = Object.fromEntries(articles.filter(a => wanted.has(a.slug) &&
+    (!a.publishedLocales || a.publishedLocales.includes(lang))).map(a => {
     const localized = { ...a, ...(overrides[a.slug] || {}) };
     return [a.slug, {
       slug: a.slug, title: localized.title, excerpt: localized.excerpt,
       coverImage: a.coverImage || a.featuredImage, publishedAt: a.publishDate,
+      ...(a.publishedLocales ? { publishedLocales: a.publishedLocales } : {}),
     }];
   }));
   writeFileSync(new URL(`journal-index/${lang}.json`, data), JSON.stringify(index, null, 2) + '\n');

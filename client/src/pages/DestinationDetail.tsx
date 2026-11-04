@@ -32,6 +32,7 @@ import { DestinationPage, buildDestinationGraph } from '@/components/destination
 import type { Destination, Property, Product } from '@/lib/types';
 import { withoutRepeatedImages } from '@/lib/destinationImagery';
 import { adventureMatchesDestination } from '@/lib/destinationAdventures';
+import { destinationJournalCards, type DestinationJournalCard } from '@/lib/destinationJournal';
 
 const destinations = destinationsData as unknown as Destination[];
 const allProducts = productsData as unknown as Product[];
@@ -108,16 +109,13 @@ export default function DestinationDetail() {
     );
   }
 
-  const index = { ...journalIndex, ...journalOverrides } as Record<string, {slug: string; title: string; excerpt?: string; coverImage?: string}>;
+  const index = { ...journalIndex, ...journalOverrides } as Record<string, DestinationJournalCard>;
   const articles = withoutRepeatedImages(
-    ((destinationJournal as Record<string, string[]>)[dest.slug] || [])
-      .map(slug => {
-        const article = index[slug];
-        if (!article) return null;
-        const curatedImage = (destinationJournalImages as Record<string, string>)[slug];
+    destinationJournalCards((destinationJournal as Record<string, string[]>)[dest.slug] || [], index, i18n.language)
+      .map(article => {
+        const curatedImage = (destinationJournalImages as Record<string, string>)[article.slug];
         return curatedImage ? { ...article, coverImage: curatedImage } : article;
-      })
-      .filter((article): article is NonNullable<typeof article> => !!article),
+      }),
     [dest.regionImage, dest.coverImage, getDestinationEditorial(dest.slug, i18n.language)?.photo.src,
       ...destProperties.slice(0, 6).map(p => p.images?.[0]),
       ...adventures.map(p => p.image)],
