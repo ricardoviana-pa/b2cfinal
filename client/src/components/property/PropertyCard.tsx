@@ -50,6 +50,9 @@ interface PropertyCardProps {
   /** Lowest real bookable nightly (next 90d) — shown as "From €X" when no dates
    *  are picked. Undefined = not computed yet → neutral "select dates" prompt. */
   fromPrice?: number | null;
+  /** An editorial context can describe configured unit options without
+   * implying those units are all available for the selected dates. */
+  groupContextLabel?: string;
   /** The listing's LCP candidate (first card): its first photo loads eagerly at
    *  fetchpriority=high, and React preloads it from the server HTML
    *  (lib/listingImagePriority.ts). */
@@ -74,6 +77,7 @@ export default function PropertyCard({
   batchFailed = false,
   hidePrice = false,
   fromPrice,
+  groupContextLabel,
   priority,
   preloadMedia,
 }: PropertyCardProps) {
@@ -417,7 +421,7 @@ export default function PropertyCard({
             <div className="text-right shrink-0">
               {isGroup ? (
                 <p className="text-[0.8125rem] text-[#6B6860] font-medium leading-tight">
-                  {t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
+                  {groupContextLabel ?? t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
                 </p>
               ) : nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0 ? (
                 <>

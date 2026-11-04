@@ -25,12 +25,14 @@ const guides: Record<string, Record<string, Guide[]>> = {
   },
   'large-group-villas': {
     en: [
-      { q: 'How do we choose a home for twelve or more guests?', a: 'Compare the bedroom layout, bathrooms and dining spaces as well as the total capacity. Check whether the listing is one home or a group of units, so everyone knows how the space is arranged.' },
-      { q: 'Can we arrange a chef or celebrate an occasion?', a: 'Tell the team about your plans before booking. Private chefs and transfers can be requested separately, subject to availability and a quote. Events, parties and extra visitors need specific approval for the chosen home.' },
+      { q: 'How do we choose a home for twelve or more guests?', a: 'Enter the total number of overnight guests, then compare the capacity, bedrooms and bathrooms shown on each home. Check bed types, sofa beds and dining spaces: the guest capacity alone does not describe the sleeping arrangements.' },
+      { q: 'Are we booking the whole property or an individual unit?', a: 'A whole-property stay and an individual unit are different booking options. Use the capacity and bedrooms of the option you choose; do not add their capacities together. Confirm which units and shared spaces are included, then check price and availability for your dates.' },
+      { q: 'What should we confirm before a group stay?', a: 'Read the house rules and confirm the visitor policy and quiet hours before booking. A larger guest capacity does not give permission for events or parties; these require specific approval for the chosen home. Private chefs and transfers can be requested separately, subject to availability and a quote.' },
     ],
     pt: [
-      { q: 'Como escolher uma casa para doze ou mais pessoas?', a: 'Compare a distribuição dos quartos, as casas de banho e os espaços para refeições, além da capacidade total. Confirme se o anúncio corresponde a uma casa ou a um conjunto de unidades.' },
-      { q: 'Podemos pedir um chef ou celebrar uma ocasião?', a: 'Conte à equipa o que tem em mente antes de reservar. Chef privado e transfers podem ser pedidos à parte, sujeitos a disponibilidade e orçamento. Eventos, festas e visitantes adicionais exigem aprovação específica para a casa escolhida.' },
+      { q: 'Como escolher uma casa para doze ou mais pessoas?', a: 'Indique o total de hóspedes que vão pernoitar e compare a capacidade, os quartos e as casas de banho de cada opção. Confirme os tipos de cama, os sofás-cama e os lugares à mesa: a capacidade de hóspedes, por si só, não explica a distribuição para dormir.' },
+      { q: 'Estamos a reservar o conjunto completo ou uma unidade?', a: 'A estadia no conjunto completo e numa unidade individual são opções de reserva diferentes. Considere a capacidade e os quartos da opção escolhida, sem somar as capacidades entre anúncios. Confirme as unidades e os espaços comuns incluídos e consulte o preço e a disponibilidade para as suas datas.' },
+      { q: 'O que confirmar antes de uma estadia em grupo?', a: 'Leia as regras da casa e confirme a política de visitantes e os horários de silêncio antes de reservar. Uma capacidade maior não autoriza eventos ou festas, que exigem aprovação específica para a casa escolhida. Chef privado e transfers podem ser pedidos à parte, sujeitos a disponibilidade e orçamento.' },
     ],
   },
   'pet-friendly-villas': {
@@ -68,6 +70,15 @@ const guides: Record<string, Record<string, Guide[]>> = {
 export function collectionPlanning(slug: string, lang: string) {
   const questions = guides[slug]?.[lang];
   if (!questions) return null;
+  if (slug === 'large-group-villas') return lang === 'pt' ? {
+    title: 'Escolha a casa para o grupo',
+    help: 'Comece pelas datas e pelo total de hóspedes. Compare a distribuição para dormir e abra a página da casa para confirmar o preço e a disponibilidade.',
+    contact: 'Ajude-me a escolher', questionsTitle: 'Antes de escolher a sua casa', questions,
+  } : {
+    title: 'Choose a home for the whole group',
+    help: 'Start with your dates and total guest count. Compare sleeping arrangements, then open a home to confirm its price and availability.',
+    contact: 'Help me choose', questionsTitle: 'Choosing your holiday home', questions,
+  };
   return lang === 'pt' ? {
     title: 'Encontre a casa para os seus dias cá',
     help: 'Partilhe as datas e o grupo. A nossa equipa ajuda a escolher a casa e a preparar os detalhes da estadia.',
@@ -77,4 +88,18 @@ export function collectionPlanning(slug: string, lang: string) {
     help: 'Share your dates and group size. Our local team can help you choose a home and plan the details of your stay.',
     contact: 'Help me choose', questionsTitle: 'Choosing your holiday home', questions,
   };
+}
+
+/** Localized booking-option labels, never an availability or capacity total. */
+export function collectionUnitOptionsLabel(language: string, count: number): string | undefined {
+  if (count < 1) return undefined;
+  const labels: Record<string, [string, string]> = {
+    en: ['unit option', 'unit options'], pt: ['opção de unidade', 'opções de unidade'],
+    fr: ['option de logement', 'options de logement'], es: ['opción de alojamiento', 'opciones de alojamiento'],
+    it: ['opzione di alloggio', 'opzioni di alloggio'], de: ['Unterkunftsoption', 'Unterkunftsoptionen'],
+    nl: ['verblijfsoptie', 'verblijfsopties'], fi: ['majoitusvaihtoehto', 'majoitusvaihtoehtoa'],
+    sv: ['boendealternativ', 'boendealternativ'],
+  };
+  const forms = labels[language.split('-')[0]] ?? labels.en;
+  return `${count} ${forms[count === 1 ? 0 : 1]}`;
 }

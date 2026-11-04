@@ -13,8 +13,9 @@
  * Inputs are the raw record's facts (name, bedrooms, guests, type, region),
  * which the per-language overrides never touch — so the result is the same
  * before and after the overrides load. Translated taglines are not used: they
- * vary in quality (some are cut paragraphs ending in "…"), and the English
- * route keeps the curated English tagline it always had.
+ * vary in quality (some are cut paragraphs ending in "…"). The reviewed
+ * EN/PT pilot uses current locality, capacity and verified amenities; other
+ * English pages keep their curated English tagline.
  *
  * The noun comes from the property type, so apartments, the boat and the
  * studios are no longer called "Luxury Villa"; one-bedroom homes get singular
@@ -28,6 +29,7 @@
 import { getDisplayName } from './displayName';
 import { placePhrases, type PlaceLang } from './regionPhrases';
 import { getGroupByParentGuestyId } from '../client/src/config/propertyGroups';
+import { propertyEditorialMeta } from './propertyEditorialMeta';
 
 /** Google shows ~600 px of a title; 65 characters is the practical budget. */
 export const PROPERTY_TITLE_BUDGET = 65;
@@ -292,9 +294,10 @@ export function propertyPageMeta(prop: any, lang: string | undefined): PropertyP
     tagline: prop?.tagline,
   };
   const image = Array.isArray(prop?.images) && prop.images.length > 0 ? prop.images[0] : undefined;
+  const editorial = propertyEditorialMeta(prop ?? {}, name, lang);
   return {
-    title: propertyTitle(lang, input),
-    description: truncateWords(propertyDescription(lang, input), 155),
+    title: editorial && editorial.title.length <= PROPERTY_TITLE_BUDGET ? editorial.title : propertyTitle(lang, input),
+    description: truncateWords(editorial?.description ?? propertyDescription(lang, input), 155),
     image,
     path: `/homes/${prop?.slug}`,
   };
