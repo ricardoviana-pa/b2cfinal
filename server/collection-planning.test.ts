@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { render } from '../client/src/entry-server';
 import { selectCollectionHomes, collectionUnitOptionCount } from '../client/src/lib/collectionHomes';
-import { collectionUnitOptionsLabel } from '../client/src/data/collectionPlanning';
+import { collectionUnitOptionsLabel, collectionCapacityCopy } from '../client/src/data/collectionPlanning';
 import { PROPERTY_GROUPS } from '../client/src/config/propertyGroups';
 import type { Property } from '../client/src/lib/types';
 
@@ -72,12 +72,60 @@ describe('large-group collection SSR and safe booking links', () => {
     expect(appHtml).not.toContain('token=private');
     expect(appHtml).toContain(collectionUnitOptionsLabel(locale, 5));
     const labels = JSON.parse(fs.readFileSync(`client/src/i18n/locales/${locale}.json`, 'utf8'));
+    expect(appHtml).toContain(labels.collections.checkAvailability);
+    const primaryCta = appHtml.match(/<a\b[^>]*class="btn-primary text-center"[^>]*>/)?.[0];
+    expect(primaryCta).toContain('style="text-transform:none"');
+    expect(appHtml).not.toContain(`>${labels.property.checkAvailability}<`);
     const misleading = (labels.property.unitsAvailable_other ?? labels.property.unitsAvailable).replace('{{count}}', '6');
     expect(appHtml).not.toContain(misleading);
     const visibleText = appHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
     expect(visibleText).toContain('Fountain Retreat 28 12 13');
+    const capacity = collectionCapacityCopy(locale, 20, 12);
+    expect(visibleText).toContain(capacity.context);
+    expect(visibleText).toContain(capacity.reset);
+    const reset = appHtml.match(new RegExp(`href="(/${locale}/collections/large-group-villas[^\"]*)"[^>]*>\\s*${capacity.reset.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
+    expect(reset?.[1]).toBe(`/${locale}/collections/large-group-villas?checkin=2027-05-10&amp;checkout=2027-05-17`);
     if (['en', 'pt'].includes(locale)) {
       expect(appHtml).toContain(`href="/${locale}/contact?subject=plan-my-stay&amp;collection=large-group-villas&amp;${trip}"`);
+      const secondaryCta = appHtml.match(/<a\b[^>]*class="btn-ghost text-center"[^>]*>/)?.[0];
+      expect(secondaryCta).toContain('style="text-transform:none"');
     }
+  });
+
+  it.each(['', '?guests=12', '?guests=4', '?guests=101', '?guests=twenty'])('default or invalid capacity does not add a reset control: %s', async query => {
+    const { appHtml } = await render(`/en/collections/large-group-villas${query}`, {
+      prefetch: { catalogForSite: properties },
+    });
+    expect(appHtml).not.toContain('Showing homes with capacity');
+    expect(appHtml).not.toContain('See all homes for 12+ guests');
+    expect(appHtml).toContain('href="/en/homes/too-small');
+  });
+
+  it('an empty filtered result retains a visible reset; its URL restores the full collection and valid dates only', async () => {
+    const { appHtml } = await render('/pt/collections/large-group-villas?guests=40&checkin=2027-05-10&checkout=2027-05-17&token=private&unknown=value', {
+      prefetch: { catalogForSite: properties },
+    });
+    expect(appHtml).toContain('A mostrar casas com capacidade para 40 hóspedes');
+    expect(appHtml).toContain('Ver todas as casas para 12 ou mais hóspedes');
+    const href = '/pt/collections/large-group-villas?checkin=2027-05-10&amp;checkout=2027-05-17';
+    expect(appHtml).toContain(`href="${href}"`);
+    expect(appHtml).not.toContain('href="/pt/homes/whole-property');
+    expect(appHtml).not.toContain('token=private');
+    expect(appHtml).not.toContain('unknown=value');
+    const reset = await render(href.replaceAll('&amp;', '&'), { prefetch: { catalogForSite: properties } });
+    expect(reset.appHtml).not.toContain('A mostrar casas com capacidade');
+    expect(reset.appHtml).toContain('href="/pt/homes/too-small?checkin=2027-05-10&amp;checkout=2027-05-17"');
+  });
+
+  it('reset drops invalid dates and another collection does not inherit the group capacity context', async () => {
+    const empty = await render('/en/collections/large-group-villas?guests=40&checkin=2027-05-17&checkout=2027-05-10&token=private', {
+      prefetch: { catalogForSite: properties },
+    });
+    expect(empty.appHtml).toContain('href="/en/collections/large-group-villas"');
+    const other = await render('/en/collections/villas-with-private-pool?guests=20', {
+      prefetch: { catalogForSite: properties },
+    });
+    expect(other.appHtml).not.toContain('Showing homes with capacity');
+    expect(other.appHtml).not.toContain('See all homes for 12+ guests');
   });
 });

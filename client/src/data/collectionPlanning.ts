@@ -103,3 +103,19 @@ export function collectionUnitOptionsLabel(language: string, count: number): str
   const forms = labels[language.split('-')[0]] ?? labels.en;
   return `${count} ${forms[count === 1 ? 0 : 1]}`;
 }
+
+/** A capacity filter describes the catalogue, never date availability. */
+export function collectionCapacityCopy(language: string, guests: number, minimum: number) {
+  const labels: Record<string, { context: string; reset: string }> = {
+    en: { context: `Showing homes with capacity for ${guests} guests`, reset: `See all homes for ${minimum}+ guests` },
+    pt: { context: `A mostrar casas com capacidade para ${guests} hóspedes`, reset: `Ver todas as casas para ${minimum} ou mais hóspedes` },
+    fr: { context: `Maisons pouvant accueillir ${guests} personnes`, reset: `Voir toutes les maisons pour ${minimum} personnes ou plus` },
+    es: { context: `Mostrando casas con capacidad para ${guests} huéspedes`, reset: `Ver todas las casas para ${minimum} o más huéspedes` },
+    it: { context: `Case che possono ospitare ${guests} persone`, reset: `Vedi tutte le case per ${minimum} o più persone` },
+    de: { context: `Häuser mit Platz für ${guests} Gäste`, reset: `Alle Häuser für mindestens ${minimum} Gäste ansehen` },
+    nl: { context: `Woningen met ruimte voor ${guests} gasten`, reset: `Bekijk alle woningen voor ${minimum} of meer gasten` },
+    sv: { context: `Boenden med plats för ${guests} gäster`, reset: `Se alla boenden för ${minimum} eller fler gäster` },
+    fi: { context: `Majoitukset, joihin mahtuu ${guests} vierasta`, reset: `Näytä kaikki majoitukset vähintään ${minimum} vieraalle` },
+  };
+  return labels[language.toLowerCase().split('-')[0]] ?? labels.en;
+}

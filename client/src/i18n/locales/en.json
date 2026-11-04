@@ -2013,6 +2013,7 @@
     "bathroomCount_other": "{{num}} Bathrooms"
   },
   "collections": {
+    "checkAvailability": "Check availability",
     "eyebrow": "Curated collection",
     "count": "{{count}} homes in this collection",
     "more": "More collections"

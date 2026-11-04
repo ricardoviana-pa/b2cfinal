@@ -2013,6 +2013,7 @@
     "bathroomCount_other": "{{num}} Badezimmer"
   },
   "collections": {
+    "checkAvailability": "Verfügbarkeit prüfen",
     "eyebrow": "Kuratierte Kollektion",
     "count": "{{count}} Häuser in dieser Kollektion",
     "more": "Weitere Kollektionen"

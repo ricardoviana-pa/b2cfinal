@@ -2013,6 +2013,7 @@
     "bathroomCount_other": "{{num}} kylpyhuonetta"
   },
   "collections": {
+    "checkAvailability": "Tarkista saatavuus",
     "eyebrow": "Kuratoitu kokoelma",
     "count": "{{count}} taloa tässä kokoelmassa",
     "more": "Lisää kokoelmia"
