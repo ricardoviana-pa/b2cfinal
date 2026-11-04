@@ -1,8 +1,8 @@
 {
   "complete-guide-north-portugal": {
     "slug": "complete-guide-north-portugal",
-    "title": "Norte de Portugal: praias, natureza e onde ficar",
-    "excerpt": "Escolha a base para umas férias no Norte: Viana do Castelo, Caminha ou Esposende, com praias atlânticas, natureza, sugestões de passeios e casas para comparar.",
+    "title": "Norte de Portugal: escolha a base, da costa à montanha",
+    "excerpt": "Escolha onde ficar no Norte: compare a costa do Minho, o vale do Lima e a montanha, com casas reais e sugestões para três ou sete noites.",
     "coverImage": "https://assets.guesty.com/image/upload/v1776950966/production/6957de4388cba42d9e7a905e/gbu3pgilt9l7nmkakdvy.jpg",
     "publishedAt": "2026-03-30"
   },
@@ -68,5 +68,16 @@
     "excerpt": "Prepare uma refeição com chef privado nas suas férias: escolha a ocasião, compare propostas e confirme ementa, inclusões e condições da casa.",
     "coverImage": "/experiences/private-chef-dinner.webp",
     "publishedAt": "2026-03-30"
+  },
+  "esposende-guide": {
+    "slug": "esposende-guide",
+    "title": "Guia de Esposende: praias, passeios e três noites junto ao mar",
+    "excerpt": "Prepare uma estadia em Esposende: compare centro, Ofir e Apúlia, organize dois dias de passeios e encontre a casa para as suas datas.",
+    "coverImage": "/destinations/esposende-litoral-norte.jpg",
+    "publishedAt": "2026-11-04",
+    "publishedLocales": [
+      "en",
+      "pt"
+    ]
   }
 }

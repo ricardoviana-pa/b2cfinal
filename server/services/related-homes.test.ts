@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { pickRelatedHomes } from "./related-homes";
+import { getRelatedHomes, pickRelatedHomes } from "./related-homes";
 import { PROPERTY_GROUPS } from "../../client/src/config/propertyGroups";
 
 const home = (slug: string, destination: string, over: Record<string, unknown> = {}) => ({
@@ -67,6 +67,32 @@ describe("pickRelatedHomes", () => {
     ], 'minho-coast', 4, 'viana-do-castelo-guide');
     expect(r.map(p => p.slug)).toEqual(['city']);
     expect(pickRelatedHomes(POOL, 'minho-coast', 4, 'viana-do-castelo-guide')).toEqual([]);
+  });
+
+  it("keeps Esposende distinct from Fão, Ofir, Apúlia and Marinhas, without regional filler", () => {
+    const nearby = ['Fão', 'Ofir', 'Apúlia', 'Marinhas', 'Viana do Castelo']
+      .map(locality => home(locality, 'minho', { locality, sortOrder: 0 }));
+    const local = home('esposende', 'minho', { locality: 'Esposende', sortOrder: 99 });
+    const inactive = home('inactive', 'minho', { locality: 'Esposende', isActive: false });
+    expect(pickRelatedHomes([...nearby, local, inactive], 'minho-coast', 4, 'esposende-guide').map(p => p.slug)).toEqual(['esposende']);
+    expect(pickRelatedHomes([...nearby, inactive], 'minho-coast', 4, 'esposende-guide')).toEqual([]);
+    const partner = home('partner', 'minho', { locality: 'Esposende', guestyId: undefined, source: 'tripwix' });
+    expect(pickRelatedHomes([partner, local, ...nearby], 'minho-coast', 4, 'esposende-guide').map(p => p.slug)).toEqual(['esposende', 'partner']);
+  });
+
+  it("the northern guide offers the reviewed coast, valley, mountain and riverside bases", async () => {
+    const picks = await getRelatedHomes('minho-coast', 4, 'complete-guide-north-portugal');
+    expect(picks.map(p => p.locality)).toEqual(['Carreço', 'Ponte de Lima', 'Vieira do Minho', 'Caminha']);
+    expect(picks.every(p => p.destination === 'minho')).toBe(true);
+  });
+
+  it("northern picks cannot revive inactive homes, escape Minho or exclude relevant alternatives", () => {
+    const inactivePick = home('inactive-pick', 'minho', { guestyId: '696533466d209c001510ecfe', isActive: false });
+    const movedPick = home('moved-pick', 'porto', { guestyId: '69653365bf04fe0013743511' });
+    const local = home('local', 'minho', { sortOrder: 99 });
+    const partner = home('partner', 'minho', { guestyId: undefined, source: 'tripwix', sortOrder: 0 });
+    expect(pickRelatedHomes([inactivePick, movedPick, partner, local], 'minho-coast', 4, 'complete-guide-north-portugal').map(p => p.slug)).toEqual(['local', 'partner']);
+    expect(pickRelatedHomes([inactivePick, movedPick], 'minho-coast', 4, 'complete-guide-north-portugal')).toEqual([]);
   });
 
   it("prioritises the direct operation within the right destination, retaining premium partner alternatives", () => {

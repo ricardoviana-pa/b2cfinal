@@ -2,7 +2,7 @@
   "minho": {
     "name": "Minho",
     "tagline": "Onde Portugal começa: surf atlântico, aldeias de granito e os vales do Vinho Verde.",
-    "description": "Um guia do Minho: localidades atlânticas, vale do Lima e passeios de montanha, com informação prática para escolher a base.",
+    "description": "Escolha a sua base no Minho: costa atlântica, vale do Lima ou montanha. Compare casas e organize a estadia a partir da localização que lhe convém.",
     "heroSubtitle": "Costa atlântica, vales fluviais e montanhas do Minho",
     "pullQuote": null,
     "primaryAccolade": null,
@@ -15,12 +15,12 @@
       "Viana do Castelo, Ponte de Lima e Guimarães — três das vilas e cidades históricas mais bonitas de Portugal",
       "O melhor marisco e as melhores festas do país — a Agonia em agosto, a vindima em setembro"
     ],
-    "seoTitle": "Férias no Norte de Portugal: Casas no Minho | Portugal Active",
-    "seoDescription": "Escolha a sua casa no Minho, entre praias, rios e Gerês. Compare zonas, explore roteiros e prepare a chegada com a equipa local Portugal Active.",
-    "howToGetHere": "Aeroporto do Porto (OPO), a 45 a 70 minutos de carro consoante o vale. O aeroporto de Vigo (VGO), em Espanha, fica a uma hora da costa. Comboios diretos do Porto a Viana do Castelo em cerca de 75 minutos. Organizamos transfers do aeroporto para todas as estadias.",
-    "bestTimeToVisit": "Do final de maio a junho e de setembro a início de outubro: calor, pouca chuva, vinhas no seu verde mais intenso ou em plena vindima, e praias sem multidões. Julho e agosto para o mar e as festas. O inverno é ameno, verde e chuvoso — as melhores tarifas do ano.",
-    "whatToExpect": "Localidades atlânticas, vales fluviais e paisagens de montanha com deslocações distintas entre si. Escolha uma área mais pequena para cada dia e consulte a previsão do destino concreto.",
-    "whereToStayIntro": "Compare a localidade concreta de cada casa: Viana, as localidades costeiras e os vales do interior servem roteiros diferentes. Confirme capacidade, acessos, condições da piscina e serviços na página do alojamento e na proposta de reserva.",
+    "seoTitle": "Casas de férias no Minho: costa, vale e montanha | Portugal Active",
+    "seoDescription": "Encontre a sua casa no Minho. Compare costa, vale do Lima e montanha, escolha datas e hóspedes e consulte disponibilidade para a estadia.",
+    "howToGetHere": "Compare voos para o Porto e o percurso até à casa. A GET BUS publica ligações para Viana e Ponte de Lima; para outras localidades, planeie a ligação seguinte. Carro alugado ou shuttle são alternativas para uma chegada direta à morada.",
+    "bestTimeToVisit": "Escolha a época pelo programa: verão para dar mais tempo à praia; primavera e outono para combinar passeios, vilas e produtores; inverno para gastronomia e tempo na casa. Ajuste os dias ao tempo na zona escolhida.",
+    "whatToExpect": "Costa, vales e montanha dão estadias diferentes. Escolha uma base para as saídas principais e deixe espaço entre passeios para aproveitar a casa.",
+    "whereToStayIntro": "Comece pela zona em que quer passar mais tempo: costa em Carreço ou Esposende, vale em Ponte de Lima, norte do Minho em Caminha ou saídas de montanha a partir de Vieira do Minho. Depois compare quartos, capacidade e datas na ficha de cada casa.",
     "journalSectionTitle": "Do diário — histórias do Minho",
     "thingsToDoIntro": "Escolha os passeios por zona: a costa, o vale do Lima e as montanhas exigem deslocações diferentes. Uma base costeira junto ao comboio pode funcionar sem carro; as visitas ao interior precisam de ligações e regressos próprios.",
     "thingsToDo": [
@@ -242,7 +242,7 @@
     "faqs": [
       {
         "question": "Quantas noites devo reservar para o Minho?",
-        "answer": "Sugerimos cinco noites para uma primeira visita com base na zona de Viana: cidade, costa, vale do Lima e tempo para a casa. Três noites servem uma escapadinha mais concentrada; sete permitem acrescentar um dia de montanha e uma visita a Braga ou Guimarães. São sugestões de ritmo, ajustáveis à localização da casa."
+        "answer": "Três noites permitem uma escapadinha centrada numa zona; numa semana, pode alternar duas ou três saídas com tempo na casa. Escolha primeiro entre costa, vale e montanha e distribua o programa a partir daí. São sugestões de viagem; as condições de estadia dependem da casa e das datas."
       },
       {
         "question": "Posso visitar sem carro?",
@@ -270,7 +270,7 @@
       },
       {
         "question": "Como comparo o preço das casas e dos extras?",
-        "answer": "Escolha as datas e o número de hóspedes para consultar disponibilidade e o total da estadia. Compare quartos, localização, comodidades e condições na ficha de cada casa. Chef, shuttle e experiências têm reserva e preço próprios; peça-nos uma proposta para os serviços que pretende."
+        "answer": "Escolha as datas e o número de hóspedes, abra a ficha da casa e compare o total da estadia, os quartos e as condições. Para refeições com chef, shuttle ou experiências, peça uma proposta ajustada ao grupo e às datas."
       }
     ],
     "ownersCTA": {
@@ -834,23 +834,23 @@
   "esposende": {
     "name": "Esposende",
     "tagline": "Entre dunas e rio.",
-    "description": "Entre a foz do Neiva e Apúlia, o Parque Natural do Litoral Norte reúne praias, dunas e estuário. Esposende pode ser um dia especial numa estadia no Minho: escolha um setor da costa e dê-lhe tempo.",
-    "heroSubtitle": "Passadiços até ao mar, moinhos sobre a areia e tempo à mesa depois de uma manhã na costa.",
+    "description": "Faça de Esposende a sua base para férias entre rio e mar. Comece pelo centro e pelo Cávado, reserve outro dia para Ofir ou Apúlia e escolha a casa pelo espaço de que o grupo precisa.",
+    "heroSubtitle": "Uma casa junto à costa, passeios pelo Cávado e dias para descobrir Ofir e Apúlia.",
     "whyOverline": "PORQUÊ ESPOSENDE",
-    "whyDescription": "Esposende é o troço da costa norte por onde a maioria das pessoas passa sem parar. A A28 corre uns quilómetros para o interior e, da autoestrada, pouco deixa adivinhar o que existe entre a estrada e o mar: dezasseis quilómetros de praia, duna e pinhal, protegidos como parque natural, com uma pequena cidade na foz do rio Cávado a meio.\n\nO Parque Natural do Litoral Norte cobre toda a orla costeira do concelho, da foz do Neiva, a norte, ao limite sul de Apúlia. Foi protegido pela primeira vez em 1987 e passou a parque natural em 2005, e a maior parte da sua área fica no mar, sobre recifes e fundos rochosos. Em terra, protege um sistema frágil de dunas, pinhais e sapal, de um tipo que quase desapareceu no resto desta costa. Passadiços de madeira atravessam as dunas, e uma ciclovia costeira liga as praias.\n\nA cidade fica na margem norte do Cávado, onde o rio se alarga num estuário abrigado por uma longa restinga de areia. O Forte de São João Baptista, construído entre 1699 e 1704 para guardar a barra, continua de pé junto à água, com um farol vermelho de ferro no seu canto sudoeste. Uma ponte de ferro de 1892 atravessa o rio até Fão, uma vila ribeirinha conhecida em todo o Norte pelas clarinhas, um pequeno pastel frito recheado com doce de chila e ovos. Para lá de Fão fica Ofir, um pinhal sobre as dunas com uma longa praia no fim e, ao largo, os rochedos escuros a que chamam Cavalos de Fão.\n\nMais a sul fica Apúlia, a terra que deu a esta costa o seu ofício mais conhecido. Durante gerações, as gentes de Apúlia apanharam o sargaço que o Atlântico trazia, secaram-no na areia e venderam-no como adubo às lavouras do interior. Os sargaceiros trabalhavam na rebentação vestidos com uma túnica branca de lã, a branqueta, e os moinhos de vento em pedra sobre as dunas, construídos para moer cereal, continuam a ser a imagem da terra. A apanha já não é uma economia, mas vive no grupo de sargaceiros da terra e na memória local.\n\nPara lá da costa, o terreno sobe em direção a Barcelos e Braga. Acima de Vila Chã, o Castro de São Lourenço conserva fundações de um povoado da Idade do Ferro com vistas para o litoral. Viana do Castelo, Barcelos e Braga podem ser passeios separados: confirme o percurso e o regresso, sem tratar a região como um único destino que se percorre a pé.\n\nNo verão, Esposende ganha ritmo de vila balnear; nas outras estações, há mais espaço para a cidade, o estuário e os percursos costeiros assinalados. O vento atlântico e o estado do mar podem alterar o programa. O centro, Fão e Ofir, e Apúlia são bases distintas; confirme onde ficará e como se deslocará entre elas.",
+    "whyDescription": "Esposende permite viver a costa a partir da mesma casa: um passeio junto ao Cávado, tempo no centro e uma saída a Ofir ou Apúlia noutro dia. A escolha da base começa na morada e no espaço que o grupo precisa.\n\nOfir reúne praia, dunas e pinhal a sul da foz do Cávado. Apúlia acrescenta os moinhos e a memória da apanha do sargaço, apresentada no seu museu. Mais para o interior, São Lourenço dá outra perspetiva sobre a paisagem. São programas para dias diferentes, deixando tempo entre saídas para aproveitar a casa.",
     "highlights": [
-      "Parque Natural do Litoral Norte: dezasseis quilómetros de dunas, pinhal e praia protegidos",
-      "Ofir e o seu pinhal na margem sul do Cávado",
-      "Apúlia, os seus moinhos e a tradição dos sargaceiros",
-      "O estuário do Cávado, para paddle, caiaque e observação de aves",
-      "A trinta e cinco minutos do aeroporto do Porto e a trinta de Braga"
+      "Uma casa de férias em Esposende e passeios junto ao Cávado",
+      "Ofir: praia, dunas e pinhal",
+      "Apúlia: moinhos e memória do sargaço",
+      "Parque Natural do Litoral Norte e percursos costeiros",
+      "São Lourenço: paisagem e história no interior"
     ],
-    "seoTitle": "Esposende: praias, Apúlia e natureza | Portugal Active",
-    "seoDescription": "Passadiços até ao mar, moinhos sobre a areia e tempo à mesa depois de uma manhã na costa. Escolha a zona e planeie os seus dias.",
-    "howToGetHere": "Aeroporto do Porto (OPO) a cerca de 35 min pela A28. Braga a 30 min para nascente. Viana do Castelo a 25 min para norte. Sem comboio: as estações mais próximas são Barcelos e Viana do Castelo.",
-    "bestTimeToVisit": "Junho e setembro. Dias quentes, praias longas com espaço de sobra e o vento da tarde que é bom para windsurf e kitesurf. Julho e agosto para o verão em pleno.",
+    "seoTitle": "Casas de férias em Esposende: praia e Cávado | Portugal Active",
+    "seoDescription": "Escolha a sua casa em Esposende, consulte datas e hóspedes e prepare dias entre praia e Cávado, com passeios a Ofir e Apúlia.",
+    "howToGetHere": "Compare a chegada pelo Aeroporto do Porto com a ligação até à morada da casa. Carro, táxi ou shuttle são opções para a viagem; para transportes públicos, organize também as ligações e o percurso final.",
+    "bestTimeToVisit": "O verão convida a dar mais tempo à praia. Noutras épocas, combine passeios, património local e refeições, ajustando o programa ao tempo do dia.",
     "whatToExpect": "Uma terra de praia tranquila na foz de um rio, dentro de um parque natural costeiro. Dunas, pinheiros e areais largos em vez de falésias e vida noturna.",
-    "whereToStayIntro": "O catálogo atual não tem casas em Esposende. A seleção abaixo apresenta alternativas noutras localidades do Minho, identificadas em cada casa. Use este guia para planear uma visita a Esposende e confirme a deslocação a partir da base escolhida.",
+    "whereToStayIntro": "Encontre a sua base em Esposende. A Shoreline Escape tem três quartos para até sete hóspedes; consulte a distribuição dos espaços e escolha as datas para ver disponibilidade e preço.",
     "journalSectionTitle": "Do diário: histórias de Esposende",
     "thingsToDoIntro": "Esposende é um lugar para caminhadas longas e dias lentos, mais do que para listas de monumentos. A costa é a razão da visita, e muda de norte para sul: a foz e a cidade, o pinhal e a duna, e depois Apúlia, a antiga terra dos sargaceiros. Eis como a dividiríamos.",
     "thingsToDo": [
@@ -944,7 +944,7 @@
       "fromSpain": "A partir de Vigo, atravesse o Minho em Tui e Valença e siga pelas autoestradas para sul, por Ponte de Lima e Viana do Castelo, cerca de uma hora e um quarto no total. A partir de Santiago de Compostela, conte com cerca de duas horas.",
       "gettingAround": "A cidade, a praia e o estuário fazem-se a pé, e uma ciclovia costeira acompanha grande parte do parque natural. O carro é útil para Braga, Barcelos e Viana do Castelo, e menos para o dia a dia junto ao mar."
     },
-    "eatDrinkIntro": "Procure pratos de peixe e marisco na costa e as clarinhas associadas a Fão. O centro, Fão e Apúlia são locais distintos para comer; confirme abertura, ementa atual e transporte de regresso, sem presumir que a refeição fica a uma caminhada da sua base.",
+    "eatDrinkIntro": "Escolha a refeição na zona do passeio: peixe e cozinha regional na costa, ou uma pausa para as Clarinhas em Fão. Deixe tempo para a mesa antes de regressar à casa.",
     "specialties": [
       {
         "name": "Clarinhas de Fão",
@@ -967,7 +967,7 @@
         "description": "Uma das sub-regiões da denominação Vinho Verde, conhecida por brancos frescos e citrinos. Bebe-se novo e bem fresco, com peixe."
       }
     ],
-    "experiencesIntro": "Ideias para planear a visita. Confirme operador, ponto de encontro, percurso, preço e inclusões antes de reservar; estas descrições não estabelecem disponibilidade nem serviços incluídos no alojamento.",
+    "experiencesIntro": "Escolha uma experiência para dar forma a um dia. Partilhe as datas e o perfil do grupo para receber uma proposta adequada.",
     "experiences": [
       {
         "name": "Paddle ou caiaque no estuário do Cávado",
@@ -996,36 +996,36 @@
     ],
     "faqs": [
       {
-        "question": "Vale a visita sem ficar em Esposende?",
-        "answer": "Sim. Apúlia e Ofir permitem dias de costa a partir de uma base no Minho, com o percurso planeado desde a casa."
+        "question": "Onde ficar em Esposende?",
+        "answer": "A Shoreline Escape é um duplex em Esposende com três quartos para até sete hóspedes. A ficha apresenta a distribuição dos espaços, comodidades e condições; escolha datas e hóspedes para consultar a estadia."
       },
       {
-        "question": "Onde posso procurar alojamento?",
-        "answer": "A seleção nesta página apresenta alternativas no Minho, com a localidade de cada casa. Confirme a localização antes de escolher."
+        "question": "Quantas noites devo considerar?",
+        "answer": "Três noites dão dois dias completos para o centro e uma saída a Ofir ou Apúlia. Uma semana permite mais praia e tempo na casa. São sugestões de viagem; consulte as condições para a casa e as datas escolhidas."
       },
       {
         "question": "Apúlia ou Ofir?",
-        "answer": "Apúlia combina moinhos, praia e sargaço. Ofir dá outro dia de costa e pinhal, ligado a Fão."
+        "answer": "Apúlia combina moinhos, praia e a história do sargaço. Ofir junta praia, dunas e pinhal, perto de Fão. Escolha uma zona por saída para dar tempo ao passeio e à refeição."
       },
       {
         "question": "O que fazer além da praia?",
-        "answer": "Visite o Museu do Sargaço em Apúlia ou escolha a paisagem e o castro de São Lourenço."
+        "answer": "Passeie junto ao Cávado, visite o Museu do Sargaço em Apúlia ou vá até ao castro de São Lourenço, em Vila Chã. Escolha o programa pelo tempo disponível e pelos interesses do grupo."
       },
       {
-        "question": "Consigo fazer tudo a pé?",
-        "answer": "Pode explorar uma zona a pé. Para juntar Apúlia, Ofir, centro e São Lourenço, planeie transporte entre setores."
+        "question": "Preciso de carro?",
+        "answer": "Pode organizar dias locais a pé a partir da morada da casa. Para combinar Esposende, Ofir, Apúlia e São Lourenço, um carro dá flexibilidade; sem carro, combine os percursos de ida e regresso."
       },
       {
-        "question": "Como planear com crianças?",
-        "answer": "Combine um passeio curto, uma refeição e uma visita. Escolha acessos e serviços balneares adequados à data e ao grupo."
+        "question": "Como escolher a casa para uma família?",
+        "answer": "Compare quartos, camas e escadas com as idades e necessidades do grupo. Na Shoreline Escape, veja a distribuição do duplex e a capacidade de até sete hóspedes. Planeie uma saída principal por dia, deixando tempo para descansar."
       },
       {
-        "question": "O que provar?",
-        "answer": "Peixe e cozinha regional em Apúlia, com uma pausa para as Clarinhas em Fão."
+        "question": "Como consultar disponibilidade e preço?",
+        "answer": "Indique as datas e o número de hóspedes na pesquisa ou na ficha da casa. Compare o total da estadia e as condições antes de avançar. Se pretende chef, shuttle ou outra experiência, peça uma proposta para o serviço."
       },
       {
         "question": "Como chegar do aeroporto?",
-        "answer": "Considere Porto (OPO). Compare a ligação pública com táxi ou shuttle Portugal Active, reservado e confirmado para a morada."
+        "answer": "Compare voos para o Porto (OPO) e a ligação até à morada. Pode escolher carro, táxi ou pedir um shuttle à Portugal Active. Para transportes públicos, planeie as ligações e o trajeto final até à casa."
       }
     ],
     "ownersCTA": {

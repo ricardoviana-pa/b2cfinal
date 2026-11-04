@@ -1,8 +1,8 @@
 {
   "complete-guide-north-portugal": {
     "slug": "complete-guide-north-portugal",
-    "title": "Northern Portugal: Beaches, Nature and Where to Stay",
-    "excerpt": "Choose your northern Portugal holiday base: Viana do Castelo, Caminha or Esposende, with Atlantic beaches, nature, day-trip ideas and homes to compare.",
+    "title": "Northern Portugal: Choose Your Base, from Coast to Mountains",
+    "excerpt": "Choose where to stay in northern Portugal: compare the Minho coast, Lima valley and mountains, with real homes and ideas for three or seven nights.",
     "coverImage": "https://assets.guesty.com/image/upload/v1776950966/production/6957de4388cba42d9e7a905e/gbu3pgilt9l7nmkakdvy.jpg",
     "publishedAt": "2026-03-30"
   },
@@ -68,5 +68,16 @@
     "excerpt": "Plan a private chef meal during your Portugal holiday: choose the occasion, compare proposals and confirm the menu, inclusions and details of your home.",
     "coverImage": "/experiences/private-chef-dinner.webp",
     "publishedAt": "2026-03-30"
+  },
+  "esposende-guide": {
+    "slug": "esposende-guide",
+    "title": "Esposende Guide: Beaches, Coastal Walks and Three Nights by the Sea",
+    "excerpt": "Plan a coastal stay in Esposende: compare the centre, Ofir and Apúlia, organise two days out and find a home for your dates.",
+    "coverImage": "/destinations/esposende-litoral-norte.jpg",
+    "publishedAt": "2026-11-04",
+    "publishedLocales": [
+      "en",
+      "pt"
+    ]
   }
 }

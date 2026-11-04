@@ -561,7 +561,7 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
       {
         title: "Esposende: planeie a visita e escolha a base",
         answer:
-          "Escolha a zona pelo que quer fazer: centro e estuário em Esposende, praia em Ofir ou costa e moinhos em Apúlia. Sem carro, confirme o acesso à praia concreta e o último regresso, além da chegada ao concelho. Este guia também serve uma visita a partir de outra base no Minho. As alternativas de alojamento apresentadas noutras localidades devem ser escolhidas pela sua localização real; não correspondem a casas disponíveis dentro de Esposende.",
+          "Escolha a zona pelo que quer fazer: centro e estuário em Esposende, praia em Ofir ou costa e moinhos em Apúlia. A Shoreline Escape é uma opção de estadia em Esposende; consulte a localização, a distribuição dos quartos e a disponibilidade para as suas datas. Sem carro, planeie o percurso entre a casa e cada passeio, incluindo o regresso. Organize as visitas a Ofir e Apúlia como passeios a partir da sua base.",
         areas: [
           area(
             "Esposende e estuário do Cávado",
@@ -604,6 +604,8 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
         season:
           "Para praia e percursos na costa, confirme vento, mar, acessos e vigilância nas datas escolhidas. Fora da época balnear, organize a visita em torno da vila e de equipamentos abertos; não presuma que serviços de verão funcionam durante todo o ano.",
         nextLinks: [
+          link("Ver casas e datas em Esposende", "/homes?location=esposende"),
+          link("O que fazer em Esposende", "/blog/esposende-guide"),
           link("Explorar outras bases no Minho", "/destinations/minho"),
           link(
             "Planear uma estadia em Viana",
@@ -617,7 +619,7 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
       {
         title: "Esposende: plan the visit and choose your base",
         answer:
-          "Choose an area around your plans: central Esposende and the estuary, the beach at Ofir, or the coast and windmills at Apúlia. Without a car, check access to your chosen beach and the last return as well as the journey into the municipality. This guide also works for a visit from another Minho base. Accommodation alternatives in other towns should be chosen by their actual location; they are not homes available within Esposende.",
+          "Choose an area around your plans: central Esposende and the estuary, the beach at Ofir, or the coast and windmills at Apúlia. Shoreline Escape is a place to stay in Esposende; explore its location, bedroom layout and availability for your dates. Without a car, plan the journey from your home to each outing, including the return. Plan visits to Ofir and Apúlia as outings from your chosen base.",
         areas: [
           area(
             "Esposende and the Cávado estuary",
@@ -660,6 +662,8 @@ const guides: Record<string, Partial<Record<Locale, PlanningGuide>>> = {
         season:
           "For beaches and coastal walks, check wind, sea conditions, access and lifeguard arrangements for your dates. Outside the bathing season, build your visit around the town and open venues; summer services should not be assumed to run all year.",
         nextLinks: [
+          link("Find homes and dates in Esposende", "/homes?location=esposende"),
+          link("Things to do in Esposende", "/blog/esposende-guide"),
           link("Explore other Minho bases", "/destinations/minho"),
           link("Plan a stay in Viana", "/destinations/viana-do-castelo"),
         ],

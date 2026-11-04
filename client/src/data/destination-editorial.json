@@ -673,24 +673,24 @@
     "name": ["Esposende", "Esposende"],
     "line": ["Entre dunas e rio.", "Between dunes and river."],
     "intro": [
-      "Passadiços até ao mar, moinhos sobre a areia e tempo à mesa depois de uma manhã na costa.",
-      "Boardwalks to the sea, windmills above the sand and a long lunch after a coastal morning."
+      "Uma casa junto à costa, passeios pelo Cávado e dias para descobrir Ofir e Apúlia.",
+      "A home by the coast, walks beside the Cávado and days to discover Ofir and Apúlia."
     ],
     "orientation": [
-      "Entre a foz do Neiva e Apúlia, o Parque Natural do Litoral Norte reúne praias, dunas e estuário. Esposende pode ser um dia especial numa estadia no Minho: escolha um setor da costa e dê-lhe tempo.",
-      "Between the Neiva estuary and Apúlia, the Northern Coast Natural Park brings together beaches, dunes and estuary scenery. Make Esposende a special day during a Minho stay: choose one coastal area and give it time."
+      "Faça de Esposende a sua base para férias entre rio e mar. Comece pelo centro e pelo Cávado, reserve outro dia para Ofir ou Apúlia e escolha a casa pelo espaço de que o grupo precisa.",
+      "Make Esposende your base for a holiday between river and sea. Start with the town and Cávado, give another day to Ofir or Apúlia and choose a home with the space your group needs."
     ],
     "fit": [
-      "Para quem gosta de passeios costeiros, praias e histórias ligadas ao mar.",
-      "For coastal walks, beaches and stories shaped by the sea."
+      "Para quem quer juntar praia, passeios curtos e tempo na casa.",
+      "For beach time, shorter outings and time at home."
     ],
     "airport": [
       "Porto (OPO) é a entrada de referência.",
       "Porto (OPO) is the main gateway."
     ],
     "mobility": [
-      "Uma zona a pé; transporte para combinar Apúlia, Ofir e o interior.",
-      "Walk within one area; use transport between Apúlia, Ofir and inland sights."
+      "Passeios locais a pé; carro ou transporte combinado para Ofir, Apúlia e o interior.",
+      "Local walks on foot; a car or arranged transport for Ofir, Apúlia and inland outings."
     ],
     "point": [96, 79],
     "photo": {
@@ -746,20 +746,20 @@
         "name": "Centro / Cávado",
         "tag": ["RIO E PASSEIO", "RIVER & WALKS"],
         "text": [
-          "Um primeiro contacto com a cidade e a frente ribeirinha.",
-          "A first introduction to the town and riverfront."
+          "A base para combinar a frente ribeirinha, o centro e tempo na costa de Esposende.",
+          "A base for the riverfront, town and time on Esposende’s coast."
         ],
         "transport": [
-          "Escolha o ponto de chegada e passeie dentro desta zona.",
-          "Choose an arrival point and explore this area on foot."
+          "Compare a morada da casa com os passeios e refeições que quer fazer a pé.",
+          "Compare the home’s address with the walks and meals you want to reach on foot."
         ]
       },
       {
         "name": "Fão / Ofir",
         "tag": ["PRAIA E PINHAL", "BEACH & PINES"],
         "text": [
-          "Outro dia de costa, com uma pausa para as Clarinhas de Fão.",
-          "Another coastal day, with a stop for Fão’s Clarinhas pastries."
+          "Uma saída para a praia e o pinhal, com tempo para uma pausa em Fão.",
+          "An outing for the beach and pinewoods, with time to pause in Fão."
         ],
         "transport": [
           "Combine Fão e Ofir com transporte adequado ao percurso.",
@@ -770,8 +770,8 @@
         "name": "Apúlia",
         "tag": ["MOINHOS E SARGAÇO", "WINDMILLS & SEAWEED"],
         "text": [
-          "Praia, memória local e almoço num mesmo setor.",
-          "Beach, local history and lunch in one area."
+          "Um passeio que junta praia, moinhos, museu e almoço na mesma zona.",
+          "An outing that brings beach, windmills, museum and lunch together in one area."
         ],
         "transport": [
           "Confirme a abertura do Museu do Sargaço antes de organizar o dia.",
@@ -781,11 +781,11 @@
     ],
     "routes": [
       {
-        "id": "minho",
-        "label": ["Estadia no Minho", "Staying in the Minho"],
+        "id": "esposende",
+        "label": ["Uma semana em Esposende", "A week in Esposende"],
         "intro": [
-          "Ideias para incluir Esposende numa base regional. A localidade da casa determina a ordem das saídas.",
-          "Ideas for including Esposende in a regional stay. Your home’s location determines the order of outings."
+          "Para uma estadia maior, alterne costa e tempo na casa. Estes seis dias completos são uma sugestão para sete noites, adaptável às suas datas.",
+          "For a longer stay, alternate the coast with time at home. These six full days suggest a rhythm for seven nights, adaptable to your dates."
         ],
         "days": [
           {
@@ -800,11 +800,11 @@
             ]
           },
           {
-            "place": ["A sua base no Minho", "Your base in the Minho"],
-            "title": ["Conhecer onde fica", "Discover your home base"],
+            "place": ["Esposende · Cávado", "Esposende · Cávado"],
+            "title": ["Conhecer a sua base", "Get to know your base"],
             "text": [
-              "Dedique o segundo dia à localidade da casa, com passeio e tempo para descansar.",
-              "Give the second day to your home’s town, with a walk and time to rest."
+              "Passeie pelo centro e pela frente ribeirinha e regresse à casa para uma tarde sem pressa.",
+              "Explore the town and riverfront, then return home for an unhurried afternoon."
             ]
           },
           {
@@ -816,11 +816,11 @@
             ]
           },
           {
-            "place": ["A sua base no Minho", "Your base in the Minho"],
+            "place": ["A sua casa em Esposende", "Your Esposende home"],
             "title": ["Um dia ao seu ritmo", "A day at your pace"],
             "text": [
-              "Aproveite a casa e os serviços próximos, sem acrescentar uma nova excursão.",
-              "Enjoy your home and nearby places without adding another excursion."
+              "Reserve tempo para a casa, uma refeição na zona e o passeio que mais gostou de fazer.",
+              "Make time for the house, a local meal and the walk you most enjoyed."
             ]
           },
           {
@@ -832,11 +832,11 @@
             ]
           },
           {
-            "place": ["Vale do Lima", "Lima valley"],
-            "title": ["Terminar junto ao rio", "Finish beside the river"],
+            "place": ["Esposende", "Esposende"],
+            "title": ["Uma última tarde na costa", "A final afternoon on the coast"],
             "text": [
-              "Passeie em Ponte de Lima ou fique pela casa: a última tarde merece tempo livre.",
-              "Walk in Ponte de Lima or stay at home: leave the final afternoon free."
+              "Volte à zona de praia preferida ou aproveite a casa antes da partida.",
+              "Return to your favourite coastal spot or enjoy the house before departure."
             ]
           }
         ]
@@ -905,35 +905,35 @@
       ]
     ],
     "homes": [
-      "Explore alternativas noutras localidades do Minho e inclua Esposende no roteiro. Consulte a localidade de cada casa e planeie a deslocação à costa.",
-      "Explore alternatives elsewhere in the Minho and include Esposende in your itinerary. Check each home’s locality and plan the trip to the coast."
+      "Encontre a sua base em Esposende. A Shoreline Escape tem três quartos para até sete hóspedes; consulte a distribuição dos espaços e escolha as datas para ver disponibilidade e preço.",
+      "Find your base in Esposende. Shoreline Escape has three bedrooms for up to seven guests; explore the layout and choose dates to check availability and price."
     ],
     "faqs": [
       {
         "question": [
-          "Vale a visita sem ficar em Esposende?",
-          "Is it worth visiting without staying in Esposende?"
+          "Onde ficar em Esposende?",
+          "Where can I stay in Esposende?"
         ],
         "answer": [
-          "Sim. Apúlia e Ofir permitem dias de costa a partir de uma base no Minho, com o percurso planeado desde a casa.",
-          "Yes. Apúlia and Ofir make coastal day trips from a Minho base, with the journey planned from your home."
+          "A Shoreline Escape é um duplex em Esposende com três quartos para até sete hóspedes. A ficha apresenta a distribuição dos espaços, comodidades e condições; escolha datas e hóspedes para consultar a estadia.",
+          "Shoreline Escape is an Esposende duplex with three bedrooms for up to seven guests. Its page presents the layout, amenities and conditions; choose dates and guests to check your stay."
         ]
       },
       {
         "question": [
-          "Onde posso procurar alojamento?",
-          "Where can I look for accommodation?"
+          "Quantas noites devo considerar?",
+          "How many nights should I consider?"
         ],
         "answer": [
-          "A seleção nesta página apresenta alternativas no Minho, com a localidade de cada casa. Confirme a localização antes de escolher.",
-          "This page presents alternatives in the Minho, with each home’s locality. Check the location before choosing."
+          "Três noites dão dois dias completos para o centro e uma saída a Ofir ou Apúlia. Uma semana permite mais praia e tempo na casa. São sugestões de viagem; consulte as condições para a casa e as datas escolhidas.",
+          "Three nights give you two full days for the town and an outing to Ofir or Apúlia. A week leaves more time for the beach and the house. These are trip suggestions; check the conditions for your home and dates."
         ]
       },
       {
         "question": ["Apúlia ou Ofir?", "Apúlia or Ofir?"],
         "answer": [
-          "Apúlia combina moinhos, praia e sargaço. Ofir dá outro dia de costa e pinhal, ligado a Fão.",
-          "Apúlia combines windmills, beach and seaweed heritage. Ofir offers another coastal day with pinewoods, near Fão."
+          "Apúlia combina moinhos, praia e a história do sargaço. Ofir junta praia, dunas e pinhal, perto de Fão. Escolha uma zona por saída para dar tempo ao passeio e à refeição.",
+          "Apúlia combines windmills, beach and seaweed heritage. Ofir brings together beach, dunes and pinewoods near Fão. Choose one area per outing to leave time for a walk and a meal."
         ]
       },
       {
@@ -942,35 +942,35 @@
           "What is there beyond the beach?"
         ],
         "answer": [
-          "Visite o Museu do Sargaço em Apúlia ou escolha a paisagem e o castro de São Lourenço.",
-          "Visit the Seaweed Museum in Apúlia or choose São Lourenço’s scenery and hillfort."
+          "Passeie junto ao Cávado, visite o Museu do Sargaço em Apúlia ou vá até ao castro de São Lourenço, em Vila Chã. Escolha o programa pelo tempo disponível e pelos interesses do grupo.",
+          "Walk beside the Cávado, visit the Seaweed Museum in Apúlia or head to São Lourenço hillfort in Vila Chã. Choose the programme around your time and the group’s interests."
         ]
       },
       {
         "question": [
-          "Consigo fazer tudo a pé?",
-          "Can I do everything on foot?"
+          "Preciso de carro?",
+          "Do I need a car?"
         ],
         "answer": [
-          "Pode explorar uma zona a pé. Para juntar Apúlia, Ofir, centro e São Lourenço, planeie transporte entre setores.",
-          "You can explore one area on foot. Plan transport between Apúlia, Ofir, the centre and São Lourenço."
+          "Pode organizar dias locais a pé a partir da morada da casa. Para combinar Esposende, Ofir, Apúlia e São Lourenço, um carro dá flexibilidade; sem carro, combine os percursos de ida e regresso.",
+          "You can plan local days on foot around the home’s address. A car adds flexibility for combining Esposende, Ofir, Apúlia and São Lourenço; without one, arrange each outward and return journey."
         ]
       },
       {
         "question": [
-          "Como planear com crianças?",
-          "How should we plan with children?"
+          "Como escolher a casa para uma família?",
+          "How should a family choose a home?"
         ],
         "answer": [
-          "Combine um passeio curto, uma refeição e uma visita. Escolha acessos e serviços balneares adequados à data e ao grupo.",
-          "Combine a short walk, a meal and one visit. Choose beach access and services suited to your dates and group."
+          "Compare quartos, camas e escadas com as idades e necessidades do grupo. Na Shoreline Escape, veja a distribuição do duplex e a capacidade de até sete hóspedes. Planeie uma saída principal por dia, deixando tempo para descansar.",
+          "Compare bedrooms, beds and stairs with the group’s ages and needs. At Shoreline Escape, review the duplex layout and capacity of up to seven guests. Plan one main outing each day, with time to rest."
         ]
       },
       {
-        "question": ["O que provar?", "What should I try?"],
+        "question": ["Como consultar disponibilidade e preço?", "How do I check availability and price?"],
         "answer": [
-          "Peixe e cozinha regional em Apúlia, com uma pausa para as Clarinhas em Fão.",
-          "Fish and regional cooking in Apúlia, with a stop for Clarinhas in Fão."
+          "Indique as datas e o número de hóspedes na pesquisa ou na ficha da casa. Compare o total da estadia e as condições antes de avançar. Se pretende chef, shuttle ou outra experiência, peça uma proposta para o serviço.",
+          "Enter dates and guest numbers in the search or on the home’s page. Compare the stay total and conditions before proceeding. For a chef, shuttle or another experience, request a proposal for the service."
         ]
       },
       {
@@ -979,14 +979,14 @@
           "How do I get here from the airport?"
         ],
         "answer": [
-          "Considere Porto (OPO). Compare a ligação pública com táxi ou shuttle Portugal Active, reservado e confirmado para a morada.",
-          "Consider Porto (OPO). Compare public transport with a taxi or Portugal Active shuttle, booked and confirmed for your address."
+          "Compare voos para o Porto (OPO) e a ligação até à morada. Pode escolher carro, táxi ou pedir um shuttle à Portugal Active. Para transportes públicos, planeie as ligações e o trajeto final até à casa.",
+          "Compare flights to Porto (OPO) and the journey to the address. Choose a hire car, taxi or request a Portugal Active shuttle. For public transport, plan the connections and final leg to the house."
         ]
       }
     ],
     "seo": [
-      "Esposende: praias, Apúlia e natureza | Portugal Active",
-      "Esposende: coastal walks, beaches and local flavours | Portugal Active"
+      "Casas de férias em Esposende: praia e Cávado | Portugal Active",
+      "Esposende Holiday Homes: Beach & River Stays | Portugal Active"
     ]
   },
   "porto": {
