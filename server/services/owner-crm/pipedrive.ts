@@ -2,6 +2,8 @@ import { CrmError, type CrmEnquiry, type CrmFile, type CrmGateway } from "./type
 
 export interface PipedriveConfig { token: string; ownerId: number; stageId: number }
 const API = "https://portugalactive.pipedrive.com/api";
+// Verified existing account options; no field/schema creation or later overwrites.
+const propertyTypeOption: Record<string, number> = { villa: 151, apartment: 152, farmhouse: 153, hostel: 154, guesthouse: 155, boutiqueHotel: 156, other: 157 };
 const id = (payload: any) => {
   const value = Number(payload?.data?.id);
   if (!Number.isSafeInteger(value) || value < 1) throw new CrmError("CREATE_UNCONFIRMED", true);
@@ -67,7 +69,9 @@ export class PipedriveGateway implements CrmGateway {
     return id(await this.request("/v2/deals", "POST", { title,
       person_id: personId, owner_id: this.config.ownerId, pipeline_id: 1, stage_id: this.config.stageId, status: "open", currency: "EUR",
       custom_fields: { "3a4458a2c4f594775453a118d0573b7279866105": 37, "687102d74877dfa1e2d679cd1c671cabcecf7edd": "Portugal Active · Management",
-        "6c2d373ce54c79d3b0cda47281273511c38d8fee": String(e.attribution.campaign || "Website Management") } }));
+        "6c2d373ce54c79d3b0cda47281273511c38d8fee": String(e.attribution.campaign || "Website Management"),
+        ...(propertyTypeOption[e.type] ? { "bbcf4de8b2feb36dc3041087ae7e114918450d4e": propertyTypeOption[e.type] } : {}),
+        ...(e.source === "v4" && e.locality ? { "2c10ff14f44288ca9f891a7abb4e52a0efe667a7": e.locality } : {}) } }));
   }
   async findNotes(dealId: number, marker: string) {
     return (await this.list("/v1/notes", { deal_id: dealId })).filter(n => String(n.content || "").includes(marker)).map(n => Number(n.id));

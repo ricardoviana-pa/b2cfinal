@@ -94,6 +94,19 @@ describe("CRM content and isolation", () => {
   it("labels net income and qualification honestly; escapes HTML and avoids private continuation tokens", () => {
     const content = noteContent(example()); expect(content).toContain("líquida anual"); expect(content).toContain("30.000–60.000"); expect(content).toContain("&lt;script&gt;"); expect(content).not.toContain("#token="); expect(content).toContain("A aguardar fotografias");
   });
+  it("renders an escaped HTTP photo link as a clear action awaiting team review", () => {
+    const e = example(); e.details.photosLink = 'https://example.com/álbum?view=1&caption=%22casa%22';
+    const content = noteContent(e);
+    expect(content).toContain('href="https://example.com/%C3%A1lbum?view=1&amp;caption=%22casa%22"');
+    expect(content).toContain('>Ver fotografias</a>'); expect(content).toContain("Por rever pela equipa."); expect(content).not.toContain("fotografias aprovadas");
+  });
+  it.each(["javascript:alert(1)", "Fotos enviadas por telefone", "not a url"])('does not create an anchor from invalid photo link %s', value => {
+    const e = example(); e.details.photosLink = value; const content = noteContent(e); expect(content).not.toContain("<a "); expect(content).toContain("A aguardar fotografias");
+  });
+  it("does not disclose a pasted private continuation link or token in the CRM note", () => {
+    const e = example(); e.details.photosLink = "https://www.portugalactive.com/management/complete/?lang=pt#token=synthetic-private-token";
+    const content = noteContent(e); expect(content).not.toContain("synthetic-private-token"); expect(content).not.toContain("/management/complete/"); expect(content).not.toContain("<a "); expect(content).toContain("Link pessoal de acompanhamento omitido");
+  });
   it("snapshot changes when a photo arrives and file name uses full digest", () => {
     const e = example(); const first = snapshotHash(e); e.details.photosLink = "https://example.com/photo"; expect(snapshotHash(e)).not.toBe(first);
     expect(remoteFilename({ id: "a", name: "private.jpg", size: 1, mimeType: "image/jpeg", digest: "a".repeat(64) })).toBe(`PA-${"a".repeat(64)}.jpg`);

@@ -32,6 +32,19 @@ describe("Pipedrive HTTP contract", () => {
     expect(body).toMatchObject({ person_id: 7, owner_id: 22976488, pipeline_id: 1, stage_id: 1, status: "open" }); expect(body).not.toHaveProperty("value");
     expect(body.custom_fields["3a4458a2c4f594775453a118d0573b7279866105"]).toBe(37);
   });
+  it.each([["villa", 151], ["apartment", 152], ["farmhouse", 153], ["hostel", 154], ["guesthouse", 155], ["boutiqueHotel", 156], ["other", 157]])("maps declared property type %s only on creation", async (type, option) => {
+    const fetcher = vi.fn(async () => result({ id: 9 }));
+    await new PipedriveGateway(config, fetcher).createDeal({ ...e, source: "v4", type: String(type) }, 7, "PA-OWNER-v4-synthetic");
+    const body = JSON.parse((fetcher.mock.calls[0] as unknown as [string, RequestInit])[1].body as string);
+    expect(body.custom_fields["bbcf4de8b2feb36dc3041087ae7e114918450d4e"]).toBe(option);
+    expect(body.custom_fields["2c10ff14f44288ca9f891a7abb4e52a0efe667a7"]).toBe(e.locality);
+  });
+  it("does not mislabel a legacy street address as municipality or guess an unknown enum", async () => {
+    const fetcher = vi.fn(async () => result({ id: 9 }));
+    await new PipedriveGateway(config, fetcher).createDeal({ ...e, source: "v3", type: "unknown-legacy-type" }, 7, "PA-OWNER-v3-synthetic");
+    const body = JSON.parse((fetcher.mock.calls[0] as unknown as [string, RequestInit])[1].body as string);
+    expect(body.custom_fields).not.toHaveProperty("bbcf4de8b2feb36dc3041087ae7e114918450d4e"); expect(body.custom_fields).not.toHaveProperty("2c10ff14f44288ca9f891a7abb4e52a0efe667a7");
+  });
   it("checks existing inbox leads and open opportunities across all pipelines", async () => {
     const fetcher = vi.fn().mockResolvedValueOnce(result([{ id: 9, pipeline_id: 12, title: "Earlier property opportunity" }]))
       .mockResolvedValueOnce(result([{ id: "synthetic-lead-uuid", title: "Existing inbox lead", is_archived: false }]));

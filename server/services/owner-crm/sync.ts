@@ -22,8 +22,22 @@ export function snapshotHash(e: CrmEnquiry) {
 const escape = (value: unknown) => String(value ?? "Por confirmar").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 const labels: Record<string, string> = { yes: "Sim", no: "Não", maybe: "Talvez", pending: "Em processo", unknown: "Por confirmar", villa: "Moradia", apartment: "Apartamento", farmhouse: "Quinta", hostel: "Hostel", guesthouse: "Guesthouse", boutiqueHotel: "Hotel boutique", other: "Outro" };
 const display = (v: unknown) => typeof v === "string" ? labels[v] || v || "Por confirmar" : v ?? "Por confirmar";
+function photoLink(value: unknown): { href: string | null; text: string } {
+  const raw = typeof value === "string" ? value.trim() : "";
+  if (!raw) return { href: null, text: "Não fornecido" };
+  try {
+    const url = new URL(raw);
+    // A private continuation link is an authentication capability, not a photo album.
+    if ((url.hostname === "portugalactive.com" || url.hostname.endsWith(".portugalactive.com"))
+      && /^\/management\/complete(?:\/|$)/i.test(url.pathname)) {
+      return { href: null, text: "Link pessoal de acompanhamento omitido; solicitar um link de fotografias." };
+    }
+    if (!["https:", "http:"].includes(url.protocol) || url.username || url.password) return { href: null, text: raw };
+    return { href: url.href, text: url.href };
+  } catch { return { href: null, text: raw }; }
+}
 export function noteContent(e: CrmEnquiry) {
-  const d = e.details; const photos = !!d.photosLink || e.files.some(f => f.mimeType.startsWith("image/"));
+  const d = e.details; const link = photoLink(d.photosLink); const photos = !!link.href || e.files.some(f => f.mimeType.startsWith("image/"));
   const status = e.qualified ? photos ? "Dados e fotografias recebidos — avaliar" : "A aguardar fotografias" : photos ? "Fotografias recebidas — completar qualificação no contacto" : "Contacto recebido — falta qualificação e fotografias";
   const fields: [string, unknown][] = [
     ["Estado do pedido", status], ["Nome", e.name], ["Email", e.email], ["Telefone", e.phone], ["Localidade", e.locality], ["Tipo de imóvel", display(e.type)],
@@ -32,13 +46,15 @@ export function noteContent(e: CrmEnquiry) {
     ["Vive alguém na casa", display(d.occupied)], ["Detalhes de ocupação", d.occupiedDetails], ["À venda", display(d.forSale)], ["Interesse em vender com a PA", display(d.saleInterest)],
     ["Entrada no mercado", OWNER_TIMELINE_LABELS[d.launchTimeline as keyof typeof OWNER_TIMELINE_LABELS] || "Por confirmar"],
     ["Expectativa líquida anual para o proprietário", OWNER_INCOME_LABELS[d.incomeExpectation as keyof typeof OWNER_INCOME_LABELS] || "Por confirmar"],
-    ["Link de fotografias", d.photosLink], ["Anexos atualmente enviados", e.files.map(f => f.name).join(", ") || "Sem anexos"],
+    ["Link de fotografias", link.text], ["Anexos atualmente enviados", e.files.map(f => f.name).join(", ") || "Sem anexos"],
     ["Recebido em", e.capturedAt.toISOString()], ["Atualizado em", e.modifiedAt.toISOString()], ["Referência do pedido", e.id],
     ["Idioma", e.context.language], ["Página", e.context.page_path], ["Posição do formulário", e.context.placement], ["Região", e.context.region],
     ["UTM origem", e.attribution.source], ["UTM meio", e.attribution.medium], ["UTM campanha", e.attribution.campaign], ["UTM conteúdo", e.attribution.content], ["Página de entrada", e.attribution.landing_path],
   ];
   return `<h2>Portugal Active · Pedido de gestão</h2><p><strong>${escape(enquiryMarker(e))}</strong></p>`
-    + fields.map(([label, value]) => `<p><strong>${escape(label)}:</strong> ${escape(value || "Por confirmar").replace(/\n/g, "<br>")}</p>`).join("")
+    + fields.map(([label, value]) => `<p><strong>${escape(label)}:</strong> ${label === "Link de fotografias" && link.href
+      ? `<a href="${escape(link.href)}" target="_blank" rel="noopener noreferrer">Ver fotografias</a><br>${escape(link.text)}<br>Por rever pela equipa.`
+      : escape(value || "Por confirmar").replace(/\n/g, "<br>")}</p>`).join("")
     + "<p>Fotografias e links requerem revisão da equipa. Dados declarados pelo proprietário; o rendimento indicado é uma expectativa líquida anual, não uma previsão da Portugal Active. Informação de privacidade aceite para tratar o pedido, sem subscrição de marketing. Esta nota é atualizada pelo site; registe as notas comerciais separadamente.</p>";
 }
 export function remoteFilename(file: CrmFile) {
