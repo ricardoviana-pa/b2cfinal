@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { automationEligible, ensureRemote, hash, noteContent, remoteFilename, snapshotHash, syncEnquiry } from "./sync";
-import { CrmError, type CrmEnquiry, type CrmGateway, type CrmLedger, type CrmOperation } from "./types";
+import { CrmError, type CrmEnquiry, type CrmFieldState, type CrmGateway, type CrmLedger, type CrmOperation } from "./types";
+import { desiredPropertyFields, emptyFieldState } from "./fields";
 import { ownerCrmConfig } from "./service";
 
 const example = (): CrmEnquiry => ({ source: "v4", id: "00000000-0000-4000-8000-000000000001", sourceKey: "v4:00000000-0000-4000-8000-000000000001",
@@ -9,7 +10,10 @@ const example = (): CrmEnquiry => ({ source: "v4", id: "00000000-0000-4000-8000-
   attribution: { source: "google", campaign: "synthetic" }, status: "awaiting_photos", qualified: true, files: [] });
 function memoryLedger() {
   const operations = new Map<string, CrmOperation>();
+  const fieldStates = new Map<string, CrmFieldState>();
   const ledger: CrmLedger = {
+    fieldState: async key => structuredClone(fieldStates.get(key) || emptyFieldState()),
+    saveFieldState: async (key, value) => { fieldStates.set(key, structuredClone(value)); },
     checkpoint: vi.fn(async () => {}),
     operation: async key => { if (!operations.has(key)) operations.set(key, { key, status: "ready", remoteId: null }); return { ...operations.get(key)! }; },
     attempting: async key => { const op = operations.get(key)!; if (op.status !== "ready") return false; op.status = "attempting"; return true; },
@@ -19,8 +23,10 @@ function memoryLedger() {
   return { ledger, operations };
 }
 function gateway(): CrmGateway {
+  let fields: Record<string, unknown> = {};
   return { findPersons: vi.fn(async () => []), createPerson: vi.fn(async () => 11), findDeals: vi.fn(async () => []), otherOpenDeals: vi.fn(async () => []),
-    createDeal: vi.fn(async () => 22), findNotes: vi.fn(async () => []), createNote: vi.fn(async () => 33), updateNote: vi.fn(async () => {}), findFiles: vi.fn(async () => []), createFile: vi.fn(async () => 44) };
+    createDeal: vi.fn(async e => { fields = desiredPropertyFields(e); return 22; }), readDealFields: vi.fn(async () => ({ ...fields })), updateDealFields: vi.fn(async (_id, patch) => { fields = { ...fields, ...patch }; }),
+    findNotes: vi.fn(async () => []), createNote: vi.fn(async () => 33), updateNote: vi.fn(async () => {}), findFiles: vi.fn(async () => []), createFile: vi.fn(async () => 44) };
 }
 describe("durable owner CRM identity", () => {
   it("replaying a completed enquiry creates one person, opportunity and note", async () => {
@@ -65,6 +71,21 @@ describe("durable owner CRM identity", () => {
     const { ledger } = memoryLedger(); const find = vi.fn(async () => []); const create = vi.fn().mockRejectedValueOnce(new CrmError("PIPEDRIVE_HTTP_429", false, true)).mockResolvedValue(55);
     await expect(ensureRemote(ledger, "deal", find, create)).rejects.toThrow("429"); expect(await ensureRemote(ledger, "deal", find, create)).toBe(55); expect(create).toHaveBeenCalledTimes(2);
   });
+  it("a transient preflight lookup failure does not reserve an ambiguous remote create", async () => {
+    const { ledger, operations } = memoryLedger(); const find = vi.fn(async () => []); const create = vi.fn(async () => 55);
+    const prepare = vi.fn().mockRejectedValueOnce(new CrmError("PIPEDRIVE_UNAVAILABLE")).mockResolvedValue(undefined);
+    await expect(ensureRemote(ledger, "deal", find, create, prepare)).rejects.toThrow("PIPEDRIVE_UNAVAILABLE");
+    expect(operations.get("deal")?.status).toBe("ready"); expect(create).not.toHaveBeenCalled();
+    expect(await ensureRemote(ledger, "deal", find, create, prepare)).toBe(55); expect(create).toHaveBeenCalledTimes(1);
+  });
+  it("an attachment read failure before upload remains safely retryable", async () => {
+    const { ledger, operations } = memoryLedger(); const api = gateway(); const e = example(); const content = Buffer.from("synthetic photo");
+    e.files = [{ id: "a", name: "a.png", mimeType: "image/png", size: content.length, digest: hash(content.toString()) }];
+    const read = vi.fn().mockRejectedValueOnce(new Error("transient storage read")).mockResolvedValue(content);
+    await expect(syncEnquiry(e, ledger, api, read)).rejects.toThrow("transient storage read");
+    expect([...operations.values()].find(op => op.key.includes(":file:"))?.status).toBe("ready"); expect(api.createFile).not.toHaveBeenCalled();
+    await syncEnquiry(e, ledger, api, read); expect(api.createFile).toHaveBeenCalledTimes(1);
+  });
   it("two racing workers cannot both reserve a create", async () => {
     const { ledger } = memoryLedger(); const create = vi.fn(async () => 55);
     const results = await Promise.allSettled([ensureRemote(ledger, "deal", async () => [], create), ensureRemote(ledger, "deal", async () => [], create)]);
@@ -106,6 +127,21 @@ describe("CRM content and isolation", () => {
   it("does not disclose a pasted private continuation link or token in the CRM note", () => {
     const e = example(); e.details.photosLink = "https://www.portugalactive.com/management/complete/?lang=pt#token=synthetic-private-token";
     const content = noteContent(e); expect(content).not.toContain("synthetic-private-token"); expect(content).not.toContain("/management/complete/"); expect(content).not.toContain("<a "); expect(content).toContain("Link pessoal de acompanhamento omitido");
+  });
+  it("historical photo follow-up preserves original v3 reference without claiming a new checkbox consent", () => {
+    const e = example(); e.context = { page_kind: "crm-photo-followup", page_id: "v3:00000000-0000-4000-8000-000000000002" };
+    e.privacyNoticeVersion = "owner-crm-photo-followup"; e.originalSourceKey = "v3:00000000-0000-4000-8000-000000000002"; e.originalRequestedAt = new Date("2026-11-01T12:00:00Z");
+    const content = noteContent(e); expect(content).toContain("PA-OWNER-v3-00000000-0000-4000-8000-000000000002");
+    expect(content).toContain("Pedido existente no CRM; contacto para obter elementos necessários à avaliação"); expect(content).not.toContain("Informação de privacidade aceite"); expect(content).toContain("Sem subscrição de marketing");
+    expect(content).toContain("Pedido original recebido em"); expect(content).toContain("2026-11-01T12:00:00.000Z"); expect(content).toContain("Seguimento criado em");
+  });
+  it("public attribution cannot impersonate an imported enquiry or its original reference", () => {
+    const e = example(); e.context = { page_kind: "crm-photo-followup", page_id: "v3:00000000-0000-4000-8000-000000000002" }; e.privacyNoticeVersion = "owner-intake-v4";
+    const content = noteContent(e); expect(content).toContain("Informação de privacidade aceite"); expect(content).not.toContain("Pedido existente no CRM"); expect(content).not.toContain("PA-OWNER-v3-00000000-0000-4000-8000-000000000002");
+  });
+  it("legacy form records do not gain a privacy checkbox claim that was never captured", () => {
+    const e = example(); e.source = "v3"; e.details.schemaVersion = "owner-intake-legacy";
+    expect(noteContent(e)).toContain("Pedido recebido pelo formulário anterior"); expect(noteContent(e)).not.toContain("Informação de privacidade aceite");
   });
   it("snapshot changes when a photo arrives and file name uses full digest", () => {
     const e = example(); const first = snapshotHash(e); e.details.photosLink = "https://example.com/photo"; expect(snapshotHash(e)).not.toBe(first);

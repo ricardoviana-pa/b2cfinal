@@ -2,7 +2,8 @@ import { randomUUID } from "node:crypto";
 import { sql, type SQL } from "drizzle-orm";
 import { getDb } from "../../db";
 import { isOwnerIntakeProduction } from "../owner-intake/email";
-import { CrmError, type CrmEnquiry, type CrmFile, type CrmLedger, type CrmOperation, type CrmSource } from "./types";
+import { CrmError, type CrmEnquiry, type CrmFile, type CrmFieldState, type CrmLedger, type CrmOperation, type CrmSource } from "./types";
+import { emptyFieldState, PROPERTY_FIELDS_VERSION } from "./fields";
 
 export const CRM_SCHEMA = [
   `CREATE TABLE IF NOT EXISTS owner_crm_links (
@@ -18,6 +19,9 @@ export const CRM_SCHEMA = [
   )`,
   `CREATE TABLE IF NOT EXISTS owner_crm_lease (
     id varchar(20) NOT NULL PRIMARY KEY, leaseToken varchar(36) NULL, expiresAt datetime(3) NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS owner_crm_field_state (
+    stateKey varchar(150) NOT NULL PRIMARY KEY, state json NOT NULL, updatedAt datetime(3) NOT NULL
   )`,
 ] as const;
 type Executor = { execute(statement: SQL): Promise<unknown> };
@@ -43,6 +47,19 @@ export async function releaseCrmLease(token: string) {
 }
 export function sqlLedger(token: string): CrmLedger {
   return {
+    async fieldState(key) {
+      const db = await database();
+      const found = rows<{ state: CrmFieldState | string }>(await db.execute(sql`SELECT state FROM owner_crm_field_state WHERE stateKey = ${key} LIMIT 1`))[0];
+      return found ? object(found.state) as CrmFieldState : emptyFieldState();
+    },
+    async saveFieldState(key, state) {
+      const db = await database();
+      const changed = affected(await db.execute(sql`INSERT INTO owner_crm_field_state (stateKey, state, updatedAt)
+        SELECT ${key}, ${JSON.stringify(state)}, UTC_TIMESTAMP(3) FROM owner_crm_lease
+        WHERE id = 'sweep' AND leaseToken = ${token} AND expiresAt > UTC_TIMESTAMP(3)
+        ON DUPLICATE KEY UPDATE state = VALUES(state), updatedAt = UTC_TIMESTAMP(3)`));
+      if (!changed) throw new CrmError("LEASE_LOST");
+    },
     async checkpoint() {
       const db = await database();
       const changed = affected(await db.execute(sql`UPDATE owner_crm_lease SET expiresAt = DATE_ADD(UTC_TIMESTAMP(3), INTERVAL 5 MINUTE)
@@ -80,11 +97,16 @@ export async function crmCandidates(from: Date, source: CrmSource, limit = 20) {
   const db = await database();
   const testIds = (process.env.OWNER_AUTOMATION_TEST_IDS || "").split(",").map(v => v.trim()).filter(v => /^[0-9a-f-]{36}$/i.test(v));
   const authorizedTest = testIds.length ? sql`l.status = 'excluded' AND e.id IN (${sql.join(testIds.map(id => sql`${id}`), sql`, `)})` : sql`FALSE`;
-  const query = source === "v4" ? sql`SELECT e.* FROM owner_v4_enquiries e LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v4:', e.id)
+  const query = source === "v4" ? sql`SELECT e.*, h.originalSourceKey, h.originalRequestedAt FROM owner_v4_enquiries e
+    LEFT JOIN owner_crm_photo_requests h ON h.enquiryId = e.id LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v4:', e.id)
     WHERE e.capturedAt >= ${from} AND (l.sourceKey IS NULL OR e.updatedAt > l.sourceModifiedAt
+      OR (l.status = 'synced' AND NOT EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey = CONCAT('enquiry:v4:', e.id, ':', ${PROPERTY_FIELDS_VERSION}) AND status = 'done'))
       OR (l.status IN ('retry','review') AND l.nextAttemptAt <= UTC_TIMESTAMP(3)) OR (${authorizedTest})) ORDER BY e.capturedAt, e.id LIMIT ${limit}`
     : sql`SELECT e.* FROM owner_enquiries e LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v3:', e.id)
-    WHERE e.createdAt >= ${from} AND (l.sourceKey IS NULL OR e.updatedAt > l.sourceModifiedAt
+    WHERE e.createdAt >= ${from}
+      AND NOT EXISTS (SELECT dealId FROM owner_crm_photo_requests h WHERE h.originalSourceKey = CONCAT('v3:', e.id) AND h.enquiryId <> e.id)
+      AND (l.sourceKey IS NULL OR e.updatedAt > l.sourceModifiedAt
+      OR (l.status = 'synced' AND NOT EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey = CONCAT('enquiry:v3:', e.id, ':', ${PROPERTY_FIELDS_VERSION}) AND status = 'done'))
       OR (l.status IN ('retry','review') AND l.nextAttemptAt <= UTC_TIMESTAMP(3)) OR (${authorizedTest})) ORDER BY e.createdAt, e.id LIMIT ${limit}`;
   const enquiries: CrmEnquiry[] = [];
   for (const row of rows<any>(await db.execute(query))) {
@@ -94,7 +116,9 @@ export async function crmCandidates(from: Date, source: CrmSource, limit = 20) {
       enquiries.push({ source, id: row.id, sourceKey: `${source}:${row.id}`, modifiedAt: new Date(row.updatedAt), capturedAt: new Date(row.capturedAt),
         name: contact.name, email: contact.email, phone: contact.phone || "", locality: contact.locality || "", type: contact.type || "",
         details: object(row.details), context: object(row.context), attribution: object(row.attribution), status: row.status,
-        qualified: !!row.qualificationCompletedAt, files });
+        qualified: !!row.qualificationCompletedAt, files, privacyNoticeVersion: row.privacyNoticeVersion,
+        ...(row.originalSourceKey ? { originalSourceKey: row.originalSourceKey } : {}),
+        ...(row.originalRequestedAt ? { originalRequestedAt: new Date(row.originalRequestedAt) } : {}) });
     } else {
       const p = object(row.payload);
       enquiries.push({ source, id: row.id, sourceKey: `${source}:${row.id}`, modifiedAt: new Date(row.updatedAt), capturedAt: new Date(row.createdAt),
@@ -148,14 +172,18 @@ export async function crmStorageHealth() {
     if (!Number.isFinite(+from)) return { storageReady: true, attentionRequired: true };
     await db.execute(sql`SELECT operationKey, remoteId FROM owner_crm_operations LIMIT 0`);
     await db.execute(sql`SELECT id, leaseToken FROM owner_crm_lease LIMIT 0`);
+    await db.execute(sql`SELECT stateKey, state FROM owner_crm_field_state LIMIT 0`);
     const flagged = rows(await db.execute(sql`SELECT sourceKey FROM owner_crm_links WHERE status = 'review'
       OR (status = 'retry' AND sourceModifiedAt < DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 15 MINUTE)) LIMIT 1`)).length > 0;
     const v4Pending = rows(await db.execute(sql`SELECT e.id FROM owner_v4_enquiries e LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v4:', e.id)
       WHERE e.capturedAt >= ${from} AND e.updatedAt < DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 15 MINUTE)
-      AND (l.sourceKey IS NULL OR (l.status <> 'excluded' AND (l.sourceModifiedAt IS NULL OR l.sourceModifiedAt < e.updatedAt))) LIMIT 1`)).length > 0;
+      AND (l.sourceKey IS NULL OR (l.status <> 'excluded' AND (l.sourceModifiedAt IS NULL OR l.sourceModifiedAt < e.updatedAt))
+        OR (l.status = 'synced' AND NOT EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey = CONCAT('enquiry:v4:', e.id, ':', ${PROPERTY_FIELDS_VERSION}) AND status = 'done'))) LIMIT 1`)).length > 0;
     const v3Pending = rows(await db.execute(sql`SELECT e.id FROM owner_enquiries e LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v3:', e.id)
       WHERE e.createdAt >= ${from} AND e.updatedAt < DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 15 MINUTE)
-      AND (l.sourceKey IS NULL OR (l.status <> 'excluded' AND (l.sourceModifiedAt IS NULL OR l.sourceModifiedAt < e.updatedAt))) LIMIT 1`)).length > 0;
+      AND NOT EXISTS (SELECT dealId FROM owner_crm_photo_requests h WHERE h.originalSourceKey = CONCAT('v3:', e.id) AND h.enquiryId <> e.id)
+      AND (l.sourceKey IS NULL OR (l.status <> 'excluded' AND (l.sourceModifiedAt IS NULL OR l.sourceModifiedAt < e.updatedAt))
+        OR (l.status = 'synced' AND NOT EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey = CONCAT('enquiry:v3:', e.id, ':', ${PROPERTY_FIELDS_VERSION}) AND status = 'done'))) LIMIT 1`)).length > 0;
     return { storageReady: true, attentionRequired: flagged || v4Pending || v3Pending };
   } catch { return { storageReady: false, attentionRequired: true }; }
 }

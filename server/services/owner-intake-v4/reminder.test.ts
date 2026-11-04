@@ -6,7 +6,7 @@ vi.mock("../../db", () => ({ getDb: fake.db }));
 vi.mock("../owner-intake/email", async original => ({ ...await original<any>(), isOwnerIntakeProduction: fake.production }));
 import { PHOTO_REMINDER_DELAY_MS, photoRemindersEnabled, reminderEligible, reminderFrom, reminderWelcomeReady } from "./reminder";
 import { prepareV4ReminderDelivery, queueV4PhotoReminders } from "./store";
-import { photoReminderMail } from "./email";
+import { photoReminderMail, photoRequestMail } from "./email";
 import { recordInput, SYNTHETIC_TOKEN, testNow } from "./fixtures.test-utils";
 import type { V4Outbox } from "./types";
 const now = new Date(testNow.getTime() + PHOTO_REMINDER_DELAY_MS);
@@ -141,5 +141,44 @@ describe("one restrained owner photo reminder", () => {
       expect(mail.from).toContain("management@portugalactive.com");
       if (["he", "ar"].includes(language)) expect(mail.html).toContain('dir="rtl"');
     }
+  });
+});
+
+describe("explicit historical photo delivery", () => {
+  function historical() {
+    const record = recordInput(); record.capturedAt = now; record.updatedAt = now;
+    record.privacyAcknowledgedAt = null; record.privacyNoticeVersion = "owner-crm-photo-followup";
+    const m = memory(record); m.outbox.delete(`${record.id}:welcome`);
+    m.outbox.set(`${record.id}:photo-reminder`, { id: `${record.id}:photo-reminder`, enquiryId: record.id, kind: "historical_photos",
+      payload: { mail: photoRequestMail(record, url), completionUrl: url, fileIds: [] }, attachmentBytes: 0, status: "pending" });
+    return m;
+  }
+  it("delivers an explicitly requested fresh continuation without a welcome or artificial aging", async () => {
+    const m = historical(); const item = m.claim();
+    expect(await prepareV4ReminderDelivery(item, now, true)).toBe(true);
+    expect(m.outbox.has(`${m.record.id}:welcome`)).toBe(false);
+    expect(m.statements.some(q => q.startsWith("SELECT status, firstAttemptAt, payload"))).toBe(false);
+  });
+  it("shares the existing reminder identity so an automatic sweep cannot create another request", async () => {
+    const m = historical();
+    expect(await queueV4PhotoReminders(new Date(+now + PHOTO_REMINDER_DELAY_MS))).toBe(0);
+    expect(m.outbox.size).toBe(1); expect(m.reminder().kind).toBe("historical_photos");
+  });
+  it("cancels for photos or a closed CRM deal, including on repeated dispatch", async () => {
+    const m = historical(); const item = m.claim();
+    m.files.push({ mimeType: "image/png" });
+    expect(await prepareV4ReminderDelivery(item, now, true)).toBe(false); expect(m.reminder().status).toBe("cancelled");
+    m.files.length = 0; expect(await prepareV4ReminderDelivery(item, now, true)).toBe(false);
+    const other = historical(); const second = other.claim();
+    expect(await prepareV4ReminderDelivery(second, now, false)).toBe(false); expect(other.reminder().status).toBe("cancelled");
+  });
+  it("respects the stop switch and still checks the same recipient, token and expiry", async () => {
+    const m = historical(); const item = m.claim();
+    vi.stubEnv("OWNER_PHOTO_REMINDERS_ENABLED", "false");
+    expect(await prepareV4ReminderDelivery(item, now, true)).toBe(false); expect(m.reminder().status).toBe("pending");
+    expect(+m.reminder().nextAttemptAt).toBe(+now + 15 * 60_000);
+    vi.stubEnv("OWNER_PHOTO_REMINDERS_ENABLED", "true"); const again = m.claim();
+    m.record.tokenExpiresAt = now;
+    expect(await prepareV4ReminderDelivery(again, now, true)).toBe(false); expect(m.reminder().status).toBe("cancelled");
   });
 });

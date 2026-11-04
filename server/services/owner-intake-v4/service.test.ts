@@ -29,8 +29,8 @@ describe("v4 bounded durable delivery", () => {
     await finish(deliverV4(item.id));
     expect(fake.send).toHaveBeenCalledTimes(1);
   });
-  it("cancels a reminder for a closed deal and defers without sending when CRM status is unknown", async () => {
-    const item = { id: "synthetic:photo-reminder", enquiryId: "synthetic", kind: "photo_reminder", attempts: 1, leaseAt: lease, payload: { mail: { html: "reminder" }, fileIds: [] } };
+  it.each(["photo_reminder", "historical_photos"])("cancels %s for a closed deal and defers without sending when CRM status is unknown", async kind => {
+    const item = { id: "synthetic:photo-reminder", enquiryId: "synthetic", kind, attempts: 1, leaseAt: lease, payload: { mail: { html: "reminder" }, fileIds: [] } };
     fake.claim.mockResolvedValue(item); fake.crmAllows.mockResolvedValue(false); fake.prepareReminder.mockResolvedValue(false);
     await finish(deliverV4(item.id));
     expect(fake.prepareReminder).toHaveBeenCalledWith(item, expect.any(Date), false); expect(fake.send).not.toHaveBeenCalled();

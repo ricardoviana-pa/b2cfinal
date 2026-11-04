@@ -36,7 +36,7 @@ export async function deliverV4(id: string) {
   try {
     const files = await v4MailFiles(item);
     await providerPace();
-    if (item.kind === "photo_reminder") {
+    if (["photo_reminder", "historical_photos"].includes(item.kind)) {
       let crmAllows: boolean;
       try { crmAllows = await ownerCrmAllowsPhotoReminder(item.enquiryId); }
       catch { throw new V4DeliveryError("CRM_REMINDER_STATUS_UNAVAILABLE", 900, false, true); }
