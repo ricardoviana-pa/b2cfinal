@@ -6,19 +6,20 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { blogAuthorName, blogCategoryLabel } from '@/lib/blogLabels';
-import { useBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
+import { journalLocale, type JournalCard } from '@shared/journal';
+import { trpc } from '@/lib/trpc';
+import JournalRequestState from '@/components/blog/JournalRequestState';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
-import { Link } from 'wouter';
+import { Link, useSearch } from 'wouter';
+import { withEditorialTrip } from '@shared/editorialTripContext';
 import { Clock, ArrowRight, Calendar, Play } from 'lucide-react';
 import BookingCTA from '@/components/property/BookingCTA';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import type { BlogArticle, BlogCategory } from '@/lib/types';
-import blogData from '@/data/blog.json';
-import { isBlogLanguagePublished } from '@shared/blogPublication';
+import type { BlogCategory } from '@/lib/types';
 import { formatSiteDate } from '@shared/siteDate';
 
 // Article dates are calendar days: the same text on the server and in every
@@ -26,13 +27,6 @@ import { formatSiteDate } from '@shared/siteDate';
 // day early and React threw #418).
 const articleDate = (date: string, lang: string) =>
   formatSiteDate(date, lang, { day: 'numeric', month: 'short', year: 'numeric' });
-
-// Newest first. The SSR index used to open on the Video tab (nine posts from
-// 2019-2023) and never sorted, so crawlers and first paint missed the thirty
-// editorial articles, including the newest ones (auditoria set/2026, N3).
-const articles = ((blogData as any).articles as BlogArticle[])
-  .slice()
-  .sort((a, b) => (b.publishDate || "").localeCompare(a.publishDate || ""));
 
 const FALLBACK_IMAGES: Record<string, string> = {
   destinations: "/destinations/minho-coast.webp",
@@ -43,20 +37,24 @@ const FALLBACK_IMAGES: Record<string, string> = {
   people: "/experiences/team-curation.webp",
 };
 
-function getArticleImage(article: BlogArticle): string {
+function getArticleImage(article: JournalCard): string {
   return (article as any).coverImage || (article as any).featuredImage || FALLBACK_IMAGES[article.category] || FALLBACK_IMAGES.destinations;
 }
 
 export default function Blog() {
   const { t, i18n } = useTranslation();
+  const search = useSearch();
   usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
   // Journal opens on All, newest first; the video tab is one tap away.
   const [searchText, setSearchText] = useState('');
   const [activeCategory, setActiveCategory] = useState<BlogCategory | "all">("all");
 
-  // Overlay per-locale article translations (slug-keyed), active language only.
-  const blogOverrides = useBlogOverrides(i18n.language);
-  const locArticles = useMemo(() => articles.filter(a => isBlogLanguagePublished(a, i18n.language)).map(a => mergeBlogOverride(a, blogOverrides)!), [blogOverrides, i18n.language]);
+  // Localized card metadata only, newest first; hydrated from the same SSR query.
+  const indexQuery = trpc.blog.siteIndex.useQuery(
+    { locale: journalLocale(i18n.language) },
+    { staleTime: 5 * 60 * 1000, retry: 1 },
+  );
+  const locArticles = indexQuery.data ?? [];
 
   const blogGraph = useMemo(() => {
     const publishedArticles = locArticles.filter((a) => a.status === 'published');
@@ -114,6 +112,8 @@ export default function Blog() {
   const featured = activeCategory === 'all' && !searchText.trim() ? filtered[0] : undefined;
   const rest = featured ? filtered.slice(1) : filtered;
 
+  if (!indexQuery.data) return <JournalRequestState failed={indexQuery.isError} retry={() => { void indexQuery.refetch(); }} />;
+
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <StructuredData id="blog-graph" data={blogGraph} />
@@ -159,7 +159,7 @@ export default function Blog() {
       {featured && activeCategory === 'all' && (
         <section className="section-padding">
           <div className="container">
-            <Link href={`/blog/${featured.slug}`} className="group block">
+            <Link href={withEditorialTrip(`/blog/${featured.slug}`, search)} className="group block">
               <div className="grid md:grid-cols-2 gap-8 md:gap-12">
                 <div className="aspect-[4/3] overflow-hidden rounded-xl bg-[#F5F1EB] relative">
                   <img
@@ -218,7 +218,7 @@ export default function Blog() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {rest.map(article => (
-                <Link key={article.id} href={`/blog/${article.slug}`} className="group block">
+                <Link key={article.id} href={withEditorialTrip(`/blog/${article.slug}`, search)} className="group block">
                   <div className="aspect-[4/3] overflow-hidden rounded-xl bg-[#F5F1EB] mb-4 relative">
                     <img
                       src={cdnResize(getArticleImage(article), 768)}

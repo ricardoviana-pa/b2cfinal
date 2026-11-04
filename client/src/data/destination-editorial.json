@@ -3,24 +3,24 @@
     "name": ["Viana do Castelo", "Viana do Castelo"],
     "line": ["Entre o Lima e o mar.", "Where the Lima meets the sea."],
     "intro": [
-      "Uma manhã sobre a cidade, uma tarde na praia e uma mesa que convida a ficar.",
-      "A morning above the city, an afternoon on the beach and a table worth lingering over."
+      "Escolha entre dias na cidade, manhãs no Cabedelo e uma casa na costa norte.",
+      "Choose between city days, Cabedelo mornings and a home on the northern coast."
     ],
     "orientation": [
-      "No litoral do Minho, a norte do Porto, Viana reúne centro histórico, rio e Atlântico. Santa Luzia mostra essa relação de uma só vez; depois, vale a pena descer e descobrir cada lugar com tempo.",
-      "On the Minho coast, north of Porto, Viana brings together a historic centre, river and Atlantic shore. Santa Luzia reveals the whole setting; come back down and give each place time."
+      "O centro de Viana, o Cabedelo na margem sul e a costa de Carreço e Afife oferecem bases diferentes. Comece pelo que quer fazer a pé e pelas deslocações que aceita ter. Depois compare casas, quartos e datas na localidade escolhida.",
+      "Central Viana, Cabedelo on the south bank and the coast around Carreço and Afife offer different bases. Start with what you want to do on foot and the journeys you are happy to make. Then compare homes, bedrooms and dates in your chosen locality."
     ],
     "fit": [
-      "Para casais e famílias que gostam de alternar cidade, praia e pequenas descobertas.",
-      "For couples and families who enjoy a mix of town life, beach time and small discoveries."
+      "Para casais, famílias e amigos que querem combinar cidade, praia e tempo na casa.",
+      "For couples, families and friends combining city visits, beach time and days at the house."
     ],
     "airport": [
       "Porto (OPO); compare também Vigo (VGO).",
       "Porto (OPO); also compare Vigo (VGO)."
     ],
     "mobility": [
-      "Centro a pé; transporte para combinar as duas margens e a costa.",
-      "Walk around the centre; use transport to explore both riverbanks and the coast."
+      "No centro, planeie os percursos a pé. Para Cabedelo, Carreço e outras bases, confirme ida e regresso até à casa.",
+      "Plan walking routes in the centre. For Cabedelo, Carreço and other bases, check the outward and return journeys to your home."
     ],
     "point": [94, 64],
     "photo": {
@@ -79,36 +79,36 @@
         "name": "Centro / Lima",
         "tag": ["CIDADE E MESA", "CITY & FOOD"],
         "text": [
-          "Para sair a pé, descobrir o património e escolher restaurantes no centro.",
-          "For walks, heritage and restaurants in the centre."
+          "Para dar prioridade às praças, museus e refeições na cidade, com menos deslocações entre programas.",
+          "For city squares, museums and meals, with fewer journeys between plans."
         ],
         "transport": [
-          "Confirme o percurso desde a casa, as escadas e o estacionamento.",
-          "Check the route from your home, steps and parking."
+          "Confirme o percurso desde a casa e desde a estação/interface, as escadas e o estacionamento, se necessário.",
+          "Check the route from the home and station/interchange, steps and parking if needed."
         ]
       },
       {
         "name": "Cabedelo / margem sul",
         "tag": ["TEMPO DE PRAIA", "BEACH TIME"],
         "text": [
-          "Para dar mais espaço à costa e às atividades junto à água.",
-          "For more time on the coast and activities by the water."
+          "Para ter a praia como parte principal da estadia e reservar algumas saídas para o centro de Viana.",
+          "For a stay centred on the beach, with selected outings into Viana’s centre."
         ],
         "transport": [
-          "Planeie a ligação ao centro; a margem da casa muda os percursos.",
-          "Plan the trip into town; your riverbank makes a difference."
+          "A margem sul muda o percurso para o centro. Confirme o acesso da casa ao areal e o transporte de regresso.",
+          "The south bank changes the route into town. Check the home’s beach access and the return transport."
         ]
       },
       {
-        "name": "Carreço / costa norte",
+        "name": "Carreço / Afife",
         "tag": ["AREAL E PAISAGEM", "SAND & SCENERY"],
         "text": [
-          "Para explorar a costa norte e regressar a uma estadia mais tranquila.",
-          "For exploring the northern coast and returning to a quieter base."
+          "Para explorar a costa a norte de Viana e combinar passeios com tempo na casa. Compare a localidade de cada opção.",
+          "For the coast north of Viana, combining outings with time at the house. Compare the locality of each option."
         ],
         "transport": [
-          "Carro ou transporte reservado ajudam nas saídas e jantares.",
-          "A car or booked transport helps with outings and dinners."
+          "Planeie praia, refeições e último regresso a partir da morada; chegar à estação não resolve todos os percursos.",
+          "Plan beach trips, meals and the last return from the home’s location; reaching a station does not cover every journey."
         ]
       }
     ],
@@ -253,62 +253,52 @@
       ]
     ],
     "homes": [
-      "Escolha pela localização e pelo que valoriza nos seus dias. Uma casa identificada como Viana pode ficar no centro, junto à costa ou no interior do concelho; consulte a localização de cada opção.",
-      "Choose by location and what matters to your days. A home labelled Viana may be in town, near the coast or inland within the municipality; check each listing’s location."
+      "Compare quartos, capacidade e localização, depois escolha as datas para consultar disponibilidade e preço. As casas identificadas em Viana podem ter ambientes diferentes; Carreço surge como localidade própria na pesquisa. Confirme na ficha o acesso à praia, os espaços privados ou partilhados e os serviços da sua reserva.",
+      "Compare bedrooms, guest capacity and location, then choose dates to check availability and price. Homes labelled Viana can have different settings; Carreço is a separate search locality. Check beach access, private or shared spaces and the services for your booking on the home page."
     ],
     "faqs": [
+      {
+        "question": [
+          "Onde ficar: centro, Cabedelo ou costa norte?",
+          "Where should I stay: the centre, Cabedelo or the northern coast?"
+        ],
+        "answer": [
+          "Escolha o centro para museus e refeições na cidade; Cabedelo para uma estadia orientada para a praia; Carreço ou Afife para explorar a costa norte. Confirme sempre os percursos a partir da casa concreta.",
+          "Choose the centre for museums and meals in town, Cabedelo for a beach-led stay, or Carreço and Afife for the northern coast. Check journeys from the specific home in each case."
+        ]
+      },
+      {
+        "question": ["Posso ficar sem carro?", "Can I stay without a car?"],
+        "answer": [
+          "Pode organizar uma estadia centrada na cidade a pé e com transportes, escolhendo uma casa com acessos adequados. Para praias e outras localidades, confirme paragens, horários e o último trajeto até ao alojamento antes de reservar.",
+          "You can plan a city-focused stay on foot and by public transport by choosing a suitably located home. For beaches and other localities, check stops, timetables and the final journey to the accommodation before booking."
+        ]
+      },
       {
         "question": [
           "A praia fica no centro?",
           "Is the beach in the city centre?"
         ],
         "answer": [
-          "Há várias praias no concelho. Cabedelo fica na margem sul do Lima; escolha a casa e os transportes de acordo com a praia que prefere.",
-          "The municipality has several beaches. Cabedelo is on the southern bank of the Lima; choose your home and transport around your preferred beach."
-        ]
-      },
-      {
-        "question": ["Posso ficar sem carro?", "Can I stay without a car?"],
-        "answer": [
-          "Um programa centrado na cidade pode funcionar a pé e com transportes. Para combinar praias, campo e várias localidades, organize as deslocações.",
-          "A city-focused stay can work on foot and by public transport. Arrange journeys if combining beaches, countryside and several towns."
-        ]
-      },
-      {
-        "question": [
-          "Qual aeroporto escolher?",
-          "Which airport should I choose?"
-        ],
-        "answer": [
-          "Porto (OPO) é a referência; compare também Vigo (VGO), incluindo a viagem até à casa.",
-          "Porto (OPO) is the main option; also compare Vigo (VGO), including the journey to your home."
+          "Cabedelo fica na margem sul do Lima, do outro lado do rio em relação ao centro. Há outras praias no concelho; a indicação Viana numa casa não garante praia a pé. Confirme o areal e o percurso que lhe interessam.",
+          "Cabedelo is on the south bank of the Lima, across the river from the centre. The municipality has other beaches; a Viana location label does not guarantee walking access to the sand. Check the beach and route that matter to you."
         ]
       },
       {
         "question": ["Quantas noites ficar?", "How many nights should I stay?"],
         "answer": [
-          "Três noites dão dois dias completos para cidade e costa. Cinco ou sete deixam espaço para o vale do Lima e outras saídas.",
-          "Three nights give you two full days for town and coast. Five or seven add room for the Lima valley and other outings."
+          "Três noites são uma opção para ter dois dias completos de cidade e costa. Cinco ou sete deixam mais espaço para experiências e tempo na casa. É uma sugestão de roteiro: a estadia mínima e os dias de chegada dependem da casa e das datas.",
+          "Three nights is one option for two full days in the city and on the coast. Five or seven leave more time for experiences and days at the house. This is an itinerary suggestion: minimum stays and arrival days depend on the home and dates."
         ]
       },
       {
         "question": [
-          "O que há além da praia?",
-          "What is there beyond the beach?"
+          "O que comparar antes de reservar uma casa?",
+          "What should I compare before booking a home?"
         ],
         "answer": [
-          "Santa Luzia, Gil Eannes, Museu do Traje e Parque Ecológico Urbano permitem construir dias muito diferentes.",
-          "Santa Luzia, Gil Eannes, the Costume Museum and Urban Ecological Park make for very different days."
-        ]
-      },
-      {
-        "question": [
-          "Há atividades para principiantes?",
-          "Are there activities for beginners?"
-        ],
-        "answer": [
-          "Escolha a modalidade e confirme idade, nível, equipamento e condições com o operador antes de reservar.",
-          "Choose an activity and confirm age, level, equipment and conditions with the operator before booking."
+          "Além da capacidade total, veja os quartos, camas, casas de banho e espaço para refeições. Confirme localização, piscina privada ou partilhada quando exista, limpeza incluída e serviços opcionais. Selecione as suas datas para consultar preço e condições.",
+          "Alongside guest capacity, compare bedrooms, beds, bathrooms and dining space. Check location, private or shared pool where relevant, included housekeeping and optional services. Select your dates to see the price and terms."
         ]
       },
       {
@@ -317,21 +307,31 @@
           "How should I choose a home with children?"
         ],
         "answer": [
-          "Veja os acessos reais à praia, os serviços próximos e as características da casa, incluindo escadas e proteção da piscina quando exista.",
-          "Check actual beach access, nearby services and the home’s features, including steps and pool protection where relevant."
+          "Comece pela distribuição dos quartos e pelos percursos do dia a dia. Pergunte sobre escadas, berço, acesso ao exterior e proteção da piscina quando exista. A capacidade para uma família não confirma, por si só, estas características.",
+          "Start with bedroom layout and everyday journeys. Ask about stairs, a cot, outdoor access and pool protection where relevant. Space for a family does not by itself confirm these features."
+        ]
+      },
+      {
+        "question": [
+          "Qual aeroporto escolher?",
+          "Which airport should I choose?"
+        ],
+        "answer": [
+          "Compare Porto (OPO) e Vigo (VGO) pelo voo e pela viagem completa até à casa. A partir do Porto há uma ligação GET BUS a Viana; confirme o horário para a sua data e o trajeto final até ao alojamento.",
+          "Compare Porto (OPO) and Vigo (VGO) by flight and the full journey to your home. GET BUS runs a connection from Porto Airport to Viana; check the timetable for your date and the final journey to the accommodation."
         ]
       },
       {
         "question": ["Organizam a chegada?", "Can you arrange our arrival?"],
         "answer": [
-          "Sim. A Portugal Active organiza shuttles mediante proposta e confirmação prévias, com voo, passageiros, bagagem e morada.",
-          "Yes. Portugal Active arranges shuttles through an agreed proposal, using your flight, passengers, luggage and address."
+          "A equipa pode ajudar a organizar um shuttle ou transfer mediante proposta e confirmação prévias. Partilhe voo, número de passageiros, bagagem e alojamento para confirmar percurso, horário e preço.",
+          "The team can help arrange a shuttle or transfer through a proposal confirmed in advance. Share your flight, passenger numbers, luggage and accommodation to confirm the route, time and price."
         ]
       }
     ],
     "seo": [
-      "Férias em Viana do Castelo: Onde Ficar e o que Fazer | Portugal Active",
-      "Viana do Castelo Holidays: Where to Stay & What to Do | Portugal Active"
+      "Casas de férias em Viana do Castelo: onde ficar | Portugal Active",
+      "Viana do Castelo Holiday Homes: Where to Stay | Portugal Active"
     ]
   },
   "caminha": {

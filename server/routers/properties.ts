@@ -87,11 +87,11 @@ export const propertiesRouter = router({
    *  listForSite this CAN be SSR-prefetched — which is the point: the links
    *  must exist in the article's HTML, not appear after hydration. */
   relatedHomes: publicProcedure
-    .input(z.object({ destinationTag: z.string().nullable().optional(), limit: z.number().int().min(1).max(12).optional() }))
+    .input(z.object({ destinationTag: z.string().nullable().optional(), limit: z.number().int().min(1).max(12).optional(), articleSlug: z.string().min(1).max(160).optional() }))
     .query(async ({ ctx, input }) => {
       ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
       const { getRelatedHomes } = await import("../services/related-homes");
-      return getRelatedHomes(input.destinationTag ?? null, input.limit ?? 4);
+      return getRelatedHomes(input.destinationTag ?? null, input.limit ?? 4, input.articleSlug);
     }),
 
   getBySlugForSite: publicProcedure

@@ -5,12 +5,12 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { getDisplayName } from '@shared/displayName';
 import { articleContents, reviewedArticleDate } from '@shared/articleNavigation';
-import { pushDL } from '@/lib/datalayer';
+import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import { useParams, Link, useSearch } from 'wouter';
 import { withEditorialTrip } from '@shared/editorialTripContext';
 import ArticleBody from '@/components/blog/ArticleBody';
 import { stripPhotoLines } from '@shared/articlePhotos';
-import { blogLanguageRedirect, isBlogLanguagePublished } from '@shared/blogPublication';
+import { journalLocale } from '@shared/journal';
 import { useTranslation } from 'react-i18next';
 import { blogAuthorName, blogAuthorRole, blogCategoryLabel } from '@/lib/blogLabels';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -20,12 +20,8 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { StructuredData, buildArticleSchema, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import AnswerCapsule from '@/components/seo/AnswerCapsule';
-import type { BlogArticle as BlogArticleType } from '@/lib/types';
-import blogData from '@/data/blog.json';
-import { useBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
+import JournalRequestState from '@/components/blog/JournalRequestState';
 import { trpc } from '@/lib/trpc';
-
-const articles = (blogData as any).articles as BlogArticleType[];
 
 /* ── Video embed: supports Vimeo (primary) and YouTube (fallback) ── */
 function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: string; title: string }) {
@@ -91,12 +87,16 @@ export default function BlogArticle() {
   const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const search = useSearch();
-  // Articles are authored in English; overlay per-locale translations
-  // (slug-keyed), loading only the active language's file. EN fallback.
-  const blogOverrides = useBlogOverrides(i18n.language);
-  const rawArticle = articles.find(a => a.slug === slug && a.status === 'published');
-  const article = useMemo(() => mergeBlogOverride(rawArticle, blogOverrides), [rawArticle, blogOverrides]);
-  const redirect = rawArticle ? blogLanguageRedirect(rawArticle, i18n.language) : null;
+  // The server sends just this localized article and three light related cards.
+  // Each locale/slug has its own cache entry, with no previous-language placeholder.
+  const articleQuery = trpc.blog.siteArticle.useQuery(
+    { locale: journalLocale(i18n.language), slug: slug ?? '' },
+    { staleTime: 5 * 60 * 1000, retry: 1, enabled: !!slug },
+  );
+  const article = articleQuery.data?.article;
+  const rawArticle = article; // The service preserves source routing/publication fields.
+  const redirect = articleQuery.data?.redirect;
+  const relatedArticles = articleQuery.data?.relatedArticles ?? [];
   const reviewed = article ? reviewedArticleDate(article,i18n.language) : undefined;
   const contents = useMemo(() => article ? articleContents(article.content) : [], [article]);
   const editorialCta = reviewed ? article?.cta : undefined;
@@ -108,8 +108,8 @@ export default function BlogArticle() {
     image: article?.coverImage || article?.featuredImage,
     url: article ? `/blog/${article.slug}` : undefined,
     type: 'article',
-    // Unknown slug: a 404 on the server, noindex here, no alternates (P7).
-    noindex: !article,
+    // Only a confirmed missing article is a 404; loading/network errors are not.
+    noindex: articleQuery.isSuccess && !article && !redirect,
   });
 
   const articleSchema = useMemo(() => {
@@ -131,17 +131,16 @@ export default function BlogArticle() {
     });
   }, [article, i18n.language, reviewed]);
 
-  // Homes to send the reader to. Keyed off rawArticle, not the merged one:
-  // destinationTag is language-independent and the locale overrides load
-  // asynchronously, so using the merged article would change the query key
-  // mid-flight and refetch data the server already embedded.
+  // Language-independent destinationTag/slug match the query embedded by SSR.
   const { data: relatedHomesData } = trpc.properties.relatedHomes.useQuery(
-    { destinationTag: (rawArticle as any)?.destinationTag ?? null, limit: 4 },
+    { destinationTag: (rawArticle as any)?.destinationTag ?? null, limit: 4, articleSlug: rawArticle?.slug },
     { enabled: Boolean(rawArticle) && !redirect && rawArticle?.commercialIntent !== 'corporate' },
   );
   const relatedHomes = relatedHomesData ?? [];
 
   if (redirect) return null;
+
+  if (!articleQuery.data) return <JournalRequestState failed={articleQuery.isError} retry={() => { void articleQuery.refetch(); }} />;
 
   if (!article) {
     return (
@@ -155,10 +154,6 @@ export default function BlogArticle() {
       </div>
     );
   }
-
-  const relatedArticles = articles
-    .filter(a => a.id !== article.id && a.status === 'published' && a.category === article.category && (a.commercialIntent === 'corporate') === (article.commercialIntent === 'corporate') && isBlogLanguagePublished(a, i18n.language))
-    .slice(0, 3).map(a => mergeBlogOverride(a, blogOverrides)!);
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -181,6 +176,13 @@ export default function BlogArticle() {
           <p className="eyebrow mb-4">{blogCategoryLabel(article.category, t)}</p>
           <h1 className="text-[#1A1A18] mb-6">{article.title}</h1>
           {reviewed && <p className="body-lg mb-6">{article.excerpt}</p>}
+          {article.slug === 'viana-do-castelo-guide' && ['en', 'pt'].includes(journalLocale(i18n.language)) && editorialCta && (
+            <Link href={withEditorialTrip(editorialCta.href, search)}
+              className="inline-flex min-h-11 items-center text-sm text-pa-gold-aa underline underline-offset-4 mb-6"
+              onClick={() => pushDL({ event: 'editorial_guide', article_slug: article.slug, language: journalLocale(i18n.language), section: 'intro', action: 'homes', target_path: editorialCta.href.split(/[?#]/)[0] })}>
+              {editorialCta.label}
+            </Link>
+          )}
           <div className="flex flex-wrap items-center gap-4 text-sm text-[#726D63]">
             <span className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
@@ -242,7 +244,7 @@ export default function BlogArticle() {
       <section className="pb-16">
         <div className="container max-w-3xl mx-auto">
           {reviewed && contents.length > 0 && <nav aria-label={t('planning.inThisGuide')} className="bg-pa-warm border-y border-pa-sand p-6 mb-10"><h2 className="text-base font-medium mb-3">{t('planning.inThisGuide')}</h2><ol className="grid sm:grid-cols-2 gap-x-7 gap-y-1">{contents.map(h=><li key={h.id}><a href={`#${h.id}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4" onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:h.id,action:'chapter'})}>{h.title}</a></li>)}</ol></nav>}
-          <ArticleBody content={article.content} onLink={action=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'body',action})} />
+          <ArticleBody content={article.content} onLink={(action,targetPath)=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'body',action,...(targetPath ? {target_path:targetPath} : {})})} />
         </div>
       </section>
 
@@ -301,8 +303,13 @@ export default function BlogArticle() {
             <h2 className="text-[#1A1A18] mb-2">{t('blogArticle.relatedHomes')}</h2>
             <p className="text-pa-stone-aa mb-8">{t('blogArticle.relatedHomesSub')}</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {relatedHomes.map(home => (
-                <Link key={home.slug} href={withEditorialTrip(`/homes/${home.slug}`,search)} className="group block">
+              {relatedHomes.map((home, index) => (
+                <Link key={home.slug} href={withEditorialTrip(`/homes/${home.slug}`,search)} className="group block"
+                  onClick={() => {
+                    pushDL({ event: 'editorial_guide', article_slug: article.slug, language: i18n.language.split('-')[0], section: 'related_homes', action: 'homes', target_path: `/homes/${home.slug}` });
+                    pushEcommerce({ event: 'select_item', ecommerce: { item_list_id: `journal_${article.slug}`, item_list_name: article.title,
+                      items: [{ item_id: `PROP-${home.catalogId}`, item_name: home.name, item_category: 'villa', item_category2: home.locality || home.destination || '', index }] } });
+                  }}>
                   <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-3">
                     {home.image && (
                       <img
@@ -321,9 +328,10 @@ export default function BlogArticle() {
                   <h3 className="text-base font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors line-clamp-2">
                     {getDisplayName(home)}
                   </h3>
-                  {(home.locality || home.bedrooms) && (
+                  {(home.locality || home.bedrooms || home.maxGuests) && (
                     <p className="text-sm text-pa-stone-aa mt-1">
-                      {[home.locality, home.bedrooms ? t('blogArticle.bedroomCount', { count: home.bedrooms }) : null]
+                      {[home.locality, home.bedrooms ? t('blogArticle.bedroomCount', { count: home.bedrooms }) : null,
+                        home.maxGuests ? t('search.guestsCount', { count: home.maxGuests }) : null]
                         .filter(Boolean)
                         .join(' · ')}
                     </p>

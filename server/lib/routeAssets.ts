@@ -18,7 +18,7 @@
  * Everything comes from Vite's build manifest (dist/public/.vite/manifest.json).
  * Without it (dev server, a build without the manifest) nothing is added.
  */
-import { CONTENT_MODULES, contentKindsForPath, needsBlogOverrides } from "../../shared/contentRoutes";
+import { CONTENT_MODULES, contentKindsForPath } from "../../shared/contentRoutes";
 
 export interface ViteManifestChunk {
   file: string;
@@ -36,11 +36,12 @@ const LANGS = ["en", "pt", "fr", "es", "it", "de", "nl", "sv", "fi"];
 
 /**
  * The lazy page module App.tsx renders for a path (locale removed). Mirrors
- * <Router> in client/src/App.tsx — server/perf-route-assets.test.ts checks
- * the two agree. The home page is not here: it ships inside the entry bundle.
+ * <Router> in client/src/App.tsx — server/perf-cache-and-assets.test.ts checks
+ * the two agree. Home is split too, so internal pages do not load its code.
  * Checkout, booking, account and admin routes are left out on purpose.
  */
 const PAGE_ROUTES: Array<[RegExp, string]> = [
+  [/^\/$/, "src/pages/Home.tsx"],
   [/^\/homes$/, "src/pages/Homes.tsx"],
   [/^\/homes\/[^/]+$/, "src/pages/PropertyDetail.tsx"],
   [/^\/destinations$/, "src/pages/Destinations.tsx"],
@@ -124,7 +125,6 @@ export function routeAssets(manifest: ViteManifest, lang: string, strippedPath: 
 
   add(modules, manifest[`src/i18n/locales/${code}.json`]?.file);
   if (code !== "en") {
-    if (needsBlogOverrides(strippedPath)) add(modules, manifest[CONTENT_MODULES.blog(code)]?.file);
     for (const kind of contentKindsForPath(strippedPath)) add(modules, manifest[CONTENT_MODULES[kind](code)]?.file);
   }
 

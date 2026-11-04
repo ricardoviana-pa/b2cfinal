@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
+import { getJournalArticlePage, getJournalIndex } from '../services/journal';
+
+const localeInput = z.enum(['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv']);
 
 const authorInput = z.object({
   name: z.string().min(1),
@@ -30,6 +33,19 @@ const postInput = z.object({
 });
 
 export const blogRouter = router({
+  /** Editorial files drive the guest Journal; database CMS routes stay separate. */
+  siteIndex: publicProcedure.input(z.object({ locale: localeInput }))
+    .query(async ({ input, ctx }) => {
+      const data = await getJournalIndex(input.locale);
+      ctx.res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=60');
+      return data;
+    }),
+  siteArticle: publicProcedure.input(z.object({ locale: localeInput, slug: z.string().min(1).max(180) }))
+    .query(async ({ input, ctx }) => {
+      const data = await getJournalArticlePage(input.slug, input.locale);
+      ctx.res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=60');
+      return data;
+    }),
   // Authors
   authors: router({
     list: adminProcedure

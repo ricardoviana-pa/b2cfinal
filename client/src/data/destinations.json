@@ -313,8 +313,8 @@
       "longitude": -8.8344
     },
     "tagline": "Where the Lima meets the sea.",
-    "description": "On the Minho coast, north of Porto, Viana brings together a historic centre, river and Atlantic shore. Santa Luzia reveals the whole setting; come back down and give each place time.",
-    "heroSubtitle": "A morning above the city, an afternoon on the beach and a table worth lingering over.",
+    "description": "Central Viana, Cabedelo on the south bank and the coast around Carreço and Afife offer different bases. Start with what you want to do on foot and the journeys you are happy to make. Then compare homes, bedrooms and dates in your chosen locality.",
+    "heroSubtitle": "Choose between city days, Cabedelo mornings and a home on the northern coast.",
     "coverImage": "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965330b6d209c001510dd49/43c0ede3-0bca-48-6y2Ze",
     "regionImage": "https://images.pexels.com/photos/33812433/pexels-photo-33812433.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "gallery": [],
@@ -334,12 +334,12 @@
       "Gateway to the Vinho Verde appellation and the Loureiro grape's place of origin"
     ],
     "comingSoon": false,
-    "seoTitle": "Viana do Castelo Holidays: Where to Stay & What to Do | Portugal Active",
-    "seoDescription": "Explore Viana do Castelo’s beaches, old town and countryside. Choose your area, discover holiday homes and plan your stay with Portugal Active.",
+    "seoTitle": "Viana do Castelo Holiday Homes: Where to Stay | Portugal Active",
+    "seoDescription": "Choose where to stay in Viana do Castelo: city centre, Cabedelo or northern coast. Compare homes, bedrooms and location, then check your dates.",
     "howToGetHere": "Porto airport (OPO) 45–50 min by A28 (toll-free through Viana since Jan 2025). CP intercity from Porto Campanhã 1h15–1h25. Vigo airport 1h from the Spanish side. Lisbon is 4h by motorway.",
     "bestTimeToVisit": "Late May to June and September. Warm, drier weather (20–25°C), vineyards either at their greenest or at full vindima, and crowds that are manageable rather than absent.",
     "whatToExpect": "A working Atlantic city, more Atlantic than Mediterranean — fishing boats at dawn, basilica at sunset, Vinho Verde at every table.",
-    "whereToStayIntro": "Portugal Active manages a curated portfolio of homes in and around Viana do Castelo, from restored merchant townhouses in the historic centre to private quintas in the Lima valley and Atlantic-facing properties on the coast. Services vary by home. Check the property page and your proposal for included cleaning, optional services and any additional charges before booking. The selection below is a starting point. The full collection is searchable by capacity, dates, and proximity to the historic centre, the river, or the ocean.",
+    "whereToStayIntro": "Compare bedrooms, guest capacity and location, then choose dates to check availability and price. Homes labelled Viana can have different settings; Carreço is a separate search locality. Check beach access, private or shared spaces and the services for your booking on the home page.",
     "journalSectionTitle": "From the journal — stories from Viana do Castelo",
     "thingsToDoIntro": "What follows is what locals would recommend to a first-time visitor with three days. The historic centre is small enough to walk in an afternoon. The hilltop deserves its own morning. The waterfront is a separate world, between river and ocean. And what lies outside the city — the Lima valley, Ponte de Lima, Caminha at the Spanish border, Peneda-Gerês — is the reason most return visitors come back for a second stay.",
     "thingsToDo": [
@@ -595,36 +595,36 @@
     ],
     "faqs": [
       {
-        "question": "Is the beach in the city centre?",
-        "answer": "The municipality has several beaches. Cabedelo is on the southern bank of the Lima; choose your home and transport around your preferred beach."
+        "question": "Where should I stay: the centre, Cabedelo or the northern coast?",
+        "answer": "Choose the centre for museums and meals in town, Cabedelo for a beach-led stay, or Carreço and Afife for the northern coast. Check journeys from the specific home in each case."
       },
       {
         "question": "Can I stay without a car?",
-        "answer": "A city-focused stay can work on foot and by public transport. Arrange journeys if combining beaches, countryside and several towns."
+        "answer": "You can plan a city-focused stay on foot and by public transport by choosing a suitably located home. For beaches and other localities, check stops, timetables and the final journey to the accommodation before booking."
       },
       {
-        "question": "Which airport should I choose?",
-        "answer": "Porto (OPO) is the main option; also compare Vigo (VGO), including the journey to your home."
+        "question": "Is the beach in the city centre?",
+        "answer": "Cabedelo is on the south bank of the Lima, across the river from the centre. The municipality has other beaches; a Viana location label does not guarantee walking access to the sand. Check the beach and route that matter to you."
       },
       {
         "question": "How many nights should I stay?",
-        "answer": "Three nights give you two full days for town and coast. Five or seven add room for the Lima valley and other outings."
+        "answer": "Three nights is one option for two full days in the city and on the coast. Five or seven leave more time for experiences and days at the house. This is an itinerary suggestion: minimum stays and arrival days depend on the home and dates."
       },
       {
-        "question": "What is there beyond the beach?",
-        "answer": "Santa Luzia, Gil Eannes, the Costume Museum and Urban Ecological Park make for very different days."
-      },
-      {
-        "question": "Are there activities for beginners?",
-        "answer": "Choose an activity and confirm age, level, equipment and conditions with the operator before booking."
+        "question": "What should I compare before booking a home?",
+        "answer": "Alongside guest capacity, compare bedrooms, beds, bathrooms and dining space. Check location, private or shared pool where relevant, included housekeeping and optional services. Select your dates to see the price and terms."
       },
       {
         "question": "How should I choose a home with children?",
-        "answer": "Check actual beach access, nearby services and the home’s features, including steps and pool protection where relevant."
+        "answer": "Start with bedroom layout and everyday journeys. Ask about stairs, a cot, outdoor access and pool protection where relevant. Space for a family does not by itself confirm these features."
+      },
+      {
+        "question": "Which airport should I choose?",
+        "answer": "Compare Porto (OPO) and Vigo (VGO) by flight and the full journey to your home. GET BUS runs a connection from Porto Airport to Viana; check the timetable for your date and the final journey to the accommodation."
       },
       {
         "question": "Can you arrange our arrival?",
-        "answer": "Yes. Portugal Active arranges shuttles through an agreed proposal, using your flight, passengers, luggage and address."
+        "answer": "The team can help arrange a shuttle or transfer through a proposal confirmed in advance. Share your flight, passenger numbers, luggage and accommodation to confirm the route, time and price."
       }
     ],
     "relatedDestinations": [

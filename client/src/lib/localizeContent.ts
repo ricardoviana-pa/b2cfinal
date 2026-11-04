@@ -19,9 +19,8 @@
    client-rendered.
    ========================================================================== */
 import { useEffect, useState } from 'react';
-import { contentKindsForPath, needsBlogOverrides, type ContentKind } from '@shared/contentRoutes';
+import { contentKindsForPath, type ContentKind } from '@shared/contentRoutes';
 import { deepMerge, baseLang } from './deepMerge';
-import { loadBlogOverrides } from './localizeBlog';
 
 export { deepMerge } from './deepMerge';
 export { localizeItem, localizeProduct, localizeService } from './localizeProduct';
@@ -90,15 +89,13 @@ export function getContentOverrides(kind: ContentKind, lang: string | undefined)
 
 /**
  * Preload the catalogues a path needs, for `lang`. Called by the server before
- * rendering and by main.tsx before hydrating; no-op for English. The blog file
- * and the content files load in parallel (the server also modulepreloads them
- * from the <head>, so on a first visit they are usually already here).
+ * rendering and by main.tsx before hydrating; no-op for English. Journal pages
+ * use their own SSR-seeded query data, so they need no translation catalogue.
  */
 export async function preloadContentOverrides(lang: string | undefined, pathWithoutLocale: string): Promise<void> {
   const code = baseLang(lang);
   if (code === 'en' || !(LANGS as readonly string[]).includes(code)) return;
   await Promise.all([
-    ...(needsBlogOverrides(pathWithoutLocale) ? [loadBlogOverrides(code)] : []),
     ...contentKindsForPath(pathWithoutLocale).map((k) => loadContentOverrides(k, code)),
   ]);
 }

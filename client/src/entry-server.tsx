@@ -26,6 +26,7 @@ import { preloadContentOverrides } from '@/lib/localizeContent';
 import { propertyOverridesQueryKey } from '@/lib/localizeProperty';
 import { SSR_FROM_PRICES_KEY, type SsrFromPrices } from '@/lib/ssrFromPrices';
 import type { ResourceKey } from "i18next";
+import type { JournalArticlePage, JournalCard, JournalLocale } from '@shared/journal';
 import superjson from 'superjson';
 import { trpc } from '@/lib/trpc';
 import App from './App';
@@ -45,6 +46,8 @@ const RESOURCES: Record<string, ResourceKey> = { en, pt, fr, es, it, fi, de, nl,
 
 /** Property data the server has already loaded, to seed the query cache. */
 export interface RenderPrefetch {
+  journalArticle?: { input: { locale: JournalLocale; slug: string }; data: JournalArticlePage };
+  journalIndex?: { input: { locale: JournalLocale }; data: JournalCard[] };
   /** Result of trpc.properties.listForSite (the full site property list). */
   listForSite?: unknown;
   catalogForSite?: unknown;
@@ -61,7 +64,7 @@ export interface RenderPrefetch {
   localities?: unknown;
   /** Result of trpc.properties.relatedHomes for a blog article — a few slim
    *  records, so the article's outbound home links are in the served HTML. */
-  relatedHomes?: { input: { destinationTag: string | null; limit: number }; data: unknown };
+  relatedHomes?: { input: { destinationTag: string | null; limit: number; articleSlug?: string }; data: unknown };
   /** Result of trpc.properties.forDestination for a destination page. */
   destinationHomes?: { input: { slug: string }; data: unknown };
   /** "From €X" the server already has for the page's homes (lib/ssrFromPrices.ts). */
@@ -125,6 +128,12 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
   // render real content. getQueryKey produces the exact key the client hooks
   // use, so the dehydrated state hydrates cleanly with no key mismatch.
   const pf = opts?.prefetch;
+  if (pf?.journalArticle) {
+    queryClient.setQueryData(getQueryKey(trpc.blog.siteArticle, pf.journalArticle.input, 'query'), pf.journalArticle.data);
+  }
+  if (pf?.journalIndex) {
+    queryClient.setQueryData(getQueryKey(trpc.blog.siteIndex, pf.journalIndex.input, 'query'), pf.journalIndex.data);
+  }
   if (pf?.guestFeedback) {
     queryClient.setQueryData(getQueryKey(trpc.properties.guestFeedback, pf.guestFeedback.input, 'query'), pf.guestFeedback.data);
   }

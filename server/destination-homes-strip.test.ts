@@ -39,6 +39,13 @@ describe('which homes a destination block shows', () => {
     const b = visibleDestinationHomes([...homes], { slug: 'lisbon' });
     expect(a.map((h) => h.guestyId)).toEqual(b.map((h) => h.guestyId));
   });
+
+  it('leads with a direct home while retaining partner inventory in the same destination selection', () => {
+    const partner = { guestyId: null, slug: 'premium', source: 'tripwix', propertyType: 'Villa', sortOrder: 0 };
+    const direct = { guestyId: 'direct', slug: 'direct', propertyType: 'Apartment', sortOrder: 99 };
+    expect(visibleDestinationHomes([partner, direct], { slug: 'lisbon' }).map(p => p.slug)).toEqual(['direct', 'premium']);
+    expect(visibleDestinationHomes([partner], { slug: 'algarve' }).map(p => p.slug)).toEqual(['premium']);
+  });
 });
 
 describe('placement in the destination guide', () => {
