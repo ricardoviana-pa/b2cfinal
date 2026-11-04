@@ -1,0 +1,70 @@
+Owner management enquiries: Pipedrive and photo reminder
+Authorised by Ricardo on 4 November 2026.
+
+The public two-step form remains contact-first and photographs remain optional.
+Every saved enquiry is reconciled with Pipedrive, including v3/legacy enquiries
+stored since the form migration. No welcome or sales email is replayed by CRM
+recovery. ActiveCampaign and Make are not reactivated.
+
+New records use Portugal Active's existing Leads & Deals / Inbound routing,
+owner22976488, pipeline1, stage1, status open. Existing contacts are reused by
+exact email. All qualification answers, annual NET owner expectation, attribution
+and current media are in one integration-owned note. Files are uploaded once per
+content digest. Later changes update that note and the same opportunity, leaving
+commercial notes, owner, stage, value and status under the team's control.
+
+An uncertain creation response is held for reconciliation, not blindly repeated.
+An existing opportunity or Leads Inbox item for the contact triggers review before
+a new opportunity is created. Recovery decisions must be recorded administratively
+in the durable operation ledger. Details: server/services/owner-crm/README.md.
+
+The owner receives at most one automatic photo reminder: after48h from capture,
+at least24h after the welcome was accepted, and after24h without recent changes.
+The same private button opens the photo-only page; the full form is not repeated.
+The email has the Portugal Active logo and is available in all10 form languages.
+No reminder is sent once an image or photo link is present, the private link has
+expired, the recipient changed, or the linked CRM deal is closed/archived/deleted.
+The final check runs after local send pacing. An email already accepted by the
+provider cannot be recalled if photos arrive during that final network request.
+The website does not parse email replies. Commercial staff must handle replies;
+closing/archiving the CRM deal prevents the remaining automatic reminder.
+
+Queue rules remain durable across restart, with the same provider idempotency key.
+Welcome and management notifications take priority over reminders. Confirmed quota
+rejections defer instead of dropping the request. Unconfirmed deliveries are held
+before the provider's deduplication window expires, for manual verification.
+
+Resend remains on the user's chosen FREE plan. Its100-emails/day limit is shared
+with other website mail.100 enquiries/day can generate more than100 emails/day;
+the durable queue prevents loss but cannot promise immediate mail at that volume.
+Pipedrive synchronization runs independently of that email quota.
+
+Production feature controls:
+  OWNER_CRM_ENABLED=true
+  PIPEDRIVE_API_TOKEN=<production secret>
+  PIPEDRIVE_OWNER_ID=22976488
+  PIPEDRIVE_STAGE_ID=1
+  OWNER_PHOTO_REMINDERS_ENABLED=true
+  OWNER_AUTOMATION_FROM=2026-11-03T00:00:00Z
+Optional OWNER_AUTOMATION_TEST_IDS explicitly allows only chosen synthetic UUIDs.
+QA identities are otherwise excluded. DEV rejects operational credentials/flags.
+
+Rollout: review and synthetic tests -> required CI -> main/production release ->
+production-only environment configuration -> live schema/queue checks -> controlled
+synthetic enquiry/replay/media/reminder -> reconcile all five genuine missing
+enquiries and repeat the reconciliation checks -> remove temporary QA configuration.
+Schema changes create three owner_crm tables only; existing enquiries are retained.
+
+Rollback: set OWNER_CRM_ENABLED=false and OWNER_PHOTO_REMINDERS_ENABLED=false,
+then redeploy the same verified application commit. This pauses the new work while
+preserving saved requests, CRM mappings and the existing form/email workflow.
+Do not delete or reset operation ledger rows to retry an uncertain remote create.
+
+Health: /api/owner-enquiries/v4/health exposes booleans only, including CRM
+configuration/attention and reminder enabled state. Review cases, stale retries,
+or enquiries not synchronized after15min raise CRM attention. No personal fields,
+private photo links or provider secrets are exposed by this endpoint.
+
+Validation uses synthetic data and mocked providers locally/CI. Production smoke
+tests are explicitly labelled PA-QA and use management@portugalactive.com only.
+No customer data or operational credentials are connected to DEV.

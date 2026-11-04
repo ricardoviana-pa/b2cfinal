@@ -30,6 +30,7 @@ import { startOwnerNotificationSweep } from "../services/owner-intake/service";
 import { registerOwnerV4Routes } from "../routes/owner-enquiries-v4";
 import { initialiseV4Schema } from "../services/owner-intake-v4/store";
 import { startV4Sweep } from "../services/owner-intake-v4/service";
+import { startOwnerCrmSweep } from "../services/owner-crm/service";
 import { permissionsPolicyHeader, registerSecurityTxtRoutes } from "../lib/security-headers";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -817,6 +818,7 @@ ${allUrls.join("\n")}
     console.info(`Server running on http://localhost:${port}/`);
     startOwnerNotificationSweep();
     startV4Sweep();
+    startOwnerCrmSweep();
 
     // Apple Pay: garante o domínio registado na conta Stripe da plataforma
     // (idempotente; dev regista dev., produção regista o domínio live)

@@ -1,7 +1,8 @@
 import express from "express";
 import type { Server } from "node:http";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-const fake = vi.hoisted(() => ({ start: vi.fn(), auth: vi.fn(), draft: vi.fn(), mutate: vi.fn(), media: vi.fn(), file: vi.fn(), remove: vi.fn(), ready: vi.fn(), attention: vi.fn(), kick: vi.fn() }));
+const fake = vi.hoisted(() => ({ start: vi.fn(), auth: vi.fn(), draft: vi.fn(), mutate: vi.fn(), media: vi.fn(), file: vi.fn(), remove: vi.fn(), ready: vi.fn(), attention: vi.fn(), kick: vi.fn(), crmHealth: vi.fn() }));
+vi.mock("../services/owner-crm/service", () => ({ ownerCrmHealth: fake.crmHealth }));
 vi.mock("../services/owner-intake-v4/store", () => ({ startV4: fake.start, authenticateV4: fake.auth, draftV4: fake.draft,
   mutateV4: fake.mutate, submitV4Media: fake.media, addV4File: fake.file, removeV4File: fake.remove, v4SchemaReady: fake.ready, v4AttentionRequired: fake.attention }));
 vi.mock("../services/owner-intake-v4/service", () => ({ kickV4: fake.kick }));
@@ -17,6 +18,7 @@ beforeEach(async () => {
   vi.stubEnv("NODE_ENV", "production"); vi.stubEnv("APP_ENV", "production"); vi.stubEnv("RENDER_GIT_BRANCH", "main");
   vi.stubEnv("RENDER_SERVICE_ID", "srv-d700n5fgi27c73f9bse0"); vi.stubEnv("RESEND_API_KEY", "synthetic-only");
   fake.auth.mockResolvedValue(recordInput()); fake.ready.mockResolvedValue(true); fake.attention.mockResolvedValue(false);
+  fake.crmHealth.mockResolvedValue({ enabled: false, configured: false, storageReady: false, attentionRequired: false });
   fake.start.mockImplementation(async input => ({ success: true, reference: input.requestId, status: "awaiting_details", duplicate: false, continuationToken: SYNTHETIC_TOKEN,
     completionUrl: `${origin}/management/complete/?lang=pt#token=${SYNTHETIC_TOKEN}` }));
   fake.draft.mockResolvedValue({ success: true, reference: recordInput().id, status: "awaiting_details", contact: recordInput().contact, context: recordInput().context, details: null, files: [], expiresAt: "2099-02-01T00:00:00.000Z" });
@@ -35,6 +37,12 @@ function request(route: string, method = "GET", body?: unknown, extra: Record<st
     ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
 }
 describe("v4 private continuation HTTP contract", () => {
+  it("exposes aggregate CRM attention without revealing records or credentials", async () => {
+    fake.crmHealth.mockResolvedValue({ enabled: true, configured: true, storageReady: true, attentionRequired: true });
+    const result = await request("/health"); expect(result.status).toBe(503);
+    const body = await result.json(); expect(body).toMatchObject({ crmEnabled: true, crmConfigured: true, crmAttentionRequired: true });
+    expect(Object.values(body).every(value => typeof value === "boolean" || value === "owner-intake-v4")).toBe(true);
+  });
   it("accepts a small contact before any qualification or optional files", async () => {
     const result = await request("/start", "POST", startInput()); expect(result.status).toBe(201);
     expect(await result.json()).toMatchObject({ success: true, reference: startInput().requestId, continuationToken: SYNTHETIC_TOKEN });
@@ -132,6 +140,7 @@ describe("v4 private continuation HTTP contract", () => {
   });
   it("reports aggregate delivery attention without exposing lead records", async () => {
     fake.attention.mockResolvedValue(true); const response = await request("/health"); expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({ ready: true, schemaVersion: "owner-intake-v4", storageReady: true, emailConfigured: true, deliveryAttentionRequired: true });
+    expect(await response.json()).toEqual({ ready: true, schemaVersion: "owner-intake-v4", storageReady: true, emailConfigured: true, deliveryAttentionRequired: true,
+      crmEnabled: false, crmConfigured: false, crmAttentionRequired: false, photoRemindersEnabled: false });
   });
 });

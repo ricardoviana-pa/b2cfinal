@@ -1,7 +1,8 @@
 import { ownerEmailConfigured, isOwnerIntakeProduction } from "../owner-intake/email";
 import { OWNER_TOTAL_FILE_LIMIT } from "../../../shared/owner-intake";
-import { claimV4, failedV4, initialiseV4Schema, pendingV4, sentV4, v4MailFiles } from "./store";
+import { claimV4, failedV4, initialiseV4Schema, pendingV4, sentV4, v4MailFiles, queueV4PhotoReminders, prepareV4ReminderDelivery } from "./store";
 import { sendV4Mail, V4DeliveryError } from "./email";
+import { ownerCrmAllowsPhotoReminder } from "../owner-crm/service";
 
 /** Two lightweight deliveries may overlap; their total attachment bytes stay bounded. */
 export async function runBoundedDeliveries<T extends { attachmentBytes: number }>(items: T[], deliver: (item: T) => Promise<void>, concurrency = 2, byteLimit = OWNER_TOTAL_FILE_LIMIT) {
@@ -35,6 +36,12 @@ export async function deliverV4(id: string) {
   try {
     const files = await v4MailFiles(item);
     await providerPace();
+    if (item.kind === "photo_reminder") {
+      let crmAllows: boolean;
+      try { crmAllows = await ownerCrmAllowsPhotoReminder(item.enquiryId); }
+      catch { throw new V4DeliveryError("CRM_REMINDER_STATUS_UNAVAILABLE", 900, false, true); }
+      if (!await prepareV4ReminderDelivery(item, new Date(), crmAllows)) return;
+    }
     const providerId = await sendV4Mail(item.id, item.payload.mail, files);
     await sentV4(item, providerId);
   } catch (error) {
@@ -49,6 +56,9 @@ export function sweepV4() {
   if (!ownerEmailConfigured()) return Promise.resolve();
   if (running) { requested = true; return running; }
   running = (async () => {
+    // An optional reminder must never block the original enquiry notifications.
+    try { await queueV4PhotoReminders(); }
+    catch { console.warn("[Owner intake v4] photo reminders deferred; original notifications continue"); }
     for (let round = 0; round < 5; round++) {
       requested = false;
       const items = await pendingV4();

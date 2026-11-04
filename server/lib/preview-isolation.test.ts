@@ -25,6 +25,8 @@ describe("preview deployment boundary", () => {
     expect(() => assertPreviewIsolation({ ...preview, JWT_SECRET: "preview-only", CHECKOUT_RECOVERY: "false" })).not.toThrow();
     expect(() => assertPreviewIsolation({ SITE_URL: "https://www.portugalactive.com", DATABASE_URL: "production-db", NODE_ENV: "production", RENDER_GIT_BRANCH: "main" })).not.toThrow();
     expect(() => assertPreviewIsolation({ ...preview, CHECKOUT_RECOVERY: "true" })).toThrow("CHECKOUT_RECOVERY");
+    expect(() => assertPreviewIsolation({ ...preview, OWNER_CRM_ENABLED: "true" })).toThrow("OWNER_CRM_ENABLED");
+    expect(() => assertPreviewIsolation({ ...preview, OWNER_PHOTO_REMINDERS_ENABLED: "true" })).toThrow("OWNER_PHOTO_REMINDERS_ENABLED");
   });
   it("blocks webhook/REST writes before a handler can run", () => {
     vi.stubEnv("APP_ENV", "preview");

@@ -18,6 +18,7 @@ export const FORBIDDEN_PREVIEW_KEYS = [
   "DATABASE_URL", "GUESTY_CLIENT_ID", "GUESTY_CLIENT_SECRET", "GUESTY_BE_CLIENT_ID",
   "GUESTY_BE_CLIENT_SECRET", "GUESTY_WEBHOOK_SECRET", "GUESTY_DEBUG_SECRET",
   "RESEND_API_KEY", "ACTIVECAMPAIGN_API_KEY", "ACTIVECAMPAIGN_API_URL",
+  "PIPEDRIVE_API_TOKEN",
   "BOKUN_ACCESS_KEY", "BOKUN_SECRET_KEY", "BOKUN_VENDOR_ID", "VITE_BOKUN_CHANNEL_UUID",
   "TRIPWIX_API_KEY", "GITHUB_PAT", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET",
   "STRIPE_SECRET_KEY", "STRIPE_PUBLISHABLE_KEY", "STRIPE_ACCOUNT_ID",
@@ -32,6 +33,8 @@ export function assertPreviewIsolation(env: NodeJS.ProcessEnv = process.env): vo
   if (!isPreviewDeployment(env)) return;
   const present: string[] = FORBIDDEN_PREVIEW_KEYS.filter(key => !!env[key]);
   if (env.CHECKOUT_RECOVERY === "true") present.push("CHECKOUT_RECOVERY");
+  if (env.OWNER_CRM_ENABLED === "true") present.push("OWNER_CRM_ENABLED");
+  if (env.OWNER_PHOTO_REMINDERS_ENABLED === "true") present.push("OWNER_PHOTO_REMINDERS_ENABLED");
   if (present.length) throw new Error(`[Preview isolation] Refusing operational configuration: ${present.join(", ")}`);
 }
 
