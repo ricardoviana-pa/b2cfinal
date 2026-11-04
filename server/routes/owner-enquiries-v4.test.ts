@@ -1,9 +1,9 @@
 import express from "express";
 import type { Server } from "node:http";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-const fake = vi.hoisted(() => ({ start: vi.fn(), auth: vi.fn(), draft: vi.fn(), mutate: vi.fn(), file: vi.fn(), remove: vi.fn(), ready: vi.fn(), attention: vi.fn(), kick: vi.fn() }));
+const fake = vi.hoisted(() => ({ start: vi.fn(), auth: vi.fn(), draft: vi.fn(), mutate: vi.fn(), media: vi.fn(), file: vi.fn(), remove: vi.fn(), ready: vi.fn(), attention: vi.fn(), kick: vi.fn() }));
 vi.mock("../services/owner-intake-v4/store", () => ({ startV4: fake.start, authenticateV4: fake.auth, draftV4: fake.draft,
-  mutateV4: fake.mutate, addV4File: fake.file, removeV4File: fake.remove, v4SchemaReady: fake.ready, v4AttentionRequired: fake.attention }));
+  mutateV4: fake.mutate, submitV4Media: fake.media, addV4File: fake.file, removeV4File: fake.remove, v4SchemaReady: fake.ready, v4AttentionRequired: fake.attention }));
 vi.mock("../services/owner-intake-v4/service", () => ({ kickV4: fake.kick }));
 import { registerOwnerV4Routes } from "./owner-enquiries-v4";
 import { ownerAdmission } from "../lib/owner-admission";
@@ -21,6 +21,7 @@ beforeEach(async () => {
     completionUrl: `${origin}/management/complete/?lang=pt#token=${SYNTHETIC_TOKEN}` }));
   fake.draft.mockResolvedValue({ success: true, reference: recordInput().id, status: "awaiting_details", contact: recordInput().contact, context: recordInput().context, details: null, files: [], expiresAt: "2099-02-01T00:00:00.000Z" });
   fake.mutate.mockResolvedValue({ success: true, reference: recordInput().id, status: "awaiting_photos", duplicate: false });
+  fake.media.mockResolvedValue({ success: true, reference: recordInput().id, status: "awaiting_details", duplicate: false });
   fake.file.mockImplementation(async (_auth, file) => ({ success: true, reference: recordInput().id, status: "awaiting_details", duplicate: false,
     file: { id: file.id, name: file.name, mimeType: file.mimeType, size: file.size } }));
   fake.remove.mockResolvedValue({ success: true, reference: recordInput().id, status: "awaiting_details", duplicate: true });
@@ -83,6 +84,28 @@ describe("v4 private continuation HTTP contract", () => {
     expect(response.status).toBe(201); expect(await response.json()).toMatchObject({ file: { name: "Casa sintética.png", size: 24 } });
     expect(fake.file.mock.calls[0][1].bytes.equals(pngBytes())).toBe(true);
     expect((await request(`/files/${startInput().requestId}`, "PUT", { base64: "anything" })).status).toBe(415);
+  });
+  it("confirms media without editing contact or qualification and preserves private-response headers", async () => {
+    const mutationId = startInput().requestId;
+    const response = await request("/media", "POST", { mutationId, photosLink: "https://example.test/photos" });
+    expect(response.status).toBe(200); expect(await response.json()).toMatchObject({ reference: recordInput().id, status: "awaiting_details" });
+    expect(fake.media).toHaveBeenCalledWith(recordInput(), { mutationId, photosLink: "https://example.test/photos" });
+    expect(fake.mutate).not.toHaveBeenCalled(); expect(fake.start).not.toHaveBeenCalled(); expect(fake.kick).toHaveBeenCalledTimes(1);
+    expect(response.headers.get("Cache-Control")).toContain("no-store"); expect(response.headers.get("X-Robots-Tag")).toContain("noindex");
+    expect((await request("/media", "POST", { mutationId, contact: { name: "Other" } })).status).toBe(400);
+    expect((await request("/media", "POST", { mutationId, details: detailsInput() })).status).toBe(400);
+    expect((await request("/media", "POST", { mutationId, photosLink: "javascript:alert(1)" })).status).toBe(400);
+    expect(fake.media).toHaveBeenCalledTimes(1);
+  });
+  it("protects media follow-up with bearer/origin checks and does not kick on an uncommitted response", async () => {
+    const body = { mutationId: startInput().requestId };
+    expect((await request("/media", "POST", body, { Authorization: "" })).status).toBe(401);
+    expect((await request("/media", "POST", body, { Origin: "https://other.example.invalid" })).status).toBe(403);
+    expect(fake.media).not.toHaveBeenCalled();
+    fake.media.mockRejectedValue(new OwnerIntakeError("MEDIA_REQUIRED", 400, ["photosLink", "attachments"]));
+    const response = await request("/media", "POST", body); expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ success: false, code: "MEDIA_REQUIRED", fields: ["photosLink", "attachments"] });
+    expect(fake.kick).not.toHaveBeenCalled();
   });
   it("does not acknowledge a failed transaction or disclose its error values", async () => {
     const log = vi.spyOn(console, "warn").mockImplementation(() => {});

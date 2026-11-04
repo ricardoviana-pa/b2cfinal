@@ -3,9 +3,9 @@ import { createHash } from "node:crypto";
 import { getDb } from "../../db";
 import { isOwnerIntakeProduction } from "../owner-intake/email";
 import { OWNER_FILE_COUNT_LIMIT, OWNER_TOTAL_FILE_LIMIT } from "../../../shared/owner-intake";
-import { OWNER_V4_TOKEN_DAYS, OWNER_V4_FILE_HISTORY_BYTES, OWNER_V4_FILE_HISTORY_COUNT, type OwnerV4Draft, type OwnerV4Mutation, type OwnerV4Receipt, type OwnerV4Start, type OwnerV4StartReceipt } from "../../../shared/owner-intake-v4";
-import { OwnerIntakeError, completeDetails, fingerprint, newToken, tokenHash, type V4File } from "./validation";
-import { managementCompletedMail, managementStartMail, welcomeMail } from "./email";
+import { OWNER_V4_TOKEN_DAYS, OWNER_V4_FILE_HISTORY_BYTES, OWNER_V4_FILE_HISTORY_COUNT, type OwnerV4Draft, type OwnerV4MediaMutation, type OwnerV4Mutation, type OwnerV4Receipt, type OwnerV4Start, type OwnerV4StartReceipt } from "../../../shared/owner-intake-v4";
+import { OwnerIntakeError, completeDetails, fingerprint, mediaSchema, newToken, parse, tokenHash, type V4File } from "./validation";
+import { managementCompletedMail, managementMediaMail, managementStartMail, welcomeMail } from "./email";
 import type { V4Record, V4FileMetadata, V4Outbox, V4OutboxPayload } from "./types";
 
 export const V4_SCHEMA = [
@@ -119,7 +119,9 @@ export async function draftV4(auth: V4Record): Promise<OwnerV4Draft> {
   const db = await database();
   return db.transaction(async tx => {
     const r = await locked(tx, auth, new Date()); const files = await fileMetadata(tx, r.id);
-    return { success: true, reference: r.id, status: r.status, contact: r.contact, details: r.details,
+    const last = await lastMediaNotification(tx, r.id);
+    const mediaConfirmationRequired = (!!r.details?.photosLink || files.length > 0 || notifiedMaterial(last)) && !mediaAlreadyQueued(r, files, last);
+    return { success: true, reference: r.id, status: r.status, contact: r.contact, details: r.details, mediaConfirmationRequired,
       files: files.map(({ id, name, mimeType, size }) => ({ id, name, mimeType, size })),
       context: r.context, ...(r.attribution ? { attribution: r.attribution } : {}), expiresAt: r.tokenExpiresAt.toISOString() };
   });
@@ -131,6 +133,27 @@ async function persistRecord(tx: Executor, r: V4Record) {
     completionCount = ${r.completionCount}, mediaFileCount = ${r.mediaFileCount} WHERE id = ${r.id}`);
 }
 function withPhotos(r: V4Record, files: V4FileMetadata[]) { return !!r.details?.photosLink || files.some(f => f.mimeType.startsWith("image/")); }
+const completeFingerprint = (r: V4Record, files: V4FileMetadata[]) => fingerprint({ contact: r.contact, details: r.details, files: files.map(f => ({ id: f.id, digest: f.digest })) });
+const mediaJournal = (r: V4Record, files: V4FileMetadata[]) => ({
+  mediaFingerprint: fingerprint({ photosLink: r.details?.photosLink || "", files: files.map(f => ({ id: f.id, digest: f.digest })) }),
+  mediaLink: r.details?.photosLink || "", notificationRevision: r.revision + 1,
+});
+async function lastMediaNotification(tx: Executor, id: string): Promise<(V4OutboxPayload & { kind: string }) | undefined> {
+  const last = rows<{ kind: string; payload: V4OutboxPayload | string }>(await tx.execute(sql`SELECT kind, payload FROM owner_v4_outbox
+    WHERE enquiryId = ${id} AND kind IN ('completed', 'media')
+    ORDER BY COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(payload, '$.notificationRevision')) AS UNSIGNED), 0) DESC, createdAt DESC, id DESC LIMIT 1`))[0];
+  return last ? { ...obj(last.payload), kind: last.kind } : undefined;
+}
+const emptyMediaFingerprint = fingerprint({ photosLink: "", files: [] });
+function notifiedMaterial(previous?: V4OutboxPayload) {
+  return !!previous && (previous.mediaFingerprint !== undefined ? previous.mediaFingerprint !== emptyMediaFingerprint : previous.fileIds.length > 0 || !!previous.mediaLink);
+}
+function mediaAlreadyQueued(r: V4Record, files: V4FileMetadata[], previous?: V4OutboxPayload) {
+  // Also recognises complete snapshots frozen before the media journal existed.
+  return previous?.mediaFingerprint !== undefined
+    ? previous.mediaFingerprint === mediaJournal(r, files).mediaFingerprint
+    : r.completedFingerprint === completeFingerprint(r, files);
+}
 export async function mutateV4(auth: V4Record, input: OwnerV4Mutation, complete: boolean, now = new Date()): Promise<OwnerV4Receipt> {
   const db = await database(); const fp = fingerprint({ input, complete });
   return db.transaction(async tx => {
@@ -145,7 +168,7 @@ export async function mutateV4(auth: V4Record, input: OwnerV4Mutation, complete:
     const files = await fileMetadata(tx, r.id); let unchangedCompletion = false;
     if (complete) {
       r.details = completeDetails(r.details);
-      const completed = fingerprint({ contact: r.contact, details: r.details, files: files.map(f => ({ id: f.id, digest: f.digest })) });
+      const completed = completeFingerprint(r, files);
       unchangedCompletion = completed === r.completedFingerprint;
       r.status = withPhotos(r, files) ? "complete" : "awaiting_photos";
       r.qualificationCompletedAt ||= now;
@@ -155,7 +178,7 @@ export async function mutateV4(auth: V4Record, input: OwnerV4Mutation, complete:
       if (!unchangedCompletion) {
         r.completionCount++; r.completedFingerprint = completed;
         await outbox(tx, `${r.id}:completed:${r.completionCount}`, r.id, "completed",
-          { mail: managementCompletedMail(r, files), fileIds: files.map(f => f.id) }, files.reduce((sum, f) => sum + f.size, 0), now);
+          { mail: managementCompletedMail({ ...r, revision: r.revision + 1, updatedAt: now }, files), fileIds: files.map(f => f.id), ...mediaJournal(r, files) }, files.reduce((sum, f) => sum + f.size, 0), now);
       }
     } else {
       // A saved draft may deliberately contain incomplete answers; no completion email is emitted.
@@ -164,6 +187,51 @@ export async function mutateV4(auth: V4Record, input: OwnerV4Mutation, complete:
     r.revision++; r.updatedAt = now;
     await persistRecord(tx, r);
     const result = receipt(r, unchangedCompletion);
+    await tx.execute(sql`INSERT INTO owner_v4_mutations (enquiryId, id, fingerprint, response, createdAt)
+      VALUES (${r.id}, ${input.mutationId}, ${fp}, ${JSON.stringify(result)}, ${now})`);
+    return result;
+  });
+}
+/** Save media on the existing request, even when the owner left qualification unfinished.
+ * The notification journal is append-only and shares the enquiry row lock with /complete.
+ * Retries never mutate a provider payload already frozen by a previous notification.
+ */
+export async function submitV4Media(auth: V4Record, input: OwnerV4MediaMutation, now = new Date()): Promise<OwnerV4Receipt> {
+  const db = await database(); const fp = fingerprint({ action: "media", input });
+  return db.transaction(async tx => {
+    const r = await locked(tx, auth, now);
+    const replay = rows<{ fingerprint: string; response: OwnerV4Receipt | string }>(await tx.execute(sql`SELECT fingerprint, response FROM owner_v4_mutations WHERE enquiryId = ${r.id} AND id = ${input.mutationId} LIMIT 1`))[0];
+    if (replay) {
+      if (replay.fingerprint !== fp) throw new OwnerIntakeError("MUTATION_ID_CONFLICT", 409);
+      return { ...obj(replay.response), duplicate: true };
+    }
+    const priorLink = r.details?.photosLink || "";
+    const files = await fileMetadata(tx, r.id);
+    const previous = await lastMediaNotification(tx, r.id);
+    const priorMediaWasQueued = mediaAlreadyQueued(r, files, previous);
+    // Draft text can be incomplete: validate the effective stored link before emailing it.
+    const effective = parse(mediaSchema, { mutationId: input.mutationId, photosLink: input.photosLink ?? priorLink });
+    if (input.photosLink !== undefined || priorLink) r.details = { ...r.details, photosLink: effective.photosLink };
+    const journal = mediaJournal(r, files);
+    const unchanged = mediaAlreadyQueued(r, files, previous);
+    // A confirmed removal may be empty; an initial empty submission is not useful.
+    if (!r.details?.photosLink && !files.length && !notifiedMaterial(previous) && !(priorLink && priorMediaWasQueued) && previous?.kind !== "media")
+      throw new OwnerIntakeError("MEDIA_REQUIRED", 400, ["photosLink", "attachments"]);
+    if (r.status !== "awaiting_details") r.status = withPhotos(r, files) ? "complete" : "awaiting_photos";
+    if (withPhotos(r, files)) r.mediaReceivedAt ||= now;
+    if (r.status === "awaiting_photos") r.awaitingPhotosAt ||= now;
+    if (!unchanged) {
+      const added = files.filter(f => !previous?.fileIds.includes(f.id));
+      const changedLink = !!r.details?.photosLink && (!previous || (input.photosLink !== undefined && input.photosLink !== priorLink) || (previous.mediaLink !== undefined && previous.mediaLink !== r.details.photosLink));
+      const reason = !r.details?.photosLink && !files.length ? "removed" : changedLink || added.some(f => f.mimeType.startsWith("image/")) ? "photos" : added.some(f => f.mimeType === "application/pdf") ? "documents" : "updated";
+      await outbox(tx, `${r.id}:media:${r.revision + 1}`, r.id, "media",
+        { mail: managementMediaMail({ ...r, revision: r.revision + 1, updatedAt: now }, files, reason), fileIds: files.map(f => f.id), ...journal }, files.reduce((sum, f) => sum + f.size, 0), now);
+      // A later /complete with exactly the same qualified information is not a new notice.
+      if (r.status !== "awaiting_details") r.completedFingerprint = completeFingerprint(r, files);
+    }
+    r.revision++; r.updatedAt = now;
+    await persistRecord(tx, r);
+    const result = receipt(r, unchanged);
     await tx.execute(sql`INSERT INTO owner_v4_mutations (enquiryId, id, fingerprint, response, createdAt)
       VALUES (${r.id}, ${input.mutationId}, ${fp}, ${JSON.stringify(result)}, ${now})`);
     return result;

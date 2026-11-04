@@ -3,8 +3,8 @@ import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import { isIP } from "node:net";
 import { isOwnerIntakeProduction, ownerEmailConfigured } from "../services/owner-intake/email";
 import { ownerBodyHandler, parseOwnerBody } from "../lib/owner-admission";
-import { authenticateV4, startV4, draftV4, mutateV4, addV4File, removeV4File, v4SchemaReady, v4AttentionRequired } from "../services/owner-intake-v4/store";
-import { bearerToken, mutationSchema, OwnerIntakeError, parse, startSchema, uuid, validateFile } from "../services/owner-intake-v4/validation";
+import { authenticateV4, startV4, draftV4, mutateV4, submitV4Media, addV4File, removeV4File, v4SchemaReady, v4AttentionRequired } from "../services/owner-intake-v4/store";
+import { bearerToken, mediaSchema, mutationSchema, OwnerIntakeError, parse, startSchema, uuid, validateFile } from "../services/owner-intake-v4/validation";
 import { kickV4 } from "../services/owner-intake-v4/service";
 import type { V4Record } from "../services/owner-intake-v4/types";
 const BASE = "/api/owner-enquiries/v4";
@@ -65,6 +65,9 @@ export function registerOwnerV4Routes(app: Express) {
   }));
   app.post(`${BASE}/complete`, ...privateRequest, json, parseOwnerBody("draft"), wrap(async (req: AuthRequest, res) => {
     const result = await mutateV4(req.ownerV4!, parse(mutationSchema, req.body), true); res.json(result); kickV4();
+  }));
+  app.post(`${BASE}/media`, ...privateRequest, json, parseOwnerBody("draft"), wrap(async (req: AuthRequest, res) => {
+    const result = await submitV4Media(req.ownerV4!, parse(mediaSchema, req.body)); res.json(result); kickV4();
   }));
   app.put(`${BASE}/files/:fileId`, ...privateRequest,
     (req, res, next) => ["image/jpeg", "image/png", "image/webp", "application/pdf"].includes(String(req.headers["content-type"])) ? next() : res.status(415).json({ success: false, code: "FILE_TYPE_NOT_ALLOWED" }),
