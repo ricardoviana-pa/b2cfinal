@@ -18,6 +18,8 @@ export interface OwnerV4Start extends OwnerV4Contact {
 export interface OwnerV4Mutation {
   mutationId: string; contact?: OwnerV4ContactEdit; details?: Partial<OwnerV4Details>;
 }
+/** Follow-up only: never edits contact details or completes qualification. */
+export interface OwnerV4MediaMutation { mutationId: string; photosLink?: string }
 export interface OwnerV4Receipt {
   success: true; reference: string; status: OwnerV4Status; duplicate: boolean;
 }
@@ -25,5 +27,7 @@ export interface OwnerV4StartReceipt extends OwnerV4Receipt { continuationToken:
 export interface OwnerV4Draft {
   success: true; reference: string; status: OwnerV4Status; contact: OwnerV4Contact;
   details: Partial<OwnerV4Details> | null; files: OwnerAttachmentMetadata[];
+  /** Material is stored, but its current snapshot has not been queued for the team. */
+  mediaConfirmationRequired: boolean;
   context: OwnerIntakeContext; attribution?: OwnerV4Attribution; expiresAt: string;
 }

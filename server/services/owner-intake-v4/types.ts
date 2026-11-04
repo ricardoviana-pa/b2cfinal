@@ -9,7 +9,11 @@ export interface V4Record {
   privacyAcknowledgedAt: Date; privacyNoticeVersion: "owner-intake-v4";
   awaitingPhotosAt: Date | null; completionCount: number; mediaFileCount: number;
 }
-export interface V4OutboxPayload { mail: OwnerMail; fileIds: string[]; completionUrl?: string }
+export interface V4OutboxPayload {
+  mail: OwnerMail; fileIds: string[]; completionUrl?: string;
+  // Private notification journal; the frozen provider payload is never edited.
+  mediaFingerprint?: string; mediaLink?: string; notificationRevision?: number;
+}
 export interface V4Outbox {
   id: string; enquiryId: string; kind: string; payload: V4OutboxPayload; attachmentBytes: number;
   status: string; attempts: number; leaseAt: Date | null; firstAttemptAt: Date | null;

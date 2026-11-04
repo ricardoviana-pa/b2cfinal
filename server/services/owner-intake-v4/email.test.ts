@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { managementCompletedMail, managementStartMail, sendV4Mail, welcomeMail } from "./email";
+import { managementCompletedMail, managementMediaMail, managementStartMail, sendV4Mail, welcomeMail } from "./email";
 import { ownerNotificationMail } from "../owner-intake/email";
 import { syntheticOwner } from "../owner-intake/__tests__/fixtures";
 import { detailsInput, recordInput, SYNTHETIC_TOKEN } from "./fixtures.test-utils";
@@ -17,7 +17,7 @@ describe("v4 branded transactional messages", () => {
     const bookingSender = "Portugal Active <booking@portugalactive.com>";
     vi.stubEnv("EMAIL_FROM", bookingSender);
     const r = recordInput(); r.details = detailsInput(); r.status = "awaiting_photos";
-    const messages = [welcomeMail(r, url), managementStartMail(r), managementCompletedMail(r, [])];
+    const messages = [welcomeMail(r, url), managementStartMail(r), managementCompletedMail(r, []), managementMediaMail(r, [], "photos")];
     for (const message of messages) {
       expect(message.from).toBe("Portugal Active · Management <management@portugalactive.com>");
       await sendV4Mail(`synthetic-sender-${messages.indexOf(message)}`, message, []);
@@ -42,30 +42,49 @@ describe("v4 branded transactional messages", () => {
   it("never discloses the private link in management mail or invents missing answers", () => {
     const r = recordInput(); const mail = managementStartMail(r);
     expect(mail.to).toBe("management@portugalactive.com"); expect(mail.replyTo).toBe(r.contact.email);
-    expect(mail.text).toContain("qualificação por completar"); expect(mail.text).not.toContain("30.000");
+    expect(mail.text).toContain("informação da casa por completar"); expect(mail.text).not.toContain("30.000");
     expect(mail.text).not.toContain(SYNTHETIC_TOKEN); expect(mail.html).not.toContain("#token=");
     expect(mail.text).toContain("isolated-test");
+    expect(mail.text).toContain("Novo pedido. As atualizações seguintes mantêm esta referência.");
+    expect(mail.text).toContain("pode ainda estar a preencher");
+    expect(mail.text).toContain("Informação em falta: Morada"); expect(mail.html).not.toContain("Por preencher");
   });
   it("explains that images are needed for assessment without asking a completed owner to repeat them", () => {
     const mail = welcomeMail(recordInput(), url);
-    expect(mail.text).toContain("Pode enviar fotografias agora ou mais tarde");
-    expect(mail.text).toContain("Precisamos de imagens da propriedade para avançar com a avaliação");
-    expect(mail.text).toContain("não precisa repetir"); expect(mail.text).toContain("Completar ou consultar pedido");
+    expect(mail.text).toContain("precisamos de fotografias ou de um link");
+    expect(mail.text).toContain("apenas o envio de fotografias, sem repetir o formulário");
+    expect(mail.text).toContain("não precisa repetir"); expect(mail.text).toContain("Enviar fotografias");
+    expect(mail.text).not.toMatch(/consultar|acompanhar|Completar ou/);
+    expect(mail.html.match(/<a /g)).toHaveLength(1);
   });
   it("completes the same reference, retains all details and clearly distinguishes optional photos", () => {
     const r = recordInput(); r.details = detailsInput(); r.status = "awaiting_photos";
     r.contact.name = "<script>synthetic</script>";
     const mail = managementCompletedMail(r, []);
-    for (const value of [r.id, "4900-123", "30.000–60.000 €", "Localidade sintética", "isolated-test", "Aguarda fotografias — avaliação por iniciar"])
+    for (const value of [r.id, "4900-123", "30.000–60.000 €", "Localidade sintética", "isolated-test", "Aguarda fotografias · avaliação por iniciar"])
       expect(mail.text).toContain(value);
     expect(mail.html).not.toContain("<script>"); expect(mail.html).toContain("&lt;script&gt;");
-    expect(mail.html).not.toContain("#token="); expect(mail.subject).toContain("Aguarda fotos");
+    expect(mail.html).not.toContain("#token="); expect(mail.subject).toContain(r.id.slice(0, 8).toUpperCase());
+    expect(mail.text).toContain("Expectativa líquida anual do proprietário");
   });
   it("keeps assessment pending for a PDF-only submission and requires checking image sufficiency", () => {
     const r = recordInput(); r.details = detailsInput(); r.status = "awaiting_photos";
     expect(managementCompletedMail(r, [{ name: "synthetic.pdf", mimeType: "application/pdf" }]).text).toContain("avaliação por iniciar");
     r.status = "complete";
     expect(managementCompletedMail(r, [{ name: "synthetic.png", mimeType: "image/png" }]).text).toContain("confirmar suficiência antes de avaliar");
+  });
+  it("keeps one request subject and clearly identifies each notice, status, next action and snapshot version", () => {
+    const r = recordInput(); r.revision = 4;
+    const captured = managementStartMail(r);
+    const photos = managementMediaMail(r, [{ name: "casa.png", mimeType: "image/png" }], "photos");
+    const documents = managementMediaMail(r, [{ name: "planta.pdf", mimeType: "application/pdf" }], "documents");
+    expect(photos.subject).toBe(captured.subject); expect(documents.subject).toBe(captured.subject);
+    expect(photos.text).toContain("Fotografias recebidas"); expect(documents.text).toContain("Documentos recebidos");
+    expect(photos.text).toContain("Imagens recebidas · informação da casa por completar");
+    expect(photos.text).toContain("Próxima ação:"); expect(photos.text).toContain("Versão do pedido 4");
+    expect(photos.text).toContain("use a versão mais alta"); expect(photos.text).toContain("qualidade ou suficiência");
+    expect(photos.html).toContain("pa-logo-dark.png"); expect(photos.html).not.toContain("#token=");
+    expect(documents.text).toContain("Fotografias em falta"); expect(documents.html).not.toContain("Por preencher");
   });
   it("retries the same frozen body/key and respects provider Retry-After", async () => {
     const mail = welcomeMail(recordInput(), url);

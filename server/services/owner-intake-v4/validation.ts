@@ -26,6 +26,9 @@ const draftDetailsSchema = z.object({ ...detailShape, address: clean(0, 300), po
   description: z.string().max(2000).refine(value => !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(value)), licenseNumber: clean(0, 100),
   occupiedDetails: z.string().max(500), photosLink: z.string().max(2000) }).partial().strict();
 export const mutationSchema = z.object({ mutationId: z.string().uuid(), contact: contactEditSchema.optional(), details: draftDetailsSchema.optional() }).strict();
+// Reuse the shared URL policy without inheriting its default: omission must not clear a link.
+export const mediaSchema = z.object({ mutationId: z.string().uuid(), photosLink: clean(0, 2000)
+  .refine(value => s.photosLink.safeParse(value).success, "invalid_photo_link").optional() }).strict();
 
 export function parse<T>(schema: z.ZodType<T>, input: unknown): T {
   const result = schema.safeParse(input);

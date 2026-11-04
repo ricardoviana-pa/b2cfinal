@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { bearerToken, completeDetails, fingerprint, mutationSchema, newToken, parse, startSchema, tokenHash, validateFile } from "./validation";
+import { bearerToken, completeDetails, fingerprint, mediaSchema, mutationSchema, newToken, parse, startSchema, tokenHash, validateFile } from "./validation";
 import { detailsInput, pngBytes, startInput } from "./fixtures.test-utils";
 describe("v4 contact, continuation and separate file contract", () => {
   it("captures only essential details and normalises the contact", () => {
@@ -32,6 +32,14 @@ describe("v4 contact, continuation and separate file contract", () => {
     expect(() => completeDetails({ ...detailsInput(), description: "short" })).toThrow("VALIDATION_FAILED");
     expect(() => completeDetails({ ...detailsInput(), photosLink: "javascript:alert(1)" })).toThrow("VALIDATION_FAILED");
     expect(() => completeDetails({ ...detailsInput(), postalCode: "123" })).toThrow("VALIDATION_FAILED");
+  });
+  it("limits follow-up to an idempotency ID and an optional safe photo link", () => {
+    const mutationId = startInput().requestId;
+    expect(parse(mediaSchema, { mutationId })).toEqual({ mutationId });
+    expect(parse(mediaSchema, { mutationId, photosLink: "" })).toEqual({ mutationId, photosLink: "" });
+    expect(parse(mediaSchema, { mutationId, photosLink: " https://example.test/photos " }).photosLink).toBe("https://example.test/photos");
+    for (const extra of [{ photosLink: "javascript:alert(1)" }, { photosLink: "https://" }, { contact: { name: "Other" } }, { details: { description: "Other" } }])
+      expect(() => parse(mediaSchema, { mutationId, ...extra })).toThrow("VALIDATION_FAILED");
   });
   it("hashes canonical payloads independently of object key order", () => {
     expect(fingerprint({ a: 1, b: { x: true, y: 2 } })).toBe(fingerprint({ b: { y: 2, x: true }, a: 1 }));

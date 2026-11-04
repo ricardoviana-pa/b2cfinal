@@ -1,21 +1,21 @@
-import { OWNER_SALES_EMAIL, type OwnerIntakeInput } from "../../../shared/owner-intake";
-import { ownerEmailConfigured, ownerNotificationMail } from "../owner-intake/email";
+import { OWNER_INCOME_LABELS, OWNER_SALES_EMAIL, OWNER_TIMELINE_LABELS } from "../../../shared/owner-intake";
+import { ownerEmailConfigured } from "../owner-intake/email";
 import type { OwnerMail } from "../owner-intake/store";
 import type { V4Record } from "./types";
 const e = (v: string) => v.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 const OWNER_V4_FROM = "Portugal Active · Management <management@portugalactive.com>";
 const labels: Record<string, string> = { villa: "Moradia", apartment: "Apartamento", farmhouse: "Quinta", hostel: "Hostel", guesthouse: "Guesthouse", boutiqueHotel: "Hotel boutique", other: "Outro" };
 const welcomeCopy: Record<string, [string, string, string, string, string, string]> = {
-  pt: ["Recebemos o seu pedido", "Vamos conhecer melhor a sua propriedade.", "O seu contacto ficou guardado. Este link permite consultar, completar ou atualizar os dados da propriedade, agora ou mais tarde.", "Completar ou consultar pedido", "Pode enviar fotografias agora ou mais tarde. Precisamos de imagens da propriedade para avançar com a avaliação. Se já completou os dados e enviou imagens, não precisa repetir.", "Este link é pessoal e válido por 30 dias. Não o partilhe. Para falar connosco, responda a este email."],
-  en: ["We have received your enquiry", "Let’s get to know your property.", "Your contact details have been saved. Use this link to review, complete or update your property details, now or later.", "Complete or view my enquiry", "You can send photos now or later. We need images of the property before we can proceed with the assessment. If you have already completed the details and sent images, you do not need to repeat this.", "This personal link is valid for 30 days. Please do not share it. To contact us, reply to this email."],
-  fr: ["Nous avons reçu votre demande", "Faisons connaissance avec votre propriété.", "Vos coordonnées sont enregistrées. Ce lien vous permet de consulter, compléter ou mettre à jour les informations sur votre propriété, maintenant ou plus tard.", "Compléter ou consulter ma demande", "Vous pouvez envoyer les photos maintenant ou plus tard. Nous avons besoin d’images de la propriété pour procéder à son évaluation. Si vous avez déjà complété les informations et envoyé des images, vous n’avez pas à le refaire.", "Ce lien personnel est valable 30 jours. Ne le partagez pas. Pour nous contacter, répondez à cet email."],
-  de: ["Wir haben Ihre Anfrage erhalten", "Lernen wir Ihre Immobilie kennen.", "Ihre Kontaktdaten wurden gespeichert. Über diesen Link können Sie Ihre Angaben jetzt oder später ansehen, vervollständigen oder aktualisieren.", "Anfrage ergänzen oder ansehen", "Sie können Fotos jetzt oder später senden. Wir benötigen Bilder der Immobilie, bevor wir mit der Bewertung fortfahren können. Wenn Sie die Angaben bereits ergänzt und Bilder gesendet haben, müssen Sie dies nicht wiederholen.", "Dieser persönliche Link ist 30 Tage gültig. Bitte teilen Sie ihn nicht. Um uns zu kontaktieren, antworten Sie auf diese E-Mail."],
-  nl: ["We hebben uw aanvraag ontvangen", "Laten we uw woning beter leren kennen.", "Uw contactgegevens zijn opgeslagen. Via deze link kunt u uw gegevens nu of later bekijken, aanvullen of bijwerken.", "Mijn aanvraag aanvullen of bekijken", "U kunt foto’s nu of later sturen. We hebben beelden van de woning nodig om met de beoordeling verder te gaan. Als u de gegevens al heeft ingevuld en beelden heeft gestuurd, hoeft u dit niet te herhalen.", "Deze persoonlijke link is 30 dagen geldig. Deel hem niet. U kunt ons bereiken door op deze e-mail te antwoorden."],
-  es: ["Hemos recibido su solicitud", "Conozcamos mejor su propiedad.", "Sus datos de contacto se han guardado. Este enlace le permite consultar, completar o actualizar los datos de su propiedad, ahora o más adelante.", "Completar o consultar mi solicitud", "Puede enviar fotografías ahora o más adelante. Necesitamos imágenes de la propiedad para avanzar con la evaluación. Si ya ha completado los datos y enviado imágenes, no necesita repetirlo.", "Este enlace personal es válido durante 30 días. No lo comparta. Para contactar con nosotros, responda a este correo."],
-  it: ["Abbiamo ricevuto la sua richiesta", "Conosciamo meglio la sua proprietà.", "I suoi recapiti sono stati salvati. Questo link permette di consultare, completare o aggiornare i dettagli della proprietà, ora o più tardi.", "Completa o consulta la richiesta", "Può inviare le fotografie ora o più tardi. Abbiamo bisogno di immagini della proprietà per procedere con la valutazione. Se ha già completato i dati e inviato le immagini, non deve ripetere l’operazione.", "Questo link personale è valido per 30 giorni. Non lo condivida. Per contattarci, risponda a questa email."],
-  he: ["קיבלנו את פנייתך", "נשמח להכיר את הנכס שלך.", "פרטי הקשר שלך נשמרו. הקישור מאפשר לצפות בפרטי הנכס, להשלים או לעדכן אותם עכשיו או מאוחר יותר.", "השלמה או צפייה בפנייה שלי", "אפשר לשלוח תמונות עכשיו או מאוחר יותר. אנו זקוקים לתמונות של הנכס כדי להתקדם בהערכה. אם כבר השלמת את הפרטים ושלחת תמונות, אין צורך לחזור על הפעולה.", "הקישור האישי תקף ל־30 יום. אין לשתף אותו. ליצירת קשר, אפשר להשיב לאימייל הזה."],
-  ar: ["تلقّينا طلبك", "لنتعرّف على عقارك بشكل أفضل.", "تم حفظ بيانات الاتصال الخاصة بك. يتيح لك هذا الرابط مراجعة تفاصيل العقار أو إكمالها أو تحديثها الآن أو لاحقًا.", "إكمال طلبي أو الاطلاع عليه", "يمكنك إرسال الصور الآن أو لاحقًا. نحتاج إلى صور للعقار للمضي قدمًا في التقييم. إذا كنت قد أكملت البيانات وأرسلت الصور بالفعل، فلا داعي لتكرار ذلك.", "هذا الرابط شخصي وصالح لمدة 30 يومًا. لا تشاركه مع الآخرين. للتواصل معنا، يمكنك الرد على هذا البريد الإلكتروني."],
-  zh: ["我们已收到您的申请", "让我们进一步了解您的房产。", "您的联系方式已保存。您可以现在或稍后通过此链接查看、完善或更新房产资料。", "完善或查看我的申请", "您可以现在或稍后发送照片。我们需要房产图片才能继续进行评估。如果您已填写资料并发送图片，则无需重复操作。", "此个人链接的有效期为30天，请勿分享。如需联系我们，请回复此邮件。"],
+  pt: ["Recebemos o seu pedido", "Obrigado por nos apresentar a sua casa.", "O seu contacto e os dados que já enviou estão guardados. Para conhecer a casa e preparar a avaliação, precisamos de fotografias ou de um link para um álbum ou anúncio.", "Enviar fotografias", "Este botão abre apenas o envio de fotografias, sem repetir o formulário. Mostre o exterior e as principais divisões. Se já enviou imagens, não precisa repetir: a nossa equipa irá revê-las e contactá-lo para os próximos passos.", "O link é pessoal e válido por 30 dias. Não o partilhe. Se precisar de ajuda, responda a este email."],
+  en: ["We have received your enquiry", "Thank you for introducing your home.", "Your contact details and the information you have already sent are saved. To understand your home and prepare the assessment, we need photographs or a link to an album or listing.", "Send photographs", "This button opens the photo upload only; you do not need to repeat the form. Show the exterior and main rooms. If you have already sent images, there is nothing to repeat: our team will review them and contact you about the next steps.", "This personal link is valid for 30 days. Please do not share it. If you need help, reply to this email."],
+  fr: ["Nous avons reçu votre demande", "Merci de nous présenter votre maison.", "Vos coordonnées et les informations déjà envoyées sont enregistrées. Pour connaître votre maison et préparer son évaluation, nous avons besoin de photos ou d’un lien vers un album ou une annonce.", "Envoyer des photos", "Ce bouton ouvre uniquement l’envoi de photos, sans remplir à nouveau le formulaire. Montrez l’extérieur et les principales pièces. Si vous avez déjà envoyé des images, inutile de recommencer : notre équipe les examinera et vous contactera pour la suite.", "Ce lien personnel est valable 30 jours. Ne le partagez pas. Pour obtenir de l’aide, répondez à cet email."],
+  de: ["Wir haben Ihre Anfrage erhalten", "Vielen Dank, dass Sie uns Ihr Haus vorstellen.", "Ihre Kontaktdaten und die bereits gesendeten Angaben sind gespeichert. Um Ihr Haus kennenzulernen und die Bewertung vorzubereiten, benötigen wir Fotos oder einen Link zu einem Album oder Inserat.", "Fotos senden", "Dieser Button öffnet nur den Foto-Upload; Sie müssen das Formular nicht erneut ausfüllen. Zeigen Sie die Außenansicht und die wichtigsten Räume. Wenn Sie bereits Bilder gesendet haben, ist nichts weiter nötig: Unser Team prüft sie und meldet sich zu den nächsten Schritten.", "Dieser persönliche Link ist 30 Tage gültig. Bitte teilen Sie ihn nicht. Wenn Sie Hilfe benötigen, antworten Sie auf diese E-Mail."],
+  nl: ["We hebben uw aanvraag ontvangen", "Bedankt dat u uw woning aan ons voorstelt.", "Uw contactgegevens en de informatie die u al heeft gestuurd zijn opgeslagen. Om uw woning te leren kennen en de beoordeling voor te bereiden, hebben we foto’s nodig of een link naar een album of advertentie.", "Foto’s sturen", "Deze knop opent alleen het uploaden van foto’s; u hoeft het formulier niet opnieuw in te vullen. Laat de buitenkant en de belangrijkste kamers zien. Heeft u al beelden gestuurd? Dan hoeft u niets te herhalen: ons team bekijkt ze en neemt contact op over de volgende stappen.", "Deze persoonlijke link is 30 dagen geldig. Deel hem niet. Heeft u hulp nodig? Antwoord op deze e-mail."],
+  es: ["Hemos recibido su solicitud", "Gracias por presentarnos su casa.", "Sus datos de contacto y la información que ya ha enviado están guardados. Para conocer su casa y preparar la evaluación, necesitamos fotografías o un enlace a un álbum o anuncio.", "Enviar fotografías", "Este botón abre solo el envío de fotografías, sin repetir el formulario. Muestre el exterior y las principales estancias. Si ya ha enviado imágenes, no necesita repetirlo: nuestro equipo las revisará y le contactará para los siguientes pasos.", "El enlace es personal y válido durante 30 días. No lo comparta. Si necesita ayuda, responda a este correo."],
+  it: ["Abbiamo ricevuto la sua richiesta", "Grazie per averci presentato la sua casa.", "I suoi recapiti e le informazioni già inviate sono salvati. Per conoscere la casa e preparare la valutazione, abbiamo bisogno di fotografie o di un link a un album o annuncio.", "Invia fotografie", "Questo pulsante apre solo l’invio delle fotografie, senza ripetere il modulo. Mostri gli esterni e gli ambienti principali. Se ha già inviato immagini, non deve ripetere l’operazione: il nostro team le esaminerà e la contatterà per i prossimi passi.", "Il link è personale e valido per 30 giorni. Non lo condivida. Se ha bisogno di aiuto, risponda a questa email."],
+  he: ["קיבלנו את פנייתך", "תודה שהצגת לנו את הבית שלך.", "פרטי הקשר והמידע שכבר שלחת נשמרו. כדי להכיר את הבית ולהכין את ההערכה, אנו זקוקים לתמונות או לקישור לאלבום או למודעה.", "שליחת תמונות", "הכפתור פותח רק את שליחת התמונות, ללא מילוי חוזר של הטופס. כדאי להציג את החלק החיצוני ואת החדרים המרכזיים. אם כבר שלחת תמונות, אין צורך לחזור על הפעולה: הצוות שלנו יעבור עליהן וייצור איתך קשר לגבי הצעדים הבאים.", "הקישור אישי ותקף ל־30 יום. אין לשתף אותו. אם דרושה עזרה, אפשר להשיב לאימייל הזה."],
+  ar: ["تلقّينا طلبك", "شكرًا لتعريفنا بمنزلك.", "تم حفظ بيانات الاتصال والمعلومات التي أرسلتها بالفعل. للتعرّف على المنزل والتحضير للتقييم، نحتاج إلى صور أو رابط لألبوم أو إعلان.", "إرسال الصور", "يفتح هذا الزر إرسال الصور فقط، دون إعادة ملء النموذج. أظهر الواجهة والغرف الرئيسية. إذا كنت قد أرسلت الصور بالفعل، فلا حاجة لتكرار ذلك: سيراجعها فريقنا ويتواصل معك بشأن الخطوات التالية.", "الرابط شخصي وصالح لمدة 30 يومًا. لا تشاركه مع الآخرين. إذا احتجت إلى مساعدة، يمكنك الرد على هذا البريد الإلكتروني."],
+  zh: ["我们已收到您的申请", "感谢您向我们介绍您的房屋。", "您的联系方式和已提交的信息均已保存。为了了解房屋并准备评估，我们需要照片，或相册、房源页面的链接。", "发送照片", "此按钮仅打开照片上传页面，无需重复填写表格。请展示房屋外观及主要房间。如果您已经发送图片，无需重复操作：我们的团队会查看图片，并联系您说明后续步骤。", "此链接仅供您本人使用，有效期为30天，请勿分享。如需帮助，请回复此邮件。"],
 };
 function shell(title: string, content: string, language = "pt") {
   const rtl = ["he", "ar"].includes(language);
@@ -31,28 +31,80 @@ export function welcomeMail(record: V4Record, completionUrl: string): OwnerMail 
   return { from: OWNER_V4_FROM, to: record.contact.email, replyTo: OWNER_SALES_EMAIL, subject: `Portugal Active · ${c[0]}`,
     text, html: shell(c[0], `<p style="margin-top:0">${e(record.contact.name)},</p><h1 style="font-size:27px;line-height:1.25">${e(c[1])}</h1><p>${e(c[2])}</p><p style="margin:26px 0"><a href="${e(completionUrl)}" style="display:inline-block;padding:13px 20px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">${e(c[3])}</a></p><p>${e(c[4])}</p><p style="font-size:12px;color:#676d62">${e(c[5])}</p><p style="font-size:11px;color:#676d62">${e(record.id)}</p>`, lang) };
 }
-export function managementStartMail(record: V4Record): OwnerMail {
-  const p = record.contact;
-  const source = attribution(record);
-  const lines = [`Novo contacto — qualificação por completar`, `Referência: ${record.id}`, `Nome: ${p.name}`, `Email: ${p.email}`, `Telefone: ${p.phone}`, `Tipo: ${labels[p.type] || p.type}`, `Localidade: ${p.locality}`, `Idioma: ${record.context.language}`, `Origem: ${record.context.page_path} · ${record.context.placement}`, "Privacidade aceite para tratar este pedido. Sem subscrição de marketing.", ...(source ? [`Campanha: ${source}`] : [])];
-  return { from: OWNER_V4_FROM, to: OWNER_SALES_EMAIL, replyTo: p.email, subject: `[Por completar] ${p.locality} · ${p.name} · Portugal Active`, text: lines.join("\n"),
-    html: shell("Novo contacto de proprietário", `<p style="font-size:12px;color:#8b7355;text-transform:uppercase">Contacto recebido · Qualificação por completar</p><h1 style="font-size:27px;line-height:1.25">Uma nova propriedade para conhecer.</h1><p><strong>${e(p.locality)}</strong><br>${e(labels[p.type] || p.type)}</p><p><strong>${e(p.name)}</strong><br><a href="mailto:${e(p.email)}" style="color:#304838">${e(p.email)}</a><br><a href="tel:${e(p.phone.replace(/[^+0-9]/g, ""))}" style="color:#304838">${e(p.phone)}</a></p><p>O contacto ficou guardado. O proprietário pode completar a qualificação através do link pessoal de continuação. Este pedido mantém a mesma referência quando for atualizado.</p><p style="font-size:12px;color:#676d62">Idioma: ${e(record.context.language)} · ${e(record.context.page_path)} · ${e(record.context.placement)}<br>Privacidade aceite para tratar este pedido. Sem subscrição de marketing.${source ? `<br>Campanha: ${e(source)}` : ""}<br>Referência: ${e(record.id)}</p>`) };
+type MailFile = { name: string; mimeType: string };
+export type ManagementNotice = "captured" | "qualification" | "updated" | "photos" | "documents" | "removed";
+const noticeTitles: Record<ManagementNotice, string> = {
+  captured: "Novo contacto de proprietário", qualification: "Informação da casa recebida", updated: "Informação atualizada",
+  photos: "Fotografias recebidas", documents: "Documentos recebidos", removed: "Material retirado pelo proprietário",
+};
+const present = (value: string | undefined) => value?.trim() || "Por preencher";
+const yesNo = (value: string | undefined) => value === "yes" ? "Sim" : value === "no" ? "Não" : "Por preencher";
+function managementMail(record: V4Record, files: MailFile[], reason: ManagementNotice): OwnerMail {
+  const p = record.contact, d = record.details || {}, source = attribution(record);
+  const hasImages = !!d.photosLink || files.some(f => f.mimeType.startsWith("image/"));
+  const partial = record.status === "awaiting_details";
+  const state = partial ? hasImages ? "Imagens recebidas · informação da casa por completar" : "Contacto recebido · informação da casa por completar"
+    : hasImages ? "Dados e imagens recebidos · confirmar suficiência antes de avaliar" : "Aguarda fotografias · avaliação por iniciar";
+  const next = reason === "captured"
+    ? "O proprietário pode ainda estar a preencher a informação da casa. Consultar a mensagem mais recente com esta referência e contactar se o pedido continuar incompleto."
+    : partial
+    ? `${hasImages ? "Rever as imagens e contactar" : "Contactar"} o proprietário para completar a informação em falta.${hasImages ? " Confirmar também se as imagens são suficientes." : " Pedir fotografias se ainda não tiverem sido enviadas."}`
+    : hasImages ? "Abrir o link e os anexos, confirmar se mostram a casa suficientemente e contactar o proprietário para preparar a avaliação."
+    : "Contactar o proprietário para pedir fotografias úteis ou um link acessível. A avaliação depende dessas imagens.";
+  const title = noticeTitles[reason];
+  const savedAt = new Intl.DateTimeFormat("pt-PT", { timeZone: "Europe/Lisbon", dateStyle: "short", timeStyle: "short" }).format(record.updatedAt);
+  const versionNote = `Versão do pedido ${record.revision} · Dados guardados em ${savedAt} (Lisboa). Em caso de avisos fora de ordem, use a versão mais alta.`;
+  const threadNote = reason === "captured" ? "Novo pedido. As atualizações seguintes mantêm esta referência."
+    : "Este email atualiza o mesmo pedido. Verifique se existe uma mensagem mais recente com esta referência antes de contactar.";
+  const propertyRows: [string, string][] = [["Tipo de imóvel", labels[p.type] || p.type], ["Localidade", p.locality], ["Morada", present(d.address)],
+    ["Código postal", present(d.postalCode)], ["Quartos", present(d.bedrooms)], ["Descrição", present(d.description)]];
+  const goalRows: [string, string][] = [["Já operou para turismo?", yesNo(d.operatedBefore)],
+    ["Licença de exploração", d.licenseStatus ? ({ yes: "Sim", pending: "Em processo", no: "Não", unknown: "Não sabe / por confirmar" })[d.licenseStatus] : "Por preencher"],
+    ...(d.licenseNumber ? [["Número de licença", d.licenseNumber] as [string, string]] : []), ["Vive alguém na casa?", yesNo(d.occupied)],
+    ...(d.occupiedDetails ? [["Ocupação — detalhes", d.occupiedDetails] as [string, string]] : []), ["À venda?", yesNo(d.forSale)],
+    ["Interesse em vender com a PA", d.saleInterest === "maybe" ? "Talvez" : yesNo(d.saleInterest)],
+    ["Entrada no mercado", d.launchTimeline ? OWNER_TIMELINE_LABELS[d.launchTimeline] : "Por preencher"],
+    ["Expectativa líquida anual do proprietário", d.incomeExpectation ? OWNER_INCOME_LABELS[d.incomeExpectation] : "Por preencher"]];
+  const missing = partial ? [...propertyRows, ...goalRows].filter(([, value]) => value === "Por preencher").map(([label]) => label) : [];
+  const shownProperty = partial ? propertyRows.filter(([, value]) => value !== "Por preencher") : propertyRows;
+  const shownGoals = partial ? goalRows.filter(([, value]) => value !== "Por preencher") : goalRows;
+  const incomeNote = d.incomeExpectation ? "Rendimento líquido anual esperado pelo proprietário, após custos. Expectativa declarada, sem previsão ou garantia da Portugal Active." : "";
+  const section = (heading: string, values: [string, string][]) => !values.length ? "" : `<h2 style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8b7355;margin:26px 0 10px">${e(heading)}</h2><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">${values.map(([label, value]) => `<tr><td style="padding:9px 0;border-bottom:1px solid #e6e7df;vertical-align:top;width:42%;font-size:12px;color:#676d62">${e(label)}</td><td style="padding:9px 0 9px 12px;border-bottom:1px solid #e6e7df;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere">${e(value)}</td></tr>`).join("")}</table>`;
+  const fileNames = files.map(f => f.name);
+  const fileText = fileNames.length ? fileNames.join(", ") : "Sem ficheiros anexados";
+  const phoneHref = p.phone.replace(/[^+0-9]/g, "");
+  const reference = record.id.slice(0, 8).toUpperCase();
+  const text = [`PORTUGAL ACTIVE · EQUIPA COMERCIAL`, title, `Pedido PA-${reference} · Referência completa: ${record.id}`, `Estado: ${state}`, `Próxima ação: ${next}`,
+    threadNote, versionNote,
+    `Nome: ${p.name}`, `Email: ${p.email}`, `Telefone: ${p.phone}`, "Responder a este email contacta diretamente o proprietário.",
+    ...shownProperty.map(([label, value]) => `${label}: ${value}`), ...shownGoals.map(([label, value]) => `${label}: ${value}`),
+    ...(missing.length ? [`Informação em falta: ${missing.join(" · ")}`] : []), ...(incomeNote ? [incomeNote] : []),
+    `Link de fotografias: ${d.photosLink || "Não fornecido"}`, `Anexos: ${fileText}`,
+    !hasImages ? "Fotografias em falta. Um PDF ou documento, por si só, não confirma imagens úteis da casa." : "As imagens e os links ainda precisam de revisão pela equipa; a receção não confirma qualidade ou suficiência.",
+    `Idioma: ${record.context.language}`, `Página: ${record.context.page_path}`, `Botão: ${record.context.placement}`,
+    ...(source ? [`Campanha: ${source}`] : []), "Privacidade aceite para tratar este pedido. Sem subscrição de marketing."].join("\n");
+  const html = shell(title, `<p style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8b7355;margin:0">Pedido PA-${e(reference)}</p><h1 style="font-size:27px;line-height:1.25;margin:10px 0 20px">${e(title)}</h1>
+    <div style="background:#e9efe7;border-left:4px solid #304838;padding:16px"><p style="margin:0 0 10px"><strong>Estado</strong><br>${e(state)}</p><p style="margin:0"><strong>Próxima ação</strong><br>${e(next)}</p></div>
+    <p style="font-size:12px;color:#676d62">${e(threadNote)}<br>${e(versionNote)}</p>
+    <h2 style="font-size:20px;margin:24px 0 6px">${e(p.name)}</h2><p style="margin:0 0 12px"><a href="mailto:${e(p.email)}" style="color:#304838">${e(p.email)}</a><br><a href="tel:${e(phoneHref)}" style="color:#304838">${e(p.phone)}</a></p>
+    <p style="font-size:12px;color:#676d62">Responder a este email contacta diretamente o proprietário.</p>${section("A propriedade", shownProperty)}${section("Situação e objetivos", shownGoals)}
+    ${missing.length ? `<p style="font-size:12px;color:#676d62"><strong>Informação em falta</strong><br>${e(missing.join(" · "))}</p>` : ""}
+    ${incomeNote ? `<p style="font-size:11px;color:#676d62">${e(incomeNote)}</p>` : ""}
+    <h2 style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8b7355;margin:26px 0 10px">Fotografias e documentos</h2>
+    ${d.photosLink ? `<p><a href="${e(d.photosLink)}" style="display:inline-block;padding:11px 18px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">Abrir fotografias</a></p><p style="font-size:12px;overflow-wrap:anywhere">${e(d.photosLink)}</p>` : '<p style="font-size:13px">Sem link de fotografias.</p>'}
+    ${fileNames.length ? `<ul style="padding-left:20px;font-size:13px;overflow-wrap:anywhere">${fileNames.map(name => `<li>${e(name)}</li>`).join("")}</ul><p style="font-size:12px;color:#676d62">Os ficheiros seguem como anexos deste email.</p>` : '<p style="font-size:12px;color:#676d62">Sem ficheiros anexados.</p>'}
+    <p style="font-size:12px;color:#676d62">${hasImages ? "As imagens e os links ainda precisam de revisão pela equipa; a receção não confirma qualidade ou suficiência." : "Fotografias em falta. Um PDF ou documento, por si só, não confirma imagens úteis da casa."}</p>
+    <div style="border-top:1px solid #e6e7df;margin-top:24px;padding-top:16px;font-size:11px;color:#676d62;overflow-wrap:anywhere">Idioma: ${e(record.context.language)} · Página: ${e(record.context.page_path)} · Botão: ${e(record.context.placement)}${source ? `<br>Campanha: ${e(source)}` : ""}<br>Privacidade aceite para tratar este pedido. Sem subscrição de marketing.<br>Referência completa: ${e(record.id)}</div>`);
+  return { from: OWNER_V4_FROM, to: OWNER_SALES_EMAIL, replyTo: p.email,
+    subject: `[PA Gestão ${reference}] ${p.locality.slice(0, 60)} · ${p.name.slice(0, 70)}`, text, html };
 }
-export function managementCompletedMail(record: V4Record, files: { name: string; mimeType: string }[]): OwnerMail {
-  const p = record.contact;
-  const d = record.details as OwnerV4RecordDetails;
-  const hasLink = !!d.photosLink;
-  const fields = { ...p, ...d, schemaVersion: "owner-intake-v3" as const, requestId: record.id,
-    photoMethod: hasLink ? files.length ? "both" as const : "link" as const : files.length ? "files" as const : "later" as const,
-    privacyAcknowledged: true as const, context: record.context };
-  const base = ownerNotificationMail(fields, files.map(f => f.name));
-  const state = record.status === "awaiting_photos" ? "Aguarda fotografias — avaliação por iniciar" : "Dados e imagens recebidos — confirmar suficiência antes de avaliar";
-  const source = attribution(record);
-  const banner = `<div style="padding:12px 18px;background:#e9efe7;color:#304838;font-family:Arial,sans-serif;font-size:13px"><strong>${state}</strong><br>Localidade: ${e(p.locality)}${source ? `<br>Campanha: ${e(source)}` : ""}</div>`;
-  return { ...base, from: OWNER_V4_FROM, subject: `[${record.status === "awaiting_photos" ? "Aguarda fotos" : "Dados e imagens"}] ${p.locality} · ${p.name} · Portugal Active`,
-    html: base.html.replace(/(<body[^>]*>)/, `$1${banner}`).replaceAll("Sem fotografias ou documentos — envio opcional", "Fotografias em falta — necessárias para avançar com a avaliação"), text: `${state}\nLocalidade: ${p.locality}${source ? `\nCampanha: ${source}` : ""}\n\n${base.text.replaceAll("Sem fotografias ou documentos — envio opcional", "Fotografias em falta — necessárias para avançar com a avaliação")}` };
+export function managementStartMail(record: V4Record): OwnerMail { return managementMail(record, [], "captured"); }
+export function managementCompletedMail(record: V4Record, files: MailFile[]): OwnerMail {
+  return managementMail(record, files, record.completionCount <= 1 ? "qualification" : "updated");
 }
-type OwnerV4RecordDetails = Omit<OwnerIntakeInput, "name" | "email" | "phone" | "type">;
+export function managementMediaMail(record: V4Record, files: MailFile[], reason: "photos" | "documents" | "updated" | "removed"): OwnerMail {
+  return managementMail(record, files, reason);
+}
 
 export class V4DeliveryError extends Error {
   constructor(public readonly code: string, public readonly retryAfterSeconds = 120, public readonly permanent = false,
