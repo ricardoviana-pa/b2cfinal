@@ -1,10 +1,7 @@
 /**
  * RELATED HOMES FOR BLOG ARTICLES
  *
- * The blog is 39 published articles that, until now, linked to no property at
- * all: topical authority with nowhere to flow. This picks the homes worth
- * showing under an article so the link is useful to the reader first and to a
- * crawler second.
+ * Picks relevant, published homes so readers can move from planning to a stay.
  *
  * The payload is deliberately slim (a handful of homes, a few fields each, a
  * couple of KB) because it gets SSR-prefetched into the article HTML. The full
@@ -14,6 +11,9 @@
 
 import { curatedPosition } from "../../client/src/config/propertyOrder";
 import { getDisplayName } from "@shared/displayName";
+import { localitySlug } from "@shared/destinationNavigation";
+import { compareEditorialOperation } from "@shared/editorialHomePriority";
+import { PROPERTY_GROUPS } from "../../client/src/config/propertyGroups";
 
 /**
  * Articles are tagged by editorial region ("minho-coast"), properties by
@@ -31,10 +31,11 @@ const TAG_TO_DESTINATION: Record<string, string> = {
   lisboa: "lisbon",
   alentejo: "alentejo",
   algarve: "algarve",
-  douro: "porto",
+  douro: "douro",
 };
 
 export interface RelatedHome {
+  catalogId: string;
   slug: string;
   name: string;
   destination: string | null;
@@ -48,6 +49,7 @@ export interface RelatedHome {
 
 function toSlim(p: any): RelatedHome {
   return {
+    catalogId: String(p.guestyId || p.id || p.slug).replace(/^guesty-/, ''),
     slug: p.slug,
     name: getDisplayName(p) || p.slug,
     destination: p.destination ?? null,
@@ -60,9 +62,10 @@ function toSlim(p: any): RelatedHome {
   };
 }
 
-/** Commercial ranking first, then the listing's own order — the same rule the
- *  PLP uses, so an article never recommends a home the PLP buries. */
+/** Direct operation first, then the commercial ranking and listing order. */
 function byCuratedThenSortOrder(a: any, b: any): number {
+  const operation = compareEditorialOperation(a, b);
+  if (operation) return operation;
   const ca = curatedPosition(a?.guestyId);
   const cb = curatedPosition(b?.guestyId);
   if (ca !== cb) return ca - cb;
@@ -75,16 +78,35 @@ function byCuratedThenSortOrder(a: any, b: any): number {
  * Pure — no I/O — so the matching rules can be tested directly.
  *
  * Falls back to the curated top homes when the article's region has no
- * inventory (there are articles tagged "algarve" and no Algarve homes) or when
- * the article carries no region at all. Showing the best available homes beats
- * showing an empty block, and it keeps every article contributing links.
+ * inventory or when the article carries no region at all. The Viana guide
+ * has a strict local scope and does not use that broad fallback.
  */
 export function pickRelatedHomes(
   properties: any[],
   destinationTag: string | null | undefined,
   limit = 4,
+  articleSlug?: string,
 ): RelatedHome[] {
-  const withSlug = (properties ?? []).filter((p) => p?.slug);
+  const active = (properties ?? []).filter((p) => p?.slug && p.isActive !== false);
+  const present = new Set(active.map(p => p.guestyId));
+  const children = new Set(PROPERTY_GROUPS.filter(g => present.has(g.parentGuestyId))
+    .flatMap(g => g.unitGuestyIds.filter(id => id !== g.parentGuestyId)));
+  const withSlug = active.filter(p => !p.guestyId || !children.has(p.guestyId));
+  if (articleSlug === 'viana-do-castelo-guide') {
+    // Same locality as the guide's "view homes" search. No unrelated Minho
+    // town is presented as Viana when this selection is empty.
+    const local = withSlug.filter(p => localitySlug(p.locality) === 'viana-do-castelo');
+    const picks = [
+      '69653354109993001383ef5f', // Beach Farm
+      '6965331fec80690013738c68', // Villa Aura
+      '6adf6ec753313e00790e647f', // Central Pearl Duplex
+      '6965332327950e001416f0b2', // Cabedelo Beach Lodge
+    ];
+    const position = (p: any) => { const n = picks.indexOf(p.guestyId); return n < 0 ? Infinity : n; };
+    return local.sort((a, b) => compareEditorialOperation(a, b) ||
+      (position(a) !== position(b) ? position(a) - position(b) : byCuratedThenSortOrder(a, b)))
+      .slice(0, limit).map(toSlim);
+  }
   const destination = destinationTag ? TAG_TO_DESTINATION[destinationTag.toLowerCase()] : undefined;
 
   const matching = destination
@@ -99,7 +121,8 @@ export function pickRelatedHomes(
 export async function getRelatedHomes(
   destinationTag: string | null | undefined,
   limit = 4,
+  articleSlug?: string,
 ): Promise<RelatedHome[]> {
   const { getPropertiesForSite, catalogProperties } = await import("./properties-store");
-  return pickRelatedHomes(catalogProperties(await getPropertiesForSite()), destinationTag, limit);
+  return pickRelatedHomes(catalogProperties(await getPropertiesForSite()), destinationTag, limit, articleSlug);
 }

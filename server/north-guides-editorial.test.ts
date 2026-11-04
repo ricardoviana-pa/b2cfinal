@@ -12,7 +12,8 @@ import products from '../client/src/data/products.json';
 import collections from '../client/src/data/collections.json';
 import { blogLanguages, isBlogLanguagePublished } from '../shared/blogPublication';
 import { mergeBlogOverride } from '../client/src/lib/localizeBlog';
-import { getPropertiesForDestination } from './services/properties-store';
+import { localitySlug } from '../shared/destinationNavigation';
+import { catalogProperties, getPropertiesForDestination, getPropertiesForSite } from './services/properties-store';
 
 const slugs = ['viana-do-castelo-guide', 'when-to-visit-north-portugal'];
 const guides = data.articles.filter(article => slugs.includes(article.slug));
@@ -38,7 +39,10 @@ describe('revised northern Portugal guides retain publication integrity', () => 
     }
   });
 
-  it('links to published guides and active destination pages, without legacy aliases', () => {
+  it('links to published guides, active destinations and visible catalog homes, without legacy aliases', async () => {
+    const catalog = catalogProperties(await getPropertiesForSite()).filter(home => home.isActive !== false);
+    const homeSlugs = new Set(catalog.map(home => home.slug));
+    const localities = new Set(catalog.map(home => localitySlug(home.locality)).filter(Boolean));
     const internalLinks = editions.flatMap(({ language, article }) =>
       [...article.content.matchAll(/\]\((\/[^)]+)\)/g)].map(match => ({ language, href: match[1] })),
     );
@@ -62,9 +66,9 @@ describe('revised northern Portugal guides retain publication integrity', () => 
       } else if (section === 'collections') {
         expect(collections.some(collection => collection.slug === slug)).toBe(true);
       } else if (section === 'homes') {
-        expect(slug).toBeUndefined();
+        if (slug) expect(homeSlugs.has(slug), `Home is absent or hidden from the catalog: ${slug}`).toBe(true);
         expect([...url.searchParams.keys()]).not.toContain('region');
-        if (url.searchParams.has('location')) expect(url.searchParams.get('location')).toBe('viana-do-castelo');
+        if (url.searchParams.has('location')) expect(localities.has(url.searchParams.get('location')!), `Unknown catalog locality: ${url.searchParams.get('location')}`).toBe(true);
         if (url.searchParams.has('destination')) expect(url.searchParams.get('destination')).toBe('minho');
       }
     }

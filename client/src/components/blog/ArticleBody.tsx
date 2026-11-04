@@ -6,7 +6,7 @@ import { parsePhotoBlock } from '@shared/articlePhotos';
 import { cdnSrcSet, cdnVariant } from '@/lib/images';
 
 type LinkAction = 'source' | 'guide' | 'homes';
-export function renderInline(text: string, search = '', onLink?: (action:LinkAction)=>void): React.ReactNode[] {
+export function renderInline(text: string, search = '', onLink?: (action:LinkAction, targetPath?:string)=>void): React.ReactNode[] {
   const parts: React.ReactNode[] = [];
   const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
   let lastIndex = 0;
@@ -22,7 +22,7 @@ export function renderInline(text: string, search = '', onLink?: (action:LinkAct
       if (/^https?:\/\//.test(href)) {
         parts.push(<a key={key} href={href} onClick={()=>onLink?.('source')} className={className} target="_blank" rel="noopener noreferrer">{match[2]}</a>);
       } else if (href.startsWith('/') && !href.startsWith('//')) {
-        parts.push(<Link key={key} href={withEditorialTrip(href,search)} onClick={()=>onLink?.(href.startsWith('/homes') ? 'homes' : 'guide')} className={className}>{match[2]}</Link>);
+        parts.push(<Link key={key} href={withEditorialTrip(href,search)} onClick={()=>onLink?.(href.startsWith('/homes') ? 'homes' : 'guide', href.split(/[?#]/)[0])} className={className}>{match[2]}</Link>);
       } else {
         parts.push(match[2]);
       }
@@ -33,7 +33,7 @@ export function renderInline(text: string, search = '', onLink?: (action:LinkAct
   return parts;
 }
 
-export default function ArticleBody({ content, onLink }: { content: string; onLink?: (action:LinkAction)=>void }) {
+export default function ArticleBody({ content, onLink }: { content: string; onLink?: (action:LinkAction, targetPath?:string)=>void }) {
   const search = useSearch();
   const headings = articleHeadings(content);
   const inline = (text:string) => renderInline(text,search,onLink);

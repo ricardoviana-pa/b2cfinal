@@ -117,7 +117,7 @@ const MANIFEST: ViteManifest = {
   "index.html": {
     file: "assets/index-E.js", isEntry: true, css: ["assets/index-E.css"],
     imports: ["_react-vendor-R.js", "_i18n-I.js"],
-    dynamicImports: ["src/pages/Homes.tsx", "src/pages/DestinationDetail.tsx", "_PropertyDetail-P.js", "src/i18n/locales/pt.json", "src/i18n/locales/en.json"],
+    dynamicImports: ["src/pages/Home.tsx", "src/pages/Homes.tsx", "src/pages/DestinationDetail.tsx", "_PropertyDetail-P.js", "src/i18n/locales/pt.json", "src/i18n/locales/en.json"],
   },
   "_react-vendor-R.js": { file: "assets/react-vendor-R.js" },
   "_i18n-I.js": { file: "assets/i18n-I.js" },
@@ -127,6 +127,7 @@ const MANIFEST: ViteManifest = {
   "src/data/journal-index/pt.json": { file: "assets/pt-JOUR.js", isDynamicEntry: true },
   "src/data/experienceDetails.i18n/pt.json": { file: "assets/pt-EXP.js", isDynamicEntry: true },
   "src/data/blog.i18n/pt.json": { file: "assets/pt-BLOG.js", isDynamicEntry: true },
+  "src/pages/Home.tsx": { file: "assets/Home-HOME.js", src: "src/pages/Home.tsx", isDynamicEntry: true, imports: ["index.html", "_react-vendor-R.js", "_shared-S.js"] },
   "src/pages/Homes.tsx": { file: "assets/Homes-H.js", src: "src/pages/Homes.tsx", isDynamicEntry: true, imports: ["index.html", "_react-vendor-R.js", "_shared-S.js"] },
   "_shared-S.js": { file: "assets/shared-S.js", imports: ["_i18n-I.js"] },
   "src/pages/DestinationDetail.tsx": {
@@ -152,7 +153,7 @@ describe("route assets from the Vite manifest", () => {
 
   it("English pages preload en.json only, no content catalogues", () => {
     expect(routeAssets(MANIFEST, "en", "/destinations/minho").modules.slice(0, 2)).toEqual(["/assets/en-EN.js", "/assets/DestinationDetail-D.js"]);
-    expect(routeAssets(MANIFEST, "en", "/").modules).toEqual(["/assets/en-EN.js"]);
+    expect(routeAssets(MANIFEST, "en", "/").modules).toEqual(["/assets/en-EN.js", "/assets/Home-HOME.js", "/assets/shared-S.js"]);
   });
 
   it("non-English pages never preload the English file (it is no longer loaded there)", () => {
@@ -161,12 +162,17 @@ describe("route assets from the Vite manifest", () => {
     }
   });
 
-  it("home page: language + destination catalogue; the page itself ships in the entry", () => {
-    expect(routeAssets(MANIFEST, "pt", "/")).toEqual({ styles: [], modules: ["/assets/pt-UI.js", "/assets/pt-DEST.js"] });
+  it("preloads the split home page with its language, content and non-entry dependencies only on Home", () => {
+    expect(routeAssets(MANIFEST, "pt", "/")).toEqual({ styles: [], modules: ["/assets/pt-UI.js", "/assets/pt-DEST.js", "/assets/Home-HOME.js", "/assets/shared-S.js"] });
+    for (const route of ["/homes", "/homes/some-home", "/destinations/minho", "/blog/some-post"]) {
+      expect(routeAssets(MANIFEST, "pt", route).modules, route).not.toContain("/assets/Home-HOME.js");
+    }
   });
 
-  it("blog and experience pages preload their own catalogues", () => {
-    expect(routeAssets(MANIFEST, "pt", "/blog/some-post").modules).toContain("/assets/pt-BLOG.js");
+  it("blog pages do not preload a whole translated catalogue; experience pages keep theirs", () => {
+    for (const route of ["/blog", "/blog/some-post"]) {
+      expect(routeAssets(MANIFEST, "pt", route).modules).not.toContain("/assets/pt-BLOG.js");
+    }
     expect(routeAssets(MANIFEST, "pt", "/experiences/x").modules).toContain("/assets/pt-EXP.js");
   });
 
@@ -300,7 +306,7 @@ describe("route assets from the Vite manifest", () => {
     for (const m of app.matchAll(/const (\w+) = lazy\(\(\) => import\("(?:\.|@)\/pages\/([^"]+)"\)\)/g)) {
       lazyModule.set(m[1], `src/pages/${m[2]}.tsx`);
     }
-    const skip = /^\/(checkout|booking|login|account|admin|owners|owners-portal|404)(\/|$)|^\/services$|^\/$/;
+    const skip = /^\/(checkout|booking|login|account|admin|owners|owners-portal|404)(\/|$)|^\/services$/;
     let checked = 0;
     for (const m of app.matchAll(/<Route path="([^"]+)"(?: nest)? component=\{(\w+)\} \/>/g)) {
       const [, route, component] = m;

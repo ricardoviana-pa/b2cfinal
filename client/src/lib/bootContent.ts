@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Start the page's content catalogues (destination, experience and blog
+   Start the page's content catalogues (destination and experience
    translations) together with its interface strings, not after them.
 
    main.tsx awaits preloadContentOverrides() before hydrating, and that call

@@ -16,15 +16,9 @@ export function contentKindsForPath(pathWithoutLocale: string): ContentKind[] {
   return kinds;
 }
 
-/** Blog pages load the blog translations (localizeBlog.ts) on top of the above. */
-export function needsBlogOverrides(pathWithoutLocale: string): boolean {
-  return pathWithoutLocale === "/blog" || pathWithoutLocale.startsWith("/blog/");
-}
-
 /** Source module of each catalogue for a language, as Vite names it in its manifest. */
-export const CONTENT_MODULES: Record<ContentKind | "blog", (lang: string) => string> = {
+export const CONTENT_MODULES: Record<ContentKind, (lang: string) => string> = {
   destinations: (lang) => `src/data/destinations.i18n/${lang}.json`,
   journal: (lang) => `src/data/journal-index/${lang}.json`,
   experiences: (lang) => `src/data/experienceDetails.i18n/${lang}.json`,
-  blog: (lang) => `src/data/blog.i18n/${lang}.json`,
 };

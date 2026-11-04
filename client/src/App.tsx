@@ -8,7 +8,6 @@ import LocaleRouter from "./components/LocaleRouter";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ItineraryProvider } from "./contexts/ItineraryContext";
 import { RISE_ABOVE_COOKIE_BANNER } from "./lib/fixedBottom";
-import Home from "./pages/Home";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { WifiOff, ArrowUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -20,6 +19,7 @@ import { managementUrl } from "./lib/siteLinks";
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
 
+const Home = lazy(() => import("./pages/Home"));
 const Homes = lazy(() => import("./pages/Homes"));
 const PropertyDetail = lazy(() => import("./pages/PropertyDetail"));
 const Destinations = lazy(() => import("./pages/Destinations"));

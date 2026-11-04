@@ -8,8 +8,9 @@ import { PROPERTY_GROUPS } from '@/config/propertyGroups';
 import { selectDestinationHomes } from '@/data/destination-discovery';
 import { sortProperties } from '@/lib/utils';
 import type { Property } from '@/lib/types';
+import { compareEditorialOperation, type EditorialHomeSource } from '@shared/editorialHomePriority';
 
-type DestinationHome = { guestyId?: string | null; isActive?: boolean };
+type DestinationHome = EditorialHomeSource & { isActive?: boolean };
 
 /** Published homes, with the units of a group folded into the group's card. */
 export function listedDestinationHomes<T extends DestinationHome>(properties: T[]): T[] {
@@ -25,6 +26,7 @@ export function listedDestinationHomes<T extends DestinationHome>(properties: T[
  *  first six — in the listing's "recommended" order (curated ranking, houses
  *  and villas before apartments), so "view all" continues where it left off. */
 export function visibleDestinationHomes<T extends DestinationHome>(properties: T[], opts: { slug: string; featured?: boolean }): T[] {
-  const homes = sortProperties(listedDestinationHomes(properties) as unknown as Property[], 'recommended') as unknown as T[];
+  const homes = (sortProperties(listedDestinationHomes(properties) as unknown as Property[], 'recommended') as unknown as T[])
+    .sort(compareEditorialOperation);
   return opts.featured ? selectDestinationHomes(homes, opts.slug) : homes.slice(0, 6);
 }

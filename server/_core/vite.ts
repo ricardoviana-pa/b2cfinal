@@ -4,6 +4,8 @@ import { languageEntryHtml, shouldSelectLanguage } from "../lib/languageEntry";
 import { experienceSearchCopy } from '../../shared/experienceSearchCopy';
 import { servicePlanning } from '../../shared/servicePlanning';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
+import { journalLocale } from '../../shared/journal';
+import { getJournalArticle, getJournalArticlePage, getJournalIndex } from '../services/journal';
 import { articlePhotos, stripPhotoLines } from '../../shared/articlePhotos';
 import { reviewedArticleDate } from '../../shared/articleNavigation';
 import { displayedAggregate } from '../../shared/reviewStats';
@@ -231,9 +233,8 @@ function localizeExperienceForMeta(exp: any, lang: string): any {
  *  overrides in client/src/data/blog.i18n/<lang>.json (slug → fields). Returns
  *  the article with the active language's title/excerpt/content/seo* applied so
  *  bots get the localised meta + body. */
-let _blogArticles: { expiresAt: number; data: Map<string, any> } | null = null;
 const _i18nOverrides = new Map<string, { expiresAt: number; data: Record<string, any> }>();
-function loadI18nOverrides(kind: "blog" | "properties", lang: string): Record<string, any> {
+function loadI18nOverrides(kind: "properties", lang: string): Record<string, any> {
   const code = (lang || "en").split("-")[0];
   if (code === "en") return {};
   const cacheKey = `${kind}:${code}`;
@@ -248,22 +249,7 @@ function loadI18nOverrides(kind: "blog" | "properties", lang: string): Record<st
   return data;
 }
 async function getBlogArticleBySlugCached(slug: string, lang: string): Promise<any | null> {
-  try {
-    if (!_blogArticles || Date.now() > _blogArticles.expiresAt) {
-      const p = path.join(process.cwd(), "client", "src", "data", "blog.json");
-      const data = JSON.parse(fs.readFileSync(p, "utf-8"));
-      const map = new Map<string, any>();
-      for (const a of (data.articles || [])) if (a.slug) map.set(a.slug, a);
-      _blogArticles = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data: map };
-    }
-    const base = _blogArticles.data.get(slug);
-    if (!base) return null;
-    const ov = loadI18nOverrides("blog", lang)[slug];
-    return ov ? deepMerge(base, ov) : base;
-  } catch (err) {
-    console.error("[Meta] Failed to load blog data for meta injection:", err);
-    return null;
-  }
+  return getJournalArticle(slug, lang);
 }
 
 /** Destinations live in client/src/data/destinations.json; overrides in
@@ -1688,23 +1674,30 @@ const _ssrRenderCache = new BoundedMap<string, {
 
   /** The prefetch of the blog, destination and catalogue routes (see buildPrefetch). */
   async function buildListPrefetch(strippedPath: string, lang: string): Promise<Record<string, unknown> | undefined> {
+    const locale = journalLocale(lang);
+    if (strippedPath === '/blog') {
+      return { journalIndex: { input: { locale }, data: await getJournalIndex(locale) } };
+    }
     // Blog articles: seed the handful of homes shown under the article, so
     // those links are in the served HTML. This is the whole point of the
     // block — an article that only links to homes after hydration passes no
     // authority to the property pages and helps no crawler.
     const blogMatch = strippedPath.match(/^\/blog\/([^/]+)$/);
     if (blogMatch) {
+      const input = { locale, slug: blogMatch[1] };
+      const data = await getJournalArticlePage(input.slug, input.locale);
+      const out: Record<string, unknown> = { journalArticle: { input, data } };
       try {
-        const post = await getBlogArticleBySlugCached(blogMatch[1], "en");
+        const post = data.article;
         if (post && post.commercialIntent !== 'corporate') {
-          const input = { destinationTag: post.destinationTag ?? null, limit: 4 };
+          const input = { destinationTag: post.destinationTag ?? null, limit: 4, articleSlug: post.slug };
           const { getRelatedHomes } = await import("../services/related-homes");
-          return { relatedHomes: { input, data: await getRelatedHomes(input.destinationTag, input.limit) } };
+          out.relatedHomes = { input, data: await getRelatedHomes(input.destinationTag, input.limit, input.articleSlug) };
         }
       } catch {
-        return undefined;
+        // A failed recommendation lookup must not remove the article's SSR data.
       }
-      return undefined;
+      return out;
     }
 
     // Destination pages: seed the homes the page lists (slim cards), so the
@@ -1893,7 +1886,20 @@ const _ssrRenderCache = new BoundedMap<string, {
     // og:locale, and <html lang>. This is the critical SEO fix: every
     // /{lang}/{path} response tells Google it's a distinct indexable version.
     const blogSlug = p.match(/^\/blog\/([^/]+)$/)?.[1];
-    const blogPost = blogSlug ? await getBlogArticleBySlugCached(blogSlug, lang) : null;
+    let blogPost;
+    try {
+      blogPost = blogSlug ? await getBlogArticleBySlugCached(blogSlug, lang) : null;
+    } catch (error) {
+      // A temporary content/translation read failure is not a missing article.
+      // Leave before the metadata/render caches so recovery is visible at once.
+      console.error('[Journal] Content temporarily unavailable:', (error as Error).message);
+      return res.status(503)
+        .set('Cache-Control', 'no-store')
+        .set('CDN-Cache-Control', 'no-store')
+        .set('Retry-After', '60')
+        .set('Content-Type', 'text/html')
+        .send(injectLocaleTags(html, { lang, pagePath: p }));
+    }
     if (blogPost?.status === 'published') {
       const redirect = blogLanguageRedirect(blogPost, lang);
       if (redirect) {

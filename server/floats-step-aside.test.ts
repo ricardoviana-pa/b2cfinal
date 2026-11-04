@@ -386,7 +386,7 @@ describe('P7: a 404 offers no language, on the server and in the page', () => {
     for (const [file, pattern] of [
       ['client/src/pages/ExperienceDetail.tsx', /noindex: !exp,\s*\}\);/],
       ['client/src/pages/ServiceDetail.tsx', /noindex: !item,\s*\}\);/],
-      ['client/src/pages/BlogArticle.tsx', /noindex: !article,\s*\}\);/],
+      ['client/src/pages/BlogArticle.tsx', /noindex: articleQuery\.isSuccess && !article && !redirect,\s*\}\);/],
       ['client/src/pages/Collection.tsx', /noindex: !def \|\| !copy,\s*\}\);/],
       ['client/src/pages/PropertyDetail.tsx', /usePageMeta\(\{ \.\.\.pdpMeta, type: 'place', noindex: partnerNoindex \|\| !property \}\);/],
       ['client/src/pages/DestinationDetail.tsx', /noindex: !dest \|\| dest\.status !== 'active' \|\| !!dest\.comingSoon,/],

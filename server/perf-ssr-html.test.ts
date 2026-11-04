@@ -51,6 +51,7 @@ beforeAll(async () => {
     "src/i18n/locales/pt.json": { file: "assets/pt-UI.js", isDynamicEntry: true },
     "src/data/destinations.i18n/pt.json": { file: "assets/pt-DEST.js", isDynamicEntry: true },
     "src/data/journal-index/pt.json": { file: "assets/pt-JOUR.js", isDynamicEntry: true },
+    "src/pages/Home.tsx": { file: "assets/Home-HOME.js", src: "src/pages/Home.tsx", isDynamicEntry: true, imports: ["index.html"] },
     "src/pages/Homes.tsx": { file: "assets/Homes-H.js", src: "src/pages/Homes.tsx", isDynamicEntry: true, imports: ["index.html"] },
     "src/pages/DestinationDetail.tsx": { file: "assets/DestinationDetail-D.js", src: "src/pages/DestinationDetail.tsx", isDynamicEntry: true, imports: ["index.html"], css: ["assets/DestinationDetail-D.css"] },
   }));
@@ -80,6 +81,63 @@ afterAll(() => {
 const get = (p: string) => fetch(base + p, { redirect: "manual" });
 
 describe("SSR HTML handler", () => {
+  it("a transient Journal read returns uncached 503 and the same URL recovers to 200", async () => {
+    const journal = await import('./services/journal');
+    const read = vi.spyOn(journal, 'getJournalArticle').mockRejectedValueOnce(new Error('Synthetic transient translation read failure'));
+    const url = '/sv/blog/viana-do-castelo-guide';
+    try {
+      const failed = await get(url);
+      expect(failed.status).toBe(503);
+      expect(failed.headers.get('cache-control')).toBe('no-store');
+      expect(failed.headers.get('cdn-cache-control')).toBe('no-store');
+      expect(failed.headers.get('retry-after')).toBe('60');
+      expect(renders().some(r => r.url === url)).toBe(false);
+      const recovered = await get(url);
+      expect(recovered.status).toBe(200);
+      expect(await recovered.text()).toContain('<meta name="robots" content="index, follow"');
+      expect(renders().find(r => r.url === url)?.prefetch?.journalArticle.data.article.slug).toBe('viana-do-castelo-guide');
+    } finally {
+      read.mockRestore();
+    }
+  });
+
+  it("seeds one localized Journal article and its related homes under matching query inputs", async () => {
+    const url = '/pt/blog/viana-do-castelo-guide';
+    const response = await get(url);
+    expect(response.status).toBe(200);
+    const html = await response.text();
+    const prefetch = renders().find(r => r.url === url)?.prefetch;
+    expect(prefetch?.journalArticle.input).toEqual({ locale: 'pt', slug: 'viana-do-castelo-guide' });
+    expect(prefetch?.journalArticle.data.article.content).toContain('Viana');
+    expect(prefetch?.journalArticle.data.relatedArticles.length).toBeLessThanOrEqual(3);
+    expect(prefetch?.journalArticle.data.relatedArticles.every((a: any) => !('content' in a))).toBe(true);
+    expect(prefetch?.relatedHomes.input.articleSlug).toBe('viana-do-castelo-guide');
+    expect(prefetch?.journalIndex).toBeUndefined();
+    expect(html).toContain('<link rel="canonical" href="https://www.portugalactive.com/pt/blog/viana-do-castelo-guide"');
+    expect(html).toContain('"@type":"BlogPosting"');
+  });
+
+  it("the Journal index seeds card metadata only, while unpublished language routes still redirect", async () => {
+    expect((await get('/pt/blog')).status).toBe(200);
+    const prefetch = renders().find(r => r.url === '/pt/blog')?.prefetch;
+    expect(prefetch?.journalIndex.input).toEqual({ locale: 'pt' });
+    expect(prefetch?.journalIndex.data.length).toBeGreaterThan(30);
+    expect(prefetch?.journalIndex.data.every((a: any) => !('content' in a))).toBe(true);
+    expect(prefetch?.journalArticle).toBeUndefined();
+    const redirect = await get('/fr/blog/cycling-minho-portugal-guide?guests=4');
+    expect(redirect.status).toBe(302);
+    expect(redirect.headers.get('location')).toBe('/en/blog/cycling-minho-portugal-guide?guests=4');
+  });
+
+  it("home keeps its server HTML and announces the split page module after the content", async () => {
+    const res = await get("/pt");
+    const html = await res.text();
+    expect(res.status).toBe(200);
+    expect(html).toContain("rendered /pt</main>");
+    expect(preloadList(html)).toEqual(["/assets/pt-UI.js", "/assets/pt-DEST.js", "/assets/Home-HOME.js"]);
+    expect(html.indexOf("rendered /pt</main>")).toBeLessThan(html.indexOf("var m=["));
+    expect(html.slice(0, html.indexOf("</head>"))).not.toContain("/assets/Home-HOME.js");
+  });
   it("seeds only the multi-unit group's cards on its property page", async () => {
     const { PROPERTY_GROUPS } = await import('../client/src/config/propertyGroups');
     const { getPropertiesForSite } = await import('./services/properties-store');
