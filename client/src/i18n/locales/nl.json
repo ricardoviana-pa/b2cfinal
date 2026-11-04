@@ -2013,6 +2013,7 @@
     "bathroomCount_other": "{{num}} Badkamers"
   },
   "collections": {
+    "checkAvailability": "Beschikbaarheid controleren",
     "eyebrow": "Samengestelde collectie",
     "count": "{{count}} huizen in deze collectie",
     "more": "Meer collecties"

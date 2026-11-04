@@ -2013,6 +2013,7 @@
     "bathroomCount_other": "{{num}} Badrum"
   },
   "collections": {
+    "checkAvailability": "Se tillgänglighet",
     "eyebrow": "Kurerad kollektion",
     "count": "{{count}} hus i denna kollektion",
     "more": "Fler kollektioner"

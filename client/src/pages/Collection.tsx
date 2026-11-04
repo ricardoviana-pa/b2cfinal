@@ -11,7 +11,7 @@ import { getDisplayName } from '@/lib/format';
 import { useMemo } from 'react';
 import { Link, useParams, useSearch } from 'wouter';
 import { editorialTripContext, withEditorialTrip } from '@shared/editorialTripContext';
-import { collectionPlanning, collectionUnitOptionsLabel } from '@/data/collectionPlanning';
+import { collectionPlanning, collectionUnitOptionsLabel, collectionCapacityCopy } from '@/data/collectionPlanning';
 import FaqItem from '@/components/ui/FaqItem';
 import { useTranslation } from 'react-i18next';
 import { trpc } from '@/lib/trpc';
@@ -48,6 +48,17 @@ export default function Collection() {
   const lang = (i18n.language || 'en').split('-')[0];
   const copy = def ? ((def as any)[lang] ?? def.en) : null;
   const planning = def ? collectionPlanning(def.slug, lang) : null;
+  const minimumGuests = def?.filter.min ?? 12;
+  const capacityContext = def?.slug === 'large-group-villas' && trip.guests && trip.guests > minimumGuests
+    ? collectionCapacityCopy(lang, trip.guests, minimumGuests) : null;
+  // Rebuild from validated dates only: resetting capacity must not carry the
+  // old guest count or arbitrary query parameters into the collection.
+  const resetDates = new URLSearchParams();
+  if (trip.checkin && trip.checkout) {
+    resetDates.set('checkin', trip.checkin);
+    resetDates.set('checkout', trip.checkout);
+  }
+  const capacityResetHref = `/collections/${def?.slug}${resetDates.size ? `?${resetDates}` : ''}`;
 
   const homes = useMemo(() => {
     if (!def || !propsData) return [] as Property[];
@@ -120,6 +131,12 @@ export default function Collection() {
             {t('collections.count', '{{count}} homes in this collection', { count: homes.length })}
           </p>
         )}
+        {capacityContext && <div className="mt-3 text-[13px] text-[#726D63]">
+          <p>{capacityContext.context}</p>
+          <Link href={capacityResetHref} className="inline-flex min-h-11 items-center text-pa-gold-aa underline underline-offset-4">
+            {capacityContext.reset}
+          </Link>
+        </div>}
       </div></section>
 
       <section className="container pt-8 pb-12 md:pb-16">
@@ -129,8 +146,8 @@ export default function Collection() {
             <p className="body-sm text-pa-earth">{planning.help}</p>
           </div>}
           <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-            <Link href={withEditorialTrip(`/homes?collection=${encodeURIComponent(def.slug)}`, search)} className="btn-primary text-center">{t('property.checkAvailability')}</Link>
-            {planning && <Link href={withEditorialTrip(`/contact?subject=plan-my-stay&collection=${encodeURIComponent(def.slug)}`, search)} className="btn-ghost text-center">{planning.contact}</Link>}
+            <Link href={withEditorialTrip(`/homes?collection=${encodeURIComponent(def.slug)}`, search)} className="btn-primary text-center" style={{ textTransform: 'none' }}>{t('collections.checkAvailability')}</Link>
+            {planning && <Link href={withEditorialTrip(`/contact?subject=plan-my-stay&collection=${encodeURIComponent(def.slug)}`, search)} className="btn-ghost text-center" style={{ textTransform: 'none' }}>{planning.contact}</Link>}
           </div>
         </div>
         {isLoading && <p className="body-sm text-pa-earth" role="status">{t('bookingWidget.loadingCalendar')}</p>}

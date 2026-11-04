@@ -2013,6 +2013,7 @@
     "bathroomCount_other": "{{num}} Salles de bain"
   },
   "collections": {
+    "checkAvailability": "Voir disponibilité",
     "eyebrow": "Collection organisée",
     "count": "{{count}} maisons dans cette collection",
     "more": "Plus de collections"
