@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import blog from "../client/src/data/blog.json";
 import {
   editorialTripContext,
   withEditorialTrip,
@@ -6,6 +8,7 @@ import {
 } from "../shared/editorialTripContext";
 import {
   articleHeadings,
+  articleContents,
   reviewedArticleDate,
 } from "../shared/articleNavigation";
 import { __testing } from "./_core/vite";
@@ -60,6 +63,22 @@ describe("editorial journeys preserve a safe travel context", () => {
 });
 
 describe("editorial navigation and real revision dates", () => {
+  it.each(['en', 'pt', 'es', 'fr', 'de', 'it', 'nl', 'fi', 'sv'])("offers all six comparison sections in %s without changing heading levels", (lang) => {
+    const slug = 'private-villa-vs-luxury-hotel-portugal';
+    const article = lang === 'en'
+      ? blog.articles.find(article => article.slug === slug)!
+      : JSON.parse(readFileSync(new URL(`../client/src/data/blog.i18n/${lang}.json`, import.meta.url), 'utf8'))[slug];
+    const contents = articleContents(article.content);
+    expect(contents).toHaveLength(6);
+    expect(contents.every(heading => heading.level === 3 && heading.title.length > 0)).toBe(true);
+    expect(new Set(contents.map(heading => heading.id)).size).toBe(6);
+    const blocks = article.content.split(/\n\s*\n/);
+    for (const heading of contents) expect(blocks[heading.index]).toBe(`### ${heading.title}`);
+  });
+  it("uses top-level sections when present and returns no contents for prose alone", () => {
+    expect(articleContents('## Arrival\n\n### By train\n\n## Stay').map(heading => heading.title)).toEqual(['Arrival', 'Stay']);
+    expect(articleContents('A short article without section headings.')).toEqual([]);
+  });
   it("creates usable unique targets for repeated and accented headings", () => {
     const headings = articleHeadings(
       "## Época\n\nText\n\n### Época\n\n## Getting here"

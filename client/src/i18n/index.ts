@@ -22,6 +22,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { addItalianDateFormats } from "./italianDateFormats";
+import { detectPreferredLanguage } from "@/lib/languagePreference";
 
 const SUPPORTED = ["en", "pt", "fr", "es", "it", "fi", "de", "nl", "sv"] as const;
 type Lang = typeof SUPPORTED[number];
@@ -42,7 +43,7 @@ const loaders: Record<Lang, () => Promise<{ default: Record<string, unknown> }>>
 function detectFromPath(): Lang {
   if (typeof window === "undefined") return "en";
   const seg = window.location.pathname.split("/").filter(Boolean)[0]?.toLowerCase();
-  return (SUPPORTED as readonly string[]).includes(seg) ? (seg as Lang) : "en";
+  return (SUPPORTED as readonly string[]).includes(seg) ? (seg as Lang) : detectPreferredLanguage();
 }
 
 const loaded = new Set<Lang>();

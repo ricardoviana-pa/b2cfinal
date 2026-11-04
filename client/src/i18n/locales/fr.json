@@ -1288,7 +1288,7 @@
     "ctaConcierge": "Parler à notre concierge",
     "relatedStories": "Articles associés",
     "relatedHomes": "Séjournez à proximité",
-    "relatedHomesSub": "Des maisons que nous gérons dans cette région.",
+    "relatedHomesSub": "Des maisons pour votre séjour dans cette région.",
     "bedroomCount_one": "{{count}} chambre",
     "bedroomCount_other": "{{count}} chambres"
   },

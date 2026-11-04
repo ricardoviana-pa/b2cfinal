@@ -1288,7 +1288,7 @@
     "ctaConcierge": "Keskustele concierge-palvelumme kanssa",
     "relatedStories": "Aiheeseen liittyvät tarinat",
     "relatedHomes": "Majoitu lähistöllä",
-    "relatedHomesSub": "Kotimme tällä alueella.",
+    "relatedHomesSub": "Lomakoteja tältä alueelta.",
     "bedroomCount_one": "{{count}} makuuhuone",
     "bedroomCount_other": "{{count}} makuuhuonetta"
   },

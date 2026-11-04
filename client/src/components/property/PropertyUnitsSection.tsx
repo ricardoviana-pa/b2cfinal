@@ -28,8 +28,7 @@ interface UnitQuote {
 
 interface Props {
   group: PropertyGroup;
-  /** Pulled from trpc.properties.listForSite — same dataset the related
-   *  section already loads, so no extra request. */
+  /** Public cards from trpc.properties.groupUnits, seeded during SSR. */
   allProperties: Property[];
   /** From the URL (?checkin=YYYY-MM-DD) — empty when no dates picked. */
   checkin?: string;

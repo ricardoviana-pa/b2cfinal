@@ -52,6 +52,8 @@ export interface RenderPrefetch {
   guestFeedback?: { input: { locale: string }; data: unknown };
   /** Result of trpc.properties.getBySlugForSite for a single property page. */
   propertyBySlug?: { slug: string; data: unknown };
+  /** Only the cards for a multi-unit home, independently of the full catalogue. */
+  groupUnits?: { input: { parentGuestyId: string }; data: unknown };
   /** That home's override for the page's language ({ [guestyId|slug]: fields }),
    *  so the server HTML and the first client render are translated. */
   propertyOverrides?: { lang: string; slug: string; data: Record<string, unknown> };
@@ -139,6 +141,12 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
     queryClient.setQueryData(
       getQueryKey(trpc.properties.getBySlugForSite, { slug: pf.propertyBySlug.slug }, 'query'),
       pf.propertyBySlug.data,
+    );
+  }
+  if (pf?.groupUnits) {
+    queryClient.setQueryData(
+      getQueryKey(trpc.properties.groupUnits, pf.groupUnits.input, 'query'),
+      pf.groupUnits.data,
     );
   }
   if (pf?.propertyOverrides) {

@@ -36,6 +36,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { redirectTarget } from "../lib/redirects";
 import { STATIC_SITEMAP_PAGES } from "../lib/sitemap-static";
+import { articleSitemapLastmod } from "../lib/sitemap-blog";
 import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
 import { runDatesOpenedAlerts } from "../services/dates-opened-alert";
@@ -283,7 +284,7 @@ async function startServer() {
       }
 
       // Dynamic pages × all languages
-      const dynamicPages: { path: string; lastmod: string; changefreq: string; priority: string; languages?: string[] }[] = [];
+      const dynamicPages: { path: string; lastmod: string | ((language: string) => string); changefreq: string; priority: string; languages?: string[] }[] = [];
 
       for (const p of properties.filter((p: any) => p.slug)) {
         // lastModified is stamped by the Guesty sync from a fingerprint of the
@@ -306,7 +307,7 @@ async function startServer() {
         for (const a of (blogFile.articles || [])) {
           if (!a?.slug || a.status !== "published") continue;
           blogSlugs.add(a.slug);
-          const lastmod = a.publishDate ? new Date(a.publishDate).toISOString().split("T")[0] : now;
+          const lastmod = (lang: string) => articleSitemapLastmod(a, lang, now);
           dynamicPages.push({ path: `/blog/${a.slug}`, lastmod, changefreq: "monthly", priority: "0.8", languages: blogLanguages(a) });
         }
       } catch (e) {
@@ -369,7 +370,8 @@ async function startServer() {
         for (const dp of dynamicPages) {
           if (dp.languages && !dp.languages.includes(lang)) continue;
           if (!servedAsIs(dp.path, lang)) continue;
-          allUrls.push(url(dp.path, lang, dp.lastmod, dp.changefreq, dp.priority, dp.languages));
+          const lastmod = typeof dp.lastmod === "function" ? dp.lastmod(lang) : dp.lastmod;
+          allUrls.push(url(dp.path, lang, lastmod, dp.changefreq, dp.priority, dp.languages));
         }
       }
 
