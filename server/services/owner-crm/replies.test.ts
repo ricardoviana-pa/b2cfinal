@@ -43,4 +43,8 @@ describe('idempotent owner reply notes', () => {
     expect(Buffer.byteLength(worst,'utf8')).toBeLessThan(100000); expect(worst).not.toContain('href="https://example.test/?q=&&');
   });
 
+  it('directs a reply without extractable text to the original Management email and associated attachments', () => {
+    expect(replyNoteContent({...reply,bodyText:''})).toContain('Consulte o email original em management@portugalactive.com e os anexos associados.');
+  });
+
 });
