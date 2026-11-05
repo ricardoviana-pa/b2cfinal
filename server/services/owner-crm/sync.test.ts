@@ -132,6 +132,16 @@ describe("durable owner CRM identity", () => {
   });
 });
 describe("CRM content and isolation", () => {
+  it("lists each attachment digest once when an owner resends the photo and document under different names", () => {
+    const e = example();
+    const photo = { id: "first-photo", name: "original.png", mimeType: "image/png", size: 10, digest: "a".repeat(64), origin: "email" as const };
+    const document = { id: "first-document", name: "original.pdf", mimeType: "application/pdf", size: 20, digest: "b".repeat(64), origin: "email" as const };
+    e.files = [photo, document, { ...photo, id: "resent-photo", name: "renamed.png" }, { ...document, id: "resent-document", name: "renamed.pdf" }];
+    const content = noteContent(e);
+    expect(content).toContain("Anexos atualmente enviados:</strong> renamed.png, renamed.pdf</p>");
+    expect(content).not.toContain("original.png"); expect(content).not.toContain("original.pdf");
+    expect(content).toContain("Fotografias recebidas por resposta ao email:</strong> 1 ·");
+  });
   it("labels net income and qualification honestly; escapes HTML and avoids private continuation tokens", () => {
     const content = noteContent(example()); expect(content).toContain("líquida anual"); expect(content).toContain("30.000–60.000"); expect(content).toContain("&lt;script&gt;"); expect(content).not.toContain("#token="); expect(content).toContain("A aguardar fotografias");
   });

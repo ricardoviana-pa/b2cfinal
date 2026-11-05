@@ -40,6 +40,7 @@ function photoLink(value: unknown): { href: string | null; text: string } {
 }
 export function noteContent(e: CrmEnquiry) {
   const d = e.details; const link = photoLink(d.photosLink); const photos = !!link.href || e.files.some(f => f.mimeType.startsWith("image/"));
+  const uniqueFiles = [...new Map(e.files.map(file => [file.digest, file])).values()];
   const emailPhotos = new Set(e.files.filter(f => f.origin === "email" && f.mimeType.startsWith("image/")).map(f => f.digest)).size;
   const historical = e.privacyNoticeVersion === "owner-crm-photo-followup";
   const status = e.qualified ? photos ? "Dados e fotografias recebidos — avaliar" : "A aguardar fotografias" : photos ? "Fotografias recebidas — completar qualificação no contacto" : "Contacto recebido — falta qualificação e fotografias";
@@ -50,7 +51,7 @@ export function noteContent(e: CrmEnquiry) {
     ["Vive alguém na casa", display(d.occupied)], ["Detalhes de ocupação", d.occupiedDetails], ["À venda", display(d.forSale)], ["Interesse em vender com a PA", display(d.saleInterest)],
     ["Entrada no mercado", OWNER_TIMELINE_LABELS[d.launchTimeline as keyof typeof OWNER_TIMELINE_LABELS] || "Por confirmar"],
     ["Expectativa líquida anual para o proprietário", OWNER_INCOME_LABELS[d.incomeExpectation as keyof typeof OWNER_INCOME_LABELS] || "Por confirmar"],
-    ["Link de fotografias", link.text], ["Anexos atualmente enviados", e.files.map(f => f.name).join(", ") || "Sem anexos"],
+    ["Link de fotografias", link.text], ["Anexos atualmente enviados", uniqueFiles.map(f => f.name).join(", ") || "Sem anexos"],
     ...(emailPhotos ? [["Fotografias recebidas por resposta ao email", `${emailPhotos} · associadas a este pedido; confirmar suficiência antes de avaliar.`]] as [string, unknown][] : []),
     ...(historical && e.originalRequestedAt ? [["Pedido original recebido em", e.originalRequestedAt.toISOString()]] as [string, unknown][] : []),
     [historical ? "Seguimento criado em" : "Recebido em", e.capturedAt.toISOString()], ["Atualizado em", e.modifiedAt.toISOString()], ["Referência do pedido", e.id],
