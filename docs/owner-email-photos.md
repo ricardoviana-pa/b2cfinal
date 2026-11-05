@@ -1,4 +1,4 @@
-# Fotografias recebidas em respostas de proprietários
+# Respostas e fotografias recebidas de proprietários
 
 Pedido de Ricardo, 04–05/11/2026. O proprietário pode responder ao email com fotografias ou usar o botão existente. Ambos os caminhos atualizam o mesmo pedido e o mesmo negócio Pipedrive. Não criam uma nova conversão.
 
@@ -14,7 +14,13 @@ As tabelas `owner_email_messages`, `owner_email_files`, `owner_email_outbound_id
 
 Aceitam-se JPEG, PNG, WebP, HEIC/HEIF e PDF com conteúdo validado; PDFs não contam como fotografias. Limites: 15 MiB por anexo, 75 MiB e 30 anexos por mensagem. O transporte é sequencial e partilha o limite de memória de uploads sem ocupar a via de captação de contactos. Ficheiros recusados recebem um estado final, sem tentativas infinitas. Os originais permanecem no Gmail. Os bytes de transporte são removidos apenas após sincronização integral confirmada no negócio correto; ficam digest, nome, ID Pipedrive e data.
 
-Fotografias confirmadas suprimem os lembretes pendentes e aparecem como recebidas no link de seguimento. O PDF isolado mantém o pedido de fotografias. Não é enviado outro aviso de sucesso para Management: a resposta original já chegou a essa caixa. Uma associação duvidosa gera apenas um aviso de revisão com instruções claras. A nota existente no CRM passa a identificar as imagens recebidas por email.
+Fotografias confirmadas aparecem como recebidas no link de seguimento. Qualquer resposta humana associada com segurança, mesmo sem anexos ou apenas com um link, suspende os pedidos automáticos de fotografias para a equipa comercial avaliar o conteúdo. Um PDF ou texto não é apresentado como fotografia recebida. A validação é repetida imediatamente antes de entregar um lembrete que já estava em fila.
+
+Cada resposta fica numa nota própria no histórico do negócio, com remetente, assunto, data e apenas o texto novo. Links públicos ficam clicáveis; ligações privadas de continuação, HTML executável e histórico citado são removidos. Não é uma ligação à caixa de correio nativa do Pipedrive. A nota principal do formulário mantém-se e as respostas não ficam fixadas no topo. O marcador permanente por mensagem, a lease do sincronizador e a reconciliação de POST incerto impedem repetir a nota quando a mesma mensagem é reprocessada. Mensagens diferentes podem ter notas diferentes, mesmo quando reenviam as mesmas fotografias; os ficheiros continuam deduplicados por conteúdo.
+
+Não é enviado outro aviso de sucesso para Management: a resposta original já chegou a essa caixa. Uma associação de fotografias duvidosa gera apenas um aviso de revisão. Se um novo formulário encontra um negócio aberto preexistente sem uma associação segura, os dados ficam guardados e Management recebe um aviso único com a ligação ao contacto. Responder a esse aviso mantém a conversa na equipa interna. Não se cria um negócio duplicado nem se altera a etapa ou decisão comercial para desbloquear a integração.
+
+Atualização de 05/11/2026: a tabela de mensagens recebe quatro colunas aditivas para texto saneado, ID da nota e estado de nova tentativa. Publicar primeiro o B2C compatível e só depois o Core que inclui `replyText`. Os históricos com o formato antigo só podem ser enriquecidos se todos os restantes metadados mantiverem o hash original e o vínculo atual for novamente confirmado. A saúde CRM sinaliza notas de resposta em erro ou atrasadas.
 
 ## Ativação e controlo
 
