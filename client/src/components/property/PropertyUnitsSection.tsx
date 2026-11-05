@@ -16,21 +16,13 @@ import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/imag
 import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 import type { PropertyGroup } from '@/config/propertyGroups';
-
-interface UnitQuote {
-  total: number;
-  nightlyRate: number;
-  cleaningFee: number;
-  nights: number;
-  available?: boolean;
-  source?: string;
-}
+import { loadUnitQuotes, unitQuoteSelectionKey, unitQuotesForSelection, type UnitQuote, type UnitQuoteSnapshot } from '@/lib/unitQuotes';
 
 interface Props {
   group: PropertyGroup;
   /** Public cards from trpc.properties.groupUnits, seeded during SSR. */
   allProperties: Property[];
-  /** From the URL (?checkin=YYYY-MM-DD) — empty when no dates picked. */
+  /** Current stay on the parent PDP — empty when no complete dates are picked. */
   checkin?: string;
   checkout?: string;
   guests?: number;
@@ -62,54 +54,39 @@ export default function PropertyUnitsSection({
   }, [checkin, checkout]);
 
   // Live quotes per unit (batch tRPC — single call covering every unit at once).
-  const [quotes, setQuotes] = useState<Record<string, UnitQuote | null>>({});
+  const [quoteSnapshot, setQuoteSnapshot] = useState<UnitQuoteSnapshot | null>(null);
+  const listings = useMemo(() => units
+    .filter(p => p.guestyId && p.isActive !== false)
+    .map(p => ({ listingId: p.guestyId!, slug: p.slug })), [units]);
+  const selectionKey = nights > 0 && listings.length > 0
+    ? unitQuoteSelectionKey({ groupId: group.parentGuestyId, listings, checkIn: checkin!, checkOut: checkout!, guests: guests || 2 })
+    : null;
+  const { quotes, loading: quotesLoading } = unitQuotesForSelection(selectionKey, quoteSnapshot);
   /** True when the searched party is larger than this unit can take. */
   const tooSmallFor = (unit: { maxGuests?: number }) =>
     !!guests && !!unit.maxGuests && guests > unit.maxGuests;
-  const [quotesLoading, setQuotesLoading] = useState(false);
   const utils = trpc.useUtils();
 
   useEffect(() => {
-    if (nights <= 0 || units.length === 0) {
-      setQuotes({});
-      setQuotesLoading(false);
-      return;
-    }
-    const listings = units
-      .filter((p) => p.guestyId && p.isActive !== false)
-      .map((p) => ({ listingId: p.guestyId!, slug: p.slug }));
-    if (listings.length === 0) return;
-
-    let cancelled = false;
-    setQuotesLoading(true);
-    utils.booking.getBatchQuotes
-      .fetch({ listings, checkIn: checkin!, checkOut: checkout!, guests: guests || 2 })
-      .then((data) => {
-        if (cancelled) return;
-        const mapped: Record<string, UnitQuote | null> = {};
-        for (const [slug, q] of Object.entries(data)) {
-          mapped[slug] = {
-            total: q.pricing.total,
-            nightlyRate: q.pricing.nightlyRate,
-            cleaningFee: q.pricing.cleaningFee,
-            nights: q.nights,
-            source: q.source,
-            available: q.available,
-          };
-        }
-        setQuotes(mapped);
-        setQuotesLoading(false);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setQuotes({});
-        setQuotesLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [units, nights, checkin, checkout, guests, utils]);
+    if (!selectionKey) return;
+    const request = loadUnitQuotes(selectionKey, async () => {
+      const data = await utils.booking.getBatchQuotes
+        .fetch({ listings, checkIn: checkin!, checkOut: checkout!, guests: guests || 2 });
+      const mapped: Record<string, UnitQuote | null> = {};
+      for (const [slug, q] of Object.entries(data)) {
+        mapped[slug] = {
+          total: q.pricing.total,
+          nightlyRate: q.pricing.nightlyRate,
+          cleaningFee: q.pricing.cleaningFee,
+          nights: q.nights,
+          source: q.source,
+          available: q.available,
+        };
+      }
+      return mapped;
+    }, setQuoteSnapshot);
+    return request.cancel;
+  }, [selectionKey, listings, checkin, checkout, guests, utils]);
 
   if (units.length === 0) return null;
 
@@ -173,7 +150,7 @@ export default function PropertyUnitsSection({
 
                 <div className="mt-auto pt-3 border-t border-[#E8E4DC]">
                   {nights > 0 ? (
-                    quotesLoading && !q ? (
+                    quotesLoading ? (
                       <div className="flex flex-col gap-1.5" aria-busy="true">
                         <div className="h-3 bg-[#F5F1EB] rounded-md animate-pulse w-3/4" />
                         <div className="h-2.5 bg-[#F5F1EB] rounded-md animate-pulse w-1/2" />

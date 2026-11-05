@@ -107,27 +107,29 @@ describe('Journal delivery by article and language', () => {
     },
   );
 
-  it.each(BLOG_LANGUAGES.filter(language => !['en', 'pt'].includes(language)))(
-    '%s adds a localized Minho homes link without claiming a content review, and redirects unpublished Esposende',
-    async language => {
+  it.each(BLOG_LANGUAGES.filter(language => !['en', 'pt'].includes(language)).flatMap(language => [
+    { language, articleSlug: 'complete-guide-north-portugal', filter: 'destination=minho' },
+    { language, articleSlug: 'viana-do-castelo-guide', filter: 'location=viana-do-castelo' },
+  ]))(
+    '$language $articleSlug serves its reviewed edition and retains the selected stay in localized home links',
+    async ({ language, articleSlug, filter }) => {
       const locale = journalLocale(language);
-      const articleSlug = 'complete-guide-north-portugal';
       const data = await getJournalArticlePage(articleSlug, locale);
       expect(data.article).not.toBeNull();
       expect(data.redirect).toBeNull();
       const overrides = JSON.parse(fs.readFileSync(`client/src/data/blog.i18n/${locale}.json`, 'utf8'));
       const base = source.find((article: any) => article.slug === articleSlug);
       expect(data.article!.content).toBe(mergeBlogOverride(base, overrides)!.content);
-      expect(reviewedArticleDate(data.article!, locale)).toBeUndefined();
+      expect(reviewedArticleDate(data.article!, locale)).toBe('2026-11-05');
       const { appHtml } = await render(`/${locale}/blog/${articleSlug}?checkin=2027-05-10&checkout=2027-05-17&guests=4&token=private`, {
         prefetch: { journalArticle: { input: { locale, slug: articleSlug }, data } },
       });
       const intro = appHtml.slice(appHtml.indexOf('<h1'), appHtml.indexOf('<section class="pb-12"'));
       const labels = JSON.parse(fs.readFileSync(`client/src/i18n/locales/${locale}.json`, 'utf8'));
-      expect(intro).toContain(labels.blogArticle.ctaExplore);
-      expect(intro).toContain(`href="/${locale}/homes?destination=minho&amp;checkin=2027-05-10&amp;checkout=2027-05-17&amp;guests=4"`);
+      expect(intro).toContain(data.article!.cta!.label);
+      expect(intro).toContain(`href="/${locale}/homes?${filter}&amp;checkin=2027-05-10&amp;checkout=2027-05-17&amp;guests=4"`);
       expect(intro).not.toContain(base.cta.label);
-      expect(intro).not.toContain(labels.planning.updated);
+      expect(appHtml).toContain(labels.planning.updated);
       expect(appHtml).not.toContain('token=private');
       expect(await getJournalArticlePage('esposende-guide', locale)).toEqual({
         article: null, relatedArticles: [], redirect: '/en/blog/esposende-guide',

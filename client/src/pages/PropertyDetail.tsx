@@ -15,6 +15,7 @@ import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import { countVars } from '@/lib/plural';
 import { propertyKindInline } from '@shared/propertyMeta';
 import { propertyPageMetaOpts } from '@/lib/propertyPageMeta';
+import { publicPropertyTrip, propertyTripReplacement } from '@/lib/propertyTrip';
 import { buildPdpFaq, faqPageNode } from '@shared/pdpFaq';
 import { placeKey, placePhrases, placeVars } from '@shared/regionPhrases';
 import { displayedAggregate, formatRating } from '@shared/reviewStats';
@@ -658,22 +659,33 @@ export default function PropertyDetail() {
   // The stay's dates, one source for the page: the URL first, then whatever
   // the booking card reports, then a stay picked on the availability section
   // (which the card adopts and prices — BookingWidget's initial-dates effect).
-  const [stayDates, setStayDates] = useState({ checkIn: initialCheckin, checkOut: initialCheckout });
+  const [stayDates, setStayDates] = useState({ propertySlug: slug, checkIn: initialCheckin, checkOut: initialCheckout });
   useEffect(() => {
     setBookingSelection(null);
     setBookingOpen(false);
-    setStayDates({ checkIn: initialCheckin, checkOut: initialCheckout });
+    setStayDates({ propertySlug: slug, checkIn: initialCheckin, checkOut: initialCheckout });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
   const onBookingSelection = useCallback((next: BookingSelection) => {
     setBookingSelection(prev =>
       prev && prev.checkIn === next.checkIn && prev.checkOut === next.checkOut && prev.guests === next.guests && prev.total === next.total && prev.loading === next.loading && prev.isPartial === next.isPartial ? prev : next
     );
-    setStayDates(prev => (prev.checkIn === (next.checkIn || '') && prev.checkOut === (next.checkOut || '') ? prev : { checkIn: next.checkIn || '', checkOut: next.checkOut || '' }));
-  }, []);
+    setStayDates(prev => (prev.propertySlug === slug && prev.checkIn === (next.checkIn || '') && prev.checkOut === (next.checkOut || '') ? prev : { propertySlug: slug, checkIn: next.checkIn || '', checkOut: next.checkOut || '' }));
+  }, [slug]);
   const onStayPicked = useCallback((next: { checkIn: string; checkOut: string }) => {
-    setStayDates(prev => (prev.checkIn === next.checkIn && prev.checkOut === next.checkOut ? prev : { checkIn: next.checkIn, checkOut: next.checkOut }));
-  }, []);
+    setStayDates(prev => (prev.propertySlug === slug && prev.checkIn === next.checkIn && prev.checkOut === next.checkOut ? prev : { propertySlug: slug, checkIn: next.checkIn, checkOut: next.checkOut }));
+  }, [slug]);
+  // Links use the stay being edited, rather than the URL that opened this
+  // page. Tag dates with the home so a route change cannot carry old state
+  // into the next home's URL before the reset effect above runs.
+  const currentTrip = publicPropertyTrip(stayDates.propertySlug === slug
+    ? { ...stayDates, guests: bookingSelection?.guests ?? initialGuests }
+    : { checkIn: initialCheckin, checkOut: initialCheckout, guests: initialGuests });
+  useEffect(() => {
+    if (!slug || stayDates.propertySlug !== slug || property?.slug !== slug) return;
+    const href = propertyTripReplacement(window.location, slug, currentTrip);
+    if (href) window.history.replaceState(window.history.state, '', href);
+  }, [slug, property?.slug, stayDates.propertySlug, currentTrip.checkin, currentTrip.checkout, currentTrip.guests]);
   const [amenitiesOpen, setAmenitiesOpen] = useState(false);
   const touchStartX = useRef(0);
   const touchDeltaX = useRef(0);
@@ -1428,9 +1440,9 @@ export default function PropertyDetail() {
                 <PropertyUnitsSection
                   group={propertyGroup}
                   allProperties={groupUnits as Property[]}
-                  checkin={initialCheckin}
-                  checkout={initialCheckout}
-                  guests={initialGuests}
+                  checkin={currentTrip.checkin}
+                  checkout={currentTrip.checkout}
+                  guests={currentTrip.guests}
                 />
               )}
 
@@ -1867,9 +1879,9 @@ export default function PropertyDetail() {
                   >
                     <PropertyCard
                       property={rp}
-                      checkin={initialCheckin || undefined}
-                      checkout={initialCheckout || undefined}
-                      guests={initialGuests > 1 ? initialGuests : undefined}
+                      checkin={currentTrip.checkin}
+                      checkout={currentTrip.checkout}
+                      guests={currentTrip.guests}
                     />
                   </div>
                 ))}

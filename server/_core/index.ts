@@ -39,7 +39,8 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { redirectTarget } from "../lib/redirects";
 import { STATIC_SITEMAP_PAGES } from "../lib/sitemap-static";
-import { articleSitemapLastmod } from "../lib/sitemap-blog";
+import { localizedArticleSitemapDates } from "../lib/sitemap-blog";
+import { getJournalArticle } from "../services/journal";
 import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
 import { runDatesOpenedAlerts } from "../services/dates-opened-alert";
@@ -312,8 +313,12 @@ async function startServer() {
         for (const a of (blogFile.articles || [])) {
           if (!a?.slug || a.status !== "published") continue;
           blogSlugs.add(a.slug);
-          const lastmod = (lang: string) => articleSitemapLastmod(a, lang, now);
-          dynamicPages.push({ path: `/blog/${a.slug}`, lastmod, changefreq: "monthly", priority: "0.8", languages: blogLanguages(a) });
+          const languages = blogLanguages(a);
+          // Use the same localized record as the visible review date and Article
+          // schema. A translated edition can be revised after its English source.
+          const reviewDates = await localizedArticleSitemapDates(a, languages, now, getJournalArticle);
+          const lastmod = (lang: string) => reviewDates.get(lang)!;
+          dynamicPages.push({ path: `/blog/${a.slug}`, lastmod, changefreq: "monthly", priority: "0.8", languages });
         }
       } catch (e) {
         console.warn("[Sitemap] could not load blog.json", e);

@@ -10,6 +10,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { withPartnerDefaults, normalizePartnerAmenities } from "./tripwix";
 import { normalizePublicPropertyGeography } from "./property-geography";
+import { normalizePropertyCapacityCopy } from "./property-capacity-copy";
 
 const SYNC_PATH = join(process.cwd(), "data", "properties-synced.json");
 const FALLBACK_PATH = join(process.cwd(), "client", "src", "data", "properties.json");
@@ -274,7 +275,7 @@ export function filterPublicProperties(properties: any[]): any[] {
       return false;
     }
     return true;
-  }).map(normalizePublicPropertyGeography);
+  }).map(normalizePublicPropertyGeography).map(normalizePropertyCapacityCopy);
 }
 
 /** Mirror of the client's slugifyLocality (client/src/lib/utils.ts) so the

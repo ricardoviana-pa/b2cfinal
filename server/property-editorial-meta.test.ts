@@ -10,8 +10,8 @@ const pt = JSON.parse(fs.readFileSync('client/src/data/properties.i18n/pt.json',
 const selected = Object.keys(PROPERTY_EDITORIAL_META).map(id => homes.find(home => home.guestyId === id));
 
 describe('persistent EN/PT home search snippets', () => {
-  it('the eight reviewed homes exist and remain in the active direct catalogue', () => {
-    expect(selected).toHaveLength(8);
+  it('the ten reviewed homes exist and remain in the active direct catalogue', () => {
+    expect(selected).toHaveLength(10);
     const publicIds = new Set(catalogProperties(filterPublicProperties(homes)).map(home => home.guestyId));
     for (const home of selected) {
       expect(home).toBeDefined();
@@ -24,7 +24,7 @@ describe('persistent EN/PT home search snippets', () => {
   });
 
   it('uses a precise place and current facts in both editions, preserving image, URL and localized parity', () => {
-    const titles = new Set<string>();
+    const titles: Record<string, Set<string>> = { en: new Set(), pt: new Set() };
     for (const home of selected) {
       for (const lang of ['en', 'pt']) {
         const meta = propertyPageMeta(home, lang);
@@ -37,11 +37,14 @@ describe('persistent EN/PT home search snippets', () => {
         expect(meta.description).not.toMatch(/…|heated|aquecid|24\/7|concierge|€|guaranteed|garantid/i);
         expect(meta.path).toBe(`/homes/${home.slug}`);
         expect(meta.image).toBe(home.images[0]);
-        titles.add(meta.title);
+        titles[lang].add(meta.title);
         if (lang === 'pt') expect(propertyPageMeta(mergePropertyOverrides(home, pt), lang)).toEqual(meta);
       }
     }
-    expect(titles.size).toBe(16);
+    // Proper names and locality can legitimately yield the same EN/PT title;
+    // distinct homes must still have distinct titles within each edition.
+    expect(titles.en.size).toBe(10);
+    expect(titles.pt.size).toBe(10);
   });
 
   it('keeps group names and describes their capacity without calling the whole estate a single villa', () => {
@@ -76,7 +79,5 @@ describe('persistent EN/PT home search snippets', () => {
     for (const changes of [{ guestyId: 'unreviewed' }, { source: 'tripwix' }, { supplierUid: 'supplier' }, { isActive: false }, { locality: '' }]) {
       expect(propertyEditorialMeta({ ...home, ...changes }, name, 'en')).toBeNull();
     }
-    expect(PROPERTY_EDITORIAL_META['69c567ad7f6873000e9a3c37']).toBeUndefined();
-    expect(PROPERTY_EDITORIAL_META['6965331fec80690013738c68']).toBeUndefined();
   });
 });
