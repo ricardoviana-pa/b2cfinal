@@ -26,7 +26,7 @@ export const metadataSchema = z.object({
   providerId: z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/), threadId: z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/).nullable(),
   messageId: header.nullable(), inReplyTo: z.array(header).max(30), references: z.array(header).max(100),
   from: email, originalSender: email.optional(), to: z.array(email).max(100), cc: z.array(email).max(100), listId: header.optional(),
-  subject: z.string().max(500), text: z.string().max(16000), automatic: z.boolean(), receivedAt: z.iso.datetime({ offset: true }),
+  subject: z.string().max(500), text: z.string().max(16000), replyText: z.string().max(16000).optional(), automatic: z.boolean(), receivedAt: z.iso.datetime({ offset: true }),
   attachments: z.array(inboundAttachmentSchema).max(100), authentication: inboundAuthenticationSchema,
 }).strict().refine(value => new Set(value.attachments.map(file => file.id)).size === value.attachments.length, "duplicate_attachment_id");
 export type InboundPhotoMetadata = z.infer<typeof metadataSchema>;

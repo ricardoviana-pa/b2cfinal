@@ -35,13 +35,14 @@ function memoryStore(seed: any[] = [request()], options: { failReview?: boolean 
         .filter(r => p.includes((r.contact || r.payload).email) || p.includes(r.id) || p.includes(r.originalSourceKey) || p.includes(r.tokenHash) || r.outbound.some((id: string) => p.includes(hash(id))))
         .map(r => ({ ...r, ...s.bindings.get(r.sourceKey) })));
     }
+    if (q.sql.startsWith("SELECT id FROM owner_v4_enquiries WHERE LOWER")) return result([...s.requests.values()].filter(r => p.includes((r.contact || r.payload).email)).slice(0,1));
     if (q.sql.startsWith("SELECT h.messageId")) return result(([...s.requests.values()].find(r => r.id === p[0])?.outbound || []).map((messageId: string) => ({ messageId })));
     if (q.sql.startsWith("SELECT * FROM owner_email_messages")) return result([s.messages.get(p[0])].filter(Boolean));
     if (q.sql.startsWith("SELECT attachmentId FROM owner_email_files") || q.sql.startsWith("SELECT attachmentId,mimeType")) return result([...s.files.values()].filter(f => f.messageKey === p[0]));
     if (q.sql.startsWith("SELECT digest,outcome FROM owner_email_files")) return result([s.files.get(`${p[0]}:${p[1]}`)].filter(Boolean));
     if (q.sql.startsWith("INSERT IGNORE INTO owner_email_messages")) {
-      const [messageKey, mailbox, providerId, threadId, messageId, fingerprint, sourceKey, dealId, personId, senderEmail, subject, descriptors, status, reason, receivedAt, createdAt, updatedAt] = p;
-      if (!s.messages.has(messageKey)) s.messages.set(messageKey, { messageKey, mailbox, providerId, threadId, messageId, fingerprint, sourceKey, dealId, personId, senderEmail, subject, descriptors, status, reason, receivedAt, createdAt, updatedAt });
+      const [messageKey, mailbox, providerId, threadId, messageId, fingerprint, sourceKey, dealId, personId, senderEmail, subject, descriptors, status, reason, receivedAt, createdAt, updatedAt, bodyText] = p;
+      if (!s.messages.has(messageKey)) s.messages.set(messageKey, { messageKey, mailbox, providerId, threadId, messageId, fingerprint, sourceKey, dealId, personId, senderEmail, subject, descriptors, status, reason, receivedAt, createdAt, updatedAt, bodyText });
       return ok();
     }
     if (q.sql.startsWith("INSERT INTO owner_email_files")) {
@@ -52,6 +53,10 @@ function memoryStore(seed: any[] = [request()], options: { failReview?: boolean 
     if (q.sql.startsWith("INSERT IGNORE INTO owner_v4_outbox")) {
       if (options.failReview) throw new Error("synthetic outbox failure");
       const [id, enquiryId, payload, createdAt] = p; if (!s.outbox.has(id)) s.outbox.set(id, { id, enquiryId, payload, createdAt, kind: "email_review", status: "pending" }); return ok();
+    }
+    if (q.sql.startsWith("UPDATE owner_email_messages SET bodyText")) {
+      const [bodyText,fingerprint,sourceKey,personId,dealId,senderEmail,status,updatedAt,messageKey] = p;
+      Object.assign(s.messages.get(messageKey), {bodyText,fingerprint,sourceKey,personId,dealId,senderEmail,status,reason:null,updatedAt}); return ok();
     }
     if (q.sql.startsWith("UPDATE owner_email_messages SET status='review'")) { Object.assign(s.messages.get(p[2]), { status: "review", reason: p[0], updatedAt: p[1] }); return ok(); }
     if (q.sql.startsWith("UPDATE owner_email_messages SET status='ignored'")) { Object.assign(s.messages.get(p[1]), { status: "ignored", reason: "NO_ELIGIBLE_ATTACHMENTS", updatedAt: p[0] }); return ok(); }
@@ -97,6 +102,52 @@ describe("durable owner reply photo ingestion", () => {
     expect(await acceptOwnerEmail(metadata({ providerId: "signature-mail", text: "Thanks", attachments: [descriptor(png, { name: "pa-logo-dark.png" })] }), now)).toMatchObject({ state: "ignored" });
     expect(m.fetch).not.toHaveBeenCalled(); expect(m.state().outbox.size).toBe(0);
     expect(m.statements.some(q => q.sql.startsWith("SELECT e.id"))).toBe(false);
+  });
+  it("accepts a referenced text-only reply, pauses reminders and never claims photos received", async () => {
+    const m = memoryStore(), mail = metadata({ attachments: [], replyText: "Já não pretendo vender.\nhttps://airbnb.pt/rooms/123" });
+    m.state().outbox.set("reminder", { enquiryId: A, kind: "photo_reminder", status: "pending" });
+    const accepted = await acceptOwnerEmail(mail,now); expect(accepted).toMatchObject({state:"accepted",missingAttachmentIds:[]});
+    expect(await completeOwnerEmail(accepted.messageKey,now)).toMatchObject({state:"complete"});
+    expect(await acceptOwnerEmail(mail,now)).toMatchObject({state:"complete"});
+    expect(await completeOwnerEmail(accepted.messageKey,now)).toMatchObject({state:"complete"});
+    expect(m.state().messages.get(accepted.messageKey)).toMatchObject({bodyText:mail.replyText,sourceKey:`v4:${A}`,dealId:20,personId:10});
+    expect(m.state().requests.get(`v4:${A}`)).toMatchObject({status:"awaiting_photos",mediaReceivedAt:null,revision:5});
+    expect(m.state().outbox.get("reminder").status).toBe("cancelled"); expect(m.state().files.size).toBe(0);
+    expect(m.state().outbox.size).toBe(1);
+  });
+  it("keeps empty new text separate from the quoted private body and still pauses followups", async () => {
+    const m = memoryStore(), mail = metadata({attachments:[],replyText:"", text:`${A} https://www.portugalactive.com/management/complete/#token=${'t'.repeat(43)}`});
+    const accepted = await acceptOwnerEmail(mail,now); await completeOwnerEmail(accepted.messageKey,now);
+    expect(m.state().messages.get(accepted.messageKey).bodyText).toBe("");
+    expect(JSON.stringify([...m.state().messages.values()])).not.toContain('t'.repeat(43));
+  });
+  it("ignores unrelated external messages while keeping ambiguous known replies in review without photo alerts", async () => {
+    const m = memoryStore([request(),request(B)]);
+    expect(await acceptOwnerEmail(metadata({providerId:"unknown",from:"other@synthetic.test",text:"Invoice",replyText:"Invoice",references:["<external-thread@synthetic.test>"],attachments:[]}),now)).toMatchObject({state:"ignored"});
+    expect(await acceptOwnerEmail(metadata({providerId:"ambiguous",text:`${A} ${B}`,replyText:"Photos soon",attachments:[]}),now)).toMatchObject({state:"review"});
+    expect(m.state().outbox.size).toBe(0); expect(m.fetch).not.toHaveBeenCalled();
+  });
+  it("enriches an exact old ready message once, preserving its files and binding; altered text is rejected", async () => {
+    const m = memoryStore(), mail = metadata(), accepted = await acceptOwnerEmail(mail,now);
+    await putOwnerEmailFile(accepted.messageKey,mail.attachments[0].id,png,now); await completeOwnerEmail(accepted.messageKey,now);
+    const enriched = {...mail,replyText:"A casa está disponível."};
+    expect(await acceptOwnerEmail(enriched,now)).toMatchObject({state:"complete"});
+    expect(await acceptOwnerEmail(enriched,now)).toMatchObject({state:"complete"});
+    expect(m.state().messages.get(accepted.messageKey).bodyText).toBe(enriched.replyText); expect(m.state().files.size).toBe(1);
+    await expect(acceptOwnerEmail({...enriched,replyText:"Alterado"},now)).rejects.toThrow("MESSAGE_CONTENT_CONFLICT");
+  });
+  it("never enriches an old ready message when the remote deal has closed", async () => {
+    const m = memoryStore(), mail = metadata(), accepted = await acceptOwnerEmail(mail,now);
+    await putOwnerEmailFile(accepted.messageKey,mail.attachments[0].id,png,now); await completeOwnerEmail(accepted.messageKey,now); m.closeRemote();
+    expect(await acceptOwnerEmail({...mail,replyText:"Uma resposta"},now)).toMatchObject({state:"complete"});
+    expect(m.state().messages.get(accepted.messageKey).bodyText).toBeNull();
+  });
+  it("recovers only exact old no-attachment ignores after authenticated matching", async () => {
+    const m = memoryStore(), mail = metadata({attachments:[]}), old = await acceptOwnerEmail(mail,now);
+    expect(old.state).toBe("ignored");
+    expect(await acceptOwnerEmail({...mail,replyText:"https://airbnb.pt/rooms/123"},now)).toMatchObject({state:"accepted"});
+    expect(await completeOwnerEmail(old.messageKey,now)).toMatchObject({state:"complete"});
+    expect(m.state().messages.size).toBe(1); expect(m.state().messages.get(old.messageKey).dealId).toBe(20);
   });
   it("retries recent uncorrelated replies before creating a review, then resolves a late RFC webhook", async () => {
     const m = memoryStore(), mail = metadata({ text: "Fotos em anexo", references: ["<late-welcome@synthetic.test>"] });

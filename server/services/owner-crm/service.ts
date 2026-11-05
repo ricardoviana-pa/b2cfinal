@@ -1,8 +1,10 @@
 import { isOwnerIntakeProduction } from "../owner-intake/email";
-import { acquireCrmLease, crmCandidates, crmDealForV4, crmFileBytes, crmStorageHealth, initialiseOwnerCrmSchema, releaseCrmLease, releaseSyncedEmailBytes, saveCrmResult, sqlLedger } from "./store";
+import { acquireCrmLease, crmCandidates, crmEmailReplies, verifyCrmEmailReply, saveCrmEmailReply, crmDealForV4, crmFileBytes, crmStorageHealth, initialiseOwnerCrmSchema, releaseCrmLease, releaseSyncedEmailBytes, saveCrmResult, sqlLedger } from "./store";
 import { PipedriveGateway, type PipedriveConfig } from "./pipedrive";
 import { automationEligible, snapshotHash, syncEnquiry } from "./sync";
 import { CrmError } from "./types";
+import { syncEmailReply } from "./replies";
+import { queueOwnerCrmReview } from "./review-notification";
 export { ownerCrmStatus } from "./store";
 
 export function ownerCrmConfig(env: NodeJS.ProcessEnv = process.env): PipedriveConfig | null {
@@ -51,8 +53,20 @@ export function sweepOwnerCrm() {
           } catch (error) {
             const failure = error instanceof CrmError ? error : new CrmError("CRM_UNAVAILABLE");
             await saveCrmResult(token, e, version, failure.review ? "review" : "retry", null, failure.code);
+            if (failure.code === "EXISTING_OPPORTUNITY_REVIEW") await queueOwnerCrmReview(e, failure)
+              .catch(() => console.warn("[Owner CRM] association review notification deferred"));
             if (failure.code === "LEASE_LOST") throw failure;
           }
+        }
+      }
+      for (const reply of await crmEmailReplies()) {
+        try {
+          const noteId = await syncEmailReply(reply, ledger, gateway, () => verifyCrmEmailReply(token, reply));
+          await saveCrmEmailReply(token, reply, noteId);
+        } catch (error) {
+          const failure = error instanceof CrmError ? error : new CrmError("REPLY_SYNC_UNAVAILABLE");
+          await saveCrmEmailReply(token, reply, null, failure);
+          if (failure.code === "LEASE_LOST") throw failure;
         }
       }
     } finally { await releaseCrmLease(token); }

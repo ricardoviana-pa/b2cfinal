@@ -57,6 +57,15 @@ describe("Pipedrive HTTP contract", () => {
     const body = JSON.parse((fetcher.mock.calls[0] as unknown as [string, RequestInit])[1].body as string);
     expect(body.title.length).toBeLessThanOrEqual(240); expect(body.title).toContain(marker);
   });
+  it("creates chronological reply notes without pinning and checks current deal/contact ownership", async () => {
+    const fetcher = vi.fn().mockResolvedValueOnce(result({status:"open",person_id:7})).mockResolvedValueOnce(result({email:[{value:e.email}]})).mockResolvedValueOnce(result({id:99}));
+    const gateway=new PipedriveGateway(config,fetcher); await gateway.verifyReplyOwner(9,7,e.email); await gateway.createReplyNote(9,"A reply");
+    expect(JSON.parse(fetcher.mock.calls[2][1].body)).toEqual({deal_id:9,content:"A reply",pinned_to_deal_flag:0});
+    const moved=new PipedriveGateway(config,vi.fn().mockResolvedValueOnce(result({status:"open",person_id:8})).mockResolvedValueOnce(result({email:[{value:e.email}]})));
+    await expect(moved.verifyReplyOwner(9,7,e.email)).rejects.toThrow("REPLY_OWNER_CHANGED");
+    const closed=new PipedriveGateway(config,vi.fn().mockResolvedValueOnce(result({status:"lost",person_id:7})).mockResolvedValueOnce(result({email:[{value:e.email}]})));
+    await expect(closed.verifyReplyOwner(9,7,e.email)).rejects.toThrow("REPLY_DEAL_NOT_OPEN");
+  });
   it("updates only integration note content without touching deal lifecycle", async () => {
     const fetcher = vi.fn(async () => result({ id: 9 })); await new PipedriveGateway(config, fetcher).updateNote(9, "synthetic note");
     const [url, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit]; expect(url).toContain("/v1/notes/9"); expect(init.method).toBe("PUT"); expect(JSON.parse(init.body as string)).toEqual({ content: "synthetic note" });

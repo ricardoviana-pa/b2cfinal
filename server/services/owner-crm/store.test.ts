@@ -3,7 +3,7 @@ import { MySqlDialect } from "drizzle-orm/mysql-core";
 const fake = vi.hoisted(() => ({ db: vi.fn(), production: vi.fn(() => true) }));
 vi.mock("../../db", () => ({ getDb: fake.db }));
 vi.mock("../owner-intake/email", () => ({ isOwnerIntakeProduction: fake.production }));
-import { acquireCrmLease, crmCandidates, crmDealForV4, crmFileBytes, crmStorageHealth, releaseSyncedEmailBytes, saveCrmResult, sqlLedger } from "./store";
+import { acquireCrmLease, crmCandidates, crmEmailReplies, verifyCrmEmailReply, saveCrmEmailReply, crmDealForV4, crmFileBytes, crmStorageHealth, releaseSyncedEmailBytes, saveCrmResult, sqlLedger } from "./store";
 import type { CrmEnquiry } from "./types";
 const dialect = new MySqlDialect();
 beforeEach(() => { fake.db.mockReset(); fake.production.mockReturnValue(true); });
@@ -122,4 +122,24 @@ describe("CRM storage fencing and recovery", () => {
   it("health reports unavailable storage without exposing database errors", async () => {
     fake.db.mockRejectedValue(new Error("synthetic private database text")); expect(await crmStorageHealth()).toEqual({ storageReady: false, attentionRequired: true });
   });
+  it("selects only ready pending replies and rechecks the current contact, canonical binding and worker lease", async () => {
+    const reply = {messageKey:'a'.repeat(64),sourceKey:'v4:11111111-1111-4111-8111-111111111111',personId:11,dealId:22,senderEmail:'owner@synthetic.test',subject:'Re',receivedAt:new Date(),bodyText:'Resposta'};
+    const execute = vi.fn().mockResolvedValueOnce([[reply],[]]).mockResolvedValueOnce([[{messageKey:reply.messageKey}],[]]); fake.db.mockResolvedValue({execute});
+    expect(await crmEmailReplies()).toEqual([reply]); await verifyCrmEmailReply('lease',reply);
+    const selection=dialect.sqlToQuery(execute.mock.calls[0][0]); expect(selection.sql).toContain("bodyText IS NOT NULL AND replyNoteId IS NULL"); expect(selection.sql).toContain("replyNextAttemptAt<=UTC_TIMESTAMP(3)");
+    const validation=dialect.sqlToQuery(execute.mock.calls[1][0]);
+    expect(validation.sql).toContain('l.dealId=m.dealId AND l.personId=m.personId'); expect(validation.sql).toContain('JSON_EXTRACT(e4.contact');
+    expect(validation.sql).toContain('h.originalSourceKey=m.sourceKey'); expect(validation.params).toContain('lease');
+    execute.mockResolvedValue([[],[]]); await expect(verifyCrmEmailReply('lease',reply)).rejects.toThrow('REPLY_BINDING_OR_LEASE_CHANGED');
+  });
+  it("persists a reply note only after its confirmed operation and live binding, and exposes pending failures in health", async () => {
+    const reply = {messageKey:'b'.repeat(64),sourceKey:'v4:11111111-1111-4111-8111-111111111111',personId:11,dealId:22,senderEmail:'owner@synthetic.test',subject:'Re',receivedAt:new Date(),bodyText:'Resposta'};
+    const execute=vi.fn().mockResolvedValueOnce([[{messageKey:reply.messageKey}],[]]).mockResolvedValueOnce([{affectedRows:1},[]]); fake.db.mockResolvedValue({execute});
+    await saveCrmEmailReply('lease',reply,99); const saved=dialect.sqlToQuery(execute.mock.calls[1][0]);
+    expect(saved.sql).toContain("status='done' AND remoteId="); expect(saved.sql).toContain('m.replyNoteId IS NULL OR m.replyNoteId=');
+    expect(saved.params).toContain(`owner-reply:${reply.messageKey}:note`); expect(saved.params).toContain('lease');
+    execute.mockImplementation(async statement => dialect.sqlToQuery(statement).sql.includes("SELECT messageKey FROM owner_email_messages") ? [[{messageKey:reply.messageKey}],[]] : [[],[]]);
+    expect(await crmStorageHealth()).toEqual({storageReady:true,attentionRequired:true});
+  });
+
 });

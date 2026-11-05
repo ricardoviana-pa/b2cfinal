@@ -230,6 +230,49 @@ export async function crmStorageHealth() {
       AND (l.sourceKey IS NULL OR (l.status <> 'excluded' AND (l.sourceModifiedAt IS NULL OR l.sourceModifiedAt < e.updatedAt))
         OR (l.status = 'synced' AND ${pendingEmailCleanup("v3")})
         OR (l.status = 'synced' AND NOT EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey = CONCAT('enquiry:v3:', e.id, ':', ${PROPERTY_FIELDS_VERSION}) AND status = 'done'))) LIMIT 1`)).length > 0;
-    return { storageReady: true, attentionRequired: flagged || v4Pending || v3Pending };
+    const replyPending = rows(await db.execute(sql`SELECT messageKey FROM owner_email_messages WHERE status='ready' AND bodyText IS NOT NULL AND replyNoteId IS NULL
+      AND (replyError IS NOT NULL OR updatedAt < DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 15 MINUTE)) LIMIT 1`)).length > 0;
+    return { storageReady: true, attentionRequired: flagged || v4Pending || v3Pending || replyPending };
   } catch { return { storageReady: false, attentionRequired: true }; }
+}
+
+/** Ready human replies are separate immutable notes, never a new lead/contact. */
+export async function crmEmailReplies(limit = 20) {
+  const db = await database();
+  const found = rows<any>(await db.execute(sql`SELECT messageKey,sourceKey,dealId,personId,senderEmail,subject,receivedAt,bodyText
+    FROM owner_email_messages WHERE status='ready' AND bodyText IS NOT NULL AND replyNoteId IS NULL
+      AND (replyNextAttemptAt IS NULL OR replyNextAttemptAt<=UTC_TIMESTAMP(3)) ORDER BY receivedAt,messageKey LIMIT ${limit}`));
+  return found.map(row => ({ ...row, dealId: Number(row.dealId), personId: Number(row.personId), receivedAt: new Date(row.receivedAt) })) as import("./replies").CrmEmailReply[];
+}
+export async function verifyCrmEmailReply(token: string, reply: import("./replies").CrmEmailReply) {
+  const db = await database();
+  const found = rows<any>(await db.execute(sql`SELECT m.messageKey FROM owner_email_messages m
+    INNER JOIN owner_crm_links l ON l.sourceKey=m.sourceKey AND l.dealId=m.dealId AND l.personId=m.personId
+    LEFT JOIN owner_v4_enquiries e4 ON m.sourceKey=CONCAT('v4:',e4.id)
+    LEFT JOIN owner_enquiries e3 ON m.sourceKey=CONCAT('v3:',e3.id)
+    WHERE m.messageKey=${reply.messageKey} AND m.sourceKey=${reply.sourceKey} AND m.dealId=${reply.dealId} AND m.personId=${reply.personId}
+      AND m.senderEmail=${reply.senderEmail} AND m.status='ready' AND m.bodyText IS NOT NULL
+      AND LOWER(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(e4.contact,'$.email')),JSON_UNQUOTE(JSON_EXTRACT(e3.payload,'$.email'))))=LOWER(m.senderEmail)
+      AND NOT EXISTS (SELECT h.enquiryId FROM owner_crm_photo_requests h INNER JOIN owner_crm_links canonical ON canonical.sourceKey=CONCAT('v4:',h.enquiryId)
+        AND canonical.dealId>0 AND canonical.personId>0 WHERE h.originalSourceKey=m.sourceKey)
+      AND EXISTS (SELECT id FROM owner_crm_lease WHERE id='sweep' AND leaseToken=${token} AND expiresAt>UTC_TIMESTAMP(3)) LIMIT 1`));
+  if (found.length !== 1) throw new CrmError("REPLY_BINDING_OR_LEASE_CHANGED", true);
+}
+export async function saveCrmEmailReply(token: string, reply: import("./replies").CrmEmailReply, noteId: number | null, error?: CrmError) {
+  const db = await database();
+  if (noteId !== null) {
+    await verifyCrmEmailReply(token, reply);
+    const changed = affected(await db.execute(sql`UPDATE owner_email_messages m INNER JOIN owner_crm_links l ON l.sourceKey=m.sourceKey
+      AND l.personId=m.personId AND l.dealId=m.dealId SET m.replyNoteId=${noteId},m.replyError=NULL,m.replyNextAttemptAt=NULL
+      WHERE m.messageKey=${reply.messageKey} AND m.sourceKey=${reply.sourceKey} AND m.personId=${reply.personId} AND m.dealId=${reply.dealId} AND m.status='ready'
+        AND (m.replyNoteId IS NULL OR m.replyNoteId=${noteId})
+        AND EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey=${`owner-reply:${reply.messageKey}:note`} AND status='done' AND remoteId=${noteId})
+        AND EXISTS (SELECT id FROM owner_crm_lease WHERE id='sweep' AND leaseToken=${token} AND expiresAt>UTC_TIMESTAMP(3))`));
+    if (changed !== 1) throw new CrmError("REPLY_MAPPING_OR_LEASE_CHANGED", true);
+  } else {
+    await db.execute(sql`UPDATE owner_email_messages SET replyError=${error?.code || "REPLY_SYNC_UNAVAILABLE"},
+      replyNextAttemptAt=DATE_ADD(UTC_TIMESTAMP(3), INTERVAL ${error?.review ? 60 : 5} MINUTE)
+      WHERE messageKey=${reply.messageKey} AND replyNoteId IS NULL
+        AND EXISTS (SELECT id FROM owner_crm_lease WHERE id='sweep' AND leaseToken=${token} AND expiresAt>UTC_TIMESTAMP(3))`);
+  }
 }

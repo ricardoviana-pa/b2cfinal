@@ -1,14 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const fake = vi.hoisted(() => ({
   initialise: vi.fn(), acquire: vi.fn(), release: vi.fn(), candidates: vi.fn(), bytes: vi.fn(), save: vi.fn(),
-  cleanup: vi.fn(), checkpoint: vi.fn(), sync: vi.fn(), eligible: vi.fn(), gateway: vi.fn(),
+  review: vi.fn(), replies: vi.fn(), verifyReply: vi.fn(), saveReply: vi.fn(), syncReply: vi.fn(), cleanup: vi.fn(), checkpoint: vi.fn(), sync: vi.fn(), eligible: vi.fn(), gateway: vi.fn(),
 }));
 vi.mock("../owner-intake/email", () => ({ isOwnerIntakeProduction: () => true }));
 vi.mock("./store", () => ({
   initialiseOwnerCrmSchema: fake.initialise, acquireCrmLease: fake.acquire, releaseCrmLease: fake.release,
-  crmCandidates: fake.candidates, crmFileBytes: fake.bytes, saveCrmResult: fake.save, releaseSyncedEmailBytes: fake.cleanup,
+  crmCandidates: fake.candidates, crmEmailReplies: fake.replies, verifyCrmEmailReply: fake.verifyReply, saveCrmEmailReply: fake.saveReply, crmFileBytes: fake.bytes, saveCrmResult: fake.save, releaseSyncedEmailBytes: fake.cleanup,
   sqlLedger: () => ({ checkpoint: fake.checkpoint }), crmDealForV4: vi.fn(), crmStorageHealth: vi.fn(), ownerCrmStatus: vi.fn(),
 }));
+vi.mock("./review-notification", () => ({ queueOwnerCrmReview: fake.review }));
+vi.mock("./replies", () => ({ syncEmailReply: fake.syncReply }));
 vi.mock("./pipedrive", () => ({ PipedriveGateway: fake.gateway }));
 vi.mock("./sync", () => ({ automationEligible: fake.eligible, snapshotHash: () => "synthetic-version", syncEnquiry: fake.sync }));
 import { sweepOwnerCrm } from "./service";
@@ -21,7 +23,7 @@ beforeEach(() => {
   vi.stubEnv("OWNER_CRM_ENABLED", "true"); vi.stubEnv("PIPEDRIVE_API_TOKEN", "synthetic-only");
   vi.stubEnv("PIPEDRIVE_OWNER_ID", "22976488"); vi.stubEnv("PIPEDRIVE_STAGE_ID", "1");
   vi.stubEnv("OWNER_AUTOMATION_FROM", "2026-11-03T00:00:00Z");
-  fake.acquire.mockResolvedValue("synthetic-lease"); fake.eligible.mockReturnValue(true); fake.sync.mockResolvedValue(ids);
+  fake.replies.mockResolvedValue([]); fake.acquire.mockResolvedValue("synthetic-lease"); fake.eligible.mockReturnValue(true); fake.sync.mockResolvedValue(ids);
   fake.candidates.mockImplementation(async (_from, source) => source === "v4" ? [enquiry] : []);
 });
 afterEach(() => vi.unstubAllEnvs());
@@ -56,4 +58,18 @@ describe("email photo transport-copy retention", () => {
     fake.acquire.mockResolvedValue(null); await sweepOwnerCrm();
     expect(fake.cleanup).not.toHaveBeenCalled();
   });
+  it("synchronizes text-only reply notes under the same lease, even without a form update", async () => {
+    const reply={messageKey:'a'.repeat(64)}; fake.candidates.mockResolvedValue([]); fake.replies.mockResolvedValue([reply]); fake.syncReply.mockResolvedValue(99);
+    await sweepOwnerCrm(); expect(fake.syncReply).toHaveBeenCalledWith(reply,expect.anything(),expect.anything(),expect.any(Function));
+    expect(fake.saveReply).toHaveBeenCalledWith('synthetic-lease',reply,99); expect(fake.release).toHaveBeenCalledWith('synthetic-lease');
+  });
+  it("saves reply failures for a bounded retry without breaking the remaining sweep", async () => {
+    const reply={messageKey:'b'.repeat(64)}; fake.replies.mockResolvedValue([reply]); const failure=new CrmError('REPLY_OWNER_CHANGED',true); fake.syncReply.mockRejectedValue(failure);
+    await sweepOwnerCrm(); expect(fake.saveReply).toHaveBeenCalledWith('synthetic-lease',reply,null,failure);
+  });
+  it("queues an idempotent association notice after saving an existing-opportunity review", async () => {
+    const error=new CrmError('EXISTING_OPPORTUNITY_REVIEW',true); fake.sync.mockRejectedValue(error); fake.review.mockResolvedValue(true);
+    await sweepOwnerCrm(); expect(fake.review).toHaveBeenCalledWith(enquiry,error); expect(fake.save.mock.invocationCallOrder[0]).toBeLessThan(fake.review.mock.invocationCallOrder[0]);
+  });
+
 });
