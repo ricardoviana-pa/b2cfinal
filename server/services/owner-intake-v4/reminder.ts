@@ -25,6 +25,7 @@ export function photoRequestEligible(record: V4Record, files: { mimeType: string
     && record.tokenExpiresAt > new Date(now.getTime() + 3600_000)
     && ["awaiting_details", "awaiting_photos"].includes(record.status)
     && !record.details?.photosLink?.trim()
+    && !record.emailReplyReceived
     && !(record.emailPhotoCount && record.emailPhotoCount > 0)
     && !files.some(file => file.mimeType.startsWith("image/"));
 }

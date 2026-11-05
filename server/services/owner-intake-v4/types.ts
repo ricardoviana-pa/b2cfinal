@@ -10,6 +10,8 @@ export interface V4Record {
   awaitingPhotosAt: Date | null; completionCount: number; mediaFileCount: number;
   /** Read-only projection of confirmed email evidence, never a public upload count. */
   emailPhotoCount?: number; emailFileCount?: number;
+  /** A verified owner's reply hands follow-up back to the sales team. */
+  emailReplyReceived?: boolean;
 }
 export interface V4OutboxPayload {
   mail: OwnerMail; fileIds: string[]; completionUrl?: string;

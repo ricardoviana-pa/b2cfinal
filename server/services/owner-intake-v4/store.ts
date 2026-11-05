@@ -8,7 +8,7 @@ import { OwnerIntakeError, completeDetails, fingerprint, mediaSchema, newToken, 
 import { managementCompletedMail, managementMediaMail, managementStartMail, welcomeMail, photoReminderMail } from "./email";
 import { PHOTO_REMINDER_DELAY_MS, PHOTO_REMINDER_KIND, PHOTO_REMINDER_QUIET_MS, HISTORICAL_PHOTO_KIND, photoRemindersEnabled, photoRequestEligible, reminderEligible, reminderFrom, reminderWelcomeReady } from "./reminder";
 import type { V4Record, V4FileMetadata, V4Outbox, V4OutboxPayload } from "./types";
-import { OWNER_EMAIL_SCHEMA } from "../owner-email-photos/schema";
+import { OWNER_EMAIL_SCHEMA, ensureOwnerEmailBodySchema } from "../owner-email-photos/schema";
 
 export const V4_SCHEMA = [
   ...OWNER_EMAIL_SCHEMA,
@@ -77,6 +77,7 @@ export async function initialiseV4Schema() {
   if (!isOwnerIntakeProduction()) return false;
   const db = await database();
   for (const statement of V4_SCHEMA) await db.execute(sql.raw(statement));
+  await ensureOwnerEmailBodySchema(db);
   await ensureV4PrivacyNullable(db); return v4SchemaReady();
 }
 export async function v4SchemaReady() {
@@ -86,7 +87,7 @@ export async function v4SchemaReady() {
     await db.execute(sql`SELECT id, digest, content, active FROM owner_v4_files LIMIT 0`);
     await db.execute(sql`SELECT id, fingerprint, response FROM owner_v4_mutations LIMIT 0`);
     await db.execute(sql`SELECT id, payload, attachmentBytes, leaseAt FROM owner_v4_outbox LIMIT 0`);
-    await db.execute(sql`SELECT messageKey, sourceKey, status FROM owner_email_messages LIMIT 0`);
+    await db.execute(sql`SELECT messageKey, sourceKey, status, bodyText FROM owner_email_messages LIMIT 0`);
     await db.execute(sql`SELECT id, messageKey, digest, content, active FROM owner_email_files LIMIT 0`);
     return true;
   } catch { return false; }
@@ -97,12 +98,16 @@ export async function authenticateV4(token: string, now = new Date()) {
   if (!found) throw new OwnerIntakeError("TOKEN_INVALID_OR_EXPIRED", 401); return withEmailMedia(db, record(found));
 }
 async function withEmailMedia(tx: Executor, r: V4Record): Promise<V4Record> {
-  const counts = rows<{ emailPhotoCount: number; emailFileCount: number }>(await tx.execute(sql`SELECT
+  const counts = rows<{ emailPhotoCount: number; emailFileCount: number; emailReplyReceived: number }>(await tx.execute(sql`SELECT
     COUNT(DISTINCT CASE WHEN f.mimeType LIKE 'image/%' THEN f.digest END) AS emailPhotoCount,
-    COUNT(DISTINCT f.digest) AS emailFileCount FROM owner_email_files f
+    COUNT(DISTINCT f.digest) AS emailFileCount,
+    EXISTS (SELECT 1 FROM owner_email_messages reply WHERE reply.sourceKey = ${`v4:${r.id}`}
+      AND reply.status = 'ready' AND reply.bodyText IS NOT NULL) AS emailReplyReceived
+    FROM owner_email_files f
     INNER JOIN owner_email_messages m ON m.messageKey = f.messageKey
     WHERE m.sourceKey = ${`v4:${r.id}`} AND m.status = 'ready' AND f.active = 1`))[0];
-  return { ...r, emailPhotoCount: Number(counts?.emailPhotoCount || 0), emailFileCount: Number(counts?.emailFileCount || 0) };
+  return { ...r, emailPhotoCount: Number(counts?.emailPhotoCount || 0), emailFileCount: Number(counts?.emailFileCount || 0),
+    emailReplyReceived: Number(counts?.emailReplyReceived || 0) === 1 };
 }
 async function locked(tx: Executor, auth: V4Record, now: Date) {
   const row = rows<any>(await tx.execute(sql`SELECT * FROM owner_v4_enquiries WHERE id = ${auth.id} FOR UPDATE`))[0];
@@ -339,6 +344,8 @@ export async function queueV4PhotoReminders(now = new Date()) {
     WHERE e.capturedAt >= ${reminderFrom()} AND e.capturedAt <= ${due} AND e.updatedAt <= ${quiet}
       AND e.tokenExpiresAt > ${minimumExpiry} AND e.status IN ('awaiting_details', 'awaiting_photos')
       AND COALESCE(JSON_UNQUOTE(JSON_EXTRACT(e.details, '$.photosLink')), '') = ''
+      AND NOT EXISTS (SELECT 1 FROM owner_email_messages reply WHERE reply.sourceKey = CONCAT('v4:', e.id)
+        AND reply.status = 'ready' AND reply.bodyText IS NOT NULL)
       AND NOT EXISTS (SELECT 1 FROM owner_v4_files f WHERE f.enquiryId = e.id AND f.active = 1 AND f.mimeType LIKE 'image/%')
       AND NOT EXISTS (SELECT 1 FROM owner_email_files f INNER JOIN owner_email_messages m ON m.messageKey = f.messageKey
         WHERE m.sourceKey = CONCAT('v4:', e.id) AND m.status = 'ready' AND f.active = 1 AND f.mimeType LIKE 'image/%')

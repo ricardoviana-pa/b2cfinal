@@ -39,6 +39,7 @@ function memoryStore({ failOutbox = false, failMediaOutbox = false, failFile = f
     if (q.sql.includes("AS emailPhotoCount")) {
       const files = [...s.emailFiles.values()].filter(f => f.sourceKey === p[0] && f.status === "ready" && f.active);
       return [[{ emailFileCount: new Set(files.map(f => f.digest)).size,
+        emailReplyReceived: s.enquiries.get(String(p[0]).slice(3))?.emailReplyReceived ? 1 : 0,
         emailPhotoCount: new Set(files.filter(f => f.mimeType.startsWith("image/")).map(f => f.digest)).size }], []];
     }
     if (q.sql.startsWith("SELECT kind, payload FROM owner_v4_outbox") && q.sql.includes("WHERE enquiryId"))
@@ -91,12 +92,13 @@ describe("v4 historical privacy compatibility", () => {
     const statements: string[] = [];
     const execute = vi.fn(async (q: SQL) => {
       const text = dialect.sqlToQuery(q).sql; statements.push(text);
+      if (text.includes("TABLE_NAME='owner_email_messages'")) return [[...['bodyText', 'replyNoteId', 'replyNextAttemptAt', 'replyError'].map(COLUMN_NAME => ({ COLUMN_NAME }))], []];
       if (text.includes("information_schema.COLUMNS")) return [[{ isNullable: "NO" }], []];
       return ok();
     });
     fake.db.mockResolvedValue({ execute });
     expect(await initialiseV4Schema()).toBe(true); expect(await initialiseV4Schema()).toBe(true);
-    expect(statements.filter(q => q.includes("information_schema.COLUMNS"))).toHaveLength(1);
+    expect(statements.filter(q => q.includes("COLUMN_NAME = 'privacyAcknowledgedAt'"))).toHaveLength(1);
     expect(statements.filter(q => q.startsWith("ALTER TABLE"))).toEqual(["ALTER TABLE owner_v4_enquiries MODIFY COLUMN privacyAcknowledgedAt datetime(3) NULL"]);
     expect(statements.some(q => /^(UPDATE|DELETE|DROP|TRUNCATE)/.test(q))).toBe(false);
   });
@@ -104,6 +106,7 @@ describe("v4 historical privacy compatibility", () => {
     let fail = true; const statements: string[] = [];
     const execute = vi.fn(async (q: SQL) => {
       const text = dialect.sqlToQuery(q).sql; statements.push(text);
+      if (text.includes("TABLE_NAME='owner_email_messages'")) return [[...['bodyText', 'replyNoteId', 'replyNextAttemptAt', 'replyError'].map(COLUMN_NAME => ({ COLUMN_NAME }))], []];
       if (text.includes("information_schema.COLUMNS")) {
         if (fail) { fail = false; throw new Error("synthetic metadata unavailable"); }
         return [[{ isNullable: "YES" }], []];
@@ -113,7 +116,7 @@ describe("v4 historical privacy compatibility", () => {
     fake.db.mockResolvedValue({ execute });
     await expect(initialiseV4Schema()).rejects.toThrow("synthetic metadata unavailable");
     expect(await initialiseV4Schema()).toBe(true); expect(await initialiseV4Schema()).toBe(true);
-    expect(statements.filter(q => q.includes("information_schema.COLUMNS"))).toHaveLength(2);
+    expect(statements.filter(q => q.includes("COLUMN_NAME = 'privacyAcknowledgedAt'"))).toHaveLength(2);
     expect(statements.some(q => q.startsWith("ALTER TABLE"))).toBe(false);
   });
   it("preserves null imported privacy dates and original form acceptance dates", async () => {
