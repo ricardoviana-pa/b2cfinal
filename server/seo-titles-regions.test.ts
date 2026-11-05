@@ -8,8 +8,9 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { createInstance } from 'i18next';
 import {
-  PROPERTY_TITLE_BUDGET, propertyDescription, propertyKind, propertyKindInline, propertyKindPhrase, propertyPageMeta, propertyTitle,
+  PROPERTY_TITLE_BUDGET, propertyDescription, propertyKind, propertyKindInline, propertyKindPhrase, propertyPageMeta, propertyPageName, propertyTitle,
 } from '@shared/propertyMeta';
+import { propertyEditorialMeta } from '@shared/propertyEditorialMeta';
 import { countVars, pluralCount } from '@/lib/plural';
 import { placePhrases, placeVars } from '@shared/regionPhrases';
 import { __testing } from './_core/vite';
@@ -120,17 +121,34 @@ describe('title length', () => {
 
   it('a home loses its bedroom count only when even the compact count does not fit', () => {
     const counted = /\d+-Bed|\bT\d+\b|\d+ (chambres?|dormitorios?|camer[ae]|slaapkamers?|sovrum|makuuhuoneen)\b|\d+-Schlafzimmer/;
+    let reviewedOmissions = 0;
     for (const h of HOMES) {
       if (!(h.bedrooms > 0) || ['Studio', 'Boat'].includes(h.propertyType)) continue;
       for (const lang of LANGS) {
-        const { title } = propertyPageMeta(h, lang);
+        const { title, description } = propertyPageMeta(h, lang);
         if (counted.test(title.replace(/^[^|]*\|/, ''))) continue;
+        const editorial = propertyEditorialMeta(h, propertyPageName(h), lang);
+        if (editorial && title === editorial.title) {
+          // Reviewed EN/PT titles retain the actual locality, not a shorter
+          // regional label. Dropping bedrooms is justified only against that
+          // precise title; the description must still state the bedroom count.
+          const compact = lang === 'pt'
+            ? `${propertyPageName(h)} | T${h.bedrooms} em ${h.locality} | Portugal Active`
+            : `${propertyPageName(h)} | ${h.bedrooms}-Bed, ${h.locality} | Portugal Active`;
+          expect(title, `${lang} ${h.slug}`).toContain(h.locality);
+          expect(compact.length, `${lang} ${compact}`).toBeGreaterThan(PROPERTY_TITLE_BUDGET);
+          const noun = lang === 'pt' ? (h.bedrooms === 1 ? 'quarto' : 'quartos') : (h.bedrooms === 1 ? 'bedroom' : 'bedrooms');
+          expect(description, `${lang} ${h.slug}`).toContain(`${h.bedrooms} ${noun}`);
+          reviewedOmissions++;
+          continue;
+        }
         const input = { bedrooms: h.bedrooms, destination: h.destination || h.locality || h.region || null, propertyType: h.propertyType };
         const name = title.split(' | ')[0];
         const compact = `${name} | ${propertyKindPhrase(lang, input, { luxury: false, shortBeds: true })} | Portugal Active`;
         expect(compact.length, `${lang} ${compact}`).toBeGreaterThan(PROPERTY_TITLE_BUDGET);
       }
     }
+    expect(reviewedOmissions).toBeGreaterThan(0);
   });
 });
 
