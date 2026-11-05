@@ -197,8 +197,12 @@ const EXCLUDED_SLUG_PATTERNS: string[] = [
   "test-guesty-test", // Guesty's own test listing — never public (auditoria set/2026, N10)
 ];
 
-/** Hard exclusions: no page at all. Empty on purpose (see below). */
-const EXCLUDED_GUESTY_IDS = new Set<string>([]);
+/** Confirmed retired by Ricardo, 5 Nov 2026: no public page, even if a sync reintroduces them. */
+const EXCLUDED_GUESTY_IDS = new Set<string>([
+  "6965338ed1c09900156e8502", // Calejo House
+  "696533794fe6a100145fe4bf", // Ocean Bliss
+  "6a3a63f9e19cb0001db6a05e", // Saltwind Studio
+]);
 
 /**
  * Off the catalogue, still findable by name (Ricardo, 24–26 Sep 2026).
@@ -206,15 +210,16 @@ const EXCLUDED_GUESTY_IDS = new Set<string>([]);
  * In June 18 homes left www to protect the luxury positioning, and their
  * pages 404'd. Shoreline Escape and Coastal Horizon came back into the
  * listings on 21 Oct 2026 (Ricardo), at the end of the default order; the
- * 16 below stay off. But many direct bookings come from guests who saw a home
- * on an OTA and search its name, so each keeps a page: 200, "index, follow",
+ * 13 below stay off. Calejo House, Ocean Bliss and Saltwind Studio were confirmed
+ * retired on 5 Nov 2026 and are excluded entirely above. Many direct bookings come
+ * from guests who saw a home on an OTA and search its name, so each of the
+ * remaining homes keeps a page: 200, "index, follow",
  * in sitemap.xml. What they don't get is a place in anything that *lists*
  * homes: /homes, the homepage, collections, destinations, the search picker,
  * similar homes, blog "where to stay" and the recovery-email alternatives.
  * Use catalogProperties() for those; getPropertiesForSite() stays complete.
  */
 export const CATALOG_HIDDEN_GUESTY_IDS = new Set<string>([
-  "6965338ed1c09900156e8502", // Calejo House
   "696532fa6d209c001510d5ee", // Ocean view Cabedelo Beach Duplex
   "696533762def930014e917bf", // Seabreeze Duplex
   "696533616cff760015e28965", // Tide Terrace Duplex
@@ -226,10 +231,8 @@ export const CATALOG_HIDDEN_GUESTY_IDS = new Set<string>([
   "696533af4fe6a100145fecb6", // White Charm by the Sea
   "69ca869e5b0a0500158b7d5a", // River View
   "6965333104b96f00147f5428", // Bandeira Retreat
-  "696533794fe6a100145fe4bf", // Ocean Bliss
   "6965335df1c3a8001597c8e4", // Divine Waves Duplex
   "6965337d2def930014e919c6", // Urban Reflections
-  "6a3a63f9e19cb0001db6a05e", // Saltwind Studio
 ]);
 
 export function isHiddenFromCatalog(p: any): boolean {
@@ -253,7 +256,7 @@ function isExcluded(p: any): boolean {
 /** Filter out test listings, properties below minimum price threshold, and manual exclusions */
 export function filterPublicProperties(properties: any[]): any[] {
   return properties.filter(p => {
-    // Manual exclusion list (slug-based, survives Guesty re-syncs)
+    // Manual exclusions by stable listing ID or slug, surviving Guesty re-syncs.
     if (isExcluded(p)) {
       console.debug(`[Properties] Filtered out excluded listing: ${p.slug}`);
       return false;

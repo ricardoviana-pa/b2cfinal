@@ -64,9 +64,9 @@ describe('homes kept off the catalogue', () => {
   it('drops them from catalogue lists but not from the full set', async () => {
     const { catalogProperties, isHiddenFromCatalog, CATALOG_HIDDEN_GUESTY_IDS } = await import('./services/properties-store');
     const hidden = [...CATALOG_HIDDEN_GUESTY_IDS][0];
-    const list = [{ guestyId: hidden, slug: 'calejo' }, { guestyId: 'visible-id', slug: 'aura' }];
+    const list = [{ guestyId: hidden, slug: 'catalog-hidden' }, { guestyId: 'visible-id', slug: 'aura' }];
     expect(isHiddenFromCatalog(list[0])).toBe(true);
     expect(catalogProperties(list).map((p) => p.slug)).toEqual(['aura']);
-    expect(CATALOG_HIDDEN_GUESTY_IDS.size).toBe(16);
+    expect(CATALOG_HIDDEN_GUESTY_IDS.size).toBe(13);
   });
 });
