@@ -54,12 +54,12 @@ describe("one commercial alert for an unresolved existing opportunity", () => {
     expect(payload.fileIds).toEqual([]); expect(payload.mail.attachments).toBeUndefined();
     expect(payload.mail.to).toBe("management@portugalactive.com");
     expect(payload.mail.from).toBe("Portugal Active · Management <management@portugalactive.com>");
-    expect(payload.mail.replyTo).toBe("owner@example.invalid");
+    expect(payload.mail.replyTo).toBe("management@portugalactive.com");
     expect(payload.mail.html).toContain('alt="Portugal Active"');
     expect(payload.mail.html).toContain("/brand/pa-logo-dark.png");
     expect(payload.mail.html).toContain('href="https://portugalactive.pipedrive.com/person/121"');
     expect(payload.mail.text).toContain("não foi criado um negócio duplicado");
-    expect(payload.mail.text).toContain("Responder a este aviso contacta diretamente o proprietário");
+    expect(payload.mail.text).toContain("Responder a este aviso mantém o assunto na equipa de gestão");
     expect(queries[0].sql).toContain("status='done'");
   });
   it.each([null, 0, -1, 1.5, "not-an-id", Number.MAX_SAFE_INTEGER + 1])("omits a CRM link unless its persisted contact ID is safe: %s", async unsafe => {
@@ -80,7 +80,7 @@ describe("one commercial alert for an unresolved existing opportunity", () => {
     expect(payload.fileIds).toEqual([]);
   });
   it.each(["owner@example.invalid\r\nBcc:other@example.invalid", "owner@example.invalid,other@example.invalid", '<owner@example.invalid>'])
-    ("never inserts an invalid Reply-To header: %s", async email => {
+    ("keeps replies internal even when the contact address is malformed: %s", async email => {
       const e = enquiry(); e.email = email; await queueOwnerCrmReview(e, review());
       expect([...outbox.values()][0].mail.replyTo).toBe("management@portugalactive.com");
     });
