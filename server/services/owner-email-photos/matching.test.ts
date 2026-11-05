@@ -90,4 +90,21 @@ describe("owner photo reply association", () => {
       expect(resolveReplyTarget(message, [current], { allowedTestEnquiryIds: [A] })).toEqual({ decision: "ignored", code: "INTERNAL_MESSAGE" });
     }
   });
+  it("ignores our outbound RFC Message-ID even when the allowlisted QA body contains its private completion link", () => {
+    const c = {...candidate(),email:"management@portugalactive.com",synthetic:true};
+    const welcome = {...syntheticMetadata(),from:c.email,messageId:"outgoing@synthetic.test",text:`https://www.portugalactive.com/management/complete/#token=${token}`};
+    expect(resolveReplyTarget(welcome,[c],{allowedTestEnquiryIds:[A]})).toEqual({decision:"ignored",code:"OWN_OUTBOUND_MESSAGE"});
+    expect(resolveReplyTarget({...welcome,from:"owner@synthetic.test"},[candidate()])).toEqual({decision:"ignored",code:"OWN_OUTBOUND_MESSAGE"});
+    expect(resolveReplyTarget({...welcome,messageId:"<different-reply@synthetic.test>"},[c],{allowedTestEnquiryIds:[A]})).toMatchObject({decision:"matched"});
+  });
+  it.each(["Recebemos o seu pedido", "[PA Gestão] Novo pedido", "[PA Gestão] Fotografias recebidas"])("ignores an internal QA notification without a reply subject: %s", subject => {
+    const c = {...candidate(),email:"management@portugalactive.com",synthetic:true};
+    const message = {...syntheticMetadata(),from:c.email,subject,text:A,inReplyTo:["<outgoing@synthetic.test>"]};
+    expect(resolveReplyTarget(message,[c],{allowedTestEnquiryIds:[A]})).toEqual({decision:"ignored",code:"INTERNAL_MESSAGE"});
+    expect(resolveReplyTarget({...message,subject:`Re: ${subject}`},[c],{allowedTestEnquiryIds:[A]})).toMatchObject({decision:"matched"});
+  });
+  it("does not require a reply-subject prefix from a verified external owner", () => {
+    expect(resolveReplyTarget({...syntheticMetadata(),subject:"Fotografias da casa",text:A},[candidate()])).toMatchObject({decision:"matched"});
+  });
+
 });

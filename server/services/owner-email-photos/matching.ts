@@ -47,6 +47,9 @@ export function extractReplySignals(message: Pick<InboundPhotoMetadata, "subject
 /** Matching outputs identifiers only. Quoted content and private links never leave this function. */
 export function resolveReplyTarget(message: InboundPhotoMetadata, candidates: ReplyCandidate[], options: { allowedTestEnquiryIds?: string[] } = {}): ReplyMatch {
   if (message.automatic) return { decision: "ignored", code: "AUTOMATIC_MESSAGE" };
+  const incomingId = message.messageId ? normalizeMessageId(message.messageId) : null;
+  if (incomingId && candidates.some(candidate => candidate.outboundMessageIds.some(id => normalizeMessageId(id) === incomingId)))
+    return { decision: "ignored", code: "OWN_OUTBOUND_MESSAGE" };
   const auth = message.authentication;
   const managementDestination = [...message.to, ...message.cc].some(email => normalizeEmail(email) === "management@portugalactive.com")
     || auth.groupVerified && /(?:^|<)management\.portugalactive\.com>?$/i.test(message.listId || "");
@@ -56,6 +59,9 @@ export function resolveReplyTarget(message: InboundPhotoMetadata, candidates: Re
   let sender: "from" | "original_sender" = "from";
   let email = normalizeEmail(message.from);
   const effectiveEmail = auth.googleAuthserv && auth.groupVerified && auth.originalSenderVerified && message.originalSender ? normalizeEmail(message.originalSender) : email;
+  // An allowlisted QA owner can reply, but its welcome and internal intake notices are never replies.
+  if ((!message.originalSender || auth.originalSenderVerified) && /@portugalactive\.com$/i.test(effectiveEmail) && !/^\s*re\s*:/i.test(message.subject))
+    return { decision: "ignored", code: "INTERNAL_MESSAGE" };
   if ((!message.originalSender || auth.originalSenderVerified) && /@portugalactive\.com$/i.test(effectiveEmail) && !candidates.some(candidate => allowedTests.has(candidate.enquiryId) && normalizeEmail(candidate.email) === effectiveEmail
     && ([candidate.enquiryId,...candidate.requestIds].some(id => signals.requestIds.includes(id.toLowerCase()))
       || candidate.tokenHashes.some(digest => signals.tokenHashes.includes(digest))

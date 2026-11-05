@@ -32,7 +32,7 @@ export function replyNoteContent(reply: CrmEmailReply) {
   let shortened = false;
   while (Buffer.byteLength(rendered, "utf8") > 90000) { body = body.slice(0, Math.floor(body.length * .8)); rendered = renderText(body); shortened = true; }
   return `<h2>Resposta do proprietário por email</h2><p><strong>De:</strong> ${escape(reply.senderEmail)}<br><strong>Recebida em:</strong> ${reply.receivedAt.toISOString()}<br><strong>Assunto:</strong> ${escape(sanitizeReplyText(reply.subject))}</p>`
-    + `<p>${rendered || "Resposta recebida sem texto novo identificável. Consultar o email original."}${shortened ? "<br>[Texto abreviado; consultar a resposta original no email.]" : ""}</p>`
+    + `<p>${rendered || "Consulte o email original em management@portugalactive.com e os anexos associados."}${shortened ? "<br>[Texto abreviado; consultar a resposta original no email.]" : ""}</p>`
     + `<p>Resposta recebida: o pedido automático de fotografias ficou em pausa. A equipa deve rever o conteúdo e confirmar os próximos passos. Os links são fornecidos pelo proprietário e não foram abertos automaticamente.</p>`
     + `<p>${replyMarker(reply)}</p>`;
 }
