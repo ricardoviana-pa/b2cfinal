@@ -2180,7 +2180,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Alentejo Rural Farmhouse with Heated Pool & Total Privacy — Portugal Active",
-    "seoDescription": "Pool heating is an optional extra, charged at €70 per night.\n\nA peaceful retreat in the heart of the Alentejo. Traditional Farm with 5 bedrooms, heated pool, da",
+    "seoDescription": "Pool heating is an optional extra, charged at €70 per night.\n\nA peaceful retreat in the heart of the Alentejo. Traditional Farm with 4 bedrooms, heated pool, da",
     "address": {
       "full": "",
       "street": "Monte do Sossego",
@@ -2484,7 +2484,7 @@
     "averageRating": 4.86,
     "reviewCount": 7,
     "lastModified": "2026-11-05",
-    "contentHash": "e9b78748133e0415ee1e45dcf718ccd7cb4f8d22"
+    "contentHash": "aba083e0a1d602bed725f674c08f55d1565a540d"
   },
   {
     "id": "guesty-69e7350685a8b000124854c5",
@@ -15223,10 +15223,10 @@
     "bedrooms": 1,
     "bathrooms": 1,
     "maxGuests": 4,
-    "priceFrom": 70,
-    "pricePerNight": 70,
-    "cleaningFee": 98,
-    "minNights": 1,
+    "priceFrom": 100,
+    "pricePerNight": 100,
+    "cleaningFee": 110,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1793710672/production/6957de4388cba42d9e7a905e/pzcxoocvoljq661lvmmj.jpg",
@@ -21560,10 +21560,10 @@
     "bedrooms": 1,
     "bathrooms": 1,
     "maxGuests": 4,
-    "priceFrom": 70,
-    "pricePerNight": 70,
-    "cleaningFee": 98,
-    "minNights": 1,
+    "priceFrom": 100,
+    "pricePerNight": 100,
+    "cleaningFee": 110,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1793727512/production/6957de4388cba42d9e7a905e/a02q3yagt7m9mf23c8rn.jpg",
@@ -21746,7 +21746,7 @@
     "maxGuests": 12,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 153,
+    "cleaningFee": 295,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -31544,10 +31544,10 @@
     "bedrooms": 1,
     "bathrooms": 1,
     "maxGuests": 4,
-    "priceFrom": 70,
-    "pricePerNight": 70,
-    "cleaningFee": 98,
-    "minNights": 1,
+    "priceFrom": 100,
+    "pricePerNight": 100,
+    "cleaningFee": 110,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1793789569/production/6957de4388cba42d9e7a905e/mqdzxybzart68jfhzhvu.jpg",
