@@ -27,6 +27,8 @@ export interface OwnerV4StartReceipt extends OwnerV4Receipt { continuationToken:
 export interface OwnerV4Draft {
   success: true; reference: string; status: OwnerV4Status; contact: OwnerV4Contact;
   details: Partial<OwnerV4Details> | null; files: OwnerAttachmentMetadata[];
+  /** Confirmed email attachments are read-only and separate from editable form uploads. */
+  emailMedia?: { photoCount: number; fileCount: number };
   /** Material is stored, but its current snapshot has not been queued for the team. */
   mediaConfirmationRequired: boolean;
   context: OwnerIntakeContext; attribution?: OwnerV4Attribution; expiresAt: string;

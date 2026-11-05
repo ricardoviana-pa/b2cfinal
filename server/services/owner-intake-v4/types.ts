@@ -8,6 +8,8 @@ export interface V4Record {
   capturedAt: Date; updatedAt: Date; qualificationCompletedAt: Date | null; mediaReceivedAt: Date | null;
   privacyAcknowledgedAt: Date | null; privacyNoticeVersion: "owner-intake-v4" | "owner-crm-photo-followup";
   awaitingPhotosAt: Date | null; completionCount: number; mediaFileCount: number;
+  /** Read-only projection of confirmed email evidence, never a public upload count. */
+  emailPhotoCount?: number; emailFileCount?: number;
 }
 export interface V4OutboxPayload {
   mail: OwnerMail; fileIds: string[]; completionUrl?: string;

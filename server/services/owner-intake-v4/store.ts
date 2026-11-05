@@ -8,8 +8,10 @@ import { OwnerIntakeError, completeDetails, fingerprint, mediaSchema, newToken, 
 import { managementCompletedMail, managementMediaMail, managementStartMail, welcomeMail, photoReminderMail } from "./email";
 import { PHOTO_REMINDER_DELAY_MS, PHOTO_REMINDER_KIND, PHOTO_REMINDER_QUIET_MS, HISTORICAL_PHOTO_KIND, photoRemindersEnabled, photoRequestEligible, reminderEligible, reminderFrom, reminderWelcomeReady } from "./reminder";
 import type { V4Record, V4FileMetadata, V4Outbox, V4OutboxPayload } from "./types";
+import { OWNER_EMAIL_SCHEMA } from "../owner-email-photos/schema";
 
 export const V4_SCHEMA = [
+  ...OWNER_EMAIL_SCHEMA,
   `CREATE TABLE IF NOT EXISTS owner_crm_photo_requests (
     dealId bigint NOT NULL PRIMARY KEY, enquiryId varchar(36) NOT NULL,
     personId bigint NOT NULL, originalRequestedAt datetime(3) NOT NULL,
@@ -84,20 +86,30 @@ export async function v4SchemaReady() {
     await db.execute(sql`SELECT id, digest, content, active FROM owner_v4_files LIMIT 0`);
     await db.execute(sql`SELECT id, fingerprint, response FROM owner_v4_mutations LIMIT 0`);
     await db.execute(sql`SELECT id, payload, attachmentBytes, leaseAt FROM owner_v4_outbox LIMIT 0`);
+    await db.execute(sql`SELECT messageKey, sourceKey, status FROM owner_email_messages LIMIT 0`);
+    await db.execute(sql`SELECT id, messageKey, digest, content, active FROM owner_email_files LIMIT 0`);
     return true;
   } catch { return false; }
 }
 export async function authenticateV4(token: string, now = new Date()) {
   const db = await database();
   const found = rows<any>(await db.execute(sql`SELECT * FROM owner_v4_enquiries WHERE tokenHash = ${tokenHash(token)} AND tokenExpiresAt > ${now} LIMIT 1`))[0];
-  if (!found) throw new OwnerIntakeError("TOKEN_INVALID_OR_EXPIRED", 401); return record(found);
+  if (!found) throw new OwnerIntakeError("TOKEN_INVALID_OR_EXPIRED", 401); return withEmailMedia(db, record(found));
+}
+async function withEmailMedia(tx: Executor, r: V4Record): Promise<V4Record> {
+  const counts = rows<{ emailPhotoCount: number; emailFileCount: number }>(await tx.execute(sql`SELECT
+    COUNT(DISTINCT CASE WHEN f.mimeType LIKE 'image/%' THEN f.digest END) AS emailPhotoCount,
+    COUNT(DISTINCT f.digest) AS emailFileCount FROM owner_email_files f
+    INNER JOIN owner_email_messages m ON m.messageKey = f.messageKey
+    WHERE m.sourceKey = ${`v4:${r.id}`} AND m.status = 'ready' AND f.active = 1`))[0];
+  return { ...r, emailPhotoCount: Number(counts?.emailPhotoCount || 0), emailFileCount: Number(counts?.emailFileCount || 0) };
 }
 async function locked(tx: Executor, auth: V4Record, now: Date) {
   const row = rows<any>(await tx.execute(sql`SELECT * FROM owner_v4_enquiries WHERE id = ${auth.id} FOR UPDATE`))[0];
   if (!row) throw new OwnerIntakeError("TOKEN_INVALID_OR_EXPIRED", 401);
   const found = record(row);
   if (found.tokenHash !== auth.tokenHash || found.tokenExpiresAt <= now) throw new OwnerIntakeError("TOKEN_INVALID_OR_EXPIRED", 401);
-  return found;
+  return withEmailMedia(tx, found);
 }
 async function fileMetadata(tx: Executor, id: string) {
   return rows<V4FileMetadata>(await tx.execute(sql`SELECT id, name, mimeType, size, digest, active FROM owner_v4_files WHERE enquiryId = ${id} AND active = 1 ORDER BY createdAt, id`));
@@ -146,6 +158,7 @@ export async function draftV4(auth: V4Record): Promise<OwnerV4Draft> {
     const mediaConfirmationRequired = (!!r.details?.photosLink || files.length > 0 || notifiedMaterial(last)) && !mediaAlreadyQueued(r, files, last);
     return { success: true, reference: r.id, status: r.status, contact: r.contact, details: r.details, mediaConfirmationRequired,
       files: files.map(({ id, name, mimeType, size }) => ({ id, name, mimeType, size })),
+      emailMedia: { photoCount: r.emailPhotoCount || 0, fileCount: r.emailFileCount || 0 },
       context: r.context, ...(r.attribution ? { attribution: r.attribution } : {}), expiresAt: r.tokenExpiresAt.toISOString() };
   });
 }
@@ -155,7 +168,7 @@ async function persistRecord(tx: Executor, r: V4Record) {
     qualificationCompletedAt = ${r.qualificationCompletedAt}, mediaReceivedAt = ${r.mediaReceivedAt}, awaitingPhotosAt = ${r.awaitingPhotosAt},
     completionCount = ${r.completionCount}, mediaFileCount = ${r.mediaFileCount} WHERE id = ${r.id}`);
 }
-function withPhotos(r: V4Record, files: V4FileMetadata[]) { return !!r.details?.photosLink || files.some(f => f.mimeType.startsWith("image/")); }
+function withPhotos(r: V4Record, files: V4FileMetadata[]) { return !!r.details?.photosLink || (r.emailPhotoCount || 0) > 0 || files.some(f => f.mimeType.startsWith("image/")); }
 const completeFingerprint = (r: V4Record, files: V4FileMetadata[]) => fingerprint({ contact: r.contact, details: r.details, files: files.map(f => ({ id: f.id, digest: f.digest })) });
 const mediaJournal = (r: V4Record, files: V4FileMetadata[]) => ({
   mediaFingerprint: fingerprint({ photosLink: r.details?.photosLink || "", files: files.map(f => ({ id: f.id, digest: f.digest })) }),
@@ -327,6 +340,8 @@ export async function queueV4PhotoReminders(now = new Date()) {
       AND e.tokenExpiresAt > ${minimumExpiry} AND e.status IN ('awaiting_details', 'awaiting_photos')
       AND COALESCE(JSON_UNQUOTE(JSON_EXTRACT(e.details, '$.photosLink')), '') = ''
       AND NOT EXISTS (SELECT 1 FROM owner_v4_files f WHERE f.enquiryId = e.id AND f.active = 1 AND f.mimeType LIKE 'image/%')
+      AND NOT EXISTS (SELECT 1 FROM owner_email_files f INNER JOIN owner_email_messages m ON m.messageKey = f.messageKey
+        WHERE m.sourceKey = CONCAT('v4:', e.id) AND m.status = 'ready' AND f.active = 1 AND f.mimeType LIKE 'image/%')
       AND NOT EXISTS (SELECT 1 FROM owner_v4_outbox r WHERE r.id = CONCAT(e.id, ':photo-reminder'))
     ORDER BY (LOWER(JSON_UNQUOTE(JSON_EXTRACT(e.contact, '$.name'))) LIKE '%qa%') ASC, e.capturedAt, e.id LIMIT 100`));
   let queued = 0;
@@ -334,7 +349,7 @@ export async function queueV4PhotoReminders(now = new Date()) {
     queued += await db.transaction(async tx => {
       const found = rows<any>(await tx.execute(sql`SELECT * FROM owner_v4_enquiries WHERE id = ${candidate.id} FOR UPDATE`))[0];
       if (!found) return 0;
-      const r = record(found); const files = await fileMetadata(tx, r.id);
+      const r = await withEmailMedia(tx, record(found)); const files = await fileMetadata(tx, r.id);
       if (!reminderEligible(r, files, now)) return 0;
       const existing = rows<any>(await tx.execute(sql`SELECT id FROM owner_v4_outbox WHERE id = ${`${r.id}:photo-reminder`} LIMIT 1`))[0];
       if (existing) return 0;
@@ -367,7 +382,7 @@ export async function prepareV4ReminderDelivery(item: V4Outbox, now = new Date()
     const found = rows<any>(await tx.execute(sql`SELECT * FROM owner_v4_enquiries WHERE id = ${item.enquiryId} FOR UPDATE`))[0];
     const current = rows<any>(await tx.execute(sql`SELECT status, leaseAt FROM owner_v4_outbox WHERE id = ${item.id} LIMIT 1 FOR UPDATE`))[0];
     if (!current || current.status !== "sending" || !item.leaseAt || date(current.leaseAt)?.getTime() !== item.leaseAt.getTime()) return false;
-    const r = found ? record(found) : null;
+    const r = found ? await withEmailMedia(tx, record(found)) : null;
     const files = r ? await fileMetadata(tx, r.id) : [];
     // Recent activity postpones the existing reminder; it does not schedule another one.
     const eligibilityTime = r ? new Date(Math.max(now.getTime(), r.updatedAt.getTime() + PHOTO_REMINDER_QUIET_MS)) : now;

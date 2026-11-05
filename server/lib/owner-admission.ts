@@ -2,7 +2,7 @@ import type { Request, RequestHandler } from "express";
 
 const KiB = 1024;
 const MiB = KiB * KiB;
-export type OwnerBodyKind = "start" | "draft" | "file" | "v3" | "legacy";
+export type OwnerBodyKind = "start" | "draft" | "file" | "v3" | "legacy" | "email_metadata" | "email_file" | "email_event";
 type Lane = "small" | "media";
 export interface OwnerBodyPolicy {
   format: "json" | "raw";
@@ -14,6 +14,18 @@ export interface OwnerBodyPolicy {
   lane: Lane | "auto";
 }
 export const OWNER_BODY_POLICIES: Record<OwnerBodyKind, OwnerBodyPolicy> = {
+  email_event: {
+    format: "raw", maxBytes: 64 * KiB, memoryFactor: 8,
+    maxRequests: 600, maxWindowBytes: 16 * MiB, timeoutMs: 15_000, lane: "small",
+  },
+  email_metadata: {
+    format: "raw", maxBytes: 256 * KiB, memoryFactor: 8,
+    maxRequests: 900, maxWindowBytes: 64 * MiB, timeoutMs: 15_000, lane: "small",
+  },
+  email_file: {
+    format: "raw", maxBytes: 15 * MiB, memoryFactor: 3,
+    maxRequests: 600, maxWindowBytes: 600 * MiB, timeoutMs: 60_000, lane: "media",
+  },
   start: {
     format: "json",
     maxBytes: 16 * KiB,
