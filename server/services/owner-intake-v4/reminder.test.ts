@@ -28,6 +28,7 @@ function memory(record = recordInput()) {
     const q = dialect.sqlToQuery(statement), p = q.params as any[]; state.statements.push(q.sql);
     if (q.sql.startsWith("SELECT e.id FROM")) return [[{ id: record.id }], []];
     if (q.sql.startsWith("SELECT * FROM owner_v4_enquiries")) return [[state.record], []];
+    if (q.sql.includes("AS emailPhotoCount")) return [[{ emailPhotoCount: state.record.emailPhotoCount || 0, emailFileCount: state.record.emailFileCount || 0 }], []];
     if (q.sql.startsWith("SELECT id, name, mimeType")) return [state.files, []];
     if (q.sql.startsWith("SELECT id FROM owner_v4_outbox") || q.sql.startsWith("SELECT status,")) return [[state.outbox.get(p[0])].filter(Boolean), []];
     if (q.sql.startsWith("INSERT INTO owner_v4_outbox")) {
@@ -82,6 +83,19 @@ describe("one restrained owner photo reminder", () => {
     expect(reminderEligible({ ...recordInput(), details: { photosLink: "https://example.test/album" } }, [], now)).toBe(false);
     expect(reminderEligible(recordInput(), [{ mimeType: "application/pdf" }], now)).toBe(true);
     expect(reminderEligible({ ...recordInput(), status: "complete" }, [], now)).toBe(false);
+    expect(reminderEligible({ ...recordInput(), emailPhotoCount: 2, emailFileCount: 2 }, [], now)).toBe(false);
+    expect(reminderEligible({ ...recordInput(), emailPhotoCount: 0, emailFileCount: 1 }, [], now)).toBe(true);
+  });
+  it("does not queue requests for photos already received by email, and cancels a previously queued request", async () => {
+    const m = memory();
+    m.record.emailPhotoCount = 1; m.record.emailFileCount = 1;
+    expect(await queueV4PhotoReminders(now)).toBe(0); expect(m.reminder()).toBeUndefined();
+    m.record.emailPhotoCount = 0; m.record.emailFileCount = 0;
+    expect(await queueV4PhotoReminders(now)).toBe(1); const item = m.claim();
+    m.record.emailPhotoCount = 1; m.record.emailFileCount = 1;
+    expect(await prepareV4ReminderDelivery(item, now)).toBe(false);
+    expect(m.reminder().status).toBe("cancelled");
+    expect(m.statements.some(q => q.includes("m.sourceKey = CONCAT('v4:', e.id)") && q.includes("m.status = 'ready'"))).toBe(true);
   });
   it("two concurrent scheduler sweeps freeze exactly one message with the same private photo link", async () => {
     const m = memory(); expect(await Promise.all([queueV4PhotoReminders(now), queueV4PhotoReminders(now)])).toEqual([1, 0]);

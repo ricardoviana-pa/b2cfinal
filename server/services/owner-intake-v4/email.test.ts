@@ -73,6 +73,17 @@ describe("v4 branded transactional messages", () => {
     r.status = "complete";
     expect(managementCompletedMail(r, [{ name: "synthetic.png", mimeType: "image/png" }]).text).toContain("confirmar suficiência antes de avaliar");
   });
+  it("recognises email photographs in later form notifications without pretending they are new attachments", () => {
+    const r = { ...recordInput(), details: detailsInput(), status: "complete" as const, emailPhotoCount: 3, emailFileCount: 4 };
+    const mail = managementCompletedMail(r, []);
+    expect(mail.text).toContain("Dados e imagens recebidos");
+    expect(mail.text).toContain("4 ficheiro(s), incluindo 3 fotografia(s)");
+    expect(mail.text).toContain("mesmo negócio no Pipedrive");
+    expect(mail.text).not.toContain("Fotografias em falta");
+    expect(mail.html).not.toContain("Os ficheiros seguem como anexos deste email");
+    expect(mail.html).toContain("não são reenviados neste aviso");
+    expect(managementCompletedMail({ ...r, emailPhotoCount: 0 }, []).text).toContain("Fotografias em falta");
+  });
   it("keeps one request subject and clearly identifies each notice, status, next action and snapshot version", () => {
     const r = recordInput(); r.revision = 4;
     const captured = managementStartMail(r);

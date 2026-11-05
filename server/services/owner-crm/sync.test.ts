@@ -102,6 +102,26 @@ describe("durable owner CRM identity", () => {
     await syncEnquiry(e, ledger, api, async () => bytes); await syncEnquiry(e, ledger, api, async () => bytes);
     expect(api.createDeal).toHaveBeenCalledTimes(1); expect(api.createNote).toHaveBeenCalledTimes(1); expect(api.createFile).toHaveBeenCalledTimes(1); expect(api.updateNote).toHaveBeenLastCalledWith(33, expect.stringContaining("https://example.com/photos"));
   });
+  it("reuses one CRM attachment when the same photograph arrives from the form and repeated email replies", async () => {
+    const { ledger } = memoryLedger(); const api = gateway(); const e = example(); const bytes = Buffer.from("same photograph across channels");
+    const form = { id: "form-photo", name: "front.png", mimeType: "image/png", size: bytes.length, digest: hash(bytes.toString()) };
+    e.files = [form]; await syncEnquiry(e, ledger, api, async () => bytes);
+    e.files.push({ ...form, id: "first-email-photo", name: "IMG-100.png", origin: "email" }, { ...form, id: "second-email-photo", name: "IMG-200.png", origin: "email" });
+    await syncEnquiry(e, ledger, api, async () => bytes); await syncEnquiry(e, ledger, api, async () => bytes);
+    expect(api.createFile).toHaveBeenCalledTimes(1); expect(api.createPerson).toHaveBeenCalledTimes(1); expect(api.createDeal).toHaveBeenCalledTimes(1);
+    expect(api.updateNote).toHaveBeenLastCalledWith(33, expect.stringContaining("Fotografias recebidas por resposta ao email:</strong> 1"));
+    expect(noteContent(e)).not.toContain("A aguardar fotografias");
+  });
+  it("replays a synced email photo without reading released bytes or calling any remote file operation", async () => {
+    const { ledger } = memoryLedger(); const api = gateway(); const e = example(); const content = Buffer.from("synthetic email photo");
+    e.files = [{ id: "email-photo", name: "photo.png", mimeType: "image/png", size: content.length, digest: hash(content.toString()), origin: "email" }];
+    const read = vi.fn(async () => content);
+    await syncEnquiry(e, ledger, api, read); expect(read).toHaveBeenCalledTimes(1); expect(api.createFile).toHaveBeenCalledTimes(1);
+    read.mockReset().mockRejectedValue(new CrmError("FILE_CONTENT_RELEASED", true));
+    vi.mocked(api.findFiles).mockClear(); vi.mocked(api.createFile).mockClear();
+    await syncEnquiry(e, ledger, api, read); await syncEnquiry(e, ledger, api, read);
+    expect(read).not.toHaveBeenCalled(); expect(api.findFiles).not.toHaveBeenCalled(); expect(api.createFile).not.toHaveBeenCalled();
+  });
   it("corrupt attachment bytes are never sent", async () => {
     const { ledger } = memoryLedger(); const api = gateway(); const e = example(); e.files = [{ id: "a", name: "a.png", mimeType: "image/png", size: 1, digest: hash("A") }];
     await expect(syncEnquiry(e, ledger, api, async () => Buffer.from("B"))).rejects.toThrow("FILE_INTEGRITY"); expect(api.createFile).not.toHaveBeenCalled();
@@ -152,6 +172,17 @@ describe("CRM content and isolation", () => {
     e.email = "owner@synthetic-domain.pt"; expect(automationEligible(e, {})).toBe(true); e.name = "PA-QA-CRM-NÃO-CONTACTAR"; expect(automationEligible(e, {})).toBe(false);
     expect(automationEligible(e, { OWNER_AUTOMATION_TEST_IDS: e.id })).toBe(true); e.capturedAt = new Date("2020-01-01"); expect(automationEligible(e, { OWNER_AUTOMATION_TEST_IDS: e.id })).toBe(false);
     expect(automationEligible(example(), { OWNER_AUTOMATION_FROM: "invalid" })).toBe(false);
+  });
+  it("allows confirmed historical email replies without weakening QA exclusions or invalid configuration", () => {
+    const e = { ...example(), email: "owner@fictitious-business.pt", capturedAt: new Date("2026-10-01"), hasReadyEmailEvidence: true };
+    expect(automationEligible(e, {})).toBe(true);
+    expect(automationEligible({ ...e, hasReadyEmailEvidence: false }, {})).toBe(false);
+    const forged = { ...e, hasReadyEmailEvidence: undefined, details: { hasReadyEmailEvidence: true } };
+    expect(automationEligible(forged, {})).toBe(false);
+    expect(automationEligible({ ...e, name: "PA-QA-NÃO-CONTACTAR" }, {})).toBe(false);
+    expect(automationEligible({ ...e, email: "test@example.invalid" }, {})).toBe(false);
+    expect(automationEligible({ ...e, name: "PA-QA-NÃO-CONTACTAR" }, { OWNER_AUTOMATION_TEST_IDS: e.id })).toBe(true);
+    expect(automationEligible(e, { OWNER_AUTOMATION_FROM: "invalid" })).toBe(false);
   });
   it("disabled, DEV, wrong service and wrong routing cannot obtain a production client", () => {
     const env = { NODE_ENV: "production", RENDER_SERVICE_ID: "srv-d700n5fgi27c73f9bse0", OWNER_CRM_ENABLED: "true", PIPEDRIVE_API_TOKEN: "synthetic-only", PIPEDRIVE_OWNER_ID: "22976488", PIPEDRIVE_STAGE_ID: "1" };

@@ -97,16 +97,20 @@ export async function crmCandidates(from: Date, source: CrmSource, limit = 20) {
   const db = await database();
   const testIds = (process.env.OWNER_AUTOMATION_TEST_IDS || "").split(",").map(v => v.trim()).filter(v => /^[0-9a-f-]{36}$/i.test(v));
   const authorizedTest = testIds.length ? sql`l.status = 'excluded' AND e.id IN (${sql.join(testIds.map(id => sql`${id}`), sql`, `)})` : sql`FALSE`;
-  const query = source === "v4" ? sql`SELECT e.*, h.originalSourceKey, h.originalRequestedAt FROM owner_v4_enquiries e
+  const readyEvidence = readyEmailEvidence(source);
+  const pendingCleanup = pendingEmailCleanup(source);
+  const query = source === "v4" ? sql`SELECT e.*, h.originalSourceKey, h.originalRequestedAt, ${readyEvidence} AS hasReadyEmailEvidence FROM owner_v4_enquiries e
     LEFT JOIN owner_crm_photo_requests h ON h.enquiryId = e.id LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v4:', e.id)
-    WHERE e.capturedAt >= ${from} AND (l.sourceKey IS NULL OR e.updatedAt > l.sourceModifiedAt
+    WHERE (e.capturedAt >= ${from} OR ${readyEvidence}) AND (l.sourceKey IS NULL OR e.updatedAt > l.sourceModifiedAt
       OR (l.status = 'synced' AND NOT EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey = CONCAT('enquiry:v4:', e.id, ':', ${PROPERTY_FIELDS_VERSION}) AND status = 'done'))
+      OR (l.status = 'synced' AND ${pendingCleanup})
       OR (l.status IN ('retry','review') AND l.nextAttemptAt <= UTC_TIMESTAMP(3)) OR (${authorizedTest})) ORDER BY e.capturedAt, e.id LIMIT ${limit}`
-    : sql`SELECT e.* FROM owner_enquiries e LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v3:', e.id)
-    WHERE e.createdAt >= ${from}
+    : sql`SELECT e.*, ${readyEvidence} AS hasReadyEmailEvidence FROM owner_enquiries e LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v3:', e.id)
+    WHERE (e.createdAt >= ${from} OR ${readyEvidence})
       AND NOT EXISTS (SELECT dealId FROM owner_crm_photo_requests h WHERE h.originalSourceKey = CONCAT('v3:', e.id) AND h.enquiryId <> e.id)
       AND (l.sourceKey IS NULL OR e.updatedAt > l.sourceModifiedAt
       OR (l.status = 'synced' AND NOT EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey = CONCAT('enquiry:v3:', e.id, ':', ${PROPERTY_FIELDS_VERSION}) AND status = 'done'))
+      OR (l.status = 'synced' AND ${pendingCleanup})
       OR (l.status IN ('retry','review') AND l.nextAttemptAt <= UTC_TIMESTAMP(3)) OR (${authorizedTest})) ORDER BY e.createdAt, e.id LIMIT ${limit}`;
   const enquiries: CrmEnquiry[] = [];
   for (const row of rows<any>(await db.execute(query))) {
@@ -116,7 +120,7 @@ export async function crmCandidates(from: Date, source: CrmSource, limit = 20) {
       enquiries.push({ source, id: row.id, sourceKey: `${source}:${row.id}`, modifiedAt: new Date(row.updatedAt), capturedAt: new Date(row.capturedAt),
         name: contact.name, email: contact.email, phone: contact.phone || "", locality: contact.locality || "", type: contact.type || "",
         details: object(row.details), context: object(row.context), attribution: object(row.attribution), status: row.status,
-        qualified: !!row.qualificationCompletedAt, files, privacyNoticeVersion: row.privacyNoticeVersion,
+        qualified: !!row.qualificationCompletedAt, files, privacyNoticeVersion: row.privacyNoticeVersion, hasReadyEmailEvidence: Number(row.hasReadyEmailEvidence) === 1,
         ...(row.originalSourceKey ? { originalSourceKey: row.originalSourceKey } : {}),
         ...(row.originalRequestedAt ? { originalRequestedAt: new Date(row.originalRequestedAt) } : {}) });
     } else {
@@ -124,22 +128,62 @@ export async function crmCandidates(from: Date, source: CrmSource, limit = 20) {
       enquiries.push({ source, id: row.id, sourceKey: `${source}:${row.id}`, modifiedAt: new Date(row.updatedAt), capturedAt: new Date(row.createdAt),
         name: p.name, email: p.email, phone: p.phone || "", locality: p.address || "", type: p.type || "", details: p,
         context: p.context || { language: p.language || "pt" }, attribution: {}, status: p.qualificationIncomplete ? "awaiting_details" : "complete",
-        qualified: !p.qualificationIncomplete, files });
+        qualified: !p.qualificationIncomplete, files, hasReadyEmailEvidence: Number(row.hasReadyEmailEvidence) === 1 });
     }
   }
   return enquiries;
 }
+// These flags come from the trusted importer journal, never public form fields.
+function readyEmailEvidence(source: CrmSource) {
+  return sql`EXISTS (SELECT 1 FROM owner_email_messages em WHERE em.sourceKey = CONCAT(${`${source}:`}, e.id)
+    AND em.status = 'ready' AND em.dealId > 0 AND em.personId > 0)`;
+}
+function pendingEmailCleanup(source: CrmSource) {
+  return sql`EXISTS (SELECT 1 FROM owner_email_files ef INNER JOIN owner_email_messages em ON em.messageKey = ef.messageKey
+    WHERE em.sourceKey = CONCAT(${`${source}:`}, e.id) AND em.status = 'ready' AND ef.active = 1 AND ef.content IS NOT NULL)`;
+}
 async function crmFileMetadata(db: Executor, source: CrmSource, id: string) {
-  return rows<CrmFile>(await db.execute(source === "v4"
-    ? sql`SELECT id, name, mimeType, size, digest FROM owner_v4_files WHERE enquiryId = ${id} AND active = 1 ORDER BY id`
-    : sql`SELECT id, name, mimeType, size, digest FROM owner_enquiry_attachments WHERE enquiryId = ${id} ORDER BY id`));
+  const formFiles = source === "v4"
+    ? sql`SELECT id, name, mimeType, size, digest, NULL AS origin FROM owner_v4_files WHERE enquiryId = ${id} AND active = 1`
+    : sql`SELECT id, name, mimeType, size, digest, NULL AS origin FROM owner_enquiry_attachments WHERE enquiryId = ${id}`;
+  // Email evidence remains separate from public uploads and their count/size limits.
+  // Only the importer-confirmed request binding may project a file into its deal.
+  return rows<CrmFile>(await db.execute(sql`${formFiles} UNION ALL
+    SELECT f.id, f.name, f.mimeType, f.size, f.digest, 'email' AS origin FROM owner_email_files f
+    INNER JOIN owner_email_messages m ON m.messageKey = f.messageKey
+    WHERE m.sourceKey = ${`${source}:${id}`} AND m.status = 'ready' AND f.active = 1 ORDER BY id`));
 }
 export async function crmFileBytes(e: CrmEnquiry, file: CrmFile) {
   const db = await database();
-  const found = rows<{ content: Buffer }>(await db.execute(e.source === "v4"
+  let found = rows<{ content: Buffer | null }>(await db.execute(e.source === "v4"
     ? sql`SELECT content FROM owner_v4_files WHERE enquiryId = ${e.id} AND id = ${file.id} AND digest = ${file.digest} AND active = 1 LIMIT 1`
     : sql`SELECT content FROM owner_enquiry_attachments WHERE enquiryId = ${e.id} AND id = ${file.id} AND digest = ${file.digest} LIMIT 1`))[0];
-  if (!found) throw new CrmError("FILE_CHANGED", false, true); return Buffer.from(found.content);
+  found ||= rows<{ content: Buffer | null }>(await db.execute(sql`SELECT f.content FROM owner_email_files f
+    INNER JOIN owner_email_messages m ON m.messageKey = f.messageKey
+    WHERE m.sourceKey = ${e.sourceKey} AND m.status = 'ready' AND f.active = 1
+      AND f.id = ${file.id} AND f.digest = ${file.digest} LIMIT 1`))[0];
+  if (!found) throw new CrmError("FILE_CHANGED", false, true);
+  if (found.content === null) throw new CrmError("FILE_CONTENT_RELEASED", true, true);
+  return Buffer.from(found.content);
+}
+/** Release temporary transport copies only after the entire deal sync succeeded.
+ * Metadata stays available for status, reminder suppression and digest idempotency.
+ * The original Gmail attachment and the confirmed Pipedrive file remain intact.
+ */
+export async function releaseSyncedEmailBytes(token: string, e: CrmEnquiry, ids: { personId: number; dealId: number }) {
+  const db = await database();
+  await db.execute(sql`UPDATE owner_email_files f
+    INNER JOIN owner_email_messages m ON m.messageKey = f.messageKey
+    INNER JOIN owner_crm_links l ON l.sourceKey = m.sourceKey
+    INNER JOIN owner_crm_operations deal ON deal.operationKey = CONCAT('enquiry:', m.sourceKey, ':deal') AND deal.status = 'done' AND deal.remoteId = l.dealId
+    INNER JOIN owner_crm_operations person ON person.operationKey = CONCAT('enquiry:', m.sourceKey, ':person') AND person.status = 'done' AND person.remoteId = l.personId
+    INNER JOIN owner_crm_operations upload ON upload.operationKey = CONCAT('enquiry:', m.sourceKey, ':file:', f.digest) AND upload.status = 'done' AND upload.remoteId > 0
+    SET f.content = NULL, f.remoteFileId = upload.remoteId, f.syncedAt = COALESCE(f.syncedAt, UTC_TIMESTAMP(3))
+    WHERE m.sourceKey = ${e.sourceKey} AND m.status = 'ready' AND f.active = 1 AND l.status = 'synced'
+      AND l.dealId = ${ids.dealId} AND l.personId = ${ids.personId} AND m.dealId = l.dealId AND m.personId = l.personId
+      AND (f.remoteFileId IS NULL OR f.remoteFileId = upload.remoteId)
+      AND (f.content IS NOT NULL OR f.remoteFileId IS NULL OR f.syncedAt IS NULL)
+      AND EXISTS (SELECT id FROM owner_crm_lease WHERE id = 'sweep' AND leaseToken = ${token} AND expiresAt > UTC_TIMESTAMP(3))`);
 }
 export async function saveCrmResult(token: string, e: CrmEnquiry, sourceVersion: string, status: "synced" | "excluded" | "retry" | "review",
   ids: { personId: number; dealId: number; noteId: number } | null = null, error: string | null = null) {
@@ -176,13 +220,15 @@ export async function crmStorageHealth() {
     const flagged = rows(await db.execute(sql`SELECT sourceKey FROM owner_crm_links WHERE status = 'review'
       OR (status = 'retry' AND sourceModifiedAt < DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 15 MINUTE)) LIMIT 1`)).length > 0;
     const v4Pending = rows(await db.execute(sql`SELECT e.id FROM owner_v4_enquiries e LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v4:', e.id)
-      WHERE e.capturedAt >= ${from} AND e.updatedAt < DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 15 MINUTE)
+      WHERE (e.capturedAt >= ${from} OR ${readyEmailEvidence("v4")}) AND e.updatedAt < DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 15 MINUTE)
       AND (l.sourceKey IS NULL OR (l.status <> 'excluded' AND (l.sourceModifiedAt IS NULL OR l.sourceModifiedAt < e.updatedAt))
+        OR (l.status = 'synced' AND ${pendingEmailCleanup("v4")})
         OR (l.status = 'synced' AND NOT EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey = CONCAT('enquiry:v4:', e.id, ':', ${PROPERTY_FIELDS_VERSION}) AND status = 'done'))) LIMIT 1`)).length > 0;
     const v3Pending = rows(await db.execute(sql`SELECT e.id FROM owner_enquiries e LEFT JOIN owner_crm_links l ON l.sourceKey = CONCAT('v3:', e.id)
-      WHERE e.createdAt >= ${from} AND e.updatedAt < DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 15 MINUTE)
+      WHERE (e.createdAt >= ${from} OR ${readyEmailEvidence("v3")}) AND e.updatedAt < DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 15 MINUTE)
       AND NOT EXISTS (SELECT dealId FROM owner_crm_photo_requests h WHERE h.originalSourceKey = CONCAT('v3:', e.id) AND h.enquiryId <> e.id)
       AND (l.sourceKey IS NULL OR (l.status <> 'excluded' AND (l.sourceModifiedAt IS NULL OR l.sourceModifiedAt < e.updatedAt))
+        OR (l.status = 'synced' AND ${pendingEmailCleanup("v3")})
         OR (l.status = 'synced' AND NOT EXISTS (SELECT operationKey FROM owner_crm_operations WHERE operationKey = CONCAT('enquiry:v3:', e.id, ':', ${PROPERTY_FIELDS_VERSION}) AND status = 'done'))) LIMIT 1`)).length > 0;
     return { storageReady: true, attentionRequired: flagged || v4Pending || v3Pending };
   } catch { return { storageReady: false, attentionRequired: true }; }

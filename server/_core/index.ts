@@ -28,6 +28,8 @@ import { initialiseOwnerIntakeSchema } from "../services/owner-intake/store";
 import { isOwnerIntakeProduction } from "../services/owner-intake/email";
 import { startOwnerNotificationSweep } from "../services/owner-intake/service";
 import { registerOwnerV4Routes } from "../routes/owner-enquiries-v4";
+import { registerOwnerEmailPhotoRoutes } from "../routes/owner-email-photos";
+import { registerOwnerEmailEventRoutes } from "../routes/owner-email-events";
 import { initialiseV4Schema } from "../services/owner-intake-v4/store";
 import { startV4Sweep } from "../services/owner-intake-v4/service";
 import { startOwnerCrmSweep } from "../services/owner-crm/service";
@@ -159,6 +161,8 @@ async function startServer() {
   registerSecurityTxtRoutes(app);
   // Separate bounded parser/rate limiter; private files never become public assets.
   registerOwnerV4Routes(app);
+  registerOwnerEmailPhotoRoutes(app);
+  registerOwnerEmailEventRoutes(app);
   registerOwnerEnquiryRoutes(app);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));

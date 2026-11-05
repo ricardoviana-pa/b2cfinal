@@ -1,5 +1,5 @@
 import { isOwnerIntakeProduction } from "../owner-intake/email";
-import { acquireCrmLease, crmCandidates, crmDealForV4, crmFileBytes, crmStorageHealth, initialiseOwnerCrmSchema, releaseCrmLease, saveCrmResult, sqlLedger } from "./store";
+import { acquireCrmLease, crmCandidates, crmDealForV4, crmFileBytes, crmStorageHealth, initialiseOwnerCrmSchema, releaseCrmLease, releaseSyncedEmailBytes, saveCrmResult, sqlLedger } from "./store";
 import { PipedriveGateway, type PipedriveConfig } from "./pipedrive";
 import { automationEligible, snapshotHash, syncEnquiry } from "./sync";
 import { CrmError } from "./types";
@@ -46,6 +46,8 @@ export function sweepOwnerCrm() {
           try {
             const ids = await syncEnquiry(e, ledger, gateway, file => crmFileBytes(e, file));
             await saveCrmResult(token, e, version, "synced", ids);
+            await ledger.checkpoint();
+            await releaseSyncedEmailBytes(token, e, ids);
           } catch (error) {
             const failure = error instanceof CrmError ? error : new CrmError("CRM_UNAVAILABLE");
             await saveCrmResult(token, e, version, failure.review ? "review" : "retry", null, failure.code);

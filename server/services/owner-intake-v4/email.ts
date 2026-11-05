@@ -36,20 +36,32 @@ function shell(title: string, content: string, language = "pt") {
 function attribution(record: V4Record) {
   return record.attribution ? Object.entries(record.attribution).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(" · ") : "";
 }
+const replyPhotosCopy: Record<string, string> = {
+  pt: "Também pode responder a este email com as fotografias em anexo. Use o mesmo endereço de email do pedido para as associarmos à sua propriedade.",
+  en: "You can also reply to this email with the photos attached. Use the same email address as your enquiry so we can link them to your property.",
+  fr: "Vous pouvez aussi répondre à cet email en joignant les photos. Utilisez la même adresse email que pour votre demande afin de les associer à votre propriété.",
+  es: "También puede responder a este email con las fotografías adjuntas. Use la misma dirección de email de su solicitud para asociarlas a su propiedad.",
+  de: "Sie können auch auf diese E-Mail antworten und die Fotos anhängen. Verwenden Sie dieselbe E-Mail-Adresse wie bei Ihrer Anfrage, damit wir die Bilder Ihrer Immobilie zuordnen können.",
+  nl: "U kunt ook op deze e-mail antwoorden met de foto’s als bijlage. Gebruik hetzelfde e-mailadres als bij uw aanvraag, zodat we ze aan uw woning kunnen koppelen.",
+  it: "Può anche rispondere a questa email allegando le fotografie. Usi lo stesso indirizzo email della richiesta per permetterci di associarle alla sua proprietà.",
+  ar: "يمكنك أيضًا الرد على هذا البريد الإلكتروني مع إرفاق الصور. استخدم عنوان البريد الإلكتروني نفسه المستخدم في طلبك حتى نتمكن من ربطها بعقارك.",
+  he: "אפשר גם להשיב לאימייל הזה ולצרף את התמונות. השתמשו באותה כתובת אימייל שבה הגשתם את הפנייה כדי שנוכל לשייך אותן לנכס שלכם.",
+  ru: "Вы также можете ответить на это письмо, прикрепив фотографии. Используйте тот же адрес электронной почты, что и в заявке, чтобы мы могли связать их с вашей недвижимостью.",
+};
 export function welcomeMail(record: V4Record, completionUrl: string): OwnerMail {
   const lang = welcomeCopy[record.context.language] ? record.context.language : "en";
   const c = welcomeCopy[lang];
-  const text = `${record.contact.name},\n\n${c[1]}\n${c[2]}\n\n${c[3]}: ${completionUrl}\n\n${c[4]}\n\n${c[5]}\n\nPortugal Active\n${record.id}`;
+  const text = `${record.contact.name},\n\n${c[1]}\n${c[2]}\n\n${c[3]}: ${completionUrl}\n\n${c[4]}\n${replyPhotosCopy[lang] || replyPhotosCopy.en}\n\n${c[5]}\n\nPortugal Active\n${record.id}`;
   return { from: OWNER_V4_FROM, to: record.contact.email, replyTo: OWNER_SALES_EMAIL, subject: `Portugal Active · ${c[0]}`,
-    text, html: shell(c[0], `<p style="margin-top:0">${e(record.contact.name)},</p><h1 style="font-size:27px;line-height:1.25">${e(c[1])}</h1><p>${e(c[2])}</p><p style="margin:26px 0"><a href="${e(completionUrl)}" style="display:inline-block;padding:13px 20px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">${e(c[3])}</a></p><p>${e(c[4])}</p><p style="font-size:12px;color:#676d62">${e(c[5])}</p><p style="font-size:11px;color:#676d62">${e(record.id)}</p>`, lang) };
+    text, html: shell(c[0], `<p style="margin-top:0">${e(record.contact.name)},</p><h1 style="font-size:27px;line-height:1.25">${e(c[1])}</h1><p>${e(c[2])}</p><p style="margin:26px 0"><a href="${e(completionUrl)}" style="display:inline-block;padding:13px 20px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">${e(c[3])}</a></p><p>${e(c[4])}</p><p>${e(replyPhotosCopy[lang] || replyPhotosCopy.en)}</p><p style="font-size:12px;color:#676d62">${e(c[5])}</p><p style="font-size:11px;color:#676d62">${e(record.id)}</p>`, lang) };
 }
 export function photoReminderMail(record: V4Record, completionUrl: string): OwnerMail {
   const lang = reminderCopy[record.context.language] ? record.context.language : "en";
   const c = reminderCopy[lang];
-  const text = `${record.contact.name},\n\n${c[1]}\n${c[2]}\n\n${c[3]}: ${completionUrl}\n\n${c[4]}\n\nPortugal Active\n${record.id}`;
+  const text = `${record.contact.name},\n\n${c[1]}\n${c[2]}\n\n${c[3]}: ${completionUrl}\n\n${c[4]}\n${replyPhotosCopy[lang] || replyPhotosCopy.en}\n\nPortugal Active\n${record.id}`;
   return { from: OWNER_V4_FROM, to: record.contact.email, replyTo: OWNER_SALES_EMAIL,
     subject: `Portugal Active · ${c[0]}`, text,
-    html: shell(c[0], `<p style="margin-top:0">${e(record.contact.name)},</p><h1 style="font-size:27px;line-height:1.25">${e(c[1])}</h1><p>${e(c[2])}</p><p style="margin:26px 0"><a href="${e(completionUrl)}" style="display:inline-block;padding:13px 20px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">${e(c[3])}</a></p><p>${e(c[4])}</p><p style="font-size:11px;color:#676d62">${e(record.id)}</p>`, lang) };
+    html: shell(c[0], `<p style="margin-top:0">${e(record.contact.name)},</p><h1 style="font-size:27px;line-height:1.25">${e(c[1])}</h1><p>${e(c[2])}</p><p style="margin:26px 0"><a href="${e(completionUrl)}" style="display:inline-block;padding:13px 20px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">${e(c[3])}</a></p><p>${e(c[4])}</p><p>${e(replyPhotosCopy[lang] || replyPhotosCopy.en)}</p><p style="font-size:11px;color:#676d62">${e(record.id)}</p>`, lang) };
 }
 /** An operational request for an existing owner lead; never a new-enquiry welcome. */
 export function photoRequestMail(record: V4Record, completionUrl: string): OwnerMail {
@@ -71,10 +83,10 @@ export function photoRequestMail(record: V4Record, completionUrl: string): Owner
   ];
   const property = record.details?.address?.trim() || record.contact.locality?.trim() || "";
   const propertyLine = property ? `${lang === "pt" ? "Propriedade" : "Property"}: ${property}` : "";
-  const text = `${record.contact.name},\n\n${c[1]}\n${c[2]}${propertyLine ? `\n\n${propertyLine}` : ""}\n\n${c[3]}: ${completionUrl}\n\n${c[4]}\n\n${c[5]}\n\nPortugal Active\n${record.id}`;
+  const text = `${record.contact.name},\n\n${c[1]}\n${c[2]}${propertyLine ? `\n\n${propertyLine}` : ""}\n\n${c[3]}: ${completionUrl}\n\n${c[4]}\n${replyPhotosCopy[lang] || replyPhotosCopy.en}\n\n${c[5]}\n\nPortugal Active\n${record.id}`;
   return { from: OWNER_V4_FROM, to: record.contact.email, replyTo: OWNER_SALES_EMAIL,
     subject: `Portugal Active · ${c[0]}`, text,
-    html: shell(c[0], `<p style="margin-top:0">${e(record.contact.name)},</p><h1 style="font-size:27px;line-height:1.25">${e(c[1])}</h1><p>${e(c[2])}</p>${propertyLine ? `<p style="font-size:13px;color:#676d62">${e(propertyLine)}</p>` : ""}<p style="margin:26px 0"><a href="${e(completionUrl)}" style="display:inline-block;padding:13px 20px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">${e(c[3])}</a></p><p>${e(c[4])}</p><p style="font-size:12px;color:#676d62">${e(c[5])}</p><p style="font-size:11px;color:#676d62">${e(record.id)}</p>`, lang) };
+    html: shell(c[0], `<p style="margin-top:0">${e(record.contact.name)},</p><h1 style="font-size:27px;line-height:1.25">${e(c[1])}</h1><p>${e(c[2])}</p>${propertyLine ? `<p style="font-size:13px;color:#676d62">${e(propertyLine)}</p>` : ""}<p style="margin:26px 0"><a href="${e(completionUrl)}" style="display:inline-block;padding:13px 20px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">${e(c[3])}</a></p><p>${e(c[4])}</p><p>${e(replyPhotosCopy[lang] || replyPhotosCopy.en)}</p><p style="font-size:12px;color:#676d62">${e(c[5])}</p><p style="font-size:11px;color:#676d62">${e(record.id)}</p>`, lang) };
 }
 type MailFile = { name: string; mimeType: string };
 export type ManagementNotice = "captured" | "qualification" | "updated" | "photos" | "documents" | "removed";
@@ -89,7 +101,8 @@ function managementMail(record: V4Record, files: MailFile[], reason: ManagementN
   const privacyNote = record.privacyNoticeVersion === "owner-crm-photo-followup"
     ? "Continuação de um pedido comercial já existente no CRM. Não foi registada uma nova aceitação de privacidade no formulário nem uma subscrição de marketing."
     : "Privacidade aceite para tratar este pedido. Sem subscrição de marketing.";
-  const hasImages = !!d.photosLink || files.some(f => f.mimeType.startsWith("image/"));
+  const emailPhotos = record.emailPhotoCount || 0, emailFiles = record.emailFileCount || 0;
+  const hasImages = !!d.photosLink || emailPhotos > 0 || files.some(f => f.mimeType.startsWith("image/"));
   const partial = record.status === "awaiting_details";
   const state = partial ? hasImages ? "Imagens recebidas · informação da casa por completar" : "Contacto recebido · informação da casa por completar"
     : hasImages ? "Dados e imagens recebidos · confirmar suficiência antes de avaliar" : "Aguarda fotografias · avaliação por iniciar";
@@ -97,7 +110,7 @@ function managementMail(record: V4Record, files: MailFile[], reason: ManagementN
     ? "O proprietário pode ainda estar a preencher a informação da casa. Consultar a mensagem mais recente com esta referência e contactar se o pedido continuar incompleto."
     : partial
     ? `${hasImages ? "Rever as imagens e contactar" : "Contactar"} o proprietário para completar a informação em falta.${hasImages ? " Confirmar também se as imagens são suficientes." : " Pedir fotografias se ainda não tiverem sido enviadas."}`
-    : hasImages ? "Abrir o link e os anexos, confirmar se mostram a casa suficientemente e contactar o proprietário para preparar a avaliação."
+    : hasImages ? `${emailPhotos ? "Rever as fotografias recebidas por email e o material deste pedido" : "Abrir o link e os anexos"}, confirmar se mostram a casa suficientemente e contactar o proprietário para preparar a avaliação.`
     : "Contactar o proprietário para pedir fotografias úteis ou um link acessível. A avaliação depende dessas imagens.";
   const title = noticeTitles[reason];
   const savedAt = new Intl.DateTimeFormat("pt-PT", { timeZone: "Europe/Lisbon", dateStyle: "short", timeStyle: "short" }).format(record.updatedAt);
@@ -119,7 +132,8 @@ function managementMail(record: V4Record, files: MailFile[], reason: ManagementN
   const incomeNote = d.incomeExpectation ? "Rendimento líquido anual esperado pelo proprietário, após custos. Expectativa declarada, sem previsão ou garantia da Portugal Active." : "";
   const section = (heading: string, values: [string, string][]) => !values.length ? "" : `<h2 style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8b7355;margin:26px 0 10px">${e(heading)}</h2><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">${values.map(([label, value]) => `<tr><td style="padding:9px 0;border-bottom:1px solid #e6e7df;vertical-align:top;width:42%;font-size:12px;color:#676d62">${e(label)}</td><td style="padding:9px 0 9px 12px;border-bottom:1px solid #e6e7df;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere">${e(value)}</td></tr>`).join("")}</table>`;
   const fileNames = files.map(f => f.name);
-  const fileText = fileNames.length ? fileNames.join(", ") : "Sem ficheiros anexados";
+  const fileText = fileNames.length ? fileNames.join(", ") : emailFiles ? "Sem novos anexos do formulário; ver material recebido por email" : "Sem ficheiros anexados";
+  const emailEvidence = emailFiles ? `Material recebido por resposta ao email: ${emailFiles} ficheiro(s), incluindo ${emailPhotos} fotografia(s). Consulte a resposta original em management@portugalactive.com e os ficheiros do mesmo negócio no Pipedrive. Estes ficheiros não são reenviados neste aviso.` : "";
   const phoneHref = p.phone.replace(/[^+0-9]/g, "");
   const reference = record.id.slice(0, 8).toUpperCase();
   const text = [`PORTUGAL ACTIVE · EQUIPA COMERCIAL`, title, `Pedido PA-${reference} · Referência completa: ${record.id}`, `Estado: ${state}`, `Próxima ação: ${next}`,
@@ -128,6 +142,7 @@ function managementMail(record: V4Record, files: MailFile[], reason: ManagementN
     ...shownProperty.map(([label, value]) => `${label}: ${value}`), ...shownGoals.map(([label, value]) => `${label}: ${value}`),
     ...(missing.length ? [`Informação em falta: ${missing.join(" · ")}`] : []), ...(incomeNote ? [incomeNote] : []),
     `Link de fotografias: ${d.photosLink || "Não fornecido"}`, `Anexos: ${fileText}`,
+    ...(emailEvidence ? [emailEvidence] : []),
     !hasImages ? "Fotografias em falta. Um PDF ou documento, por si só, não confirma imagens úteis da casa." : "As imagens e os links ainda precisam de revisão pela equipa; a receção não confirma qualidade ou suficiência.",
     `Idioma: ${record.context.language}`, `Página: ${record.context.page_path}`, `Botão: ${record.context.placement}`,
     ...(source ? [`Campanha: ${source}`] : []), privacyNote].join("\n");
@@ -140,7 +155,8 @@ function managementMail(record: V4Record, files: MailFile[], reason: ManagementN
     ${incomeNote ? `<p style="font-size:11px;color:#676d62">${e(incomeNote)}</p>` : ""}
     <h2 style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8b7355;margin:26px 0 10px">Fotografias e documentos</h2>
     ${d.photosLink ? `<p><a href="${e(d.photosLink)}" style="display:inline-block;padding:11px 18px;background:#304838;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold">Abrir fotografias</a></p><p style="font-size:12px;overflow-wrap:anywhere">${e(d.photosLink)}</p>` : '<p style="font-size:13px">Sem link de fotografias.</p>'}
-    ${fileNames.length ? `<ul style="padding-left:20px;font-size:13px;overflow-wrap:anywhere">${fileNames.map(name => `<li>${e(name)}</li>`).join("")}</ul><p style="font-size:12px;color:#676d62">Os ficheiros seguem como anexos deste email.</p>` : '<p style="font-size:12px;color:#676d62">Sem ficheiros anexados.</p>'}
+    ${fileNames.length ? `<ul style="padding-left:20px;font-size:13px;overflow-wrap:anywhere">${fileNames.map(name => `<li>${e(name)}</li>`).join("")}</ul><p style="font-size:12px;color:#676d62">Os ficheiros seguem como anexos deste email.</p>` : `<p style="font-size:12px;color:#676d62">${e(fileText)}.</p>`}
+    ${emailEvidence ? `<p style="padding:12px;background:#e9efe7;font-size:13px">${e(emailEvidence)}</p>` : ""}
     <p style="font-size:12px;color:#676d62">${hasImages ? "As imagens e os links ainda precisam de revisão pela equipa; a receção não confirma qualidade ou suficiência." : "Fotografias em falta. Um PDF ou documento, por si só, não confirma imagens úteis da casa."}</p>
     <div style="border-top:1px solid #e6e7df;margin-top:24px;padding-top:16px;font-size:11px;color:#676d62;overflow-wrap:anywhere">Idioma: ${e(record.context.language)} · Página: ${e(record.context.page_path)} · Botão: ${e(record.context.placement)}${source ? `<br>Campanha: ${e(source)}` : ""}<br>${e(privacyNote)}<br>Referência completa: ${e(record.id)}</div>`);
   return { from: OWNER_V4_FROM, to: OWNER_SALES_EMAIL, replyTo: p.email,

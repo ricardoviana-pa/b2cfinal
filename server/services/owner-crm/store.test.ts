@@ -3,7 +3,7 @@ import { MySqlDialect } from "drizzle-orm/mysql-core";
 const fake = vi.hoisted(() => ({ db: vi.fn(), production: vi.fn(() => true) }));
 vi.mock("../../db", () => ({ getDb: fake.db }));
 vi.mock("../owner-intake/email", () => ({ isOwnerIntakeProduction: fake.production }));
-import { acquireCrmLease, crmCandidates, crmDealForV4, crmStorageHealth, saveCrmResult, sqlLedger } from "./store";
+import { acquireCrmLease, crmCandidates, crmDealForV4, crmFileBytes, crmStorageHealth, releaseSyncedEmailBytes, saveCrmResult, sqlLedger } from "./store";
 import type { CrmEnquiry } from "./types";
 const dialect = new MySqlDialect();
 beforeEach(() => { fake.db.mockReset(); fake.production.mockReturnValue(true); });
@@ -45,6 +45,66 @@ describe("CRM storage fencing and recovery", () => {
       contact: { name: "Synthetic", email: "synthetic@example.com", type: "villa" }, context: { page_kind: "crm-photo-followup" }, privacyNoticeVersion: "owner-crm-photo-followup", originalSourceKey: "v3:00000000-0000-4000-8000-000000000001", originalRequestedAt: "2026-11-01T12:00:00Z" }], []]).mockResolvedValueOnce([[], []]);
     fake.db.mockResolvedValue({ execute }); const [e] = await crmCandidates(new Date("2026-11-03"), "v4");
     expect(e.privacyNoticeVersion).toBe("owner-crm-photo-followup"); expect(e.originalSourceKey).toContain("v3:"); expect(e.originalRequestedAt?.toISOString()).toBe("2026-11-01T12:00:00.000Z");
+  });
+  it("unions only confirmed email files bound to the exact request with public upload metadata", async () => {
+    const form = { id: "form", name: "form.png", mimeType: "image/png", size: 1, digest: "a".repeat(64) };
+    const email = { id: "email", name: "email.heic", mimeType: "image/heic", size: 2, digest: "b".repeat(64), origin: "email" };
+    const execute = vi.fn().mockResolvedValueOnce([[{ id: "synthetic", capturedAt: "2026-11-04T10:00:00Z", updatedAt: "2026-11-04T12:00:00Z",
+      contact: { name: "Synthetic", email: "synthetic@example.com", type: "villa" }, context: {} }], []])
+      .mockResolvedValueOnce([[form, email], []]);
+    fake.db.mockResolvedValue({ execute }); const [e] = await crmCandidates(new Date("2026-11-03"), "v4");
+    expect(e.files).toEqual([form, email]);
+    const query = dialect.sqlToQuery(execute.mock.calls[1][0]);
+    expect(query.sql).toContain("UNION ALL"); expect(query.sql).toContain("'email' AS origin");
+    expect(query.sql).toContain("m.messageKey = f.messageKey");
+    expect(query.sql).toContain("m.status = 'ready' AND f.active = 1"); expect(query.params).toEqual(["synthetic", "v4:synthetic"]);
+  });
+  it.each(["v3", "v4"] as const)("permits older %s requests only through persisted confirmed email evidence", async source => {
+    const execute = vi.fn().mockResolvedValueOnce([[{ id: "synthetic", createdAt: "2026-10-01T10:00:00Z", capturedAt: "2026-10-01T10:00:00Z", updatedAt: "2026-11-05T12:00:00Z",
+      hasReadyEmailEvidence: 1, contact: { name: "Owner", email: "owner@example.com" }, payload: { name: "Owner", email: "owner@example.com" }, context: {} }], []]).mockResolvedValueOnce([[], []]);
+    fake.db.mockResolvedValue({ execute }); const [e] = await crmCandidates(new Date("2026-11-03"), source);
+    expect(e.hasReadyEmailEvidence).toBe(true); expect(e.capturedAt.toISOString()).toBe("2026-10-01T10:00:00.000Z");
+    const query = dialect.sqlToQuery(execute.mock.calls[0][0]);
+    expect(query.sql).toMatch(/WHERE \(e\.(?:createdAt|capturedAt) >= \? OR EXISTS/);
+    expect(query.sql).toContain("em.status = 'ready' AND em.dealId > 0 AND em.personId > 0");
+    expect(query.params).toContain(`${source}:`);
+    expect(query.sql).toContain("ef.content IS NOT NULL");
+    if (source === "v3") expect(query.sql).toContain("h.originalSourceKey = CONCAT('v3:', e.id)");
+  });
+  it("does not grant the historical exception from public payload or attribution", async () => {
+    const execute = vi.fn().mockResolvedValueOnce([[{ id: "synthetic", createdAt: "2026-10-01", updatedAt: "2026-11-05",
+      payload: { name: "Owner", email: "owner@example.com", hasReadyEmailEvidence: true }, hasReadyEmailEvidence: 0 }], []]).mockResolvedValueOnce([[], []]);
+    fake.db.mockResolvedValue({ execute }); const [e] = await crmCandidates(new Date("2026-11-03"), "v3");
+    expect(e.details.hasReadyEmailEvidence).toBe(true); expect(e.hasReadyEmailEvidence).toBe(false);
+  });
+  it("reads email bytes only with the same confirmed request, active file, ID and digest", async () => {
+    const e = { id: "synthetic", source: "v4", sourceKey: "v4:synthetic" } as CrmEnquiry;
+    const file = { id: "email-photo", name: "a.jpg", mimeType: "image/jpeg", size: 9, digest: "c".repeat(64) };
+    const execute = vi.fn().mockResolvedValueOnce([[], []]).mockResolvedValueOnce([[{ content: Buffer.from("synthetic") }], []]);
+    fake.db.mockResolvedValue({ execute }); expect((await crmFileBytes(e, file)).toString()).toBe("synthetic");
+    const query = dialect.sqlToQuery(execute.mock.calls[1][0]);
+    expect(query.params).toEqual([e.sourceKey, file.id, file.digest]);
+    expect(query.sql).toContain("m.status = 'ready' AND f.active = 1");
+    execute.mockResolvedValue([[], []]);
+    await expect(crmFileBytes(e, file)).rejects.toMatchObject({ code: "FILE_CHANGED", confirmedRejected: true });
+    execute.mockResolvedValueOnce([[], []]).mockResolvedValueOnce([[{ content: null }], []]);
+    await expect(crmFileBytes(e, file)).rejects.toMatchObject({ code: "FILE_CONTENT_RELEASED", review: true, confirmedRejected: true });
+  });
+  it("releases only confirmed email bytes under the current deal/person binding and live worker lease", async () => {
+    const execute = vi.fn(async () => [{ affectedRows: 1 }, []]); fake.db.mockResolvedValue({ execute });
+    await releaseSyncedEmailBytes("current-lease", { sourceKey: "v4:synthetic" } as CrmEnquiry, { personId: 11, dealId: 22 });
+    const query = dialect.sqlToQuery(execute.mock.calls[0][0]);
+    expect(query.sql).toContain("SET f.content = NULL, f.remoteFileId = upload.remoteId, f.syncedAt = COALESCE");
+    expect(query.sql).toContain("upload.status = 'done' AND upload.remoteId > 0");
+    expect(query.sql).toContain("':file:', f.digest");
+    expect(query.sql).toContain("deal.status = 'done' AND deal.remoteId = l.dealId");
+    expect(query.sql).toContain("person.status = 'done' AND person.remoteId = l.personId");
+    expect(query.sql).toContain("m.status = 'ready' AND f.active = 1 AND l.status = 'synced'");
+    expect(query.sql).toContain("m.dealId = l.dealId AND m.personId = l.personId");
+    expect(query.sql).toContain("f.remoteFileId IS NULL OR f.remoteFileId = upload.remoteId");
+    expect(query.sql).toContain("expiresAt > UTC_TIMESTAMP(3)");
+    expect(query.params).toEqual(["v4:synthetic", 22, 11, "current-lease"]);
+    expect(query.sql).not.toContain("owner_v4_files"); expect(query.sql).not.toContain("DELETE");
   });
   it("allows an explicitly approved previously excluded QA UUID back into reconciliation", async () => {
     const testId = "00000000-0000-4000-8000-000000000001"; vi.stubEnv("OWNER_AUTOMATION_TEST_IDS", testId);

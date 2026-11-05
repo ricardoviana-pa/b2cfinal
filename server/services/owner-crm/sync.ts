@@ -6,9 +6,9 @@ import { desiredPropertyFields, emptyFieldState, PROPERTY_FIELDS_VERSION, syncPr
 export const hash = (value: string) => createHash("sha256").update(value).digest("hex");
 export const enquiryMarker = (e: CrmEnquiry) => `PA-OWNER-${e.source}-${e.id}`;
 export const operationPrefix = (e: CrmEnquiry) => `enquiry:${e.sourceKey}`;
-export function automationEligible(e: Pick<CrmEnquiry, "id" | "name" | "email" | "capturedAt">, env: NodeJS.ProcessEnv = process.env) {
+export function automationEligible(e: Pick<CrmEnquiry, "id" | "name" | "email" | "capturedAt" | "hasReadyEmailEvidence">, env: NodeJS.ProcessEnv = process.env) {
   const from = new Date(env.OWNER_AUTOMATION_FROM || "2026-11-03T00:00:00Z");
-  if (!Number.isFinite(+from) || e.capturedAt < from) return false;
+  if (!Number.isFinite(+from) || (e.capturedAt < from && e.hasReadyEmailEvidence !== true)) return false;
   const tests = new Set((env.OWNER_AUTOMATION_TEST_IDS || "").split(",").map(v => v.trim()).filter(Boolean));
   if (tests.has(e.id)) return true;
   // Deliberate QA identities only; do not filter people merely named Testa, etc.
@@ -19,7 +19,7 @@ export function snapshotHash(e: CrmEnquiry) {
   return hash(JSON.stringify({ name: e.name, email: e.email, phone: e.phone, locality: e.locality, type: e.type,
     details: e.details, context: e.context, attribution: e.attribution, status: e.status, qualified: e.qualified,
     privacyNoticeVersion: e.privacyNoticeVersion, originalSourceKey: e.originalSourceKey, originalRequestedAt: e.originalRequestedAt?.toISOString(),
-    files: e.files.map(({ digest, name, mimeType }) => ({ digest, name, mimeType })).sort((a, b) => a.digest.localeCompare(b.digest)) }));
+    files: e.files.map(({ digest, name, mimeType, origin }) => ({ digest, name, mimeType, origin })).sort((a, b) => a.digest.localeCompare(b.digest)) }));
 }
 const escape = (value: unknown) => String(value ?? "Por confirmar").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 const labels: Record<string, string> = { yes: "Sim", no: "Não", maybe: "Talvez", pending: "Em processo", unknown: "Por confirmar", villa: "Moradia", apartment: "Apartamento", farmhouse: "Quinta", hostel: "Hostel", guesthouse: "Guesthouse", boutiqueHotel: "Hotel boutique", other: "Outro" };
@@ -40,6 +40,7 @@ function photoLink(value: unknown): { href: string | null; text: string } {
 }
 export function noteContent(e: CrmEnquiry) {
   const d = e.details; const link = photoLink(d.photosLink); const photos = !!link.href || e.files.some(f => f.mimeType.startsWith("image/"));
+  const emailPhotos = new Set(e.files.filter(f => f.origin === "email" && f.mimeType.startsWith("image/")).map(f => f.digest)).size;
   const historical = e.privacyNoticeVersion === "owner-crm-photo-followup";
   const status = e.qualified ? photos ? "Dados e fotografias recebidos — avaliar" : "A aguardar fotografias" : photos ? "Fotografias recebidas — completar qualificação no contacto" : "Contacto recebido — falta qualificação e fotografias";
   const fields: [string, unknown][] = [
@@ -50,6 +51,7 @@ export function noteContent(e: CrmEnquiry) {
     ["Entrada no mercado", OWNER_TIMELINE_LABELS[d.launchTimeline as keyof typeof OWNER_TIMELINE_LABELS] || "Por confirmar"],
     ["Expectativa líquida anual para o proprietário", OWNER_INCOME_LABELS[d.incomeExpectation as keyof typeof OWNER_INCOME_LABELS] || "Por confirmar"],
     ["Link de fotografias", link.text], ["Anexos atualmente enviados", e.files.map(f => f.name).join(", ") || "Sem anexos"],
+    ...(emailPhotos ? [["Fotografias recebidas por resposta ao email", `${emailPhotos} · associadas a este pedido; confirmar suficiência antes de avaliar.`]] as [string, unknown][] : []),
     ...(historical && e.originalRequestedAt ? [["Pedido original recebido em", e.originalRequestedAt.toISOString()]] as [string, unknown][] : []),
     [historical ? "Seguimento criado em" : "Recebido em", e.capturedAt.toISOString()], ["Atualizado em", e.modifiedAt.toISOString()], ["Referência do pedido", e.id],
     ["Idioma", e.context.language], ["Página", e.context.page_path], ["Posição do formulário", e.context.placement], ["Região", e.context.region],
@@ -68,7 +70,7 @@ export function noteContent(e: CrmEnquiry) {
 }
 export function remoteFilename(file: CrmFile) {
   // Same bytes uploaded under another local UUID still produce one CRM attachment.
-  const extension = ({ "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "application/pdf": "pdf" } as Record<string, string>)[file.mimeType] || "bin";
+  const extension = ({ "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "image/heic": "heic", "image/heif": "heif", "application/pdf": "pdf" } as Record<string, string>)[file.mimeType] || "bin";
   return `PA-${file.digest}.${extension}`;
 }
 

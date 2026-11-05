@@ -1,11 +1,13 @@
 export type CrmSource = "v3" | "v4";
-export interface CrmFile { id: string; name: string; mimeType: string; size: number; digest: string }
+export interface CrmFile { id: string; name: string; mimeType: string; size: number; digest: string; origin?: "email" }
 export interface CrmEnquiry {
   source: CrmSource; id: string; sourceKey: string; modifiedAt: Date; capturedAt: Date;
   name: string; email: string; phone: string; locality: string; type: string;
   details: Record<string, unknown>; context: Record<string, unknown>; attribution: Record<string, unknown>;
   status: string; qualified: boolean; files: CrmFile[];
   privacyNoticeVersion?: string; originalSourceKey?: string; originalRequestedAt?: Date;
+  /** Set only by the SQL projection of an importer-confirmed ready message. */
+  hasReadyEmailEvidence?: boolean;
 }
 export interface CrmOperation { key: string; status: "ready" | "attempting" | "done"; remoteId: number | null }
 export type CrmFieldValue = string | number | null;

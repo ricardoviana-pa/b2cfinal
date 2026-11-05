@@ -15,8 +15,8 @@ beforeEach(() => { fake.db.mockReset(); fake.production.mockReturnValue(true); }
 
 /** Isolated SQL-shaped adapter. Serial commits emulate row locks/unique-key races. */
 function memoryStore({ failOutbox = false, failMediaOutbox = false, failFile = false } = {}) {
-  type State = { enquiries: Map<string, any>; files: Map<string, any>; mutations: Map<string, any>; outbox: Map<string, any> };
-  let state: State = { enquiries: new Map(), files: new Map(), mutations: new Map(), outbox: new Map() }; let queue = Promise.resolve();
+  type State = { enquiries: Map<string, any>; files: Map<string, any>; emailFiles: Map<string, any>; mutations: Map<string, any>; outbox: Map<string, any> };
+  let state: State = { enquiries: new Map(), files: new Map(), emailFiles: new Map(), mutations: new Map(), outbox: new Map() }; let queue = Promise.resolve();
   const statements: { sql: string; params: any[] }[] = [];
   const duplicate = () => Object.assign(new Error("synthetic duplicate"), { code: "ER_DUP_ENTRY" });
   async function execute(statement: SQL, s = state) {
@@ -36,6 +36,11 @@ function memoryStore({ failOutbox = false, failMediaOutbox = false, failFile = f
     }
     if (q.sql.startsWith("SELECT * FROM owner_v4_enquiries WHERE id")) return [[s.enquiries.get(p[0])].filter(Boolean), []];
     if (q.sql.startsWith("SELECT * FROM owner_v4_enquiries WHERE tokenHash")) return [[...s.enquiries.values()].filter(r => r.tokenHash === p[0] && r.tokenExpiresAt > p[1]), []];
+    if (q.sql.includes("AS emailPhotoCount")) {
+      const files = [...s.emailFiles.values()].filter(f => f.sourceKey === p[0] && f.status === "ready" && f.active);
+      return [[{ emailFileCount: new Set(files.map(f => f.digest)).size,
+        emailPhotoCount: new Set(files.filter(f => f.mimeType.startsWith("image/")).map(f => f.digest)).size }], []];
+    }
     if (q.sql.startsWith("SELECT kind, payload FROM owner_v4_outbox") && q.sql.includes("WHERE enquiryId"))
       return [[...s.outbox.values()].filter(r => r.enquiryId === p[0] && ["completed", "media"].includes(r.kind))
         .sort((a, b) => (JSON.parse(b.payload).notificationRevision || 0) - (JSON.parse(a.payload).notificationRevision || 0)
@@ -159,6 +164,37 @@ describe("v4 atomic capture and bearer ownership", () => {
   });
 });
 describe("v4 same-lead drafts and completion", () => {
+  it("retains confirmed email photographs through a late form completion and removal of a public upload", async () => {
+    const { m, result, auth } = await captured();
+    expect(auth.emailPhotoCount).toBe(0);
+    m.state().emailFiles.set("email-photo", { sourceKey: `v4:${auth.id}`, status: "ready", active: 1, mimeType: "image/jpeg", digest: "a".repeat(64) });
+    const received = new Date(+testNow + 1000);
+    Object.assign(m.state().enquiries.get(auth.id), { mediaReceivedAt: received, updatedAt: received });
+    expect(await mutateV4(auth, { mutationId: fileId(50), details: detailsInput() }, true, new Date(+received + 1000)))
+      .toMatchObject({ status: "complete" });
+    const completed = JSON.parse(m.state().outbox.get(`${auth.id}:completed:1`).payload);
+    expect(completed.fileIds).toEqual([]); expect(completed.mail.text).toContain("Material recebido por resposta ao email: 1");
+    expect(completed.mail.text).not.toContain("Fotografias em falta");
+    await addV4File(auth, validateFile(fileId(51), "synthetic.png", "image/png", pngBytes()), new Date(+received + 2000));
+    expect(await removeV4File(auth, fileId(51), new Date(+received + 3000))).toMatchObject({ status: "complete" });
+    const draft = await draftV4(auth);
+    expect(draft.files).toEqual([]); expect(draft.emailMedia).toEqual({ photoCount: 1, fileCount: 1 });
+    expect(draft.mediaConfirmationRequired).toBe(false); expect(draft).not.toHaveProperty("emailFiles");
+    expect(m.state().enquiries.get(auth.id)).toMatchObject({ mediaReceivedAt: received, mediaFileCount: 0, status: "complete" });
+    expect(await authenticateV4(result.continuationToken, testNow)).toMatchObject({ emailPhotoCount: 1, emailFileCount: 1 });
+    expect([...m.state().outbox.values()].filter(row => row.kind === "welcome")).toHaveLength(1);
+  });
+  it("does not count unconfirmed, inactive or another request's email files, and keeps PDFs separate", async () => {
+    const { m, auth } = await captured();
+    const common = { sourceKey: `v4:${auth.id}`, status: "ready", active: 1, mimeType: "image/jpeg", digest: "a".repeat(64) };
+    m.state().emailFiles.set("review", { ...common, status: "review" });
+    m.state().emailFiles.set("receiving", { ...common, status: "receiving" });
+    m.state().emailFiles.set("inactive", { ...common, active: 0 });
+    m.state().emailFiles.set("foreign", { ...common, sourceKey: "v4:another-request" });
+    m.state().emailFiles.set("pdf", { ...common, mimeType: "application/pdf", digest: "b".repeat(64) });
+    expect(await mutateV4(auth, { mutationId: fileId(52), details: detailsInput() }, true, testNow)).toMatchObject({ status: "awaiting_photos" });
+    expect((await draftV4(auth)).emailMedia).toEqual({ photoCount: 0, fileCount: 1 });
+  });
   it("updates inline contact details and resumes a partial draft without sending another welcome", async () => {
     const { m, auth } = await captured();
     await mutateV4(auth, { mutationId: fileId(1), contact: { phone: "+351900000001" }, details: { description: "Partial" } }, false, testNow);
