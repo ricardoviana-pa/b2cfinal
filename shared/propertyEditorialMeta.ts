@@ -2,8 +2,9 @@
  * These choices live outside the synced property JSON. IDs select the pilot;
  * current catalogue facts supply the copy, so a sync cannot freeze an old
  * capacity or keep advertising a removed amenity. No supplier labels are
- * included in the result. Alentejo Farmhouse and Villa Aura await resolution
- * of conflicting bedroom/capacity data before joining the pilot.
+ * included in the result. Villa Aura joined after Ricardo confirmed its
+ * 13-guest capacity on 5 November 2026. Alentejo Farmhouse joined after
+ * he also confirmed its five bedrooms and ten-guest capacity that day.
  */
 type Locale = 'en' | 'pt';
 type Feature = 'privatePool' | 'outdoorPool' | 'garden' | 'seaView' | 'gym';
@@ -17,6 +18,8 @@ export const PROPERTY_EDITORIAL_META: Record<string, readonly Feature[]> = {
   '6965335cbf04fe00137431cb': ['outdoorPool', 'garden'], // Lima River Houses
   '696533722def930014e914e2': ['outdoorPool', 'gym'], // Abreu Retreat Palace
   '6965339dbf04fe0013743e2d': ['outdoorPool', 'garden'], // Fountain Retreat
+  '6965331fec80690013738c68': ['outdoorPool', 'gym'], // Villa Aura
+  '69c567ad7f6873000e9a3c37': ['outdoorPool', 'garden'], // Alentejo Farmhouse / Monte do Sossego
 };
 
 const FEATURES: Record<Feature, { amenity: string; en: string; pt: string }> = {
@@ -54,9 +57,13 @@ export function propertyEditorialMeta(prop: EditorialInput, name: string, langua
   const amenities = new Set(prop.amenities?.property || []);
   const features = selected.filter(key => amenities.has(FEATURES[key].amenity)).map(key => FEATURES[key][lang]);
   const featureText = features.join(lang === 'pt' ? ' e ' : ' and ');
-  const title = lang === 'pt'
+  const titleWithBedrooms = lang === 'pt'
     ? `${name} | T${beds} em ${locality} | Portugal Active`
     : `${name} | ${beds}-Bed, ${locality} | Portugal Active`;
+  // Keep the precise locality when a longer name cannot fit the title budget.
+  // The description retains both the bedroom count and guest capacity.
+  const title = titleWithBedrooms.length <= 65
+    ? titleWithBedrooms : `${name} | ${locality} | Portugal Active`;
   const facts = lang === 'pt'
     ? `${name} em ${locality}: ${beds} ${beds === 1 ? 'quarto' : 'quartos'} para até ${guests} ${guests === 1 ? 'hóspede' : 'hóspedes'}`
     : `${name} in ${locality}: ${beds} ${beds === 1 ? 'bedroom' : 'bedrooms'} for up to ${guests} ${guests === 1 ? 'guest' : 'guests'}`;

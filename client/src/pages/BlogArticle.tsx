@@ -111,7 +111,7 @@ export default function BlogArticle() {
   const guideDestination = article ? GUIDE_DESTINATIONS[article.slug] : undefined;
   const destinationGuide = guideDestination ?? (article?.destinationTag === 'minho-coast' ? GUIDE_DESTINATIONS['complete-guide-north-portugal'] : undefined);
   const introHomesCta = guideDestination && (
-    ['en', 'pt'].includes(journalLocale(i18n.language)) && editorialCta?.action === 'homes'
+    editorialCta?.action === 'homes'
       ? editorialCta
       : article?.slug === 'complete-guide-north-portugal'
         ? { href: guideDestination.homesHref, label: t('blogArticle.ctaExplore') }
@@ -295,10 +295,10 @@ export default function BlogArticle() {
             {editorialCta?.body ?? (article.commercialIntent === 'corporate' ? t('corporate.brief') : t('blogArticle.ctaBody'))}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href={withEditorialTrip(editorialCta?.href ?? (article.commercialIntent === 'corporate' ? '/contact?subject=events&intent=corporate' : destinationGuide?.homesHref ?? '/homes'), search)} onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'cta',action:editorialCta?.action ?? 'homes'})} className="btn-white inline-flex items-center gap-2">
+            <Link href={withEditorialTrip(editorialCta?.href ?? (article.commercialIntent === 'corporate' ? '/contact?subject=events&intent=corporate' : destinationGuide?.homesHref ?? '/homes'), search)} onClick={()=>pushDL({event:'editorial_guide',article_slug:article.slug,language:i18n.language.split('-')[0],section:'cta',action:editorialCta?.action ?? 'homes'})} className="btn-white inline-flex items-center gap-2" style={{ textTransform: 'none' }}>
               {editorialCta?.label ?? (article.commercialIntent === 'corporate' ? t('destinationGrowth.corporateCta') : t('blogArticle.ctaExplore'))} <ArrowRight size={14} />
             </Link>
-            <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost-light inline-flex items-center gap-2">
+            <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost-light inline-flex items-center gap-2" style={{ textTransform: 'none' }}>
               {t('blogArticle.ctaConcierge')}
             </a>
           </div>

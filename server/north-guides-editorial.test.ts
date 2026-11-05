@@ -29,7 +29,7 @@ describe('revised northern Portugal guides retain publication integrity', () => 
       expect(article.status).toBe('published');
       expect(article.publishDate).toBe('2026-03-30');
       expect(blogLanguages(article)).toEqual(['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv']);
-      expect(article.updatedLocales).toEqual(['en', 'pt']);
+      expect(article.updatedLocales).toEqual(article.slug === 'viana-do-castelo-guide' ? blogLanguages(article) : ['en', 'pt']);
       expect(article.modifiedDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(article.modifiedDate! >= article.publishDate).toBe(true);
     }
