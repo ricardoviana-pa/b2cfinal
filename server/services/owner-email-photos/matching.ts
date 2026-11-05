@@ -73,7 +73,8 @@ export function resolveReplyTarget(message: InboundPhotoMetadata, candidates: Re
     if (candidate.tokenHashes.some(digest => tokenHashes.has(digest))) evidence.push("private_link");
     return { candidate, evidence };
   }).filter(item => item.evidence.length > 0);
-  if (!signalled.length) return { decision: "review", code: "REQUEST_REFERENCE_MISSING" };
+  if (!signalled.length) return /@portugalactive\.com$/i.test(email)
+    ? { decision: "ignored", code: "INTERNAL_MESSAGE" } : { decision: "review", code: "REQUEST_REFERENCE_MISSING" };
   const canonical = new Map<string, { candidate: ReplyCandidate; evidence: Set<ReplyEvidence> }>();
   for (const item of signalled) {
     const key = item.candidate.sourceKey;

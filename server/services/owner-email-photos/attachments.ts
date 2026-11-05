@@ -126,7 +126,8 @@ export function classifyAttachment(file: InboundAttachmentDescriptor, input: Uin
   const signatureName = /(?:^|[\s_.-])(?:logo|signature|assinatura|facebook|instagram|linkedin|twitter|whatsapp|icon)(?:[\s_.-]|$)/i.test(file.name)
     || /^pa-logo-/i.test(file.name);
   if (image && signatureName && (file.disposition === "inline" || file.size < 100 * 1024)) return { kind: "ignored", code: "SIGNATURE_IMAGE" };
-  if (image && file.disposition === "inline" && (file.size < 20 * 1024 || image.width !== undefined && (image.width < 320 || (image.height || 0) < 200)))
+  if (image && file.disposition === "inline" && (file.size < 20 * 1024 || image.width !== undefined && (image.width < 320 || (image.height || 0) < 200
+    || Math.max(image.width, image.height || 0) < 640 && Math.min(image.width, image.height || 0) < 300)))
     return { kind: "ignored", code: "SMALL_INLINE_IMAGE" };
   const extension = image?.extension || "pdf";
   return { kind: image ? "photo" : "document", name: safeFilename(file.name, extension), mimeType: detectedMime, size: bytes.length,
