@@ -72,6 +72,14 @@ describe("email attachment classification and bounded processing", () => {
       expect(classifyAttachment(file(bytes, { name, mimeType }), bytes)).toMatchObject({ kind: "review", code: "UNSUPPORTED_OR_INVALID_FILE" });
     }
   });
+  it("ignores a 502x251 inline signature above20KB while keeping explicit attachments and phone photos", () => {
+    const signature = jpeg(502, 251, 21855);
+    const descriptor = file(signature, { name: "image001.jpg", mimeType: "image/jpeg", disposition: "inline" });
+    expect(classifyAttachment(descriptor, signature)).toEqual({ kind: "ignored", code: "SMALL_INLINE_IMAGE" });
+    expect(classifyAttachment({ ...descriptor, disposition: "attachment" }, signature)).toMatchObject({ kind: "photo" });
+    const phonePhoto = jpeg(800, 600, 21855);
+    expect(classifyAttachment(file(phonePhoto, { name: "image002.jpg", mimeType: "image/jpeg", disposition: "inline" }), phonePhoto)).toMatchObject({ kind: "photo" });
+  });
   it("holds corrupt signatures, wrong sizes and files above the chosen limit", () => {
     expect(classifyAttachment(file(png, { size: png.length + 1 }), png)).toMatchObject({ kind: "review", code: "ATTACHMENT_SIZE_MISMATCH" });
     expect(classifyAttachment(file(png, { size: INBOUND_FILE_LIMIT + 1 }), png)).toMatchObject({ kind: "review", code: "FILE_TOO_LARGE" });

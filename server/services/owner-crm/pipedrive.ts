@@ -83,7 +83,17 @@ export class PipedriveGateway implements CrmGateway {
   async findNotes(dealId: number, marker: string) {
     return (await this.list("/v1/notes", { deal_id: dealId })).filter(n => String(n.content || "").includes(marker)).map(n => Number(n.id));
   }
+  async verifyReplyOwner(dealId: number, personId: number, email: string) {
+    const [dealResult, personResult] = await Promise.all([this.request(`/v2/deals/${dealId}`), this.request(`/v1/persons/${personId}`)]);
+    const deal = dealResult.data, person = personResult.data;
+    if (!deal || !person || deal.status !== "open" || deal.is_archived || deal.is_deleted || person.is_deleted)
+      throw new CrmError("REPLY_DEAL_NOT_OPEN", true);
+    if (Number(deal.person_id?.value || deal.person_id) !== personId
+      || !(person.email || []).some((entry: any) => String(typeof entry === "string" ? entry : entry.value || "").trim().toLowerCase() === email.trim().toLowerCase()))
+      throw new CrmError("REPLY_OWNER_CHANGED", true);
+  }
   async createNote(dealId: number, content: string) { return id(await this.request("/v1/notes", "POST", { deal_id: dealId, content, pinned_to_deal_flag: 1 })); }
+  async createReplyNote(dealId: number, content: string) { return id(await this.request("/v1/notes", "POST", { deal_id: dealId, content, pinned_to_deal_flag: 0 })); }
   async updateNote(noteId: number, content: string) { await this.request(`/v1/notes/${noteId}`, "PUT", { content }); }
   async findFiles(dealId: number, filename: string) {
     return (await this.list(`/v1/deals/${dealId}/files`)).filter(f => f.name === filename || f.file_name === filename).map(f => Number(f.id));

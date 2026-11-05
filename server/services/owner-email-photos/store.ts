@@ -6,7 +6,8 @@ import { ownerCrmConfig } from "../owner-crm/service";
 import { metadataSchema, type InboundPhotoMetadata } from "./protocol";
 import { extractReplySignals, normalizeMessageId, resolveReplyTarget, type ReplyCandidate } from "./matching";
 import { classifyAttachment, classifyInboundMessage } from "./attachments";
-import { OWNER_EMAIL_SCHEMA } from "./schema";
+import { OWNER_EMAIL_SCHEMA, ensureOwnerEmailBodySchema } from "./schema";
+import { sanitizeReplyText } from "./reply-text";
 
 export class OwnerEmailError extends Error {
   constructor(public code: string, public status = 503) { super(code); }
@@ -17,8 +18,7 @@ const obj = (value: any): any => typeof value === "string" ? JSON.parse(value) :
 const hash = (value: string | Buffer) => createHash("sha256").update(value).digest("hex");
 const escape = (value: string) => value.replace(/[&<>"']/g, x => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[x]!);
 const norm = (value: string) => value.trim().toLowerCase();
-const safeSubject = (value: string) => value.replace(/https?:\/\/[^\s<>"']*#token=[^\s<>"']+/gi, "[ligação privada removida]")
-  .replace(/(?:#|&#(?:35|x23);|%23)?token=[A-Za-z0-9_-]{43}/gi, "[ligação privada removida]").slice(0, 500);
+const safeSubject = (value: string) => sanitizeReplyText(value).slice(0, 500);
 const inList = (values: string[]) => sql.join(values.map(value => sql`${value}`), sql`, `);
 export function emailPhotosEnabled() { return isOwnerIntakeProduction() && process.env.OWNER_EMAIL_PHOTOS_ENABLED === "true"; }
 async function database() {
@@ -27,9 +27,17 @@ async function database() {
 }
 export async function initialiseOwnerEmailSchema() {
   const db = await database(); for (const query of OWNER_EMAIL_SCHEMA) await db.execute(sql.raw(query));
+  await ensureOwnerEmailBodySchema(db);
 }
 function preservedReferences(value: any) {
   return { id: String(value.id), email: norm(String(value.email || "")), requestIds: [String(value.id)], tokenHashes: value.tokenHash ? [String(value.tokenHash)] : [] };
+}
+/** A welcome may be replied to before its CRM binding exists. Only known source contacts get that retry window. */
+async function hasUnboundOwnerRequest(db: Executor, message: InboundPhotoMetadata) {
+  const sender = message.authentication.googleAuthserv && message.authentication.groupVerified && message.authentication.originalSenderVerified && message.originalSender
+    ? message.originalSender : message.from;
+  return rows(await db.execute(sql`SELECT id FROM owner_v4_enquiries WHERE LOWER(JSON_UNQUOTE(JSON_EXTRACT(contact,'$.email')))=${norm(sender)}
+    UNION ALL SELECT id FROM owner_enquiries WHERE LOWER(JSON_UNQUOTE(JSON_EXTRACT(payload,'$.email')))=${norm(sender)} LIMIT 1`)).length > 0;
 }
 async function candidates(db: Executor, message: InboundPhotoMetadata): Promise<ReplyCandidate[]> {
   const senders = [...new Set([message.from, message.originalSender].filter(Boolean).map(x => norm(x!)))];
@@ -130,14 +138,21 @@ export async function acceptOwnerEmail(raw: unknown, now = new Date()) {
   if (+new Date(parsed.data.receivedAt) > +now + 5 * 60_000) throw new OwnerEmailError("INVALID_MESSAGE_TIME", 400);
   const message = parsed.data; const db = await database();
   const messageKey = hash(`${message.mailbox}\n${message.providerId}`), fingerprint = hash(JSON.stringify(message));
+  const { replyText: _newReply, ...legacyMetadata } = message;
+  const legacyFingerprint = hash(JSON.stringify(legacyMetadata));
   const existing = rows(await db.execute(sql`SELECT * FROM owner_email_messages WHERE messageKey=${messageKey} LIMIT 1`))[0];
-  if (existing) {
-    if (existing.fingerprint !== fingerprint) throw new OwnerEmailError("MESSAGE_CONTENT_CONFLICT", 409);
+  const enrichLegacy = !!existing && existing.fingerprint === legacyFingerprint && message.replyText !== undefined && existing.bodyText == null
+    && (existing.status === "ready" || existing.status === "receiving" || existing.status === "ignored" && existing.reason === "NO_ELIGIBLE_ATTACHMENTS");
+  if (existing && !enrichLegacy) {
+    if (existing.fingerprint !== fingerprint && existing.fingerprint !== legacyFingerprint) throw new OwnerEmailError("MESSAGE_CONTENT_CONFLICT", 409);
     return responseFor(db, existing);
   }
   const selected = selectDescriptors(message);
   let state = "ignored", reason: string | null = "NO_ELIGIBLE_ATTACHMENTS", target: ReplyCandidate | undefined;
-  if (selected.policy.decision !== "ignored") {
+  const allowedTestEnquiryIds = (process.env.OWNER_AUTOMATION_TEST_IDS || "").split(",").map(x => x.trim()).filter(Boolean);
+  // An old worker without replyText still imports attachments, without retaining quoted text.
+  const hasReply = message.replyText !== undefined;
+  if (selected.policy.decision !== "ignored" || hasReply) {
     let found: ReplyCandidate[] = [];
     try { found = await candidates(db, message); }
     catch (error) {
@@ -145,10 +160,13 @@ export async function acceptOwnerEmail(raw: unknown, now = new Date()) {
       state = "review"; reason = error.code;
     }
     if (state !== "review") {
-      const match = resolveReplyTarget(message, found, { allowedTestEnquiryIds: (process.env.OWNER_AUTOMATION_TEST_IDS || "").split(",").map(x => x.trim()).filter(Boolean) });
+      const signals = extractReplySignals(message);
+      const unrelated = !found.length && !signals.requestIds.length && !signals.tokenHashes.length
+        && (!signals.rfcMessageIds.length || !await hasUnboundOwnerRequest(db, message));
+      const match = unrelated ? { decision: "ignored" as const, code: "UNRELATED_MESSAGE" }
+        : resolveReplyTarget(message, found, { allowedTestEnquiryIds });
       state = match.decision === "matched" ? "receiving" : match.decision;
       reason = match.decision === "matched" ? null : match.code;
-      // The welcome can arrive before its CRM binding or RFC webhook. Core durably retries this short race.
       if (reason === "REQUEST_REFERENCE_MISSING" && +now - +new Date(message.receivedAt) < 15 * 60_000)
         throw new OwnerEmailError("CORRELATION_PENDING", 503);
       if (match.decision === "matched") target = found.find(c => c.sourceKey === match.sourceKey);
@@ -158,16 +176,37 @@ export async function acceptOwnerEmail(raw: unknown, now = new Date()) {
         if (changed) { state = "review"; reason = changed; }
       }
     }
-    // Ordinary replies/documents without photographs must not flood Management with review notices.
-    if (state === "review" && !selected.mayHavePhotos) { state = "ignored"; reason = "NO_PHOTOGRAPHIC_ATTACHMENTS"; }
+    // Text-only uncertainty remains visible in the journal, but never sends a photo alert.
+  }
+  if (enrichLegacy) {
+    if (state !== "receiving" || !target || existing.sourceKey && (existing.sourceKey !== target.sourceKey
+      || Number(existing.personId) !== target.personId || Number(existing.dealId) !== target.dealId)) return responseFor(db, existing);
+    await db.transaction(async tx => {
+      const source = target!.sourceKey, enquiryId = source.slice(3);
+      const request = rows(await tx.execute(source.startsWith("v4:") ? sql`SELECT * FROM owner_v4_enquiries WHERE id=${enquiryId} FOR UPDATE`
+        : sql`SELECT * FROM owner_enquiries WHERE id=${enquiryId} FOR UPDATE`))[0];
+      const binding = rows(await tx.execute(sql`SELECT personId,dealId FROM owner_crm_links WHERE sourceKey=${source} FOR UPDATE`))[0];
+      const saved = rows(await tx.execute(sql`SELECT * FROM owner_email_messages WHERE messageKey=${messageKey} FOR UPDATE`))[0];
+      if (saved.fingerprint !== legacyFingerprint || saved.bodyText != null
+        || !(saved.status === "ready" || saved.status === "receiving" || saved.status === "ignored" && saved.reason === "NO_ELIGIBLE_ATTACHMENTS")) return;
+      if (!request || norm(String(obj(request.contact || request.payload).email || "")) !== target!.email
+        || Number(binding?.dealId) !== target!.dealId || Number(binding?.personId) !== target!.personId || await verifyRemoteTarget(target!)) return;
+      const next = saved.status === "ready" ? "ready" : "receiving";
+      await tx.execute(sql`UPDATE owner_email_messages SET bodyText=${sanitizeReplyText(message.replyText!)},fingerprint=${fingerprint},
+        sourceKey=${target!.sourceKey},personId=${target!.personId},dealId=${target!.dealId},senderEmail=${target!.email},status=${next},reason=NULL,updatedAt=${now}
+        WHERE messageKey=${messageKey} AND fingerprint=${legacyFingerprint} AND bodyText IS NULL`);
+      if (next === "ready" && source.startsWith("v4:")) await tx.execute(sql`UPDATE owner_v4_outbox SET status='cancelled',lastError='REMINDER_NO_LONGER_NEEDED',leaseAt=NULL,nextAttemptAt=NULL
+        WHERE enquiryId=${enquiryId} AND kind IN ('photo_reminder','historical_photos') AND status IN ('pending','failed')`);
+    });
+    return responseFor(db, rows(await db.execute(sql`SELECT * FROM owner_email_messages WHERE messageKey=${messageKey} LIMIT 1`))[0]);
   }
   const subject = safeSubject(message.subject);
   await db.transaction(async tx => {
     await tx.execute(sql`INSERT IGNORE INTO owner_email_messages
-      (messageKey,mailbox,providerId,threadId,messageId,fingerprint,sourceKey,dealId,personId,senderEmail,subject,descriptors,status,reason,receivedAt,createdAt,updatedAt)
+      (messageKey,mailbox,providerId,threadId,messageId,fingerprint,sourceKey,dealId,personId,senderEmail,subject,descriptors,status,reason,receivedAt,createdAt,updatedAt,bodyText)
       VALUES (${messageKey},${message.mailbox},${message.providerId},${message.threadId},${message.messageId ? normalizeMessageId(message.messageId) : null},${fingerprint},
       ${target?.sourceKey || null},${target?.dealId || null},${target?.personId || null},${target?.email || message.from},${subject},
-      ${JSON.stringify(selected.eligible)},${state},${reason},${new Date(message.receivedAt)},${now},${now})`);
+      ${JSON.stringify(selected.eligible)},${state},${reason},${new Date(message.receivedAt)},${now},${now},${target && message.replyText !== undefined ? sanitizeReplyText(message.replyText) : null})`);
     const saved = rows(await tx.execute(sql`SELECT * FROM owner_email_messages WHERE messageKey=${messageKey} FOR UPDATE`))[0];
     if (saved.fingerprint !== fingerprint) throw new OwnerEmailError("MESSAGE_CONTENT_CONFLICT", 409);
     if (saved.status === "review" && selected.mayHavePhotos) await queueReview(tx, messageKey, { ...message, subject }, saved.reason || "ASSOCIATION_REVIEW", now);
@@ -221,7 +260,7 @@ export async function completeOwnerEmail(messageKey: string, now = new Date()) {
     const files = rows(await tx.execute(sql`SELECT attachmentId,mimeType,active,outcome FROM owner_email_files WHERE messageKey=${messageKey}`));
     if (!(obj(message.descriptors) as Descriptor[]).every(x => files.some(f => f.attachmentId === x.id))) throw new OwnerEmailError("ATTACHMENTS_PENDING", 409);
     const imported = files.filter(f => f.active && f.outcome === "accepted"), hasPhotos = imported.some(f => f.mimeType.startsWith("image/"));
-    if (!imported.length) {
+    if (!imported.length && message.bodyText == null) {
       await tx.execute(sql`UPDATE owner_email_messages SET status='ignored',reason='NO_ELIGIBLE_ATTACHMENTS',updatedAt=${now} WHERE messageKey=${messageKey}`);
       return { state: "ignored", messageKey, missingAttachmentIds: [] };
     }
@@ -246,7 +285,7 @@ export async function completeOwnerEmail(messageKey: string, now = new Date()) {
       const status = request.qualificationCompletedAt && hasPhotos ? "complete" : request.status;
       await tx.execute(sql`UPDATE owner_v4_enquiries SET updatedAt=${now},revision=revision+1,status=${status},
         mediaReceivedAt=CASE WHEN ${hasPhotos} THEN COALESCE(mediaReceivedAt,${now}) ELSE mediaReceivedAt END WHERE id=${id}`);
-      if (hasPhotos) await tx.execute(sql`UPDATE owner_v4_outbox SET status='cancelled',lastError='REMINDER_NO_LONGER_NEEDED',leaseAt=NULL,nextAttemptAt=NULL
+      if (hasPhotos || message.bodyText != null) await tx.execute(sql`UPDATE owner_v4_outbox SET status='cancelled',lastError='REMINDER_NO_LONGER_NEEDED',leaseAt=NULL,nextAttemptAt=NULL
         WHERE enquiryId=${id} AND kind IN ('photo_reminder','historical_photos') AND status IN ('pending','failed')`);
     } else await tx.execute(sql`UPDATE owner_enquiries SET updatedAt=${now} WHERE id=${id}`);
     return { state: "complete", messageKey, missingAttachmentIds: [] };
@@ -263,7 +302,8 @@ export async function ownerEmailHealth(now = new Date()) {
     const configured = /^[a-f0-9]{64}$/i.test(process.env.OWNER_EMAIL_INGEST_SECRET || "");
     const last = rows(await db.execute(sql`SELECT lastPollAt FROM owner_email_state WHERE id='gmail' LIMIT 1`))[0];
     const outstanding = rows(await db.execute(sql`SELECT messageKey FROM owner_email_messages WHERE status='review'
-      OR (status='receiving' AND updatedAt < ${new Date(+now - 20 * 60_000)}) LIMIT 1`)).length > 0;
+      OR (status='receiving' AND updatedAt < ${new Date(+now - 20 * 60_000)})
+      OR (status='ready' AND bodyText IS NOT NULL AND replyNoteId IS NULL AND updatedAt < ${new Date(+now - 20 * 60_000)}) LIMIT 1`)).length > 0;
     const stale = !last?.lastPollAt || +new Date(last.lastPollAt) < +now - 15 * 60_000;
     return { enabled, configured, attentionRequired: !configured || outstanding || stale, pollCurrent: !stale };
   } catch { return { enabled, configured: false, attentionRequired: true, pollCurrent: false }; }

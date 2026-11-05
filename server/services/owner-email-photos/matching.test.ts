@@ -83,4 +83,11 @@ describe("owner photo reply association", () => {
     const message = { ...syntheticMetadata(), text: A.replaceAll("-", "&#45;") };
     expect(resolveReplyTarget(message, [candidate()])).toMatchObject({ decision: "matched" });
   });
+  it("ignores old internal messages without an authorised matching reference even when a current QA is allowlisted", () => {
+    const current = { ...candidate(), email: "management@portugalactive.com", synthetic: true };
+    for (const text of ["", B, `https://www.portugalactive.com/management/complete/#token=${"b".repeat(43)}`]) {
+      const message = { ...syntheticMetadata(), from: current.email, text };
+      expect(resolveReplyTarget(message, [current], { allowedTestEnquiryIds: [A] })).toEqual({ decision: "ignored", code: "INTERNAL_MESSAGE" });
+    }
+  });
 });

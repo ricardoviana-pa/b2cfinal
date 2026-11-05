@@ -28,7 +28,8 @@ function memory(record = recordInput()) {
     const q = dialect.sqlToQuery(statement), p = q.params as any[]; state.statements.push(q.sql);
     if (q.sql.startsWith("SELECT e.id FROM")) return [[{ id: record.id }], []];
     if (q.sql.startsWith("SELECT * FROM owner_v4_enquiries")) return [[state.record], []];
-    if (q.sql.includes("AS emailPhotoCount")) return [[{ emailPhotoCount: state.record.emailPhotoCount || 0, emailFileCount: state.record.emailFileCount || 0 }], []];
+    if (q.sql.includes("AS emailPhotoCount")) return [[{ emailPhotoCount: state.record.emailPhotoCount || 0, emailFileCount: state.record.emailFileCount || 0,
+      emailReplyReceived: state.record.emailReplyReceived ? 1 : 0 }], []];
     if (q.sql.startsWith("SELECT id, name, mimeType")) return [state.files, []];
     if (q.sql.startsWith("SELECT id FROM owner_v4_outbox") || q.sql.startsWith("SELECT status,")) return [[state.outbox.get(p[0])].filter(Boolean), []];
     if (q.sql.startsWith("INSERT INTO owner_v4_outbox")) {
@@ -96,6 +97,21 @@ describe("one restrained owner photo reminder", () => {
     expect(await prepareV4ReminderDelivery(item, now)).toBe(false);
     expect(m.reminder().status).toBe("cancelled");
     expect(m.statements.some(q => q.includes("m.sourceKey = CONCAT('v4:', e.id)") && q.includes("m.status = 'ready'"))).toBe(true);
+  });
+  it("hands photo follow-up to sales after a text-only or link-only reply, including a reminder already claimed", async () => {
+    const m = memory();
+    m.record.emailReplyReceived = true;
+    expect(await queueV4PhotoReminders(now)).toBe(0);
+    expect(m.reminder()).toBeUndefined();
+    expect(m.record.emailPhotoCount || 0).toBe(0);
+    m.record.emailReplyReceived = false;
+    expect(await queueV4PhotoReminders(now)).toBe(1);
+    const claimed = m.claim();
+    m.record.emailReplyReceived = true;
+    expect(await prepareV4ReminderDelivery(claimed, now)).toBe(false);
+    expect(m.reminder().status).toBe("cancelled");
+    expect(await prepareV4ReminderDelivery(claimed, new Date(+now + 86400_000))).toBe(false);
+    expect(m.statements.some(q => q.includes("reply.bodyText IS NOT NULL") && q.includes("reply.status = 'ready'"))).toBe(true);
   });
   it("two concurrent scheduler sweeps freeze exactly one message with the same private photo link", async () => {
     const m = memory(); expect(await Promise.all([queueV4PhotoReminders(now), queueV4PhotoReminders(now)])).toEqual([1, 0]);
@@ -185,6 +201,13 @@ describe("explicit historical photo delivery", () => {
     m.files.length = 0; expect(await prepareV4ReminderDelivery(item, now, true)).toBe(false);
     const other = historical(); const second = other.claim();
     expect(await prepareV4ReminderDelivery(second, now, false)).toBe(false); expect(other.reminder().status).toBe("cancelled");
+  });
+  it("cancels historical photo requests after an owner reply even with no photo", async () => {
+    const m = historical(); const item = m.claim();
+    m.record.emailReplyReceived = true;
+    expect(await prepareV4ReminderDelivery(item, now, true)).toBe(false);
+    expect(m.reminder().status).toBe("cancelled");
+    expect(m.files).toHaveLength(0);
   });
   it("respects the stop switch and still checks the same recipient, token and expiry", async () => {
     const m = historical(); const item = m.claim();

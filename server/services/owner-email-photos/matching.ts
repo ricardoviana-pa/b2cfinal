@@ -52,8 +52,15 @@ export function resolveReplyTarget(message: InboundPhotoMetadata, candidates: Re
     || auth.groupVerified && /(?:^|<)management\.portugalactive\.com>?$/i.test(message.listId || "");
   if (!managementDestination) return { decision: "ignored", code: "NOT_MANAGEMENT_REPLY" };
   const allowedTests = new Set(options.allowedTestEnquiryIds || []);
+  const signals = extractReplySignals(message);
   let sender: "from" | "original_sender" = "from";
   let email = normalizeEmail(message.from);
+  const effectiveEmail = auth.googleAuthserv && auth.groupVerified && auth.originalSenderVerified && message.originalSender ? normalizeEmail(message.originalSender) : email;
+  if ((!message.originalSender || auth.originalSenderVerified) && /@portugalactive\.com$/i.test(effectiveEmail) && !candidates.some(candidate => allowedTests.has(candidate.enquiryId) && normalizeEmail(candidate.email) === effectiveEmail
+    && ([candidate.enquiryId,...candidate.requestIds].some(id => signals.requestIds.includes(id.toLowerCase()))
+      || candidate.tokenHashes.some(digest => signals.tokenHashes.includes(digest))
+      || candidate.outboundMessageIds.some(id => { const normalized = normalizeMessageId(id); return !!normalized && signals.rfcMessageIds.includes(normalized); }))))
+    return { decision: "ignored", code: "INTERNAL_MESSAGE" };
   if (auth.googleAuthserv && auth.groupVerified && message.originalSender && !auth.originalSenderVerified)
     return { decision: "review", code: "ORIGINAL_SENDER_NOT_VERIFIED" };
   if (auth.googleAuthserv && auth.groupVerified && auth.originalSenderVerified && message.originalSender) {
@@ -64,7 +71,6 @@ export function resolveReplyTarget(message: InboundPhotoMetadata, candidates: Re
   const subject = message.subject.trim();
   if (/^(?:Auto(?:matic)?[ -]?reply|Automatic response|Resposta autom[aá]tica|Out of office|Undeliverable|Delivery Status Notification)\b/i.test(subject))
     return { decision: "ignored", code: "AUTOMATIC_MESSAGE" };
-  const signals = extractReplySignals(message);
   const requests = new Set(signals.requestIds), tokenHashes = new Set(signals.tokenHashes), refs = new Set(signals.rfcMessageIds);
   const signalled = candidates.map(candidate => {
     const evidence: ReplyEvidence[] = [];
@@ -73,7 +79,8 @@ export function resolveReplyTarget(message: InboundPhotoMetadata, candidates: Re
     if (candidate.tokenHashes.some(digest => tokenHashes.has(digest))) evidence.push("private_link");
     return { candidate, evidence };
   }).filter(item => item.evidence.length > 0);
-  if (!signalled.length) return { decision: "review", code: "REQUEST_REFERENCE_MISSING" };
+  if (!signalled.length) return /@portugalactive\.com$/i.test(email)
+    ? { decision: "ignored", code: "INTERNAL_MESSAGE" } : { decision: "review", code: "REQUEST_REFERENCE_MISSING" };
   const canonical = new Map<string, { candidate: ReplyCandidate; evidence: Set<ReplyEvidence> }>();
   for (const item of signalled) {
     const key = item.candidate.sourceKey;
