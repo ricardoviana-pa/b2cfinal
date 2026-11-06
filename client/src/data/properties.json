@@ -24774,6 +24774,41 @@
     "areaSquareFeet": 1076.391042,
     "reviews": [
       {
+        "rating": 3,
+        "text": "It's not the host's fault, but it's still part of an honest review. The location is great, but the neighbors are loud; the neighbor's dog barked the whole time, and the neighbor's dog urinated right in front of the stairs; there's dog poop lying around in front of the entrance (in front of the parking lot). But the location was great right next to the beach and the apartment was nice too.",
+        "guestDisplayName": "Jordan",
+        "guestName": "Jordan",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-11-04T15:23:14.007Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 1
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Das Wohnzimmer war etwas kleiner als erwartet. Jedoch passen und funktional.\nDie Kinder liebten den grossen Fernseher.\nDie Aussicht zum Meer war Atemberaubend.",
         "guestDisplayName": "Daniel",
@@ -25124,8 +25159,8 @@
         "categories": []
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 15,
+    "averageRating": 4.88,
+    "reviewCount": 16,
     "lastModified": "2026-10-25",
     "contentHash": "b9e8b81046f2e73abfa7aaa6a175b484970e9514"
   },
