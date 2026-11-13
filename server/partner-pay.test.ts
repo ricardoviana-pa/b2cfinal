@@ -73,13 +73,16 @@ beforeEach(() => {
 afterEach(() => { vi.unstubAllEnvs(); vi.useRealTimers(); });
 
 describe("the switch", () => {
-  it("off unless PARTNER_PAY=true, and never with a live key outside production", async () => {
+  it("on in production unless PARTNER_PAY=false, never without a Stripe key, and never with a live key outside production", async () => {
     const { partnerPayEnabled } = await pay();
-    expect(partnerPayEnabled({ STRIPE_SECRET_KEY: "sk_live_x" } as any)).toBe(false);
-    expect(partnerPayEnabled({ PARTNER_PAY: "true" } as any)).toBe(false);
-    expect(partnerPayEnabled({ PARTNER_PAY: "true", STRIPE_SECRET_KEY: "sk_live_x", SITE_URL: "https://www.portugalactive.com", NODE_ENV: "production" } as any)).toBe(true);
-    expect(partnerPayEnabled({ PARTNER_PAY: "true", STRIPE_SECRET_KEY: "sk_live_x", APP_ENV: "preview" } as any)).toBe(false);
-    expect(partnerPayEnabled({ PARTNER_PAY: "true", STRIPE_SECRET_KEY: "sk_test_x", APP_ENV: "preview" } as any)).toBe(true);
+    const prod = { SITE_URL: "https://www.portugalactive.com", NODE_ENV: "production" };
+    expect(partnerPayEnabled({ ...prod, STRIPE_SECRET_KEY: "sk_live_x" } as any)).toBe(true);
+    expect(partnerPayEnabled({ ...prod, STRIPE_SECRET_KEY: "sk_live_x", PARTNER_PAY: "true" } as any)).toBe(true);
+    expect(partnerPayEnabled({ ...prod, STRIPE_SECRET_KEY: "sk_live_x", PARTNER_PAY: "false" } as any)).toBe(false);
+    expect(partnerPayEnabled({ ...prod } as any)).toBe(false);
+    expect(partnerPayEnabled({ STRIPE_SECRET_KEY: "sk_live_x", APP_ENV: "preview" } as any)).toBe(false);
+    expect(partnerPayEnabled({ STRIPE_SECRET_KEY: "sk_live_x", NODE_ENV: "development" } as any)).toBe(false);
+    expect(partnerPayEnabled({ STRIPE_SECRET_KEY: "sk_test_x", APP_ENV: "preview" } as any)).toBe(true);
   });
 
   it("payable only when free, priced, read in the last 6 hours and the switch is on", async () => {
@@ -90,7 +93,7 @@ describe("the switch", () => {
     expect(partnerQuotePayable(priced({ fetchedAt: NOW - 7 * 3_600_000 }) as any)).toBe(false);
     expect(partnerQuotePayable(priced({ fetchedAt: undefined }) as any)).toBe(false);
     expect(partnerQuotePayable(null)).toBe(false);
-    vi.stubEnv("PARTNER_PAY", "");
+    vi.stubEnv("PARTNER_PAY", "false");
     expect(partnerQuotePayable(priced() as any)).toBe(false);
   });
 });
@@ -159,7 +162,7 @@ describe("opening the payment", () => {
   });
 
   it("switch off: refused before anything is read", async () => {
-    vi.stubEnv("PARTNER_PAY", "");
+    vi.stubEnv("PARTNER_PAY", "false");
     const { startPartnerPayment } = await pay();
     await expect(startPartnerPayment(input())).rejects.toMatchObject({ code: "PRECONDITION_FAILED" });
     expect(quote).not.toHaveBeenCalled();
