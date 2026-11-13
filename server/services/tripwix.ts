@@ -8,6 +8,12 @@ export function partnerGuestPrice(net: number): number {
 }
 
 export type PartnerFees = { cleaningFee?: number; securityDeposit?: number; minNights?: number; maxGuests?: number; guests?: number };
+/** Encargos de uma casa parceira como a cotação os quer: um zero importado é "não sabemos", não "não há". */
+export function partnerFeesOf(p: any, guests?: number): PartnerFees {
+  const positive = (v: unknown) => typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : undefined;
+  return { cleaningFee: positive(p?.cleaningFee), securityDeposit: positive(p?.securityDeposit),
+    minNights: positive(p?.minNights), maxGuests: positive(p?.maxGuests), guests };
+}
 export type PartnerQuote = {
   available: boolean;
   nights: number;

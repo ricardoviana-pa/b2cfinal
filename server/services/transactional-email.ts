@@ -2514,7 +2514,11 @@ export async function sendPartnerRequestEmail(data: {
     [pt ? "Entrada" : "Check-in", m.checkin], [pt ? "Saída" : "Check-out", m.checkout],
     [pt ? "Hóspedes" : "Guests", m.guests],
     ...(channel === "team" ? [["Nome", data.name], ["Email", data.email], ["Telefone", data.phone],
-      ["Valor apresentado (EUR, por confirmar)", m.total], ["Estado do orçamento", m.quoteStatus || "unknown"]] : []),
+      [m.totalSource === "server" ? "Valor calculado pelo site (EUR, por confirmar; o hóspede não o viu no ecrã)" : "Valor apresentado (EUR, por confirmar)", m.total],
+      ...(m.serverTotal ? [["Valor atual no site (EUR)", m.serverTotal]] : []),
+      ...(m.priceNote ? [[m.total === "—" ? "Sem valor porque" : "Nota sobre o valor", m.priceNote]] : []),
+      ...(m.fromPrice ? [["Preço de referência (EUR por noite, desde)", m.fromPrice]] : []),
+      ["Estado do orçamento", m.quoteStatus || "unknown"]] : []),
     [pt ? "Mensagem" : "Message", data.message],
   ];
   const intro = channel === "team"
