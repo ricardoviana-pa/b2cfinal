@@ -19,7 +19,7 @@
  * - Nada toca no Guesty nem no checkout das nossas casas: o PI leva
  *   metadata.flow = "partner_pay" e os outros fluxos ignoram-no.
  *
- * Desligado por omissão: PARTNER_PAY=true liga. Com a flag desligada, ou numa
+ * Ligado por omissão; PARTNER_PAY=false desliga. Com a flag desligada, ou numa
  * estadia que o servidor não consegue cotar com confiança, o painel continua
  * a ser o pedido sem pagamento.
  *
@@ -53,8 +53,13 @@ function stripeKey(env: NodeJS.ProcessEnv = process.env): string | null {
   return key;
 }
 
+/**
+ * Ligado por omissão desde 13 nov 2026 (decisão do Ricardo: "é para ligar já
+ * hoje"). PARTNER_PAY=false no Render desliga sem deploy de código: o painel
+ * volta a ser o pedido sem pagamento.
+ */
 export function partnerPayEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  return env.PARTNER_PAY === "true" && !!stripeKey(env);
+  return env.PARTNER_PAY !== "false" && !!stripeKey(env);
 }
 
 async function stripeClient(): Promise<Stripe> {
