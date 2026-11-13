@@ -15,6 +15,7 @@ import { guestyBEClient, type BEListingWithPrice } from "../lib/guesty";
 import { getSearchHint, type SearchHint } from "../services/search-hint";
 import { getDisplayedLowestNightly, getLowestNightlyBatch } from "../services/lowest-nightly";
 import * as db from "../db";
+import { partnerFeesOf } from "../services/tripwix";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 import { ratePlanPolicyFor, withTimeout } from "../services/rate-plan-policy";
 import { planPolicyCode } from "@shared/cancellationPolicy";
@@ -76,11 +77,7 @@ async function partnerProperty(uid: string) {
   const { getPropertiesForSite } = await import('../services/properties-store');
   return (await getPropertiesForSite()).find((p: any) => p.source === 'tripwix' && p.isActive !== false && p.supplierUid === uid) as any;
 }
-function partnerFees(p: any, guests?: number) {
-  const positive = (v: unknown) => typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : undefined;
-  return { cleaningFee: positive(p?.cleaningFee), securityDeposit: positive(p?.securityDeposit),
-    minNights: positive(p?.minNights), maxGuests: positive(p?.maxGuests), guests };
-}
+const partnerFees = partnerFeesOf;
 
 /**
  * Save a trip to the customer's account and award loyalty points.
