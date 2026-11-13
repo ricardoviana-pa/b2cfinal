@@ -130,10 +130,51 @@ export function PartnerBookingPanel({
     [calendarDays, calendarError, calendarRange.endDate],
   );
 
+  // Set after the payment refused an out-of-date price: the next read skips
+  // the edge cache, so the panel shows what the server would charge.
+  const [quoteNonce, setQuoteNonce] = useState<number | undefined>(undefined);
   const { data: quote, isFetching, isError } = trpc.booking.partnerQuote.useQuery(
-    { tripwixUid, checkIn, checkOut, guests },
+    { tripwixUid, checkIn, checkOut, guests, ...(quoteNonce ? { fresh: quoteNonce } : {}) },
     { enabled: datesValid, staleTime: 15 * 60 * 1000, retry: false, refetchOnWindowFocus: false },
   );
+  // The server says when this stay can be paid for now (partner-pay.ts): free,
+  // priced for every night, read recently, and the payment switched on.
+  // Otherwise this panel is the request it always was, with no payment.
+  // payRefused: the server refused the payment for these dates (another guest
+  // paid them and the home has not answered, or the switch went off). The
+  // quote alone would keep saying "payable", so the panel remembers it and
+  // offers the request with no payment; new dates clear it.
+  const [payRefused, setPayRefused] = useState(false);
+  useEffect(() => { setPayRefused(false); }, [checkIn, checkOut, guests]);
+
+  // Back from the Stripe page: ?partner_session=cs_… Read after mount, so the
+  // server render and the first client render agree.
+  const [paySession, setPaySession] = useState('');
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('partner_session') ?? '';
+    if (/^cs_(test|live)_[A-Za-z0-9]+$/.test(id)) setPaySession(id);
+  }, []);
+  const payStatus = trpc.booking.partnerPayStatus.useQuery(
+    { sessionId: paySession },
+    { enabled: !!paySession, staleTime: Infinity, retry: 1, refetchOnWindowFocus: false },
+  );
+  const paid = payStatus.data?.status === 'paid' ? payStatus.data : null;
+  // Back from Stripe without a confirmed answer (the check failed, or Stripe
+  // did not say "paid"): the guest very likely paid, so the panel never
+  // offers the payment again on this visit.
+  const payUnconfirmed = !!paySession && !paid && !payStatus.isLoading;
+  const payable = !!quote?.available && !!(quote as { payable?: boolean }).payable && !payRefused && !paySession;
+  const paidLogged = useRef(false);
+  useEffect(() => {
+    if (!paid || paidLogged.current) return;
+    paidLogged.current = true;
+    try {
+      const key = `pa_partner_paid_${paySession.slice(-16)}`;
+      if (window.sessionStorage.getItem(key)) return;
+      window.sessionStorage.setItem(key, '1');
+    } catch { /* storage blocked: the event may repeat on a reload */ }
+    pushDL({ event: 'partner_payment_paid', property_id: propertySlug, value: Number(paid.total) || 0, currency: 'EUR' });
+  }, [paid, paySession, propertySlug]);
   const quoteNotice = partnerQuoteNotice({
     checkIn, checkOut, quote, quoteFetching: isFetching, quoteError: isError,
     calendar: calendarDays, calendarError, windowEnd: calendarRange.endDate,
@@ -145,6 +186,20 @@ export function PartnerBookingPanel({
   }, [checkIn, checkOut, guests, isFetching, quote?.available, quote?.total, quote?.feesKnown, onSelectionChange]);
 
   const createLead = trpc.leads.create.useMutation();
+  const payStart = trpc.booking.partnerPayStart.useMutation();
+  const [redirecting, setRedirecting] = useState(false);
+  const busy = createLead.isPending || payStart.isPending || redirecting;
+  // The browser's Back button can restore this page from its cache with the
+  // button still saying "Opening secure payment…": a restored page starts over.
+  useEffect(() => {
+    const onShow = (e: PageTransitionEvent) => {
+      if (!e.persisted) return;
+      setRedirecting(false);
+      submitting.current = false;
+    };
+    window.addEventListener('pageshow', onShow);
+    return () => window.removeEventListener('pageshow', onShow);
+  }, []);
 
   // Computador: o "Pedir estas datas" fica no rodapé fixo do cartão
   // (bookingCardSlot.tsx), que nunca tapa nada. Quando a cotação diz que há
@@ -205,8 +260,37 @@ export function PartnerBookingPanel({
     }
     if (!name.trim() || !email.trim()) return;
     submitting.current = true;
-    pushDL({ event: 'partner_request_attempt', property_id: propertySlug });
     setSubmitError('');
+    if (payable && quote) {
+      // Pay now: the server prices the stay again and opens the Stripe page
+      // only for the total shown here.
+      pushDL({ event: 'partner_payment_start', property_id: propertySlug, value: quote.total, currency: 'EUR' });
+      try {
+        const { url } = await payStart.mutateAsync({
+          name: name.trim(), email: email.trim(), phone: phone.trim() || undefined, message: message.trim() || undefined,
+          property: propertySlug, checkin: checkIn, checkout: checkOut, guests,
+          shownTotal: quote.total, locale: lang, returnPath: window.location.pathname,
+        });
+        setRedirecting(true);
+        window.location.assign(url);
+      } catch (err) {
+        const code = (err as { message?: string })?.message ?? '';
+        pushDL({ event: 'partner_payment_error', property_id: propertySlug, reason: code.slice(0, 40) });
+        if (code === 'PARTNER_PRICE_CHANGED' || code === 'PARTNER_NOT_PAYABLE' || code === 'PARTNER_PAY_OFF') {
+          setQuoteNonce(Date.now());
+          if (code !== 'PARTNER_PRICE_CHANGED') setPayRefused(true);
+          setSubmitError(code === 'PARTNER_PRICE_CHANGED'
+            ? t('partnerBooking.payPriceChanged', 'The price for these dates has just been updated. Please check the new total above and continue.')
+            : t('partnerBooking.payUnavailable', 'Online payment is not available for these dates right now. You can send the request instead and we will reply by email.'));
+        } else {
+          setSubmitError(t('partnerBooking.payError', 'We could not open the payment page. Nothing was charged. Please try again, or message the concierge.'));
+        }
+      } finally {
+        submitting.current = false;
+      }
+      return;
+    }
+    pushDL({ event: 'partner_request_attempt', property_id: propertySlug });
     try {
       await createLead.mutateAsync({
         name: name.trim(),
@@ -244,6 +328,52 @@ export function PartnerBookingPanel({
     } finally {
       submitting.current = false;
     }
+  }
+
+  if (paySession && (paid || payStatus.isLoading)) {
+    return (
+      <div className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
+        <div className="bg-black px-6 py-5 text-center">
+          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3">
+            {paid ? <Check className="w-6 h-6 text-white" /> : <Loader2 className="w-6 h-6 text-white animate-spin" />}
+          </div>
+          <p className="text-white text-[18px]" style={{ fontFamily: 'var(--font-display)' }}>
+            {paid ? t('partnerBooking.paidTitle', 'Payment received') : t('partnerBooking.payChecking', 'Checking your payment…')}
+          </p>
+        </div>
+        {paid && (
+          <div className="p-6 space-y-4">
+            <p className="text-[13px] text-black/60 leading-relaxed">
+              {t('partnerBooking.paidBody', {
+                amount: formatQuotedEur(Number(paid.total) || 0, lang),
+                defaultValue: 'We have received your payment of {{amount}}. We are confirming your stay with the home and will reply within 48 hours. Your reservation is not confirmed yet: if we cannot confirm it, you are refunded in full.',
+              })}
+            </p>
+            <div className="bg-black/[0.02] p-4 space-y-1">
+              <p className="text-[10px] text-black/30 uppercase tracking-wider mb-1">
+                {t('partnerBooking.requestDetails', 'Request details')}
+              </p>
+              <p className="text-[12px] text-black">{paid.propertyName || propertyName}</p>
+              {paid.checkin && paid.checkout && (
+                <p className="text-[11px] text-black/40">
+                  {formatBookingDate(paid.checkin, lang)} → {formatBookingDate(paid.checkout, lang)} · {paid.guests}{' '}
+                  {t('booking.guestsLabel', 'guests')}
+                </p>
+              )}
+              {paid.reference && <p className="text-[11px] text-black/40">{paid.reference}</p>}
+            </div>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pa-action w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.12em] uppercase px-8 flex items-center justify-center gap-2 hover:bg-black/85 transition-colors"
+            >
+              {t('property.talkConciergeMobile', 'TALK TO CONCIERGE')}
+            </a>
+          </div>
+        )}
+      </div>
+    );
   }
 
   if (sent) {
@@ -554,10 +684,15 @@ export function PartnerBookingPanel({
                   <p className="text-[11px] text-black/35 leading-snug">
                     {quote.feesKnown
                       ? t('partnerBooking.depositNote', { amount: formatQuotedEur(quote.securityDeposit, lang) })
-                      : t(
-                          'partnerBooking.feesPending',
-                          'This property may add a cleaning fee and a refundable deposit. The concierge confirms the final total before anything is charged.',
-                        )}
+                      : payable
+                        ? t(
+                            'partnerBooking.payFeesPending',
+                            'This amount covers your stay. If this home adds a cleaning fee or a refundable security deposit, we tell you the amount when we confirm the home, before your arrival.',
+                          )
+                        : t(
+                            'partnerBooking.feesPending',
+                            'This property may add a cleaning fee and a refundable deposit. The concierge confirms the final total before anything is charged.',
+                          )}
                   </p>
                 )}
               </div>
@@ -630,24 +765,38 @@ export function PartnerBookingPanel({
             </div>
           )}
 
+          {payUnconfirmed && (
+            <div className="flex items-start gap-2 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
+              <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
+              <p className="text-xs text-amber-800 leading-snug">
+                {t('partnerBooking.payNotConfirmed', 'We could not confirm your payment on this page. If you completed it, you will receive an email shortly: please do not pay again. If no email arrives, message the concierge.')}
+              </p>
+            </div>
+          )}
+
           <button
             type="button"
             onClick={submit}
-            disabled={createLead.isPending}
+            disabled={busy}
+            data-partner-cta={payable ? 'pay' : 'request'}
             className="pa-action pa-reserve-cta w-full min-h-[52px] px-8 text-xs font-medium tracking-[0.15em] uppercase bg-black text-white hover:bg-black/85 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            {createLead.isPending ? (
+            {busy ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                {t('partnerBooking.sending', 'Sending…')}
+                {payable ? t('partnerBooking.paying', 'Opening secure payment…') : t('partnerBooking.sending', 'Sending…')}
               </span>
+            ) : payable && quote ? (
+              t('partnerBooking.payCta', { amount: formatQuotedEur(quote.total, lang), defaultValue: 'Reserve and pay {{amount}}' })
             ) : (
               t('partnerBooking.submit', 'Request these dates')
             )}
           </button>
 
           <p className="text-[11px] text-black/30 text-center leading-relaxed">
-            {t('partnerBooking.noCharge', 'No payment now — our concierge confirms availability and the final total first.')}
+            {payable
+              ? t('partnerBooking.payNote', 'Your card is charged now, on a secure Stripe page. We confirm the home within 48 hours; if we cannot confirm it, you are refunded in full.')
+              : t('partnerBooking.noCharge', 'No payment now — our concierge confirms availability and the final total first.')}
           </p>
           </ReserveCtaSlot>
           </>) : (

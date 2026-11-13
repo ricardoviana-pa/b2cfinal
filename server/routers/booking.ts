@@ -231,9 +231,11 @@ export const bookingRouter = router({
       guests: z.number().int().min(1).max(100).optional(),
       checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
       checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      /** O painel manda-o depois de o pagamento recusar um preço antigo: passa ao lado da cache da edge. */
+      fresh: z.number().optional(),
     }))
     .query(async ({ input, ctx }) => {
-      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=60");
+      ctx.res.setHeader("Cache-Control", input.fresh ? "private, no-store" : "public, max-age=0, s-maxage=900, stale-while-revalidate=60");
       const { getPartnerQuote } = await import("../services/tripwix");
 
       const prop = await partnerProperty(input.tripwixUid);
@@ -242,8 +244,41 @@ export const bookingRouter = router({
       // Sem cotação (casa que o job ainda não leu, por exemplo logo depois de
       // um deploy): cache curta, para o preço aparecer assim que houver
       // calendário (revisão do PR #173, P173-R2).
-      if (!quote) ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60");
-      return quote;
+      if (!quote && !input.fresh) ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60");
+      if (!quote) return quote;
+      // Cobrável já (partner-pay.ts): o painel troca o pedido pelo pagamento.
+      const { partnerQuotePayable } = await import("../services/partner-pay");
+      return { ...quote, payable: partnerQuotePayable(quote) };
+    }),
+
+  /** Casa parceira: abre o pagamento de 100% da estadia (Stripe Checkout). */
+  partnerPayStart: publicProcedure
+    .input(z.object({
+      email: z.string().email().max(320),
+      name: z.string().trim().min(1).max(255),
+      phone: z.string().max(50).optional(),
+      message: z.string().max(5000).optional(),
+      property: z.string().min(1).max(200),
+      checkin: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      checkout: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      guests: z.number().int().min(1).max(100),
+      shownTotal: z.number().positive(),
+      locale: z.string().max(10).optional(),
+      returnPath: z.string().max(300),
+    }))
+    .mutation(async ({ input }) => {
+      const { startPartnerPayment } = await import("../services/partner-pay");
+      const { url } = await startPartnerPayment(input);
+      return { url };
+    }),
+
+  /** O hóspede voltou do Stripe: a sessão ficou paga? */
+  partnerPayStatus: publicProcedure
+    .input(z.object({ sessionId: z.string().min(10).max(260) }))
+    .query(async ({ input, ctx }) => {
+      ctx.res.setHeader("Cache-Control", "private, no-store");
+      const { partnerPaymentStatus } = await import("../services/partner-pay");
+      return partnerPaymentStatus(input.sessionId);
     }),
 
   /**

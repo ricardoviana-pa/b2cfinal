@@ -156,6 +156,25 @@ export function registerStripeCardWebhookRoute(app: Express) {
         markProcessed(db, event.id);
         return res.json({ received: true });
       }
+      if (event.type === "charge.refunded") {
+        // Casa parceira (partner-pay.ts): a devolução foi feita no Dashboard.
+        // Qualquer outra charge sai daqui "ignored" e segue como sempre.
+        // Se o módulo não carregar, a devolução de qualquer outra casa segue
+        // como sempre (regista e responde 200): nunca um 500 por causa disto.
+        const partnerPay = await import("../services/partner-pay").catch((err: any) => {
+          console.error("[Partner pay] módulo indisponível no webhook:", err?.message);
+          return null;
+        });
+        if (partnerPay) try {
+          const { handlePartnerChargeRefunded } = partnerPay;
+          const r = await handlePartnerChargeRefunded(event.data.object as any);
+          if (r !== "ignored") console.info(`[Partner pay] webhook: charge ${(event.data.object as any).id} → ${r}`);
+        } catch (err: any) {
+          console.error("[Partner pay] webhook da devolução falhou:", err?.message);
+          markFailed(db, event.id, String(err?.message ?? err));
+          return res.status(500).send("partner refund webhook failed");
+        }
+      }
       if (event.type !== "payment_intent.succeeded") {
         // Outros tipos subscritos (falhas, reembolsos) ficam registados; o
         // motor da 2.ª parte decide pelo estado real do PI em cada passagem.
@@ -177,6 +196,21 @@ export function registerStripeCardWebhookRoute(app: Express) {
           console.error(`[Balance] webhook do saldo falhou ${pi.id}:`, err?.message);
           markFailed(db, event.id, String(err?.message ?? err));
           return res.status(500).send("balance webhook failed");
+        }
+        return res.json({ received: true });
+      }
+      if (pi.metadata?.flow === "partner_pay") {
+        // Casa parceira: marca o pedido pago e avisa a equipa e o hóspede.
+        // Nunca cai no settle do Guesty (estas casas não existem lá).
+        try {
+          const { handlePartnerPaymentSucceeded } = await import("../services/partner-pay");
+          const r = await handlePartnerPaymentSucceeded(pi);
+          console.info(`[Partner pay] webhook: PI ${pi.id} → ${r}`);
+          markProcessed(db, event.id);
+        } catch (err: any) {
+          console.error(`[Partner pay] webhook falhou ${pi.id}:`, err?.message);
+          markFailed(db, event.id, String(err?.message ?? err));
+          return res.status(500).send("partner pay webhook failed");
         }
         return res.json({ received: true });
       }

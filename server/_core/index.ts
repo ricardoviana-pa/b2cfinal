@@ -6,6 +6,7 @@ import compression from "compression";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { BALANCE_RATE_LIMIT_PER_MIN, balanceTrpcLimiter } from "../lib/balance-rate-limit";
+import { PARTNER_PAY_RATE_LIMIT_PER_MIN, partnerPayTrpcLimiter } from "../lib/partner-pay-rate-limit";
 import { createServer } from "http";
 import net from "net";
 import fs from "fs";
@@ -146,6 +147,9 @@ async function startServer() {
   // app.use("/api/trpc/balance") nunca apanha; o matcher decide pelo nome.
   const balanceLimiter = rateLimit({ windowMs: 60 * 1000, max: BALANCE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false });
   app.use("/api/trpc", balanceTrpcLimiter(balanceLimiter));
+  // Pagamento das casas parceiras: mesmo motivo, decide pelo nome do procedimento.
+  const partnerPayLimiter = rateLimit({ windowMs: 60 * 1000, max: PARTNER_PAY_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, message: { error: "Too many submissions. Please wait a moment." } });
+  app.use("/api/trpc", partnerPayTrpcLimiter(partnerPayLimiter));
 
   // Guesty webhook needs raw body for signature validation
   registerGuestyWebhookRoute(app);
