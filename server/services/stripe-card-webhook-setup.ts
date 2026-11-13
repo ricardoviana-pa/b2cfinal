@@ -39,6 +39,10 @@ export const CARD_WEBHOOK_EVENTS = [
   // Um reembolso "pending" que falha mais tarde (o hóspede já foi avisado de
   // que o dinheiro voltou): só este evento o diz.
   "refund.failed",
+  // Casas parceiras (partner-pay.ts): valor retido no cartão e retenção
+  // cancelada ou expirada. Os outros fluxos só registam estes tipos.
+  "payment_intent.amount_capturable_updated",
+  "payment_intent.canceled",
 ] as const satisfies readonly Stripe.WebhookEndpointCreateParams.EnabledEvent[];
 
 /** Eventos de CARD_WEBHOOK_EVENTS que faltam a um endpoint ("*" já recebe tudo). */
