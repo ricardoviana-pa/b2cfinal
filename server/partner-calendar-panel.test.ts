@@ -31,6 +31,8 @@ vi.mock("@/lib/trpc", () => ({
     booking: {
       partnerCalendar: { useQuery: () => ({ ...q.calendar, refetch: async () => ({}) }) },
       partnerQuote: { useQuery: () => q.quote },
+      partnerPayStart: { useMutation: () => ({ mutateAsync: async () => ({ url: "" }), isPending: false }) },
+      partnerPayStatus: { useQuery: () => ({ data: undefined, isLoading: false }) },
     },
     leads: { create: { useMutation: () => ({ mutateAsync: async () => ({}), isPending: false }) } },
   },
@@ -189,5 +191,35 @@ describe("the partner panel's price line: 'not computed yet' is not 'none' (veri
     expect(t).toContain(`${en.property.fromPerNight.replace("{{price}}", "795")} ${en.partnerBooking.perNight}`);
     expect(t).toContain(en.partnerBooking.pickDates);
     expect(t).not.toContain(en.property.priceOnRequest);
+  });
+});
+
+describe("the partner panel's button: pay now when the server says the stay can be charged (13 nov 2026)", () => {
+  const stay = { calendar: FULL, checkIn: "2026-12-06", checkOut: "2026-12-13" };
+  const cta = (html: string) => ({
+    mode: html.match(/data-partner-cta="(\w+)"/)?.[1],
+    text: textOf(html.match(/<button[^>]*data-partner-cta[^>]*>([\s\S]*?)<\/button>/)?.[1] ?? ""),
+  });
+
+  it("payable: 'Reserve and pay' with the total, and the note says the card is charged now and refunded if the home is not confirmed", () => {
+    const { html } = panel({ ...stay, quote: { ...QUOTE, payable: true } });
+    expect(cta(html)).toEqual({ mode: "pay", text: "Reserve and pay €5,565" });
+    expect(textOf(html)).toContain(en.partnerBooking.payNote);
+    expect(textOf(html)).toContain(en.partnerBooking.payFeesPending);
+    expect(textOf(html)).not.toContain(en.partnerBooking.noCharge);
+    // The old line promised nothing is charged before the total is final: it cannot stand beside a charge.
+    expect(textOf(html)).not.toContain("before anything is charged");
+  });
+
+  it("not payable (switch off, stale calendar): the request with no payment, word for word as before", () => {
+    const { html } = panel({ ...stay, quote: QUOTE });
+    expect(cta(html)).toEqual({ mode: "request", text: en.partnerBooking.submit });
+    expect(textOf(html)).toContain(en.partnerBooking.noCharge);
+    expect(textOf(html)).not.toContain(en.partnerBooking.payNote);
+  });
+
+  it("nights taken: never the payment, even if the server's flag came through", () => {
+    const { html } = panel({ ...stay, quote: { ...QUOTE, available: false, unavailable: ["2026-12-08"], payable: true } });
+    expect(cta(html).mode).toBe("request");
   });
 });

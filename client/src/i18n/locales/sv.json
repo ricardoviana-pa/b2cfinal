@@ -2074,7 +2074,18 @@
     "sending": "Skickar…",
     "submit": "Efterfråga dessa datum",
     "noCharge": "Ingen betalning nu — vår concierge bekräftar först tillgänglighet och sluttotal.",
-    "pickDatesFirst": "Välj dina datum ovan och dela sedan dina uppgifter med vår concierge."
+    "pickDatesFirst": "Välj dina datum ovan och dela sedan dina uppgifter med vår concierge.",
+    "payCta": "Boka och betala {{amount}}",
+    "paying": "Öppnar säker betalning…",
+    "payNote": "Beloppet dras nu, på en säker Stripe-sida. Vi bekräftar huset inom 48 timmar; går det inte får du hela beloppet tillbaka.",
+    "payFeesPending": "Beloppet täcker din vistelse. Om huset har städavgift eller en återbetalningsbar deposition meddelar vi beloppet när vi bekräftar huset, före din ankomst.",
+    "paidTitle": "Betalning mottagen",
+    "paidBody": "Vi har tagit emot din betalning på {{amount}}. Vi bekräftar din vistelse med huset och svarar inom 48 timmar. Bokningen är ännu inte bekräftad: kan vi inte bekräfta den får du hela beloppet tillbaka.",
+    "payChecking": "Kontrollerar din betalning…",
+    "payNotConfirmed": "Vi kunde inte bekräfta någon betalning för det här besöket. Om du slutförde den får du snart ett mejl; annars kan du försöka igen nedan.",
+    "payPriceChanged": "Priset för dessa datum har just uppdaterats. Kontrollera den nya summan ovan och fortsätt.",
+    "payUnavailable": "Onlinebetalning är inte tillgänglig för dessa datum just nu. Du kan skicka förfrågan i stället så svarar vi via mejl.",
+    "payError": "Det gick inte att öppna betalningssidan. Inget har dragits. Försök igen eller skriv till conciergen."
   },
   "login": {
     "benefitTrips": "Hantera dina resor",

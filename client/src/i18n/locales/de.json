@@ -2074,7 +2074,18 @@
     "sending": "Wird gesendet…",
     "submit": "Diese Daten anfragen",
     "noCharge": "Keine Zahlung jetzt — der Concierge bestätigt zuerst Verfügbarkeit und Endbetrag.",
-    "pickDatesFirst": "Wählen Sie oben Ihre Reisedaten und teilen Sie unserem Concierge Ihre Kontaktdaten mit."
+    "pickDatesFirst": "Wählen Sie oben Ihre Reisedaten und teilen Sie unserem Concierge Ihre Kontaktdaten mit.",
+    "payCta": "Reservieren und {{amount}} bezahlen",
+    "paying": "Sichere Zahlung wird geöffnet…",
+    "payNote": "Der Betrag wird jetzt auf einer sicheren Stripe-Seite abgebucht. Wir bestätigen das Haus innerhalb von 48 Stunden; ist das nicht möglich, erstatten wir den vollen Betrag.",
+    "payFeesPending": "Dieser Betrag deckt Ihren Aufenthalt. Falls dieses Haus eine Reinigungsgebühr oder eine erstattbare Kaution vorsieht, nennen wir Ihnen den Betrag mit der Bestätigung des Hauses, vor Ihrer Anreise.",
+    "paidTitle": "Zahlung eingegangen",
+    "paidBody": "Wir haben Ihre Zahlung über {{amount}} erhalten. Wir bestätigen Ihren Aufenthalt mit dem Haus und melden uns innerhalb von 48 Stunden. Die Reservierung ist noch nicht bestätigt: Können wir sie nicht bestätigen, erstatten wir den vollen Betrag.",
+    "payChecking": "Ihre Zahlung wird geprüft…",
+    "payNotConfirmed": "Wir konnten für diesen Besuch keine Zahlung bestätigen. Falls Sie sie abgeschlossen haben, erhalten Sie in Kürze eine E-Mail; andernfalls können Sie es unten erneut versuchen.",
+    "payPriceChanged": "Der Preis für diese Daten wurde soeben aktualisiert. Bitte prüfen Sie die neue Summe oben und fahren Sie fort.",
+    "payUnavailable": "Die Online-Zahlung ist für diese Daten derzeit nicht verfügbar. Sie können stattdessen die Anfrage senden, wir antworten per E-Mail.",
+    "payError": "Die Zahlungsseite konnte nicht geöffnet werden. Es wurde nichts abgebucht. Bitte versuchen Sie es erneut oder schreiben Sie dem Concierge."
   },
   "login": {
     "benefitTrips": "Reisen verwalten",

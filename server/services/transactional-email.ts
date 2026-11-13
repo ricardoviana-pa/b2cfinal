@@ -2536,6 +2536,73 @@ export async function sendPartnerRequestEmail(data: {
   return result.id;
 }
 
+/**
+ * Casas parceiras com pagamento (partner-pay.ts): o pedido foi pago, ou
+ * devolvido no Dashboard do Stripe. A reserva só fica confirmada quando a
+ * casa aceita; nenhum destes emails diz o contrário.
+ */
+export async function sendPartnerPaymentEmail(data: {
+  id: number; email: string; name?: string | null; phone?: string | null;
+  message?: string | null; metadata?: Record<string, string> | null;
+}, notice: "started" | "paid" | "refunded", channel: "team" | "guest"): Promise<string> {
+  if (isPreviewDeployment() || !resend) throw new Error("PARTNER_EMAIL_UNAVAILABLE");
+  const esc = (s: string | null | undefined) => (s || "—").replace(/[&<>"']/g,
+    c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+  const m = data.metadata || {};
+  const pt = channel === "team" || !!m.locale?.startsWith("pt");
+  const home = m.propertyName || m.property || "";
+  const eur = (v?: string) => (v && Number.isFinite(Number(v)) ? `${Number(v).toLocaleString(pt ? "pt-PT" : "en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} EUR` : "—");
+  const paid = eur(m.paidAmount || m.paymentAmount || m.total);
+  const refunded = eur(m.refundedAmount);
+  const partial = m.payment === "partially_refunded";
+  const dashboard = m.paymentIntentId ? `https://dashboard.stripe.com/payments/${encodeURIComponent(m.paymentIntentId)}` : "";
+
+  let title: string, intro: string;
+  if (channel === "team") {
+    if (notice === "started") {
+      title = `Casa parceira #${data.id} · pagamento iniciado`;
+      intro = `O hóspede abriu o pagamento de ${paid}. Se o email "PAGO" não chegar em 30 minutos, não concluiu: contactar e tratar como um pedido normal.`;
+    } else if (notice === "paid") {
+      title = `PAGO · casa parceira #${data.id}`;
+      intro = `O hóspede pagou ${paid}. Confirmar a estadia com a Tripwix em até 48 horas. Se a casa não confirmar, devolver o valor total no Dashboard do Stripe (o hóspede é avisado por email automaticamente). O hóspede foi informado de que a reserva ainda não está confirmada.`;
+    } else {
+      title = `${partial ? "DEVOLUÇÃO PARCIAL" : "DEVOLVIDO"} · casa parceira #${data.id}`;
+      intro = partial
+        ? `Foram devolvidos ${refunded} no Stripe. O hóspede não recebeu email nosso sobre esta devolução parcial.`
+        : `O pagamento foi devolvido na totalidade (${refunded}) no Stripe. O hóspede foi avisado por email.`;
+    }
+  } else if (notice === "paid") {
+    title = pt ? "Recebemos o seu pagamento" : "We have received your payment";
+    intro = pt
+      ? `Recebemos o seu pagamento de ${paid}. Estamos a confirmar a sua estadia com a casa e respondemos em até 48 horas. A reserva ainda não está confirmada: se não for possível confirmá-la, devolvemos o valor total.`
+      : `We have received your payment of ${paid}. We are confirming your stay with the home and will reply within 48 hours. The reservation is not confirmed yet: if we cannot confirm it, you are refunded in full.`;
+  } else {
+    title = pt ? "Devolvemos o seu pagamento" : "We have refunded your payment";
+    intro = pt
+      ? `Devolvemos o seu pagamento na totalidade (${refunded}). O valor chega à sua conta em 5 a 10 dias úteis, consoante o banco. Se quiser, procuramos uma alternativa para as suas datas: basta responder a este email.`
+      : `We have refunded your payment in full (${refunded}). It reaches your account within 5 to 10 business days, depending on your bank. If you would like us to look for an alternative for your dates, simply reply to this email.`;
+  }
+  const subject = `${title} · ${home}`.replace(/[\r\n]/g, " ");
+  const rows: [string, string | null | undefined][] = [
+    [pt ? "Casa" : "Home", home],
+    [pt ? "Entrada" : "Check-in", m.checkin], [pt ? "Saída" : "Check-out", m.checkout],
+    [pt ? "Hóspedes" : "Guests", m.guests],
+    [notice === "refunded" ? (pt ? "Valor devolvido" : "Amount refunded") : (pt ? "Valor pago" : "Amount paid"), notice === "refunded" ? refunded : paid],
+    ...(channel === "team" ? [["Nome", data.name], ["Email", data.email], ["Telefone", data.phone],
+      ["Mensagem", data.message], ...(dashboard ? [["Stripe", dashboard]] : [])] as [string, string | null | undefined][] : []),
+  ];
+  const sign = channel === "guest" ? `<p>Portugal Active · Concierge</p>` : "";
+  const html = wrapTemplate(`<h1>${esc(title)}</h1><p>${esc(intro)}</p><table>${rows.map(([label, value]) =>
+    `<tr><td style="padding:8px;vertical-align:top">${esc(label)}</td><td style="padding:8px;white-space:pre-wrap">${esc(value)}</td></tr>`).join("")}</table><p>${pt ? "Referência" : "Reference"}: PA-${data.id}</p>${sign}`, title, pt);
+  const { data: result, error } = await resend.emails.send({
+    from: FROM_EMAIL, to: channel === "team" ? BOOKING_NOTIFICATION_EMAIL : data.email,
+    replyTo: channel === "team" ? data.email : BOOKING_NOTIFICATION_EMAIL, subject, html,
+  }, { idempotencyKey: `partner-pay-${data.id}-${notice}-${channel}-v1` });
+  if (error || !result?.id) throw new Error("PARTNER_EMAIL_REJECTED");
+  console.info(`[Partner pay] provider accepted lead=${data.id} notice=${notice} channel=${channel}`);
+  return result.id;
+}
+
 /* ── Fase 2b: novo link da página do saldo ("Enviar novo link") ── */
 
 const BALANCE_LINK_I18N: Record<EmailLang, { subject: (house: string) => string; headline: string; body: (greeting: string, house: string) => string; cta: string; note: string }> = {

@@ -51,6 +51,8 @@ vi.mock("@/lib/trpc", () => ({
     booking: {
       partnerCalendar: { useQuery: () => ({ data: undefined, isLoading: false, isError: false, refetch: async () => ({}) }) },
       partnerQuote: { useQuery: () => q.quote },
+      partnerPayStart: { useMutation: () => ({ mutateAsync: async () => ({ url: "" }), isPending: false }) },
+      partnerPayStatus: { useQuery: () => ({ data: undefined, isLoading: false }) },
     },
     leads: { create: { useMutation: () => ({ mutateAsync: async () => ({}), isPending: false }) } },
   },

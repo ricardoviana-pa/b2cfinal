@@ -2074,7 +2074,18 @@
     "sending": "Envoi…",
     "submit": "Demander ces dates",
     "noCharge": "Aucun paiement maintenant — le concierge confirme d’abord la disponibilité et le total final.",
-    "pickDatesFirst": "Choisissez vos dates ci-dessus, puis transmettez vos coordonnées à notre conciergerie."
+    "pickDatesFirst": "Choisissez vos dates ci-dessus, puis transmettez vos coordonnées à notre conciergerie.",
+    "payCta": "Réserver et payer {{amount}}",
+    "paying": "Ouverture du paiement sécurisé…",
+    "payNote": "Le montant est débité maintenant, sur une page sécurisée Stripe. Nous confirmons la maison sous 48 heures ; si ce n'est pas possible, vous êtes remboursé intégralement.",
+    "payFeesPending": "Ce montant couvre votre séjour. Si cette maison prévoit des frais de ménage ou une caution remboursable, nous vous en indiquons le montant à la confirmation de la maison, avant votre arrivée.",
+    "paidTitle": "Paiement reçu",
+    "paidBody": "Nous avons reçu votre paiement de {{amount}}. Nous confirmons votre séjour avec la maison et vous répondons sous 48 heures. La réservation n'est pas encore confirmée : si nous ne pouvons pas la confirmer, vous êtes remboursé intégralement.",
+    "payChecking": "Vérification de votre paiement…",
+    "payNotConfirmed": "Nous n'avons pas pu confirmer de paiement pour cette visite. Si vous l'avez finalisé, vous recevrez un e-mail sous peu ; sinon, vous pouvez réessayer ci-dessous.",
+    "payPriceChanged": "Le prix de ces dates vient d'être mis à jour. Vérifiez le nouveau total ci-dessus puis continuez.",
+    "payUnavailable": "Le paiement en ligne n'est pas disponible pour ces dates pour le moment. Vous pouvez envoyer la demande et nous vous répondons par e-mail.",
+    "payError": "Impossible d'ouvrir la page de paiement. Rien n'a été débité. Réessayez ou écrivez au concierge."
   },
   "login": {
     "benefitTrips": "Gérez vos voyages",

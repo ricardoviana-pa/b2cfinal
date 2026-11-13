@@ -2074,7 +2074,18 @@
     "sending": "Versturen…",
     "submit": "Deze data aanvragen",
     "noCharge": "Nu geen betaling — de concierge bevestigt eerst beschikbaarheid en het eindtotaal.",
-    "pickDatesFirst": "Kies hierboven je data en deel je gegevens met onze conciërge."
+    "pickDatesFirst": "Kies hierboven je data en deel je gegevens met onze conciërge.",
+    "payCta": "Reserveren en {{amount}} betalen",
+    "paying": "Veilige betaling wordt geopend…",
+    "payNote": "Het bedrag wordt nu afgeschreven, op een beveiligde Stripe-pagina. Wij bevestigen het huis binnen 48 uur; lukt dat niet, dan krijgt u het volledige bedrag terug.",
+    "payFeesPending": "Dit bedrag dekt uw verblijf. Als dit huis schoonmaakkosten of een terugbetaalbare borg rekent, laten wij u het bedrag weten bij de bevestiging van het huis, vóór uw aankomst.",
+    "paidTitle": "Betaling ontvangen",
+    "paidBody": "Wij hebben uw betaling van {{amount}} ontvangen. Wij bevestigen uw verblijf met het huis en antwoorden binnen 48 uur. De reservering is nog niet bevestigd: als wij haar niet kunnen bevestigen, krijgt u het volledige bedrag terug.",
+    "payChecking": "Uw betaling wordt gecontroleerd…",
+    "payNotConfirmed": "Wij konden voor dit bezoek geen betaling bevestigen. Als u de betaling hebt afgerond, ontvangt u binnenkort een e-mail; anders kunt u het hieronder opnieuw proberen.",
+    "payPriceChanged": "De prijs voor deze data is zojuist bijgewerkt. Controleer het nieuwe totaal hierboven en ga verder.",
+    "payUnavailable": "Online betalen is op dit moment niet beschikbaar voor deze data. U kunt de aanvraag versturen; wij antwoorden per e-mail.",
+    "payError": "De betaalpagina kon niet worden geopend. Er is niets afgeschreven. Probeer het opnieuw of stuur de concierge een bericht."
   },
   "login": {
     "benefitTrips": "Beheer uw reizen",

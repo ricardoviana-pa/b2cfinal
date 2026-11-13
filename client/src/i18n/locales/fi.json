@@ -2074,7 +2074,18 @@
     "sending": "Lähetetään…",
     "submit": "Pyydä näitä päiviä",
     "noCharge": "Ei maksua nyt — concierge vahvistaa ensin saatavuuden ja lopullisen summan.",
-    "pickDatesFirst": "Valitse päivämäärät yllä ja lähetä tietosi concierge-palvelullemme."
+    "pickDatesFirst": "Valitse päivämäärät yllä ja lähetä tietosi concierge-palvelullemme.",
+    "payCta": "Varaa ja maksa {{amount}}",
+    "paying": "Avataan turvallista maksua…",
+    "payNote": "Summa veloitetaan nyt Stripen suojatulla sivulla. Vahvistamme talon 48 tunnin kuluessa; jos se ei onnistu, palautamme koko summan.",
+    "payFeesPending": "Tämä summa kattaa oleskelusi. Jos talossa on siivousmaksu tai palautettava vakuus, kerromme summan vahvistaessamme talon, ennen saapumistasi.",
+    "paidTitle": "Maksu vastaanotettu",
+    "paidBody": "Olemme vastaanottaneet maksusi {{amount}}. Vahvistamme oleskelusi talon kanssa ja vastaamme 48 tunnin kuluessa. Varausta ei ole vielä vahvistettu: jos emme voi vahvistaa sitä, palautamme koko summan.",
+    "payChecking": "Tarkistetaan maksuasi…",
+    "payNotConfirmed": "Emme voineet vahvistaa maksua tälle käynnille. Jos suoritit maksun, saat pian sähköpostin; muuten voit yrittää uudelleen alla.",
+    "payPriceChanged": "Näiden päivien hinta päivittyi juuri. Tarkista uusi summa yllä ja jatka.",
+    "payUnavailable": "Verkkomaksu ei ole juuri nyt käytettävissä näille päiville. Voit lähettää pyynnön, ja vastaamme sähköpostitse.",
+    "payError": "Maksusivua ei voitu avata. Mitään ei veloitettu. Yritä uudelleen tai kirjoita conciergelle."
   },
   "login": {
     "benefitTrips": "Hallitse matkojasi",

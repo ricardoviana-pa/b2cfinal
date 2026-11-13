@@ -2074,7 +2074,18 @@
     "sending": "Enviando…",
     "submit": "Solicitar estas fechas",
     "noCharge": "Sin pago ahora — el concierge confirma primero la disponibilidad y el total final.",
-    "pickDatesFirst": "Elige tus fechas arriba y comparte tus datos con nuestro concierge."
+    "pickDatesFirst": "Elige tus fechas arriba y comparte tus datos con nuestro concierge.",
+    "payCta": "Reservar y pagar {{amount}}",
+    "paying": "Abriendo el pago seguro…",
+    "payNote": "El importe se cobra ahora, en una página segura de Stripe. Confirmamos la casa en un máximo de 48 horas; si no es posible confirmarla, le devolvemos el importe íntegro.",
+    "payFeesPending": "Este importe cubre su estancia. Si esta casa tiene tarifa de limpieza o fianza reembolsable, le indicamos el importe al confirmar la casa, antes de su llegada.",
+    "paidTitle": "Pago recibido",
+    "paidBody": "Hemos recibido su pago de {{amount}}. Estamos confirmando su estancia con la casa y le respondemos en un máximo de 48 horas. La reserva aún no está confirmada: si no es posible confirmarla, le devolvemos el importe íntegro.",
+    "payChecking": "Comprobando su pago…",
+    "payNotConfirmed": "No hemos podido confirmar un pago en esta visita. Si lo completó, recibirá un correo en breve; si no, puede intentarlo de nuevo abajo.",
+    "payPriceChanged": "El precio de estas fechas acaba de actualizarse. Revise el nuevo total arriba y continúe.",
+    "payUnavailable": "El pago en línea no está disponible para estas fechas en este momento. Puede enviar la solicitud y le respondemos por correo.",
+    "payError": "No se pudo abrir la página de pago. No se ha cobrado nada. Inténtelo de nuevo o escriba al concierge."
   },
   "login": {
     "benefitTrips": "Gestione sus viajes",

@@ -2074,7 +2074,18 @@
     "sending": "Sending…",
     "submit": "Request these dates",
     "noCharge": "No payment now — our concierge confirms availability and the final total first.",
-    "pickDatesFirst": "Choose your dates above, then share your details with our concierge."
+    "pickDatesFirst": "Choose your dates above, then share your details with our concierge.",
+    "payCta": "Reserve and pay {{amount}}",
+    "paying": "Opening secure payment…",
+    "payNote": "Your card is charged now, on a secure Stripe page. We confirm the home within 48 hours; if we cannot confirm it, you are refunded in full.",
+    "payFeesPending": "This amount covers your stay. If this home adds a cleaning fee or a refundable security deposit, we tell you the amount when we confirm the home, before your arrival.",
+    "paidTitle": "Payment received",
+    "paidBody": "We have received your payment of {{amount}}. We are confirming your stay with the home and will reply within 48 hours. Your reservation is not confirmed yet: if we cannot confirm it, you are refunded in full.",
+    "payChecking": "Checking your payment…",
+    "payNotConfirmed": "We could not confirm a payment for this visit. If you completed it, you will receive an email shortly; otherwise you can try again below.",
+    "payPriceChanged": "The price for these dates has just been updated. Please check the new total above and continue.",
+    "payUnavailable": "Online payment is not available for these dates right now. You can send the request instead and we will reply by email.",
+    "payError": "We could not open the payment page. Nothing was charged. Please try again, or message the concierge."
   },
   "login": {
     "benefitTrips": "Manage your trips",
