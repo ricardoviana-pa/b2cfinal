@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, it, expect } from "vitest";
 import { getRelatedHomes, pickRelatedHomes } from "./related-homes";
 import { PROPERTY_GROUPS } from "../../client/src/config/propertyGroups";
@@ -82,7 +83,20 @@ describe("pickRelatedHomes", () => {
 
   it("the northern guide offers the reviewed coast, valley, mountain and riverside bases", async () => {
     const picks = await getRelatedHomes('minho-coast', 4, 'complete-guide-north-portugal');
-    expect(picks.map(p => p.locality)).toEqual(['Carreço', 'Ponte de Lima', 'Vieira do Minho', 'Caminha']);
+    // The four reviewed bases, in the reviewed order. One that has left the
+    // catalogue is skipped, never revived (the Gerês home left Guesty on
+    // 13 Nov 2026 and this test, pinned to all four, broke the main build);
+    // the guide then fills the place with another Minho home.
+    const reviewed: [string, string][] = [
+      ['696533466d209c001510ecfe', 'Carreço'], ['69653365bf04fe0013743511', 'Ponte de Lima'],
+      ['6a7079007df813008d013634', 'Vieira do Minho'], ['69c415ceab80a8001247452c', 'Caminha'],
+    ];
+    const catalogue = new Set(JSON.parse(readFileSync('client/src/data/properties.json', 'utf8'))
+      .filter((p: any) => p.isActive !== false).map((p: any) => p.guestyId));
+    const expected = reviewed.filter(([id]) => catalogue.has(id)).map(([, locality]) => locality);
+    expect(expected.length).toBeGreaterThan(0);
+    expect(picks).toHaveLength(4);
+    expect(picks.map(p => p.locality).slice(0, expected.length)).toEqual(expected);
     expect(picks.every(p => p.destination === 'minho')).toBe(true);
   });
 
