@@ -24,7 +24,7 @@ vi.mock("stripe", () => ({
 vi.mock("mysql2/promise", () => ({ default: { createConnection: h.createConnection } }));
 
 const URL = "https://www.portugalactive.com/api/webhooks/stripe-card";
-const FULL = ["payment_intent.succeeded", "payment_intent.payment_failed", "charge.refunded", "charge.dispute.created", "refund.failed"];
+const FULL = ["payment_intent.succeeded", "payment_intent.payment_failed", "charge.refunded", "charge.dispute.created", "refund.failed", "payment_intent.amount_capturable_updated", "payment_intent.canceled"];
 const ENV_KEYS = ["STRIPE_SECRET_KEY", "DATABASE_URL", "STRIPE_CARD_WEBHOOK_SECRET", "SITE_URL", "PUBLIC_BASE_URL", "APP_URL"];
 let envBackup: Record<string, string | undefined>;
 

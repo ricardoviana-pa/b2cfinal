@@ -2544,7 +2544,7 @@ export async function sendPartnerRequestEmail(data: {
 export async function sendPartnerPaymentEmail(data: {
   id: number; email: string; name?: string | null; phone?: string | null;
   message?: string | null; metadata?: Record<string, string> | null;
-}, notice: "started" | "paid" | "refunded", channel: "team" | "guest", variant?: string): Promise<string> {
+}, notice: "started" | "held" | "paid" | "released" | "refunded", channel: "team" | "guest", variant?: string): Promise<string> {
   if (isPreviewDeployment() || !resend) throw new Error("PARTNER_EMAIL_UNAVAILABLE");
   const esc = (s: string | null | undefined) => (s || "—").replace(/[&<>"']/g,
     c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
@@ -2552,7 +2552,10 @@ export async function sendPartnerPaymentEmail(data: {
   const pt = channel === "team" || !!m.locale?.startsWith("pt");
   const home = m.propertyName || m.property || "";
   const eur = (v?: string) => (v && Number.isFinite(Number(v)) ? `${Number(v).toLocaleString(pt ? "pt-PT" : "en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} EUR` : "—");
-  const paid = eur(m.paidAmount || m.paymentAmount || m.total);
+  const paid = eur(m.paidAmount || m.heldAmount || m.paymentAmount || m.total);
+  const held = eur(m.heldAmount || m.paymentAmount || m.total);
+  const ptDay = (d?: string) => (d && /^\d{4}-\d{2}-\d{2}/.test(d) ? `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}` : "—");
+  const releasedGuestTold = m.releasedGuestNotification === "accepted";
   const refunded = eur(m.refundedAmount);
   const partial = m.payment === "partially_refunded";
   const guestTold = Object.entries(m).some(([k, v]) => k.startsWith("refundedGuestNotification") && v === "accepted");
@@ -2561,42 +2564,74 @@ export async function sendPartnerPaymentEmail(data: {
   const dashboard = m.paymentIntentId ? `https://dashboard.stripe.com/payments/${encodeURIComponent(m.paymentIntentId)}` : "";
 
   let title: string, intro: string;
+  const feesTeam = feesOpen ? " O valor cobre só o alojamento: a limpeza e a caução, se existirem, ficam por indicar ao hóspede na confirmação." : "";
+  const feesGuest = feesOpen
+    ? (pt ? " Este valor cobre a sua estadia. Se esta casa tiver taxa de limpeza ou caução reembolsável, indicamos o valor quando confirmarmos a casa."
+      : " This amount covers your stay. If this home adds a cleaning fee or a refundable security deposit, we tell you the amount when we confirm the home.")
+    : "";
   if (channel === "team") {
     if (notice === "started") {
       title = `Casa parceira #${data.id} · pagamento iniciado`;
       intro = m.paymentSessionId
-        ? `O hóspede abriu o pagamento de ${paid}. Se o email "PAGO" não chegar em 30 minutos, não concluiu: contactar e tratar como um pedido normal.`
-        : `O hóspede quis pagar ${paid}, mas a página de pagamento não abriu. Nada foi cobrado: contactar e tratar como um pedido normal.`;
+        ? `O hóspede abriu a página de pagamento para reter ${held} no cartão. Se o email "RETIDO" não chegar em 30 minutos, não concluiu: contactar e tratar como um pedido normal.`
+        : `O hóspede quis reservar com ${held} retidos no cartão, mas a página de pagamento não abriu. Nada foi retido nem cobrado: contactar e tratar como um pedido normal.`;
+    } else if (notice === "held") {
+      title = `RETIDO · casa parceira #${data.id}`;
+      intro = `O hóspede tem ${held} retidos no cartão. Ainda NÃO foi cobrado. Confirmar a estadia com a Tripwix. `
+        + `Se a casa confirmar: capturar o pagamento no Stripe (link abaixo, botão "Capturar") e escrever ao hóspede com a confirmação. `
+        + `Se a casa não confirmar: cancelar o pagamento no Stripe; a retenção é libertada sem custos e o hóspede é avisado por email automaticamente. `
+        + `Prazo: capturar ou cancelar até ${ptDay(m.holdUntil)}. Depois disso a retenção pode expirar no banco do hóspede e o valor deixa de estar garantido. `
+        + `O hóspede foi informado de que o valor está retido e de que a reserva ainda não está confirmada.`
+        + feesTeam
+        + (m.overlapWith ? ` ATENÇÃO: já existe outro valor retido ou cobrado para noites desta estadia (${m.overlapWith}). Só uma das reservas pode ficar: cancelar a outra.` : "");
     } else if (notice === "paid") {
-      title = `PAGO · casa parceira #${data.id}`;
-      intro = `O hóspede pagou ${paid}. Confirmar a estadia com a Tripwix em até 48 horas. Se a casa não confirmar, devolver o valor total no Dashboard do Stripe (o hóspede é avisado por email automaticamente). O hóspede foi informado de que a reserva ainda não está confirmada.`
-        + (feesOpen ? " O valor cobre só o alojamento: a limpeza e a caução, se existirem, ficam por indicar ao hóspede na confirmação." : "")
+      title = `COBRADO · casa parceira #${data.id}`;
+      intro = `Foram cobrados ${paid} ao hóspede (captura no Stripe). O hóspede recebeu um email a dizer que o valor foi cobrado; a confirmação com os detalhes da estadia segue por nós. Uma devolução a partir de agora já perde a comissão do Stripe.`
+        + feesTeam
         + (m.overlapWith ? ` ATENÇÃO: já existe outro pagamento para noites desta estadia (${m.overlapWith}). Só uma das reservas pode ficar: devolver a outra.` : "");
+    } else if (notice === "released") {
+      title = `LIBERTADO · casa parceira #${data.id}`;
+      intro = `A retenção de ${held} foi cancelada no Stripe, ou expirou. Nada foi cobrado e não há custos. ${releasedGuestTold ? "O hóspede foi avisado por email." : "O email ao hóspede NÃO saiu: avisar o hóspede."}`;
     } else {
       title = `${partial ? "DEVOLUÇÃO PARCIAL" : "DEVOLVIDO"} · casa parceira #${data.id}`;
       intro = partial
         ? `Foram devolvidos ${refunded} no Stripe. O hóspede não recebeu email nosso sobre esta devolução parcial.`
         : `O pagamento foi devolvido na totalidade (${refunded}) no Stripe. ${guestTold ? "O hóspede foi avisado por email." : "O email ao hóspede NÃO saiu: avisar o hóspede."}`;
     }
+  } else if (notice === "held") {
+    title = pt ? "O valor ficou retido no seu cartão" : "The amount is on hold on your card";
+    intro = (pt
+      ? `Retivemos ${held} no seu cartão. O valor ainda não foi cobrado. Estamos a confirmar a sua estadia com a casa e respondemos em até 48 horas. Se confirmarmos, o valor é cobrado; se não for possível confirmar, a retenção é libertada e nada é cobrado.`
+      : `We have placed a hold of ${held} on your card. Nothing has been charged yet. We are confirming your stay with the home and will reply within 48 hours. If we confirm, the amount is charged; if we cannot confirm it, the hold is released and nothing is charged.`)
+      + feesGuest;
   } else if (notice === "paid") {
-    title = pt ? "Recebemos o seu pagamento" : "We have received your payment";
+    title = pt ? "O valor da sua estadia foi cobrado" : "Your stay has been charged";
+    intro = (pt
+      ? `Cobrámos ${paid} no seu cartão pela sua estadia. A nossa equipa envia-lhe a confirmação com os detalhes.`
+      : `We have charged ${paid} to your card for your stay. Our team will send you the confirmation with the details.`)
+      + feesGuest;
+  } else if (notice === "released") {
+    title = pt ? "Libertámos o valor retido no seu cartão" : "We have released the hold on your card";
     intro = pt
-      ? `Recebemos o seu pagamento de ${paid}. Estamos a confirmar a sua estadia com a casa e respondemos em até 48 horas. A reserva ainda não está confirmada: se não for possível confirmá-la, devolvemos o valor total.`
-        + (feesOpen ? " Este valor cobre a sua estadia. Se esta casa tiver taxa de limpeza ou caução reembolsável, indicamos o valor quando confirmarmos a casa." : "")
-      : `We have received your payment of ${paid}. We are confirming your stay with the home and will reply within 48 hours. The reservation is not confirmed yet: if we cannot confirm it, you are refunded in full.`
-        + (feesOpen ? " This amount covers your stay. If this home adds a cleaning fee or a refundable security deposit, we tell you the amount when we confirm the home." : "");
+      ? `A retenção de ${held} no seu cartão foi libertada. Nada foi cobrado; o valor volta a ficar disponível em poucos dias, consoante o banco. Se a sua estadia não ficou confirmada e quiser que procuremos uma alternativa para as suas datas, basta responder a este email.`
+      : `The hold of ${held} on your card has been released. Nothing was charged; the amount becomes available again within a few days, depending on your bank. If your stay was not confirmed and you would like us to look for an alternative for your dates, simply reply to this email.`;
   } else {
     title = pt ? "Devolvemos o seu pagamento" : "We have refunded your payment";
     intro = pt
       ? `Devolvemos o seu pagamento na totalidade (${refunded}). O valor chega à sua conta em 5 a 10 dias úteis, consoante o banco. Se quiser, procuramos uma alternativa para as suas datas: basta responder a este email.`
       : `We have refunded your payment in full (${refunded}). It reaches your account within 5 to 10 business days, depending on your bank. If you would like us to look for an alternative for your dates, simply reply to this email.`;
   }
+  const amountLabel = notice === "refunded" ? (pt ? "Valor devolvido" : "Amount refunded")
+    : notice === "paid" ? (pt ? "Valor cobrado" : "Amount charged")
+    : notice === "released" ? (pt ? "Valor libertado" : "Amount released")
+    : (pt ? "Valor retido" : "Amount on hold");
+  const amountValue = notice === "refunded" ? refunded : notice === "paid" ? paid : held;
   const subject = `${title} · ${home}`.replace(/[\r\n]/g, " ");
   const rows: [string, string | null | undefined][] = [
     [pt ? "Casa" : "Home", home],
     [pt ? "Entrada" : "Check-in", m.checkin], [pt ? "Saída" : "Check-out", m.checkout],
     [pt ? "Hóspedes" : "Guests", m.guests],
-    [notice === "refunded" ? (pt ? "Valor devolvido" : "Amount refunded") : (pt ? "Valor pago" : "Amount paid"), notice === "refunded" ? refunded : paid],
+    [amountLabel, amountValue],
     ...(channel === "team" ? [["Nome", data.name], ["Email", data.email], ["Telefone", data.phone],
       ["Mensagem", data.message], ...(dashboard ? [["Stripe", dashboard]] : [])] as [string, string | null | undefined][] : []),
   ];

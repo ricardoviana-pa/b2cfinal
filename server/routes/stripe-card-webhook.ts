@@ -175,6 +175,24 @@ export function registerStripeCardWebhookRoute(app: Express) {
           return res.status(500).send("partner refund webhook failed");
         }
       }
+      if (event.type === "payment_intent.amount_capturable_updated" || event.type === "payment_intent.canceled") {
+        // Casa parceira (partner-pay.ts): valor retido no cartão, ou retenção
+        // cancelada/expirada. Os PaymentIntents dos outros fluxos saem daqui
+        // "ignored" e seguem como sempre (regista e responde 200).
+        const held = event.type === "payment_intent.amount_capturable_updated";
+        const intent = event.data.object as any;
+        if (intent?.metadata?.flow === "partner_pay") {
+          try {
+            const partnerPay = await import("../services/partner-pay");
+            const r = held ? await partnerPay.handlePartnerPaymentHeld(intent) : await partnerPay.handlePartnerPaymentCanceled(intent);
+            console.info(`[Partner pay] webhook: PI ${intent.id} (${held ? "retido" : "cancelado"}) → ${r}`);
+          } catch (err: any) {
+            console.error(`[Partner pay] webhook falhou ${intent?.id}:`, err?.message);
+            markFailed(db, event.id, String(err?.message ?? err));
+            return res.status(500).send("partner pay webhook failed");
+          }
+        }
+      }
       if (event.type !== "payment_intent.succeeded") {
         // Outros tipos subscritos (falhas, reembolsos) ficam registados; o
         // motor da 2.ª parte decide pelo estado real do PI em cada passagem.

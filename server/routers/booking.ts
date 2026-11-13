@@ -248,7 +248,8 @@ export const bookingRouter = router({
       if (!quote) return quote;
       // Cobrável já (partner-pay.ts): o painel troca o pedido pelo pagamento.
       const { partnerQuotePayable } = await import("../services/partner-pay");
-      return { ...quote, payable: partnerQuotePayable(quote) };
+      // payMode "hold": o valor fica retido no cartão e só é cobrado na captura.
+      return { ...quote, payable: partnerQuotePayable(quote), payMode: "hold" as const };
     }),
 
   /** Casa parceira: abre o pagamento de 100% da estadia (Stripe Checkout). */

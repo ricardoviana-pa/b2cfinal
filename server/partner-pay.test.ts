@@ -114,9 +114,10 @@ describe("opening the payment", () => {
     });
     expect(params.line_items[0].price_data).toMatchObject({ currency: "eur", unit_amount: 842750 });
     expect(params.payment_intent_data.metadata).toMatchObject({ flow: "partner_pay", leadId: "1", property: "casa-de-caiz", checkin: "2027-01-10", checkout: "2027-01-17" });
-    expect(params.payment_intent_data.capture_method).toBeUndefined(); // cobrança imediata, não retenção
+    expect(params.payment_intent_data.capture_method).toBe("manual"); // retenção: só se cobra na captura
     expect(params.adaptive_pricing).toEqual({ enabled: false }); // sempre em euros, sem conversão no Stripe
     expect(params.custom_text.submit.message).toContain("48 horas");
+    expect(params.custom_text.submit.message).toContain("não é cobrado agora");
     const lead = leads.get(1);
     expect(lead).toMatchObject({ source: "partner-home-request", email: "ana@example.com" });
     expect(lead.metadata).toMatchObject({ payment: "started", paymentAmount: "8427.5", total: "8427.5", nights: "7", paymentSessionId: "cs_test_abcdefghij1234567890" });
@@ -321,19 +322,30 @@ describe("a refund made in the Stripe Dashboard", () => {
 });
 
 describe("the guest comes back from the Stripe page", () => {
-  it("paid: closes the request here if the webhook has not arrived, and shows only what the page needs", async () => {
+  it("the amount is on hold: closes the request here if the webhook has not arrived, and shows only what the page needs", async () => {
     quote.mockResolvedValue(priced());
     const m = await pay();
     await m.startPartnerPayment(input()); await flush(); emails.length = 0;
     sessionsRetrieve.mockResolvedValue({
-      id: "cs_test_abcdefghij1234567890", payment_status: "paid", metadata: { flow: "partner_pay", leadId: "1" },
-      payment_intent: { id: "pi_1", amount_received: 842750, metadata: { flow: "partner_pay", leadId: "1" } },
+      id: "cs_test_abcdefghij1234567890", status: "complete", payment_status: "unpaid", metadata: { flow: "partner_pay", leadId: "1" },
+      payment_intent: { id: "pi_1", status: "requires_capture", amount: 842750, amount_capturable: 842750, metadata: { flow: "partner_pay", leadId: "1" } },
     });
     expect(await m.partnerPaymentStatus("cs_test_abcdefghij1234567890")).toEqual({
-      status: "paid", reference: "PA-1", propertyName: "Casa de Caiz", checkin: "2027-01-10", checkout: "2027-01-17", guests: "4", total: "8427.5",
+      status: "held", reference: "PA-1", propertyName: "Casa de Caiz", checkin: "2027-01-10", checkout: "2027-01-17", guests: "4", total: "8427.5",
     });
-    expect(leads.get(1).metadata.payment).toBe("paid");
-    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["paid/team", "paid/guest"]);
+    expect(leads.get(1).metadata).toMatchObject({ payment: "held", heldAmount: "8427.5", paymentIntentId: "pi_1" });
+    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["held/team", "held/guest"]);
+  });
+
+  it("the guest opens the link again after the capture: charged, not on hold", async () => {
+    quote.mockResolvedValue(priced());
+    const m = await pay();
+    await m.startPartnerPayment(input()); await flush();
+    sessionsRetrieve.mockResolvedValue({
+      id: "cs_test_abcdefghij1234567890", status: "complete", payment_status: "paid", metadata: { flow: "partner_pay", leadId: "1" },
+      payment_intent: { id: "pi_1", status: "succeeded", amount: 842750, amount_received: 842750, metadata: { flow: "partner_pay", leadId: "1" } },
+    });
+    expect(await m.partnerPaymentStatus("cs_test_abcdefghij1234567890")).toMatchObject({ status: "paid", total: "8427.5" });
   });
 
   it("not paid, someone else's session, or a made-up id: says nothing about anyone", async () => {
@@ -345,5 +357,140 @@ describe("the guest comes back from the Stripe page", () => {
     sessionsRetrieve.mockClear();
     expect(await m.partnerPaymentStatus("not-a-session")).toEqual({ status: "unknown" });
     expect(sessionsRetrieve).not.toHaveBeenCalled();
+  });
+});
+
+describe("retention: the amount is held on the card and only charged on capture (13 nov 2026)", () => {
+  const meta = { flow: "partner_pay", leadId: "1" };
+  const authorised = { id: "pi_1", status: "requires_capture", amount: 842750, amount_capturable: 842750, metadata: meta };
+  const captured = { id: "pi_1", status: "succeeded", amount: 842750, amount_received: 842750, metadata: meta };
+  const canceled = { id: "pi_1", status: "canceled", amount: 842750, metadata: meta };
+  const started = async () => {
+    quote.mockResolvedValue(priced());
+    const m = await pay();
+    await m.startPartnerPayment(input()); await flush(); emails.length = 0;
+    return m;
+  };
+
+  it("card authorised: the request is held, with the day the team must capture or cancel by, and both are told once", async () => {
+    const m = await started();
+    expect(await m.handlePartnerPaymentHeld(authorised)).toBe("held");
+    expect(leads.get(1).metadata).toMatchObject({ payment: "held", heldAmount: "8427.5", paymentIntentId: "pi_1", holdUntil: "2026-11-17" });
+    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["held/team", "held/guest"]);
+    expect(await m.handlePartnerPaymentHeld(authorised)).toBe("already");
+    expect(emails).toHaveLength(2);
+  });
+
+  it("captured in the Dashboard: charged, both are told, and the competing pages are not closed twice", async () => {
+    const m = await started();
+    await m.handlePartnerPaymentHeld(authorised);
+    emails.length = 0; sessionsExpire.mockClear();
+    expect(await m.handlePartnerPaymentSucceeded(captured)).toBe("paid");
+    expect(leads.get(1).metadata).toMatchObject({ payment: "paid", paidAmount: "8427.5" });
+    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["paid/team", "paid/guest"]);
+    expect(sessionsExpire).not.toHaveBeenCalled();
+  });
+
+  it("cancelled in the Dashboard (or expired): released, nothing charged, the guest is told first", async () => {
+    const m = await started();
+    await m.handlePartnerPaymentHeld(authorised);
+    emails.length = 0;
+    expect(await m.handlePartnerPaymentCanceled(canceled)).toBe("released");
+    expect(leads.get(1).metadata.payment).toBe("released");
+    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["released/guest", "released/team"]);
+    // Reentrega: nada muda, nada se repete. E as noites voltam a poder ser reservadas.
+    expect(await m.handlePartnerPaymentCanceled(canceled)).toBe("released");
+    expect(emails).toHaveLength(2);
+    await expect(m.startPartnerPayment(input({ email: "rui@example.com" }))).resolves.toBeTruthy();
+  });
+
+  it("a guest who left the Stripe page: the request is marked expired and nobody gets a 'released' email", async () => {
+    const m = await started();
+    expect(await m.handlePartnerPaymentCanceled(canceled)).toBe("expired");
+    expect(leads.get(1).metadata.payment).toBe("expired");
+    expect(emails).toHaveLength(0);
+  });
+
+  it("a cancel event after the capture changes nothing", async () => {
+    const m = await started();
+    await m.handlePartnerPaymentHeld(authorised);
+    await m.handlePartnerPaymentSucceeded(captured);
+    emails.length = 0;
+    expect(await m.handlePartnerPaymentCanceled(canceled)).toBe("already");
+    expect(leads.get(1).metadata.payment).toBe("paid");
+    expect(emails).toHaveLength(0);
+  });
+
+  it("nights on hold for one guest: no second hold, and the other open pages are closed", async () => {
+    quote.mockResolvedValue(priced());
+    const m = await pay();
+    sessionsCreate.mockResolvedValueOnce({ id: "cs_test_aaaaaaaaaaaaaaaaaaaa", url: "https://checkout.stripe.com/a" });
+    sessionsCreate.mockResolvedValueOnce({ id: "cs_test_bbbbbbbbbbbbbbbbbbbb", url: "https://checkout.stripe.com/b" });
+    await m.startPartnerPayment(input());
+    await m.startPartnerPayment(input({ email: "rui@example.com", checkin: "2027-01-14", checkout: "2027-01-21" }));
+    await flush();
+    await m.handlePartnerPaymentHeld(authorised);
+    expect(sessionsExpire.mock.calls.map((c) => c[0])).toEqual(["cs_test_bbbbbbbbbbbbbbbbbbbb"]);
+    await expect(m.startPartnerPayment(input({ email: "eva@example.com", checkin: "2027-01-16", checkout: "2027-01-23" }))).rejects.toMatchObject({ message: "PARTNER_NOT_PAYABLE" });
+  });
+
+  it("the email provider is down when the hold arrives: throws for Stripe to redeliver, then sends what is missing", async () => {
+    const m = await started();
+    emailFails.on = true;
+    await expect(m.handlePartnerPaymentHeld(authorised)).rejects.toThrow("PARTNER_NOTIFY_FAILED");
+    expect(leads.get(1).metadata.payment).toBe("held");
+    emailFails.on = false;
+    expect(await m.handlePartnerPaymentHeld(authorised)).toBe("already");
+    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["held/team", "held/guest"]);
+  });
+});
+
+describe("the five-minute pass: Stripe's state reaches the request even if an event never arrives", () => {
+  const meta = { flow: "partner_pay", leadId: "1" };
+  const started = async () => {
+    quote.mockResolvedValue(priced());
+    const m = await pay();
+    await m.startPartnerPayment(input()); await flush(); emails.length = 0;
+    return m;
+  };
+
+  it("an open page whose card was authorised becomes held, and the team hears of it", async () => {
+    const m = await started();
+    sessionsRetrieve.mockResolvedValue({ status: "complete", metadata: meta, payment_intent: { id: "pi_1", status: "requires_capture", amount: 842750, amount_capturable: 842750, metadata: meta } });
+    expect(await m.sweepPartnerPayments()).toEqual({ checked: 1, changed: 1 });
+    expect(leads.get(1).metadata.payment).toBe("held");
+    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["held/team", "held/guest"]);
+  });
+
+  it("a held request whose hold was cancelled or captured in the Dashboard follows", async () => {
+    const m = await started();
+    await m.handlePartnerPaymentHeld({ id: "pi_1", status: "requires_capture", amount: 842750, amount_capturable: 842750, metadata: meta });
+    emails.length = 0;
+    piRetrieve.mockResolvedValue({ id: "pi_1", status: "requires_capture", amount: 842750, amount_capturable: 842750, metadata: meta });
+    expect(await m.sweepPartnerPayments()).toEqual({ checked: 1, changed: 0 }); // ainda retido: nada a fazer
+    piRetrieve.mockResolvedValue({ id: "pi_1", status: "canceled", amount: 842750, metadata: meta });
+    expect(await m.sweepPartnerPayments()).toEqual({ checked: 1, changed: 1 });
+    expect(leads.get(1).metadata.payment).toBe("released");
+    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["released/guest", "released/team"]);
+    expect(await m.sweepPartnerPayments()).toEqual({ checked: 0, changed: 0 }); // fechado: já não é conferido
+  });
+
+  it("an abandoned page is marked expired and not asked about again; a still-open one is left alone", async () => {
+    const m = await started();
+    sessionsRetrieve.mockResolvedValue({ status: "open", metadata: meta, payment_intent: null });
+    expect(await m.sweepPartnerPayments()).toEqual({ checked: 1, changed: 0 });
+    expect(leads.get(1).metadata.payment).toBe("started");
+    sessionsRetrieve.mockResolvedValue({ status: "expired", metadata: meta, payment_intent: null });
+    expect(await m.sweepPartnerPayments()).toEqual({ checked: 1, changed: 1 });
+    expect(leads.get(1).metadata.payment).toBe("expired");
+    expect(await m.sweepPartnerPayments()).toEqual({ checked: 0, changed: 0 });
+    expect(emails).toHaveLength(0);
+  });
+
+  it("Stripe is down: the pass fails quietly and tries again next time", async () => {
+    const m = await started();
+    sessionsRetrieve.mockRejectedValue(new Error("stripe down"));
+    expect(await m.sweepPartnerPayments()).toEqual({ checked: 1, changed: 0 });
+    expect(leads.get(1).metadata.payment).toBe("started");
   });
 });

@@ -158,7 +158,11 @@ export function PartnerBookingPanel({
     { sessionId: paySession },
     { enabled: !!paySession, staleTime: Infinity, retry: 1, refetchOnWindowFocus: false },
   );
-  const paid = payStatus.data?.status === 'paid' ? payStatus.data : null;
+  // 'held': the amount is on hold on the card and nothing is charged until
+  // the home confirms. 'paid': the hold was captured (the guest came back to
+  // this link later). Both mean this visit's payment is done.
+  const paid = payStatus.data?.status === 'held' || payStatus.data?.status === 'paid' ? payStatus.data : null;
+  const onHold = paid?.status === 'held';
   // Back from Stripe without a confirmed answer (the check failed, or Stripe
   // did not say "paid"): the guest very likely paid, so the panel never
   // offers the payment again on this visit.
@@ -173,7 +177,7 @@ export function PartnerBookingPanel({
       if (window.sessionStorage.getItem(key)) return;
       window.sessionStorage.setItem(key, '1');
     } catch { /* storage blocked: the event may repeat on a reload */ }
-    pushDL({ event: 'partner_payment_paid', property_id: propertySlug, value: Number(paid.total) || 0, currency: 'EUR' });
+    pushDL({ event: paid.status === 'held' ? 'partner_payment_held' : 'partner_payment_paid', property_id: propertySlug, value: Number(paid.total) || 0, currency: 'EUR' });
   }, [paid, paySession, propertySlug]);
   const quoteNotice = partnerQuoteNotice({
     checkIn, checkOut, quote, quoteFetching: isFetching, quoteError: isError,
@@ -338,16 +342,23 @@ export function PartnerBookingPanel({
             {paid ? <Check className="w-6 h-6 text-white" /> : <Loader2 className="w-6 h-6 text-white animate-spin" />}
           </div>
           <p className="text-white text-[18px]" style={{ fontFamily: 'var(--font-display)' }}>
-            {paid ? t('partnerBooking.paidTitle', 'Payment received') : t('partnerBooking.payChecking', 'Checking your payment…')}
+            {paid
+              ? (onHold ? t('partnerBooking.heldTitle', 'Amount held on your card') : t('partnerBooking.paidTitle', 'Payment charged'))
+              : t('partnerBooking.payChecking', 'Checking your payment…')}
           </p>
         </div>
         {paid && (
           <div className="p-6 space-y-4">
             <p className="text-[13px] text-black/60 leading-relaxed">
-              {t('partnerBooking.paidBody', {
-                amount: formatQuotedEur(Number(paid.total) || 0, lang),
-                defaultValue: 'We have received your payment of {{amount}}. We are confirming your stay with the home and will reply within 48 hours. Your reservation is not confirmed yet: if we cannot confirm it, you are refunded in full.',
-              })}
+              {onHold
+                ? t('partnerBooking.heldBody', {
+                    amount: formatQuotedEur(Number(paid.total) || 0, lang),
+                    defaultValue: 'We have placed a hold of {{amount}} on your card. Nothing has been charged yet. We are confirming your stay with the home and will reply within 48 hours. If we confirm, the amount is charged; if we cannot confirm it, the hold is released and nothing is charged.',
+                  })
+                : t('partnerBooking.paidBody', {
+                    amount: formatQuotedEur(Number(paid.total) || 0, lang),
+                    defaultValue: 'We have charged {{amount}} to your card for your stay. Our team will send you the confirmation with the details.',
+                  })}
             </p>
             <div className="bg-black/[0.02] p-4 space-y-1">
               <p className="text-[10px] text-black/30 uppercase tracking-wider mb-1">
@@ -787,7 +798,7 @@ export function PartnerBookingPanel({
                 {payable ? t('partnerBooking.paying', 'Opening secure payment…') : t('partnerBooking.sending', 'Sending…')}
               </span>
             ) : payable && quote ? (
-              t('partnerBooking.payCta', { amount: formatQuotedEur(quote.total, lang), defaultValue: 'Reserve and pay {{amount}}' })
+              t('partnerBooking.payCta', { amount: formatQuotedEur(quote.total, lang), defaultValue: 'Reserve now · {{amount}}' })
             ) : (
               t('partnerBooking.submit', 'Request these dates')
             )}
@@ -795,7 +806,7 @@ export function PartnerBookingPanel({
 
           <p className="text-[11px] text-black/30 text-center leading-relaxed">
             {payable
-              ? t('partnerBooking.payNote', 'Your card is charged now, on a secure Stripe page. We confirm the home within 48 hours; if we cannot confirm it, you are refunded in full.')
+              ? t('partnerBooking.payNote', 'Your card is not charged now. The amount is held on your card, on a secure Stripe page, and only charged once we confirm the home, within 48 hours. If we cannot confirm it, the hold is released and nothing is charged.')
               : t('partnerBooking.noCharge', 'No payment now — our concierge confirms availability and the final total first.')}
           </p>
           </ReserveCtaSlot>

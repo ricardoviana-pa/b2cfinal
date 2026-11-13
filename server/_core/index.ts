@@ -877,6 +877,12 @@ ${allUrls.join("\n")}
       .then(({ startTripwixRefresh }) => startTripwixRefresh())
       .catch((e) => console.warn("[Tripwix] refresh dos calendários não arrancou:", e?.message ?? e));
 
+    // Casas parceiras com valor retido no cartão: confere os pedidos abertos
+    // com o Stripe de 5 em 5 minutos, para o caso de um evento não chegar.
+    import("../services/partner-pay")
+      .then(({ startPartnerPaymentSweep }) => startPartnerPaymentSweep())
+      .catch((e) => console.warn("[Partner pay] a passagem não arrancou:", e?.message ?? e));
+
     // Pagamento em duas partes (Fase 2): motor da 2.ª parte e digest diário às
     // 09:00 de Lisboa. O motor só corre com CHECKOUT_BALANCE=true no serviço
     // de produção (canRunBalanceEngine). O digest é agendado no serviço de

@@ -201,9 +201,11 @@ describe("the partner panel's button: pay now when the server says the stay can 
     text: textOf(html.match(/<button[^>]*data-partner-cta[^>]*>([\s\S]*?)<\/button>/)?.[1] ?? ""),
   });
 
-  it("payable: 'Reserve and pay' with the total, and the note says the card is charged now and refunded if the home is not confirmed", () => {
+  it("payable: 'Reserve now' with the total, and the note says the amount is held, not charged, until the home is confirmed", () => {
     const { html } = panel({ ...stay, quote: { ...QUOTE, payable: true } });
-    expect(cta(html)).toEqual({ mode: "pay", text: "Reserve and pay €5,565" });
+    expect(cta(html)).toEqual({ mode: "pay", text: "Reserve now · €5,565" });
+    expect(en.partnerBooking.payNote).toContain("not charged now");
+    expect(en.partnerBooking.payNote).toContain("hold is released");
     expect(textOf(html)).toContain(en.partnerBooking.payNote);
     expect(textOf(html)).toContain(en.partnerBooking.payFeesPending);
     expect(textOf(html)).not.toContain(en.partnerBooking.noCharge);
