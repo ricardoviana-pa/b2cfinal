@@ -159,8 +159,14 @@ export function registerStripeCardWebhookRoute(app: Express) {
       if (event.type === "charge.refunded") {
         // Casa parceira (partner-pay.ts): a devolução foi feita no Dashboard.
         // Qualquer outra charge sai daqui "ignored" e segue como sempre.
-        try {
-          const { handlePartnerChargeRefunded } = await import("../services/partner-pay");
+        // Se o módulo não carregar, a devolução de qualquer outra casa segue
+        // como sempre (regista e responde 200): nunca um 500 por causa disto.
+        const partnerPay = await import("../services/partner-pay").catch((err: any) => {
+          console.error("[Partner pay] módulo indisponível no webhook:", err?.message);
+          return null;
+        });
+        if (partnerPay) try {
+          const { handlePartnerChargeRefunded } = partnerPay;
           const r = await handlePartnerChargeRefunded(event.data.object as any);
           if (r !== "ignored") console.info(`[Partner pay] webhook: charge ${(event.data.object as any).id} → ${r}`);
         } catch (err: any) {

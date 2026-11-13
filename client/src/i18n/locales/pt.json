@@ -2082,7 +2082,7 @@
     "paidTitle": "Pagamento recebido",
     "paidBody": "Recebemos o seu pagamento de {{amount}}. Estamos a confirmar a sua estadia com a casa e respondemos em até 48 horas. A reserva ainda não está confirmada: se não for possível confirmá-la, devolvemos o valor total.",
     "payChecking": "A verificar o seu pagamento…",
-    "payNotConfirmed": "Não conseguimos confirmar um pagamento nesta visita. Se o concluiu, vai receber um email em breve; caso contrário, pode tentar de novo abaixo.",
+    "payNotConfirmed": "Não conseguimos confirmar o seu pagamento nesta página. Se o concluiu, vai receber um email em breve: por favor não pague de novo. Se o email não chegar, fale com o concierge.",
     "payPriceChanged": "O preço destas datas acabou de ser atualizado. Veja o novo total acima e continue.",
     "payUnavailable": "O pagamento online não está disponível para estas datas neste momento. Pode enviar o pedido e respondemos por email.",
     "payError": "Não foi possível abrir a página de pagamento. Nada foi cobrado. Tente de novo ou fale com o concierge."

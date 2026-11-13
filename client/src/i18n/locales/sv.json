@@ -2082,7 +2082,7 @@
     "paidTitle": "Betalning mottagen",
     "paidBody": "Vi har tagit emot din betalning på {{amount}}. Vi bekräftar din vistelse med huset och svarar inom 48 timmar. Bokningen är ännu inte bekräftad: kan vi inte bekräfta den får du hela beloppet tillbaka.",
     "payChecking": "Kontrollerar din betalning…",
-    "payNotConfirmed": "Vi kunde inte bekräfta någon betalning för det här besöket. Om du slutförde den får du snart ett mejl; annars kan du försöka igen nedan.",
+    "payNotConfirmed": "Vi kunde inte bekräfta din betalning på den här sidan. Om du slutförde den får du snart ett mejl: betala inte igen. Kommer inget mejl, skriv till conciergen.",
     "payPriceChanged": "Priset för dessa datum har just uppdaterats. Kontrollera den nya summan ovan och fortsätt.",
     "payUnavailable": "Onlinebetalning är inte tillgänglig för dessa datum just nu. Du kan skicka förfrågan i stället så svarar vi via mejl.",
     "payError": "Det gick inte att öppna betalningssidan. Inget har dragits. Försök igen eller skriv till conciergen."

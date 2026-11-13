@@ -123,13 +123,38 @@ const SUBMIT_NOTE: Record<string, string> = {
  * para depois ser reembolsado. Com um pago pendente, o segundo fica pelo
  * pedido sem pagamento e a equipa decide.
  */
+const sameNights = (m: Record<string, string>, slug: string, checkin: string, checkout: string) =>
+  m.property === slug && YMD.test(m.checkin || "") && YMD.test(m.checkout || "") && m.checkin < checkout && checkin < m.checkout;
+
 async function paidStayOverlaps(slug: string, checkin: string, checkout: string): Promise<boolean> {
   const rows = await db.listLeads({ source: "partner-home-request" });
-  return rows.some((lead: any) => {
-    const m = lead?.metadata || {};
-    return m.property === slug && m.payment === "paid" && YMD.test(m.checkin || "") && YMD.test(m.checkout || "")
-      && m.checkin < checkout && checkin < m.checkout;
-  });
+  return rows.some((lead: any) => lead?.metadata?.payment === "paid" && sameNights(lead.metadata, slug, checkin, checkout));
+}
+
+/**
+ * Um pedido acabou de ficar pago: as páginas de pagamento ainda abertas para
+ * as mesmas noites fecham-se (uma sessão vive 31 minutos, e o segundo hóspede
+ * — ou o mesmo, noutro separador — pagaria por cima). Se mesmo assim já
+ * houver outro pagamento para estas noites, devolve os pedidos em causa para
+ * a equipa ser avisada. Melhor esforço: nunca falha o pagamento que chegou.
+ */
+async function closeCompetingPayments(leadId: number, m: Record<string, string>): Promise<number[]> {
+  const alsoPaid: number[] = [];
+  try {
+    const rows = await db.listLeads({ source: "partner-home-request" });
+    const rivals = rows.filter((lead: any) => lead?.id !== leadId && lead?.metadata && sameNights(lead.metadata, m.property, m.checkin, m.checkout));
+    for (const lead of rivals as any[]) {
+      if (lead.metadata.payment === "paid") alsoPaid.push(lead.id);
+      if (lead.metadata.payment !== "started" || !lead.metadata.paymentSessionId) continue;
+      try {
+        await (await stripeClient()).checkout.sessions.expire(lead.metadata.paymentSessionId);
+        console.info(`[Partner pay] expired open session of lead=${lead.id} (lead=${leadId} paid the same nights)`);
+      } catch { /* já paga ou já expirada: o Stripe recusa, e está certo */ }
+    }
+  } catch (err: any) {
+    console.error(`[Partner pay] closing competing payments failed lead=${leadId}:`, err?.message);
+  }
+  return alsoPaid;
 }
 
 /**
@@ -205,6 +230,9 @@ export async function startPartnerPayment(raw: unknown): Promise<{ url: string; 
         },
       }],
       custom_text: { submit: { message: SUBMIT_NOTE[lang] ?? SUBMIT_NOTE.en } },
+      // Sempre em euros: sem conversão de moeda (com taxa) na página do Stripe,
+      // e o valor pago é o que o painel mostrou.
+      adaptive_pricing: { enabled: false },
       metadata: flowMeta,
       payment_intent_data: {
         metadata: flowMeta,
@@ -228,30 +256,55 @@ export async function startPartnerPayment(raw: unknown): Promise<{ url: string; 
 }
 
 type Notice = "started" | "paid" | "refunded";
-const CHANNELS: Record<Notice, ("team" | "guest")[]> = { started: ["team"], paid: ["team", "guest"], refunded: ["team", "guest"] };
+/** Na devolução o hóspede vai primeiro: o email da equipa diz se ele foi avisado. */
+const CHANNELS: Record<Notice, ("team" | "guest")[]> = { started: ["team"], paid: ["team", "guest"], refunded: ["guest", "team"] };
 
-/** Emails de cada passo, uma vez por pedido e canal (a chave de idempotência do fornecedor segura as repetições). */
-async function notifyPartnerPayment(leadId: number, notice: Notice, opts: { guest?: boolean } = {}): Promise<void> {
+/**
+ * Emails de cada passo, uma vez por pedido, canal e variante (a chave de
+ * idempotência do fornecedor segura as repetições). Devolve false se algum
+ * não saiu: quem chama a partir do webhook responde 500 e o Stripe reentrega.
+ */
+async function notifyPartnerPayment(leadId: number, notice: Notice, opts: { guest?: boolean; variant?: string } = {}): Promise<boolean> {
   const lead = await db.getLeadById(leadId);
-  if (!lead) return;
+  if (!lead) return true;
   const metadata: Record<string, string> = { ...(lead.metadata || {}) };
   const { sendPartnerPaymentEmail } = await import("./transactional-email");
+  const suffix = opts.variant ? `_${opts.variant}` : "";
+  const patch: Record<string, string> = {};
+  let ok = true;
   for (const channel of CHANNELS[notice]) {
     if (channel === "guest" && opts.guest === false) continue;
-    const key = `${notice}${channel === "team" ? "Team" : "Guest"}Notification`;
+    const key = `${notice}${channel === "team" ? "Team" : "Guest"}Notification${suffix}`;
     if (metadata[key] === "accepted") continue;
     try {
-      metadata[`${key}Id`] = await sendPartnerPaymentEmail({ ...lead, metadata }, notice, channel);
-      metadata[key] = "accepted";
+      patch[`${key}Id`] = await sendPartnerPaymentEmail({ ...lead, metadata }, notice, channel, opts.variant);
+      metadata[key] = patch[key] = "accepted";
     } catch {
-      metadata[key] = "failed";
+      metadata[key] = patch[key] = "failed";
+      ok = false;
       console.error(`[Partner pay] notification failed lead=${leadId} notice=${notice} channel=${channel}`);
     }
   }
-  // Só as chaves das notificações: o estado do pagamento pode ter mudado entretanto.
-  const fresh = await db.getLeadById(leadId);
-  const patch = Object.fromEntries(Object.entries(metadata).filter(([k]) => k.includes("Notification")));
-  await db.updateLead(leadId, { metadata: { ...(fresh?.metadata || {}), ...patch } }).catch(() => {});
+  if (!Object.keys(patch).length) return ok;
+  // Só as chaves das notificações, por cima do estado mais recente: o
+  // pagamento pode ter mudado entretanto, e um "failed" de quem perdeu a
+  // corrida nunca apaga o "accepted" de quem a ganhou.
+  const fresh = (await db.getLeadById(leadId))?.metadata || {};
+  const merged: Record<string, string> = { ...fresh };
+  for (const [k, v] of Object.entries(patch)) if (!(v === "failed" && merged[k] === "accepted")) merged[k] = v;
+  await db.updateLead(leadId, { metadata: merged }).catch(() => {});
+  return ok;
+}
+
+/** A variante de uma devolução: "full", ou os cêntimos devolvidos até agora (cada parcial tem o seu aviso). */
+const refundVariant = (m: Record<string, string>) => (m.payment === "refunded" ? "full" : String(Math.round(Number(m.refundedAmount || 0) * 100)));
+
+/** Admin: voltar a tentar o aviso à equipa do passo em que o pedido está (nunca escreve ao hóspede). */
+export async function retryPartnerPaymentTeamNotice(leadId: number): Promise<{ teamNotification: string }> {
+  const m = (await db.getLeadById(leadId))?.metadata || {};
+  const notice: Notice = m.payment === "paid" ? "paid" : m.payment === "started" ? "started" : "refunded";
+  const ok = await notifyPartnerPayment(leadId, notice, { guest: false, variant: notice === "refunded" ? refundVariant(m) : undefined });
+  return { teamNotification: ok ? "accepted" : "failed" };
 }
 
 const leadIdOf = (meta: Record<string, string> | null | undefined) => {
@@ -263,7 +316,7 @@ const leadIdOf = (meta: Record<string, string> | null | undefined) => {
  * payment_intent.succeeded de uma casa parceira (webhook, ou o regresso do
  * hóspede à página). Idempotente: um pedido já pago ou reembolsado não muda.
  */
-export async function handlePartnerPaymentSucceeded(pi: { id: string; amount_received?: number; amount?: number; metadata?: Record<string, string> | null }): Promise<"paid" | "already" | "ignored"> {
+export async function handlePartnerPaymentSucceeded(pi: { id: string; amount_received?: number; amount?: number; currency?: string; metadata?: Record<string, string> | null }): Promise<"paid" | "already" | "ignored"> {
   const leadId = leadIdOf(pi.metadata);
   if (!leadId) return "ignored";
   const lead = await db.getLeadById(leadId);
@@ -275,11 +328,21 @@ export async function handlePartnerPaymentSucceeded(pi: { id: string; amount_rec
     metadata.paymentIntentId = pi.id;
     metadata.paidAt = new Date().toISOString();
     metadata.paidAmount = String((Number(pi.amount_received ?? pi.amount) || 0) / 100);
+    if (pi.currency && pi.currency.toLowerCase() !== "eur") metadata.paidCurrency = pi.currency.toUpperCase();
     await db.updateLead(leadId, { metadata });
     console.info(`[Partner pay] paid lead=${leadId} pi=${pi.id} amount=${metadata.paidAmount}`);
+    const alsoPaid = await closeCompetingPayments(leadId, metadata);
+    if (alsoPaid.length) {
+      metadata.overlapWith = alsoPaid.map((id) => `PA-${id}`).join(", ");
+      await db.updateLead(leadId, { metadata }).catch(() => {});
+      console.warn(`[Partner pay] lead=${leadId} paid nights already paid by ${metadata.overlapWith}`);
+    }
   }
-  // Também na repetição: um email que falhou à primeira sai agora.
-  if (metadata.payment === "paid") await notifyPartnerPayment(leadId, "paid");
+  // Também na repetição: um email que falhou à primeira sai agora. Se voltar
+  // a falhar, lança: o webhook responde 500 e o Stripe reentrega o evento.
+  if (metadata.payment === "paid" && !(await notifyPartnerPayment(leadId, "paid"))) {
+    throw new Error("PARTNER_NOTIFY_FAILED");
+  }
   return first ? "paid" : "already";
 }
 
@@ -303,12 +366,21 @@ export async function handlePartnerChargeRefunded(charge: { id: string; refunded
   const full = charge.refunded === true || (Number(charge.amount_refunded) > 0 && Number(charge.amount_refunded) >= Number(charge.amount));
   const state: PartnerPaymentState = full ? "refunded" : "partially_refunded";
   const metadata = { ...(lead.metadata || {}) };
-  metadata.payment = state;
-  metadata.refundedAmount = String((Number(charge.amount_refunded) || 0) / 100);
-  metadata.refundedAt = new Date().toISOString();
-  await db.updateLead(leadId, { metadata });
-  console.info(`[Partner pay] ${state} lead=${leadId} charge=${charge.id} amount=${metadata.refundedAmount}`);
-  await notifyPartnerPayment(leadId, "refunded", { guest: full });
+  const refundedCents = Number(charge.amount_refunded) || 0;
+  const knownCents = Math.round(Number(metadata.refundedAmount || 0) * 100);
+  // Eventos fora de ordem: uma devolução parcial antiga nunca desfaz uma
+  // total, nem baixa o valor já devolvido.
+  if ((metadata.payment === "refunded" && !full) || refundedCents < knownCents) return metadata.payment as "refunded" | "partially_refunded";
+  if (metadata.payment !== state || refundedCents !== knownCents) {
+    metadata.payment = state;
+    metadata.refundedAmount = String(refundedCents / 100);
+    metadata.refundedAt = new Date().toISOString();
+    await db.updateLead(leadId, { metadata });
+    console.info(`[Partner pay] ${state} lead=${leadId} charge=${charge.id} amount=${metadata.refundedAmount}`);
+  }
+  if (!(await notifyPartnerPayment(leadId, "refunded", { guest: full, variant: refundVariant(metadata) }))) {
+    throw new Error("PARTNER_NOTIFY_FAILED");
+  }
   return state;
 }
 
@@ -327,6 +399,7 @@ export async function partnerPaymentStatus(sessionId: string): Promise<{ status:
   if (session.payment_status !== "paid") return { status: "open" };
   const pi = session.payment_intent as Stripe.PaymentIntent | null;
   if (pi && typeof pi === "object") await handlePartnerPaymentSucceeded(pi as any).catch((err: any) => console.error(`[Partner pay] status settle failed lead=${leadId}:`, err?.message));
-  const m = (await db.getLeadById(leadId))?.metadata || {};
+  // Pago é pago, mesmo que a BD falhe agora: a página nunca volta a oferecer o pagamento.
+  const m = (await db.getLeadById(leadId).catch(() => undefined))?.metadata || {};
   return { status: "paid", reference: `PA-${leadId}`, propertyName: m.propertyName, checkin: m.checkin, checkout: m.checkout, guests: m.guests, total: m.paidAmount || m.total };
 }

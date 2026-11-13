@@ -2082,7 +2082,7 @@
     "paidTitle": "Betaling ontvangen",
     "paidBody": "Wij hebben uw betaling van {{amount}} ontvangen. Wij bevestigen uw verblijf met het huis en antwoorden binnen 48 uur. De reservering is nog niet bevestigd: als wij haar niet kunnen bevestigen, krijgt u het volledige bedrag terug.",
     "payChecking": "Uw betaling wordt gecontroleerd…",
-    "payNotConfirmed": "Wij konden voor dit bezoek geen betaling bevestigen. Als u de betaling hebt afgerond, ontvangt u binnenkort een e-mail; anders kunt u het hieronder opnieuw proberen.",
+    "payNotConfirmed": "Wij konden uw betaling op deze pagina niet bevestigen. Als u de betaling hebt afgerond, ontvangt u binnenkort een e-mail: betaal alstublieft niet opnieuw. Komt er geen e-mail, stuur dan de concierge een bericht.",
     "payPriceChanged": "De prijs voor deze data is zojuist bijgewerkt. Controleer het nieuwe totaal hierboven en ga verder.",
     "payUnavailable": "Online betalen is op dit moment niet beschikbaar voor deze data. U kunt de aanvraag versturen; wij antwoorden per e-mail.",
     "payError": "De betaalpagina kon niet worden geopend. Er is niets afgeschreven. Probeer het opnieuw of stuur de concierge een bericht."

@@ -143,5 +143,8 @@ export async function createPartnerRequest(input: unknown) {
 export async function retryPartnerTeamNotification(id: number) {
   const lead = await db.getLeadById(id);
   if (!lead || lead.source !== "partner-home-request") throw new TRPCError({ code: "NOT_FOUND" });
+  // Pedido com pagamento: o aviso é o do passo em que está, e só as chaves
+  // das notificações são escritas (o estado do pagamento pode estar a mudar).
+  if (lead.metadata?.payment) return (await import("./partner-pay")).retryPartnerPaymentTeamNotice(id);
   return notify({ ...lead, metadata: lead.metadata || {} }, ["team"]);
 }

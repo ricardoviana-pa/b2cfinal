@@ -2544,7 +2544,7 @@ export async function sendPartnerRequestEmail(data: {
 export async function sendPartnerPaymentEmail(data: {
   id: number; email: string; name?: string | null; phone?: string | null;
   message?: string | null; metadata?: Record<string, string> | null;
-}, notice: "started" | "paid" | "refunded", channel: "team" | "guest"): Promise<string> {
+}, notice: "started" | "paid" | "refunded", channel: "team" | "guest", variant?: string): Promise<string> {
   if (isPreviewDeployment() || !resend) throw new Error("PARTNER_EMAIL_UNAVAILABLE");
   const esc = (s: string | null | undefined) => (s || "—").replace(/[&<>"']/g,
     c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
@@ -2555,27 +2555,36 @@ export async function sendPartnerPaymentEmail(data: {
   const paid = eur(m.paidAmount || m.paymentAmount || m.total);
   const refunded = eur(m.refundedAmount);
   const partial = m.payment === "partially_refunded";
+  const guestTold = Object.entries(m).some(([k, v]) => k.startsWith("refundedGuestNotification") && v === "accepted");
+  // Só o alojamento foi cobrado: a limpeza e a caução, se a casa as tiver, vêm depois.
+  const feesOpen = m.quoteStatus !== "complete";
   const dashboard = m.paymentIntentId ? `https://dashboard.stripe.com/payments/${encodeURIComponent(m.paymentIntentId)}` : "";
 
   let title: string, intro: string;
   if (channel === "team") {
     if (notice === "started") {
       title = `Casa parceira #${data.id} · pagamento iniciado`;
-      intro = `O hóspede abriu o pagamento de ${paid}. Se o email "PAGO" não chegar em 30 minutos, não concluiu: contactar e tratar como um pedido normal.`;
+      intro = m.paymentSessionId
+        ? `O hóspede abriu o pagamento de ${paid}. Se o email "PAGO" não chegar em 30 minutos, não concluiu: contactar e tratar como um pedido normal.`
+        : `O hóspede quis pagar ${paid}, mas a página de pagamento não abriu. Nada foi cobrado: contactar e tratar como um pedido normal.`;
     } else if (notice === "paid") {
       title = `PAGO · casa parceira #${data.id}`;
-      intro = `O hóspede pagou ${paid}. Confirmar a estadia com a Tripwix em até 48 horas. Se a casa não confirmar, devolver o valor total no Dashboard do Stripe (o hóspede é avisado por email automaticamente). O hóspede foi informado de que a reserva ainda não está confirmada.`;
+      intro = `O hóspede pagou ${paid}. Confirmar a estadia com a Tripwix em até 48 horas. Se a casa não confirmar, devolver o valor total no Dashboard do Stripe (o hóspede é avisado por email automaticamente). O hóspede foi informado de que a reserva ainda não está confirmada.`
+        + (feesOpen ? " O valor cobre só o alojamento: a limpeza e a caução, se existirem, ficam por indicar ao hóspede na confirmação." : "")
+        + (m.overlapWith ? ` ATENÇÃO: já existe outro pagamento para noites desta estadia (${m.overlapWith}). Só uma das reservas pode ficar: devolver a outra.` : "");
     } else {
       title = `${partial ? "DEVOLUÇÃO PARCIAL" : "DEVOLVIDO"} · casa parceira #${data.id}`;
       intro = partial
         ? `Foram devolvidos ${refunded} no Stripe. O hóspede não recebeu email nosso sobre esta devolução parcial.`
-        : `O pagamento foi devolvido na totalidade (${refunded}) no Stripe. O hóspede foi avisado por email.`;
+        : `O pagamento foi devolvido na totalidade (${refunded}) no Stripe. ${guestTold ? "O hóspede foi avisado por email." : "O email ao hóspede NÃO saiu: avisar o hóspede."}`;
     }
   } else if (notice === "paid") {
     title = pt ? "Recebemos o seu pagamento" : "We have received your payment";
     intro = pt
       ? `Recebemos o seu pagamento de ${paid}. Estamos a confirmar a sua estadia com a casa e respondemos em até 48 horas. A reserva ainda não está confirmada: se não for possível confirmá-la, devolvemos o valor total.`
-      : `We have received your payment of ${paid}. We are confirming your stay with the home and will reply within 48 hours. The reservation is not confirmed yet: if we cannot confirm it, you are refunded in full.`;
+        + (feesOpen ? " Este valor cobre a sua estadia. Se esta casa tiver taxa de limpeza ou caução reembolsável, indicamos o valor quando confirmarmos a casa." : "")
+      : `We have received your payment of ${paid}. We are confirming your stay with the home and will reply within 48 hours. The reservation is not confirmed yet: if we cannot confirm it, you are refunded in full.`
+        + (feesOpen ? " This amount covers your stay. If this home adds a cleaning fee or a refundable security deposit, we tell you the amount when we confirm the home." : "");
   } else {
     title = pt ? "Devolvemos o seu pagamento" : "We have refunded your payment";
     intro = pt
@@ -2597,7 +2606,7 @@ export async function sendPartnerPaymentEmail(data: {
   const { data: result, error } = await resend.emails.send({
     from: FROM_EMAIL, to: channel === "team" ? BOOKING_NOTIFICATION_EMAIL : data.email,
     replyTo: channel === "team" ? data.email : BOOKING_NOTIFICATION_EMAIL, subject, html,
-  }, { idempotencyKey: `partner-pay-${data.id}-${notice}-${channel}-v1` });
+  }, { idempotencyKey: `partner-pay-${data.id}-${notice}${variant ? `-${variant}` : ""}-${channel}-v1` });
   if (error || !result?.id) throw new Error("PARTNER_EMAIL_REJECTED");
   console.info(`[Partner pay] provider accepted lead=${data.id} notice=${notice} channel=${channel}`);
   return result.id;

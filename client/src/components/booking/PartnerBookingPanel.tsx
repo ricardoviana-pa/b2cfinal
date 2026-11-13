@@ -140,7 +140,12 @@ export function PartnerBookingPanel({
   // The server says when this stay can be paid for now (partner-pay.ts): free,
   // priced for every night, read recently, and the payment switched on.
   // Otherwise this panel is the request it always was, with no payment.
-  const payable = !!quote?.available && !!(quote as { payable?: boolean }).payable;
+  // payRefused: the server refused the payment for these dates (another guest
+  // paid them and the home has not answered, or the switch went off). The
+  // quote alone would keep saying "payable", so the panel remembers it and
+  // offers the request with no payment; new dates clear it.
+  const [payRefused, setPayRefused] = useState(false);
+  useEffect(() => { setPayRefused(false); }, [checkIn, checkOut, guests]);
 
   // Back from the Stripe page: ?partner_session=cs_… Read after mount, so the
   // server render and the first client render agree.
@@ -154,6 +159,11 @@ export function PartnerBookingPanel({
     { enabled: !!paySession, staleTime: Infinity, retry: 1, refetchOnWindowFocus: false },
   );
   const paid = payStatus.data?.status === 'paid' ? payStatus.data : null;
+  // Back from Stripe without a confirmed answer (the check failed, or Stripe
+  // did not say "paid"): the guest very likely paid, so the panel never
+  // offers the payment again on this visit.
+  const payUnconfirmed = !!paySession && !paid && !payStatus.isLoading;
+  const payable = !!quote?.available && !!(quote as { payable?: boolean }).payable && !payRefused && !paySession;
   const paidLogged = useRef(false);
   useEffect(() => {
     if (!paid || paidLogged.current) return;
@@ -179,6 +189,17 @@ export function PartnerBookingPanel({
   const payStart = trpc.booking.partnerPayStart.useMutation();
   const [redirecting, setRedirecting] = useState(false);
   const busy = createLead.isPending || payStart.isPending || redirecting;
+  // The browser's Back button can restore this page from its cache with the
+  // button still saying "Opening secure payment…": a restored page starts over.
+  useEffect(() => {
+    const onShow = (e: PageTransitionEvent) => {
+      if (!e.persisted) return;
+      setRedirecting(false);
+      submitting.current = false;
+    };
+    window.addEventListener('pageshow', onShow);
+    return () => window.removeEventListener('pageshow', onShow);
+  }, []);
 
   // Computador: o "Pedir estas datas" fica no rodapé fixo do cartão
   // (bookingCardSlot.tsx), que nunca tapa nada. Quando a cotação diz que há
@@ -257,6 +278,7 @@ export function PartnerBookingPanel({
         pushDL({ event: 'partner_payment_error', property_id: propertySlug, reason: code.slice(0, 40) });
         if (code === 'PARTNER_PRICE_CHANGED' || code === 'PARTNER_NOT_PAYABLE' || code === 'PARTNER_PAY_OFF') {
           setQuoteNonce(Date.now());
+          if (code !== 'PARTNER_PRICE_CHANGED') setPayRefused(true);
           setSubmitError(code === 'PARTNER_PRICE_CHANGED'
             ? t('partnerBooking.payPriceChanged', 'The price for these dates has just been updated. Please check the new total above and continue.')
             : t('partnerBooking.payUnavailable', 'Online payment is not available for these dates right now. You can send the request instead and we will reply by email.'));
@@ -743,11 +765,11 @@ export function PartnerBookingPanel({
             </div>
           )}
 
-          {paySession && payStatus.data && !paid && (
+          {payUnconfirmed && (
             <div className="flex items-start gap-2 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
               <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
               <p className="text-xs text-amber-800 leading-snug">
-                {t('partnerBooking.payNotConfirmed', 'We could not confirm a payment for this visit. If you completed it, you will receive an email shortly; otherwise you can try again below.')}
+                {t('partnerBooking.payNotConfirmed', 'We could not confirm your payment on this page. If you completed it, you will receive an email shortly: please do not pay again. If no email arrives, message the concierge.')}
               </p>
             </div>
           )}

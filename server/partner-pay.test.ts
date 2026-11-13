@@ -11,7 +11,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const UID = "3bac86ea-0000-4000-8000-000000000001";
 const home = { slug: "casa-de-caiz", name: "Casa de Caiz", bookingMode: "request", source: "tripwix", isActive: true, supplierUid: UID, supplierReference: "PT0101", maxGuests: 10, minNights: 2, cleaningFee: 0, securityDeposit: 0 };
 const leads = new Map<number, any>();
-const emails: { id: number; notice: string; channel: string; payment?: string }[] = [];
+const emails: { id: number; notice: string; channel: string; payment?: string; variant?: string; overlapWith?: string }[] = [];
+const emailFails = { on: false };
+const sessionsExpire = vi.fn();
 const quote = vi.fn();
 const sessionsCreate = vi.fn();
 const sessionsRetrieve = vi.fn();
@@ -27,14 +29,18 @@ vi.mock("./db", () => ({
 }));
 vi.mock("./services/properties-store", () => ({ getPropertiesForSite: async () => [home] }));
 vi.mock("./services/transactional-email", () => ({
-  sendPartnerPaymentEmail: async (lead: any, notice: string, channel: string) => { emails.push({ id: lead.id, notice, channel, payment: lead.metadata?.payment }); return `email-${emails.length}`; },
+  sendPartnerPaymentEmail: async (lead: any, notice: string, channel: string, variant?: string) => {
+    if (emailFails.on) throw new Error("provider down");
+    emails.push({ id: lead.id, notice, channel, payment: lead.metadata?.payment, ...(variant ? { variant } : {}), ...(lead.metadata?.overlapWith ? { overlapWith: lead.metadata.overlapWith } : {}) });
+    return `email-${emails.length}`;
+  },
 }));
 vi.mock("./services/tripwix", async (importOriginal) => ({
   ...(await importOriginal<typeof import("./services/tripwix")>()),
   getPartnerQuote: (...a: any[]) => quote(...a),
 }));
 vi.mock("stripe", () => ({
-  default: class { checkout = { sessions: { create: sessionsCreate, retrieve: sessionsRetrieve } }; paymentIntents = { retrieve: piRetrieve }; },
+  default: class { checkout = { sessions: { create: sessionsCreate, retrieve: sessionsRetrieve, expire: sessionsExpire } }; paymentIntents = { retrieve: piRetrieve }; },
 }));
 
 const NOW = Date.parse("2026-11-13T12:00:00Z");
@@ -50,8 +56,9 @@ const pay = async () => import("./services/partner-pay");
 const flush = () => new Promise((r) => setImmediate(r));
 
 beforeEach(() => {
-  leads.clear(); emails.length = 0;
-  quote.mockReset(); sessionsCreate.mockReset(); sessionsRetrieve.mockReset(); piRetrieve.mockReset();
+  leads.clear(); emails.length = 0; emailFails.on = false;
+  quote.mockReset(); sessionsCreate.mockReset(); sessionsRetrieve.mockReset(); piRetrieve.mockReset(); sessionsExpire.mockReset();
+  sessionsExpire.mockResolvedValue({});
   vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(new Date(NOW));
   vi.stubEnv("PARTNER_PAY", "true");
@@ -105,6 +112,7 @@ describe("opening the payment", () => {
     expect(params.line_items[0].price_data).toMatchObject({ currency: "eur", unit_amount: 842750 });
     expect(params.payment_intent_data.metadata).toMatchObject({ flow: "partner_pay", leadId: "1", property: "casa-de-caiz", checkin: "2027-01-10", checkout: "2027-01-17" });
     expect(params.payment_intent_data.capture_method).toBeUndefined(); // cobrança imediata, não retenção
+    expect(params.adaptive_pricing).toEqual({ enabled: false }); // sempre em euros, sem conversão no Stripe
     expect(params.custom_text.submit.message).toContain("48 horas");
     const lead = leads.get(1);
     expect(lead).toMatchObject({ source: "partner-home-request", email: "ana@example.com" });
@@ -196,6 +204,37 @@ describe("Stripe says the payment succeeded", () => {
     expect(emails).toHaveLength(2);
   });
 
+  it("the 'PAGO' email fails: throws for Stripe to redeliver, and the redelivery sends it without paying twice", async () => {
+    await started();
+    const { handlePartnerPaymentSucceeded } = await pay();
+    emailFails.on = true;
+    await expect(handlePartnerPaymentSucceeded(pi)).rejects.toThrow("PARTNER_NOTIFY_FAILED");
+    expect(leads.get(1).metadata.payment).toBe("paid");
+    emailFails.on = false;
+    expect(await handlePartnerPaymentSucceeded(pi)).toBe("already");
+    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["paid/team", "paid/guest"]);
+  });
+
+  it("closes the payment pages still open for the same nights, and warns the team if a second payment got through", async () => {
+    quote.mockResolvedValue(priced());
+    const m = await pay();
+    sessionsCreate.mockResolvedValueOnce({ id: "cs_test_aaaaaaaaaaaaaaaaaaaa", url: "https://checkout.stripe.com/a" });
+    sessionsCreate.mockResolvedValueOnce({ id: "cs_test_bbbbbbbbbbbbbbbbbbbb", url: "https://checkout.stripe.com/b" });
+    sessionsCreate.mockResolvedValueOnce({ id: "cs_test_cccccccccccccccccccc", url: "https://checkout.stripe.com/c" });
+    await m.startPartnerPayment(input()); // 1: 10 a 17
+    await m.startPartnerPayment(input({ email: "rui@example.com", checkin: "2027-01-14", checkout: "2027-01-21" })); // 2: toca nas noites do 1
+    await m.startPartnerPayment(input({ email: "eva@example.com", checkin: "2027-01-17", checkout: "2027-01-24" })); // 3: não toca no 1
+    await flush(); emails.length = 0;
+    await m.handlePartnerPaymentSucceeded({ id: "pi_1", amount_received: 842750, metadata: { flow: "partner_pay", leadId: "1" } });
+    expect(sessionsExpire.mock.calls.map((c) => c[0])).toEqual(["cs_test_bbbbbbbbbbbbbbbbbbbb"]);
+    expect(leads.get(1).metadata.overlapWith).toBeUndefined();
+    // O hóspede 2 já estava no fim do pagamento e o Stripe cobrou-o na mesma.
+    emails.length = 0;
+    await m.handlePartnerPaymentSucceeded({ id: "pi_2", amount_received: 842750, metadata: { flow: "partner_pay", leadId: "2" } });
+    expect(leads.get(2).metadata).toMatchObject({ payment: "paid", overlapWith: "PA-1" });
+    expect(emails.find((e) => e.channel === "team")).toMatchObject({ id: 2, notice: "paid", overlapWith: "PA-1" });
+  });
+
   it("a payment from the checkout of our own homes is not ours to touch", async () => {
     await started();
     const { handlePartnerPaymentSucceeded } = await pay();
@@ -229,14 +268,38 @@ describe("a refund made in the Stripe Dashboard", () => {
     const m = await paidLead();
     expect(await m.handlePartnerChargeRefunded({ id: "ch_1", refunded: true, amount: 842750, amount_refunded: 842750, metadata: { flow: "partner_pay", leadId: "1" } })).toBe("refunded");
     expect(leads.get(1).metadata).toMatchObject({ payment: "refunded", refundedAmount: "8427.5" });
-    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["refunded/team", "refunded/guest"]);
+    // O hóspede primeiro: o email da equipa diz se ele foi avisado.
+    expect(emails.map((e) => `${e.notice}/${e.channel}/${e.variant}`)).toEqual(["refunded/guest/full", "refunded/team/full"]);
   });
 
   it("in part: only the team is told", async () => {
     const m = await paidLead();
     expect(await m.handlePartnerChargeRefunded({ id: "ch_1", refunded: false, amount: 842750, amount_refunded: 50000, metadata: { flow: "partner_pay", leadId: "1" } })).toBe("partially_refunded");
     expect(leads.get(1).metadata).toMatchObject({ payment: "partially_refunded", refundedAmount: "500" });
-    expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["refunded/team"]);
+    expect(emails.map((e) => `${e.notice}/${e.channel}/${e.variant}`)).toEqual(["refunded/team/50000"]);
+  });
+
+  it("in part, then in full: the team hears of both and the guest of the full one", async () => {
+    const m = await paidLead();
+    const meta = { flow: "partner_pay", leadId: "1" };
+    await m.handlePartnerChargeRefunded({ id: "ch_1", refunded: false, amount: 842750, amount_refunded: 50000, metadata: meta });
+    await m.handlePartnerChargeRefunded({ id: "ch_1", refunded: true, amount: 842750, amount_refunded: 842750, metadata: meta });
+    expect(emails.map((e) => `${e.channel}/${e.variant}`)).toEqual(["team/50000", "guest/full", "team/full"]);
+    // Um evento parcial atrasado não desfaz a devolução total nem repete avisos.
+    expect(await m.handlePartnerChargeRefunded({ id: "ch_1", refunded: false, amount: 842750, amount_refunded: 50000, metadata: meta })).toBe("refunded");
+    expect(leads.get(1).metadata).toMatchObject({ payment: "refunded", refundedAmount: "8427.5" });
+    expect(emails).toHaveLength(3);
+  });
+
+  it("the email provider is down: the handler throws so Stripe redelivers, and the redelivery sends what is missing", async () => {
+    const m = await paidLead();
+    const charge = { id: "ch_1", refunded: true, amount: 842750, amount_refunded: 842750, metadata: { flow: "partner_pay", leadId: "1" } };
+    emailFails.on = true;
+    await expect(m.handlePartnerChargeRefunded(charge)).rejects.toThrow("PARTNER_NOTIFY_FAILED");
+    expect(leads.get(1).metadata.payment).toBe("refunded"); // o estado fica; só os avisos faltam
+    emailFails.on = false;
+    expect(await m.handlePartnerChargeRefunded(charge)).toBe("refunded");
+    expect(emails.map((e) => `${e.channel}/${e.variant}`)).toEqual(["guest/full", "team/full"]);
   });
 
   it("a charge with no metadata: the payment intent says whose it is", async () => {

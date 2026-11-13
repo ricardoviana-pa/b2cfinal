@@ -284,7 +284,9 @@ export default function AdminLeads() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {item.source === "partner-home-request" && item.metadata?.teamNotification !== "accepted" && (
+              {item.source === "partner-home-request" && (item.metadata?.payment
+                ? Object.entries(item.metadata).some(([k, v]) => k.includes("TeamNotification") && v === "failed")
+                : item.metadata?.teamNotification !== "accepted") && (
                 <DropdownMenuItem disabled={retryM.isPending} onClick={() => retryM.mutate({ id: item.id })}>
                   <Mail className="h-4 w-4 mr-2" />Notify booking team (no guest email)
                 </DropdownMenuItem>
