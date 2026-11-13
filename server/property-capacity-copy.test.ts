@@ -88,6 +88,23 @@ describe("capacities confirmed by Ricardo on 5 November 2026", () => {
   });
 });
 
+describe("the sync writes the confirmed capacities, not Guesty's older text (CI do main, 5–13 nov 2026)", () => {
+  it("Monte do Sossego's search description, cut from Guesty's summary, says five bedrooms", () => {
+    const monte = homes.find((p: any) => p.guestyId === targets[1].id);
+    const fromGuesty = { ...monte, seoDescription: "A peaceful retreat in the heart of the Alentejo. Traditional Farm with 4 bedrooms, heated pool" };
+    const fixed = normalizePropertyCapacityCopy(fromGuesty);
+    expect(fixed.seoDescription).toContain("Traditional Farm with 5 bedrooms");
+    expect(monte.seoDescription).not.toMatch(/\b(four|4)[ -]bedrooms?\b/i);
+  });
+
+  it("every home the sync maps goes through the correction before it is stamped and written", () => {
+    const source = readFileSync("server/services/guesty-sync.ts", "utf8");
+    const mapped = source.indexOf("normalizePropertyCapacityCopy(\n      mapListingToProperty(");
+    expect(mapped).toBeGreaterThan(-1);
+    expect(source.indexOf("stampLastModified(properties", mapped)).toBeGreaterThan(mapped);
+  });
+});
+
 describe("capacity copy in an older runtime snapshot", () => {
   it.each(["sync", "fallback"])("corrects public %s data and PDP lookup without replacing unrelated copy or operational fields", async source => {
     const dir = mkdtempSync(join(tmpdir(), "pa-capacity-copy-"));
