@@ -21,6 +21,7 @@ vi.mock("./db", () => ({
   createLead: async (row: any) => { const id = leads.size + 1; leads.set(id, { id, ...row }); return { id }; },
   updateLead: async (id: number, data: any) => { leads.set(id, { ...leads.get(id), ...data }); },
   getLeadById: async (id: number) => leads.get(id),
+  listLeads: async () => [...leads.values()],
   getSettingsByKeys: async () => new Map(),
   upsertSetting: async () => {},
 }));
@@ -130,6 +131,23 @@ describe("opening the payment", () => {
     await expect(startPartnerPayment(input())).rejects.toMatchObject({ code: "CONFLICT", message: "PARTNER_NOT_PAYABLE" });
     expect(sessionsCreate).not.toHaveBeenCalled();
     expect(leads.size).toBe(0);
+  });
+
+  it("another guest already paid for nights of this stay and the home has not answered: no second charge", async () => {
+    quote.mockResolvedValue(priced());
+    const m = await pay();
+    await m.startPartnerPayment(input()); await flush();
+    // Só iniciado (pode ter desistido): o segundo hóspede ainda pode pagar.
+    await expect(m.startPartnerPayment(input({ email: "rui@example.com", checkin: "2027-01-14", checkout: "2027-01-21" }))).resolves.toMatchObject({ leadId: 2 });
+    await m.handlePartnerPaymentSucceeded({ id: "pi_1", amount_received: 842750, metadata: { flow: "partner_pay", leadId: "1" } });
+    sessionsCreate.mockClear();
+    await expect(m.startPartnerPayment(input({ email: "eva@example.com", checkin: "2027-01-16", checkout: "2027-01-23" }))).rejects.toMatchObject({ code: "CONFLICT", message: "PARTNER_NOT_PAYABLE" });
+    expect(sessionsCreate).not.toHaveBeenCalled();
+    // A saída de um é a entrada do outro: não se sobrepõem.
+    await expect(m.startPartnerPayment(input({ email: "eva@example.com", checkin: "2027-01-17", checkout: "2027-01-24" }))).resolves.toBeTruthy();
+    // Devolvido: as noites voltam a poder ser pagas.
+    await m.handlePartnerChargeRefunded({ id: "ch_1", refunded: true, amount: 842750, amount_refunded: 842750, metadata: { flow: "partner_pay", leadId: "1" } });
+    await expect(m.startPartnerPayment(input({ email: "eva@example.com", checkin: "2027-01-16", checkout: "2027-01-23" }))).resolves.toBeTruthy();
   });
 
   it("switch off: refused before anything is read", async () => {

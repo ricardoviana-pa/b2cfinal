@@ -116,6 +116,23 @@ const SUBMIT_NOTE: Record<string, string> = {
 };
 
 /**
+ * Já há um pagamento por devolver nesta casa que toca nestas noites?
+ *
+ * Enquanto a Tripwix não confirma (até 48 h) o calendário dela continua a
+ * dar as noites como livres, e um segundo hóspede pagaria as mesmas datas
+ * para depois ser reembolsado. Com um pago pendente, o segundo fica pelo
+ * pedido sem pagamento e a equipa decide.
+ */
+async function paidStayOverlaps(slug: string, checkin: string, checkout: string): Promise<boolean> {
+  const rows = await db.listLeads({ source: "partner-home-request" });
+  return rows.some((lead: any) => {
+    const m = lead?.metadata || {};
+    return m.property === slug && m.payment === "paid" && YMD.test(m.checkin || "") && YMD.test(m.checkout || "")
+      && m.checkin < checkout && checkin < m.checkout;
+  });
+}
+
+/**
  * Abre a sessão de pagamento de uma estadia numa casa parceira.
  * Lança CONFLICT com PARTNER_NOT_PAYABLE (o painel volta ao pedido sem
  * pagamento) ou PARTNER_PRICE_CHANGED (o painel relê o preço e mostra-o).
@@ -137,6 +154,10 @@ export async function startPartnerPayment(raw: unknown): Promise<{ url: string; 
   const quote = await getPartnerQuote(property.supplierUid, input.checkin, input.checkout, partnerFeesOf(property, input.guests));
   if (!partnerQuotePayable(quote)) throw new TRPCError({ code: "CONFLICT", message: "PARTNER_NOT_PAYABLE" });
   if (cents(quote!.total) !== cents(input.shownTotal)) throw new TRPCError({ code: "CONFLICT", message: "PARTNER_PRICE_CHANGED" });
+  if (await paidStayOverlaps(property.slug, input.checkin, input.checkout)) {
+    console.info(`[Partner pay] refused: paid stay already pending property=${property.slug} ${input.checkin}→${input.checkout}`);
+    throw new TRPCError({ code: "CONFLICT", message: "PARTNER_NOT_PAYABLE" });
+  }
   const amount = cents(quote!.total);
   const lang = (input.locale || "en").slice(0, 2).toLowerCase();
 
