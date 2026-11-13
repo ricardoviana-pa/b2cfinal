@@ -136,6 +136,22 @@ const SUBMIT_NOTE: Record<string, string> = {
   fi: "Summaa ei veloiteta nyt: se varataan kortiltasi ja veloitetaan vasta, kun vahvistamme talon, 48 tunnin kuluessa. Jos emme voi vahvistaa sitä, katevaraus vapautetaan eikä mitään veloiteta.",
 };
 
+/** "noite/noites" e "hóspede/hóspedes" na linha da estadia da página do Stripe, na língua do hóspede. */
+const STAY_WORDS: Record<string, { nights: [string, string]; guests: [string, string] }> = {
+  en: { nights: ["night", "nights"], guests: ["guest", "guests"] },
+  pt: { nights: ["noite", "noites"], guests: ["hóspede", "hóspedes"] },
+  es: { nights: ["noche", "noches"], guests: ["huésped", "huéspedes"] },
+  fr: { nights: ["nuit", "nuits"], guests: ["voyageur", "voyageurs"] },
+  it: { nights: ["notte", "notti"], guests: ["ospite", "ospiti"] },
+  de: { nights: ["Nacht", "Nächte"], guests: ["Gast", "Gäste"] },
+  nl: { nights: ["nacht", "nachten"], guests: ["gast", "gasten"] },
+  sv: { nights: ["natt", "nätter"], guests: ["gäst", "gäster"] },
+  fi: { nights: ["yö", "yötä"], guests: ["vieras", "vierasta"] },
+};
+const stayWords = (lang: string) => STAY_WORDS[lang] ?? STAY_WORDS.en;
+/** 2027-02-08 → 08/02/2027: lê-se igual em todas as línguas do site. */
+const dayMonthYear = (ymd: string) => `${ymd.slice(8, 10)}/${ymd.slice(5, 7)}/${ymd.slice(0, 4)}`;
+
 /**
  * Já há um pagamento por devolver nesta casa que toca nestas noites?
  *
@@ -245,11 +261,13 @@ export async function startPartnerPayment(raw: unknown): Promise<{ url: string; 
           currency: "eur",
           unit_amount: amount,
           product_data: {
-            name: `${property.name} · ${quote!.nights} ${quote!.nights === 1 ? "night" : "nights"}`,
-            description: `${input.checkin} → ${input.checkout} · ${input.guests} ${input.guests === 1 ? "guest" : "guests"}`,
+            name: `${property.name} · ${quote!.nights} ${stayWords(lang).nights[quote!.nights === 1 ? 0 : 1]}`,
+            description: `${dayMonthYear(input.checkin)} → ${dayMonthYear(input.checkout)} · ${input.guests} ${stayWords(lang).guests[input.guests === 1 ? 0 : 1]}`,
           },
         },
       }],
+      // "Reservar" no botão em vez de "Pagar": o valor fica retido, não é cobrado agora.
+      submit_type: "book",
       custom_text: { submit: { message: SUBMIT_NOTE[lang] ?? SUBMIT_NOTE.en } },
       // Sempre em euros: sem conversão de moeda (com taxa) na página do Stripe,
       // e o valor pago é o que o painel mostrou.

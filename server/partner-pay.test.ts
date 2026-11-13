@@ -113,6 +113,9 @@ describe("opening the payment", () => {
       cancel_url: "https://www.portugalactive.com/pt/homes/casa-de-caiz?checkin=2027-01-10&checkout=2027-01-17&guests=4",
     });
     expect(params.line_items[0].price_data).toMatchObject({ currency: "eur", unit_amount: 842750 });
+    // Na língua do hóspede, e o botão do Stripe diz "Reservar", não "Pagar".
+    expect(params.line_items[0].price_data.product_data).toEqual({ name: "Casa de Caiz · 7 noites", description: "10/01/2027 → 17/01/2027 · 4 hóspedes" });
+    expect(params.submit_type).toBe("book");
     expect(params.payment_intent_data.metadata).toMatchObject({ flow: "partner_pay", leadId: "1", property: "casa-de-caiz", checkin: "2027-01-10", checkout: "2027-01-17" });
     expect(params.payment_intent_data.capture_method).toBe("manual"); // retenção: só se cobra na captura
     expect(params.adaptive_pricing).toEqual({ enabled: false }); // sempre em euros, sem conversão no Stripe

@@ -249,7 +249,8 @@ export const bookingRouter = router({
       // Cobrável já (partner-pay.ts): o painel troca o pedido pelo pagamento.
       const { partnerQuotePayable } = await import("../services/partner-pay");
       // payMode "hold": o valor fica retido no cartão e só é cobrado na captura.
-      return { ...quote, payable: partnerQuotePayable(quote), payMode: "hold" as const };
+      // payVersion sobe quando a sessão do Stripe muda: diz que versão está em produção.
+      return { ...quote, payable: partnerQuotePayable(quote), payMode: "hold" as const, payVersion: 2 };
     }),
 
   /** Casa parceira: abre o pagamento de 100% da estadia (Stripe Checkout). */
