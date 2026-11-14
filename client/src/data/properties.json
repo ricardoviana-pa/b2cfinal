@@ -2217,7 +2217,7 @@
     "maxGuests": 14,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 320,
+    "cleaningFee": 459,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -9093,7 +9093,7 @@
     "maxGuests": 20,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 90,
+    "cleaningFee": 430,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -18137,7 +18137,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 190,
+    "cleaningFee": 553,
     "minNights": 2,
     "currency": "EUR",
     "images": [
