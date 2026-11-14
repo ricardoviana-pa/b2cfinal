@@ -1,7 +1,16 @@
+import fs from "node:fs";
+import path from "node:path";
 import { describe, it, expect } from "vitest";
 import { getTableColumns } from "drizzle-orm";
 import { bookingIntents } from "../../drizzle/schema";
+import { RECOVERY_TIMING } from "./recovery-funnel";
 import {
+  GUEST_DETAILS_MAX_AGE_MS,
+  GUEST_DETAIL_FIELDS,
+  guestDetailsVisible,
+  intentExpired,
+  paidIntentPointer,
+  withoutGuestDetails,
   FULL_PAYMENT_GIFT_MS,
   effectiveFlexChoice,
   fullPaymentGiftPatchFor,
@@ -59,6 +68,107 @@ describe("getIntent: projeção pública do intent", () => {
 
   it("não inventa campos que a linha não tem", () => {
     expect(publicIntent({ id: "x", status: "draft" })).toEqual({ id: "x", status: "draft" });
+  });
+});
+
+// Auditoria de 14 nov 2026 (segunda ronda técnica): o getIntent devolvia o
+// nome, o email, o telefone e o NIF do hóspede para sempre, a quem tivesse o
+// link: também com a reserva paga e com o checkout parado há meses. O router
+// verdadeiro corre em server/checkout-sandbox/intent-privacy.test.ts.
+describe("o que o link do checkout mostra conforme o estado do intent", () => {
+  const now = Date.parse("2026-11-14T12:00:00Z");
+  const HOUR = 60 * 60 * 1000;
+  const live = { status: "payment_pending", createdAt: new Date(now - 2 * HOUR), expiresAt: new Date(now + 20 * HOUR) };
+
+  it("em curso (por pagar, preço válido, recente): os dados do hóspede saem", () => {
+    expect(guestDetailsVisible(live, now)).toBe(true);
+    expect(guestDetailsVisible({ ...live, status: "draft" }, now)).toBe(true);
+    expect(guestDetailsVisible({ ...live, status: "contact_captured" }, now)).toBe(true);
+    // Datas como texto ou número (a BD devolve Date; um JSON devolve texto).
+    expect(guestDetailsVisible({ ...live, createdAt: new Date(now - HOUR).toISOString(), expiresAt: now + HOUR }, now)).toBe(true);
+  });
+
+  it("pago: nunca, com qualquer validade ou idade", () => {
+    expect(guestDetailsVisible({ ...live, status: "paid" }, now)).toBe(false);
+    expect(guestDetailsVisible({ status: "paid", createdAt: new Date(now), expiresAt: null }, now)).toBe(false);
+  });
+
+  it("preço caducado: não, pela mesma regra que sempre deu o `expired` do getIntent", () => {
+    expect(intentExpired({ ...live, expiresAt: new Date(now - 1) }, now)).toBe(true);
+    expect(guestDetailsVisible({ ...live, expiresAt: new Date(now - 1) }, now)).toBe(false);
+    // No instante exato ainda vale (a comparação sempre foi "<").
+    expect(intentExpired({ ...live, expiresAt: new Date(now) }, now)).toBe(false);
+    expect(intentExpired({ ...live, status: "expired" }, now)).toBe(true);
+    expect(guestDetailsVisible({ ...live, status: "expired" }, now)).toBe(false);
+    // Sem validade gravada não se chama "caducado" (como antes).
+    expect(intentExpired({ ...live, expiresAt: null }, now)).toBe(false);
+    expect(guestDetailsVisible({ ...live, expiresAt: null }, now)).toBe(true);
+  });
+
+  it("mais de 9 dias depois de criado: nunca mais, mesmo com o preço refeito", () => {
+    expect(GUEST_DETAILS_MAX_AGE_MS).toBe(RECOVERY_TIMING.maxAgeMs);
+    expect(GUEST_DETAILS_MAX_AGE_MS).toBe(9 * 24 * HOUR);
+    const old = { ...live, createdAt: new Date(now - GUEST_DETAILS_MAX_AGE_MS - 1), expiresAt: new Date(now + 20 * HOUR) };
+    expect(intentExpired(old, now)).toBe(false);
+    expect(guestDetailsVisible(old, now)).toBe(false);
+    expect(guestDetailsVisible({ ...live, createdAt: new Date(now - GUEST_DETAILS_MAX_AGE_MS) }, now)).toBe(true);
+    // O contacto 3 do funil (3 dias) refaz o preço: o hóspede que volta encontra os dados.
+    expect(guestDetailsVisible({ ...live, createdAt: new Date(now - RECOVERY_TIMING.stage3AfterMs - HOUR), expiresAt: new Date(now + RECOVERY_TIMING.requoteTtlMs - HOUR) }, now)).toBe(true);
+  });
+
+  it("sem data de criação legível, na dúvida não saem", () => {
+    expect(guestDetailsVisible({ status: "draft", expiresAt: new Date(now + HOUR) }, now)).toBe(false);
+    expect(guestDetailsVisible({ ...live, createdAt: null }, now)).toBe(false);
+    expect(guestDetailsVisible({ ...live, createdAt: "não é uma data" }, now)).toBe(false);
+  });
+
+  it("withoutGuestDetails põe os cinco campos a null, mantém as chaves e não toca no resto nem no original", () => {
+    const view = { id: "x", status: "payment_pending", checkIn: "2027-06-01", quote: { total: 100 }, email: "a@b.pt", guestFirstName: "A", guestLastName: "B", guestPhone: "+351", nif: "1" };
+    const out = withoutGuestDetails(view);
+    expect(out).toEqual({ id: "x", status: "payment_pending", checkIn: "2027-06-01", quote: { total: 100 }, email: null, guestFirstName: null, guestLastName: null, guestPhone: null, nif: null });
+    expect(view.email).toBe("a@b.pt");
+    // Não inventa chaves que a projeção não tinha.
+    expect(withoutGuestDetails({ id: "x" })).toEqual({ id: "x" });
+  });
+
+  it("os campos do hóspede são os que o checkout semeia nos campos do formulário, e todos públicos", () => {
+    expect([...GUEST_DETAIL_FIELDS].sort()).toEqual(["email", "guestFirstName", "guestLastName", "guestPhone", "nif"]);
+    expect(GUEST_DETAIL_FIELDS.filter((f) => !(PUBLIC_INTENT_FIELDS as readonly string[]).includes(f))).toEqual([]);
+    const columns = getTableColumns(bookingIntents) as Record<string, { notNull: boolean }>;
+    // Têm de aceitar null: é o que o browser recebe em vez do valor.
+    for (const f of GUEST_DETAIL_FIELDS) expect(columns[f].notNull, f).toBe(false);
+  });
+
+  it("de um intent pago só saem o código, a reserva e a casa", () => {
+    const row = Object.fromEntries(Object.keys(getTableColumns(bookingIntents)).map((c) => [c, `valor-${c}`]));
+    expect(paidIntentPointer(row)).toEqual({ reservationId: "valor-reservationId", confirmationCode: "valor-confirmationCode", propertySlug: "valor-propertySlug" });
+    expect(paidIntentPointer({})).toEqual({ reservationId: null, confirmationCode: null, propertySlug: null });
+  });
+
+  it("o checkout e as páginas de regresso leem a resposta nova", () => {
+    const read = (p: string) => fs.readFileSync(path.resolve(import.meta.dirname, "../..", p), "utf8");
+    const checkout = read("client/src/pages/checkout/CheckoutPage.tsx");
+    expect(checkout).toContain("const paid = isDemo ? null : (intentQuery.data?.paid ?? null);");
+    // O ecrã "reserva confirmada" decide-se antes do "checkout não encontrado":
+    // num intent pago o servidor manda `intent: null`.
+    expect(checkout.indexOf("if (paid) {")).toBeGreaterThan(0);
+    expect(checkout.indexOf("if (paid) {")).toBeLessThan(checkout.indexOf("if (!intent) {\n    return ("));
+    expect(checkout).not.toMatch(/intent\??\.status === "paid"/);
+    // Os campos do hóspede só se semeiam quando vêm preenchidos: com null
+    // ficam vazios e nada é gravado por cima do que o servidor guarda.
+    for (const line of [
+      "if (intent.email) setEmail(intent.email);",
+      "if (intent.guestFirstName) setFirstName(intent.guestFirstName);",
+      "if (intent.guestLastName) setLastName(intent.guestLastName);",
+      "if (intent.guestPhone) setPhone(intent.guestPhone);",
+      "if (intent.nif) setNif(intent.nif);",
+    ]) expect(checkout, line).toContain(line);
+    for (const page of ["client/src/pages/booking/KlarnaReturnPage.tsx", "client/src/pages/booking/PayPalReturnPage.tsx"]) {
+      const src = read(page);
+      expect(src, page).toContain("utils.checkout.getIntent.fetch({ intentId: intentId! }, { staleTime: 0 })");
+      expect(src, page).toContain("const reservationId = r?.paid?.reservationId;");
+      expect(src, page).not.toMatch(/status === "paid"/);
+    }
   });
 });
 

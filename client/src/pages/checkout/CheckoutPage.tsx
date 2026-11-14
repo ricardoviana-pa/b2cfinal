@@ -221,8 +221,12 @@ export default function CheckoutPage() {
   const captureLead = trpc.checkout.captureLead.useMutation();
 
   const intent = isDemo ? demoIntent : (intentQuery.data?.intent ?? null);
+  // Reserva paga: o servidor já não manda o intent, só o código e a ligação à
+  // reserva (auditoria de 14 nov 2026). Tudo o resto da página vê `intent`
+  // a null, como enquanto carrega.
+  const paid = isDemo ? null : (intentQuery.data?.paid ?? null);
   // Origem da visita: link de recuperação com UTM, ou consentimento mudado aqui
-  useVisitOriginSync(isDemo ? undefined : intentId, !!intent, intent?.status === "paid");
+  useVisitOriginSync(isDemo ? undefined : intentId, !!intent, !!paid);
 
   /** Patch the server intent AND the React Query cache in lockstep — otherwise a
    *  remount within staleTime re-seeds the page from pre-edit data (stale quote). */
@@ -1425,20 +1429,10 @@ export default function CheckoutPage() {
       </div>
     );
   }
-  if (!intent) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center px-6">
-        <div className="max-w-[420px] text-center space-y-4">
-          <h1 className="headline-md text-pa-dark">{t("checkout.notFoundTitle", "Checkout not found")}</h1>
-          <p className="body-sm">{t("checkout.notFoundBody", "This checkout link has expired or is invalid. Your dates are not lost — start again from the property page.")}</p>
-          <Link href="/homes" className="btn-primary inline-flex">{t("booking.backToProperty", "Back to the property")}</Link>
-        </div>
-      </div>
-    );
-  }
   // A paid intent is terminal: reopening the resume link must NEVER re-arm the
-  // payment form (double-charge risk via a second Stripe PaymentIntent).
-  if (intent.status === "paid") {
+  // payment form (double-charge risk via a second Stripe PaymentIntent). The
+  // server sends no intent for it, only `paid`.
+  if (paid) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center px-6">
         <div className="max-w-[440px] text-center space-y-4">
@@ -1448,15 +1442,26 @@ export default function CheckoutPage() {
           <h1 className="headline-md text-pa-dark">{t("checkout.alreadyPaidTitle", "This booking is already confirmed")}</h1>
           <p className="body-sm">
             {t("checkout.alreadyPaidBody", "The payment for this stay was completed. Check your email for the confirmation, or view your booking below.")}
-            {intent.confirmationCode ? ` (${intent.confirmationCode})` : ""}
+            {paid.confirmationCode ? ` (${paid.confirmationCode})` : ""}
           </p>
-          {intent.reservationId ? (
-            <Link href={`/booking/thank-you/${intent.reservationId}?method=card`} className="btn-primary inline-flex">
+          {paid.reservationId ? (
+            <Link href={`/booking/thank-you/${paid.reservationId}?method=card`} className="btn-primary inline-flex">
               {t("checkout.viewBooking", "View my booking")}
             </Link>
           ) : (
-            <Link href={backHref} className="btn-primary inline-flex">{t("booking.backToProperty", "Back to the property")}</Link>
+            <Link href={paid.propertySlug ? `/homes/${paid.propertySlug}` : "/homes"} className="btn-primary inline-flex">{t("booking.backToProperty", "Back to the property")}</Link>
           )}
+        </div>
+      </div>
+    );
+  }
+  if (!intent) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
+        <div className="max-w-[420px] text-center space-y-4">
+          <h1 className="headline-md text-pa-dark">{t("checkout.notFoundTitle", "Checkout not found")}</h1>
+          <p className="body-sm">{t("checkout.notFoundBody", "This checkout link has expired or is invalid. Your dates are not lost — start again from the property page.")}</p>
+          <Link href="/homes" className="btn-primary inline-flex">{t("booking.backToProperty", "Back to the property")}</Link>
         </div>
       </div>
     );

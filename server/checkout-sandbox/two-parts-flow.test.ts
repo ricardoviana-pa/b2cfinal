@@ -105,7 +105,8 @@ beforeEach(() => {
   vi.stubEnv('FULL_PAYMENT_INCENTIVE', 'flex');
   fake.supplierQuote.mockImplementation(supplierQuote());
   fake.intents.clear(); fake.payments.clear(); fake.keys.clear(); fake.schedules.clear(); fake.mandates = [];
-  fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, structuredClone(data)); return data.id; });
+  // Como a BD (createdAt DEFAULT now()): o getIntent só mostra os dados do hóspede a um checkout recente.
+  fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, { ...structuredClone(data), createdAt: new Date() }); return data.id; });
   fake.markPaid.mockImplementation(async (id, reservationId, confirmationCode) => {
     const m = fake.intents.get(id); if (!m || m.status === 'paid') return false;
     Object.assign(m, { status: 'paid', reservationId, confirmationCode }); return true;

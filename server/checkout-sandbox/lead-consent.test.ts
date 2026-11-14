@@ -56,7 +56,8 @@ beforeEach(() => {
     createdAt: new Date().toISOString(), expiresAt: new Date(Date.now() + 3600000).toISOString(),
     rates: { ratePlans: [{ ratePlan: { _id: 'synthetic-flex', name: 'Flexible', cancellationPolicy: 'MODERATE',
       money: { subTotalPrice: 2147, fareCleaning: 120, currency: 'EUR' } } }] } }));
-  fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, structuredClone(data)); return data.id; });
+  // Como a BD (createdAt DEFAULT now()): o getIntent só mostra os dados do hóspede a um checkout recente.
+  fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, { ...structuredClone(data), createdAt: new Date() }); return data.id; });
   fake.getIntent.mockImplementation(async (id) => structuredClone(fake.intents.get(id) ?? null));
   fake.updateIntent.mockImplementation(async (id, patch) => {
     if (!fake.intents.has(id)) return false;
@@ -152,6 +153,6 @@ describe('getIntent: a caixa volta como o hóspede a deixou', () => {
 
   it('um intent que não existe também responde null', async () => {
     expect(await caller().getIntent({ intentId: '00000000-0000-4000-8000-000000000000' }))
-      .toEqual({ intent: null, expired: false, paymentPlan: null, newsletterOptIn: null });
+      .toEqual({ intent: null, expired: false, paymentPlan: null, newsletterOptIn: null, paid: null });
   });
 });
