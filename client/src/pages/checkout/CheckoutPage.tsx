@@ -901,6 +901,20 @@ export default function CheckoutPage() {
   // enquanto flexGiftUntil for válido; o ecrã tem de dizer o mesmo
   const flexGifted = !!(intent as any)?.flexGiftUntil && new Date((intent as any).flexGiftUntil).getTime() > Date.now();
   const flexPrice = flexSelected && flexConfig && !flexGifted ? flexUnit : 0;
+  // A oferta do funil de recuperação acaba com a página aberta: o Flex veio
+  // com a oferta, não foi o hóspede que o escolheu, por isso sai em vez de
+  // ficar escolhido e a pagar (auditoria de 14 nov 2026). O servidor faz o
+  // mesmo a quem abre o checkout depois das 72 horas (checkout-plan.ts).
+  const recoveryFlexGift = (intent as any)?.flexGiftReason === "recovery";
+  const recoveryGiftSeen = useRef(false);
+  useEffect(() => {
+    if (recoveryFlexGift && flexGifted) { recoveryGiftSeen.current = true; return; }
+    if (!recoveryGiftSeen.current || flexGifted || !flexSelected) return;
+    recoveryGiftSeen.current = false;
+    setFlexSelected(false);
+    syncIntent({ flex: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recoveryFlexGift, flexGifted, flexSelected]);
   // M2 (auditoria set/2026): mudar para um plano mais barato abaixo do limiar
   // escondia o bloco do Flex mas deixava os 250 € presos no total — e o
   // servidor cobrava-os. Abaixo do limiar, o Flex sai sozinho.

@@ -60,7 +60,8 @@ import {
   offerForIntent,
   publicIntent,
   revokeFullPaymentGiftPatch,
-  withoutExpiredFullPaymentGift,
+  withoutExpiredFlexGift,
+  expiredRecoveryGiftPatch,
 } from "../services/checkout-plan";
 import { FLEX_IMMEDIATE_CONSENT_VERSION, renderTwoPartsMandate } from "../services/two-parts-mandate";
 
@@ -552,9 +553,10 @@ export const checkoutRouter = router({
       const expired =
         intent.status === "expired" ||
         (intent.expiresAt != null && intent.expiresAt.getTime() < Date.now());
-      // Uma oferta de Flex por pagamento integral que expirou não se mostra: o
-      // ecrã tem de dizer o que a próxima cobrança vai cobrar.
-      const view = withoutExpiredFullPaymentGift(intent);
+      // Uma oferta de Flex que expirou (pagamento integral ou funil de
+      // recuperação) não se mostra: o ecrã tem de dizer o que a próxima
+      // cobrança vai cobrar, e o Flex volta à escolha do hóspede.
+      const view = withoutExpiredFlexGift(intent);
       const paymentPlan = await clientPaymentPlanFor(view).catch((err: any) => {
         console.warn(`[TwoParts] oferta nao calculada intent=${input.intentId}: ${err?.message}`);
         return { available: false as const, reason: null };
@@ -639,6 +641,15 @@ export const checkoutRouter = router({
       // não com o flex=true que a oferta forçou na BD.
       if (patch.flex !== undefined && isFullPaymentGift(current) && patch.flex !== effectiveFlexChoice(current)) {
         dbPatch.flexGiftPrevFlex = patch.flex;
+      }
+      // Um Flex oferecido pelo funil de recuperação que já expirou sai do
+      // intent no primeiro contacto depois das 72 horas: os campos da oferta
+      // limpam-se e o Flex fica com o que o hóspede tem agora no ecrã (o que
+      // este pedido manda) ou, se o pedido não fala do Flex, com a escolha que
+      // ele tinha antes da oferta. A partir daqui o Flex é só a escolha dele.
+      const expiredRecovery = expiredRecoveryGiftPatch(current);
+      if (expiredRecovery) {
+        Object.assign(dbPatch, expiredRecovery, patch.flex !== undefined ? { flex: patch.flex } : {});
       }
       // Nova tarifa, datas ou hóspedes podem tirar a elegibilidade (tarifa NR,
       // antecedência): o Flex oferecido sai e volta só se a próxima cobrança
@@ -772,7 +783,10 @@ export const checkoutRouter = router({
       // conforme a escolha. Só em memória por agora: grava-se junto com o PI,
       // depois de o PI anterior estar resolvido (um PI anterior que entretanto
       // ficou pago não pode ver o Flex do intent mudar debaixo dele).
-      const giftPatch = fullPaymentGiftPatchFor(m, first);
+      // Uma oferta do funil de recuperação já expirada desfaz-se aqui também
+      // (um pedido que chegue à cobrança sem ter passado pelo updateIntent):
+      // nunca se cobra, nem se confirma, um Flex que só existia pela oferta.
+      const giftPatch = expiredRecoveryGiftPatch(m) ?? fullPaymentGiftPatchFor(m, first);
       if (giftPatch) {
         m = { ...m, ...giftPatch } as any;
         mSafe = petSafe(m);

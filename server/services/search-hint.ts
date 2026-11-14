@@ -233,6 +233,13 @@ export async function datesAreBookable(
       const byDate = new Map<string, any>(days.map((d: any) => [d.date, d]));
       const start = byDate.get(checkIn);
       if (!start || start.status !== "available" || start.cta) continue;
+      // The home's own rules count too: a stay shorter than the minimum for
+      // that arrival, or one that ends on a day closed to departures, cannot
+      // be booked, so it is not "available" (auditoria de 14 nov 2026: the
+      // alert told guests their dates had opened when the minimum stay still
+      // ruled them out).
+      if (nights < Math.max(1, Number(start.minNights ?? 1))) continue;
+      if (byDate.get(checkOut)?.ctd) continue;
       let ok = true;
       for (let i = 0; i < nights; i++) {
         const day = byDate.get(addDays(checkIn, i));

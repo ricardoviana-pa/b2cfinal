@@ -235,14 +235,31 @@ export const reviewsRouter = router({
 /* ================================================================
    LEADS
    ================================================================ */
+/**
+ * A lead from a public form. Anyone can call this, and some sources answer
+ * with an email to the address given, so every field has a ceiling
+ * (auditoria de 14 nov 2026: the fields were unbounded and their text went
+ * into the email as it came). The emails escape what they show
+ * (transactional-email.ts); this keeps the stored record and the team's
+ * notifications within bounds too.
+ */
 const leadInput = z.object({
-  email: z.string().email(),
-  name: z.string().optional(),
-  phone: z.string().optional(),
-  message: z.string().optional(),
-  source: z.string().min(1),
-  metadata: z.record(z.string(), z.string()).optional(),
+  email: z.string().email().max(320),
+  name: z.string().max(200).optional(),
+  phone: z.string().max(50).optional(),
+  message: z.string().max(8000).optional(),
+  source: z.string().min(1).max(80),
+  metadata: z.record(z.string().max(60), z.string().max(2000)).optional()
+    .refine((m) => !m || Object.keys(m).length <= 40, "too many metadata fields"),
 });
+
+/** A calendar day from a form, or a dash: never free text in a date's place. */
+const formDay = (v: string | undefined) => (v && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '—');
+/** A small whole number from a form (guests, nights), or a dash. */
+const formCount = (v: string | undefined) => (v && /^\d{1,3}$/.test(v) ? v : '—');
+
+/** Test hooks: the public lead schema and the form normalisers. */
+export const __leadTesting = { leadInput, formDay, formCount };
 
 export const leadsRouter = router({
   list: adminProcedure
@@ -276,19 +293,19 @@ export const leadsRouter = router({
         sendAvailabilityRequestNotification({
           name: input.name,
           email: input.email,
-          checkIn: input.metadata?.checkin ?? '—',
-          checkOut: input.metadata?.checkout ?? '—',
-          guests: input.metadata?.guests ?? '—',
-          nights: input.metadata?.nights ?? '—',
+          checkIn: formDay(input.metadata?.checkin),
+          checkOut: formDay(input.metadata?.checkout),
+          guests: formCount(input.metadata?.guests),
+          nights: formCount(input.metadata?.nights),
         }).catch(e => console.error("[Email] Availability request notification failed:", e));
         // Instant acknowledgment to the guest — silence after handing over an
         // email reads as "nobody's home" and sends them back to the OTA tab.
         sendAvailabilityRequestConfirmation({
           email: input.email,
           name: input.name,
-          checkIn: input.metadata?.checkin ?? '—',
-          checkOut: input.metadata?.checkout ?? '—',
-          guests: input.metadata?.guests ?? '—',
+          checkIn: formDay(input.metadata?.checkin),
+          checkOut: formDay(input.metadata?.checkout),
+          guests: formCount(input.metadata?.guests),
           locale: input.metadata?.locale,
         }).catch(e => console.error("[Email] Availability request confirmation failed:", e));
       } else if (input.source.startsWith('newsletter')) {

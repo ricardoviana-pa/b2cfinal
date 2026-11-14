@@ -7,6 +7,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { BALANCE_RATE_LIMIT_PER_MIN, balanceTrpcLimiter } from "../lib/balance-rate-limit";
 import { PARTNER_PAY_RATE_LIMIT_PER_MIN, partnerPayTrpcLimiter } from "../lib/partner-pay-rate-limit";
+import { LEAD_RATE_LIMIT_PER_MIN, leadTrpcLimiter } from "../lib/lead-rate-limit";
 import { createServer } from "http";
 import net from "net";
 import fs from "fs";
@@ -134,12 +135,14 @@ async function startServer() {
 
   const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false, message: { error: "Too many login attempts. Please try again later." } });
   const apiLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, standardHeaders: true, legacyHeaders: false });
-  const leadLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false, message: { error: "Too many submissions. Please wait a moment." } });
+  const leadLimiter = rateLimit({ windowMs: 60 * 1000, max: LEAD_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, message: { error: "Too many submissions. Please wait a moment." } });
 
   app.use("/api/auth/google", authLimiter);
   app.use("/api/auth/dev-login", authLimiter);
   app.use("/api/reservations", apiLimiter);
-  app.use("/api/trpc/leads.create", leadLimiter);
+  // Formulários públicos: decide pelo nome do procedimento, para o limite
+  // contar também quando o leads.create vem num batch (server/lib/lead-rate-limit.ts).
+  app.use("/api/trpc", leadTrpcLimiter(leadLimiter));
   app.use("/api/trpc/booking", apiLimiter);
   app.use("/api/trpc/checkout", apiLimiter); // checkout_v2 intents + lead capture
   // Página da 2.ª parte (pagamento em duas partes): os pedidos tRPC chegam
