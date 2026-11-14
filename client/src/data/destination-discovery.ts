@@ -63,10 +63,12 @@ export const destinationDiscovery: Record<string, {
 // Stable catalogue IDs survive changes to a property's marketing name or slug.
 // Only homes returned for the current destination are eligible for selection.
 export const featuredDestinationHomes: Record<string, Array<{ id: string; reason: Copy }>> = {
+  // A bookable home first; Eben Lodge (showcase, price on request) after it
+  // (Ricardo, 14 nov 2026). The Vieira do Minho home left the catalogue on
+  // 13 nov 2026; the third card is filled from the listing's order.
   minho: [
-    { id: '696533466d209c001510ecfe', reason: ['Uma base em Carreço para dias na costa a norte de Viana.', 'A base in Carreço for days on the coast north of Viana.'] },
     { id: '69653365bf04fe0013743511', reason: ['Em Ponte de Lima, para combinar a vila com passeios pelo vale.', 'In Ponte de Lima, for time in town and outings through the valley.'] },
-    { id: '6a7079007df813008d013634', reason: ['Em Vieira do Minho, para organizar saídas de montanha em grupo.', 'In Vieira do Minho, for planning mountain outings together.'] },
+    { id: '696533466d209c001510ecfe', reason: ['Uma base em Carreço para dias na costa a norte de Viana.', 'A base in Carreço for days on the coast north of Viana.'] },
   ],
   'viana-do-castelo': [
     { id: '69653354109993001383ef5f', reason: ['Para acordar de frente para o mar: piscina privada e jacuzzi em Carreço.', 'For waking up to the sea: a private pool and jacuzzi in Carreço.'] },

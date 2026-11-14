@@ -19,13 +19,20 @@ export function isPublicHome(p) {
   return true;
 }
 
+/** A casa vem do inventário parceiro: "partner" no que o site publica, o nome
+ *  do fornecedor no ficheiro da importação (o recurso quando o site não responde). */
+const PARTNER_SOURCES = ['partner', 'tripwix'];
+function fromPartnerInventory(p) {
+  return PARTNER_SOURCES.includes(p.source);
+}
+
 /** Casas nossas (Guesty) a cotar: as de montra (isPortfolio) nunca têm preço online. */
 export function isQuotableOwnHome(p) {
-  return isPublicHome(p) && p.source !== 'tripwix' && !!(p.guestyId || p.listingId) && !p.isPortfolio;
+  return isPublicHome(p) && !fromPartnerInventory(p) && !!(p.guestyId || p.listingId) && !p.isPortfolio;
 }
 
 export function isPartnerHome(p) {
-  return isPublicHome(p) && p.source === 'tripwix' && typeof p.supplierUid === 'string' && !!p.supplierUid;
+  return isPublicHome(p) && fromPartnerInventory(p) && typeof p.supplierUid === 'string' && !!p.supplierUid;
 }
 
 /** Noites de uma estadia (o dia da saída não conta). */

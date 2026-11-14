@@ -24,6 +24,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { HOME_COUNT_LABEL } from "../shared/brandFacts";
 import { getPropertiesForSite } from "../server/services/properties-store";
+import { isPartnerHome } from "../shared/partnerHome";
 
 const ROOT = process.cwd();
 
@@ -43,7 +44,7 @@ function homeCountLabel(n: number): string {
 /** Public homes exactly as the site lists them (own + partner, filtered). */
 async function countPublicHomes() {
   const all = await getPropertiesForSite();
-  const own = all.filter((p: any) => p.source !== "tripwix").length;
+  const own = all.filter((p: any) => !isPartnerHome(p)).length;
   const partner = all.length - own;
   return { total: all.length, own, partner, source: "properties-store" };
 }

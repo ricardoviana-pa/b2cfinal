@@ -1,3 +1,4 @@
+import { isPartnerHome } from './partnerHome';
 /** EN/PT search-snippet pilot, reviewed 4 November 2026.
  * These choices live outside the synced property JSON. IDs select the pilot;
  * current catalogue facts supply the copy, so a sync cannot freeze an old
@@ -46,7 +47,7 @@ export function propertyEditorialMeta(prop: EditorialInput, name: string, langua
   const locale = (language || 'en').toLowerCase().split('-')[0];
   const selected = prop.guestyId && PROPERTY_EDITORIAL_META[prop.guestyId];
   if (!selected || !['en', 'pt'].includes(locale) || prop.isActive === false ||
-      prop.source === 'tripwix' || prop.supplierUid) return null;
+      isPartnerHome(prop) || prop.supplierUid) return null;
   const lang = locale as Locale;
   const locality = prop.locality?.trim();
   const beds = prop.bedrooms;

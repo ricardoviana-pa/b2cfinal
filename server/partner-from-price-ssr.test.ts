@@ -119,7 +119,7 @@ describe("the server puts the partner home's 'from' into its page", () => {
 });
 
 describe("readPdpFromPriceForSsr: one home, the right store, the same budget", () => {
-  const caiz = { source: "tripwix", supplierUid: CAIZ, minNights: 2, isActive: true };
+  const caiz = { source: "partner", supplierUid: CAIZ, minNights: 2, isActive: true };
 
   it("partner home: the stored calendar's 'from' keyed by uid; none, or a non-price, stays null", async () => {
     const partner = vi.fn(async () => 795);
@@ -137,7 +137,7 @@ describe("readPdpFromPriceForSsr: one home, the right store, the same budget", (
 
   it("a partner home without a uid or switched off is left to the query; our homes read lowest-nightly", async () => {
     const partner = vi.fn(async () => 795);
-    expect(await readPdpFromPriceForSsr({ source: "tripwix", isActive: true }, { partner })).toBeUndefined();
+    expect(await readPdpFromPriceForSsr({ source: "partner", isActive: true }, { partner })).toBeUndefined();
     expect(await readPdpFromPriceForSsr({ ...caiz, isActive: false }, { partner })).toBeUndefined();
     const guesty = vi.fn(async (ids: string[]) => Object.fromEntries(ids.map((id) => [id, 120])));
     expect(await readPdpFromPriceForSsr({ guestyId: "g1" }, { guesty, partner })).toMatchObject({ prices: { g1: 120 } });
@@ -150,16 +150,16 @@ describe("the page reads the seed by the listing its lowestNightly query sends",
   const seed = { prices: { [CAIZ]: 795, [ARROZ]: null, g1: 120 }, at: 1_000 };
 
   it("partner home: by supplier uid, in the shape booking.lowestNightly returns for it", () => {
-    expect(pickPdpLowestNightly(seed, { tripwixUid: CAIZ })).toEqual({ data: { from: 795, source: "calendar", currency: "EUR" }, updatedAt: 1_000 });
+    expect(pickPdpLowestNightly(seed, { partnerUid: CAIZ })).toEqual({ data: { from: 795, source: "calendar", currency: "EUR" }, updatedAt: 1_000 });
     // No price yet: seeded as none, and stale, so the query asks again after hydration.
-    expect(pickPdpLowestNightly(seed, { tripwixUid: ARROZ })).toEqual({ data: { from: null, source: "none", currency: "EUR" }, updatedAt: 0 });
+    expect(pickPdpLowestNightly(seed, { partnerUid: ARROZ })).toEqual({ data: { from: null, source: "none", currency: "EUR" }, updatedAt: 0 });
   });
 
   it("our home: by Guesty id, as before; a home the server did not price falls back to the query", () => {
     expect(pickPdpLowestNightly(seed, { guestyId: "g1" })).toEqual({ data: { from: 120, source: "fallback", currency: "EUR" }, updatedAt: 1_000 });
-    expect(pickPdpLowestNightly(seed, { tripwixUid: "not-seeded" })).toBeUndefined();
+    expect(pickPdpLowestNightly(seed, { partnerUid: "not-seeded" })).toBeUndefined();
     expect(pickPdpLowestNightly(seed, {})).toBeUndefined();
-    expect(pickPdpLowestNightly(undefined, { tripwixUid: CAIZ })).toBeUndefined();
+    expect(pickPdpLowestNightly(undefined, { partnerUid: CAIZ })).toBeUndefined();
   });
 });
 
@@ -228,7 +228,7 @@ describe("a render without the price does not outlive the price (revisão do PR 
 });
 
 describe("unpricedPdpListing: which render may not be kept", () => {
-  const caiz = { source: "tripwix", supplierUid: CAIZ, minNights: 2, isActive: true };
+  const caiz = { source: "partner", supplierUid: CAIZ, minNights: 2, isActive: true };
 
   it("a null or missing seed names the listing; a price, or nothing to price, does not", () => {
     expect(unpricedPdpListing(caiz, { prices: { [CAIZ]: null }, at: 1 })).toBe(CAIZ);

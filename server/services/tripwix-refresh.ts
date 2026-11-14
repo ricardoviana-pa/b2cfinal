@@ -11,6 +11,7 @@
  * BD confirmar cada escrita, para não ficarem ~1 h sem preço (P173-R2). Conta
  * para o mesmo teto de 35/h.
  */
+import { isPartnerHome } from "../../shared/partnerHome";
 import { isPreviewDeployment } from "../lib/preview-isolation";
 import { getPropertiesForSite } from "./properties-store";
 import {
@@ -49,7 +50,7 @@ export async function publishedPartnerHomes(): Promise<Home[]> {
   if (homesCache && Date.now() - homesCache.at < HOMES_TTL_MS) return homesCache.homes;
   const all = await getPropertiesForSite();
   const homes = all
-    .filter((p: any) => p?.source === "tripwix" && p.isActive !== false && typeof p.supplierUid === "string" && p.supplierUid)
+    .filter((p: any) => isPartnerHome(p) && p.isActive !== false && typeof p.supplierUid === "string" && p.supplierUid)
     .map((p: any) => ({ uid: p.supplierUid as string, name: String(p.name || p.slug || p.supplierUid) }));
   homesCache = { at: Date.now(), homes };
   return homes;

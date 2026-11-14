@@ -43,6 +43,7 @@ import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/Structur
 import { parseDestinationSelection } from '@/lib/homeSearch';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import StayCollections from '@/components/property/StayCollections';
+import { isPartnerHome } from '@shared/partnerHome';
 
 interface LiveQuote {
   total: number;
@@ -435,7 +436,7 @@ export default function Homes() {
         // Fallback: use catalogue base prices so cards aren't empty
         const computed: Record<string, LiveQuote | null> = {};
         for (const property of allProperties) {
-          if (property.source === 'tripwix') continue;
+          if (isPartnerHome(property)) continue;
           const nightlyRate = property.pricePerNight ?? property.priceFrom ?? 0;
           const cleaningFee = property.cleaningFee ?? 0;
           if (nightlyRate > 0) {
@@ -1025,7 +1026,7 @@ export default function Homes() {
                       checkout={searchCheckout}
                       guests={searchGuestsCount || undefined}
                       liveQuote={quotes[property.slug] || undefined}
-                      quoteLoading={property.source === 'tripwix' ? partner.isFetching : quotesPending}
+                      quoteLoading={isPartnerHome(property) ? partner.isFetching : quotesPending}
                       batchFailed={batchFailed}
                       fromPrice={fromPrices?.[property.guestyId ?? property.supplierUid ?? '']}
                       listId="search_results"

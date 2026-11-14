@@ -55,6 +55,7 @@ import {
   buildVacationRentalSchema,
   buildBreadcrumbSchema,
 } from '@/components/seo/StructuredData';
+import { isPartnerHome } from '@shared/partnerHome';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -535,7 +536,7 @@ export default function PropertyDetail() {
   // descriptions in nine languages), so they index like every other home
   // (auditoria set/2026, N19). Submit the URLs in Search Console once live.
   const PARTNER_HOMES_NOINDEX = false;
-  const partnerNoindex = PARTNER_HOMES_NOINDEX && (property as any)?.source === 'tripwix';
+  const partnerNoindex = PARTNER_HOMES_NOINDEX && isPartnerHome(property as any);
 
   // Sem casa (a carregar, erro ou slug desconhecido — um 404 no servidor) a
   // página não se indexa nem tem versões noutras línguas: com os alternates
@@ -817,21 +818,21 @@ export default function PropertyDetail() {
   // Starts from the price the server put into the page (lib/ssrFromPrices.ts),
   // so the booking card and the mobile bar show it in the server HTML — for
   // partner homes too, under their supplier uid (Property PP-3).
-  const tripwixUid = (property as any)?.source === 'tripwix'
+  const partnerUid = isPartnerHome(property as any)
     ? ((property as any)?.supplierUid as string | undefined)
     : undefined;
   const seededNightly = pickPdpLowestNightly(
     queryClient.getQueryData<SsrFromPrices>(SSR_FROM_PRICES_KEY),
-    { guestyId: property?.guestyId, tripwixUid },
+    { guestyId: property?.guestyId, partnerUid },
   );
   const { data: lowestNightly } = trpc.booking.lowestNightly.useQuery(
     {
-      listingId: property?.guestyId ?? tripwixUid ?? '',
+      listingId: property?.guestyId ?? partnerUid ?? '',
       basePrice: (property?.priceFrom as number) || undefined,
-      tripwixUid,
+      partnerUid,
     },
     {
-      enabled: !!property?.guestyId || !!tripwixUid,
+      enabled: !!property?.guestyId || !!partnerUid,
       staleTime: 60_000,
       ...(seededNightly ? { initialData: seededNightly.data, initialDataUpdatedAt: seededNightly.updatedAt } : {}),
     },
@@ -843,7 +844,7 @@ export default function PropertyDetail() {
   // showcase-only home goes to the concierge with the home pre-filled.
   useEffect(() => {
     const open = () => {
-      const canBookHere = !!tripwixUid || (!!property?.guestyId && !property?.isPortfolio);
+      const canBookHere = !!partnerUid || (!!property?.guestyId && !property?.isPortfolio);
       if (window.matchMedia('(min-width: 1024px)').matches) {
         document.getElementById('property-booking')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else if (canBookHere) {
@@ -854,7 +855,7 @@ export default function PropertyDetail() {
     };
     window.addEventListener('pa:reserve', open);
     return () => window.removeEventListener('pa:reserve', open);
-  }, [tripwixUid, property?.guestyId, property?.isPortfolio, property?.slug, navigate]);
+  }, [partnerUid, property?.guestyId, property?.isPortfolio, property?.slug, navigate]);
   const relatedProperties = useMemo(() => {
     if (!property || !allPropsData) return [];
     return (allPropsData as Property[])
@@ -1056,12 +1057,12 @@ export default function PropertyDetail() {
   // O pricePerNight/priceFrom importado do Guesty é um valor de referência
   // errado nos dois sentidos: sem preço calculado, a barra pede as datas.
   const barNightly = lowestNightly?.from ?? 0;
-  const barFromPrice = (bookableOnline || tripwixUid) && barNightly > 0
+  const barFromPrice = (bookableOnline || partnerUid) && barNightly > 0
     ? `${t('property.fromPerNight', { price: Math.round(barNightly).toLocaleString(intlLocale(i18n.language)) })} ${t('partnerBooking.perNight', 'per night')}`
     : null;
   // A partner home with no "from" (no calendar yet): "Price on request", not
   // "Select dates for price" — dates will not price it either.
-  const barNoPrice = t(noPriceLabelKey(!!tripwixUid, lowestNightly?.from));
+  const barNoPrice = t(noPriceLabelKey(!!partnerUid, lowestNightly?.from));
 
   // The rating beside the title, the facts under the photos (what the stat
   // pills used to say, as one line) and the section links.
@@ -1089,7 +1090,7 @@ export default function PropertyDetail() {
     ['property-about', t('propertyDetail.aboutTitle')],
     ...(property.rooms?.length ? [['property-bedrooms', t('pdpUx.bedrooms')] as [string, string]] : []),
     ['property-amenities', t('propertyDetail.amenitiesTitle')],
-    ...((bookableOnline || tripwixUid) ? [['property-availability', t('propertyDetail.availabilityTitle', 'Availability')] as [string, string]] : []),
+    ...((bookableOnline || partnerUid) ? [['property-availability', t('propertyDetail.availabilityTitle', 'Availability')] as [string, string]] : []),
     ['property-location', t('propertyDetail.locationTitle')],
     ...(hasReviews ? [['property-reviews', t('reviews.title', 'Guest reviews')] as [string, string]] : []),
     ['property-good-to-know', t('pdpFaq.title')],
@@ -1118,9 +1119,9 @@ export default function PropertyDetail() {
             initialGuests={bookingSelection?.guests ?? initialGuests}
           />
         </Suspense>
-      ) : tripwixUid ? (
+      ) : partnerUid ? (
         <PartnerBookingPanel
-          tripwixUid={tripwixUid}
+          partnerUid={partnerUid}
           propertyName={displayName}
           propertySlug={property.slug}
           fromPrice={lowestNightly?.from}
@@ -1190,7 +1191,7 @@ export default function PropertyDetail() {
             // the price" and a price-match promise are both undefendable — a
             // guest already arrived at the concierge holding a screenshot of
             // the first one against a quote EUR 1,194 higher.
-            ...(tripwixUid
+            ...(partnerUid
               ? []
               : [
                   { icon: ShieldCheck, label: t('trust.bestRateTeeth', 'Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price') },
@@ -1204,7 +1205,7 @@ export default function PropertyDetail() {
             </div>
           ))}
         </div>
-        {!tripwixUid && <Link href="/best-rate-guarantee" className="inline-flex items-center mt-1 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
+        {!partnerUid && <Link href="/best-rate-guarantee" className="inline-flex items-center mt-1 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
           {t('trust.guaranteeTerms', 'How the guarantee works')}
         </Link>}
       </div>
@@ -1558,10 +1559,10 @@ export default function PropertyDetail() {
                   on a computer, one on a phone, so a guest sees when the home
                   is free without touching anything. A stay picked here goes to
                   the card (stayDates), which prices it. */}
-              {(bookableOnline || tripwixUid) && (
+              {(bookableOnline || partnerUid) && (
                 <AvailabilitySection
-                  guestyId={tripwixUid ? null : property.guestyId}
-                  tripwixUid={tripwixUid}
+                  guestyId={partnerUid ? null : property.guestyId}
+                  partnerUid={partnerUid}
                   minNights={(property as any).minNights}
                   checkIn={stayDates.checkIn}
                   checkOut={stayDates.checkOut}
@@ -1798,7 +1799,7 @@ export default function PropertyDetail() {
             {/* Partner homes open the same drawer: the request form lives on
                 the property now, and sending the guest to the generic contact
                 page threw away the dates they had just picked. */}
-            {bookableOnline || tripwixUid ? (
+            {bookableOnline || partnerUid ? (
               <button
                 type="button"
                 onClick={() => setBookingOpen(true)}
@@ -1820,7 +1821,7 @@ export default function PropertyDetail() {
         {/* Mobile: booking bottom-sheet — opened from the fixed bar. Keeps the
             full availability flow (calendar, guests, live quote) one tap away
             without an inline form blocking the content. Mobile only. */}
-        {(bookableOnline || tripwixUid) && (
+        {(bookableOnline || partnerUid) && (
           <Drawer open={bookingOpen} onOpenChange={setBookingOpen}>
             <DrawerContent className="lg:hidden bg-white max-h-[92vh]">
               <DrawerHeader className="flex-row items-center justify-between gap-3 border-b border-pa-sand px-5 py-4 text-left">

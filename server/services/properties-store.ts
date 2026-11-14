@@ -9,6 +9,7 @@ import { readFile, stat } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { withPartnerDefaults, normalizePartnerAmenities } from "./tripwix";
+import { PARTNER_SOURCE } from "../../shared/partnerHome";
 import { normalizePublicPropertyGeography } from "./property-geography";
 import { normalizePropertyCapacityCopy } from "./property-capacity-copy";
 
@@ -76,6 +77,57 @@ async function readJsonFile(path: string): Promise<unknown> {
   return value;
 }
 
+/**
+ * What the partner feed says about the supplier, kept on the server: their
+ * reference for the home (ops needs it on a paid request) and the commission
+ * agreed with them. Keyed by supplier uid. Neither value is part of a public
+ * record (Ricardo, 14 nov 2026: shared/partnerHome.ts).
+ */
+const partnerSupplier = new Map<string, { reference: string; commission: string }>();
+
+/**
+ * The imported partner record → the record the site may publish. The
+ * supplier's name leaves the id and the source, and the reference and the
+ * commission stay behind in `partnerSupplier`. Everything that reaches a
+ * browser is built from what this returns.
+ */
+export function toPublicPartner(p: any): any {
+  const { supplierReference, supplierCommission, ...rest } = p ?? {};
+  if (rest.supplierUid) {
+    partnerSupplier.set(String(rest.supplierUid), {
+      reference: String(supplierReference ?? "").trim(),
+      commission: String(supplierCommission ?? "").trim(),
+    });
+  }
+  return { ...rest, id: String(rest.id ?? "").replace(/^tripwix-/i, "partner-"), source: PARTNER_SOURCE };
+}
+
+/** The supplier's own reference for a partner home ("" when unknown). Server use only. */
+export async function partnerSupplierReference(supplierUid: string | null | undefined): Promise<string> {
+  if (!supplierUid) return "";
+  if (!partnerSupplier.has(supplierUid)) await getPropertiesForSite();
+  return partnerSupplier.get(supplierUid)?.reference ?? "";
+}
+
+/**
+ * The location a page may publish: town, region, country and coordinates
+ * rounded to three decimals (about 100 m). The property page says
+ * "approximate area — the exact address is shared after booking", and the
+ * availability calendar is public, so street, door and postcode never leave
+ * the server (auditoria 14 nov 2026).
+ */
+export function withPublicAddress(p: any): any {
+  const a = p?.address;
+  if (!a || typeof a !== "object") return p;
+  const round = (n: unknown) => (typeof n === "number" && Number.isFinite(n) ? Number(n.toFixed(3)) : undefined);
+  const out: Record<string, unknown> = {};
+  for (const key of ["city", "state", "country"] as const) if (a[key]) out[key] = a[key];
+  const lat = round(a.lat);
+  const lng = round(a.lng);
+  if (lat !== undefined && lng !== undefined) { out.lat = lat; out.lng = lng; }
+  return { ...p, address: out };
+}
+
 async function getTripwixProperties(): Promise<any[]> {
   if (process.env.TRIPWIX_INVENTORY === "0") {
     console.info("[Properties] Tripwix partner inventory disabled via TRIPWIX_INVENTORY=0.");
@@ -86,7 +138,7 @@ async function getTripwixProperties(): Promise<any[]> {
     const data = JSON.parse(await readFile(paths.tripwix, "utf-8"));
     if (!Array.isArray(data) || data.length === 0) return [];
     console.info(`[Properties] Loaded ${data.length} Tripwix partner properties.`);
-    return data.map(withPartnerDefaults);
+    return data.map(withPartnerDefaults).map(toPublicPartner);
   } catch (err) {
     console.error("[Properties] Failed to read Tripwix inventory:", err);
     return [];
@@ -275,7 +327,7 @@ export function filterPublicProperties(properties: any[]): any[] {
       return false;
     }
     return true;
-  }).map(normalizePublicPropertyGeography).map(normalizePropertyCapacityCopy);
+  }).map(normalizePublicPropertyGeography).map(normalizePropertyCapacityCopy).map(withPublicAddress);
 }
 
 /** Mirror of the client's slugifyLocality (client/src/lib/utils.ts) so the

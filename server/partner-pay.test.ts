@@ -9,7 +9,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const UID = "3bac86ea-0000-4000-8000-000000000001";
-const home = { slug: "casa-de-caiz", name: "Casa de Caiz", bookingMode: "request", source: "tripwix", isActive: true, supplierUid: UID, supplierReference: "PT0101", maxGuests: 10, minNights: 2, cleaningFee: 0, securityDeposit: 0 };
+const home = { slug: "casa-de-caiz", name: "Casa de Caiz", bookingMode: "request", source: "partner", isActive: true, supplierUid: UID, maxGuests: 10, minNights: 2, cleaningFee: 0, securityDeposit: 0 };
 const leads = new Map<number, any>();
 const emails: { id: number; notice: string; channel: string; payment?: string; variant?: string; overlapWith?: string }[] = [];
 const emailFails = { on: false };
@@ -27,7 +27,8 @@ vi.mock("./db", () => ({
   getSettingsByKeys: async () => new Map(),
   upsertSetting: async () => {},
 }));
-vi.mock("./services/properties-store", () => ({ getPropertiesForSite: async () => [home] }));
+// The public record has no supplier reference: it comes from the store's server-side lookup.
+vi.mock("./services/properties-store", () => ({ getPropertiesForSite: async () => [home], partnerSupplierReference: async (uid: string) => (uid === UID ? "PT0101" : "") }));
 vi.mock("./services/transactional-email", () => ({
   sendPartnerPaymentEmail: async (lead: any, notice: string, channel: string, variant?: string) => {
     if (emailFails.on) throw new Error("provider down");

@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { formatEur, formatCurrency, intlLocale } from '@/lib/format';
 import type { Property } from '@/lib/types';
 import type { SearchQuote } from '@/lib/homeSearch';
+import { isPartnerHome } from '@shared/partnerHome';
 
 interface HomesMapProps {
   properties: Property[];
@@ -68,7 +69,7 @@ export default function HomesMap({ properties, fromPrices, quotes, checkin, chec
         const price = hasDates
           ? (quote?.available !== false ? quote?.total : null)
           : fromPrices?.[p.guestyId ?? p.supplierUid ?? ''];
-        const isPartner = p.source === 'tripwix';
+        const isPartner = isPartnerHome(p);
         const partial = isPartner && hasDates && !quote?.feesKnown;
         const money = price && price > 0
           ? (isPartner && hasDates ? formatCurrency(price, { locale: intlLocale(lang) }) : formatEur(price, lang))

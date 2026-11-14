@@ -76,7 +76,7 @@ describe('persistent EN/PT home search snippets', () => {
     for (const lang of ['fr', 'de', 'es', 'it', 'fi', 'sv', 'nl', 'unknown']) {
       expect(propertyEditorialMeta(home, name, lang)).toBeNull();
     }
-    for (const changes of [{ guestyId: 'unreviewed' }, { source: 'tripwix' }, { supplierUid: 'supplier' }, { isActive: false }, { locality: '' }]) {
+    for (const changes of [{ guestyId: 'unreviewed' }, { source: 'partner' }, { supplierUid: 'supplier' }, { isActive: false }, { locality: '' }]) {
       expect(propertyEditorialMeta({ ...home, ...changes }, name, 'en')).toBeNull();
     }
   });

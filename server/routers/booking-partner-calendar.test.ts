@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const UID = "3bac86ea-0000-4000-8000-000000000001";
 vi.mock("../db", () => ({ getSettingsByKeys: async () => new Map(), upsertSetting: async () => {} }));
 vi.mock("../services/properties-store", () => ({
-  getPropertiesForSite: async () => [{ source: "tripwix", isActive: true, supplierUid: UID, name: "Casa de Caiz", minNights: 2, maxGuests: 8 }],
+  getPropertiesForSite: async () => [{ source: "partner", isActive: true, supplierUid: UID, name: "Casa de Caiz", minNights: 2, maxGuests: 8 }],
 }));
 
 const T0 = Date.parse("2026-10-29T00:30:00Z");
@@ -37,25 +37,25 @@ describe("partner calendar before the job has read the home", () => {
     vi.stubGlobal("fetch", fetcher);
     const c = await caller();
 
-    expect(await c.partnerCalendar({ tripwixUid: UID, startDate: ymd(0), endDate: ymd(30) })).toBeNull();
+    expect(await c.partnerCalendar({ partnerUid: UID, startDate: ymd(0), endDate: ymd(30) })).toBeNull();
     expect(headers.get("Cache-Control")).toBe("public, max-age=0, s-maxage=60");
-    expect(await c.partnerQuote({ tripwixUid: UID, checkIn: ymd(150), checkOut: ymd(155) })).toBeNull();
+    expect(await c.partnerQuote({ partnerUid: UID, checkIn: ymd(150), checkOut: ymd(155) })).toBeNull();
     expect(headers.get("Cache-Control")).toBe("public, max-age=0, s-maxage=60");
     expect(fetcher).not.toHaveBeenCalled(); // o pedido do hóspede nunca lê a Tripwix
 
     const { refreshTripwixCalendar } = await import("../services/tripwix-calendar");
     expect(await refreshTripwixCalendar(UID)).toMatchObject({ action: "refreshed" });
 
-    const days = await c.partnerCalendar({ tripwixUid: UID, startDate: ymd(0), endDate: ymd(30) });
+    const days = await c.partnerCalendar({ partnerUid: UID, startDate: ymd(0), endDate: ymd(30) });
     expect(days).toHaveLength(31);
     expect(days!.every((d) => d.status === "unavailable")).toBe(true); // fechada até fevereiro: nada livre
     expect(headers.get("Cache-Control")).toContain("s-maxage=900");
-    expect(await c.partnerQuote({ tripwixUid: UID, checkIn: ymd(150), checkOut: ymd(155) })).toMatchObject({ available: true, nights: 5 });
+    expect(await c.partnerQuote({ partnerUid: UID, checkIn: ymd(150), checkOut: ymd(155) })).toMatchObject({ available: true, nights: 5 });
     expect(headers.get("Cache-Control")).toContain("s-maxage=900");
   });
 
   it("a uid that is not a published partner home still answers []", async () => {
     const c = await caller();
-    expect(await c.partnerCalendar({ tripwixUid: "3bac86ea-0000-4000-8000-0000000000ff", startDate: ymd(0), endDate: ymd(30) })).toEqual([]);
+    expect(await c.partnerCalendar({ partnerUid: "3bac86ea-0000-4000-8000-0000000000ff", startDate: ymd(0), endDate: ymd(30) })).toEqual([]);
   });
 });

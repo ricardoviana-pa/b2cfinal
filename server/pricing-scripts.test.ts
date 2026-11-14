@@ -103,6 +103,10 @@ describe('quote-health rules', () => {
     const partner = { name: 'Casa na Areia', slug: 'casa-na-areia', source: 'tripwix', supplierUid: 'u1', isActive: true };
     expect(isPartnerHome(partner)).toBe(true);
     expect(isQuotableOwnHome(partner)).toBe(false);
+    // The site publishes the same home as source "partner" (14 nov 2026); the import file keeps the supplier's name.
+    const published = { ...partner, source: 'partner' };
+    expect(isPartnerHome(published)).toBe(true);
+    expect(isQuotableOwnHome({ ...published, guestyId: 'g9' })).toBe(false);
     expect(isQuotableOwnHome({ name: 'Eben Lodge', slug: 'eben', guestyId: 'g4', isPortfolio: true })).toBe(false);
     expect(isQuotableOwnHome({ name: 'Lima River Houses', slug: 'lima', guestyId: 'g5' })).toBe(true);
   });

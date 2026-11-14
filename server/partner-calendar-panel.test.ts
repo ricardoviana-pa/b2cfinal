@@ -78,7 +78,7 @@ function panel(opts: { calendar: unknown; calendarError?: boolean; quote?: unkno
   q.calendar = { data: opts.calendar, isLoading: false, isError: !!opts.calendarError };
   q.quote = { data: opts.quote, isFetching: false, isError: false };
   const html = renderToStaticMarkup(React.createElement(PartnerBookingPanel, {
-    tripwixUid: "71776293-1e7f-4eb9-bd2c-d9733621716f", propertyName: "Casa de Caiz", propertySlug: "casa-de-caiz",
+    partnerUid: "71776293-1e7f-4eb9-bd2c-d9733621716f", propertyName: "Casa de Caiz", propertySlug: "casa-de-caiz",
     fromPrice: opts.fromPrice, maxGuests: 10, minNights: 1, initialCheckIn: opts.checkIn, initialCheckOut: opts.checkOut,
     whatsappUrl: "https://wa.me/000",
   }));
@@ -158,12 +158,12 @@ describe("the listing card, rendered: a partner home with no 'from' reads 'Price
   ));
 
   it("partner home whose 'from' came back as none: 'Price on request'", () => {
-    const t = card(home("tripwix"), null);
+    const t = card(home("partner"), null);
     expect(t).toContain(en.property.priceOnRequest);
     expect(t).not.toContain(en.property.selectDatesForPrice);
   });
   it("not computed yet, or one of our own homes: 'Select dates for price' as before", () => {
-    expect(card(home("tripwix"), undefined)).toContain(en.property.selectDatesForPrice);
+    expect(card(home("partner"), undefined)).toContain(en.property.selectDatesForPrice);
     expect(card(home(), null)).toContain(en.property.selectDatesForPrice);
   });
 });

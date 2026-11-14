@@ -74,9 +74,9 @@ export function pickLowestNightly(
  */
 export function pickPdpLowestNightly(
   seed: SsrFromPrices | undefined,
-  home: { guestyId?: string | null; tripwixUid?: string | null },
+  home: { guestyId?: string | null; partnerUid?: string | null },
 ): SeededLowestNightly | undefined {
-  return home.tripwixUid
-    ? pickLowestNightly(seed, home.tripwixUid, true)
+  return home.partnerUid
+    ? pickLowestNightly(seed, home.partnerUid, true)
     : pickLowestNightly(seed, home.guestyId ?? undefined);
 }

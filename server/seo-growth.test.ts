@@ -38,10 +38,12 @@ describe('Google rental fields survive SSR and client navigation', () => {
     expect(server.additionalProperty.value).toBe('123/AL');
   });
   it('keeps an identifier across languages and slug changes, including partner homes', () => {
-    const a = vacationRentalSchema({...rental, guestyId:null, supplierUid:'PT-A-SUD'},'en');
-    const b = vacationRentalSchema({...rental, slug:'renamed', guestyId:null, supplierUid:'PT-A-SUD'},'pt');
+    const a = vacationRentalSchema({...rental, id:'partner-PT0009', guestyId:null, supplierUid:'supplier-uid'},'en');
+    const b = vacationRentalSchema({...rental, id:'partner-PT0009', slug:'renamed', guestyId:null, supplierUid:'supplier-uid'},'pt');
     expect(a.identifier).toBe(b.identifier);
-    expect(a.identifier).toBe('tripwix:PT-A-SUD');
+    // The catalogue id, never the supplier's name or uid (Ricardo, 14 nov 2026).
+    expect(a.identifier).toBe('pa:partner-PT0009');
+    expect(JSON.stringify(a)).not.toMatch(/tripwix|supplier-uid/i);
   });
   it('never asserts an imported rate is bookable for a year', () => {
     const schema = vacationRentalSchema(rental);
@@ -91,7 +93,7 @@ describe('destinations connect useful content to the right homes', () => {
   });
   it('keeps the supplier UID needed to show live partner prices on destination cards', async () => {
     const homes = await getPropertiesForDestination('alentejo');
-    const partner = homes.find(p=>p.source==='tripwix');
+    const partner = homes.find(p=>p.source==='partner');
     expect(partner?.supplierUid).toBeTruthy();
   });
 });

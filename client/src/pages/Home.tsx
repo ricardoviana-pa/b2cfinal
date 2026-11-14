@@ -47,6 +47,7 @@ import DestinationOptions, { useDestinationOptions } from '@/components/marketin
 import { selectFeaturedHomes } from '@/lib/featuredHomes';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { useFromPrices } from '@/hooks/useFromPrices';
+import { isPartnerHome } from '@shared/partnerHome';
 
 const destinations = destinationsData as unknown as Destination[];
 
@@ -186,7 +187,7 @@ export default function Home() {
 
   // Featured homes — the homepage strip follows HOME_FEATURED_ORDER
   // (src/config/propertyOrder.ts): our homes and partner homes interleaved,
-  // Eben Lodge in slot 2. The PLP keeps its own ranking
+  // Eben Lodge in the third row. The PLP keeps its own ranking
   // (CURATED_PROPERTY_ORDER); only the homepage reads this list. The
   // selection (catalogue-key matching, no group children, fillers from the
   // curated order when a home is missing) lives in lib/featuredHomes.ts so
@@ -262,7 +263,7 @@ export default function Home() {
         // Fallback: base price estimates
         const computed: typeof homeQuotes = {};
         for (const p of featured) {
-          if (p.source === 'tripwix') continue; // partner quotes come from usePartnerPrices
+          if (isPartnerHome(p)) continue; // partner quotes come from usePartnerPrices
           const rate = (p as any).pricePerNight ?? p.priceFrom ?? 0;
           const fee = (p as any).cleaningFee ?? 0;
           if (rate > 0) {
@@ -481,8 +482,8 @@ export default function Home() {
                   checkout={searchCheckout || undefined}
                   guests={guestsChosen ? searchGuests : undefined}
                   nights={searchNights}
-                  liveQuote={(property.source === 'tripwix' ? partner.quotes[property.slug] : homeQuotes[property.slug]) || undefined}
-                  quoteLoading={property.source === 'tripwix' ? partner.isFetching : homeQuotesLoading}
+                  liveQuote={(isPartnerHome(property) ? partner.quotes[property.slug] : homeQuotes[property.slug]) || undefined}
+                  quoteLoading={isPartnerHome(property) ? partner.isFetching : homeQuotesLoading}
                   fromPrice={property.supplierUid ? partner.prices[property.supplierUid] : property.guestyId ? featuredFromPrices?.[property.guestyId] : undefined}
                   listId="featured_homes"
                   listName="Editor's Picks"

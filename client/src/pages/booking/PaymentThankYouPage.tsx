@@ -9,7 +9,7 @@ import { fetchReservation, readThankYou } from "@/lib/booking-api";
 import { pushPurchaseOnce, stayValue } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
 import { optimizeGuestyImage } from "@/lib/images";
-import propertiesData from "@/data/properties.json";
+import { trpc } from "@/lib/trpc";
 import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
 
 const CONCIERGE_EMAIL = "info@portugalactive.com";
@@ -161,15 +161,15 @@ export default function PaymentThankYouPage() {
 }
 
 function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
-  // Foto real da casa (feedback 13 ago): lookup local por listingId
-  const propertyPhoto = (() => {
-    try {
-      const items: any[] = Array.isArray(propertiesData) ? (propertiesData as any[]) : (propertiesData as any).properties;
-      const prop = items.find((pr) => (pr.guestyId || String(pr.id || "").replace("guesty-", "")) === (data.listingId ?? ""));
-      const img = Array.isArray(prop?.images) && prop.images.length ? prop.images[0] : null;
-      return img ? optimizeGuestyImage(typeof img === "string" ? img : img.url, 1080) : null;
-    } catch { return null; }
-  })();
+  // Foto real da casa (feedback 13 ago). Pedida ao servidor pelo listingId:
+  // o ficheiro do catálogo já não vai para o browser (trazia a morada exata
+  // de cada casa num script público — auditoria de 14 nov 2026).
+  const listingId = String(data.listingId ?? "");
+  const { data: cover } = trpc.properties.coverForListing.useQuery(
+    { listingId },
+    { enabled: listingId.length > 0, staleTime: Infinity, retry: 1 },
+  );
+  const propertyPhoto = cover?.image ? optimizeGuestyImage(cover.image, 1080) : null;
 
   const { t, i18n } = useTranslation();
   const lang = i18n.language;

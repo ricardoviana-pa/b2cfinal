@@ -2,6 +2,8 @@
  * Keep the requested location relevant, then lead with the direct operation.
  * Supplier identity is an internal ranking signal, never a guest-facing label.
  */
+import { isPartnerHome } from './partnerHome';
+
 export interface EditorialHomeSource {
   guestyId?: string | null;
   source?: string | null;
@@ -9,6 +11,6 @@ export interface EditorialHomeSource {
 }
 
 export function compareEditorialOperation(a: EditorialHomeSource, b: EditorialHomeSource): number {
-  const direct = (p: EditorialHomeSource) => Boolean(p.guestyId) && p.source !== 'tripwix' && !p.supplierUid;
+  const direct = (p: EditorialHomeSource) => Boolean(p.guestyId) && !isPartnerHome(p) && !p.supplierUid;
   return Number(direct(b)) - Number(direct(a));
 }

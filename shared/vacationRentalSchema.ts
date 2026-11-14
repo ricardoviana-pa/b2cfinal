@@ -69,8 +69,9 @@ export function rentalAccommodation(i: VacationRentalInput): Record<string, unkn
 
 export function vacationRentalSchema(i: VacationRentalInput, lang = 'en'): Record<string, unknown> {
   const url = `${BASE}/${lang}/homes/${i.slug}`;
-  const identifier = i.guestyId ? `guesty:${i.guestyId}`
-    : i.supplierUid ? `tripwix:${i.supplierUid}` : i.id != null ? `pa:${i.id}` : undefined;
+  // Partner homes are identified by their public catalogue id: the supplier
+  // is never named in what a page publishes (shared/partnerHome.ts).
+  const identifier = i.guestyId ? `guesty:${i.guestyId}` : i.id != null ? `pa:${i.id}` : undefined;
   const images = [...new Set((i.images ?? []).filter(Boolean))].slice(0, 12)
     .map(src => src.startsWith('/') ? `${BASE}${src}` : src);
   return {
