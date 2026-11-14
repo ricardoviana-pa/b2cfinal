@@ -98,8 +98,6 @@ interface RawExperience {
   reserveNowPayLater?: boolean;
   mobileTicket?: boolean;
   pickupIncluded?: boolean;
-  bookingsLastMonth?: number;
-  averageBookingLeadDays?: number;
   recommendedPercent?: number;
   guideName?: string;
   guideRole?: string;
@@ -500,19 +498,6 @@ export default function ExperienceDetail() {
             </button>
           </div>
         </div>
-
-        {/* Urgency / social proof signal */}
-        {exp.bookingsLastMonth && exp.bookingsLastMonth > 3 && (
-          <div className="mt-4 inline-flex items-center gap-2 text-[11px] text-[#8B7355] bg-[#F5F1EB] border border-[#E8E4DC] px-4 py-2">
-            <TrendingUp className="w-3 h-3" />
-            <span style={{ fontWeight: 300 }}>
-              {t('experienceDetail.bookingsLastMonth', { count: exp.bookingsLastMonth })}
-              {exp.averageBookingLeadDays && (
-                <> · {t('experienceDetail.bookedInAdvance', { days: exp.averageBookingLeadDays })}</>
-              )}
-            </span>
-          </div>
-        )}
       </section>
 
       {/* ── Quick facts row ── */}

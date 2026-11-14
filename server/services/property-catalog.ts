@@ -1,5 +1,5 @@
 import { detectReviewLanguage, type ReviewLanguage } from './review-language';
-import { REVIEW_CHANNEL_RE } from '../../shared/reviewStats';
+import { REVIEW_CHANNEL_RE, isDisplayableRating } from '../../shared/reviewStats';
 
 /** Public card payload. Full descriptions, room photos and review bodies stay on the PDP. */
 const CATALOG_FIELDS = [
@@ -45,20 +45,22 @@ const SUBSTANTIVE_WORDS = 8;
 
 /**
  * Recent substantive feedback from the published inventory; no invented
- * testimonials. One review per home, at most 20.
+ * testimonials. One review per home, at most 20, and only 4★ and 5★ reviews
+ * (Ricardo, 14 nov 2026: shared/reviewStats.ts, MIN_DISPLAY_RATING).
  *
  * With a page language (auditoria 29 out, ux-home-plp-07): reviews in that
- * language first, then English, then the rest; within each, longer reviews
- * before very short ones, then newest. Each review carries the language it
- * was detected in (null when unsure) so the page can label the others.
- * Without a language the order is simply newest first.
+ * language first, then English, then the rest; within each, 5★ before 4★
+ * (a 4★ review can still open with a complaint, and this rail is the
+ * showcase), longer reviews before very short ones, then newest. Each review
+ * carries the language it was detected in (null when unsure) so the page can
+ * label the others. Without a language the order is 5★ first, then newest.
  */
 export function recentGuestFeedback(properties: Record<string, any>[], locale?: string | null) {
   const lang = locale ? String(locale).toLowerCase().slice(0, 2) : null;
   const rankOf = (language: ReviewLanguage | null) => !lang ? 0 : language === lang ? 0 : language === 'en' ? 1 : 2;
   const feedback = properties.filter(p => p.isActive !== false).flatMap(p =>
     (Array.isArray(p.reviews) ? p.reviews : []).filter((r: any) =>
-      Number.isFinite(r.rating) && r.rating >= 1 && r.rating <= 5 &&
+      isDisplayableRating(r.rating) &&
       typeof r.text === 'string' && r.text.replace(/[^\p{L}]/gu, '').length >= 12 &&
       // The one channel-name rule for every surface (shared/reviewStats.ts).
       !REVIEW_CHANNEL_RE.test(r.text)
@@ -72,7 +74,7 @@ export function recentGuestFeedback(properties: Record<string, any>[], locale?: 
         _rank: rankOf(language), _short: lang && words < SUBSTANTIVE_WORDS ? 1 : 0,
       };
     })
-  ).sort((a, b) => a._rank - b._rank || a._short - b._short || (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
+  ).sort((a, b) => a._rank - b._rank || b.rating - a.rating || a._short - b._short || (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
   const seen = new Set<string>();
   return feedback.filter(r => {
     if (seen.has(r.property.slug)) return false;

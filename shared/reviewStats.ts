@@ -5,9 +5,13 @@
  * page (ReviewsSection, the rating beside the title, the JSON-LD) and the
  * server-rendered JSON-LD (server/_core/vite.ts), so they can never disagree.
  *
- * Policy (Ricardo, 29 out 2026): every review of a home counts and is shown,
- * whatever its rating — the average is the real one. Until 29 out the site
- * kept 5★ only, so every home read "5.0" by construction.
+ * Policy (Ricardo, 14 nov 2026): the site shows the text of 4★ and 5★
+ * reviews only (MIN_DISPLAY_RATING) — the cards on the home page, the list
+ * and the quote on the property page, the review nodes of the JSON-LD.
+ * Every review still COUNTS: the count and the average are computed over all
+ * of them, so the number beside a home is the real one and is never raised
+ * by what is hidden. (29 out 2026 to 14 nov 2026 every rating was shown as a
+ * card; before that the site kept 5★ only and every home read "5.0".)
  *
  * Two honesty rules on top:
  *  - a home with fewer than MIN_REVIEWS_FOR_AVERAGE reviews shows the count
@@ -17,6 +21,15 @@
  */
 
 export const MIN_REVIEWS_FOR_AVERAGE = 3;
+
+/** A review is shown as a card or a quote only from this rating up. The
+ *  aggregate (count and average) is never filtered by it. */
+export const MIN_DISPLAY_RATING = 4;
+
+/** Shown as a card or a quote? A valid rating of MIN_DISPLAY_RATING or more. */
+export function isDisplayableRating(rating: unknown): rating is number {
+  return isValidRating(rating) && rating >= MIN_DISPLAY_RATING;
+}
 
 /** White-label: a quote that names the booking channel is never shown —
  *  "Airbnb", "air bnb" and "AirBnB" alike (a guest wrote "our original air
@@ -54,10 +67,10 @@ export function reviewLetters(text: unknown): number {
   return typeof text === 'string' ? text.replace(/[^\p{L}]/gu, '').length : 0;
 }
 
-/** Reviews that can be shown as cards: a valid rating, real text, no channel name. */
+/** Reviews that can be shown as cards: 4★ or 5★, real text, no channel name. */
 export function publishableReviews<T extends RatedReview>(reviews: readonly T[] | null | undefined, minLetters = 3): T[] {
   return (reviews ?? []).filter(r =>
-    isValidRating(r?.rating) && reviewLetters(r.text) >= minLetters && !REVIEW_CHANNEL_RE.test(String(r.text)));
+    isDisplayableRating(r?.rating) && reviewLetters(r.text) >= minLetters && !REVIEW_CHANNEL_RE.test(String(r.text)));
 }
 
 /** Count and mean (two decimals) over every review with a valid rating. */

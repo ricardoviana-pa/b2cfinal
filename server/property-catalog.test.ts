@@ -35,14 +35,14 @@ describe('public catalogue cards', () => {
     expect(toCatalogCard({ slug: 'partner', address: { lat: null, lng: 2 } })).toEqual({ slug: 'partner', images: [], amenities: {} });
   });
   it('retains the published partner UID needed for supplier prices', () => {
-    expect(toCatalogCard({ slug: 'partner', source: 'tripwix', supplierUid: 'public-property-id' }))
-      .toMatchObject({ source: 'tripwix', supplierUid: 'public-property-id' });
+    expect(toCatalogCard({ slug: 'partner', source: 'partner', supplierUid: 'public-property-id' }))
+      .toMatchObject({ source: 'partner', supplierUid: 'public-property-id' });
   });
 });
 
 
 describe('recent public feedback', () => {
-  it('keeps lower ratings, picks the latest feedback per published home and limits the result', () => {
+  it('quotes 4★ and 5★ feedback only, the latest per published home, and limits the result', () => {
     const review = (rating: number, date: string, text = 'A useful detailed account of our stay') => ({ rating, date, text, guestName: 'Ana Silva' });
     const result = recentGuestFeedback([
       { slug: 'hidden', isActive: false, reviews: [review(5, '2026-09-15')] },
@@ -54,9 +54,25 @@ describe('recent public feedback', () => {
       { slug: 'invalid', reviews: [review(9, '2026-09-15'), review(5, '2026-09-15', 'OK')] },
       ...Array.from({ length: 30 }, (_, i) => ({ slug: `bulk-${i}`, reviews: [review(5, '2026-08-01')] })),
     ]);
-    expect(result.map(r => r.property.slug).slice(0, 5)).toEqual(['one', 'two', 'three', 'four', 'five']);
+    // 5★ first (newest first), then 4★; "three" (3★ only) is not quoted at all.
+    expect(result.map(r => r.property.slug).slice(0, 5)).toEqual(['five', 'bulk-0', 'bulk-1', 'bulk-2', 'bulk-3']);
     expect(result).toHaveLength(20);
-    expect(result[0]).toMatchObject({ rating: 2, guestName: 'Ana' });
+    expect(result[0]).toMatchObject({ rating: 5, guestName: 'Ana' });
+    expect(result.every(r => r.rating >= 4)).toBe(true);
+    expect(result.map(r => r.property.slug)).not.toContain('three');
+  });
+
+  it('puts 5★ ahead of 4★ and still quotes the 4★ ones when there is room', () => {
+    const review = (rating: number, date: string) => ({ rating, date, text: 'A useful detailed account of our stay', guestName: 'Ana Silva' });
+    const result = recentGuestFeedback([
+      { slug: 'one', reviews: [review(5, '2026-07-01'), review(2, '2026-09-14')] },
+      { slug: 'two', reviews: [review(4, '2026-09-13')] },
+      { slug: 'three', reviews: [review(3, '2026-09-12')] },
+      { slug: 'four', reviews: [review(4, '2026-09-11'), review(5, '2026-01-05')] },
+      { slug: 'five', reviews: [review(5, '2026-09-10')] },
+    ]);
+    // "one" is quoted by its 5★ of July, not its 2★ of September; "four" by its 5★, not its newer 4★.
+    expect(result.map(r => `${r.property.slug}:${r.rating}`)).toEqual(['five:5', 'one:5', 'four:5', 'two:4']);
   });
 });
 
