@@ -7,7 +7,9 @@
  * response, not in the state the server embeds in the HTML, not in the
  * JavaScript bundle. The property store (server/services/properties-store.ts)
  * turns the imported record into the public one: `source: "partner"`, an id
- * of the form `partner-<code>`, no supplier reference and no commission.
+ * of the form `partner-<slug>`, photos under /homes/photos/<slug>/, no
+ * supplier reference (not as a field, not inside the id or a photo address)
+ * and no commission.
  *
  * This file is shared with the client, so it only knows the public value.
  */

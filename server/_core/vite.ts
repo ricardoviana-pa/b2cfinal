@@ -37,6 +37,7 @@ import { GUESTY_IMAGE_ORIGIN, injectBeforeBodyEnd, injectIntoHead, needsGuestyPr
 import { SSR_UNPRICED_RENDER_TTL_MS, guestyIdsOf, readFromPricesForSsr, readPdpFromPriceForSsr, unpricedPdpListing } from "../lib/ssrFromPrices";
 import { onListingPriceChanged } from "../lib/listingPriceEvents";
 import { setStaticFileHeaders } from "../lib/security-headers";
+import { partnerPhotoAlias } from "../lib/partnerPhotos";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
  *  tested, hydration verified clean); set the Render env var SSR_ENABLED=false to
@@ -65,6 +66,8 @@ export async function setupVite(app: Express, server: Server) {
     appType: "custom",
   });
 
+  // As in production: a partner home's photos under their public address.
+  app.use("/homes/photos", partnerPhotoAlias(partnerPhotoFolder));
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
@@ -101,6 +104,11 @@ export async function setupVite(app: Express, server: Server) {
     }
   });
 }
+
+/** The folder on disk behind a partner home's public photo folder. Loaded on
+ *  first use, like every other read of the property store in this file. */
+const partnerPhotoFolder = async (publicFolder: string) =>
+  (await import("../services/properties-store")).partnerPhotoFolder(publicFolder);
 
 const BOT_UA_RE = /googlebot|google-extended|googleother|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|slackbot|discordbot|applebot|applebot-extended|ia_archiver|gptbot|oai-searchbot|chatgpt-user|perplexitybot|perplexity-user|claudebot|claude-web|anthropic-ai|ccbot|meta-externalagent|bytespider|amazonbot|diffbot/i;
 
@@ -1480,6 +1488,12 @@ export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
     index: false,
     redirect: false,
   }));
+
+  // A partner home's photos are published as /homes/photos/<slug>/… and sit
+  // on disk in a folder named after the supplier's reference: the alias sends
+  // the request on to that folder and the handler below serves the file, with
+  // the same headers as any other (lib/partnerPhotos.ts).
+  app.use("/homes/photos", partnerPhotoAlias(partnerPhotoFolder));
 
   app.use(express.static(distPath, {
     maxAge: "1h",

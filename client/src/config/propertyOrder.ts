@@ -151,8 +151,10 @@ export function isCurated(guestyId: string | undefined): boolean {
  * Mirante 1 stays first: its tennis court is the site hero.
  *
  * Entries are catalogue keys (see `catalogKey`): the Guesty listingId for
- * our own homes, the `partner-<code>` catalogue id for partner homes, which
- * have no Guesty listing. Multi-unit groups use the PARENT id, as above.
+ * our own homes, the `partner-<slug>` catalogue id for partner homes, which
+ * have no Guesty listing (the id carried the supplier's reference for the
+ * home until 14 nov 2026; server/services/properties-store.ts,
+ * publicPartnerId). Multi-unit groups use the PARENT id, as above.
  *
  * To reorder or swap a home: edit the array, commit, push (the test in
  * server/home-featured-order.test.ts checks every entry exists). If an
@@ -160,17 +162,17 @@ export function isCurated(guestyId: string | undefined): boolean {
  * from the curated PLP order (lib/featuredHomes.ts).
  */
 export const HOME_FEATURED_ORDER: string[] = [
-  'partner-PT0009', // Mirante 1 (Albufeira, Algarve) — site hero
+  'partner-mirante-1', // Mirante 1 (Albufeira, Algarve) — site hero
   '6a2ad70638d6620013badaef', // Carcavelos Manor House (Vila Verde, Minho)
-  'partner-PT0277', // Casa de Caiz (Douro) — 20% commission
+  'partner-casa-de-caiz', // Casa de Caiz (Douro) — 20% commission
   '69e7350685a8b000124854c5', // Alvarinho Villa 5 Suites & Heated Pool (Amarante, Porto)
-  'partner-PT0253', // Villa Belvedere (West Algarve) — 20% commission
+  'partner-villa-belvedere', // Villa Belvedere (West Algarve) — 20% commission
   '696533722def930014e914e2', // Abreu Retreat Palace (Famalicão, Minho)
-  'partner-PT0256', // Villa Laura (Estoril, Lisbon) — 20% commission
+  'partner-villa-laura', // Villa Laura (Estoril, Lisbon) — 20% commission
   '696533466d209c001510ecfe', // Eben Lodge (Carreço, Minho) — slot 8, third row (Ricardo, 14 nov 2026)
-  'partner-PT0023', // Casa do Rolapipas (Douro) — 20% commission
+  'partner-casa-do-rolapipas', // Casa do Rolapipas (Douro) — 20% commission
   '69c415ceab80a8001247452c', // Azenha do Tio Luís - Riverside Watermill (Caminha, Minho; multi-unit)
-  'partner-PT0248', // Casa na Areia (Comporta)
+  'partner-casa-na-areia', // Casa na Areia (Comporta)
   '6965335cbf04fe00137431cb', // Lima River Houses (Viana do Castelo, Minho; multi-unit)
 ];
 

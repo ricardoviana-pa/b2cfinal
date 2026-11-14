@@ -25,7 +25,7 @@ const read = (f: string) => fs.readFileSync(path.join(process.cwd(), f), 'utf8')
 
 const EBEN = '696533466d209c001510ecfe';
 type Home = { id: string; guestyId?: string | null; slug: string; name: string; destination?: string; isActive?: boolean; source?: string; priceFrom?: number };
-// Partner homes as the site publishes them (properties-store.ts): `partner-<code>` ids, source "partner".
+// Partner homes as the site publishes them (properties-store.ts): `partner-<slug>` ids, source "partner".
 const catalogue = catalogProperties([...(own as Home[]), ...(partners as Home[]).map(toPublicPartner) as Home[]]).filter((p) => p.isActive !== false);
 const byKey = new Map(catalogue.map((p) => [catalogKey(p), p]));
 

@@ -10,6 +10,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { withPartnerDefaults, normalizePartnerAmenities } from "./tripwix";
 import { PARTNER_SOURCE } from "../../shared/partnerHome";
+import { PARTNER_PHOTO_ROOT, isPublicPhotoFolder, publicPhotoUrl } from "../lib/partnerPhotos";
 import { stripBrandSignoff } from "../../shared/descriptionSignoff";
 import { normalizePublicPropertyGeography } from "./property-geography";
 import { normalizePropertyCapacityCopy } from "./property-capacity-copy";
@@ -87,21 +88,79 @@ async function readJsonFile(path: string): Promise<unknown> {
 const partnerSupplier = new Map<string, { reference: string; commission: string }>();
 
 /**
+ * The catalogue id of a partner home: `partner-<slug>`. It used to be the
+ * import's own id with the prefix swapped ("partner-PT0009"), which left the
+ * supplier's reference for the home in the id the site publishes (the API,
+ * the page state, the JSON-LD identifier, the GA4 item id). Nothing looks a
+ * home up by this id across a deploy: favourites, partner requests and
+ * payments use the slug, calendars and prices the uid. The homepage strip
+ * (HOME_FEATURED_ORDER) lists the same ids and ships with the same build.
+ * A record without a slug has no page; its id falls back to the start of the
+ * uid, never to the reference.
+ */
+export function publicPartnerId(p: { slug?: unknown; supplierUid?: unknown }): string {
+  const slug = String(p?.slug ?? "").trim();
+  if (isPublicPhotoFolder(slug)) return `partner-${slug}`;
+  const uid = String(p?.supplierUid ?? "").replace(/[^a-z0-9]/gi, "").slice(0, 12).toLowerCase();
+  return `partner-${uid || "home"}`;
+}
+
+/**
  * The imported partner record → the record the site may publish. The
- * supplier's name leaves the id and the source, and the reference and the
- * commission stay behind in `partnerSupplier`. Everything that reaches a
- * browser is built from what this returns.
+ * supplier's name leaves the source; their reference leaves the id and the
+ * photo addresses (the files sit in a folder named after it: see
+ * lib/partnerPhotos.ts); the reference and the commission stay behind in
+ * `partnerSupplier`. Everything that reaches a browser is built from what
+ * this returns.
  */
 export function toPublicPartner(p: any): any {
   const { supplierReference, supplierCommission, ...rest } = p ?? {};
+  const reference = String(supplierReference ?? "").trim();
   if (rest.supplierUid) {
     partnerSupplier.set(String(rest.supplierUid), {
-      reference: String(supplierReference ?? "").trim(),
+      reference,
       commission: String(supplierCommission ?? "").trim(),
     });
   }
-  return { ...rest, id: String(rest.id ?? "").replace(/^tripwix-/i, "partner-"), source: PARTNER_SOURCE };
+  const slug = String(rest.slug ?? "").trim();
+  const images = Array.isArray(rest.images)
+    ? { images: rest.images.map((url: unknown) => publicPhotoUrl(url, reference, slug)) }
+    : {};
+  return { ...rest, ...images, id: publicPartnerId(rest), source: PARTNER_SOURCE };
 }
+
+/**
+ * The folder on disk behind a public photo folder: /homes/photos/<slug>/…
+ * is served from /homes/photos/<supplier reference>/… (lib/partnerPhotos.ts).
+ * null for a folder that is not a partner home's. Read from the data file
+ * itself, not from the published list: a photo linked from a destination or
+ * a Journal article keeps loading with the partner inventory switched off
+ * (TRIPWIX_INVENTORY=0). Server use only.
+ */
+export async function partnerPhotoFolder(publicFolder: string): Promise<string | null> {
+  if (!isPublicPhotoFolder(publicFolder) || !existsSync(paths.tripwix)) return null;
+  try {
+    const version = await fileVersion(paths.tripwix);
+    if (!photoFolders || photoFolders.version !== version) {
+      const data = await readJsonFile(paths.tripwix);
+      const map = new Map<string, string>();
+      for (const p of Array.isArray(data) ? data : []) {
+        const slug = String(p?.slug ?? "").trim();
+        const reference = String(p?.supplierReference ?? "").trim();
+        const first = Array.isArray(p?.images) ? p.images[0] : null;
+        // Only homes whose photos really are in the folder named after the reference.
+        if (isPublicPhotoFolder(slug) && /^[A-Za-z0-9_-]+$/.test(reference) && typeof first === "string" && first.startsWith(`${PARTNER_PHOTO_ROOT}${reference}/`)) {
+          map.set(slug, reference);
+        }
+      }
+      photoFolders = { version, map };
+    }
+    return photoFolders.map.get(publicFolder) ?? null;
+  } catch {
+    return null;
+  }
+}
+let photoFolders: { version: string; map: Map<string, string> } | null = null;
 
 /** The supplier's own reference for a partner home ("" when unknown). Server use only. */
 export async function partnerSupplierReference(supplierUid: string | null | undefined): Promise<string> {
@@ -475,6 +534,7 @@ export const __testing = {
     Object.assign(paths, next);
     snapshot = null;
     loading = null;
+    photoFolders = null;
     jsonFiles.clear();
     return prev;
   },
@@ -483,6 +543,7 @@ export const __testing = {
   reset(): void {
     snapshot = null;
     loading = null;
+    photoFolders = null;
     jsonFiles.clear();
     loadCount = 0;
   },
