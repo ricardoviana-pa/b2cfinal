@@ -484,8 +484,12 @@ const SUBJECT_LABELS: Record<string, string> = {
 };
 
 export async function sendContactInquiryNotification(data: ContactInquiryData): Promise<void> {
-  const subjectLabel = SUBJECT_LABELS[data.subject] || data.subject;
-  const emailSubject = `New enquiry: ${subjectLabel} — ${data.name}`;
+  // Everything below came from a public form: it is shown as text, never as markup.
+  const subjectLabel = escapeHtml(SUBJECT_LABELS[data.subject] || oneLine(data.subject, 80));
+  const emailSubject = `New enquiry: ${SUBJECT_LABELS[data.subject] || oneLine(data.subject, 80)} — ${oneLine(data.name, 120)}`;
+  const name = escapeHtml(oneLine(data.name, 200));
+  const email = escapeHtml(oneLine(data.email, 320));
+  const phone = data.phone ? escapeHtml(oneLine(data.phone, 50)) : "";
 
   const html = wrapTemplate(`
 <tr><td style="padding:0 0 24px 0;">
@@ -500,18 +504,18 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
       <tr>
         <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;width:80px;">Name</td>
-        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;font-weight:600;">${data.name}</td>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;font-weight:600;">${name}</td>
       </tr>
       <tr>
         <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Email</td>
         <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#8B7355;">
-          <a href="mailto:${data.email}" style="color:#8B7355;text-decoration:none;">${data.email}</a>
+          <a href="mailto:${email}" style="color:#8B7355;text-decoration:none;">${email}</a>
         </td>
       </tr>
       ${data.phone ? `<tr>
         <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Phone</td>
         <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;">
-          <a href="https://wa.me/${data.phone.replace(/[^0-9+]/g, "")}" style="color:#1A1A18;text-decoration:none;">${data.phone}</a>
+          <a href="https://wa.me/${data.phone.replace(/[^0-9+]/g, "")}" style="color:#1A1A18;text-decoration:none;">${phone}</a>
         </td>
       </tr>` : ""}
       <tr>
@@ -529,7 +533,7 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
 <tr><td style="padding:0 0 20px 0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
   <tr><td style="padding:20px;">
-    <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;white-space:pre-wrap;">${data.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+    <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;white-space:pre-wrap;">${escapeHtml(data.message)}</p>
   </td></tr>
 </table>
 </td></tr>`);
@@ -690,6 +694,28 @@ export interface EmailCancellation {
 
 const escapeHtml = (v: string): string =>
   v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+/** A value typed into a public form, as one line of plain text: no line
+ *  breaks or control characters (a subject line must stay one line), trimmed
+ *  and capped. Escape it with escapeHtml before it goes into markup. */
+const oneLine = (v: unknown, max = 200): string =>
+  String(v ?? "").replace(/[\u0000-\u001f\u007f\u2028\u2029]+/g, " ").replace(/\s+/g, " ").trim().slice(0, max);
+
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+/** "2027-06-05" → "5 June 2027" / "5 de junho de 2027" for a guest; anything
+ *  that is not a calendar day becomes a dash, never the raw input. */
+function guestDate(iso: unknown, pt: boolean): string {
+  const s = String(iso ?? "");
+  if (!ISO_DAY.test(s)) return "—";
+  const d = new Date(`${s}T12:00:00Z`);
+  if (Number.isNaN(d.getTime())) return "—";
+  try {
+    return new Intl.DateTimeFormat(pt ? "pt-PT" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(d);
+  } catch {
+    return s;
+  }
+}
 
 /** The booking's cancellation policy in one line — the rule of its Guesty
  *  code (shared/cancellationPolicy.ts); unknown code → "the cancellation
@@ -2370,8 +2396,10 @@ export interface AvailabilityRequestData {
 export async function sendAvailabilityRequestNotification(
   data: AvailabilityRequestData,
 ): Promise<void> {
-  const who = data.name?.trim() || data.email;
-  const emailSubject = `Availability request: ${data.checkIn} → ${data.checkOut} · ${data.guests} guests`;
+  // Everything below came from a public form: it is shown as text, never as markup.
+  const safe = (v: string | undefined, max = 120) => escapeHtml(oneLine(v, max));
+  const who = safe(data.name?.trim() || data.email, 320);
+  const emailSubject = `Availability request: ${oneLine(data.checkIn, 20)} → ${oneLine(data.checkOut, 20)} · ${oneLine(data.guests, 10)} guests`;
 
   const row = (label: string, value: string) => `
       <tr>
@@ -2389,11 +2417,11 @@ export async function sendAvailabilityRequestNotification(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
   <tr><td style="padding:20px;">
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
-      ${row("Dates", `${data.checkIn} → ${data.checkOut}`)}
-      ${row("Nights", data.nights)}
-      ${row("Guests", data.guests)}
+      ${row("Dates", `${safe(data.checkIn, 20)} → ${safe(data.checkOut, 20)}`)}
+      ${row("Nights", safe(data.nights, 10))}
+      ${row("Guests", safe(data.guests, 10))}
       ${row("Guest", who)}
-      ${row("Email", `<a href="mailto:${data.email}" style="color:#806A48;text-decoration:none;">${data.email}</a>`)}
+      ${row("Email", `<a href="mailto:${safe(data.email, 320)}" style="color:#806A48;text-decoration:none;">${safe(data.email, 320)}</a>`)}
     </table>
   </td></tr>
 </table>
@@ -2427,21 +2455,29 @@ export async function sendAvailabilityRequestConfirmation(data: {
   locale?: string;
 }): Promise<void> {
   const isPt = (data.locale || "").toLowerCase().startsWith("pt");
-  const first = data.name?.trim().split(/\s+/)[0];
+  // This email goes to an address typed into a public form, so nothing the
+  // form sent is trusted (auditoria de 14 nov 2026: name and dates were pasted
+  // into the HTML as they came, which let anyone send their own text from
+  // booking@). Dates must be dates, the party size a number, the name plain
+  // text; whatever is not becomes a dash or is left out.
+  const first = escapeHtml(oneLine(data.name, 60).split(/\s+/)[0] || "");
+  const checkIn = escapeHtml(guestDate(data.checkIn, isPt));
+  const checkOut = escapeHtml(guestDate(data.checkOut, isPt));
+  const guests = /^\d{1,3}$/.test(String(data.guests)) ? String(data.guests) : "—";
 
   const subject = isPt
-    ? `Recebemos o seu pedido — ${data.checkIn} → ${data.checkOut}`
-    : `We received your request — ${data.checkIn} → ${data.checkOut}`;
+    ? `Recebemos o seu pedido: ${guestDate(data.checkIn, isPt)} → ${guestDate(data.checkOut, isPt)}`
+    : `We received your request: ${guestDate(data.checkIn, isPt)} → ${guestDate(data.checkOut, isPt)}`;
 
   const greeting = first ? (isPt ? `Olá ${first},` : `Hello ${first},`) : (isPt ? "Olá," : "Hello,");
 
   const body = isPt
     ? `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">${greeting}</p>
-<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">Recebemos o seu pedido para <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} hóspedes). A nossa equipa local está a verificar as opções — normalmente respondemos no próprio dia.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">Recebemos o seu pedido para <strong>${checkIn} → ${checkOut}</strong> (${guests} hóspedes). A nossa equipa está a verificar as opções. Normalmente respondemos no próprio dia.</p>
 <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">Se preferir falar já connosco, responda a este email ou fale com o nosso concierge no WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.</p>
 <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;">Portugal Active</p>`
     : `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">${greeting}</p>
-<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">We received your request for <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} guests). Our local team is checking the options — we usually come back to you the same day.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">We received your request for <strong>${checkIn} → ${checkOut}</strong> (${guests} guests). Our team is checking the options. We usually come back to you the same day.</p>
 <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">If you'd rather talk now, just reply to this email or reach our concierge on WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.</p>
 <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;">Portugal Active</p>`;
 
@@ -2468,27 +2504,33 @@ export async function sendDatesOpenedEmail(data: {
 }): Promise<void> {
   const isPt = (data.locale || "").toLowerCase().startsWith("pt");
   const lang = isPt ? "pt" : "en";
-  const first = data.name?.trim().split(/\s+/)[0];
-  const link = `https://www.portugalactive.com/${lang}/homes?checkin=${data.checkIn}&checkout=${data.checkOut}&guests=${encodeURIComponent(data.guests)}`;
-  const homeNames = data.homes.map(h => h.name).join(" · ");
+  // The lead came from a public form: dates must be dates (the caller checks
+  // them too), the party size a number and the name plain text.
+  if (!ISO_DAY.test(data.checkIn) || !ISO_DAY.test(data.checkOut)) return;
+  const guestCount = /^\d{1,3}$/.test(String(data.guests)) ? String(data.guests) : "2";
+  const first = escapeHtml(oneLine(data.name, 60).split(/\s+/)[0] || "");
+  const link = `https://www.portugalactive.com/${lang}/homes?checkin=${data.checkIn}&checkout=${data.checkOut}&guests=${guestCount}`;
+  const homeNames = escapeHtml(data.homes.map(h => h.name).join(" · "));
+  const checkIn = escapeHtml(guestDate(data.checkIn, isPt));
+  const checkOut = escapeHtml(guestDate(data.checkOut, isPt));
 
   const subject = isPt
-    ? `Boas notícias — as suas datas abriram (${data.checkIn} → ${data.checkOut})`
-    : `Good news — your dates just opened (${data.checkIn} → ${data.checkOut})`;
+    ? `As suas datas ficaram disponíveis (${guestDate(data.checkIn, isPt)} → ${guestDate(data.checkOut, isPt)})`
+    : `Your dates are now available (${guestDate(data.checkIn, isPt)} → ${guestDate(data.checkOut, isPt)})`;
 
   const greeting = first ? (isPt ? `Olá ${first},` : `Hello ${first},`) : (isPt ? "Olá," : "Hello,");
   const P = (t: string) => `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">${t}</p>`;
 
   const body = isPt
     ? P(greeting) +
-      P(`Quando nos contactou, não tínhamos disponibilidade para <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} hóspedes). Acabou de abrir — nomeadamente em: <strong>${homeNames}</strong>.`) +
+      P(`Quando nos contactou, não tínhamos disponibilidade para <strong>${checkIn} → ${checkOut}</strong> (${guestCount} hóspedes). Essas datas estão agora disponíveis em: <strong>${homeNames}</strong>.`) +
       P(`<a href="${link}" style="display:inline-block;background:#1A1A18;color:#FFFFFF;text-decoration:none;padding:12px 22px;font-size:13px;letter-spacing:0.08em;">VER DISPONIBILIDADE</a>`) +
-      P(`As datas boas voltam a desaparecer depressa — se preferir, responda a este email ou fale connosco no WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.`) +
+      P(`Se preferir, responda a este email ou fale connosco no WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.`) +
       P(`Portugal Active`)
     : P(greeting) +
-      P(`When you reached out, we had no availability for <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} guests). It just opened — specifically at: <strong>${homeNames}</strong>.`) +
+      P(`When you reached out, we had no availability for <strong>${checkIn} → ${checkOut}</strong> (${guestCount} guests). Those dates are now available at: <strong>${homeNames}</strong>.`) +
       P(`<a href="${link}" style="display:inline-block;background:#1A1A18;color:#FFFFFF;text-decoration:none;padding:12px 22px;font-size:13px;letter-spacing:0.08em;">SEE AVAILABILITY</a>`) +
-      P(`Good dates tend to disappear again quickly — reply to this email or reach us on WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.`) +
+      P(`If you prefer, reply to this email or reach us on WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.`) +
       P(`Portugal Active`);
 
   const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, isPt);

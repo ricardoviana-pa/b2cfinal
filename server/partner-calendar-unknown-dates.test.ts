@@ -31,7 +31,7 @@ vi.mock("./db", () => ({
 }));
 const UID = "a77ade65-0000-4000-8000-000000000001";
 vi.mock("./services/properties-store", () => ({
-  getPropertiesForSite: async () => [{ source: "tripwix", isActive: true, supplierUid: UID, name: "Beachfront Sintra", minNights: 7, maxGuests: 10 }],
+  getPropertiesForSite: async () => [{ source: "partner", isActive: true, supplierUid: UID, name: "Beachfront Sintra", minNights: 7, maxGuests: 10 }],
 }));
 
 import { partnerCalendarDays } from "./services/tripwix";
@@ -131,11 +131,11 @@ describe("the job and the guest requests with a short calendar", () => {
     const { refreshTripwixCalendar } = await import("./services/tripwix-calendar");
     await refreshTripwixCalendar(UID, "Beachfront Sintra");
 
-    const days = await c.partnerCalendar({ tripwixUid: UID, startDate: "2026-10-29", endDate: "2027-10-29" });
+    const days = await c.partnerCalendar({ partnerUid: UID, startDate: "2026-10-29", endDate: "2027-10-29" });
     expect(days!.at(-1)).toEqual({ date: "2027-10-29", status: "unknown" });
     expect(days!.some((d) => d.date > "2027-03-04" && d.status === "available")).toBe(false);
     expect(headers.get("Cache-Control")).toContain("s-maxage=900");
-    expect(await c.partnerQuote({ tripwixUid: UID, checkIn: "2027-07-10", checkOut: "2027-07-17" })).toBeNull();
+    expect(await c.partnerQuote({ partnerUid: UID, checkIn: "2027-07-10", checkOut: "2027-07-17" })).toBeNull();
     expect(headers.get("Cache-Control")).toBe("public, max-age=0, s-maxage=60");
   });
 

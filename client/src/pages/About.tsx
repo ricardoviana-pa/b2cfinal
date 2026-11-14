@@ -3,13 +3,15 @@
    5 sections: Hero, Origin Story, Social Proof, Team, Final CTA
    ========================================================================== */
 
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
 import { ChevronLeft, ChevronRight, ArrowRight, Play } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
+import { trpc } from '@/lib/trpc';
+import { getDisplayName } from '@/lib/format';
 import EditorialHero from '@/components/marketing/EditorialHero';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -124,8 +126,28 @@ const PRESS_LOGOS = [
 ];
 
 
+/**
+ * The quote on this page is a real review, never written copy (auditoria de
+ * 14 nov 2026: the page carried a sentence from the locale file under
+ * "Verified guest review" that no guest had written). It comes from the same
+ * list as the homepage rail (properties.guestFeedback: 4★ and 5★ reviews of
+ * published homes, the page language first) and is the best-rated review short
+ * enough to read as a quote. Without one, the band is not rendered.
+ */
+const ABOUT_QUOTE_MIN = 70;
+const ABOUT_QUOTE_MAX = 280;
+type AboutFeedback = { text: string; rating: number; guestName?: string; property: { slug: string; name?: string; title?: string } };
+function pickAboutQuote(feedback: readonly AboutFeedback[] | undefined): AboutFeedback | null {
+  // The feed already follows the display policy (4★ and 5★ only); the best-rated one that fits the band wins.
+  const fits = (r: AboutFeedback) => r.text.trim().length >= ABOUT_QUOTE_MIN && r.text.trim().length <= ABOUT_QUOTE_MAX;
+  return [...(feedback ?? [])].sort((a, b) => b.rating - a.rating).find(fits) ?? null;
+}
+
 export default function About() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const pageLang = (i18n.language || 'en').split('-')[0];
+  const { data: feedback } = trpc.properties.guestFeedback.useQuery({ locale: pageLang }, { staleTime: 5 * 60 * 1000 });
+  const guestQuote = useMemo(() => pickAboutQuote(feedback as AboutFeedback[] | undefined), [feedback]);
   usePageMeta({
     title: t('nav.about') + ' Portugal Active',
     description: t('about.heroSubtitle', { count: HOME_COUNT }),
@@ -369,6 +391,7 @@ export default function About() {
           SECTION 3: SOCIAL PROOF
           Dark band — guest quote only (press logos already above)
           ═══════════════════════════════════════════════════════════════════ */}
+      {guestQuote && (
       <section className="py-20 lg:py-28 bg-[#FDFBF7]">
         <div className="container max-w-[760px] mx-auto text-center">
           <span className="mx-auto block h-px w-10 bg-[#C9A876]/70 mb-8" />
@@ -376,16 +399,22 @@ export default function About() {
             className="text-[#2A2722]"
             style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(22px, 3.4vw, 30px)', lineHeight: 1.45 }}
           >
-            &ldquo;{t('about.socialProofQuote')}&rdquo;
+            &ldquo;{guestQuote.text.trim()}&rdquo;
           </blockquote>
           <p
             className="text-[#726D63] mt-6 text-[12px] tracking-[0.14em] uppercase"
             style={{ fontFamily: 'var(--font-body)', fontWeight: 500 }}
           >
             {t('about.socialProofAttribution')}
+            {guestQuote.guestName ? ` · ${guestQuote.guestName}` : ''}
+            {' · '}
+            <Link href={`/homes/${guestQuote.property.slug}#property-reviews`} className="underline underline-offset-4">
+              {getDisplayName(guestQuote.property as any)}
+            </Link>
           </p>
         </div>
       </section>
+      )}
 
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 4: THE TEAM

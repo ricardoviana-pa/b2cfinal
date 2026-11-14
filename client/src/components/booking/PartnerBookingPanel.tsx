@@ -43,7 +43,7 @@ import { keepRevealed, rangeOf, whenFooterOnScreen } from '@/lib/bookingCardReve
  * checks the required fields (reportValidity), as the <form> did.
  */
 export function PartnerBookingPanel({
-  tripwixUid,
+  partnerUid,
   propertyName,
   propertySlug,
   fromPrice,
@@ -55,7 +55,7 @@ export function PartnerBookingPanel({
   whatsappUrl,
   onSelectionChange,
 }: {
-  tripwixUid: string;
+  partnerUid: string;
   propertyName: string;
   propertySlug: string;
   fromPrice?: number | null;
@@ -120,8 +120,8 @@ export function PartnerBookingPanel({
   const {
     data: calendarDays, isLoading: calendarLoading, isError: calendarError, refetch: refetchCalendar,
   } = trpc.booking.partnerCalendar.useQuery(
-    { tripwixUid, ...calendarRange },
-    { enabled: !!tripwixUid && (showCalendar || datesValid), staleTime: 15 * 60 * 1000, retry: 1, refetchOnWindowFocus: false },
+    { partnerUid, ...calendarRange },
+    { enabled: !!partnerUid && (showCalendar || datesValid), staleTime: 15 * 60 * 1000, retry: 1, refetchOnWindowFocus: false },
   );
   // What the calendar draws: a date it does not have is on request, never
   // free, except after the window on a home whose calendar runs to its end.
@@ -134,7 +134,7 @@ export function PartnerBookingPanel({
   // the edge cache, so the panel shows what the server would charge.
   const [quoteNonce, setQuoteNonce] = useState<number | undefined>(undefined);
   const { data: quote, isFetching, isError } = trpc.booking.partnerQuote.useQuery(
-    { tripwixUid, checkIn, checkOut, guests, ...(quoteNonce ? { fresh: quoteNonce } : {}) },
+    { partnerUid, checkIn, checkOut, guests, ...(quoteNonce ? { fresh: quoteNonce } : {}) },
     { enabled: datesValid, staleTime: 15 * 60 * 1000, retry: false, refetchOnWindowFocus: false },
   );
   // The server says when this stay can be paid for now (partner-pay.ts): free,

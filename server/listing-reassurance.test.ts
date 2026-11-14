@@ -17,7 +17,7 @@ import { catalogProperties, getPropertiesForSite } from './services/properties-s
 // first home, one of them repeating the WhatsApp button.
 
 const direct = { guestyId: 'g1', source: undefined, isPortfolio: false };
-const partner = { guestyId: undefined, source: 'tripwix', isPortfolio: false };
+const partner = { guestyId: undefined, source: 'partner', isPortfolio: false };
 const portfolio = { guestyId: 'g2', source: undefined, isPortfolio: true };
 const today = '2026-10-29';
 const addDays = (ymd: string, n: number) => {
@@ -31,7 +31,7 @@ describe('which homes the line speaks for', () => {
     expect(isBookableOnline(direct)).toBe(true);
     expect(isBookableOnline(partner)).toBe(false);
     expect(isBookableOnline(portfolio)).toBe(false);
-    expect(isBookableOnline({ guestyId: 'g3', source: 'tripwix' })).toBe(false);
+    expect(isBookableOnline({ guestyId: 'g3', source: 'partner' })).toBe(false);
   });
 
   it('never above partner homes only', () => {

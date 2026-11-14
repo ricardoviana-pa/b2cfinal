@@ -24,14 +24,17 @@
 
 export const CURATED_PROPERTY_ORDER: string[] = [
   '6a2ad70638d6620013badaef', // # 1 Carcavelos House by Portugal Active
-  '696533466d209c001510ecfe', // # 2 Eben Lodge (show off)
-  '69e7350685a8b000124854c5', // # 3 Alvarinho Villa 5 Suites & Heated Pool
-  '696533722def930014e914e2', // # 4 Abreu Retreat Palace - Luxury, Elegance & Leisure
-  '69c415ceab80a8001247452c', // # 5 Azenha do Tio Luis - Riverside Watermill (multi-unit)
-  '6965335cbf04fe00137431cb', // # 6 Lima River Houses (multi-unit)
-  '69c567ad7f6873000e9a3c37', // # 7 Alentejo Rural Farmhouse with Pool and Total Privacy
-  '696533abf142270014026fa9', // # 8 Stars View by Portugal Active
-  '69653354109993001383ef5f', // # 9 Beach Farm - Pool and Jacuzzi with Sea View
+  '69e7350685a8b000124854c5', // # 2 Alvarinho Villa 5 Suites & Heated Pool
+  '696533722def930014e914e2', // # 3 Abreu Retreat Palace - Luxury, Elegance & Leisure
+  '69c415ceab80a8001247452c', // # 4 Azenha do Tio Luis - Riverside Watermill (multi-unit)
+  '6965335cbf04fe00137431cb', // # 5 Lima River Houses (multi-unit)
+  '69c567ad7f6873000e9a3c37', // # 6 Alentejo Rural Farmhouse with Pool and Total Privacy
+  '696533abf142270014026fa9', // # 7 Stars View by Portugal Active
+  '69653354109993001383ef5f', // # 8 Beach Farm - Pool and Jacuzzi with Sea View
+  // Eben Lodge is a showcase home ("price on request", no online booking):
+  // it stays in the first screen of the listing for the brand, below the
+  // homes a guest can book (Ricardo, 14 nov 2026; it was #2).
+  '696533466d209c001510ecfe', // # 9 Eben Lodge (show off)
   '69653335bf04fe0013742743', // #10 Nature Hill Duo - 10 min Beach
   '6965330b6d209c001510dd49', // #11 Atlantic Lodge - SEA VIEW - Premium
   '696533284b583900135ceb91', // #12 Sunset Beach Lodge - Heated Pool
@@ -137,8 +140,10 @@ export function isCurated(guestyId: string | undefined): boolean {
  *
  * Ricardo, 29 out 2026: our homes and the partner homes (Tripwix inventory)
  * interleaved so the twelve cards mix regions — Algarve, Douro, Lisbon,
- * Comporta from the partners, Minho and Porto from our own — with Eben
- * Lodge in slot 2. A partner home only earns a slot with a real "from"
+ * Comporta from the partners, Minho and Porto from our own. Eben Lodge was
+ * in slot 2 until 14 nov 2026; Ricardo moved it down that day (it cannot be
+ * booked online, but it positions the brand): it now sits in the third row,
+ * after the homes a guest can book. A partner home only earns a slot with a real "from"
  * price and a calendar priced twelve months out (checked in production on
  * 29 out: booking.partnerPrices + booking.partnerCalendar); Casa do
  * Presidente and Alma da Comporta stop at 2027-03-04 and stayed out, the
@@ -146,7 +151,7 @@ export function isCurated(guestyId: string | undefined): boolean {
  * Mirante 1 stays first: its tennis court is the site hero.
  *
  * Entries are catalogue keys (see `catalogKey`): the Guesty listingId for
- * our own homes, the `tripwix-<ref>` catalogue id for partner homes, which
+ * our own homes, the `partner-<code>` catalogue id for partner homes, which
  * have no Guesty listing. Multi-unit groups use the PARENT id, as above.
  *
  * To reorder or swap a home: edit the array, commit, push (the test in
@@ -155,17 +160,17 @@ export function isCurated(guestyId: string | undefined): boolean {
  * from the curated PLP order (lib/featuredHomes.ts).
  */
 export const HOME_FEATURED_ORDER: string[] = [
-  'tripwix-PT0009', // Mirante 1 (Albufeira, Algarve) — site hero
-  '696533466d209c001510ecfe', // Eben Lodge (Carreço, Minho) — slot 2, Ricardo 29 out 2026
-  'tripwix-PT0277', // Casa de Caiz (Douro) — 20% commission
+  'partner-PT0009', // Mirante 1 (Albufeira, Algarve) — site hero
   '6a2ad70638d6620013badaef', // Carcavelos Manor House (Vila Verde, Minho)
-  'tripwix-PT0253', // Villa Belvedere (West Algarve) — 20% commission
+  'partner-PT0277', // Casa de Caiz (Douro) — 20% commission
   '69e7350685a8b000124854c5', // Alvarinho Villa 5 Suites & Heated Pool (Amarante, Porto)
-  'tripwix-PT0256', // Villa Laura (Estoril, Lisbon) — 20% commission
+  'partner-PT0253', // Villa Belvedere (West Algarve) — 20% commission
   '696533722def930014e914e2', // Abreu Retreat Palace (Famalicão, Minho)
-  'tripwix-PT0023', // Casa do Rolapipas (Douro) — 20% commission
+  'partner-PT0256', // Villa Laura (Estoril, Lisbon) — 20% commission
+  '696533466d209c001510ecfe', // Eben Lodge (Carreço, Minho) — slot 8, third row (Ricardo, 14 nov 2026)
+  'partner-PT0023', // Casa do Rolapipas (Douro) — 20% commission
   '69c415ceab80a8001247452c', // Azenha do Tio Luís - Riverside Watermill (Caminha, Minho; multi-unit)
-  'tripwix-PT0248', // Casa na Areia (Comporta)
+  'partner-PT0248', // Casa na Areia (Comporta)
   '6965335cbf04fe00137431cb', // Lima River Houses (Viana do Castelo, Minho; multi-unit)
 ];
 

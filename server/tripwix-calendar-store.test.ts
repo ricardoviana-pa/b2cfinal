@@ -347,7 +347,7 @@ describe('persistence (TiDB: one read per process, writes only on change)', () =
     // Consultas que nunca respondem (ligação meio aberta; o mysql2 não tem timeout).
     const pending = new Map<string, (rows: Map<string, string>) => void>();
     h.getMany.mockImplementation((keys: string[]) => new Promise((r) => { for (const k of keys) pending.set(k, r); }));
-    h.homes = [{ source: 'tripwix', isActive: true, supplierUid: 'b', name: 'Casa B' }];
+    h.homes = [{ source: 'partner', isActive: true, supplierUid: 'b', name: 'Casa B' }];
     const mod = await load();
     const { runTripwixRefreshTick } = await import('./services/tripwix-refresh');
     const settled = { guest: false, tick: false };
@@ -474,7 +474,7 @@ describe('job start-up (restart / deploy: no burst)', () => {
     vi.setSystemTime(new Date(T0));
     vi.spyOn(console, 'info').mockImplementation(() => {});
     vi.spyOn(console, 'warn').mockImplementation(() => {});
-    h.homes = Array.from({ length: 35 }, (_, i) => ({ source: 'tripwix', isActive: true, supplierUid: `u${i}`, name: `Casa ${i}` }));
+    h.homes = Array.from({ length: 35 }, (_, i) => ({ source: 'partner', isActive: true, supplierUid: `u${i}`, name: `Casa ${i}` }));
     const times: number[] = [];
     fetcher.mockImplementation(async () => { times.push(Date.now()); return ok(calendar()); });
     vi.stubGlobal('fetch', fetcher);

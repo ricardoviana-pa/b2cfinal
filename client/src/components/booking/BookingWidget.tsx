@@ -117,6 +117,9 @@ interface QuoteData {
   source?: "live" | "cached" | "base" | "request";
   /** Casa em "reserva por pedido" no Guesty nestas datas — não é falha */
   requestOnly?: boolean;
+  /** As datas pedidas têm noites ocupadas. Não é uma falha de preço: tentar
+   *  de novo nunca resulta, o caminho é escolher outras datas. */
+  datesTaken?: boolean;
   /** Timestamp when the BE quote was created — valid for 24h */
   quoteCreatedAt?: number;
 }
@@ -570,9 +573,15 @@ export default function BookingWidget({
       const isLivePrice = (d as any).source === "live";
       const isBookable =
         !!(d as any).quoteId && ((d as any).source === "live" || (d as any).source === "cached");
+      // O servidor diz quando as datas têm noites ocupadas (unavailableReason
+      // "dates"): isso não é uma falha de preço. Chega-se aqui por um link com
+      // datas (email de recuperação, anúncio, link partilhado), e o cartão
+      // dizia "não conseguimos confirmar o preço" com um "tentar de novo" que
+      // nunca resultava (auditoria de 14 nov 2026).
+      const datesTaken = (d as any).unavailable === true && (d as any).unavailableReason === "dates";
       // Sem quote comprável (fallback/base/request/sem preço) → um retry
       // automático antes de renderizar o estado de falha.
-      if (!isBookable && !(d as any).requestOnly && scheduleAutoRetry()) return;
+      if (!isBookable && !(d as any).requestOnly && !datesTaken && scheduleAutoRetry()) return;
 
       if (effectiveTotal <= 0 || effectiveNightly <= 0) {
         // No price at all — show request-only flow
@@ -581,13 +590,14 @@ export default function BookingWidget({
           nights: d.nights,
           priceOnRequest: true,
           requestOnly: !!(d as any).requestOnly,
+          datesTaken,
           source: (d as any).source || "request",
           fallbackMessage: (d as any).fallbackMessage || t("bookingWidget.priceOnRequestTitle"),
         });
         // GA4: funnel fallback — quote requested but no bookable price returned
         pushDL({
           event: "quote_unavailable",
-          reason: "no_price",
+          reason: datesTaken ? "dates_taken" : "no_price",
           property_id: guestyId,
           checkin_date: checkIn,
           checkout_date: checkOut,
@@ -1280,6 +1290,12 @@ export default function BookingWidget({
                   {t("bookingWidget.requestOnlyBody", "Send your request to our concierge and we will confirm availability and price personally.")}
                 </p>
               </div>
+            ) : quote?.datesTaken ? (
+              <div ref={pricingIssueRef} className="p-3 bg-pa-warm border border-pa-sand" role="status">
+                <p className="caption text-inherit text-pa-dark leading-snug font-medium">
+                  {t("booking.datesUnavailable", "These dates are no longer available")}
+                </p>
+              </div>
             ) : (
             <div ref={pricingIssueRef} className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium caption text-inherit">!</span>
@@ -1289,9 +1305,20 @@ export default function BookingWidget({
             </div>
             )}
 
+            {/* Datas ocupadas: o passo útil é escolher outras, à cabeça. */}
+            {quote?.datesTaken && (
+            <button
+              type="button"
+              onClick={resetDates}
+              className="pa-action w-full min-h-[52px] border border-black text-black caption font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
+            >
+              {t("bookingWidget.changeDates")}
+            </button>
+            )}
+
             {/* Falhas de pricing são muitas vezes transitórias: tentar de novo
                 primeiro; o concierge fica como segunda via (auditoria set/2026) */}
-            {!quote?.requestOnly && (
+            {!quote?.requestOnly && !quote?.datesTaken && (
             <button
               type="button"
               onClick={retryQuote}
@@ -1333,9 +1360,11 @@ export default function BookingWidget({
               </p>
             </div>
 
+            {!quote?.datesTaken && (
             <button onClick={resetDates} className="w-full caption text-black/30 hover:text-black transition py-1">
               {t("bookingWidget.changeDates")}
             </button>
+            )}
           </>
         )}
 

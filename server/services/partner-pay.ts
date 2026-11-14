@@ -38,12 +38,13 @@
  * O que NÃO está aqui (v1): Klarna/PayPal, duas partes, e a confirmação ao
  * hóspede com os detalhes da estadia (a equipa escreve-a, como hoje).
  */
+import { isPartnerHome } from "../../shared/partnerHome";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import type Stripe from "stripe";
 import * as db from "../db";
 import { isPreviewDeployment } from "../lib/preview-isolation";
-import { getPropertiesForSite } from "./properties-store";
+import { getPropertiesForSite, partnerSupplierReference } from "./properties-store";
 import { getPartnerQuote, partnerFeesOf, type PartnerQuote } from "./tripwix";
 
 export const PARTNER_PAY_FLOW = "partner_pay";
@@ -209,7 +210,7 @@ export async function startPartnerPayment(raw: unknown): Promise<{ url: string; 
     throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid request dates" });
   }
   const property: any = (await getPropertiesForSite()).find((p: any) =>
-    p.slug === input.property && p.bookingMode === "request" && p.source === "tripwix" && p.isActive !== false && p.supplierUid);
+    p.slug === input.property && p.bookingMode === "request" && isPartnerHome(p) && p.isActive !== false && p.supplierUid);
   if (!property) throw new TRPCError({ code: "BAD_REQUEST", message: "Partner home unavailable" });
   if (property.maxGuests && input.guests > property.maxGuests) throw new TRPCError({ code: "BAD_REQUEST", message: "Too many guests" });
 
@@ -240,7 +241,8 @@ export async function startPartnerPayment(raw: unknown): Promise<{ url: string; 
   const stripe = await stripeClient();
   const flowMeta = {
     flow: PARTNER_PAY_FLOW, leadId: String(saved.id), property: property.slug,
-    supplierReference: String(property.supplierReference ?? ""),
+    // The supplier's reference is not part of the public record: it comes from the store's server-side map.
+    supplierReference: await partnerSupplierReference(property.supplierUid),
     checkin: input.checkin, checkout: input.checkout, guests: String(input.guests),
   };
   const back = `${siteOrigin()}${input.returnPath}`;

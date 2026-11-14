@@ -1,4 +1,5 @@
 import { trustedWalletPrice, assertWalletConfirmation } from "../services/wallet-price-validation";
+import { isPartnerHome } from '../../shared/partnerHome';
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure } from "../_core/trpc";
@@ -75,9 +76,23 @@ export async function confirmWalletBooking(
 
 async function partnerProperty(uid: string) {
   const { getPropertiesForSite } = await import('../services/properties-store');
-  return (await getPropertiesForSite()).find((p: any) => p.source === 'tripwix' && p.isActive !== false && p.supplierUid === uid) as any;
+  return (await getPropertiesForSite()).find((p: any) => isPartnerHome(p) && p.isActive !== false && p.supplierUid === uid) as any;
 }
 const partnerFees = partnerFeesOf;
+
+/**
+ * The uid of a partner home in a public request. The field is `partnerUid`
+ * (Ricardo, 14 nov 2026: the supplier's name is not part of anything the
+ * browser sends or receives). `tripwixUid` is the same value under its old
+ * name: a page loaded before that deploy keeps working until it is reloaded.
+ * Remove the old name once those pages are gone (early 2027).
+ */
+const partnerUidInput = {
+  partnerUid: z.string().uuid().optional(),
+  tripwixUid: z.string().uuid().optional(),
+};
+const hasPartnerUid = (v: { partnerUid?: string; tripwixUid?: string }) => Boolean(v.partnerUid || v.tripwixUid);
+const partnerUidOf = (v: { partnerUid?: string; tripwixUid?: string }) => (v.partnerUid ?? v.tripwixUid) as string;
 
 /**
  * Save a trip to the customer's account and award loyalty points.
@@ -194,20 +209,23 @@ export const bookingRouter = router({
     .input(z.object({
       listingId: z.string().min(1),
       basePrice: z.number().optional(),
-      /** Tripwix property uid — set instead of a Guesty listingId on partner
+      /** Partner home uid — set instead of a Guesty listingId on partner
        *  inventory, which is priced off their calendar rather than Guesty. */
+      partnerUid: z.string().optional(),
+      /** The same uid under its old name: pages loaded before 14 nov 2026 still send it. */
       tripwixUid: z.string().optional(),
     }))
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
 
-      if (input.tripwixUid) {
+      const partnerUid = input.partnerUid ?? input.tripwixUid;
+      if (partnerUid) {
         const { getTripwixLowestNightly } = await import("../services/tripwix");
         // No catalogue fallback: the imported rate is the cheapest night of the
         // year and is not bookable on most dates. Same rule as our own homes —
         // a real price or none at all.
-        const prop = await partnerProperty(input.tripwixUid);
-        const from = prop ? await getTripwixLowestNightly(input.tripwixUid, prop.minNights) : null;
+        const prop = await partnerProperty(partnerUid);
+        const from = prop ? await getTripwixLowestNightly(partnerUid, prop.minNights) : null;
         return {
           from,
           source: from !== null ? ("calendar" as const) : ("none" as const),
@@ -227,20 +245,21 @@ export const bookingRouter = router({
    */
   partnerQuote: publicProcedure
     .input(z.object({
-      tripwixUid: z.string().uuid(),
+      ...partnerUidInput,
       guests: z.number().int().min(1).max(100).optional(),
       checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
       checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
       /** O painel manda-o depois de o pagamento recusar um preço antigo: passa ao lado da cache da edge. */
       fresh: z.number().optional(),
-    }))
+    }).refine(hasPartnerUid, 'partnerUid is required'))
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader("Cache-Control", input.fresh ? "private, no-store" : "public, max-age=0, s-maxage=900, stale-while-revalidate=60");
       const { getPartnerQuote } = await import("../services/tripwix");
 
-      const prop = await partnerProperty(input.tripwixUid);
+      const uid = partnerUidOf(input);
+      const prop = await partnerProperty(uid);
       if (!prop) return null;
-      const quote = await getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut, partnerFees(prop, input.guests));
+      const quote = await getPartnerQuote(uid, input.checkIn, input.checkOut, partnerFees(prop, input.guests));
       // Sem cotação (casa que o job ainda não leu, por exemplo logo depois de
       // um deploy): cache curta, para o preço aparecer assim que houver
       // calendário (revisão do PR #173, P173-R2).
@@ -299,15 +318,16 @@ export const bookingRouter = router({
    */
   partnerCalendar: publicProcedure
     .input(z.object({
-      tripwixUid: z.string().uuid(),
+      ...partnerUidInput,
       startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
       endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    }))
+    }).refine(hasPartnerUid, 'partnerUid is required'))
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=60");
       const { getPartnerCalendar } = await import("../services/tripwix");
-      if (!await partnerProperty(input.tripwixUid)) return [];
-      const days = await getPartnerCalendar(input.tripwixUid, input.startDate, input.endDate);
+      const uid = partnerUidOf(input);
+      if (!await partnerProperty(uid)) return [];
+      const days = await getPartnerCalendar(uid, input.startDate, input.endDate);
       if (!days) ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60");
       return days;
     }),
@@ -326,7 +346,7 @@ export const bookingRouter = router({
       const { hydrateTripwixCalendars } = await import('../services/tripwix-calendar');
       const { getPropertiesForSite } = await import('../services/properties-store');
       const wanted = new Set(input.uids);
-      const properties = (await getPropertiesForSite()).filter((p: any) => p.source === 'tripwix' && p.isActive !== false && wanted.has(p.supplierUid)) as any[];
+      const properties = (await getPropertiesForSite()).filter((p: any) => isPartnerHome(p) && p.isActive !== false && wanted.has(p.supplierUid)) as any[];
       // Calendários em memória (o job refresca-os); a BD é lida numa só consulta
       // para as casas que este processo ainda não leu, nunca uma por casa.
       await hydrateTripwixCalendars(properties.map((p) => p.supplierUid));

@@ -101,6 +101,20 @@ export const propertiesRouter = router({
       return list.find((p: any) => p.slug === input.slug) ?? null;
     }),
 
+  /** The first photo of a home, by its listing id. The thank-you page asks
+   *  for this instead of bundling the whole catalogue file, which put every
+   *  home's street address in a public script (auditoria 14 nov 2026). */
+  coverForListing: publicProcedure
+    .input(z.object({ listingId: z.string().min(1).max(80) }))
+    .query(async ({ ctx, input }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
+      const list = await getPropertiesForSite();
+      const home = list.find((p: any) => (p.guestyId || String(p.id ?? "").replace(/^guesty-/, "")) === input.listingId);
+      const first = Array.isArray(home?.images) ? home.images[0] : null;
+      const url = typeof first === "string" ? first : first?.url;
+      return { image: typeof url === "string" && url ? url : null };
+    }),
+
   list: publicProcedure
     .input(z.object({ activeOnly: z.boolean().optional() }).optional())
     .query(({ input }) => db.listProperties(input ?? undefined)),

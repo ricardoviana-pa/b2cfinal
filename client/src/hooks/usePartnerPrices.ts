@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { trpc } from '@/lib/trpc';
 import type { Property } from '@/lib/types';
+import { isPartnerHome } from '@shared/partnerHome';
 
 export function usePartnerPrices(properties: Property[], dates?: { checkIn: string; checkOut: string; guests: number }) {
-  const uids = useMemo(() => [...new Set(properties.filter(p => p.source === 'tripwix' && p.supplierUid).map(p => p.supplierUid!))].sort(), [properties]);
+  const uids = useMemo(() => [...new Set(properties.filter(p => isPartnerHome(p) && p.supplierUid).map(p => p.supplierUid!))].sort(), [properties]);
   const hasDates = !!dates?.checkIn && !!dates?.checkOut && dates.checkOut > dates.checkIn;
   const query = trpc.booking.partnerPrices.useQuery(
     { uids, ...(hasDates ? dates : {}) },

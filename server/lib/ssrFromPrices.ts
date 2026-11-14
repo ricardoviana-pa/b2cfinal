@@ -1,3 +1,4 @@
+import { isPartnerHome } from "../../shared/partnerHome";
 /**
  * "From €X" prices for the server-rendered page (auditoria out/2026,
  * performance-09-from-price-latency). The client side is
@@ -80,7 +81,7 @@ export interface PdpPriceProp {
  *  sends, so the seed is found under the same key. */
 export function pdpPriceListing(prop: PdpPriceProp | null | undefined): { id: string; partner: boolean; minNights?: number } | undefined {
   if (!prop) return undefined;
-  if (prop.source === "tripwix") {
+  if (isPartnerHome(prop as { source?: string | null })) {
     // booking.lowestNightly answers null for a partner home that is switched off.
     if (prop.isActive === false || typeof prop.supplierUid !== "string" || !prop.supplierUid) return undefined;
     const minNights = typeof prop.minNights === "number" && Number.isFinite(prop.minNights) && prop.minNights > 0 ? prop.minNights : undefined;

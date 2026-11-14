@@ -64,25 +64,61 @@ export function fullPaymentGiftExpired(intent: any, at = Date.now()): boolean {
   return isFullPaymentGift(intent) && !flexGiftActive(intent, at);
 }
 
+/** O Flex oferecido em vigor vem do funil de recuperação (contacto 3)? */
+export function isRecoveryGift(intent: any): boolean {
+  return intent?.flexGiftReason === "recovery";
+}
+
 /**
- * A escolha de Flex que conta para o preço. O Flex oferecido por pagamento
- * integral põe flex=true no intent; quando a oferta expira (o hóspede não
- * pagou e voltou dias depois), o Flex volta a ser o que ELE escolheu. Sem
- * isto, quem nunca escolheu o Flex passava a pagá-lo por ter visto a oferta.
+ * Um Flex oferecido pelo funil de recuperação que já não vale neste instante
+ * (as 72 horas da oferta passaram).
+ */
+export function recoveryGiftExpired(intent: any, at = Date.now()): boolean {
+  return isRecoveryGift(intent) && !flexGiftActive(intent, at);
+}
+
+/**
+ * A escolha de Flex que conta para o preço. Uma oferta (pagamento integral ou
+ * funil de recuperação) põe flex=true no intent; quando expira (o hóspede não
+ * pagou e voltou dias depois), o Flex volta a ser o que ELE tinha escolhido
+ * antes da oferta. Sem isto, quem nunca escolheu o Flex passava a pagá-lo —
+ * 10% das noites — por ter recebido a oferta.
+ *
+ * Auditoria de 14 nov 2026: a regra só existia para a oferta de pagamento
+ * integral. O contacto 3 do funil de recuperação ligava o Flex sem guardar a
+ * escolha anterior, e depois das 72 horas o Flex ficava escolhido e a pagar.
  */
 export function effectiveFlexChoice(intent: any, at = Date.now()): boolean {
-  if (fullPaymentGiftExpired(intent, at)) return intent?.flexGiftPrevFlex === true;
+  if (fullPaymentGiftExpired(intent, at) || recoveryGiftExpired(intent, at)) return intent?.flexGiftPrevFlex === true;
   return !!intent?.flex;
 }
 
 /**
- * O intent como o hóspede o deve ver agora: uma oferta por pagamento
- * integral expirada desaparece e o Flex volta à escolha dele. Só leitura
- * (getIntent); quem grava a correção é o createCardCharge.
+ * Patch que desfaz uma oferta do funil de recuperação já expirada: os campos
+ * da oferta saem e o Flex volta à escolha que o hóspede tinha antes dela (sem
+ * escolha guardada, sem Flex: nunca se cobra o que ele não pediu). null
+ * enquanto a oferta vale ou quando não é uma oferta do funil.
  */
-export function withoutExpiredFullPaymentGift<T extends Record<string, any>>(intent: T, at = Date.now()): T {
-  if (!fullPaymentGiftExpired(intent, at)) return intent;
-  return { ...intent, ...revokeFullPaymentGiftPatch(intent) };
+export function expiredRecoveryGiftPatch(intent: any, at = Date.now()): Record<string, unknown> | null {
+  if (!recoveryGiftExpired(intent, at)) return null;
+  return {
+    flexGiftUntil: null,
+    flexGiftReason: null,
+    flexGiftPrevFlex: null,
+    flex: intent?.flexGiftPrevFlex === true,
+  };
+}
+
+/**
+ * O intent como o hóspede o deve ver agora: uma oferta de Flex expirada
+ * (pagamento integral ou funil de recuperação) desaparece e o Flex volta à
+ * escolha dele. Só leitura (getIntent); quem grava a correção é o
+ * updateIntent e o createCardCharge.
+ */
+export function withoutExpiredFlexGift<T extends Record<string, any>>(intent: T, at = Date.now()): T {
+  if (fullPaymentGiftExpired(intent, at)) return { ...intent, ...revokeFullPaymentGiftPatch(intent) };
+  const recovery = expiredRecoveryGiftPatch(intent, at);
+  return recovery ? { ...intent, ...recovery } : intent;
 }
 
 /**

@@ -18,6 +18,7 @@ import { cardImageLoading } from '@/lib/listingImagePriority';
 import destinationsData from '@/data/destinations.json';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
+import { isPartnerHome } from '@shared/partnerHome';
 
 const destinations = destinationsData as unknown as Destination[];
 const getDestName = (slug: string) => destinations.find(d => d.slug === slug)?.name || slug;
@@ -82,7 +83,7 @@ export default function PropertyCard({
   preloadMedia,
 }: PropertyCardProps) {
   const { t, i18n } = useTranslation();
-  const isPartner = property.source === 'tripwix';
+  const isPartner = isPartnerHome(property);
   const hasPartnerPrice = isPartner && (nights > 0
     ? !!liveQuote && liveQuote.available !== false && liveQuote.total > 0
     : typeof fromPrice === 'number' && fromPrice > 0);

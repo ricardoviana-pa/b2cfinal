@@ -50,8 +50,9 @@ export default function ReviewsSection({ reviews, averageRating, reviewCount }: 
   const [showAll, setShowAll] = useState(false);
   const pageLang = (i18n.language || 'en').split('-')[0];
 
-  // Every rating is shown (Ricardo, 29 out 2026) — a review needs real text
-  // and must not name the booking channel, that is all. Reviews in the page
+  // Cards are 4★ and 5★ reviews only (Ricardo, 14 nov 2026) with real text
+  // that does not name the booking channel (publishableReviews); the average
+  // and the count below still cover every review. Reviews in the page
   // language first, then English, then the rest, newest first within each,
   // as on the homepage rail; the others carry a "Written in …" line.
   const items = useMemo(() => {

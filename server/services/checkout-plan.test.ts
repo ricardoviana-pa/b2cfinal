@@ -5,7 +5,10 @@ import {
   FULL_PAYMENT_GIFT_MS,
   effectiveFlexChoice,
   fullPaymentGiftPatchFor,
-  withoutExpiredFullPaymentGift,
+  withoutExpiredFlexGift,
+  expiredRecoveryGiftPatch,
+  isRecoveryGift,
+  recoveryGiftExpired,
   PRIVATE_INTENT_FIELDS,
   PUBLIC_INTENT_FIELDS,
   grantFullPaymentGiftPatch,
@@ -99,9 +102,32 @@ describe("Flex oferecido por pagamento integral (spec 2.6, opção A)", () => {
     expect(effectiveFlexChoice({ ...expired, flexGiftPrevFlex: true }, now)).toBe(true);
     // Sem escolha guardada: sem Flex.
     expect(effectiveFlexChoice({ ...expired, flexGiftPrevFlex: null }, now)).toBe(false);
-    // Em vigor, ou de outra origem, conta o flex do intent.
+    // Em vigor, conta o flex do intent.
     expect(effectiveFlexChoice({ ...expired, flexGiftUntil: new Date(now + 1) }, now)).toBe(true);
-    expect(effectiveFlexChoice({ flex: true, flexGiftReason: "recovery", flexGiftUntil: new Date(now - 1) }, now)).toBe(true);
+  });
+
+  it("um Flex oferecido pelo funil de recuperação também volta à escolha do hóspede quando expira", () => {
+    // Auditoria de 14 nov 2026: o contacto 3 ligava flex=true sem guardar a
+    // escolha anterior; passadas as 72 h, quem voltava pelo link do email
+    // encontrava o Flex escolhido e a pagar (10% das noites).
+    const gift = { flex: true, flexGiftReason: "recovery", flexGiftPrevFlex: false, flexGiftUntil: new Date(now + 60_000) };
+    expect(isRecoveryGift(gift)).toBe(true);
+    expect(recoveryGiftExpired(gift, now)).toBe(false);
+    expect(effectiveFlexChoice(gift, now)).toBe(true); // em vigor: oferecido, a 0 €
+    expect(expiredRecoveryGiftPatch(gift, now)).toBeNull();
+
+    const expired = { ...gift, flexGiftUntil: new Date(now - 1) };
+    expect(recoveryGiftExpired(expired, now)).toBe(true);
+    expect(effectiveFlexChoice(expired, now)).toBe(false);
+    // Quem já tinha escolhido o Flex antes da oferta continua com ele.
+    expect(effectiveFlexChoice({ ...expired, flexGiftPrevFlex: true }, now)).toBe(true);
+    // Ofertas antigas, gravadas sem a escolha anterior: sem Flex.
+    expect(effectiveFlexChoice({ ...expired, flexGiftPrevFlex: null }, now)).toBe(false);
+    expect(expiredRecoveryGiftPatch(expired, now)).toEqual({ flexGiftUntil: null, flexGiftReason: null, flexGiftPrevFlex: null, flex: false });
+    expect(expiredRecoveryGiftPatch({ ...expired, flexGiftPrevFlex: true }, now)?.flex).toBe(true);
+    // Não mexe numa oferta por pagamento integral nem num intent sem oferta.
+    expect(expiredRecoveryGiftPatch({ flex: true, flexGiftReason: "full_payment", flexGiftUntil: new Date(now - 1) }, now)).toBeNull();
+    expect(expiredRecoveryGiftPatch({ flex: true }, now)).toBeNull();
   });
 
   it("renovar uma oferta expirada guarda a escolha original, não o Flex forçado", () => {
@@ -111,9 +137,14 @@ describe("Flex oferecido por pagamento integral (spec 2.6, opção A)", () => {
 
   it("a vista do intent esconde a oferta expirada", () => {
     const expired = { id: "x", flex: true, flexGiftReason: "full_payment", flexGiftPrevFlex: false, flexGiftUntil: new Date(now - 1) };
-    expect(withoutExpiredFullPaymentGift(expired, now)).toMatchObject({ flex: false, flexGiftUntil: null, flexGiftReason: null });
+    expect(withoutExpiredFlexGift(expired, now)).toMatchObject({ flex: false, flexGiftUntil: null, flexGiftReason: null });
     const live = { ...expired, flexGiftUntil: new Date(now + 1) };
-    expect(withoutExpiredFullPaymentGift(live, now)).toBe(live);
+    expect(withoutExpiredFlexGift(live, now)).toBe(live);
+    // A oferta do funil de recuperação: igual.
+    const recovery = { id: "y", flex: true, flexGiftReason: "recovery", flexGiftPrevFlex: false, flexGiftUntil: new Date(now - 1) };
+    expect(withoutExpiredFlexGift(recovery, now)).toMatchObject({ id: "y", flex: false, flexGiftUntil: null, flexGiftReason: null });
+    const liveRecovery = { ...recovery, flexGiftUntil: new Date(now + 1) };
+    expect(withoutExpiredFlexGift(liveRecovery, now)).toBe(liveRecovery);
   });
 
   it("fullPaymentGiftPatchFor dá no integral com incentivo e retira em todos os outros casos", () => {

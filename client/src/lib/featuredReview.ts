@@ -5,17 +5,16 @@
  *
  * Same hygiene as ReviewsSection (shared/reviewStats.ts): a real rating,
  * enough words to mean something, never a line that names the booking
- * channel. Every rating is published (Ricardo, 29 out 2026), so this is not a
- * 5★ bar: it ranks — the best-rated review first, the newest among equals —
- * and quotes nothing below MIN_FEATURED_RATING, because a single quote in the
- * first screens is a recommendation, not the full picture; the real average,
- * over every review, stands beside the title. The quote carries its own
- * rating, and the page draws those stars, not five by default.
+ * channel. Only 4★ and 5★ reviews are shown anywhere on the site (Ricardo,
+ * 14 nov 2026: MIN_DISPLAY_RATING), and this quote follows the same floor: it
+ * ranks — the best-rated review first, the newest among equals. The real
+ * average, over every review, stands beside the title. The quote carries its
+ * own rating, and the page draws those stars, not five by default.
  */
-import { REVIEW_CHANNEL_RE, isValidRating, reviewLetters } from '@shared/reviewStats';
+import { MIN_DISPLAY_RATING, REVIEW_CHANNEL_RE, isValidRating, reviewLetters } from '@shared/reviewStats';
 
 /** A quote needs at least this rating: a 4★ or 5★ voice, never a 3★. */
-export const MIN_FEATURED_RATING = 4;
+export const MIN_FEATURED_RATING = MIN_DISPLAY_RATING;
 /** Letters a quote needs to mean something ("Great." is not a quote). */
 const MIN_LETTERS = 60;
 

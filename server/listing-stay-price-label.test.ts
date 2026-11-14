@@ -21,7 +21,7 @@ function render(partner = false, feesKnown = false) {
   return renderToStaticMarkup(React.createElement(I18nextProvider, { i18n },
     React.createElement(Router, { base: "/en", ssrPath: "/en/homes" },
       React.createElement(PropertyCard, {
-        property: partner ? { ...property, source: "tripwix" } : property,
+        property: partner ? { ...property, source: "partner" } : property,
         nights: 7, checkin: "2027-05-10", checkout: "2027-05-17", guests: 1,
         liveQuote: partner ? { ...quote, source: "partner_calendar", feesKnown } : quote,
       }))));

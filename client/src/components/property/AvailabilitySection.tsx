@@ -18,14 +18,14 @@ import { formatBookingDate } from '@/lib/format';
  */
 export default function AvailabilitySection({
   guestyId,
-  tripwixUid,
+  partnerUid,
   minNights,
   checkIn,
   checkOut,
   onSelect,
 }: {
   guestyId?: string | null;
-  tripwixUid?: string;
+  partnerUid?: string;
   minNights?: number;
   checkIn: string;
   checkOut: string;
@@ -50,21 +50,21 @@ export default function AvailabilitySection({
 
   const own = trpc.booking.getCalendar.useQuery(
     { listingId: guestyId ?? '', ...guestyRange },
-    { enabled: !!guestyId && !tripwixUid, staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false },
+    { enabled: !!guestyId && !partnerUid, staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false },
   );
   const partner = trpc.booking.partnerCalendar.useQuery(
-    { tripwixUid: tripwixUid ?? '', ...partnerRange },
-    { enabled: !!tripwixUid, staleTime: 15 * 60 * 1000, retry: 1, refetchOnWindowFocus: false },
+    { partnerUid: partnerUid ?? '', ...partnerRange },
+    { enabled: !!partnerUid, staleTime: 15 * 60 * 1000, retry: 1, refetchOnWindowFocus: false },
   );
   const partnerView = useMemo(
-    () => (tripwixUid ? partnerCalendarView({ calendar: partner.data, calendarError: partner.isError, windowEnd: partnerRange.endDate }) : null),
-    [tripwixUid, partner.data, partner.isError, partnerRange.endDate],
+    () => (partnerUid ? partnerCalendarView({ calendar: partner.data, calendarError: partner.isError, windowEnd: partnerRange.endDate }) : null),
+    [partnerUid, partner.data, partner.isError, partnerRange.endDate],
   );
 
-  if (!guestyId && !tripwixUid) return null;
+  if (!guestyId && !partnerUid) return null;
 
   const days: AvailabilityDay[] = partnerView ? partnerView.days : (own.data?.days ?? []);
-  const loading = tripwixUid ? partner.isLoading : own.isLoading;
+  const loading = partnerUid ? partner.isLoading : own.isLoading;
   const nights = checkIn && checkOut ? Math.round((Date.parse(checkOut) - Date.parse(checkIn)) / 86400000) : 0;
 
   return (

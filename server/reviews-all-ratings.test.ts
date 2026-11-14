@@ -1,7 +1,12 @@
 /**
- * Ricardo, 29 out 2026: the property page shows the real average of ALL the
- * reviews of a home and lists every rating, not only 5★. Until then the sync
- * dropped anything below 5★ at the door, so every home read "5.0".
+ * Ricardo, 14 nov 2026: the site shows the text of 4★ and 5★ reviews only
+ * (the homepage rail, the cards and the quote of the property page, the
+ * review nodes of the JSON-LD). The count and the average stay the real ones,
+ * over ALL the reviews of a home: the sync keeps every rating, and nothing
+ * that is hidden raises the number beside a home.
+ *
+ * (From 29 out 2026 every rating was also listed as a card; before that the
+ * sync dropped anything below 5★ at the door, so every home read "5.0".)
  *
  * Pure helpers (shared/reviewStats.ts), the Guesty funnel, the curated merge,
  * the JSON-LD and the rendered section, plus a source check that nothing in
@@ -15,8 +20,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { createInstance } from 'i18next';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import {
-  MIN_REVIEWS_FOR_AVERAGE, displayedAggregate, formatRating, normaliseRating, publishableReviews,
-  reviewAggregate, sortReviewsForDisplay,
+  MIN_DISPLAY_RATING, MIN_REVIEWS_FOR_AVERAGE, displayedAggregate, formatRating, isDisplayableRating, normaliseRating,
+  publishableReviews, reviewAggregate, sortReviewsForDisplay,
 } from '../shared/reviewStats';
 import { detectReviewLanguage } from '../shared/reviewLanguage';
 import { vacationRentalSchema } from '../shared/vacationRentalSchema';
@@ -99,7 +104,10 @@ describe('card order and eligibility', () => {
     expect(sortReviewsForDisplay(list).map(r => r.rating)).toEqual([4, 2, 5]);
     expect(sortReviewsForDisplay(list, undefined, 'fr').map(r => r.rating)).toEqual([4, 2, 5]);
   });
-  it('keeps every rating with real text and drops channel names and empty bodies', () => {
+  it('shows 4★ and 5★ reviews with real text; drops lower ratings, channel names and empty bodies', () => {
+    expect(MIN_DISPLAY_RATING).toBe(4);
+    expect([1, 3, 3.9, 4, 4.5, 5].map(isDisplayableRating)).toEqual([false, false, false, true, true, true]);
+    expect([0, 6, NaN, '5', null].map(isDisplayableRating)).toEqual([false, false, false, false, false]);
     const kept = publishableReviews([
       { rating: 2, text: 'Disappointing: the pool was cold and the heating broke.' },
       { rating: 5, text: 'Ok' },
@@ -107,8 +115,23 @@ describe('card order and eligibility', () => {
       { rating: 4, text: 'Booked through Airbnb, all good.' },
       { rating: 0, text: 'No rating at all on this one.' },
       { rating: 3.5, text: 'Fine for a weekend.' },
+      { rating: 3.9, text: 'Nearly there, but the wifi kept dropping.' },
+      { rating: 4, text: 'Good house on a quiet street.' },
+      { rating: 4.5, text: 'Lovely garden and a warm welcome.' },
+      { rating: 5, text: 'A perfect week by the sea.' },
     ]);
-    expect(kept.map(r => r.rating)).toEqual([2, 3.5]);
+    expect(kept.map(r => r.rating)).toEqual([4, 4.5, 5]);
+  });
+  it('the hidden reviews still count: the aggregate covers every rating', () => {
+    const all = [
+      { rating: 5, text: 'A perfect week by the sea.' },
+      { rating: 4, text: 'Good house on a quiet street.' },
+      { rating: 1, text: 'Loud construction work from eight in the morning.' },
+      { rating: 2, text: 'The lock was stuck and nobody answered the phone.' },
+    ];
+    expect(publishableReviews(all).map(r => r.rating)).toEqual([5, 4]);
+    expect(reviewAggregate(all)).toEqual({ count: 4, average: 3 });
+    expect(displayedAggregate({ reviews: all })).toEqual({ count: 4, average: 3 });
   });
   it('reads the channel name however the guest spelt it, without catching "airy"', () => {
     // "our original air bnb booking cancelled" reached a property page's
@@ -129,6 +152,21 @@ describe('card order and eligibility', () => {
       ],
     }], 'en');
     expect(rail.map(r => r.text)).toEqual(['Airy bedrooms and a quiet garden, a lovely stay for the whole family.']);
+  });
+  it('the homepage rail quotes only 4★ and 5★ reviews, however recent the others are', () => {
+    const rail = recentGuestFeedback([
+      { id: 'a', slug: 'a', name: 'A', isActive: true, reviews: [
+        { rating: 1, text: 'Loud construction noise from eight in the morning, every single day of the stay.', date: '2026-11-01' },
+        { rating: 5, text: 'A wonderful week: a spotless house and a team that answered within minutes.', date: '2026-06-01' },
+      ] },
+      { id: 'b', slug: 'b', name: 'B', isActive: true, reviews: [
+        { rating: 3, text: 'Peaceful villa but the shower and the kitchen are not very modern at all.', date: '2026-10-01' },
+      ] },
+      { id: 'c', slug: 'c', name: 'C', isActive: true, reviews: [
+        { rating: 4, text: 'Great house for a family reunion, with a pool the children never left.', date: '2026-05-01' },
+      ] },
+    ], 'en');
+    expect(rail.map(r => [r.property.slug, r.rating])).toEqual([['a', 5], ['c', 4]]);
   });
 });
 
@@ -187,6 +225,19 @@ describe('JSON-LD', () => {
     expect((schema.review as any[]).map(r => r.author.name)).toEqual(['Ana']);
     expect((schema.aggregateRating as any).reviewCount).toBe(3);
   });
+  it('publishes only the 4★ and 5★ reviews the page shows; the aggregate still counts them all', () => {
+    const schema = vacationRentalSchema({
+      ...base,
+      aggregateRating: { ratingValue: 3.7, reviewCount: 3 },
+      reviews: [
+        { rating: 2, text: 'The lock was stuck and nobody answered.', guestName: 'Pedro', date: '2026-10-01' },
+        { rating: 5, text: 'A perfect week by the sea.', guestName: 'Lisa', date: '2026-09-01' },
+        { rating: 4, text: 'Fine stay overall.', guestName: 'Ana', date: '2026-01-01' },
+      ],
+    });
+    expect((schema.review as any[]).map(r => [r.author.name, r.reviewRating.ratingValue])).toEqual([['Lisa', 5], ['Ana', 4]]);
+    expect(schema.aggregateRating).toMatchObject({ ratingValue: 3.7, reviewCount: 3 });
+  });
   it('the page and the server build it from the same helper', () => {
     expect(read('client/src/pages/PropertyDetail.tsx')).toMatch(/displayedAggregate\(/);
     expect(read('server/_core/vite.ts')).toMatch(/displayedAggregate\(/);
@@ -210,12 +261,13 @@ describe('the reviews section', () => {
     review(4, 'Das Haus war sehr sauber und die Lage einfach wunderschön, wir kommen gerne wieder.', '2026-09-01'),
   ];
 
-  it('shows the real average with every rating listed, the page language first', async () => {
+  it('shows the real average of all three and lists the 4★ and 5★ cards, the page language first', async () => {
     const html = await render('pt', { reviews, averageRating: 4, reviewCount: 3 });
     expect(html).toContain('4,0/5');
     expect(html).toContain('3 avaliações');
     const cards = [...html.matchAll(/aria-label="(\d(?:[.,]\d)?)\/5"/g)].map(m => m[1]);
-    expect(cards).toEqual(['5', '3', '4']); // pt first, then en, then de
+    expect(cards).toEqual(['5', '4']); // pt first, then de; the 3★ counts in the average and is not a card
+    expect(html).not.toContain('tired furniture');
     expect(html).toContain('Escrito em');
   });
 
@@ -223,7 +275,7 @@ describe('the reviews section', () => {
     const html = await render('en', { reviews: reviews.slice(1), averageRating: 3.5, reviewCount: 2 });
     expect(html).toContain('2 reviews');
     expect(html).not.toMatch(/\d[.,]\d\/5/);
-    expect([...html.matchAll(/aria-label="(\d(?:[.,]\d)?)\/5"/g)].map(m => m[1])).toEqual(['3', '4']);
+    expect([...html.matchAll(/aria-label="(\d(?:[.,]\d)?)\/5"/g)].map(m => m[1])).toEqual(['4']);
   });
 
   it('renders nothing without reviews', async () => {

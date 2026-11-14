@@ -17,6 +17,7 @@
  */
 import { FREE_CANCELLATION_DAYS, lisbonToday } from '@shared/cancellationPolicy';
 import type { Property } from './types';
+import { isPartnerHome } from '@shared/partnerHome';
 
 /** The longest free-cancellation period of any refundable rate, in days. */
 export const LONGEST_FREE_CANCELLATION_DAYS = Math.max(...Object.values(FREE_CANCELLATION_DAYS));
@@ -24,7 +25,7 @@ export const LONGEST_FREE_CANCELLATION_DAYS = Math.max(...Object.values(FREE_CAN
 /** Booked and paid on this site — the home page's own test for the booking
  *  widget: a Guesty home that is not portfolio-only and not a partner home. */
 export function isBookableOnline(home: Pick<Property, 'guestyId' | 'isPortfolio' | 'source'>): boolean {
-  return !!home.guestyId && !home.isPortfolio && home.source !== 'tripwix';
+  return !!home.guestyId && !home.isPortfolio && !isPartnerHome(home);
 }
 
 function ymdTime(ymd: string): number | null {

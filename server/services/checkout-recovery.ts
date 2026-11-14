@@ -46,7 +46,7 @@ import {
 import { FLEX_CONFIG, flexPriceFor } from "../config/checkout-extras";
 import { planPolicyCode } from "@shared/cancellationPolicy";
 import { isKlarnaCountry, klarnaBillingCountry } from "@shared/klarna";
-import { intentPolicyCode, withoutExpiredFullPaymentGift } from "./checkout-plan";
+import { effectiveFlexChoice, intentPolicyCode, withoutExpiredFlexGift } from "./checkout-plan";
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -219,7 +219,11 @@ async function requoteForStage3(intent: BookingIntent): Promise<
       expiresAt,
       // A origem da oferta fica gravada: o pagamento em duas partes retira o
       // Flex oferecido por pagamento integral, e nunca pode retirar este.
-      ...(flexGift ? { flexGiftUntil: flexGift.until, flex: true, flexGiftReason: "recovery", flexGiftPrevFlex: null } : {}),
+      // A escolha que o hóspede tinha ANTES da oferta fica guardada: quando as
+      // 72 horas passam, o Flex volta a ela (checkout-plan.ts,
+      // effectiveFlexChoice). Sem isto o Flex ficava escolhido e a pagar para
+      // quem nunca o pediu (auditoria de 14 nov 2026).
+      ...(flexGift ? { flexGiftUntil: flexGift.until, flex: true, flexGiftReason: "recovery", flexGiftPrevFlex: effectiveFlexChoice(intent) } : {}),
     };
     const ok = await updateBookingIntent(intent.id, patch as any);
     if (!ok) return null;
@@ -337,7 +341,7 @@ async function checkoutTotalCents(intent: BookingIntent): Promise<number | null>
 async function twoPartsOfferNow(intent: BookingIntent): Promise<RecoveryTwoParts | null> {
   try {
     const { clientPaymentPlanFor } = await import("../routers/checkout");
-    const plan: any = await clientPaymentPlanFor(withoutExpiredFullPaymentGift(intent));
+    const plan: any = await clientPaymentPlanFor(withoutExpiredFlexGift(intent));
     if (!plan?.available) return null;
     return { todayCents: Number(plan.depositCents), laterCents: Number(plan.balanceCents), chargeAt: new Date(plan.chargeAt) };
   } catch (err: any) {
