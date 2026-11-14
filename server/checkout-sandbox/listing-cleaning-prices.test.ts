@@ -81,7 +81,8 @@ beforeEach(() => {
     createdAt: new Date().toISOString(), expiresAt: new Date(Date.now() + 3600000).toISOString(),
     rates: { ratePlans: [{ ratePlan: { _id: 'synthetic-flex', name: 'Flexible', money: { subTotalPrice: 2147, fareCleaning: 120, currency: 'EUR' } } }] } }));
   fake.intents.clear(); fake.payments.clear(); fake.keys.clear();
-  fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, structuredClone(data)); return data.id; });
+  // Como a BD (createdAt DEFAULT now()): o getIntent só mostra os dados do hóspede a um checkout recente.
+  fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, { ...structuredClone(data), createdAt: new Date() }); return data.id; });
   fake.markPaid.mockImplementation(async (id, reservationId, confirmationCode) => {
     const m = fake.intents.get(id); if (!m || m.status === 'paid') return false;
     Object.assign(m, { status: 'paid', reservationId, confirmationCode }); return true;

@@ -62,6 +62,10 @@ import {
   revokeFullPaymentGiftPatch,
   withoutExpiredFlexGift,
   expiredRecoveryGiftPatch,
+  guestDetailsVisible,
+  intentExpired,
+  paidIntentPointer,
+  withoutGuestDetails,
 } from "../services/checkout-plan";
 import { FLEX_IMMEDIATE_CONSENT_VERSION, renderTwoPartsMandate } from "../services/two-parts-mandate";
 
@@ -544,15 +548,21 @@ export const checkoutRouter = router({
   /** Projeção explícita (spec 5.1, Fase 1): o browser recebe só os campos que
    *  o checkout lê, nunca o PI, o Customer da Stripe ou o estado interno dos
    *  funis. `paymentPlan` diz se a opção de duas partes existe e com que valores,
-   *  calculados no servidor; com a flag desligada é só { available: false }. */
+   *  calculados no servidor; com a flag desligada é só { available: false }.
+   *
+   *  O que sai depende do estado (checkout-plan.ts, "O que o link do checkout
+   *  mostra"): pago, só `paid` (código e ligação à reserva) e `intent: null`;
+   *  preço caducado ou checkout com mais de 9 dias, o intent sem os dados de
+   *  contacto do hóspede; em curso, tudo o que o checkout lê. */
   getIntent: publicProcedure
     .input(z.object({ intentId: z.string().uuid() }))
     .query(async ({ input }) => {
       const intent = await getBookingIntent(input.intentId);
-      if (!intent) return { intent: null, expired: false, paymentPlan: null, newsletterOptIn: null };
-      const expired =
-        intent.status === "expired" ||
-        (intent.expiresAt != null && intent.expiresAt.getTime() < Date.now());
+      if (!intent) return { intent: null, expired: false, paymentPlan: null, newsletterOptIn: null, paid: null };
+      if (intent.status === "paid") {
+        return { intent: null, expired: false, paymentPlan: null, newsletterOptIn: null, paid: paidIntentPointer(intent) };
+      }
+      const expired = intentExpired(intent);
       // Uma oferta de Flex que expirou (pagamento integral ou funil de
       // recuperação) não se mostra: o ecrã tem de dizer o que a próxima
       // cobrança vai cobrar, e o Flex volta à escolha do hóspede.
@@ -565,15 +575,25 @@ export const checkoutRouter = router({
       // do funil, n.º 2): sem isto vinha sempre desmarcada e um segundo
       // Continuar retirava o consentimento. null = não se sabe; o checkout
       // então não a repõe e o captureLead não mexe no que estava.
+      // Só com o checkout em curso: fora disso nem o email sai, nem o que se
+      // sabe sobre ele (se está na lista de marketing).
+      const showGuest = guestDetailsVisible(intent);
       let newsletterOptIn: boolean | null = null;
-      if (intent.email) {
+      if (showGuest && intent.email) {
         try {
           newsletterOptIn = await checkoutNewsletterConsent(intent.email);
         } catch {
           newsletterOptIn = null;
         }
       }
-      return { intent: publicIntent(view), expired, paymentPlan, newsletterOptIn };
+      const projection = publicIntent(view);
+      return {
+        intent: showGuest ? projection : withoutGuestDetails(projection),
+        expired,
+        paymentPlan,
+        newsletterOptIn,
+        paid: null,
+      };
     }),
 
   updateIntent: publicProcedure

@@ -77,7 +77,8 @@ beforeEach(() => {
   fake.intents.clear(); fake.payments.clear(); fake.keys.clear(); fake.origins.clear();
   fake.saveOrigin.mockImplementation(async (id, origin) => { fake.origins.set(id, structuredClone(origin)); return true; });
   fake.getOrigin.mockImplementation(async id => structuredClone(fake.origins.get(id) ?? null));
-  fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, structuredClone(data)); return data.id; });
+  // Como a BD (createdAt DEFAULT now()): o getIntent só mostra os dados do hóspede a um checkout recente.
+  fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, { ...structuredClone(data), createdAt: new Date() }); return data.id; });
   fake.markPaid.mockImplementation(async (id, reservationId, confirmationCode) => {
     const m = fake.intents.get(id); if (!m || m.status === 'paid') return false;
     Object.assign(m, {status:'paid', reservationId, confirmationCode}); return true;
@@ -142,7 +143,11 @@ describe('synthetic checkout integration — real router and settlement, no prov
       email: 'guest@checkout.invalid', canonical: expect.objectContaining({ totalCents: 252700 }),
       viewUrl: 'https://www.portugalactive.com/pt/booking/thank-you/synthetic-reservation?method=card',
     }));
-    expect((await caller().getIntent({ intentId: id })).intent?.status).toBe('paid');
+    // Pago: o link já não devolve o intent (nem o hóspede), só o código e a reserva.
+    expect(await caller().getIntent({ intentId: id })).toEqual({
+      intent: null, expired: false, paymentPlan: null, newsletterOptIn: null,
+      paid: { reservationId: 'synthetic-reservation', confirmationCode: 'SYNTHETIC-BOOKING', propertySlug: 'synthetic-home' },
+    });
     expect(await caller().updateIntent({ intentId: id, patch: { email: 'changed@checkout.invalid' } })).toEqual({ ok: false });
     expect(fake.guestEmail).toHaveBeenCalledOnce();
   });

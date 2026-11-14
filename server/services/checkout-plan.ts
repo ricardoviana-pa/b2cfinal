@@ -9,7 +9,7 @@
 import { lisbonToday, planPolicyCode, type PolicyCode } from "@shared/cancellationPolicy";
 import { computePaymentOffer, type PaymentPlan, type PaymentPlanOffer } from "./checkout-pricing";
 import { readTwoPartsConfig, type TwoPartsConfig } from "./payment-plan";
-import { flexGiftActive } from "./recovery-funnel";
+import { RECOVERY_TIMING, flexGiftActive } from "./recovery-funnel";
 
 /** Validade do Flex oferecido a quem paga tudo agora. Cobre a janela do
  *  settle (até 48 h depois do pagamento) com folga; o settle avalia a oferta
@@ -231,6 +231,76 @@ export function publicIntent<T extends Record<string, any>>(intent: T): Pick<T, 
     if (k in intent) out[k] = (intent as any)[k];
   }
   return out as any;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   O que o link do checkout mostra conforme o estado do intent
+   (auditoria de 14 nov 2026, segunda ronda técnica).
+
+   O id do intent vai nos links de retoma, nos emails de recuperação e no
+   histórico do browser, e quem o tem lê o que o getIntent devolver. Devolvia
+   o nome, o email, o telefone e o NIF do hóspede para sempre: também com a
+   reserva paga e com o checkout parado há meses.
+
+   - Em curso (por pagar, preço ainda válido, criado há menos de 9 dias):
+     tudo o que o checkout lê, como antes. É assim que a retoma funciona: o
+     hóspede que volta pelo email encontra o que deixou.
+   - Preço caducado, ou criado há mais de 9 dias: a estadia, a tarifa e os
+     extras (o que é preciso para atualizar o preço e continuar), sem os
+     dados de contacto. Continuam guardados no servidor; o browser é que
+     deixa de os receber, e o hóspede volta a escrevê-los antes de pagar.
+   - Pago: nada do intent. Só o que o ecrã "reserva confirmada" e as páginas
+     de regresso do PayPal e do Klarna leem (paidIntentPointer).
+
+   O teto dos 9 dias é o do funil de recuperação (depois disso nenhum email
+   leva o hóspede de volta a este link) e conta da criação, que nunca muda:
+   atualizar o preço dá nova validade ao intent, mas não o rejuvenesce.
+   ════════════════════════════════════════════════════════════════ */
+
+/** O que o hóspede escreveu sobre si. Só sai com o checkout em curso. */
+export const GUEST_DETAIL_FIELDS = ["email", "guestFirstName", "guestLastName", "guestPhone", "nif"] as const;
+
+/** Idade a partir da qual o link nunca mais mostra os dados do hóspede. */
+export const GUEST_DETAILS_MAX_AGE_MS = RECOVERY_TIMING.maxAgeMs;
+
+type IntentClock = {
+  status?: string | null;
+  expiresAt?: Date | string | number | null;
+  createdAt?: Date | string | number | null;
+};
+
+/** O preço do intent já não vale: a regra que o getIntent sempre usou para `expired`. */
+export function intentExpired(intent: IntentClock, now = Date.now()): boolean {
+  if (intent.status === "expired") return true;
+  if (intent.expiresAt == null) return false;
+  return new Date(intent.expiresAt).getTime() < now;
+}
+
+/** Os dados de contacto do hóspede podem ir para o browser? */
+export function guestDetailsVisible(intent: IntentClock, now = Date.now()): boolean {
+  if (intent.status === "paid" || intentExpired(intent, now)) return false;
+  // A BD preenche sempre createdAt. Sem data legível não há como provar que o
+  // checkout é recente, e na dúvida os dados não saem.
+  const createdAt = intent.createdAt == null ? NaN : new Date(intent.createdAt).getTime();
+  if (!Number.isFinite(createdAt)) return false;
+  return now - createdAt <= GUEST_DETAILS_MAX_AGE_MS;
+}
+
+/** A projeção pública sem os dados de contacto: as chaves ficam, a null, para
+ *  o checkout ler o intent da mesma maneira nos dois casos. */
+export function withoutGuestDetails<T extends Record<string, any>>(view: T): T {
+  const out: Record<string, unknown> = { ...view };
+  for (const k of GUEST_DETAIL_FIELDS) if (k in out) out[k] = null;
+  return out as T;
+}
+
+/** Tudo o que o browser recebe de um intent pago. */
+export function paidIntentPointer(intent: { reservationId?: string | null; confirmationCode?: string | null; propertySlug?: string | null }) {
+  return {
+    reservationId: intent.reservationId ?? null,
+    confirmationCode: intent.confirmationCode ?? null,
+    propertySlug: intent.propertySlug ?? null,
+  };
 }
 
 /**

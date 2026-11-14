@@ -38,11 +38,11 @@ describe('Google rental fields survive SSR and client navigation', () => {
     expect(server.additionalProperty.value).toBe('123/AL');
   });
   it('keeps an identifier across languages and slug changes, including partner homes', () => {
-    const a = vacationRentalSchema({...rental, id:'partner-PT0009', guestyId:null, supplierUid:'supplier-uid'},'en');
-    const b = vacationRentalSchema({...rental, id:'partner-PT0009', slug:'renamed', guestyId:null, supplierUid:'supplier-uid'},'pt');
+    const a = vacationRentalSchema({...rental, id:'partner-mirante-1', guestyId:null, supplierUid:'supplier-uid'},'en');
+    const b = vacationRentalSchema({...rental, id:'partner-mirante-1', slug:'renamed', guestyId:null, supplierUid:'supplier-uid'},'pt');
     expect(a.identifier).toBe(b.identifier);
     // The catalogue id, never the supplier's name or uid (Ricardo, 14 nov 2026).
-    expect(a.identifier).toBe('pa:partner-PT0009');
+    expect(a.identifier).toBe('pa:partner-mirante-1');
     expect(JSON.stringify(a)).not.toMatch(/tripwix|supplier-uid/i);
   });
   it('never asserts an imported rate is bookable for a year', () => {

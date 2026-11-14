@@ -65,11 +65,14 @@ export default function KlarnaReturnPage() {
       const iv = window.setInterval(async () => {
         tries++;
         try {
-          const r = await utils.checkout.getIntent.fetch({ intentId: intentId! });
-          const it: any = r?.intent;
-          if (it?.status === "paid" && it.reservationId) {
+          // Pago: o servidor responde só com `paid` (código e reserva), sem o intent.
+          // staleTime 0: sem isto o fetch devolvia a primeira resposta guardada
+          // (5 min por omissão, main.tsx) e a espera nunca via a reserva paga.
+          const r = await utils.checkout.getIntent.fetch({ intentId: intentId! }, { staleTime: 0 });
+          const reservationId = r?.paid?.reservationId;
+          if (reservationId) {
             window.clearInterval(iv);
-            navigate(`/booking/thank-you/${it.reservationId}?method=klarna`);
+            navigate(`/booking/thank-you/${reservationId}?method=klarna`);
             return;
           }
         } catch { /* rede — tentar de novo no próximo tick */ }

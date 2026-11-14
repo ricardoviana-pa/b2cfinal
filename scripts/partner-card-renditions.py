@@ -15,7 +15,9 @@ the Douro guide fetched 612 KB for its first two covers (revisão 2 do PR #175).
 This writes <name>-480w.webp, <name>-800w.webp and <name>-1080w.webp next to
 each cover and lists the covers in client/src/data/partner-card-renditions.json,
 which lib/images.ts (cardSrcSet) reads to give those photos a srcset. Only the
-covers: the other photos load when a guest swipes, as before.
+covers: the other photos load when a guest swipes, as before. The manifest
+lists each cover by its public address (/homes/photos/<slug>/…); the files
+stay in the folder the import wrote them to.
 
 A cover without renditions keeps its single file, so nothing breaks; but
 server/partner-card-renditions.test.ts fails until this is run again after an
@@ -54,6 +56,11 @@ def main() -> None:
             continue
         url = images[0]
         src = PUBLIC / url.lstrip("/")
+        # The manifest ships in the browser bundle, so it lists the address
+        # the site publishes (/homes/photos/<slug>/…), not the folder on disk,
+        # which is named after the supplier's reference
+        # (server/lib/partnerPhotos.ts).
+        public_url = f"/homes/photos/{p['slug']}/{src.name}"
         with Image.open(src) as im:
             original_width = im.size[0]
             for width in WIDTHS:
@@ -66,7 +73,7 @@ def main() -> None:
                 copy.thumbnail((width, width * 10), Image.LANCZOS)
                 copy.save(dest, "WEBP", quality=QUALITY, method=6)
                 written += 1
-        covers[url] = original_width
+        covers[public_url] = original_width
 
     MANIFEST.write_text(json.dumps({
         "_README": "Written by scripts/partner-card-renditions.py: the partner covers (images[0]) that have <name>-<w>w.webp copies next to them, with the original's width. lib/images.ts (cardSrcSet) builds their srcset from this.",

@@ -31,11 +31,13 @@ import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 import { isNonIndexableHost } from "../lib/hosts.js";
 import { htmlCacheHeaders, isPrivateHtmlPath } from "../lib/htmlCache";
+import { BOOKING_ROUTE, clientPageStatus, normalisePagePath } from "../lib/clientRoutes";
 import { noStoreIfTracked, ssrRenderUrl } from "../lib/trackingParams";
 import { GUESTY_IMAGE_ORIGIN, injectBeforeBodyEnd, injectIntoHead, needsGuestyPreconnect, routeAssets, routeModulePreloadScript, routeStyleTags, type ViteManifest } from "../lib/routeAssets";
 import { SSR_UNPRICED_RENDER_TTL_MS, guestyIdsOf, readFromPricesForSsr, readPdpFromPriceForSsr, unpricedPdpListing } from "../lib/ssrFromPrices";
 import { onListingPriceChanged } from "../lib/listingPriceEvents";
 import { setStaticFileHeaders } from "../lib/security-headers";
+import { partnerPhotoAlias } from "../lib/partnerPhotos";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
  *  tested, hydration verified clean); set the Render env var SSR_ENABLED=false to
@@ -64,6 +66,8 @@ export async function setupVite(app: Express, server: Server) {
     appType: "custom",
   });
 
+  // As in production: a partner home's photos under their public address.
+  app.use("/homes/photos", partnerPhotoAlias(partnerPhotoFolder));
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
@@ -100,6 +104,11 @@ export async function setupVite(app: Express, server: Server) {
     }
   });
 }
+
+/** The folder on disk behind a partner home's public photo folder. Loaded on
+ *  first use, like every other read of the property store in this file. */
+const partnerPhotoFolder = async (publicFolder: string) =>
+  (await import("../services/properties-store")).partnerPhotoFolder(publicFolder);
 
 const BOT_UA_RE = /googlebot|google-extended|googleother|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|slackbot|discordbot|applebot|applebot-extended|ia_archiver|gptbot|oai-searchbot|chatgpt-user|perplexitybot|perplexity-user|claudebot|claude-web|anthropic-ai|ccbot|meta-externalagent|bytespider|amazonbot|diffbot/i;
 
@@ -1446,10 +1455,6 @@ export function stripHreflang(html: string): string {
   return html.replace(/\s*<link\s+rel="alternate"\s+hreflang="[^"]*"[^>]*\/?>\s*/g, '\n');
 }
 
-/** The booking pages the client actually has; any other /booking/… is a 404
- *  (it answered 200, "index, follow"). All of them are noindex. */
-const BOOKING_ROUTE = /^\/booking\/(?:(?:confirmation|thank-you|balance)\/[^/]+|paypal-return|klarna-return)\/?$/;
-
 export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
   // opts.distPath: tests serve a small fixture build (perf-ssr-html.test.ts).
   const distPath = opts.distPath ?? (
@@ -1484,6 +1489,12 @@ export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
     redirect: false,
   }));
 
+  // A partner home's photos are published as /homes/photos/<slug>/… and sit
+  // on disk in a folder named after the supplier's reference: the alias sends
+  // the request on to that folder and the handler below serves the file, with
+  // the same headers as any other (lib/partnerPhotos.ts).
+  app.use("/homes/photos", partnerPhotoAlias(partnerPhotoFolder));
+
   app.use(express.static(distPath, {
     maxAge: "1h",
     setHeaders: setStaticFileHeaders,
@@ -1504,13 +1515,7 @@ export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
 
   const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
 
-  const KNOWN_ROUTES = new Set([
-    "/", "/homes", "/about", "/contact", "/services", "/adventures",
-    "/events", "/corporate-retreats", "/blog", "/faq", "/careers", "/owners", "/login", "/account",
-    "/legal/privacy", "/legal/terms", "/legal/cookies", "/legal/cancellation-policy", "/admin", "/404",
-    "/destinations", "/experiences", "/concierge", "/best-rate-guarantee",
-  ]);
-  const KNOWN_PREFIXES = ["/homes/", "/collections/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/", "/experiences/", "/activities/", "/checkout/"];
+  // Which paths are pages of the app: lib/clientRoutes.ts (clientPageStatus).
 
   /** Strip locale prefix from path: /pt/homes → /homes */
   function stripLocale(pathname: string): string {
@@ -1539,7 +1544,14 @@ export function serveStatic(app: Express, opts: { distPath?: string } = {}) {
     if (BOT_UA_RE.test(req.headers['user-agent'] || '')) {
       return res.redirect(301, `/en${p === '/' ? '' : p}${query}`);
     }
-    return res.type('html').status(200).end(languageEntryHtml(p, query, req.headers['accept-language'], req.headers.cookie));
+    // A path the app has no page for in any language says so here already:
+    // /zz-anything (and /404) answered 200 on this hop and only the
+    // /{lang}/… it forwards to answered 404. The entry page is the same, so
+    // the visitor still lands on the "not found" screen in their language.
+    // Content sections (/homes/<slug>…) stay 200: whether the record exists
+    // is decided on the localized URL.
+    const entryStatus = clientPageStatus(normalisePagePath(p));
+    return res.type('html').status(entryStatus).end(languageEntryHtml(p, query, req.headers['accept-language'], req.headers.cookie));
   });
 
   /** Extract the locale prefix from a path. Returns 'en' as fallback. */
@@ -1852,11 +1864,8 @@ const _ssrRenderCache = new BoundedMap<string, {
     const rawPath = req.originalUrl.split("?")[0];
     const p = stripLocale(rawPath);
     const lang = extractLang(rawPath);
-    const isStaticKnown = KNOWN_ROUTES.has(p);
-    const isDynamicPrefix = KNOWN_PREFIXES.some(pre => p.startsWith(pre));
-    // Initial status — will be refined for dynamic content below
-    let status = (isStaticKnown || isDynamicPrefix) ? 200 : 404;
-    if (p.startsWith("/booking/") && !BOOKING_ROUTE.test(p)) status = 404;
+    // Initial status (lib/clientRoutes.ts) — refined for dynamic content below
+    let status: number = clientPageStatus(p);
     const indexPath = path.resolve(distPath, "index.html");
 
     /** Every HTML answer leaves through here. A 404 always says noindex: the

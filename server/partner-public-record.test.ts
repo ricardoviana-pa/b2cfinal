@@ -12,7 +12,7 @@
 import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { getPropertiesForSite, partnerSupplierReference, toPublicPartner, withPublicAddress } from './services/properties-store';
+import { getPropertiesForSite, partnerSupplierReference, publicPartnerId, toPublicPartner, withPublicAddress } from './services/properties-store';
 import { PARTNER_SOURCE, isPartnerHome } from '../shared/partnerHome';
 import { vacationRentalSchema } from '../shared/vacationRentalSchema';
 import { propertiesRouter } from './routers/properties';
@@ -27,7 +27,8 @@ describe('what the property store publishes', () => {
     expect(partners.length).toBeGreaterThan(0);
     for (const p of partners) {
       expect(p.source).toBe(PARTNER_SOURCE);
-      expect(String(p.id)).toMatch(/^partner-/);
+      // The catalogue id is built from the slug, never from the import's own id.
+      expect(p.id).toBe(`partner-${p.slug}`);
       expect(p).not.toHaveProperty('supplierReference');
       expect(p).not.toHaveProperty('supplierCommission');
       // The uid stays: the page needs it to ask for this home's calendar and price.
@@ -35,6 +36,28 @@ describe('what the property store publishes', () => {
     }
     expect(JSON.stringify(all)).not.toMatch(/tripwix/i);
     expect(JSON.stringify(all)).not.toMatch(/supplierCommission|supplierReference/);
+  });
+
+  // Segunda ronda da auditoria de 14 nov 2026: the field was gone but the
+  // value was not. The supplier's reference for a home was still in its id
+  // ("partner-PT0009") and in the folder of every photo
+  // ("/homes/photos/PT0009/00.webp").
+  it('carries the supplier reference of no home anywhere: not in an id, not in a photo address', async () => {
+    const references = (raw as any[]).map((p) => String(p.supplierReference));
+    expect(references).toHaveLength(35);
+    expect(references.every((r) => /^PT\d{4}$/.test(r))).toBe(true);
+    const published = JSON.stringify(await getPropertiesForSite());
+    expect(references.filter((r) => published.includes(r))).toEqual([]);
+    // The same through the public API, for a list and for one home.
+    const caller = propertiesRouter.createCaller({ req: {}, res: { setHeader() {} }, user: null } as any);
+    const viaApi = JSON.stringify([await caller.listForSite(), await caller.getBySlugForSite({ slug: 'mirante-1' })]);
+    expect(viaApi).toContain('/homes/photos/mirante-1/');
+    expect(references.filter((r) => viaApi.includes(r))).toEqual([]);
+  });
+
+  it('gives every partner home a different id', async () => {
+    const ids = (await getPropertiesForSite()).filter(isPartnerHome).map((p) => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   it('keeps the reference on the server, for the team', async () => {
@@ -47,7 +70,23 @@ describe('what the property store publishes', () => {
 
   it('turns an imported record into the public one without touching the rest', () => {
     const pub = toPublicPartner({ id: 'tripwix-PT0009', slug: 'mirante-1', source: 'tripwix', supplierUid: 'u-1', supplierReference: 'PT0009', supplierCommission: '10%', bedrooms: 6 });
-    expect(pub).toEqual({ id: 'partner-PT0009', slug: 'mirante-1', source: 'partner', supplierUid: 'u-1', bedrooms: 6 });
+    expect(pub).toEqual({ id: 'partner-mirante-1', slug: 'mirante-1', source: 'partner', supplierUid: 'u-1', bedrooms: 6 });
+  });
+
+  it('publishes the photos under the home’s own name and leaves every other address alone', () => {
+    const pub = toPublicPartner({
+      id: 'tripwix-PT0009', slug: 'mirante-1', supplierUid: 'u-1', supplierReference: 'PT0009',
+      images: ['/homes/photos/PT0009/00.webp', '/homes/photos/PT0009/01.webp', 'https://cdn.example/x.jpg', '/hero/home.webp', '/homes/photos/PT0010/00.webp'],
+    });
+    expect(pub.images).toEqual(['/homes/photos/mirante-1/00.webp', '/homes/photos/mirante-1/01.webp', 'https://cdn.example/x.jpg', '/hero/home.webp', '/homes/photos/PT0010/00.webp']);
+  });
+
+  it('a record without a slug gets an id from its uid, never from the reference', () => {
+    expect(publicPartnerId({ slug: 'mirante-1', supplierUid: '2ff3c27b-da80-49e7-9c59-53e99106de2e' })).toBe('partner-mirante-1');
+    expect(publicPartnerId({ supplierUid: '2ff3c27b-da80-49e7-9c59-53e99106de2e' })).toBe('partner-2ff3c27bda80');
+    expect(publicPartnerId({ slug: 'Not A Slug', supplierUid: '2ff3c27b-da80-49e7-9c59-53e99106de2e' })).toBe('partner-2ff3c27bda80');
+    expect(publicPartnerId({})).toBe('partner-home');
+    expect(toPublicPartner({ id: 'tripwix-PT0009', supplierUid: 'u-1', supplierReference: 'PT0009' }).id).toBe('partner-u1');
   });
 
   it('publishes an approximate location: town and rounded coordinates, never the street', async () => {
