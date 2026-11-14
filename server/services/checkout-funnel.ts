@@ -113,7 +113,14 @@ export const FUNNEL_STEPS = {
   intent: (_: FunnelRow) => true,
   email: (r: FunnelRow) => !!r.email,
   reception: (r: FunnelRow) => !!r.reception || !!r.paymentIntentId || r.status === "payment_pending" || r.status === "paid",
+  /** Chegou à secção do pagamento (escolheu a receção e carregou em Continuar).
+   *  Desde o checkout numa página (30 out 2026) isto não quer dizer que
+   *  tentou pagar: só que viu os métodos de pagamento. */
   payment: (r: FunnelRow) => !!r.paymentIntentId || r.status === "payment_pending" || r.status === "paid",
+  /** Carregou em Pagar com cartão ou Apple/Google Pay: o createCardCharge só
+   *  cria o PaymentIntent nesse clique e grava-o no intent. O PayPal e a
+   *  Klarna criam o PI na Stripe, não no intent, e não contam aqui. */
+  clicked: (r: FunnelRow) => !!r.paymentIntentId || r.status === "paid",
   paid: (r: FunnelRow) => r.status === "paid",
 } as const;
 
@@ -122,7 +129,7 @@ export type FunnelCounts = Record<FunnelStep, number>;
 
 export function funnelCounts(rows: FunnelRow[]): FunnelCounts {
   const n = (k: FunnelStep) => rows.filter(FUNNEL_STEPS[k]).length;
-  return { intent: n("intent"), email: n("email"), reception: n("reception"), payment: n("payment"), paid: n("paid") };
+  return { intent: n("intent"), email: n("email"), reception: n("reception"), payment: n("payment"), clicked: n("clicked"), paid: n("paid") };
 }
 
 /**
@@ -150,7 +157,8 @@ const pct = (a: number, b: number) => (b ? `${((a / b) * 100).toFixed(0)}%` : "-
 export function funnelLine(label: string, c: FunnelCounts, width = 26): string {
   return (
     `${label.padEnd(width)} ${String(c.intent).padStart(4)} → email ${String(c.email).padStart(4)} (${pct(c.email, c.intent)}) → receção ${String(c.reception).padStart(4)} (${pct(c.reception, c.email)})` +
-    ` → pagamento ${String(c.payment).padStart(4)} (${pct(c.payment, c.reception)}) → pago ${String(c.paid).padStart(3)} (${pct(c.paid, c.payment)})  | total ${pct(c.paid, c.intent)}`
+    ` → secção pagamento ${String(c.payment).padStart(4)} (${pct(c.payment, c.reception)}) → clicou Pagar ${String(c.clicked).padStart(4)} (${pct(c.clicked, c.payment)})` +
+    ` → pago ${String(c.paid).padStart(3)} (${pct(c.paid, c.clicked)})  | total ${pct(c.paid, c.intent)}`
   );
 }
 

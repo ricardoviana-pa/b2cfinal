@@ -125,13 +125,13 @@ describe("os dois funis: em bruto e sem repetidos", () => {
     expect(sets.raw.map((r) => r.id).sort()).toEqual([repeated, kept, internalDraft, lone, oldDraft, paid].map((r) => r.id).sort());
     expect(sets.clean.map((r) => r.id).sort()).toEqual([kept, lone, paid].map((r) => r.id).sort());
     expect(sets.duplicates).toBe(3);
-    expect(funnelCounts(sets.raw)).toEqual({ intent: 6, email: 2, reception: 2, payment: 2, paid: 1 });
-    expect(funnelCounts(sets.clean)).toEqual({ intent: 3, email: 2, reception: 2, payment: 2, paid: 1 });
+    expect(funnelCounts(sets.raw)).toEqual({ intent: 6, email: 2, reception: 2, payment: 2, clicked: 1, paid: 1 });
+    expect(funnelCounts(sets.clean)).toEqual({ intent: 3, email: 2, reception: 2, payment: 2, clicked: 1, paid: 1 });
   });
 
   it("a linha do relatório mantém o formato de sempre, e o par imprime os dois funis por segmento", () => {
-    expect(funnelLine("Todos", { intent: 135, email: 55, reception: 48, payment: 42, paid: 20 })).toBe(
-      "Todos                       135 → email   55 (41%) → receção   48 (87%) → pagamento   42 (88%) → pago  20 (48%)  | total 15%",
+    expect(funnelLine("Todos", { intent: 135, email: 55, reception: 48, payment: 42, clicked: 30, paid: 20 })).toBe(
+      "Todos                       135 → email   55 (41%) → receção   48 (87%) → secção pagamento   42 (88%) → clicou Pagar   30 (71%) → pago  20 (67%)  | total 15%",
     );
     const raw = [row({ at: T0 }), row({ at: T0 + MIN, status: "paid", email: "rita@gmail.com" })];
     const lines = funnelPair("Todos", raw, raw.slice(1));
