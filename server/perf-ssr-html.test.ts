@@ -355,6 +355,95 @@ describe("what the static handler must not serve, and repeat 404s", () => {
   });
 });
 
+// Auditoria de 14 nov 2026 (segunda ronda técnica): /en/404 answered 200,
+// "index, follow", with the public cache headers and its 19 hreflang
+// alternates; /en/checkout/a/b answered 200; and a bare path the app has no
+// page for answered 200 on the language-entry hop. The table is
+// lib/clientRoutes.ts (server/client-routes.test.ts keeps it in step with
+// App.tsx).
+describe("pages that do not exist answer 404, and the redirects stay as they were", () => {
+  const robots = (html: string) => html.match(/<meta name="robots" content="([^"]*)"/)?.[1];
+
+  it("/{lang}/404 is a 404 like any unknown URL, and the app shell still goes out", async () => {
+    for (const p of ["/en/404", "/pt/404", "/de/404/", "/sv/404?x=1"]) {
+      for (let i = 1; i <= 2; i++) {
+        const res = await get(p);
+        const html = await res.text();
+        expect(res.status, `${p} #${i}`).toBe(404);
+        expect(robots(html), `${p} #${i}`).toBe("noindex, nofollow");
+        expect(html, `${p} #${i}`).not.toContain("hreflang=");
+        expect(res.headers.get("cache-control"), `${p} #${i}`).toBe("private, no-store");
+        expect(res.headers.get("cdn-cache-control"), `${p} #${i}`).toBeNull();
+        expect(res.headers.get("content-type"), `${p} #${i}`).toMatch(/^text\/html/);
+        // The shell the app boots from: App.tsx's catch-all route then
+        // renders the "not found" screen, as for any unknown URL.
+        expect(html, `${p} #${i}`).toContain('<div id="root"></div>');
+      }
+    }
+    // Like every error page: the language file only, never a page chunk.
+    expect(preloadList(await (await get("/pt/404")).text())).toEqual(["/assets/pt-UI.js"]);
+    expect(renders().some((r) => /\/404(\/|\?|$)/.test(r.url))).toBe(false);
+  });
+
+  it("checkout: /checkout/<intent> is a page, anything deeper is not", async () => {
+    const page = await get("/en/checkout/zz-intent-7731");
+    expect(page.status).toBe(200);
+    expect(page.headers.get("x-robots-tag")).toBe("noindex, nofollow");
+    expect(page.headers.get("cache-control")).toBe("private, no-store");
+    expect(robots(await page.text())).toBe("noindex, nofollow");
+    for (const p of ["/en/checkout/a/b", "/pt/checkout/a/b/c", "/en/checkout"]) {
+      const res = await get(p);
+      expect(res.status, p).toBe(404);
+      expect(robots(await res.text()), p).toBe("noindex, nofollow");
+    }
+  });
+
+  it("a bare path the app has no page for says 404 on the language entry, and still forwards", async () => {
+    for (const [p, target] of [
+      ["/zz-not-a-page-7731?x=1", "/en/zz-not-a-page-7731?x=1"],
+      ["/404", "/en/404"],
+      ["/xx/homes", "/en/xx/homes"],
+      ["/checkout/a/b", "/en/checkout/a/b"],
+    ]) {
+      const res = await get(p);
+      const html = await res.text();
+      expect(res.status, p).toBe(404);
+      expect(res.headers.get("cache-control"), p).toBe("private, no-store");
+      expect(res.headers.get("cdn-cache-control"), p).toBe("no-store");
+      // Same entry page as before: it sends the visitor to their language.
+      expect(html, p).toContain(`<noscript><meta http-equiv="refresh" content="0;url=${target}"></noscript>`);
+      expect(html, p).toContain("location.replace(");
+      expect(html, p).not.toContain("/assets/");
+    }
+  });
+
+  it("a bare path that is a page, or may be one, keeps its 200 entry", async () => {
+    // Content sections are decided on the localized URL, where the record is looked up.
+    for (const p of ["/", "/homes", "/homes/", "/about", "/homes/zz-no-such-home-7731", "/blog/zz-no-such-article-7731", "/checkout/zz-intent-7731", "/booking/thank-you/GY-1", "/login"]) {
+      const res = await get(p);
+      expect(res.status, p).toBe(200);
+      expect(await res.text(), p).toContain("location.replace(");
+    }
+  });
+
+  it("crawlers keep their 301 to /en on a bare path, page or not", async () => {
+    for (const [p, target] of [["/zz-not-a-page-7731", "/en/zz-not-a-page-7731"], ["/404", "/en/404"], ["/homes?guests=2", "/en/homes?guests=2"]]) {
+      const res = await fetch(base + p, { headers: { "user-agent": "Googlebot" }, redirect: "manual" });
+      expect(res.status, p).toBe(301);
+      expect(res.headers.get("location"), p).toBe(target);
+    }
+  });
+
+  it("the 301 and 302 redirects of localized URLs are untouched", async () => {
+    const journal = await get("/en/journal/some-article?utm_source=x");
+    expect(journal.status).toBe(301);
+    expect(journal.headers.get("location")).toBe("/en/blog/some-article?utm_source=x");
+    const language = await get("/fr/blog/cycling-minho-portugal-guide");
+    expect(language.status).toBe(302);
+    expect(language.headers.get("location")).toBe("/en/blog/cycling-minho-portugal-guide");
+  });
+});
+
 /** The module list of the end-of-body preload script, or null when absent. */
 function preloadList(html: string): string[] | null {
   const m = html.match(/<script>\(function\(\)\{var m=(\[[^\]]*\]),d=0;/);
