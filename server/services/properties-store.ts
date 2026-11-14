@@ -10,6 +10,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { withPartnerDefaults, normalizePartnerAmenities } from "./tripwix";
 import { PARTNER_SOURCE } from "../../shared/partnerHome";
+import { stripBrandSignoff } from "../../shared/descriptionSignoff";
 import { normalizePublicPropertyGeography } from "./property-geography";
 import { normalizePropertyCapacityCopy } from "./property-capacity-copy";
 
@@ -107,6 +108,17 @@ export async function partnerSupplierReference(supplierUid: string | null | unde
   if (!supplierUid) return "";
   if (!partnerSupplier.has(supplierUid)) await getPropertiesForSite();
   return partnerSupplier.get(supplierUid)?.reference ?? "";
+}
+
+/**
+ * The description a page may publish: without the old "Book your stay.
+ * Portugal Active, your private hotel." sign-off that ten listings still
+ * carry from Guesty (the product is a villa, never a "private hotel").
+ */
+export function withoutBrandSignoff(p: any): any {
+  if (typeof p?.description !== "string") return p;
+  const description = stripBrandSignoff(p.description);
+  return description === p.description ? p : { ...p, description };
 }
 
 /**
@@ -327,7 +339,7 @@ export function filterPublicProperties(properties: any[]): any[] {
       return false;
     }
     return true;
-  }).map(normalizePublicPropertyGeography).map(normalizePropertyCapacityCopy).map(withPublicAddress);
+  }).map(normalizePublicPropertyGeography).map(normalizePropertyCapacityCopy).map(withoutBrandSignoff).map(withPublicAddress);
 }
 
 /** Mirror of the client's slugifyLocality (client/src/lib/utils.ts) so the

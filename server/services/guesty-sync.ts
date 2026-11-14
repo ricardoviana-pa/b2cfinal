@@ -12,6 +12,7 @@ import { guestyClient, isGuestyConfigured } from "../lib/guesty";
 import { isPataias } from "./property-geography";
 import { normalizePropertyCapacityCopy } from "./property-capacity-copy";
 import { isValidRating, normaliseRating, reviewAggregate } from "../../shared/reviewStats";
+import { stripBrandSignoff } from "../../shared/descriptionSignoff";
 
 // GitHub persistence config (set via env vars on Render)
 const GITHUB_PAT = process.env.GITHUB_PAT || "";
@@ -79,7 +80,7 @@ async function fetchAllListings(): Promise<any[]> {
 
 /** Combine publicDescriptions into full description */
 function buildDescription(desc: any, legacyDescription?: string): string {
-  if (!desc || typeof desc !== "object") return legacyDescription || "";
+  if (!desc || typeof desc !== "object") return stripBrandSignoff(legacyDescription || "");
   const parts = [
     desc.summary,
     desc.space,
@@ -94,9 +95,9 @@ function buildDescription(desc: any, legacyDescription?: string): string {
     legacyDescription &&
     legacyDescription.length > combined.length
   ) {
-    return legacyDescription;
+    return stripBrandSignoff(legacyDescription);
   }
-  return combined || legacyDescription || "";
+  return stripBrandSignoff(combined || legacyDescription || "");
 }
 
 /** Content-quality metrics for the structured descriptions, accumulated across
