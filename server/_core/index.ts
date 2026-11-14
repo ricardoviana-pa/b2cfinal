@@ -8,6 +8,13 @@ import rateLimit from "express-rate-limit";
 import { BALANCE_RATE_LIMIT_PER_MIN, balanceTrpcLimiter } from "../lib/balance-rate-limit";
 import { PARTNER_PAY_RATE_LIMIT_PER_MIN, partnerPayTrpcLimiter } from "../lib/partner-pay-rate-limit";
 import { LEAD_RATE_LIMIT_PER_MIN, leadTrpcLimiter } from "../lib/lead-rate-limit";
+import {
+  CHARGE_PROCEDURES,
+  CHECKOUT_CHARGE_RATE_LIMIT_PER_MIN,
+  CHECKOUT_SAVE_RATE_LIMIT_PER_MIN,
+  SAVE_PROCEDURES,
+  weightedTrpcLimiter,
+} from "../lib/checkout-write-rate-limit";
 import { createServer } from "http";
 import net from "net";
 import fs from "fs";
@@ -143,8 +150,17 @@ async function startServer() {
   // Formulários públicos: decide pelo nome do procedimento, para o limite
   // contar também quando o leads.create vem num batch (server/lib/lead-rate-limit.ts).
   app.use("/api/trpc", leadTrpcLimiter(leadLimiter));
-  app.use("/api/trpc/booking", apiLimiter);
-  app.use("/api/trpc/checkout", apiLimiter); // checkout_v2 intents + lead capture
+  // booking.* e checkout.*: só o que grava, cobra ou envia, pelo nome do
+  // procedimento e contando cada chamada de um batch. As leituras (preços da
+  // listagem, calendário, cotações, a barra de campanha de todas as páginas)
+  // não contam. Antes havia aqui um app.use("/api/trpc/booking", apiLimiter)
+  // e outro para "/checkout" que nunca apanharam pedido nenhum
+  // (server/lib/checkout-write-rate-limit.ts explica porquê e os números).
+  // singleCount: false porque um batch conta uma vez por chamada, de propósito.
+  const checkoutChargeLimiter = rateLimit({ windowMs: 60 * 1000, max: CHECKOUT_CHARGE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, validate: { singleCount: false } });
+  const checkoutSaveLimiter = rateLimit({ windowMs: 60 * 1000, max: CHECKOUT_SAVE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, validate: { singleCount: false } });
+  app.use("/api/trpc", weightedTrpcLimiter(checkoutChargeLimiter, CHARGE_PROCEDURES));
+  app.use("/api/trpc", weightedTrpcLimiter(checkoutSaveLimiter, SAVE_PROCEDURES));
   // Página da 2.ª parte (pagamento em duas partes): os pedidos tRPC chegam
   // como /api/trpc/balance.view (ou num batch "a.b,balance.help"), que um
   // app.use("/api/trpc/balance") nunca apanha; o matcher decide pelo nome.
