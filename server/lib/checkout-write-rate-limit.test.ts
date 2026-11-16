@@ -24,6 +24,7 @@ import {
   weightedTrpcLimiter,
 } from "./checkout-write-rate-limit";
 import { isPartnerPayTrpcPath } from "./partner-pay-rate-limit";
+import { visitorRateLimitKey } from "./rate-limit-key";
 import { bookingRouter } from "../routers/booking";
 import { checkoutRouter } from "../routers/checkout";
 
@@ -114,7 +115,7 @@ afterEach(() => { server?.close(); server = undefined; vi.useRealTimers(); });
 
 async function boot() {
   const app = express();
-  const opts = { windowMs: 60 * 1000, standardHeaders: true, legacyHeaders: false, validate: { singleCount: false } } as const;
+  const opts = { keyGenerator: visitorRateLimitKey, windowMs: 60 * 1000, standardHeaders: true, legacyHeaders: false, validate: { singleCount: false } } as const;
   // Os mesmos dois limitadores, na mesma ordem e com as mesmas opções de server/_core/index.ts.
   app.use("/api/trpc", weightedTrpcLimiter(rateLimit({ ...opts, max: CHECKOUT_CHARGE_RATE_LIMIT_PER_MIN }), CHARGE_PROCEDURES));
   app.use("/api/trpc", weightedTrpcLimiter(rateLimit({ ...opts, max: CHECKOUT_SAVE_RATE_LIMIT_PER_MIN }), SAVE_PROCEDURES));

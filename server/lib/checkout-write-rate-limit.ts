@@ -51,12 +51,17 @@
  *
  * O QUE ISTO NÃO FAZ
  *
- * Trava uma inundação a partir de um IP. Não trava quem forjar o cabeçalho
- * X-Forwarded-For: o servidor confia nele (`trust proxy`), e cada valor
- * forjado conta como um visitante novo. Isto vale para todos os limites do
- * site, não só para estes (verificado em produção a 14 nov 2026), e fica
- * relatado no PR; mudar a chave exige ver os cabeçalhos que chegam ao
- * servidor antes de mexer.
+ * Trava uma inundação a partir de um endereço. A 14 nov 2026 não travava
+ * quem forjasse o cabeçalho X-Forwarded-For: o servidor confia nele
+ * (`trust proxy`) e cada valor forjado contava como um visitante novo, aqui
+ * e em todos os limites do site. Desde a mudança de 16 nov 2026 todos contam
+ * pelo endereço que o Cloudflare indica, que o cliente não consegue
+ * escrever (server/lib/rate-limit-key.ts, com o que se viu em produção).
+ *
+ * Continua a não travar quem dispõe de muitos endereços verdadeiros (uma
+ * rede de máquinas): cada endereço tem o seu contador, e isso só se trava
+ * com uma regra no Cloudflare. E a chave só vale enquanto todo o tráfego
+ * público entrar por um Cloudflare, como hoje no Render.
  */
 import type { NextFunction, Request, RequestHandler, Response } from "express";
 
