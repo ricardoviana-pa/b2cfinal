@@ -2447,7 +2447,7 @@ export default function CheckoutPage() {
                     <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
                     <p className="body-sm text-pa-dark">{t("checkout.confirmingPayment", "Payment received — confirming your booking…")}</p>
                   </div>
-                ) : quoteId && effective && !pricingSaves && !quoteStale && !requoting && !datesUnavailable && !quoteRefreshFailed ? (
+                ) : !pricingSaves && quoteId && effective && !quoteStale && !requoting && !datesUnavailable && !quoteRefreshFailed ? (
                   <CheckoutPaymentForm
                     demo={isDemo}
                     demoDecline={demoDecline}
