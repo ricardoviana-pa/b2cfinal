@@ -31,7 +31,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
 describe("recovery offer price refresh", () => {
   it("at hour 30 it reprices the original stay and reapplies the discount without exposing its code", async () => {
     const until = new Date(Date.now() + 18 * hour);
-    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "PORTUGALACTIVE5");
+    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "TEST-CR5-LIMIT1");
     mock.intent.mockResolvedValue({
       ...stay, id, status: "contact_captured", ratePlanId: "flex",
       expiresAt: new Date(Date.now() - 7 * hour),
@@ -44,12 +44,12 @@ describe("recovery offer price refresh", () => {
     };
     mock.quote.mockResolvedValue(quote);
     mock.coupon.mockResolvedValue({
-      ...quote, total: 1425, coupons: [{ code: "PORTUGALACTIVE5", supplierReference: "Portugal Active 5%" }],
+      ...quote, total: 1425, coupons: [{ code: "TEST-CR5-LIMIT1", supplierReference: "Portugal Active 5%" }],
       ratePlanOptions: [{ ratePlanId: "flex", total: 1425 }],
     });
     const refreshed = await caller().getQuote({ ...stay, recoveryIntentId: id });
     expect(mock.quote).toHaveBeenCalledWith(expect.objectContaining({ fresh: true }));
-    expect(mock.coupon).toHaveBeenCalledWith(expect.objectContaining({ coupons: ["PORTUGALACTIVE5"] }));
+    expect(mock.coupon).toHaveBeenCalledWith(expect.objectContaining({ coupons: ["TEST-CR5-LIMIT1"] }));
     expect(refreshed.pricing.total).toBe(1425);
     expect(refreshed).not.toHaveProperty("coupons");
     const proof = "recoveryProof" in refreshed ? refreshed.recoveryProof : undefined;
@@ -58,7 +58,7 @@ describe("recovery offer price refresh", () => {
   });
 
   it.each(["expired", "different stay"])("uses the ordinary quote when the offer is %s", async (mode) => {
-    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "PORTUGALACTIVE5");
+    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "TEST-CR5-LIMIT1");
     mock.intent.mockResolvedValue({
       ...stay, status: "contact_captured", guests: mode === "expired" ? 2 : 3,
       discountGiftUntil: new Date(Date.now() + (mode === "expired" ? -hour : hour)),
@@ -70,19 +70,19 @@ describe("recovery offer price refresh", () => {
 
   it("still accepts the shared code as a manual promo without issuing a recovery proof", async () => {
     vi.stubEnv("APP_ENV", "production");
-    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "PORTUGALACTIVE5");
-    mock.coupon.mockResolvedValue({ quoteId: "111111111111111111111111", coupons: [{ code: "PORTUGALACTIVE5" }], total: 1425 });
-    const manual = await caller().applyCoupon({ ...stay, quoteId: "111111111111111111111111", coupon: "PORTUGALACTIVE5" });
+    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "TEST-CR5-LIMIT1");
+    mock.coupon.mockResolvedValue({ quoteId: "111111111111111111111111", coupons: [{ code: "TEST-CR5-LIMIT1" }], total: 1425 });
+    const manual = await caller().applyCoupon({ ...stay, quoteId: "111111111111111111111111", coupon: "TEST-CR5-LIMIT1" });
     expect(manual).toMatchObject({ ok: true, total: 1425 });
     expect(manual).not.toHaveProperty("recoveryProof");
-    expect(mock.coupon).toHaveBeenCalledWith(expect.objectContaining({ coupons: ["PORTUGALACTIVE5"] }));
+    expect(mock.coupon).toHaveBeenCalledWith(expect.objectContaining({ coupons: ["TEST-CR5-LIMIT1"] }));
   });
 });
 
 describe("checkout attribution with a shared Guesty coupon", () => {
   it.each(["manual", "recovery", "expired"])("stores the correct attribution for a %s quote", async (origin) => {
     vi.stubEnv("APP_ENV", "production");
-    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "PORTUGALACTIVE5");
+    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "TEST-CR5-LIMIT1");
     const quoteId = "222222222222222222222222";
     const until = new Date(Date.now() + (origin === "expired" ? -hour : hour));
     const supplierExpiry = new Date(Date.now() + 23 * hour);
@@ -91,7 +91,7 @@ describe("checkout attribution with a shared Guesty coupon", () => {
     const fullQuote = { total: 1500 };
     mock.intent.mockResolvedValue({
       ...stay, id, status: "contact_captured", guestyQuoteId: "111111111111111111111111",
-      discountGiftUntil: until, quote: { couponCode: "PORTUGALACTIVE5", recoveryDiscountApplied: true },
+      discountGiftUntil: until, quote: { couponCode: "TEST-CR5-LIMIT1", recoveryDiscountApplied: true },
     });
     mock.trusted.mockResolvedValue({
       expiresAt: supplierExpiry, ratePlanId: "flex", couponReference: supplierReference, quote: { total: 1425 },
@@ -108,7 +108,7 @@ describe("checkout attribution with a shared Guesty coupon", () => {
       intentId: id, patch: {
         guestyQuoteId: quoteId,
         ...(origin === "manual" ? { quote: {
-          couponCode: "PORTUGALACTIVE5", nightlyRate: 475, totalNights: 1425, cleaningFee: 0,
+          couponCode: "TEST-CR5-LIMIT1", nightlyRate: 475, totalNights: 1425, cleaningFee: 0,
           taxesAndFees: 0, total: 1425, nights: 3, currency: "EUR", quoteCreatedAt: Date.now(),
         } } : { recoveryProof: recoveryQuoteProof(id, quoteId, until, supplierReference) }),
       },
@@ -127,7 +127,7 @@ describe("checkout attribution with a shared Guesty coupon", () => {
     const saved = mock.save.mock.calls[0][1];
     expect(saved).not.toHaveProperty("recoveryProof");
     expect(saved.expiresAt).toEqual(origin === "recovery" ? until : supplierExpiry);
-    expect(saved.quote.couponCode).toBe("PORTUGALACTIVE5");
+    expect(saved.quote.couponCode).toBe("TEST-CR5-LIMIT1");
     expect(saved.quote.recoveryDiscountApplied).toBe(origin === "recovery" ? true : undefined);
   });
 });

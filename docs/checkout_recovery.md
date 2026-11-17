@@ -91,9 +91,10 @@ incentivo que não custa dinheiro, dura 48 horas e nunca se repete para o mesmo
 carrinho.
 
 - O valor vive num **cupão do Guesty** (Revenue Management), não no código do
-  site. Em Render, configurar `RECOVERY_DISCOUNT_COUPON=PORTUGALACTIVE5`; a percentagem
-  mostrada nos emails é `RECOVERY_DISCOUNT_PERCENT` e tem de bater com a do
-  cupão.
+  site. Configurar em Render a variável `RECOVERY_DISCOUNT_COUPON` com o
+  código do cupão dedicado à recuperação. No Guesty, o cupão deve ter 5%
+  de desconto e um limite de uma utilização por pessoa. A percentagem dos
+  emails (`RECOVERY_DISCOUNT_PERCENT`) tem de bater com a do cupão.
 - O site aplica o cupão à cotação (`applyCouponToBEQuote`) ANTES de enviar e
   grava a cotação descontada no intent: o hóspede abre o link já com o valor
   final e não escreve código nenhum.
@@ -106,8 +107,7 @@ carrinho.
 - A garantia do preço dura 23 horas. Se o hóspede atualizar o preço antes
   de acabarem as 48 horas, o checkout pede um preço novo ao Guesty para a
   mesma estadia e reaplica o desconto. A atualização não prolonga a oferta.
-- `discount_gift_until` guarda o prazo do benefício. O código do cupão
-  é partilhado com o campo de promoção do site. A nota da reserva Guesty e
+- `discount_gift_until` guarda o prazo do benefício. A nota da reserva Guesty e
   o relatório do funil só atribuem o desconto ao contacto 3 quando o
   servidor o aplicou à cotação da reserva.
 
