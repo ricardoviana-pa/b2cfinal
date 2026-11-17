@@ -29,6 +29,8 @@ async function main() {
       flexGiftUntil: bookingIntents.flexGiftUntil,
       flexGiftReason: bookingIntents.flexGiftReason,
       flex: bookingIntents.flex,
+      discountGiftUntil: bookingIntents.discountGiftUntil,
+      quote: bookingIntents.quote,
       createdAt: bookingIntents.createdAt,
     })
     .from(bookingIntents)
@@ -57,6 +59,9 @@ async function main() {
   // em duas partes) usa a mesma coluna e mede-se no relatório desse projeto.
   const gifted = treat.filter((r) => r.flexGiftUntil && r.flexGiftReason !== "full_payment");
   console.log(`\nFlex oferecido: ${gifted.length} ofertas · ${gifted.filter((r) => r.status === "paid").length} reservas com a oferta`);
+  const couponOffers = treat.filter((r) => r.discountGiftUntil);
+  const recoveredWithCoupon = couponOffers.filter((r) => r.status === "paid" && r.quote?.recoveryDiscountApplied && r.quote.couponCode);
+  console.log(`Desconto do contacto 3: ${couponOffers.length} ofertas · ${recoveredWithCoupon.length} reservas pagas com o desconto do funil`);
   process.exit(0);
 }
 

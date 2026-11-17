@@ -22,8 +22,10 @@ export function canonicalStayQuote(raw: any, stay: StayIdentity, now = Date.now(
   const rawPlan = raw.rates.ratePlans.find((p: any) => String(p.ratePlan?._id || p._id || p.id || p.ratePlanId) === ratePlanId);
   const currency = (rawPlan?.ratePlan?.money || rawPlan?.money)?.currency;
   if (!plan || currency !== 'EUR' || parsed.currency !== 'EUR' || !(plan.total > 0) || !Number.isFinite(plan.total) || parsed.nights <= 0) throw invalid();
-  const coupon = Array.isArray(raw.coupons) ? raw.coupons.find((c: any) => c.code)?.code : undefined;
-  return { ratePlanId, expiresAt: new Date(expiresAt), quote: {
+  const appliedCoupon = Array.isArray(raw.coupons) ? raw.coupons.find((c: any) => c?.code || c?.name) : undefined;
+  const coupon = appliedCoupon?.code;
+  const couponReference = coupon || appliedCoupon?.name;
+  return { ratePlanId, expiresAt: new Date(expiresAt), couponReference: couponReference ? String(couponReference) : undefined, quote: {
     nightlyRate: plan.nightlyRate, totalNights: plan.total - plan.cleaningFee - plan.taxesAndFees,
     cleaningFee: plan.cleaningFee, taxesAndFees: plan.taxesAndFees, total: plan.total,
     nights: parsed.nights, currency: parsed.currency, quoteCreatedAt: Date.parse(raw.createdAt) || now,

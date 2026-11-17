@@ -238,22 +238,23 @@ describe("contactos 2 e 3: as mesmas duas linhas por baixo do total, nas 9 líng
   const send = (lang: EmailLang, stage: 2 | 3, over: Record<string, unknown> = {}) => email.sendCheckoutRecovery({
     ...base, locale: lang, stage, quote: stay, expiresAt: new Date("2099-11-01T18:00:00Z"),
     cancellation: { policy: "moderate" }, twoParts,
-    ...(stage === 3 ? { flexGift: { until: new Date("2099-11-02T18:00:00Z"), days: 7, value: 120 } } : {}),
+    ...(stage === 2 ? { flexGift: { until: new Date("2099-11-02T18:00:00Z"), days: 7, value: 120 } } : {}),
+    ...(stage === 3 ? { discount: { until: new Date("2099-11-02T18:00:00Z"), percent: 5, before: 160_000 } } : {}),
     ...over,
   });
 
-  it.each(EMAIL_LANGS)("%s: contacto 2 com o cancelamento gratuito (com data) e as duas partes", async (lang) => {
+  it.each(EMAIL_LANGS)("%s: contacto 2, com o Flex oferecido, as mesmas duas linhas", async (lang) => {
     await send(lang, 2);
     const html = lastHtml();
-    expect(html).toContain(FUNNEL_I18N[lang].headline2);
+    expect(html).toContain(FUNNEL_I18N[lang].giftTitle);
     expect(html).toContain(policyText(lang));
     expect(html).toContain(twoPartsText(lang));
   });
 
-  it.each(EMAIL_LANGS)("%s: contacto 3, com o Flex oferecido, as mesmas duas linhas", async (lang) => {
+  it.each(EMAIL_LANGS)("%s: contacto 3, com o desconto, as mesmas duas linhas", async (lang) => {
     await send(lang, 3);
     const html = lastHtml();
-    expect(html).toContain(FUNNEL_I18N[lang].giftTitle);
+    expect(html).toContain(FUNNEL_I18N[lang].discountTitle(5));
     expect(html).toContain(policyText(lang));
     expect(html).toContain(twoPartsText(lang));
   });
@@ -356,7 +357,8 @@ describe("italiano: o funil trata o hóspede por Lei, como o resto do site", () 
     expect(F.personal1).toContain("risponda a questa email");
     expect(F.body1Pay("Buongiorno Ana,", "Casa Sintetica")).toContain("può pagare come preferisce");
     expect(F.personal1Pay).toContain("Risponda a questa email o ci scriva su WhatsApp");
-    expect(F.headline2).toBe("Il suo prezzo resta valido ancora per qualche ora.");
+    expect(F.headline2).toBe("Le sue date sono ancora libere.");
+    expect(F.headline3(5)).toBe("Abbiamo riservato 5% per il suo soggiorno.");
     expect(F.giftBody("‹u›", 7, "‹v›")).toMatch(/^Prenoti entro ‹u› e le offriamo Flex/);
     expect(F.body4None("Buongiorno Ana,", "Casa Sintetica")).toContain("ci dica cosa ha in mente");
     expect(F.lastNote).toContain("che le inviamo");
@@ -364,9 +366,10 @@ describe("italiano: o funil trata o hóspede por Lei, como o resto do site", () 
 
   it("os botões ficam no infinitivo, como os outros emails italianos", () => {
     const F = FUNNEL_I18N.it;
-    expect([F.cta3Gift, F.cta3, F.ownLink("Casa Sintetica")]).toEqual([
+    expect([F.cta2Gift, F.cta2, F.cta3Discount(5), F.ownLink("Casa Sintetica")]).toEqual([
       "Prenotare con Flex incluso",
       "Vedere il prezzo di oggi",
+      "Prenotare con 5% di sconto",
       "Tornare a Casa Sintetica",
     ]);
   });
@@ -391,7 +394,6 @@ describe("italiano: o funil trata o hóspede por Lei, como o resto do site", () 
           ...base, guestFirstName, propertyName, locale: "it", ...variant,
           quote: { nights: 5, totalNights: 1500, total: 1500 },
           expiresAt: new Date("2099-11-01T18:00:00Z"),
-          scarcity: { unavailable: 3, total: 10 },
           propertyUrl: "https://www.portugalactive.com/it/homes/original",
         });
         const sent = lastSend();

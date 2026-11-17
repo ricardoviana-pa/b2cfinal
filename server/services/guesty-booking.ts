@@ -144,11 +144,12 @@ export async function createBEQuote(input: {
   guestFirstName?: string;
   guestLastName?: string;
   guestEmail?: string;
+  fresh?: boolean;
 }): Promise<BEQuoteResult> {
   // Only cache anonymous price-check calls (no guest data). Checkout calls with
   // real guest info bypass the cache so they always produce a fresh quoteId.
   const isAnonymous = !input.guestFirstName && !input.guestLastName && (!input.guestEmail || input.guestEmail === "guest@example.com");
-  if (isAnonymous) {
+  if (isAnonymous && !input.fresh) {
     const cacheKey = getBEQuoteCacheKey(input);
     const cached = beQuoteCache.get(cacheKey);
     if (cached && cached.expiresAt > Date.now()) {
@@ -518,6 +519,7 @@ export async function getPaymentProvider(listingId: string): Promise<{
 
 export interface BECouponInfo {
   code: string;
+  supplierReference?: string;
   type?: string;
   adjustment?: number;
 }
@@ -585,6 +587,7 @@ export async function applyCouponToBEQuote(input: {
   const coupons: BECouponInfo[] = rawCoupons
     .map((c: any) => ({
       code: codeOf(c),
+      ...(c?.name && !c?.code ? { supplierReference: String(c.name).trim() } : {}),
       type: c?.type ? String(c.type) : undefined,
       adjustment: typeof c?.adjustment === "number" ? c.adjustment : undefined,
     }))

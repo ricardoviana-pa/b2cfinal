@@ -451,6 +451,9 @@ export const bookingIntents = mysqlTable("booking_intents", {
     nights: number;
     currency: string;
     quoteCreatedAt: number | null;
+    couponCode?: string;
+    recoveryDiscountApplied?: true;
+    recoveryDiscountReference?: string;
     ratePlanOptions?: Array<{
       ratePlanId: string;
       name: string;
@@ -473,10 +476,15 @@ export const bookingIntents = mysqlTable("booking_intents", {
   /** Opt-out dos lembretes de recuperação (link no rodapé dos emails).
    *  Uma vez true, o scheduler nunca mais toca neste intent. */
   recoveryOptout: boolean("recovery_optout").default(false).notNull(),
-  /** Funil de recuperação, contacto 3: Flex oferecido até esta data. O preço
+  /** Funil de recuperação, contacto 2: Flex oferecido até esta data. O preço
    *  do Flex conta 0 em TODAS as cobranças enquanto for válido. Só o
    *  servidor escreve este campo (nunca vem do browser). */
   flexGiftUntil: timestamp("flex_gift_until"),
+  /** Funil de recuperação, contacto 3: desconto oferecido até esta data. O
+   *  desconto em si é um cupão do Guesty já aplicado à quote; esta data só
+   *  diz até quando a oferta vale, para o email e para os relatórios. Só o
+   *  servidor escreve este campo. */
+  discountGiftUntil: timestamp("discount_gift_until"),
   /** Porque é que o Flex foi oferecido (spec 2.6): NULL = funil de
    *  recuperação (todas as ofertas anteriores à Fase 1), 'full_payment' =
    *  incentivo a pagar tudo agora. Só serve para medir e para saber que

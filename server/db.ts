@@ -917,12 +917,7 @@ export async function updateBookingIntent(
    CHECKOUT RECOVERY — Fase 4 (spec §12/§16)
    ================================================================ */
 
-/**
- * Abandoned intents eligible for a recovery email: guest left an email,
- * never paid, the resume link still works (expiresAt in the future) and
- * fewer than 2 recovery emails were sent. Sweep-friendly: capped, oldest
- * first, only intents past the 1h mark.
- */
+/** Abandoned intents with a due recovery contact or concierge alert. */
 export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent[]> {
   const db = await getDb();
   if (!db) return [];
@@ -931,6 +926,7 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
     const HOUR = 60 * 60 * 1000;
     const oneHourAgo = new Date(now - HOUR);
     const nineDaysAgo = new Date(now - 9 * 24 * HOUR);
+    const oneDayAgo = new Date(now - 24 * HOUR);
     const threeDaysAgo = new Date(now - 72 * HOUR);
     const sevenDaysAgo = new Date(now - 7 * 24 * HOUR);
     const twoDaysAgo = new Date(now - 48 * HOUR);
@@ -954,7 +950,7 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
     // do contacto de 1 h, nunca entravam, e quando entravam a cotação já tinha
     // expirado. Resultado: o funil deixou de enviar sem dar erro.
 
-    // 1) Contactos 1 e 2 (cotação ainda válida) e o alerta ao concierge
+    // 1) Contactos 1 e 2 e o alerta ao concierge
     //    (abandono no pagamento, até 48 h). Janela curta por natureza.
     const early = await db
       .select()
@@ -968,7 +964,8 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
           // createdAt troca uma leitura da tabela inteira por um intervalo.
           gt(bookingIntents.createdAt, nineDaysAgo),
           or(
-            and(lt(bookingIntents.recoveryStage, 2), gt(bookingIntents.expiresAt, new Date(now))),
+            and(lt(bookingIntents.recoveryStage, 1), gt(bookingIntents.expiresAt, new Date(now))),
+            and(lt(bookingIntents.recoveryStage, 2), lt(bookingIntents.createdAt, oneDayAgo)),
             and(
               eq(bookingIntents.status, "payment_pending"),
               eq(bookingIntents.conciergeAlerted, false),
@@ -980,8 +977,7 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
       .orderBy(desc(bookingIntents.createdAt))
       .limit(limit);
 
-    // 2) Contactos 3 (3 dias) e 4 (7 dias): só com consentimento de marketing,
-    //    filtrado aqui para que quem não deu consentimento não ocupe vagas.
+    // 2) Contacto 3 (3 dias) e contacto 4 (7 dias, com consentimento).
     const late = await db
       .select()
       .from(bookingIntents)
@@ -992,9 +988,12 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
           gt(bookingIntents.createdAt, nineDaysAgo),
           or(
             lt(bookingIntents.recoveryStage, 3),
-            and(lt(bookingIntents.recoveryStage, 4), lt(bookingIntents.createdAt, sevenDaysAgo)),
+            and(
+              lt(bookingIntents.recoveryStage, 4),
+              lt(bookingIntents.createdAt, sevenDaysAgo),
+              sql`EXISTS (SELECT 1 FROM ${leads} WHERE ${leads.email} = ${bookingIntents.email} AND ${leads.source} LIKE ${"newsletter%"})`,
+            ),
           ),
-          sql`EXISTS (SELECT 1 FROM ${leads} WHERE ${leads.email} = ${bookingIntents.email} AND ${leads.source} LIKE ${"newsletter%"})`,
         ),
       )
       .orderBy(desc(bookingIntents.createdAt))
@@ -1154,20 +1153,23 @@ export async function claimRecoveryStage(
   id: string,
   fromStage: number,
   toStage: number,
+  patch?: Partial<InsertBookingIntent>,
+  expectedQuoteId?: string | null,
 ): Promise<boolean> {
   const db = await getDb();
   if (!db) return false;
   try {
     const res: any = await db
       .update(bookingIntents)
-      .set({ recoveryStage: toStage })
+      .set({ ...patch, recoveryStage: toStage })
       .where(and(
         eq(bookingIntents.id, id), eq(bookingIntents.recoveryStage, fromStage),
         inArray(bookingIntents.status, ['draft', 'contact_captured', 'payment_pending']),
         eq(bookingIntents.recoveryOptout, false),
-        // Os contactos 1 e 2 falam do preço garantido: só com a cotação viva.
-        // Os contactos 3 e 4 refazem a cotação ou mostram alternativas.
-        ...(toStage <= 2 ? [gt(bookingIntents.expiresAt, new Date())] : []),
+        // O contacto 1 usa a cotação existente. Nos contactos 2 e 3, a
+        // cotação nova e o avanço do funil são escritos no mesmo UPDATE.
+        toStage === 1 ? gt(bookingIntents.expiresAt, new Date()) : undefined,
+        patch ? (expectedQuoteId ? eq(bookingIntents.guestyQuoteId, expectedQuoteId) : isNull(bookingIntents.guestyQuoteId)) : undefined,
         sql`${bookingIntents.reservationId} IS NULL`,
       ));
     const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;

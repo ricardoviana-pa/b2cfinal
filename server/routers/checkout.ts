@@ -10,7 +10,9 @@
  * Security: the intent id is a capability (it goes into resume links and the
  * record carries guest PII), so it is a UUID — never enumerable.
  */
+import { createBEQuote } from "../services/guesty-booking";
 import { trustedStayQuote, assertQuotedTotal } from "../services/trusted-checkout-quote";
+import { recoveryDiscountCoupon, verifiesRecoveryQuoteProof } from "../services/recovery-funnel";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import { cardChargeIdempotencyKey, withCheckoutChargeLock } from "../lib/checkout-charge-attempt";
 import { randomUUID } from "crypto";
@@ -362,7 +364,8 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string, pricing?:
     // o pa-marketing a separar da procura dos códigos (originNoteEnabled).
     const couponLine = couponNoteLine(m.quote);
     const originLine = originNoteEnabled() ? originNoteLine(await originPromise) : "";
-    const headLines = [couponLine, originLine].filter(Boolean).join("\n");
+    const recoveryLine = m.quote?.recoveryDiscountApplied && m.quote.couponCode ? "Recuperacao de carrinho: desconto do contacto 3" : "";
+    const headLines = [couponLine, recoveryLine, originLine].filter(Boolean).join("\n");
     let note = headLines;
     if (hasPayload) {
       const lines = (Array.isArray(m.extras) ? m.extras : []).map((e: any) =>
@@ -587,6 +590,10 @@ export const checkoutRouter = router({
         }
       }
       const projection = publicIntent(view);
+      if (projection.quote?.recoveryDiscountApplied) {
+        const { couponCode: _couponCode, recoveryDiscountApplied: _recoveryDiscountApplied, recoveryDiscountReference: _recoveryDiscountReference, ...visibleQuote } = projection.quote;
+        projection.quote = visibleQuote;
+      }
       return {
         intent: showGuest ? projection : withoutGuestDetails(projection),
         expired,
@@ -611,6 +618,7 @@ export const checkoutRouter = router({
           checkOut: z.string().regex(DATE_RE).optional(),
           guests: z.number().int().min(1).max(30).optional(),
           guestyQuoteId: z.string().max(64).optional(),
+          recoveryProof: z.string().regex(/^[a-f0-9]{64}$/).optional(),
           quote: quoteSnapshotSchema.optional(),
           extras: z.array(extraSelectionSchema).max(40).optional(),
           reception: z
@@ -636,7 +644,7 @@ export const checkoutRouter = router({
       // A paid intent is immutable — a resumed capability link (or any UUID
       // holder) must never rewrite a completed booking's record.
       if (current.status === "paid") return { ok: false };
-      const patch = { ...input.patch };
+      const { recoveryProof, ...patch } = input.patch;
       if (patch.status === "paid" || patch.reservationId || patch.confirmationCode) {
         throw new TRPCError({ code: "FORBIDDEN", message: "Payment confirmation is managed by the server." });
       }
@@ -689,12 +697,59 @@ export const checkoutRouter = router({
         const revoke = revokeFullPaymentGiftPatch({ ...current, ...(patch.flex !== undefined ? { flexGiftPrevFlex: patch.flex } : {}) });
         if (revoke) Object.assign(dbPatch, revoke);
       }
+      let replacementQuote: { guestyQuoteId: string; ratePlanId: string; quote: Awaited<ReturnType<typeof trustedStayQuote>>["quote"] } | undefined;
       if (patch.quote || patch.guestyQuoteId || patch.ratePlanId || patch.checkIn || patch.checkOut || patch.guests) {
-        const trusted = await trustedStayQuote({ ...current, ...patch } as any);
-        Object.assign(dbPatch, { quote: trusted.quote, ratePlanId: trusted.ratePlanId, expiresAt: trusted.expiresAt });
+        const stay = { ...current, ...patch };
+        let trusted = await trustedStayQuote(stay);
+        const supplierReference = trusted.couponReference?.trim().toUpperCase();
+        const sameStay = !((patch.checkIn !== undefined && patch.checkIn !== c.checkIn) ||
+          (patch.checkOut !== undefined && patch.checkOut !== c.checkOut) ||
+          (patch.guests !== undefined && patch.guests !== c.guests));
+        const giftUntil = current.discountGiftUntil;
+        const quoteId = patch.guestyQuoteId ?? current.guestyQuoteId;
+        const previousReference = (current.quote?.recoveryDiscountReference ?? current.quote?.couponCode)?.trim().toUpperCase();
+        const existingRecovery = quoteId === current.guestyQuoteId &&
+          current.quote?.recoveryDiscountApplied === true && supplierReference === previousReference;
+        const renewedRecovery = !!(supplierReference && giftUntil && quoteId &&
+          verifiesRecoveryQuoteProof(recoveryProof, current.id, quoteId, giftUntil, supplierReference));
+        let fromRecovery = !!supplierReference && (existingRecovery || renewedRecovery);
+        if (fromRecovery && (!giftUntil || giftUntil.getTime() <= Date.now() || !sameStay)) {
+          // A separate Guesty quote preserves the original quote for any
+          // payment already in flight and gives us the actual full price.
+          const fresh = await createBEQuote({
+            listingId: stay.listingId, checkIn: stay.checkIn, checkOut: stay.checkOut,
+            guests: stay.guests, fresh: true,
+          });
+          const ratePlanId = fresh.ratePlanOptions?.some(plan => plan.ratePlanId === stay.ratePlanId)
+            ? stay.ratePlanId : undefined;
+          trusted = await trustedStayQuote({ ...stay, guestyQuoteId: fresh.quoteId, ratePlanId });
+          if (trusted.couponReference) {
+            throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Unable to refresh the price without the expired offer." });
+          }
+          replacementQuote = { guestyQuoteId: fresh.quoteId, ratePlanId: trusted.ratePlanId, quote: trusted.quote };
+          Object.assign(dbPatch, { guestyQuoteId: fresh.quoteId, discountGiftUntil: null });
+          fromRecovery = false;
+        }
+        const expiresAt = fromRecovery && giftUntil
+          ? new Date(Math.min(trusted.expiresAt.getTime(), giftUntil.getTime()))
+          : trusted.expiresAt;
+        // The provider label identifies a recovery quote for the signed
+        // proof, while the code comes from the supplier or the checkout.
+        const configuredCoupon = recoveryDiscountCoupon();
+        const couponCode = trusted.quote.couponCode ?? (trusted.couponReference
+          ? patch.quote?.couponCode ?? (quoteId === current.guestyQuoteId ? current.quote?.couponCode : undefined)
+          : undefined);
+        const quote = fromRecovery ? {
+          ...trusted.quote,
+          couponCode: (existingRecovery ? current.quote?.couponCode : configuredCoupon) ?? couponCode,
+          recoveryDiscountApplied: true as const,
+          recoveryDiscountReference: supplierReference,
+        } : { ...trusted.quote, couponCode };
+        Object.assign(dbPatch, { quote, ratePlanId: trusted.ratePlanId, expiresAt });
+        if (!sameStay && giftUntil) dbPatch.discountGiftUntil = null;
       }
       const ok = await updateBookingIntent(input.intentId, dbPatch as any);
-      return { ok };
+      return { ok, ...(ok && replacementQuote ? { replacementQuote } : {}) };
     })),
 
   /**

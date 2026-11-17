@@ -2,15 +2,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mock = vi.hoisted(() => ({
   candidates: vi.fn(), claim: vi.fn(), send: vi.fn(), properties: vi.fn(), eligible: vi.fn(),
-  consent: vi.fn(), claimAlert: vi.fn(), alert: vi.fn(), update: vi.fn(), beQuote: vi.fn(), avail: vi.fn(),
+  consent: vi.fn(), claimAlert: vi.fn(), alert: vi.fn(), beQuote: vi.fn(), beCoupon: vi.fn(), avail: vi.fn(),
   attempt: vi.fn(), plan: vi.fn(), breakdown: vi.fn(),
 }));
 vi.mock("../db", () => ({
   listRecoveryCandidates: mock.candidates, claimRecoveryStage: mock.claim,
-  hasNewsletterConsent: mock.consent, claimConciergeAlert: mock.claimAlert, updateBookingIntent: mock.update,
+  hasNewsletterConsent: mock.consent, claimConciergeAlert: mock.claimAlert,
 }));
 vi.mock("./transactional-email", () => ({ sendCheckoutRecovery: mock.send, sendConciergeCallAlert: mock.alert }));
-vi.mock("./guesty-booking", () => ({ createBEQuote: mock.beQuote }));
+vi.mock("./guesty-booking", () => ({ createBEQuote: mock.beQuote, applyCouponToBEQuote: mock.beCoupon }));
 vi.mock("./guesty", () => ({ checkAvailability: mock.avail, describeGuestyError: (e: any) => String(e?.message ?? e) }));
 vi.mock("../lib/guesty", () => ({ guestyClient: { getListingCalendar: vi.fn().mockResolvedValue([]) } }));
 vi.mock("./properties-store", () => ({ getPropertiesForSite: mock.properties, isHiddenFromCatalog: () => false }));
@@ -35,11 +35,17 @@ beforeEach(() => {
   mock.consent.mockResolvedValue(false);
   mock.claimAlert.mockResolvedValue(true);
   mock.alert.mockResolvedValue(undefined);
-  mock.update.mockResolvedValue(true);
   mock.avail.mockResolvedValue({ available: true });
   mock.attempt.mockResolvedValue(false);
   mock.plan.mockResolvedValue({ available: false, reason: "disabled" });
   mock.breakdown.mockResolvedValue({ totalCents: 250_000 });
+  mock.beCoupon.mockReset();
+  // Contactos 2 e 3 refazem a cotação antes de sair: sem isto nenhum sai.
+  mock.beQuote.mockResolvedValue({
+    quoteId: "q-new", total: 2280, currency: "EUR", nights: 5, ratePlanId: "rp1",
+    pricing: { nightlyRate: 420, totalNights: 2100, cleaningFee: 180, taxesAndFees: 0 },
+    ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2280, nightlyRate: 420, cleaningFee: 180, taxesAndFees: 0 }],
+  });
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.useRealTimers(); });
 const futureCheckIn = new Date(Date.now() + 40 * 86_400_000).toISOString().slice(0, 10);
@@ -67,11 +73,11 @@ describe("recovery email environment regression", () => {
     startCheckoutRecoveryScheduler();
     expect(vi.getTimerCount()).toBe(0);
   });
-  it.each([[2, 1, "1h"], [21, 2, "20h"]])("production sends only the owed stage after %s hours", async (hours, stage, suffix) => {
+  it.each([[2, 1, "1h"], [25, 2, "24h"]])("production sends only the owed stage after %s hours", async (hours, stage, suffix) => {
     const row = intent(Number(hours));
     mock.candidates.mockResolvedValue([row]);
     expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
-    expect(mock.claim).toHaveBeenCalledWith(row.id, 0, stage);
+    expect(mock.claim.mock.calls[0].slice(0, 3)).toEqual([row.id, 0, stage]);
     expect(mock.send).toHaveBeenCalledOnce();
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
       stage, resumeUrl: `https://www.portugalactive.com/pt/checkout/${row.id}?utm_source=email&utm_medium=recovery&utm_campaign=checkout_recovery_${suffix}`,
@@ -117,34 +123,32 @@ describe("funil de 4 contactos", () => {
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 1, paymentStep: true }));
   });
   it("o consentimento lê-se uma vez por email em cada passagem (quota da BD)", async () => {
-    const expired = { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) };
+    const due4 = { recoveryStage: 3, expiresAt: new Date(Date.now() - 3_600_000) };
     mock.candidates.mockResolvedValue([
-      intent(80, { ...expired, id: "11111111-1111-1111-1111-111111111111" }),
-      intent(90, { ...expired, id: "22222222-2222-2222-2222-222222222222" }),
-      intent(80, { ...expired, id: "33333333-3333-3333-3333-333333333333", email: "other@example.test" }),
+      intent(170, { ...due4, id: "11111111-1111-1111-1111-111111111111" }),
+      intent(175, { ...due4, id: "22222222-2222-2222-2222-222222222222" }),
+      intent(170, { ...due4, id: "33333333-3333-3333-3333-333333333333", email: "other@example.test" }),
     ]);
     await runCheckoutRecoverySweep();
     expect(mock.consent.mock.calls.map((c) => c[0]).sort()).toEqual(["guest@example.test", "other@example.test"]);
     await runCheckoutRecoverySweep();
     expect(mock.consent).toHaveBeenCalledTimes(4);
   });
-  it("sem consentimento, depois de a cotação expirar não há mais contactos", async () => {
-    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) })]);
+  it("sem consentimento, o contacto 4 (outras casas) não sai", async () => {
+    mock.candidates.mockResolvedValue([intent(170, { recoveryStage: 3, expiresAt: new Date(Date.now() - 3_600_000) })]);
     expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
     expect(mock.send).not.toHaveBeenCalled();
   });
-  it("contacto 3 refaz a cotação, grava o Flex oferecido e envia", async () => {
-    mock.consent.mockResolvedValue(true);
+  it("contacto 2 refaz a cotação, grava o Flex oferecido e envia", async () => {
     mock.beQuote.mockResolvedValue({
       quoteId: "q-new", total: 2280, currency: "EUR", nights: 5, ratePlanId: "rp1",
       pricing: { nightlyRate: 420, totalNights: 2100, cleaningFee: 180, taxesAndFees: 0 },
       ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2280, nightlyRate: 420, cleaningFee: 180, taxesAndFees: 0 }],
     });
-    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    mock.candidates.mockResolvedValue([intent(25, { recoveryStage: 1, expiresAt: new Date(Date.now() - 3_600_000) })]);
     expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
-    expect(mock.update).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ guestyQuoteId: "q-new", flex: true, flexGiftUntil: expect.any(Date) }));
-    expect(mock.claim).toHaveBeenCalledWith(expect.any(String), 2, 3);
-    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: expect.objectContaining({ days: expect.any(Number) }) }));
+    expect(mock.claim).toHaveBeenCalledWith(expect.any(String), 1, 2, expect.objectContaining({ guestyQuoteId: "q-new", flex: true, flexGiftUntil: expect.any(Date) }), undefined);
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 2, flexGift: expect.objectContaining({ days: expect.any(Number) }) }));
   });
   it("contacto 3 com datas perdidas salta para as alternativas", async () => {
     mock.consent.mockResolvedValue(true);
@@ -153,6 +157,13 @@ describe("funil de 4 contactos", () => {
     await runCheckoutRecoverySweep();
     expect(mock.claim).toHaveBeenCalledWith(expect.any(String), 2, 4);
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 4 }));
+  });
+  it("datas perdidas nunca disparam alternativas sem consentimento", async () => {
+    mock.beQuote.mockRejectedValue(new Error("This property is not available for the selected dates."));
+    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2 })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
+    expect(mock.claim).not.toHaveBeenCalled();
+    expect(mock.send).not.toHaveBeenCalled();
   });
   it("contacto 4 envia as alternativas sem o priceFrom do catálogo", async () => {
     mock.consent.mockResolvedValue(true);
@@ -242,12 +253,12 @@ describe("funil de 4 contactos", () => {
     expect(mock.alert).toHaveBeenCalledOnce();
     expect(mock.send).not.toHaveBeenCalled();
   });
-  it("cotação expirada mantém alerta humano elegível sem email automático", async () => {
+  it("cotação expirada já não trava o contacto 2: refaz-se e sai, com o alerta humano na mesma", async () => {
     mock.candidates.mockResolvedValue([intent(25, { status: "payment_pending", guestPhone: "+351900000000", quote: { total: 4200 }, expiresAt: new Date(Date.now() - 3_600_000) })]);
     await runCheckoutRecoverySweep();
     expect(mock.eligible).toHaveBeenCalledOnce();
     expect(mock.alert).toHaveBeenCalledOnce();
-    expect(mock.send).not.toHaveBeenCalled();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 2 }));
   });
 });
 
@@ -392,52 +403,114 @@ describe("contacto 1 no pagamento: o email depende de ter havido uma tentativa d
   });
 
   it("contacto 2 no pagamento: o texto não muda (só o contacto 1 tem as variantes)", async () => {
-    mock.candidates.mockResolvedValue([atPayment({ createdAt: new Date(Date.now() - 21 * 3_600_000), recoveryStage: 1 })]);
+    mock.candidates.mockResolvedValue([atPayment({ createdAt: new Date(Date.now() - 25 * 3_600_000), recoveryStage: 1 })]);
     await runCheckoutRecoverySweep();
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 2 }));
     expect(mock.attempt).not.toHaveBeenCalled();
   });
 });
 
-describe("contacto 3: o Flex só é oferecido quando acrescenta dias à tarifa", () => {
+describe("contacto 2: o Flex só é oferecido quando acrescenta dias à tarifa", () => {
   const requote = (cancellationPolicy?: string[]) => ({
     quoteId: "q-new", total: 2280, currency: "EUR", nights: 5, ratePlanId: "rp1",
     pricing: { nightlyRate: 420, totalNights: 2100, cleaningFee: 180, taxesAndFees: 0 },
     ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2280, nightlyRate: 420, cleaningFee: 180, taxesAndFees: 0,
       ...(cancellationPolicy ? { cancellationPolicy } : {}) }],
   });
-  const stage3 = () => intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) });
-  beforeEach(() => mock.consent.mockResolvedValue(true));
+  const stage2 = () => intent(25, { recoveryStage: 1, expiresAt: new Date(Date.now() - 3_600_000) });
 
   it("moderate (cancela de graça até 7 dias antes, o mesmo prazo do Flex): sem Flex oferecido", async () => {
     mock.beQuote.mockResolvedValue(requote(["MODERATE"]));
-    mock.candidates.mockResolvedValue([stage3()]);
+    mock.candidates.mockResolvedValue([stage2()]);
     expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
-    const patch = mock.update.mock.calls[0][1];
+    const patch = mock.claim.mock.calls[0][3];
     expect(patch).toMatchObject({ guestyQuoteId: "q-new" });
     expect(patch).not.toHaveProperty("flex");
     expect(patch).not.toHaveProperty("flexGiftUntil");
-    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: null }));
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 2, flexGift: null }));
   });
 
   it.each([["FIRM"], ["STRICT"], ["STRICT_60"], ["NON_REFUNDABLE"]])("%s: o Flex acrescenta dias e continua oferecido", async (code) => {
     mock.beQuote.mockResolvedValue(requote([code]));
-    mock.candidates.mockResolvedValue([stage3()]);
+    mock.candidates.mockResolvedValue([stage2()]);
     await runCheckoutRecoverySweep();
-    expect(mock.update.mock.calls[0][1]).toMatchObject({ flex: true, flexGiftUntil: expect.any(Date), flexGiftReason: "recovery" });
-    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: expect.objectContaining({ days: 7 }) }));
+    expect(mock.claim.mock.calls[0][3]).toMatchObject({ flex: true, flexGiftUntil: expect.any(Date), flexGiftReason: "recovery" });
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 2, flexGift: expect.objectContaining({ days: 7 }) }));
   });
 
   it("política desconhecida: como antes, o Flex é oferecido", async () => {
     mock.beQuote.mockResolvedValue(requote());
+    mock.candidates.mockResolvedValue([stage2()]);
+    await runCheckoutRecoverySweep();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 2, flexGift: expect.objectContaining({ days: 7 }) }));
+  });
+});
+
+describe("contacto 3: o desconto é um cupão do Guesty já aplicado no link (17 nov 2026)", () => {
+  const stage3 = () => intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) });
+  const discounted = {
+    quoteId: "q-new", total: 2166, currency: "EUR", nights: 5, ratePlanId: "rp1",
+    pricing: { nightlyRate: 399, totalNights: 1986, cleaningFee: 180, taxesAndFees: 0 },
+    ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2166, nightlyRate: 399, cleaningFee: 180, taxesAndFees: 0 }],
+    coupons: [{ code: "RECUPERA5" }],
+  };
+
+  it("sem cupão configurado o contacto 3 sai na mesma, sem desconto", async () => {
+    mock.candidates.mockResolvedValue([stage3()]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.beCoupon).not.toHaveBeenCalled();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, discount: null }));
+  });
+
+  it("com cupão, aplica-o à cotação e manda o total já descontado", async () => {
+    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "recupera5");
+    mock.beCoupon.mockResolvedValue(discounted);
+    mock.candidates.mockResolvedValue([stage3()]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.beCoupon).toHaveBeenCalledWith(expect.objectContaining({ quoteId: "q-new", coupons: ["RECUPERA5"] }));
+    expect(mock.claim.mock.calls[0][3]).toMatchObject({ discountGiftUntil: expect.any(Date) });
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
+      stage: 3,
+      discount: { until: expect.any(Date), percent: 5, before: 2280 },
+      quote: expect.objectContaining({ total: 2166, couponCode: "RECUPERA5" }),
+    }));
+  });
+
+  it("cupão recusado pelo Guesty: o email sai sem desconto, nunca com um que não existe", async () => {
+    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "RECUPERA5");
+    mock.beCoupon.mockRejectedValue(new Error("INVALID_COUPON"));
+    mock.candidates.mockResolvedValue([stage3()]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, discount: null }));
+  });
+
+  it("cupão que não baixa o total: também não se anuncia desconto", async () => {
+    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "RECUPERA5");
+    mock.beCoupon.mockResolvedValue({ ...discounted, total: 2280, ratePlanOptions: [{ ...discounted.ratePlanOptions[0], total: 2280 }] });
     mock.candidates.mockResolvedValue([stage3()]);
     await runCheckoutRecoverySweep();
-    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: expect.objectContaining({ days: 7 }) }));
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, discount: null }));
+  });
+
+  it("o contacto 2 nunca leva cupão: o incentivo dele é o Flex", async () => {
+    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "RECUPERA5");
+    mock.candidates.mockResolvedValue([intent(25, { recoveryStage: 1, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    await runCheckoutRecoverySweep();
+    expect(mock.beCoupon).not.toHaveBeenCalled();
   });
 });
 
 describe("contactos 2 e 3: cancelamento gratuito e duas partes por baixo do total (29 out 2026)", () => {
   const chargeAt = "2099-01-15T10:00:00.000Z";
+  // Desde 17 nov 2026 o contacto 2 refaz a cotação antes de sair: as linhas
+  // calculam-se sobre a tarifa nova, não sobre a que morreu no checkout.
+  beforeEach(() => {
+    mock.beQuote.mockResolvedValue({
+      quoteId: "q-new", total: 3000, currency: "EUR", nights: 5, ratePlanId: "rp-moderate",
+      pricing: { nightlyRate: 600, totalNights: 3000, cleaningFee: 0, taxesAndFees: 0 },
+      ratePlanOptions: [{ ratePlanId: "rp-moderate", name: "Flexible", total: 3000, nightlyRate: 600, cleaningFee: 0, taxesAndFees: 0, cancellationPolicy: ["MODERATE"] }],
+    });
+  });
   // Tarifa moderate, 3 000 € de estadia, parado no passo dos dados (não só no pagamento).
   const moderate = {
     ratePlanId: "rp-moderate",
@@ -448,11 +521,11 @@ describe("contactos 2 e 3: cancelamento gratuito e duas partes por baixo do tota
   const expired = () => new Date(Date.now() - 3_600_000);
 
   it("contacto 2, em qualquer passo: a política da tarifa e as duas partes como o checkout as oferece agora", async () => {
-    const row = intent(21, { recoveryStage: 1, status: "contact_captured", ...moderate });
+    const row = intent(25, { recoveryStage: 1, status: "contact_captured", ...moderate });
     mock.candidates.mockResolvedValue([row]);
     mock.plan.mockResolvedValue({ available: true, depositCents: 150_000, balanceCents: 150_000, chargeAt });
     expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
-    expect(mock.plan).toHaveBeenCalledWith(expect.objectContaining({ id: row.id, ratePlanId: "rp-moderate" }));
+    expect(mock.plan).toHaveBeenCalledWith(expect.objectContaining({ id: row.id, ratePlanId: "rp-moderate", guestyQuoteId: "q-new" }));
     expect(mock.attempt).not.toHaveBeenCalled();
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
       stage: 2, paymentStep: false,
@@ -466,29 +539,42 @@ describe("contactos 2 e 3: cancelamento gratuito e duas partes por baixo do tota
     ["erro ao calcular", () => mock.plan.mockRejectedValue(new Error("listing facts unavailable"))],
   ])("contacto 2, duas partes %s: a política vai, as duas partes não", async (_label, arrange) => {
     arrange();
-    mock.candidates.mockResolvedValue([intent(21, { recoveryStage: 1, ...moderate })]);
+    mock.candidates.mockResolvedValue([intent(25, { recoveryStage: 1, ...moderate })]);
     expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 2, cancellation: { policy: "moderate" }, twoParts: null }));
   });
 
-  it("contacto 3: as linhas calculam-se sobre a cotação refeita e gravada (nova tarifa, Flex oferecido)", async () => {
-    mock.consent.mockResolvedValue(true);
+  it("contacto 2: as linhas calculam-se sobre a cotação refeita e gravada (nova tarifa, Flex oferecido)", async () => {
     mock.beQuote.mockResolvedValue({
       quoteId: "q-new", total: 2280, currency: "EUR", nights: 5, ratePlanId: "rp1",
       pricing: { nightlyRate: 420, totalNights: 2100, cleaningFee: 180, taxesAndFees: 0 },
       ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2280, nightlyRate: 420, cleaningFee: 180, taxesAndFees: 0, cancellationPolicy: ["FIRM"] }],
     });
     mock.plan.mockResolvedValue({ available: true, depositCents: 114_000, balanceCents: 114_000, chargeAt });
-    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: expired(), ratePlanId: "rp-old" })]);
+    mock.candidates.mockResolvedValue([intent(25, { recoveryStage: 1, expiresAt: expired(), ratePlanId: "rp-old" })]);
     expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
     const seen = mock.plan.mock.calls[0][0];
     expect(seen).toMatchObject({ guestyQuoteId: "q-new", ratePlanId: "rp1", flex: true, flexGiftReason: "recovery" });
     expect(seen.quote.total).toBe(2280);
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
-      stage: 3,
+      stage: 2,
       cancellation: { policy: "firm" },
       twoParts: { todayCents: 114_000, laterCents: 114_000, chargeAt: new Date(chargeAt) },
       flexGift: expect.objectContaining({ days: 7 }),
+    }));
+  });
+
+  it("contacto 3: refaz a cotação e sai sem Flex (o incentivo é o desconto)", async () => {
+    mock.plan.mockResolvedValue({ available: true, depositCents: 150_000, balanceCents: 150_000, chargeAt });
+    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: expired(), ...moderate })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.claim.mock.calls[0][3]).not.toHaveProperty("flexGiftUntil");
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
+      stage: 3,
+      cancellation: { policy: "moderate" },
+      twoParts: { todayCents: 150_000, laterCents: 150_000, chargeAt: new Date(chargeAt) },
+      flexGift: null,
+      discount: null,
     }));
   });
 

@@ -47,7 +47,9 @@ const LEGACY_INTENT_COLUMNS = [
   "checkOut", "guests", "ratePlanId", "ratePlanType", "email", "guestFirstName", "guestLastName",
   "guestPhone", "nif", "quote", "extras", "reception", "flex", "recovery_stage", "status", "locale",
   "reservationId", "confirmationCode", "createdAt", "updatedAt", "expiresAt", "recovery_optout",
-  "payment_intent_id", "flex_gift_until", "concierge_alerted",
+  // Colunas criadas no arranque (server/_core/index.ts), fora deste motor:
+  // o Flex e o desconto oferecidos pelo funil de recuperação.
+  "payment_intent_id", "flex_gift_until", "concierge_alerted", "discount_gift_until",
 ];
 
 const NEW_INTENT_COLUMNS = [

@@ -616,10 +616,13 @@ interface CheckoutRecoveryData {
    *  partes como o checkout as oferece no envio. Ausente ou sem bater com o
    *  total do cartão: sem linha. */
   twoParts?: RecoveryTwoParts | null;
-  /** Contacto 2: escassez real do calendário (só quando é verdade) */
-  scarcity?: { unavailable: number; total: number } | null;
-  /** Contacto 3: Flex oferecido */
+  /** Contacto 2: Flex oferecido */
   flexGift?: { until: Date; value: number; days: number } | null;
+  /** Contacto 3: desconto já aplicado à cotação (cupão do Guesty). `before` é
+   *  o total antes do desconto, para a linha riscada. */
+  discount?: { until: Date; percent: number; before: number } | null;
+  /** Até 3 fotos da casa: a capa grande e duas mais pequenas por baixo. */
+  imageUrls?: string[] | null;
   /** Contacto 4: casas alternativas livres nas mesmas datas. Sem preço: o
    *  priceFrom do catálogo não é o preço destas datas e a unidade (noite ou
    *  pessoa) não está confirmada; o preço real vê-se na página da casa. */
@@ -790,13 +793,10 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   const pay = atPayment && !!data.paymentAttempted;
   const ask = atPayment && !data.paymentAttempted;
   const klarna = pay && data.klarna === true;
-  const gift = data.stage === 3 ? data.flexGift ?? null : null;
+  const gift = data.stage === 2 ? data.flexGift ?? null : null;
+  const discount = data.stage === 3 ? data.discount ?? null : null;
   const alts = data.stage === 4 ? (data.alternatives ?? []) : [];
   const until = data.expiresAt ? formatGuaranteeUntil(data.expiresAt, lang, T.atTime) : "";
-  const timeOnly = data.expiresAt
-    ? new Intl.DateTimeFormat(INTL_TAG[lang] ?? "en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Lisbon" }).format(data.expiresAt)
-    : "";
-
   // ── Texto por contacto ──
   let subject: string, preheader: string, headline: string, body: string, personal: string, cta: string, ctaUrl: string;
   switch (data.stage) {
@@ -809,20 +809,23 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
       cta = T.cta; ctaUrl = data.resumeUrl;
       break;
     case 2:
-      subject = timeOnly ? F.subject2(house, timeOnly) : T.subject2(house);
-      preheader = F.preheader2;
+      subject = F.subject2(house);
+      preheader = gift ? F.preheader2Gift : F.preheader2;
       headline = F.headline2;
-      body = until ? F.body2(greeting, house, until) : T.body2(greeting, house);
+      body = F.body2(greeting, house);
       personal = T.closing;
-      cta = T.cta; ctaUrl = data.resumeUrl;
+      cta = gift ? F.cta2Gift : F.cta2; ctaUrl = data.resumeUrl;
       break;
     case 3:
-      subject = F.subject3(house);
-      preheader = gift ? F.preheader3Gift : F.preheader3;
-      headline = F.headline3;
-      body = F.body3(greeting, house);
+      // Sem cupão configurado (ou recusado pelo Guesty) o contacto 3 sai na
+      // mesma, com as datas re-verificadas e o preço de hoje: o mesmo texto
+      // do contacto 2 sem oferta, nunca um desconto que não existe.
+      subject = discount ? F.subject3(house, discount.percent) : F.subject2(house);
+      preheader = discount ? F.preheader3Discount : F.preheader3;
+      headline = discount ? F.headline3(discount.percent) : F.headline2;
+      body = discount ? F.body3(greeting, house, discount.percent) : F.body2(greeting, house);
       personal = T.closing;
-      cta = gift ? F.cta3Gift : F.cta3; ctaUrl = data.resumeUrl;
+      cta = discount ? F.cta3Discount(discount.percent) : F.cta3; ctaUrl = data.resumeUrl;
       break;
     default:
       subject = alts.length ? F.subject4(house) : F.subject4None(house);
@@ -840,12 +843,14 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
         <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${strong ? PA.gold : PA.earth};">${label}</td>
         <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${strong ? PA.gold : PA.dark};text-align:right;">${value}</td>
       </tr>`;
+  const total = q.total ?? data.total;
+  const discountAmount = discount && total != null ? Math.max(0, discount.before - total) : 0;
   let priceLines = "";
-  if (q.nights && q.totalNights != null) priceLines += line(`${q.nights} ${T.nightsLabel}`, eur(q.totalNights, lang));
+  if (q.nights && q.totalNights != null) priceLines += line(`${q.nights} ${T.nightsLabel}`, eur(q.totalNights + discountAmount, lang));
   if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(cleaningFeeLabel(lang), eur(q.cleaningFee, lang));
   if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(T.taxesLabel, eur(q.taxesAndFees, lang));
   if (gift) priceLines += line(F.flexIncluded, `<s style="color:${PA.stoneAA};">${eur(gift.value, lang)}</s> &nbsp;${eur(0, lang)}`, true);
-  const total = q.total ?? data.total;
+  if (discount) priceLines += line(F.discountLine(discount.percent), `&minus;${eur(discountAmount, lang)}`, true);
   // Contacto 1 no pagamento (com ou sem tentativa) e contactos 2 e 3: as duas
   // razões para reservar já, por baixo do total. Depois de uma tentativa, as
   // duas partes são também a resposta a "um limite do banco": metade hoje, no
@@ -859,8 +864,21 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
     ? F.twoPartsLine(eurCents(twoParts.todayCents, lang), eurCents(twoParts.laterCents, lang), lisbonDay(twoParts.chargeAt, lang))
     : "";
   const destination = data.destination ? data.destination.charAt(0).toUpperCase() + data.destination.slice(1) : "";
-  const photo = data.imageUrl
-    ? `<tr><td style="border-radius:12px 12px 0 0;overflow:hidden;"><img src="${data.imageUrl}" alt="${house}" width="600" style="display:block;width:100%;height:auto;border-radius:12px 12px 0 0;" /></td></tr>`
+  // Fotos da casa que o hóspede deixou no checkout. O contacto 1 mostra três
+  // (capa grande e duas por baixo); o 2 mostra a capa e o 3 a segunda foto,
+  // para o mesmo hóspede não ver sempre a mesma imagem. Casa com uma só foto:
+  // repete-se a capa, que é o que existe.
+  const photos = (data.imageUrls?.length ? data.imageUrls : data.imageUrl ? [data.imageUrl] : []).filter(Boolean).slice(0, 3);
+  const heroPhoto = (data.stage === 3 ? photos[1] ?? photos[0] : photos[0]) ?? null;
+  const thumbs = data.stage === 1 ? photos.slice(1, 3) : [];
+  const photo = heroPhoto
+    ? `<tr><td style="border-radius:12px 12px 0 0;overflow:hidden;"><img src="${heroPhoto}" alt="${house}" width="600" style="display:block;width:100%;height:auto;border-radius:12px 12px 0 0;" /></td></tr>` +
+      (thumbs.length === 2
+        ? `<tr><td style="padding:4px 0 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+    <td width="50%" style="padding:0 2px 0 0;"><img src="${thumbs[0]}" alt="${house}" width="298" style="display:block;width:100%;height:auto;" /></td>
+    <td width="50%" style="padding:0 0 0 2px;"><img src="${thumbs[1]}" alt="${house}" width="298" style="display:block;width:100%;height:auto;" /></td>
+  </tr></table></td></tr>`
+        : "")
     : "";
   const stayCard = data.stage === 4 ? "" : `
 <tr><td style="padding:0 0 24px 0;">
@@ -884,10 +902,11 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 </td></tr>`;
 
   // ── Blocos específicos ──
-  const scarcityBlock = data.stage === 2 && data.scarcity ? `
+  const discountBlock = discount ? `
 <tr><td style="padding:0 0 24px 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:2px solid ${PA.gold};"><tr><td style="padding:4px 0 4px 16px;">
-    <p style="font-family:${SERIF};font-size:19px;line-height:1.4;color:${PA.dark};margin:0;">${F.scarcity(data.scarcity.unavailable, data.scarcity.total)}</p>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.gold};border-radius:12px;"><tr><td style="padding:22px 24px;">
+    <p style="font-family:${SERIF};font-size:26px;line-height:1.25;color:${PA.dark};margin:0 0 10px 0;">${escapeHtml(F.discountTitle(discount.percent))}</p>
+    <p style="font-family:${SANS};font-size:14px;line-height:1.65;color:${PA.earth};margin:0;">${escapeHtml(F.discountBody(formatGuaranteeUntil(discount.until, lang, T.atTime)))}</p>
   </td></tr></table>
 </td></tr>` : "";
 
@@ -921,11 +940,11 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
+<body style="margin:0;padding:0;background:#FFFFFF;font-family:${SANS};">
 <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
-<tr><td align="center" style="padding:0;">
-  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;margin:0 auto;width:100%;max-width:600px;height:auto;" />
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFFFF;">
+<tr><td align="center" bgcolor="#FFFFFF" style="padding:0;background:#FFFFFF;">
+  <img src="https://www.portugalactive.com/email/recovery-brand-band.png" alt="Portugal Active" width="600" style="display:block;margin:0 auto;width:100%;max-width:600px;height:auto;" />
 </td></tr>
 <tr><td align="center" style="padding:36px 20px 44px 20px;">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
@@ -935,8 +954,8 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 <tr><td style="padding:0 0 24px 0;">
   <p style="font-family:${SANS};font-size:15px;color:${PA.earth};line-height:1.65;margin:0;">${body}</p>
 </td></tr>
-${scarcityBlock}
 ${giftBlock}
+${discountBlock}
 ${stayCard}
 ${altBlock}
 <tr><td style="padding:0 0 24px 0;">

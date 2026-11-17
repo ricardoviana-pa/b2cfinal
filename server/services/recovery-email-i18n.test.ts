@@ -98,7 +98,6 @@ async function render(lang: EmailLang, stage: (typeof STAGES)[number]): Promise<
     ...base,
     locale: lang,
     stage,
-    scarcity: stage === 2 ? { unavailable: 3, total: 5 } : null,
     flexGift: stage === 3 ? { until: new Date("2099-11-02T18:00:00Z"), value: 120, days: 30 } : null,
     alternatives: stage === 4
       ? [{ name: "Casa Alternativa", locality: "Caminha", url: "https://www.portugalactive.com/homes/alt" }]
