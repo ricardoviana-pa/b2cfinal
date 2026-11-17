@@ -12788,6 +12788,10 @@
             "quantity": 1
           },
           {
+            "type": "SOFA_BED",
+            "quantity": 1
+          },
+          {
             "type": "FLOOR_MATTRESS",
             "quantity": 1
           }
@@ -12801,8 +12805,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-11-14",
-    "contentHash": "4b09064cee419ee5b924dbc20fecfc8ddcc2599c"
+    "lastModified": "2026-11-17",
+    "contentHash": "925ce8dec61a5a11ea6d8702e49389ad7976634b"
   },
   {
     "id": "guesty-6970af61638a8a0015eaa850",
@@ -22020,48 +22024,59 @@
     "minNights": 2,
     "currency": "EUR",
     "images": [
+      "https://assets.guesty.com/image/upload/v1794851749/production/6957de4388cba42d9e7a905e/qf3bmjc30tht2hgvi4tr.jpg",
+      "https://assets.guesty.com/image/upload/v1794851756/production/6957de4388cba42d9e7a905e/mua2bwsm6lyxj9jcekue.jpg",
+      "https://assets.guesty.com/image/upload/v1794908690/production/6957de4388cba42d9e7a905e/p6lxx2ij5pdorlulf25v.jpg",
+      "https://assets.guesty.com/image/upload/v1794849160/production/6957de4388cba42d9e7a905e/jxliuspgnvoc3g4ruzly.jpg",
+      "https://assets.guesty.com/image/upload/v1794851748/production/6957de4388cba42d9e7a905e/dcz17fyqxrxekrscjobe.jpg",
+      "https://assets.guesty.com/image/upload/v1794929182/production/6957de4388cba42d9e7a905e/k3ub2v6gde7ukqkehvex.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/f0288985-e550-49-VjO7V",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1ae0701c-1cbc-4e-jKcod",
-      "https://assets.guesty.com/image/upload/v1779299104/production/6957de4388cba42d9e7a905e/skanddhkq2fjkq7zrdsp.jpg",
+      "https://assets.guesty.com/image/upload/v1794851721/production/6957de4388cba42d9e7a905e/u7r33dlvd1jwg1imxyoc.jpg",
+      "https://assets.guesty.com/image/upload/v1794851755/production/6957de4388cba42d9e7a905e/koj1hlpsohuviid3o214.jpg",
+      "https://assets.guesty.com/image/upload/v1794847724/production/6957de4388cba42d9e7a905e/xbexk9ezyr29hxg2jwoy.jpg",
+      "https://assets.guesty.com/image/upload/v1794847734/production/6957de4388cba42d9e7a905e/li0ehlkrmr3xapfnsxag.jpg",
+      "https://assets.guesty.com/image/upload/v1794847715/production/6957de4388cba42d9e7a905e/ofmaa7kv2q2lbbcotpe8.jpg",
+      "https://assets.guesty.com/image/upload/v1794847730/production/6957de4388cba42d9e7a905e/p4ngr6a7fhhstnyjg8ve.jpg",
+      "https://assets.guesty.com/image/upload/v1794847738/production/6957de4388cba42d9e7a905e/dj21xabzqi0luqfdbror.jpg",
       "https://assets.guesty.com/image/upload/v1794847716/production/6957de4388cba42d9e7a905e/mpc7drvejdgpc8hnqblk.jpg",
       "https://assets.guesty.com/image/upload/v1794847705/production/6957de4388cba42d9e7a905e/t4y52a5cy7b4g3veueoo.jpg",
-      "https://assets.guesty.com/image/upload/v1794847716/production/6957de4388cba42d9e7a905e/aobtwvoqxql3irzmk9gz.jpg",
-      "https://assets.guesty.com/image/upload/v1794847715/production/6957de4388cba42d9e7a905e/ofmaa7kv2q2lbbcotpe8.jpg",
-      "https://assets.guesty.com/image/upload/v1794847716/production/6957de4388cba42d9e7a905e/nlpvt7xts7hhxesgumsu.jpg",
-      "https://assets.guesty.com/image/upload/v1794847716/production/6957de4388cba42d9e7a905e/p6ee9fbo1shftpwpjwbd.jpg",
-      "https://assets.guesty.com/image/upload/v1794847710/production/6957de4388cba42d9e7a905e/osk01m3hqjl92njyqzb6.jpg",
-      "https://assets.guesty.com/image/upload/v1794847715/production/6957de4388cba42d9e7a905e/vcdvjbf6jxjzrwoeokrc.jpg",
-      "https://assets.guesty.com/image/upload/v1794847728/production/6957de4388cba42d9e7a905e/w18sq6sxfx6yxloxduge.jpg",
+      "https://assets.guesty.com/image/upload/v1794851709/production/6957de4388cba42d9e7a905e/wyu2rribth0dnektemk8.jpg",
       "https://assets.guesty.com/image/upload/v1794847730/production/6957de4388cba42d9e7a905e/wdl3be7koowkm3oih4dg.jpg",
+      "https://assets.guesty.com/image/upload/v1794847716/production/6957de4388cba42d9e7a905e/nlpvt7xts7hhxesgumsu.jpg",
+      "https://assets.guesty.com/image/upload/v1794847731/production/6957de4388cba42d9e7a905e/q98mr2u8az8inlqqbyrc.jpg",
       "https://assets.guesty.com/image/upload/v1794847733/production/6957de4388cba42d9e7a905e/mmmhav9ytmfjsh3amjxp.jpg",
       "https://assets.guesty.com/image/upload/v1794847730/production/6957de4388cba42d9e7a905e/f2lnmjye7fylubzq7r8y.jpg",
-      "https://assets.guesty.com/image/upload/v1794847731/production/6957de4388cba42d9e7a905e/q98mr2u8az8inlqqbyrc.jpg",
-      "https://assets.guesty.com/image/upload/v1794847724/production/6957de4388cba42d9e7a905e/xbexk9ezyr29hxg2jwoy.jpg",
-      "https://assets.guesty.com/image/upload/v1794847730/production/6957de4388cba42d9e7a905e/p4ngr6a7fhhstnyjg8ve.jpg",
-      "https://assets.guesty.com/image/upload/v1794847734/production/6957de4388cba42d9e7a905e/li0ehlkrmr3xapfnsxag.jpg",
+      "https://assets.guesty.com/image/upload/v1794847716/production/6957de4388cba42d9e7a905e/aobtwvoqxql3irzmk9gz.jpg",
+      "https://assets.guesty.com/image/upload/v1794847743/production/6957de4388cba42d9e7a905e/pc4zpyd6wjgs8brwk9a6.jpg",
       "https://assets.guesty.com/image/upload/v1794847745/production/6957de4388cba42d9e7a905e/utaaysu5fivipk6xhazz.jpg",
+      "https://assets.guesty.com/image/upload/v1794851746/production/6957de4388cba42d9e7a905e/jpmfhzr8exeybl98mir9.jpg",
+      "https://assets.guesty.com/image/upload/v1794847740/production/6957de4388cba42d9e7a905e/rygy4ccug9qlc5mp5yjw.jpg",
+      "https://assets.guesty.com/image/upload/v1794847742/production/6957de4388cba42d9e7a905e/ulca3riksse0zk4r4aea.jpg",
       "https://assets.guesty.com/image/upload/v1794847738/production/6957de4388cba42d9e7a905e/bumwmddsa22cmrwumgvr.jpg",
       "https://assets.guesty.com/image/upload/v1794847737/production/6957de4388cba42d9e7a905e/w8gjchozfovk7x8pemxl.jpg",
-      "https://assets.guesty.com/image/upload/v1794847740/production/6957de4388cba42d9e7a905e/rygy4ccug9qlc5mp5yjw.jpg",
-      "https://assets.guesty.com/image/upload/v1794847738/production/6957de4388cba42d9e7a905e/dj21xabzqi0luqfdbror.jpg",
+      "https://assets.guesty.com/image/upload/v1794851720/production/6957de4388cba42d9e7a905e/dbgp7spe2qc84uxdjujl.jpg",
+      "https://assets.guesty.com/image/upload/v1794847728/production/6957de4388cba42d9e7a905e/w18sq6sxfx6yxloxduge.jpg",
       "https://assets.guesty.com/image/upload/v1794847738/production/6957de4388cba42d9e7a905e/usuj0hvccacw3zcje7xl.jpg",
-      "https://assets.guesty.com/image/upload/v1794847742/production/6957de4388cba42d9e7a905e/ulca3riksse0zk4r4aea.jpg",
-      "https://assets.guesty.com/image/upload/v1794847743/production/6957de4388cba42d9e7a905e/pc4zpyd6wjgs8brwk9a6.jpg",
+      "https://assets.guesty.com/image/upload/v1794847715/production/6957de4388cba42d9e7a905e/vcdvjbf6jxjzrwoeokrc.jpg",
+      "https://assets.guesty.com/image/upload/v1794851752/production/6957de4388cba42d9e7a905e/t9oluvivytmiviquuqhj.jpg",
       "https://assets.guesty.com/image/upload/v1794847937/production/6957de4388cba42d9e7a905e/stffig09pd6qss4syggj.jpg",
       "https://assets.guesty.com/image/upload/v1794847950/production/6957de4388cba42d9e7a905e/ynttow2vcgept0knxdvr.jpg",
       "https://assets.guesty.com/image/upload/v1794847952/production/6957de4388cba42d9e7a905e/rpin9gbczwxqro30sbp8.jpg",
       "https://assets.guesty.com/image/upload/v1794847930/production/6957de4388cba42d9e7a905e/uprxdt5m2cj9kzkwpo0b.jpg",
       "https://assets.guesty.com/image/upload/v1794847941/production/6957de4388cba42d9e7a905e/ceowhmdzd3rd5sjyvykk.jpg",
       "https://assets.guesty.com/image/upload/v1794847954/production/6957de4388cba42d9e7a905e/mpsegomefyxn6vf5hbw2.jpg",
+      "https://assets.guesty.com/image/upload/v1794851723/production/6957de4388cba42d9e7a905e/bw4z7fa6uwqxkkm3or3g.jpg",
       "https://assets.guesty.com/image/upload/v1794847953/production/6957de4388cba42d9e7a905e/d25hwipursexjkjgyv9r.jpg",
       "https://assets.guesty.com/image/upload/v1794847943/production/6957de4388cba42d9e7a905e/niytrjbgwtu0bu4gkn08.jpg",
       "https://assets.guesty.com/image/upload/v1794847952/production/6957de4388cba42d9e7a905e/bjokmijiccjhtxfd5h4s.jpg",
+      "https://assets.guesty.com/image/upload/v1794851745/production/6957de4388cba42d9e7a905e/nzqbajogqttlhso7puti.jpg",
       "https://assets.guesty.com/image/upload/v1794847943/production/6957de4388cba42d9e7a905e/oevkyfs8lam8fxje1rxg.jpg",
       "https://assets.guesty.com/image/upload/v1794847945/production/6957de4388cba42d9e7a905e/pjrhrhtjp7ekyplht1dl.jpg",
       "https://assets.guesty.com/image/upload/v1794847946/production/6957de4388cba42d9e7a905e/z2dquj4xzfvt2xmyhlcs.jpg",
       "https://assets.guesty.com/image/upload/v1794847949/production/6957de4388cba42d9e7a905e/t2lajpb7qfuuvgttjzai.jpg",
       "https://assets.guesty.com/image/upload/v1794847931/production/6957de4388cba42d9e7a905e/fi6piwioh6nx3479bf5t.jpg",
       "https://assets.guesty.com/image/upload/v1794847957/production/6957de4388cba42d9e7a905e/tzxhwe7nbntphehnmscx.jpg",
+      "https://assets.guesty.com/image/upload/v1794851725/production/6957de4388cba42d9e7a905e/yxyyiqoatffbuyqrqy9q.jpg",
       "https://assets.guesty.com/image/upload/v1794847935/production/6957de4388cba42d9e7a905e/sryjlag2bxwuoc9ctdgq.jpg",
       "https://assets.guesty.com/image/upload/v1794847936/production/6957de4388cba42d9e7a905e/hfoiuaxomvsu0myerqtt.jpg",
       "https://assets.guesty.com/image/upload/v1794847937/production/6957de4388cba42d9e7a905e/tfifnxgexqtpwy9lrnw2.jpg",
@@ -22070,8 +22085,8 @@
       "https://assets.guesty.com/image/upload/v1794847957/production/6957de4388cba42d9e7a905e/lsbbfi6moecthqygzusq.jpg",
       "https://assets.guesty.com/image/upload/v1794847939/production/6957de4388cba42d9e7a905e/vmnkqmrbl6jwyunpzrvq.jpg",
       "https://assets.guesty.com/image/upload/v1794847943/production/6957de4388cba42d9e7a905e/ugrzxowsewng0vchpayy.jpg",
-      "https://assets.guesty.com/image/upload/v1794848581/production/6957de4388cba42d9e7a905e/bnvhyxttoycz70deb6am.jpg",
       "https://assets.guesty.com/image/upload/v1794848565/production/6957de4388cba42d9e7a905e/a25pu2tnudvbrdpvyxit.jpg",
+      "https://assets.guesty.com/image/upload/v1794848581/production/6957de4388cba42d9e7a905e/bnvhyxttoycz70deb6am.jpg",
       "https://assets.guesty.com/image/upload/v1794848573/production/6957de4388cba42d9e7a905e/kxex65zrtnpxqutqks8a.jpg",
       "https://assets.guesty.com/image/upload/v1794848588/production/6957de4388cba42d9e7a905e/cjctxfa1qljjexqm6s2b.jpg",
       "https://assets.guesty.com/image/upload/v1794848548/production/6957de4388cba42d9e7a905e/exgdvxf2m2jnftexqifz.jpg",
@@ -22079,24 +22094,28 @@
       "https://assets.guesty.com/image/upload/v1794848553/production/6957de4388cba42d9e7a905e/urnggpj2qda1zkfmslja.jpg",
       "https://assets.guesty.com/image/upload/v1794848564/production/6957de4388cba42d9e7a905e/rrqwjvf323jrtjurc42n.jpg",
       "https://assets.guesty.com/image/upload/v1794848559/production/6957de4388cba42d9e7a905e/jeahzxldvsgixnxojift.jpg",
+      "https://assets.guesty.com/image/upload/v1794851720/production/6957de4388cba42d9e7a905e/yosrnhhgmyaeednzyzer.jpg",
       "https://assets.guesty.com/image/upload/v1794848565/production/6957de4388cba42d9e7a905e/vkwwb22eqtzhxzpllymo.jpg",
       "https://assets.guesty.com/image/upload/v1794848560/production/6957de4388cba42d9e7a905e/klhpnfbw8hynqjlatczk.jpg",
       "https://assets.guesty.com/image/upload/v1794848569/production/6957de4388cba42d9e7a905e/qpslbn6vox2jq3ypyapx.jpg",
       "https://assets.guesty.com/image/upload/v1794848568/production/6957de4388cba42d9e7a905e/xqwfdvese80w1cl45k5s.jpg",
       "https://assets.guesty.com/image/upload/v1794848552/production/6957de4388cba42d9e7a905e/l30espllu1x91vnqkoi5.jpg",
+      "https://assets.guesty.com/image/upload/v1794851724/production/6957de4388cba42d9e7a905e/ukhczylaigby6revmmma.jpg",
       "https://assets.guesty.com/image/upload/v1794848585/production/6957de4388cba42d9e7a905e/xuzyzw0cvhs3oryla3wf.jpg",
       "https://assets.guesty.com/image/upload/v1794848550/production/6957de4388cba42d9e7a905e/wm85f6zbktbmpxqrfihd.jpg",
       "https://assets.guesty.com/image/upload/v1794848552/production/6957de4388cba42d9e7a905e/wjl1s0x7koxkjmbk2rcz.jpg",
+      "https://assets.guesty.com/image/upload/v1794851737/production/6957de4388cba42d9e7a905e/w1up7uke9skxjockfb3p.jpg",
       "https://assets.guesty.com/image/upload/v1794848589/production/6957de4388cba42d9e7a905e/cpc1yklwvyswkp5i2jli.jpg",
       "https://assets.guesty.com/image/upload/v1794848581/production/6957de4388cba42d9e7a905e/bkuh9ixm6ns8ptdc7a42.jpg",
       "https://assets.guesty.com/image/upload/v1794848574/production/6957de4388cba42d9e7a905e/khu1ar9amulutwcvnw4h.jpg",
       "https://assets.guesty.com/image/upload/v1794848588/production/6957de4388cba42d9e7a905e/ce93vz4bonqircorlccu.jpg",
+      "https://assets.guesty.com/image/upload/v1794851739/production/6957de4388cba42d9e7a905e/eegokg6uogcyywonvkd3.jpg",
       "https://assets.guesty.com/image/upload/v1794848584/production/6957de4388cba42d9e7a905e/xrwruscvrt0ruzb2fzml.jpg",
       "https://assets.guesty.com/image/upload/v1794848592/production/6957de4388cba42d9e7a905e/ez3ouyo3on7h0luifrku.jpg",
       "https://assets.guesty.com/image/upload/v1794848594/production/6957de4388cba42d9e7a905e/ewoxy1pu7cu7fihjl19s.jpg",
       "https://assets.guesty.com/image/upload/v1794848554/production/6957de4388cba42d9e7a905e/n1gar8pzihsqz3zg9e3q.jpg",
       "https://assets.guesty.com/image/upload/v1794848593/production/6957de4388cba42d9e7a905e/nohkxpt82zclfoxrckev.jpg",
-      "https://assets.guesty.com/image/upload/v1794848844/production/6957de4388cba42d9e7a905e/o0yqxw1dtcq4mrmhk2jj.jpg",
+      "https://assets.guesty.com/image/upload/v1794851757/production/6957de4388cba42d9e7a905e/dnqlzbry94qzybzgexfn.jpg",
       "https://assets.guesty.com/image/upload/v1794848825/production/6957de4388cba42d9e7a905e/jzxzujrdq8yjewi38nst.jpg",
       "https://assets.guesty.com/image/upload/v1794848831/production/6957de4388cba42d9e7a905e/vugvp8nyjaxr4aoikut4.jpg",
       "https://assets.guesty.com/image/upload/v1794848829/production/6957de4388cba42d9e7a905e/dwlvauforh2mfgdrfpim.jpg",
@@ -22109,6 +22128,8 @@
       "https://assets.guesty.com/image/upload/v1794848836/production/6957de4388cba42d9e7a905e/gjxp7jzcauyyavmrjkk5.jpg",
       "https://assets.guesty.com/image/upload/v1794848837/production/6957de4388cba42d9e7a905e/hlqglcjcoivv5tickbod.jpg",
       "https://assets.guesty.com/image/upload/v1794848837/production/6957de4388cba42d9e7a905e/qgbwhpo96axopeqnhxr6.jpg",
+      "https://assets.guesty.com/image/upload/v1794851728/production/6957de4388cba42d9e7a905e/e3jg38aa25nuf99qxvwa.jpg",
+      "https://assets.guesty.com/image/upload/v1794848844/production/6957de4388cba42d9e7a905e/o0yqxw1dtcq4mrmhk2jj.jpg",
       "https://assets.guesty.com/image/upload/v1794848837/production/6957de4388cba42d9e7a905e/neuxgdqend2wxjitpfka.jpg",
       "https://assets.guesty.com/image/upload/v1794848868/production/6957de4388cba42d9e7a905e/emw6twplueg65iwqqctu.jpg",
       "https://assets.guesty.com/image/upload/v1794848846/production/6957de4388cba42d9e7a905e/vfimf4mldhulhscyck6x.jpg",
@@ -22119,6 +22140,7 @@
       "https://assets.guesty.com/image/upload/v1794848878/production/6957de4388cba42d9e7a905e/wy3paqovhdpmc0ycsvbm.jpg",
       "https://assets.guesty.com/image/upload/v1794848846/production/6957de4388cba42d9e7a905e/see4s9q7xyr4vrgjfihg.jpg",
       "https://assets.guesty.com/image/upload/v1794848858/production/6957de4388cba42d9e7a905e/tbkwjtgbfh6i6nuckmqp.jpg",
+      "https://assets.guesty.com/image/upload/v1794851738/production/6957de4388cba42d9e7a905e/amzd48uxau5zor6reffz.jpg",
       "https://assets.guesty.com/image/upload/v1794848852/production/6957de4388cba42d9e7a905e/pykhuc862wkss7rew3tf.jpg",
       "https://assets.guesty.com/image/upload/v1794848847/production/6957de4388cba42d9e7a905e/x40sa1zahajijpuv4j7s.jpg",
       "https://assets.guesty.com/image/upload/v1794848851/production/6957de4388cba42d9e7a905e/eheoqzj1yfbadax619yl.jpg",
@@ -22133,20 +22155,20 @@
       "https://assets.guesty.com/image/upload/v1794848863/production/6957de4388cba42d9e7a905e/why03snz57ipuquz6mz3.jpg",
       "https://assets.guesty.com/image/upload/v1794848874/production/6957de4388cba42d9e7a905e/vjuf8xpkjyx9spzxvich.jpg",
       "https://assets.guesty.com/image/upload/v1794849339/production/6957de4388cba42d9e7a905e/lzszofhp55douoej2czi.jpg",
-      "https://assets.guesty.com/image/upload/v1794849162/production/6957de4388cba42d9e7a905e/xbo4aemzyq1lmu10gwrv.jpg",
-      "https://assets.guesty.com/image/upload/v1794849181/production/6957de4388cba42d9e7a905e/fos6gyfezetjhkkg9lsj.jpg",
       "https://assets.guesty.com/image/upload/v1794849304/production/6957de4388cba42d9e7a905e/hcohxrkdznju8zgdzgcx.jpg",
       "https://assets.guesty.com/image/upload/v1794849299/production/6957de4388cba42d9e7a905e/aomdjrh112jhwwickmhl.jpg",
       "https://assets.guesty.com/image/upload/v1794849300/production/6957de4388cba42d9e7a905e/hvuoiki0naxq7mgspam9.jpg",
       "https://assets.guesty.com/image/upload/v1794849294/production/6957de4388cba42d9e7a905e/njn1ajlkpucocyypm57w.jpg",
       "https://assets.guesty.com/image/upload/v1794849294/production/6957de4388cba42d9e7a905e/xrl9ocvxnfyqfk1xyfye.jpg",
       "https://assets.guesty.com/image/upload/v1794849297/production/6957de4388cba42d9e7a905e/k2rj5yaadfdsijpefwxk.jpg",
+      "https://assets.guesty.com/image/upload/v1794851710/production/6957de4388cba42d9e7a905e/e9tvwrb00y17vjdug64n.jpg",
       "https://assets.guesty.com/image/upload/v1794849286/production/6957de4388cba42d9e7a905e/o0p2nqp5oxemoyleaei9.jpg",
       "https://assets.guesty.com/image/upload/v1794849305/production/6957de4388cba42d9e7a905e/ob3xgnwfuspwjgqq1qvg.jpg",
       "https://assets.guesty.com/image/upload/v1794849305/production/6957de4388cba42d9e7a905e/iak7ryvbdoaejhpvcgfy.jpg",
       "https://assets.guesty.com/image/upload/v1794851733/production/6957de4388cba42d9e7a905e/l8mfuroqislu5yjv1omb.jpg",
       "https://assets.guesty.com/image/upload/v1794849301/production/6957de4388cba42d9e7a905e/cmxf19ljbr7mnep20wrk.jpg",
       "https://assets.guesty.com/image/upload/v1794849308/production/6957de4388cba42d9e7a905e/l4mxbtodntghvndksjnn.jpg",
+      "https://assets.guesty.com/image/upload/v1794851716/production/6957de4388cba42d9e7a905e/svwpgeczfabhaljfhzo9.jpg",
       "https://assets.guesty.com/image/upload/v1794849311/production/6957de4388cba42d9e7a905e/lih13agrasvrglkkichi.jpg",
       "https://assets.guesty.com/image/upload/v1794849325/production/6957de4388cba42d9e7a905e/atbvsccnchrph29vj3tt.jpg",
       "https://assets.guesty.com/image/upload/v1794849343/production/6957de4388cba42d9e7a905e/cwfrdqxwdoz8xsi5eobw.jpg",
@@ -22154,6 +22176,7 @@
       "https://assets.guesty.com/image/upload/v1794849319/production/6957de4388cba42d9e7a905e/ec5b6cluvzok0ninazec.jpg",
       "https://assets.guesty.com/image/upload/v1794849316/production/6957de4388cba42d9e7a905e/oglxascug47iaiitgia8.jpg",
       "https://assets.guesty.com/image/upload/v1794849334/production/6957de4388cba42d9e7a905e/oz8qlbuclrvlhykxyb6w.jpg",
+      "https://assets.guesty.com/image/upload/v1794849181/production/6957de4388cba42d9e7a905e/fos6gyfezetjhkkg9lsj.jpg",
       "https://assets.guesty.com/image/upload/v1794849330/production/6957de4388cba42d9e7a905e/w8sohu7kbjgtor1mspcm.jpg",
       "https://assets.guesty.com/image/upload/v1794849318/production/6957de4388cba42d9e7a905e/u3s9j10ucxil2bnuzaeb.jpg",
       "https://assets.guesty.com/image/upload/v1794849331/production/6957de4388cba42d9e7a905e/c9cqzi8do6lphqpqtnln.jpg",
@@ -22161,18 +22184,22 @@
       "https://assets.guesty.com/image/upload/v1794849348/production/6957de4388cba42d9e7a905e/hldnv4tttkhfkfd3nbqk.jpg",
       "https://assets.guesty.com/image/upload/v1794849332/production/6957de4388cba42d9e7a905e/zprkl86vwmiosgkmujhe.jpg",
       "https://assets.guesty.com/image/upload/v1794849331/production/6957de4388cba42d9e7a905e/lmea8c8ect7fxptk7zgi.jpg",
+      "https://assets.guesty.com/image/upload/v1794851716/production/6957de4388cba42d9e7a905e/y5bd3n0z9nqpvo36dla8.jpg",
       "https://assets.guesty.com/image/upload/v1794849324/production/6957de4388cba42d9e7a905e/ealos8qwr6y3zhpslhma.jpg",
       "https://assets.guesty.com/image/upload/v1794849329/production/6957de4388cba42d9e7a905e/oiavfikow1w6mpvzkfqj.jpg",
       "https://assets.guesty.com/image/upload/v1794849325/production/6957de4388cba42d9e7a905e/s3iobu9egornqpbxsc2b.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1ae0701c-1cbc-4e-jKcod",
       "https://assets.guesty.com/image/upload/v1794849291/production/6957de4388cba42d9e7a905e/kvr77xainclkppuijsts.jpg",
       "https://assets.guesty.com/image/upload/v1794849291/production/6957de4388cba42d9e7a905e/vb3w2lizrufa3uoiq4js.jpg",
       "https://assets.guesty.com/image/upload/v1794849308/production/6957de4388cba42d9e7a905e/nsuriltgfkcjg4opovar.jpg",
+      "https://assets.guesty.com/image/upload/v1794851752/production/6957de4388cba42d9e7a905e/cjom8elnbfs1seohkpam.jpg",
       "https://assets.guesty.com/image/upload/v1794849184/production/6957de4388cba42d9e7a905e/dk0lf7mdi59kwhdyxy2m.jpg",
       "https://assets.guesty.com/image/upload/v1794849180/production/6957de4388cba42d9e7a905e/jqolhyygzexcxqfsw1pl.jpg",
       "https://assets.guesty.com/image/upload/v1794849182/production/6957de4388cba42d9e7a905e/gmkg2lyfkjx8clommaez.jpg",
       "https://assets.guesty.com/image/upload/v1794849172/production/6957de4388cba42d9e7a905e/subd6wdkjnfboii6phiy.jpg",
       "https://assets.guesty.com/image/upload/v1794849174/production/6957de4388cba42d9e7a905e/vdre0jtxgmvnz265uo2d.jpg",
       "https://assets.guesty.com/image/upload/v1794849177/production/6957de4388cba42d9e7a905e/zmn550gqyhlyn5g43sr6.jpg",
+      "https://assets.guesty.com/image/upload/v1794851723/production/6957de4388cba42d9e7a905e/tabzgemjan7mdpt95a0p.jpg",
       "https://assets.guesty.com/image/upload/v1794849205/production/6957de4388cba42d9e7a905e/xqr5kgg9rvh2salh5z1a.jpg",
       "https://assets.guesty.com/image/upload/v1794849196/production/6957de4388cba42d9e7a905e/rrhxue7bro6u0msckp1g.jpg",
       "https://assets.guesty.com/image/upload/v1794849198/production/6957de4388cba42d9e7a905e/agvue2bd8n6qwpaeptkg.jpg",
@@ -22181,6 +22208,7 @@
       "https://assets.guesty.com/image/upload/v1794849197/production/6957de4388cba42d9e7a905e/l8yvmizgq7gw1j5xtk7d.jpg",
       "https://assets.guesty.com/image/upload/v1794849189/production/6957de4388cba42d9e7a905e/urzbcwfkrrebdqplin6m.jpg",
       "https://assets.guesty.com/image/upload/v1794849195/production/6957de4388cba42d9e7a905e/gtjbdlhjegh6wu0gvqqh.jpg",
+      "https://assets.guesty.com/image/upload/v1794851754/production/6957de4388cba42d9e7a905e/tkdco8zle1estnn1fdqd.jpg",
       "https://assets.guesty.com/image/upload/v1794849301/production/6957de4388cba42d9e7a905e/jrir1nuqqiff95tqswu6.jpg",
       "https://assets.guesty.com/image/upload/v1794849203/production/6957de4388cba42d9e7a905e/ejilsmjhg6mgkcohzdef.jpg",
       "https://assets.guesty.com/image/upload/v1794849214/production/6957de4388cba42d9e7a905e/vg5wu35vczffwihr6zqr.jpg",
@@ -22189,6 +22217,7 @@
       "https://assets.guesty.com/image/upload/v1794849213/production/6957de4388cba42d9e7a905e/iyauxiq6jmtptivbygwr.jpg",
       "https://assets.guesty.com/image/upload/v1794849204/production/6957de4388cba42d9e7a905e/ie0zcjbe808vzyjbu1fl.jpg",
       "https://assets.guesty.com/image/upload/v1794849212/production/6957de4388cba42d9e7a905e/hhq6kvna9gqcuumcrdha.jpg",
+      "https://assets.guesty.com/image/upload/v1794851716/production/6957de4388cba42d9e7a905e/zrz3cybicspxnemhs7mu.jpg",
       "https://assets.guesty.com/image/upload/v1794849206/production/6957de4388cba42d9e7a905e/e8n3gzo5pxiwexbfatcs.jpg",
       "https://assets.guesty.com/image/upload/v1794849223/production/6957de4388cba42d9e7a905e/yb3zh5emigu7slz1yel0.jpg",
       "https://assets.guesty.com/image/upload/v1794849218/production/6957de4388cba42d9e7a905e/ugeow4ukrknf2vr8js6s.jpg",
@@ -22197,6 +22226,7 @@
       "https://assets.guesty.com/image/upload/v1794849219/production/6957de4388cba42d9e7a905e/bekdisrifxjopwsalbng.jpg",
       "https://assets.guesty.com/image/upload/v1794849219/production/6957de4388cba42d9e7a905e/ftkon559rgrzkyuwdb5i.jpg",
       "https://assets.guesty.com/image/upload/v1794849218/production/6957de4388cba42d9e7a905e/t990repr7m2ft6vbe6dm.jpg",
+      "https://assets.guesty.com/image/upload/v1794851716/production/6957de4388cba42d9e7a905e/n5aezxv8mt1ml5xvyf03.jpg",
       "https://assets.guesty.com/image/upload/v1794849231/production/6957de4388cba42d9e7a905e/gyzlfph6xktlzkbgirza.jpg",
       "https://assets.guesty.com/image/upload/v1794849219/production/6957de4388cba42d9e7a905e/qljbkfqblydaev1lp2kh.jpg",
       "https://assets.guesty.com/image/upload/v1794849238/production/6957de4388cba42d9e7a905e/wf8dwf0rt5zc0rolckbx.jpg",
@@ -22210,6 +22240,7 @@
       "https://assets.guesty.com/image/upload/v1794849225/production/6957de4388cba42d9e7a905e/ylefwem4rhgn7dmmyzzl.jpg",
       "https://assets.guesty.com/image/upload/v1794849232/production/6957de4388cba42d9e7a905e/o4pmddkybyhz46wwbffs.jpg",
       "https://assets.guesty.com/image/upload/v1794849229/production/6957de4388cba42d9e7a905e/lhdenr5whavlxlyxyyzb.jpg",
+      "https://assets.guesty.com/image/upload/v1794851745/production/6957de4388cba42d9e7a905e/anq9nafuxeh3xh3sdukm.jpg",
       "https://assets.guesty.com/image/upload/v1794849232/production/6957de4388cba42d9e7a905e/gofytwh2kwse1uwvyiy9.jpg",
       "https://assets.guesty.com/image/upload/v1794849237/production/6957de4388cba42d9e7a905e/xdyuapkfi9cog8auftu0.jpg",
       "https://assets.guesty.com/image/upload/v1794849237/production/6957de4388cba42d9e7a905e/fmm0tlmx7pyf6nfzmsbd.jpg",
@@ -22217,6 +22248,7 @@
       "https://assets.guesty.com/image/upload/v1794849337/production/6957de4388cba42d9e7a905e/yos0lohtmie1kh7nljpq.jpg",
       "https://assets.guesty.com/image/upload/v1794849240/production/6957de4388cba42d9e7a905e/pz6wqeowuikucjyelbpa.jpg",
       "https://assets.guesty.com/image/upload/v1794849242/production/6957de4388cba42d9e7a905e/oaxdmdjz0jxhy3b7sobb.jpg",
+      "https://assets.guesty.com/image/upload/v1794851739/production/6957de4388cba42d9e7a905e/wu5suu5moh2dpzgvzbpf.jpg",
       "https://assets.guesty.com/image/upload/v1794849261/production/6957de4388cba42d9e7a905e/tp0z3imnakbx4ojtucew.jpg",
       "https://assets.guesty.com/image/upload/v1794849244/production/6957de4388cba42d9e7a905e/ctguz97idldhudogpmnh.jpg",
       "https://assets.guesty.com/image/upload/v1794849336/production/6957de4388cba42d9e7a905e/hxn18rapt27rxahy40uo.jpg",
@@ -22227,6 +22259,7 @@
       "https://assets.guesty.com/image/upload/v1794851738/production/6957de4388cba42d9e7a905e/upgkw1cz8yfxbc6gtiwn.jpg",
       "https://assets.guesty.com/image/upload/v1794849247/production/6957de4388cba42d9e7a905e/brmjapzaeyawwupfenwj.jpg",
       "https://assets.guesty.com/image/upload/v1794849247/production/6957de4388cba42d9e7a905e/ddkhln8rxqukaqd965x9.jpg",
+      "https://assets.guesty.com/image/upload/v1794851726/production/6957de4388cba42d9e7a905e/zfbgwoswoqh655i0qhcm.jpg",
       "https://assets.guesty.com/image/upload/v1794849252/production/6957de4388cba42d9e7a905e/ach8yatjgdmrdub551rr.jpg",
       "https://assets.guesty.com/image/upload/v1794849259/production/6957de4388cba42d9e7a905e/dbplyekzga2jctllzb3c.jpg",
       "https://assets.guesty.com/image/upload/v1794849260/production/6957de4388cba42d9e7a905e/vdwfhccp3ilbli4ok146.jpg",
@@ -22250,9 +22283,10 @@
       "https://assets.guesty.com/image/upload/v1794849274/production/6957de4388cba42d9e7a905e/ndsvzmivjrpygtxmm7b4.jpg",
       "https://assets.guesty.com/image/upload/v1794849285/production/6957de4388cba42d9e7a905e/dmsceuc9tfx7cnlqgzbs.jpg",
       "https://assets.guesty.com/image/upload/v1794849276/production/6957de4388cba42d9e7a905e/bnqq9zllur4iciwqx7hy.jpg",
-      "https://assets.guesty.com/image/upload/v1794849284/production/6957de4388cba42d9e7a905e/zl1koaa0urjzasrh6wbx.jpg",
       "https://assets.guesty.com/image/upload/v1794849178/production/6957de4388cba42d9e7a905e/tol5npgqcijkyvfnj9sx.jpg",
+      "https://assets.guesty.com/image/upload/v1794849284/production/6957de4388cba42d9e7a905e/zl1koaa0urjzasrh6wbx.jpg",
       "https://assets.guesty.com/image/upload/v1794849286/production/6957de4388cba42d9e7a905e/ihpbfwmrxbggue7ywqmi.jpg",
+      "https://assets.guesty.com/image/upload/v1794851750/production/6957de4388cba42d9e7a905e/dcwo2igwblns7dtz7qcn.jpg",
       "https://assets.guesty.com/image/upload/v1794849278/production/6957de4388cba42d9e7a905e/pnrelo5jj6tem5rjm6qz.jpg",
       "https://assets.guesty.com/image/upload/v1794849281/production/6957de4388cba42d9e7a905e/w0rxqnd3zautjpvx35wv.jpg",
       "https://assets.guesty.com/image/upload/v1794849280/production/6957de4388cba42d9e7a905e/wn14aububovuvszqm2wx.jpg",
@@ -22265,42 +22299,10 @@
       "https://assets.guesty.com/image/upload/v1794849165/production/6957de4388cba42d9e7a905e/qbrxocydg0z0kah4fogo.jpg",
       "https://assets.guesty.com/image/upload/v1794849160/production/6957de4388cba42d9e7a905e/lzbpwx76ijmr8thowfnx.jpg",
       "https://assets.guesty.com/image/upload/v1794849180/production/6957de4388cba42d9e7a905e/wgivyspfpttb4cfkfjfs.jpg",
-      "https://assets.guesty.com/image/upload/v1794849160/production/6957de4388cba42d9e7a905e/jxliuspgnvoc3g4ruzly.jpg",
       "https://assets.guesty.com/image/upload/v1794849167/production/6957de4388cba42d9e7a905e/acmqiihqypylyvzrnwbm.jpg",
+      "https://assets.guesty.com/image/upload/v1794851753/production/6957de4388cba42d9e7a905e/frjnovr70xmolvjhumr2.jpg",
       "https://assets.guesty.com/image/upload/v1794849344/production/6957de4388cba42d9e7a905e/u11ahqrkozpmvhfkbfcn.jpg",
       "https://assets.guesty.com/image/upload/v1794849344/production/6957de4388cba42d9e7a905e/sovjd2wpe8wxs7ldahk2.jpg",
-      "https://assets.guesty.com/image/upload/v1794851709/production/6957de4388cba42d9e7a905e/wyu2rribth0dnektemk8.jpg",
-      "https://assets.guesty.com/image/upload/v1794851710/production/6957de4388cba42d9e7a905e/e9tvwrb00y17vjdug64n.jpg",
-      "https://assets.guesty.com/image/upload/v1794851716/production/6957de4388cba42d9e7a905e/svwpgeczfabhaljfhzo9.jpg",
-      "https://assets.guesty.com/image/upload/v1794851716/production/6957de4388cba42d9e7a905e/zrz3cybicspxnemhs7mu.jpg",
-      "https://assets.guesty.com/image/upload/v1794851716/production/6957de4388cba42d9e7a905e/n5aezxv8mt1ml5xvyf03.jpg",
-      "https://assets.guesty.com/image/upload/v1794851716/production/6957de4388cba42d9e7a905e/y5bd3n0z9nqpvo36dla8.jpg",
-      "https://assets.guesty.com/image/upload/v1794851720/production/6957de4388cba42d9e7a905e/dbgp7spe2qc84uxdjujl.jpg",
-      "https://assets.guesty.com/image/upload/v1794851721/production/6957de4388cba42d9e7a905e/u7r33dlvd1jwg1imxyoc.jpg",
-      "https://assets.guesty.com/image/upload/v1794851720/production/6957de4388cba42d9e7a905e/yosrnhhgmyaeednzyzer.jpg",
-      "https://assets.guesty.com/image/upload/v1794851723/production/6957de4388cba42d9e7a905e/bw4z7fa6uwqxkkm3or3g.jpg",
-      "https://assets.guesty.com/image/upload/v1794851724/production/6957de4388cba42d9e7a905e/ukhczylaigby6revmmma.jpg",
-      "https://assets.guesty.com/image/upload/v1794851723/production/6957de4388cba42d9e7a905e/tabzgemjan7mdpt95a0p.jpg",
-      "https://assets.guesty.com/image/upload/v1794851725/production/6957de4388cba42d9e7a905e/yxyyiqoatffbuyqrqy9q.jpg",
-      "https://assets.guesty.com/image/upload/v1794851726/production/6957de4388cba42d9e7a905e/zfbgwoswoqh655i0qhcm.jpg",
-      "https://assets.guesty.com/image/upload/v1794851739/production/6957de4388cba42d9e7a905e/wu5suu5moh2dpzgvzbpf.jpg",
-      "https://assets.guesty.com/image/upload/v1794851728/production/6957de4388cba42d9e7a905e/e3jg38aa25nuf99qxvwa.jpg",
-      "https://assets.guesty.com/image/upload/v1794851738/production/6957de4388cba42d9e7a905e/amzd48uxau5zor6reffz.jpg",
-      "https://assets.guesty.com/image/upload/v1794851739/production/6957de4388cba42d9e7a905e/eegokg6uogcyywonvkd3.jpg",
-      "https://assets.guesty.com/image/upload/v1794851737/production/6957de4388cba42d9e7a905e/w1up7uke9skxjockfb3p.jpg",
-      "https://assets.guesty.com/image/upload/v1794851745/production/6957de4388cba42d9e7a905e/nzqbajogqttlhso7puti.jpg",
-      "https://assets.guesty.com/image/upload/v1794851746/production/6957de4388cba42d9e7a905e/jpmfhzr8exeybl98mir9.jpg",
-      "https://assets.guesty.com/image/upload/v1794851745/production/6957de4388cba42d9e7a905e/anq9nafuxeh3xh3sdukm.jpg",
-      "https://assets.guesty.com/image/upload/v1794851750/production/6957de4388cba42d9e7a905e/dcwo2igwblns7dtz7qcn.jpg",
-      "https://assets.guesty.com/image/upload/v1794851748/production/6957de4388cba42d9e7a905e/dcz17fyqxrxekrscjobe.jpg",
-      "https://assets.guesty.com/image/upload/v1794851749/production/6957de4388cba42d9e7a905e/qf3bmjc30tht2hgvi4tr.jpg",
-      "https://assets.guesty.com/image/upload/v1794851752/production/6957de4388cba42d9e7a905e/cjom8elnbfs1seohkpam.jpg",
-      "https://assets.guesty.com/image/upload/v1794851754/production/6957de4388cba42d9e7a905e/tkdco8zle1estnn1fdqd.jpg",
-      "https://assets.guesty.com/image/upload/v1794851752/production/6957de4388cba42d9e7a905e/t9oluvivytmiviquuqhj.jpg",
-      "https://assets.guesty.com/image/upload/v1794851753/production/6957de4388cba42d9e7a905e/frjnovr70xmolvjhumr2.jpg",
-      "https://assets.guesty.com/image/upload/v1794851755/production/6957de4388cba42d9e7a905e/koj1hlpsohuviid3o214.jpg",
-      "https://assets.guesty.com/image/upload/v1794851757/production/6957de4388cba42d9e7a905e/dnqlzbry94qzybzgexfn.jpg",
-      "https://assets.guesty.com/image/upload/v1794851756/production/6957de4388cba42d9e7a905e/mua2bwsm6lyxj9jcekue.jpg",
       "https://assets.guesty.com/image/upload/v1794851709/production/6957de4388cba42d9e7a905e/ieovt7bflv3h69aiyx32.jpg",
       "https://assets.guesty.com/image/upload/v1794851749/production/6957de4388cba42d9e7a905e/tzhuphkcbmaiqmbmvrh3.jpg",
       "https://assets.guesty.com/image/upload/v1794847667/production/6957de4388cba42d9e7a905e/qattekrmdanojt6yu5fo.jpg",
@@ -22413,7 +22415,7 @@
         "name": "Bedroom 2",
         "beds": [
           {
-            "type": "SOFA_BED",
+            "type": "DOUBLE_BED",
             "quantity": 1
           }
         ]
@@ -22440,8 +22442,8 @@
         "name": "Bedroom 5",
         "beds": [
           {
-            "type": "SINGLE_BED",
-            "quantity": 2
+            "type": "DOUBLE_BED",
+            "quantity": 1
           }
         ]
       },
@@ -22485,8 +22487,8 @@
         "name": "Bedroom 10",
         "beds": [
           {
-            "type": "DOUBLE_BED",
-            "quantity": 1
+            "type": "SINGLE_BED",
+            "quantity": 2
           }
         ]
       },
@@ -22510,15 +22512,6 @@
       },
       {
         "name": "Bedroom 13",
-        "beds": [
-          {
-            "type": "DOUBLE_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 14",
         "beds": [
           {
             "type": "SINGLE_BED",
@@ -22745,8 +22738,8 @@
     ],
     "averageRating": 4.33,
     "reviewCount": 6,
-    "lastModified": "2026-11-16",
-    "contentHash": "95f3da04f4934279816ee0394001a05bdc08a9bf"
+    "lastModified": "2026-11-17",
+    "contentHash": "659c8953f49a440e59cc28acc4e872ba860d947b"
   },
   {
     "id": "guesty-696533714b583900135cef22",
@@ -25119,8 +25112,8 @@
         "name": "Bedroom 3",
         "beds": [
           {
-            "type": "SINGLE_BED",
-            "quantity": 2
+            "type": "DOUBLE_BED",
+            "quantity": 1
           }
         ]
       },
@@ -25128,8 +25121,8 @@
         "name": "Bedroom 4",
         "beds": [
           {
-            "type": "DOUBLE_BED",
-            "quantity": 1
+            "type": "SINGLE_BED",
+            "quantity": 2
           }
         ]
       },
@@ -25144,6 +25137,15 @@
       },
       {
         "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
         "beds": [
           {
             "type": "SINGLE_BED",
@@ -25315,8 +25317,8 @@
     ],
     "averageRating": 4.75,
     "reviewCount": 8,
-    "lastModified": "2026-11-13",
-    "contentHash": "94155eb537259125c5966ab5026a4c38539cc727"
+    "lastModified": "2026-11-17",
+    "contentHash": "d9aecc7763e408004e2bfd0ee4c16179fd3003fe"
   },
   {
     "id": "guesty-696533cf4b583900135cfb02",
@@ -28751,6 +28753,41 @@
     "areaSquareFeet": 2369,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Casa super bem localizada. Casa muito aconchegante e bem decorada, limpeza excelente...",
+        "guestDisplayName": "Luís",
+        "guestName": "Luís",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-11-15T20:11:26.255Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Awesome location and great apartment. It was very clean and cozy. There are three bedrooms downstairs and one is without windows. Each has bathroom which gives you privacy and comfort. The complex the apartment is located in has a shared game and activities space but lack the equipment to play games. The views and beaches around are fantastic- highly recommend.",
         "guestDisplayName": "Bartosz",
@@ -28786,8 +28823,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 1,
+    "averageRating": 4.5,
+    "reviewCount": 2,
     "lastModified": "2026-10-25",
     "contentHash": "246924d9fc2b60401bb319e88a41c0dea766878e"
   },
