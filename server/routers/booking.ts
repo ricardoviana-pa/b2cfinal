@@ -19,7 +19,7 @@ import * as db from "../db";
 import { partnerFeesOf } from "../services/tripwix";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 import { ratePlanPolicyFor, withTimeout } from "../services/rate-plan-policy";
-import { isRecoveryDiscountCoupon, recoveryDiscountCoupon, recoveryQuoteProof } from "../services/recovery-funnel";
+import { recoveryDiscountCoupon, recoveryQuoteProof } from "../services/recovery-funnel";
 import { planPolicyCode } from "@shared/cancellationPolicy";
 
 /** Policy of the rate booked, from the listing's rate plan in Guesty — for
@@ -510,7 +510,7 @@ export const bookingRouter = router({
             const planId = intent.ratePlanId ?? fresh.ratePlanId;
             const original = fresh.ratePlanOptions?.find(p => p.ratePlanId === planId);
             const updated = discounted.ratePlanOptions?.find(p => p.ratePlanId === planId);
-            const applied = discounted.coupons.find(c => isRecoveryDiscountCoupon(c.code, coupon));
+            const applied = discounted.coupons.find(c => c.code.toUpperCase() === coupon);
             if (!applied ||
                 !original || !updated || updated.total <= 0 || updated.total >= original.total) {
               throw new Error("Could not refresh the recovery offer.");

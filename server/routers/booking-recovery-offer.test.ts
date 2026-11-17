@@ -86,24 +86,41 @@ describe("checkout attribution with a shared Guesty coupon", () => {
     const quoteId = "222222222222222222222222";
     const until = new Date(Date.now() + (origin === "expired" ? -hour : hour));
     const supplierExpiry = new Date(Date.now() + 23 * hour);
+    const supplierReference = "PA 5% recuperação";
+    const refreshedId = "333333333333333333333333";
+    const fullQuote = { total: 1500 };
     mock.intent.mockResolvedValue({
       ...stay, id, status: "contact_captured", guestyQuoteId: "111111111111111111111111",
       discountGiftUntil: until, quote: { couponCode: "PORTUGALACTIVE5", recoveryDiscountApplied: true },
     });
     mock.trusted.mockResolvedValue({
-      expiresAt: supplierExpiry, ratePlanId: "flex", quote: { couponCode: "Portugal Active 5%", total: 1425 },
+      expiresAt: supplierExpiry, ratePlanId: "flex", couponReference: supplierReference, quote: { total: 1425 },
     });
+    if (origin === "expired") {
+      mock.quote.mockResolvedValueOnce({ quoteId: refreshedId, ratePlanOptions: [{ ratePlanId: "flex" }] });
+      mock.trusted.mockResolvedValueOnce({
+        expiresAt: supplierExpiry, ratePlanId: "flex", couponReference: supplierReference, quote: { total: 1425 },
+      }).mockResolvedValueOnce({ expiresAt: supplierExpiry, ratePlanId: "flex", quote: fullQuote });
+    }
     mock.save.mockResolvedValue(true);
     const checkout = checkoutRouter.createCaller({ req: { headers: {} }, res: {} as any, user: null } as any);
     const update = checkout.updateIntent({
       intentId: id, patch: {
         guestyQuoteId: quoteId,
-        ...(origin !== "manual" ? { recoveryProof: recoveryQuoteProof(id, quoteId, until, "Portugal Active 5%") } : {}),
+        ...(origin === "manual" ? { quote: {
+          couponCode: "PORTUGALACTIVE5", nightlyRate: 475, totalNights: 1425, cleaningFee: 0,
+          taxesAndFees: 0, total: 1425, nights: 3, currency: "EUR", quoteCreatedAt: Date.now(),
+        } } : { recoveryProof: recoveryQuoteProof(id, quoteId, until, supplierReference) }),
       },
     });
     if (origin === "expired") {
-      await expect(update).rejects.toThrow("The recovery offer has expired");
-      expect(mock.save).not.toHaveBeenCalled();
+      await expect(update).resolves.toEqual({
+        ok: true, replacementQuote: { guestyQuoteId: refreshedId, ratePlanId: "flex", quote: fullQuote },
+      });
+      expect(mock.quote).toHaveBeenCalledWith(expect.objectContaining({ fresh: true }));
+      expect(mock.save).toHaveBeenCalledWith(id, expect.objectContaining({
+        guestyQuoteId: refreshedId, discountGiftUntil: null, expiresAt: supplierExpiry, quote: fullQuote,
+      }));
       return;
     }
     await expect(update).resolves.toEqual({ ok: true });

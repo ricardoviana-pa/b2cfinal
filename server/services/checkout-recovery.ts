@@ -140,7 +140,6 @@ type QuoteSnap = {
   cleaningFee?: number; taxesAndFees?: number; total?: number;
 };
 
-/** Escassez real do calendário (±21 dias à volta das datas). Fail-soft. */
 /**
  * Contactos 2 e 3: refaz a cotação no Guesty. Devolve a cotação nova (e
  * grava-a no intent com nova validade e o incentivo do contacto — o Flex no 2,

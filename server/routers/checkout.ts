@@ -10,6 +10,7 @@
  * Security: the intent id is a capability (it goes into resume links and the
  * record carries guest PII), so it is a UUID — never enumerable.
  */
+import { createBEQuote } from "../services/guesty-booking";
 import { trustedStayQuote, assertQuotedTotal } from "../services/trusted-checkout-quote";
 import { recoveryDiscountCoupon, verifiesRecoveryQuoteProof } from "../services/recovery-funnel";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
@@ -696,9 +697,11 @@ export const checkoutRouter = router({
         const revoke = revokeFullPaymentGiftPatch({ ...current, ...(patch.flex !== undefined ? { flexGiftPrevFlex: patch.flex } : {}) });
         if (revoke) Object.assign(dbPatch, revoke);
       }
+      let replacementQuote: { guestyQuoteId: string; ratePlanId: string; quote: Awaited<ReturnType<typeof trustedStayQuote>>["quote"] } | undefined;
       if (patch.quote || patch.guestyQuoteId || patch.ratePlanId || patch.checkIn || patch.checkOut || patch.guests) {
-        const trusted = await trustedStayQuote({ ...current, ...patch } as any);
-        const supplierReference = trusted.quote.couponCode?.trim().toUpperCase();
+        const stay = { ...current, ...patch };
+        let trusted = await trustedStayQuote(stay);
+        const supplierReference = trusted.couponReference?.trim().toUpperCase();
         const sameStay = !((patch.checkIn !== undefined && patch.checkIn !== c.checkIn) ||
           (patch.checkOut !== undefined && patch.checkOut !== c.checkOut) ||
           (patch.guests !== undefined && patch.guests !== c.guests));
@@ -709,18 +712,33 @@ export const checkoutRouter = router({
           current.quote?.recoveryDiscountApplied === true && supplierReference === previousReference;
         const renewedRecovery = !!(supplierReference && giftUntil && quoteId &&
           verifiesRecoveryQuoteProof(recoveryProof, current.id, quoteId, giftUntil, supplierReference));
-        const fromRecovery = !!supplierReference && (existingRecovery || renewedRecovery);
+        let fromRecovery = !!supplierReference && (existingRecovery || renewedRecovery);
         if (fromRecovery && (!giftUntil || giftUntil.getTime() <= Date.now() || !sameStay)) {
-          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "The recovery offer has expired. Refresh the price to continue." });
+          // A separate Guesty quote preserves the original quote for any
+          // payment already in flight and gives us the actual full price.
+          const fresh = await createBEQuote({
+            listingId: stay.listingId, checkIn: stay.checkIn, checkOut: stay.checkOut,
+            guests: stay.guests, fresh: true,
+          });
+          const ratePlanId = fresh.ratePlanOptions?.some(plan => plan.ratePlanId === stay.ratePlanId)
+            ? stay.ratePlanId : undefined;
+          trusted = await trustedStayQuote({ ...stay, guestyQuoteId: fresh.quoteId, ratePlanId });
+          if (trusted.couponReference) {
+            throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Unable to refresh the price without the expired offer." });
+          }
+          replacementQuote = { guestyQuoteId: fresh.quoteId, ratePlanId: trusted.ratePlanId, quote: trusted.quote };
+          Object.assign(dbPatch, { guestyQuoteId: fresh.quoteId, discountGiftUntil: null });
+          fromRecovery = false;
         }
         const expiresAt = fromRecovery && giftUntil
           ? new Date(Math.min(trusted.expiresAt.getTime(), giftUntil.getTime()))
           : trusted.expiresAt;
+        // The provider label identifies a recovery quote for the signed
+        // proof, while the code comes from the supplier or the checkout.
         const configuredCoupon = recoveryDiscountCoupon();
-        // Guesty can return the coupon's label ("Portugal Active 5%")
-        // rather than its form code. Keep the usable code in the checkout.
-        const couponCode = configuredCoupon && supplierReference?.replace(/\s|%/g, "") === configuredCoupon
-          ? configuredCoupon : trusted.quote.couponCode;
+        const couponCode = trusted.quote.couponCode ?? (trusted.couponReference
+          ? patch.quote?.couponCode ?? (quoteId === current.guestyQuoteId ? current.quote?.couponCode : undefined)
+          : undefined);
         const quote = fromRecovery ? {
           ...trusted.quote,
           couponCode: (existingRecovery ? current.quote?.couponCode : configuredCoupon) ?? couponCode,
@@ -731,7 +749,7 @@ export const checkoutRouter = router({
         if (!sameStay && giftUntil) dbPatch.discountGiftUntil = null;
       }
       const ok = await updateBookingIntent(input.intentId, dbPatch as any);
-      return { ok };
+      return { ok, ...(ok && replacementQuote ? { replacementQuote } : {}) };
     })),
 
   /**

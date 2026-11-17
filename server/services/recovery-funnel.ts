@@ -66,13 +66,6 @@ export function recoveryDiscountCoupon(env: NodeJS.ProcessEnv = process.env): st
   return /^[A-Z0-9_-]{2,40}$/.test(raw) ? raw : null;
 }
 
-/** Guesty may return the internal coupon name in place of the public code. */
-export function isRecoveryDiscountCoupon(value?: string | null, coupon = recoveryDiscountCoupon()): boolean {
-  if (!coupon || !value) return false;
-  const normalized = value.trim().toUpperCase();
-  return normalized === coupon || normalized.startsWith(`${coupon} `) || normalized.startsWith(`${coupon}-`);
-}
-
 /** Prove that the server applied the offer to this particular Guesty quote. */
 export function recoveryQuoteProof(intentId: string, quoteId: string, until: Date, supplierReference: string): string {
   return createHmac("sha256", ENV.cookieSecret)
@@ -185,16 +178,4 @@ export function hasEnoughLeadTime(checkIn: string, now = Date.now()): boolean {
 export function flexGiftActive(intent: { flexGiftUntil?: Date | string | null } | null | undefined, now = Date.now()): boolean {
   const until = intent?.flexGiftUntil ? new Date(intent.flexGiftUntil as any).getTime() : NaN;
   return Number.isFinite(until) && until > now;
-}
-
-/**
- * Escassez real a partir do calendário à volta das datas. Só devolve algo
- * quando a maioria das noites já não está disponível — urgência inventada é
- * proibida pela spec (§2) e pela marca.
- */
-export function calendarScarcity(days: Array<{ status?: string }>): { unavailable: number; total: number } | null {
-  const total = days.length;
-  if (total < 14) return null;
-  const unavailable = days.filter((d) => d?.status && d.status !== "available").length;
-  return unavailable / total >= 0.5 ? { unavailable, total } : null;
 }

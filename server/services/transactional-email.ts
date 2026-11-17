@@ -616,8 +616,6 @@ interface CheckoutRecoveryData {
    *  partes como o checkout as oferece no envio. Ausente ou sem bater com o
    *  total do cartão: sem linha. */
   twoParts?: RecoveryTwoParts | null;
-  /** Contacto 2: escassez real do calendário (só quando é verdade) */
-  scarcity?: { unavailable: number; total: number } | null;
   /** Contacto 2: Flex oferecido */
   flexGift?: { until: Date; value: number; days: number } | null;
   /** Contacto 3: desconto já aplicado à cotação (cupão do Guesty). `before` é
@@ -904,13 +902,6 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 </td></tr>`;
 
   // ── Blocos específicos ──
-  const scarcityBlock = data.stage === 2 && data.scarcity ? `
-<tr><td style="padding:0 0 24px 0;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:2px solid ${PA.gold};"><tr><td style="padding:4px 0 4px 16px;">
-    <p style="font-family:${SERIF};font-size:19px;line-height:1.4;color:${PA.dark};margin:0;">${F.scarcity(data.scarcity.unavailable, data.scarcity.total)}</p>
-  </td></tr></table>
-</td></tr>` : "";
-
   const discountBlock = discount ? `
 <tr><td style="padding:0 0 24px 0;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.gold};border-radius:12px;"><tr><td style="padding:22px 24px;">
@@ -949,9 +940,9 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
+<body style="margin:0;padding:0;background:#FFFFFF;font-family:${SANS};">
 <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFFFF;">
 <tr><td align="center" bgcolor="#FFFFFF" style="padding:0;background:#FFFFFF;">
   <img src="https://www.portugalactive.com/email/recovery-brand-band.png" alt="Portugal Active" width="600" style="display:block;margin:0 auto;width:100%;max-width:600px;height:auto;" />
 </td></tr>
@@ -963,7 +954,6 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 <tr><td style="padding:0 0 24px 0;">
   <p style="font-family:${SANS};font-size:15px;color:${PA.earth};line-height:1.65;margin:0;">${body}</p>
 </td></tr>
-${scarcityBlock}
 ${giftBlock}
 ${discountBlock}
 ${stayCard}

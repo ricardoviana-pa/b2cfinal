@@ -394,7 +394,6 @@ describe("italiano: o funil trata o hóspede por Lei, como o resto do site", () 
           ...base, guestFirstName, propertyName, locale: "it", ...variant,
           quote: { nights: 5, totalNights: 1500, total: 1500 },
           expiresAt: new Date("2099-11-01T18:00:00Z"),
-          scarcity: { unavailable: 3, total: 10 },
           propertyUrl: "https://www.portugalactive.com/it/homes/original",
         });
         const sent = lastSend();

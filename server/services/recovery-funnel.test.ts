@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  nextRecoveryStage, isRecoveryHoldout, flexGiftActive, calendarScarcity, hasEnoughLeadTime, RECOVERY_TIMING,
+  nextRecoveryStage, isRecoveryHoldout, flexGiftActive, hasEnoughLeadTime, RECOVERY_TIMING,
   flexExtraDays, klarnaCanPay, KLARNA_MAX_CENTS, KLARNA_BILLING_COUNTRY_FORCED_PT, klarnaBillingCountryForcedPt,
   CONCIERGE_ALERT_MIN_TOTAL,
 } from "./recovery-funnel";
@@ -52,12 +52,6 @@ describe("regras do funil de recuperação", () => {
     const gifted = computeChargeBreakdown({ ...base, flexGift: true });
     expect(gifted.flexCents).toBe(0);
     expect(gifted.totalCents).toBe(300000);
-  });
-  it("escassez só quando é verdade", () => {
-    const days = (u: number, t: number) => Array.from({ length: t }, (_, i) => ({ status: i < u ? "booked" : "available" }));
-    expect(calendarScarcity(days(29, 47))).toEqual({ unavailable: 29, total: 47 });
-    expect(calendarScarcity(days(10, 47))).toBeNull();
-    expect(calendarScarcity(days(5, 7))).toBeNull();
   });
   it("sem contactos com check-in a menos de 2 dias", () => {
     const day = 86_400_000;

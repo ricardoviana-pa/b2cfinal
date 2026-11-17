@@ -228,19 +228,6 @@ export default function CheckoutPage() {
   // Origem da visita: link de recuperação com UTM, ou consentimento mudado aqui
   useVisitOriginSync(isDemo ? undefined : intentId, !!intent, !!paid);
 
-  /** Patch the server intent AND the React Query cache in lockstep — otherwise a
-   *  remount within staleTime re-seeds the page from pre-edit data (stale quote). */
-  const syncIntent = useCallback(
-    (patch: Record<string, unknown>) => {
-      if (!intentId || isDemo) return;
-      utils.checkout.getIntent.setData({ intentId }, (prev) =>
-        prev?.intent ? { ...prev, intent: { ...prev.intent, ...patch } as typeof prev.intent } : prev,
-      );
-      updateIntent.mutate({ intentId, patch: patch as any });
-    },
-    [intentId, isDemo, utils, updateIntent],
-  );
-
   // ── Local editable state, seeded ONCE from the intent ──
   const seededRef = useRef(false);
   const [step, setStep] = useState<Step>("stay");
@@ -305,6 +292,7 @@ export default function CheckoutPage() {
   useEffect(() => () => requoteRequests.current.invalidate(), []);
   const [quoteRefreshFailed, setQuoteRefreshFailed] = useState(false);
   const [quoteStale, setQuoteStale] = useState(false);
+  const [pricingSaves, setPricingSaves] = useState(0);
   const [datesUnavailable, setDatesUnavailable] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const contactFiredRef = useRef(false);
@@ -323,6 +311,36 @@ export default function CheckoutPage() {
   /** M14: código que deixou de se aplicar depois de mudar datas — nota visível */
   const [couponDropped, setCouponDropped] = useState<string | null>(null);
   const applyCouponMut = trpc.booking.applyCoupon.useMutation();
+
+  const syncIntent = useCallback(
+    (patch: Record<string, unknown>) => {
+      if (!intentId || isDemo) return;
+      const isCurrentQuote = requoteRequests.current.capture();
+      const pricingChanged = !!(patch.quote || patch.ratePlanId);
+      if (pricingChanged) setPricingSaves(count => count + 1);
+      void updateIntent.mutateAsync({ intentId, patch: patch as any }).then((result) => {
+        if (!isCurrentQuote()) return;
+        if (!result.ok) {
+          if (pricingChanged) setQuoteStale(true);
+          return;
+        }
+        const replacement = result.replacementQuote;
+        if (replacement) {
+          setQuote(replacement.quote);
+          setQuoteId(replacement.guestyQuoteId);
+          setSelectedRatePlanId(replacement.ratePlanId);
+        }
+        utils.checkout.getIntent.setData({ intentId }, (prev) =>
+          prev?.intent ? { ...prev, intent: { ...prev.intent, ...patch, ...replacement } as typeof prev.intent } : prev,
+        );
+      }).catch(() => {
+        if (pricingChanged && isCurrentQuote()) setQuoteStale(true);
+      }).finally(() => {
+        if (pricingChanged) setPricingSaves(count => count - 1);
+      });
+    },
+    [intentId, isDemo, utils, updateIntent],
+  );
 
   // Visitante que clicou na PromoBar (announcement bar): o código ficou em
   // localStorage — pré-preenche e abre o campo para o Apply ser um toque.
@@ -621,30 +639,45 @@ export default function CheckoutPage() {
         // Re-resolve the plan selection on the quote that will be shown: the
         // guest's choice if it survived; otherwise the refundable rate first.
         const planStill = next.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
-        const planNext = planStill?.ratePlanId ?? preferredRatePlanId(next.ratePlanOptions, (d as any).ratePlanId, ci) ?? (d as any).ratePlanId ?? null;
+        let planNext = planStill?.ratePlanId ?? preferredRatePlanId(next.ratePlanOptions, (d as any).ratePlanId, ci) ?? (d as any).ratePlanId ?? null;
+        let savedQuoteId = liveQuoteId;
+        if (!isDemo && intentId) {
+          const patch = {
+            checkIn: ci,
+            checkOut: co,
+            guests: g,
+            guestyQuoteId: liveQuoteId,
+            ...("recoveryProof" in d ? { recoveryProof: d.recoveryProof } : {}),
+            ratePlanId: planNext ?? undefined,
+            quote: next,
+          };
+          const saved = await updateIntent.mutateAsync({ intentId, patch });
+          if (!isCurrentRequest()) return;
+          if (!saved.ok) {
+            setQuoteRefreshFailed(true);
+            return;
+          }
+          if (saved.replacementQuote) {
+            next = saved.replacementQuote.quote;
+            savedQuoteId = saved.replacementQuote.guestyQuoteId;
+            planNext = saved.replacementQuote.ratePlanId;
+          }
+          utils.checkout.getIntent.setData({ intentId }, (prev) =>
+            prev?.intent ? { ...prev, intent: { ...prev.intent, checkIn: ci, checkOut: co, guests: g,
+              guestyQuoteId: savedQuoteId, ratePlanId: planNext, quote: next } } : prev,
+          );
+        }
         setQuote(next);
-        setQuoteId(liveQuoteId);
+        setQuoteId(savedQuoteId);
         setSelectedRatePlanId(planNext);
-        setCheckIn(ci);
-        setCheckOut(co);
-        setGuests(g);
         setQuoteStale(false);
-        syncIntent({
-          checkIn: ci,
-          checkOut: co,
-          guests: g,
-          guestyQuoteId: liveQuoteId,
-          ...("recoveryProof" in d ? { recoveryProof: d.recoveryProof } : {}),
-          ratePlanId: planNext ?? undefined,
-          quote: next,
-        });
       } catch {
         if (isCurrentRequest()) setQuoteRefreshFailed(true);
       } finally {
         if (isCurrentRequest()) setRequoting(false);
       }
     },
-    [intent, selectedRatePlanId, syncIntent, utils, applyCouponMut],
+    [intent, intentId, isDemo, selectedRatePlanId, syncIntent, utils, updateIntent, applyCouponMut],
   );
 
   /** Fecha a edição de datas: re-cota se a estadia mudou e ficou completa. */
@@ -2414,7 +2447,7 @@ export default function CheckoutPage() {
                     <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
                     <p className="body-sm text-pa-dark">{t("checkout.confirmingPayment", "Payment received — confirming your booking…")}</p>
                   </div>
-                ) : quoteId && effective && !quoteStale && !requoting && !datesUnavailable && !quoteRefreshFailed ? (
+                ) : quoteId && effective && !pricingSaves && !quoteStale && !requoting && !datesUnavailable && !quoteRefreshFailed ? (
                   <CheckoutPaymentForm
                     demo={isDemo}
                     demoDecline={demoDecline}

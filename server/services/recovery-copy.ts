@@ -57,7 +57,6 @@ export interface FunnelStrings {
   preheader2: string;
   headline2: string;
   body2: (g: string, h: string) => string;
-  scarcity: (unavailable: number, total: number) => string;
   giftTitle: string;
   giftBody: (until: string, days: number, value: string) => string;
   cta2Gift: string;
@@ -104,7 +103,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1Ask: (g, h) => `${g} a sua estadia em ${h} ficou guardada no último passo, tal como a deixou. Se ficou alguma pergunta sobre a casa, a região ou as condições da reserva, estamos aqui para ajudar. O seu preço mantém-se.`,
     personal1Ask: "Também pode responder a este email com qualquer dúvida sobre a casa, a região ou a reserva. Lemos todas as respostas.",
     twoPartsLine: (t, l, d) => `Ou em duas partes, no mesmo cartão: ${t} hoje e ${l} a ${d}.`,
-    scarcity: (u, t) => `Das ${t} noites à volta das suas datas, ${u} já não estão disponíveis.`,
     subject2: (h) => `As suas datas em ${h} continuam livres`,
     preheader2Gift: "Atualizámos o preço e o Flex fica por nossa conta durante 48 horas.",
     preheader2: "Voltámos a verificar a disponibilidade e atualizámos o preço.",
@@ -151,7 +149,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1Ask: (g, h) => `${g} your stay at ${h} is saved at the last step, just as you left it. If you have a question about the house, the area or the booking terms, we're here to help. Your price still stands.`,
     personal1Ask: "You can also reply to this email with any question about the house, the area or the booking. We read every reply.",
     twoPartsLine: (t, l, d) => `Or in two parts, on the same card: ${t} today and ${l} on ${d}.`,
-    scarcity: (u, t) => `Of the ${t} nights around your dates, ${u} are no longer available.`,
     subject2: (h) => `Your dates at ${h} are still free`,
     preheader2Gift: "We've updated the price, and Flex is on us for the next 48 hours.",
     preheader2: "We rechecked availability and updated the price.",
@@ -198,7 +195,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1Ask: (g, h) => `${g} votre séjour à ${h} est conservé à la dernière étape, tel que vous l'avez laissé. Si vous avez une question sur la maison, la région ou les conditions de réservation, nous sommes là pour vous aider. Votre prix est maintenu.`,
     personal1Ask: "Vous pouvez aussi répondre à cet email pour toute question sur la maison, la région ou la réservation. Nous lisons toutes les réponses.",
     twoPartsLine: (t, l, d) => `Ou en deux parties, avec la même carte : ${t} aujourd'hui et ${l} le ${d}.`,
-    scarcity: (u, t) => `Sur les ${t} nuits autour de vos dates, ${u} ne sont plus disponibles.`,
     subject2: (h) => `Vos dates à ${h} sont toujours libres`,
     preheader2Gift: "Nous avons mis à jour le prix, et Flex vous est offert pendant 48 heures.",
     preheader2: "Nous avons revérifié la disponibilité et mis à jour le prix.",
@@ -245,7 +241,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1Ask: (g, h) => `${g} su estancia en ${h} está guardada en el último paso, tal como la dejó. Si tiene alguna pregunta sobre la casa, la zona o las condiciones de la reserva, estamos aquí para ayudarle. Su precio se mantiene.`,
     personal1Ask: "También puede responder a este email con cualquier duda sobre la casa, la zona o la reserva. Leemos todas las respuestas.",
     twoPartsLine: (t, l, d) => `O en dos partes, con la misma tarjeta: ${t} hoy y ${l} el ${d}.`,
-    scarcity: (u, t) => `De las ${t} noches alrededor de sus fechas, ${u} ya no están disponibles.`,
     subject2: (h) => `Sus fechas en ${h} siguen libres`,
     preheader2Gift: "Hemos actualizado el precio y Flex corre de nuestra cuenta durante 48 horas.",
     preheader2: "Hemos vuelto a comprobar la disponibilidad y actualizado el precio.",
@@ -292,7 +287,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1Ask: (g, h) => `${g} il suo soggiorno a ${h} è salvato all'ultimo passo, così come l'ha lasciato. Se ha qualche domanda sulla casa, sulla zona o sulle condizioni della prenotazione, siamo qui per aiutarla. Il prezzo resta valido.`,
     personal1Ask: "Può anche rispondere a questa email per qualsiasi domanda sulla casa, sulla zona o sulla prenotazione. Leggiamo tutte le risposte.",
     twoPartsLine: (t, l, d) => `Oppure in due parti, con la stessa carta: ${t} oggi e ${l} ${itArt("il", d)}.`,
-    scarcity: (u, t) => `Delle ${t} notti intorno alle sue date, ${u} non sono più disponibili.`,
     subject2: (h) => `Le sue date a ${h} sono ancora libere`,
     preheader2Gift: "Abbiamo aggiornato il prezzo e per 48 ore Flex lo offriamo noi.",
     preheader2: "Abbiamo ricontrollato la disponibilità e aggiornato il prezzo.",
@@ -339,7 +333,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1Ask: (g, h) => `${g} Ihr Aufenthalt in ${h} ist beim letzten Schritt gespeichert, genau so, wie Sie ihn verlassen haben. Wenn Sie eine Frage zum Haus, zur Region oder zu den Buchungsbedingungen haben, helfen wir Ihnen gerne. Ihr Preis gilt weiterhin.`,
     personal1Ask: "Sie können auch einfach auf diese E-Mail antworten, mit jeder Frage zum Haus, zur Region oder zur Buchung. Wir lesen jede Antwort.",
     twoPartsLine: (t, l, d) => `Oder in zwei Teilen, mit derselben Karte: ${t} heute und ${l} am ${d}.`,
-    scarcity: (u, t) => `Von den ${t} Nächten rund um Ihre Daten sind ${u} bereits nicht mehr verfügbar.`,
     subject2: (h) => `Ihre Daten in ${h} sind noch frei`,
     preheader2Gift: "Wir haben den Preis aktualisiert, und Flex geht 48 Stunden lang auf uns.",
     preheader2: "Wir haben die Verfügbarkeit erneut geprüft und den Preis aktualisiert.",
@@ -386,7 +379,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1Ask: (g, h) => `${g} uw verblijf in ${h} staat bewaard bij de laatste stap, precies zoals u het achterliet. Heeft u een vraag over het huis, de streek of de boekingsvoorwaarden, dan helpen we u graag. Uw prijs blijft staan.`,
     personal1Ask: "U kunt ook deze e-mail beantwoorden met elke vraag over het huis, de streek of de boeking. We lezen elk antwoord.",
     twoPartsLine: (t, l, d) => `Of in twee delen, met dezelfde kaart: ${t} vandaag en ${l} op ${d}.`,
-    scarcity: (u, t) => `Van de ${t} nachten rond uw data zijn er ${u} al niet meer beschikbaar.`,
     subject2: (h) => `Uw data in ${h} zijn nog vrij`,
     preheader2Gift: "We hebben de prijs bijgewerkt, en Flex is 48 uur lang van ons.",
     preheader2: "We hebben de beschikbaarheid opnieuw gecontroleerd en de prijs bijgewerkt.",
@@ -433,7 +425,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1Ask: (g, h) => `${g} din vistelse på ${h} är sparad vid sista steget, precis som du lämnade den. Om du har en fråga om huset, området eller bokningsvillkoren hjälper vi dig gärna. Ditt pris gäller fortfarande.`,
     personal1Ask: "Du kan också svara på det här mejlet med alla frågor om huset, området eller bokningen. Vi läser varje svar.",
     twoPartsLine: (t, l, d) => `Eller i två delar, med samma kort: ${t} i dag och ${l} den ${d}.`,
-    scarcity: (u, t) => `Av de ${t} nätterna runt dina datum är ${u} inte längre tillgängliga.`,
     subject2: (h) => `Dina datum på ${h} är fortfarande lediga`,
     preheader2Gift: "Vi har uppdaterat priset, och Flex bjuder vi på i 48 timmar.",
     preheader2: "Vi har kontrollerat tillgängligheten igen och uppdaterat priset.",
@@ -480,7 +471,6 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     body1Ask: (g, h) => `${g} oleskelusi kohteessa ${h} on tallessa viimeisessä vaiheessa, juuri niin kuin jätit sen. Jos sinulla on kysyttävää talosta, alueesta tai varausehdoista, autamme mielellämme. Hintasi on yhä voimassa.`,
     personal1Ask: "Voit myös vastata tähän sähköpostiin, jos sinulla on kysyttävää talosta, alueesta tai varauksesta. Luemme jokaisen vastauksen.",
     twoPartsLine: (t, l, d) => `Tai kahdessa osassa samalla kortilla: ${t} tänään ja ${l} ${d}.`,
-    scarcity: (u, t) => `Päivämääriesi ympärillä olevista ${t} yöstä ${u} ei ole enää saatavilla.`,
     subject2: (h) => `Päivämääräsi kohteessa ${h} ovat yhä vapaina`,
     preheader2Gift: "Päivitimme hinnan, ja Flex on meidän tarjoamamme 48 tunnin ajan.",
     preheader2: "Tarkistimme saatavuuden uudelleen ja päivitimme hinnan.",
