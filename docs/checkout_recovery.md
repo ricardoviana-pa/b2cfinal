@@ -13,8 +13,8 @@ consoante o passo onde o hóspede parou.
 | Contacto | Quando | Para quem | Argumento |
 |---|---|---|---|
 | 1 | 1 hora depois | Todos | A casa: tudo guardado, um clique para continuar, convite a responder (a equipa lê todas as respostas; o Reply-To de todos os contactos é a caixa de reservas `BOOKING_NOTIFICATION_EMAIL`, booking@ por omissão, mesmo que o remetente mude; nunca promete leitura pessoal). Se parou no **pagamento**, conforme tentou ou não pagar (ver "Contacto 1 no pagamento"). |
-| 2 | 20 horas depois | Todos | Urgência verdadeira: a hora exata a que o preço expira e, só quando for verdade, a escassez do calendário ("das 47 noites à volta das suas datas, 29 já não estão disponíveis"). Por baixo do total, as mesmas duas linhas do contacto 1 no pagamento (ver abaixo): o cancelamento gratuito da tarifa com a data e as duas partes como o checkout as oferece no envio (desde 29 out 2026). |
-| 3 | 3 dias depois | Só com consentimento de marketing | As datas são re-verificadas no Guesty, o preço é refeito e guardado mais 23 horas, e o **Flex é oferecido durante 72 horas** quando acrescenta alguma coisa à tarifa (ver abaixo). Por baixo do total, as mesmas duas linhas (cancelamento gratuito e duas partes), calculadas sobre a cotação refeita. Se as datas já não se vendem, salta para o contacto 4. |
+| 2 | 24 horas depois | Todos | As datas são re-verificadas no Guesty, o preço é refeito e guardado mais 23 horas, e o **Flex é oferecido durante 48 horas** quando acrescenta alguma coisa à tarifa (ver abaixo). Por baixo do total, as mesmas duas linhas do contacto 1 no pagamento (ver abaixo): o cancelamento gratuito da tarifa com a data e as duas partes como o checkout as oferece no envio (desde 29 out 2026). Se as datas já não se vendem, salta para o contacto 4. |
+| 3 | 3 dias depois | Todos | As datas são re-verificadas, e o **desconto é oferecido durante 48 horas**: um cupão do Guesty aplicado à própria cotação antes do envio, por isso o hóspede abre o link já com o valor descontado e não escreve código nenhum. Sem cupão configurado (ou recusado pelo Guesty) o contacto sai na mesma, com as datas re-verificadas e o preço de hoje, nunca com um desconto que não existe. Se as datas já não se vendem, salta para o contacto 4. |
 | 4 | 7 dias depois | Só com consentimento de marketing | Até 3 casas na mesma região, com capacidade e livres nas mesmas datas, com foto, nome, lugar e ligação. **Sem preço no cartão**: o `priceFrom` do catálogo não é o preço daquelas datas e a unidade (noite ou pessoa) não está confirmada. É o último contacto. |
 
 ## Contacto 1 no pagamento
@@ -51,26 +51,65 @@ com o seu concierge."): é um número central, e ainda não há concierge
 confirmado por região (`shared/concierges.ts`), por isso nenhum email promete
 "o concierge da região".
 
-## O incentivo: Flex oferecido
+## Quem recebe o quê (17 nov 2026)
 
-Decisão: nada de desconto em percentagem (tira margem e ensina os clientes a
-abandonar o carrinho para receber um código). O Flex vale ~10% das noites aos
-olhos do hóspede e só custa à Portugal Active se ele remarcar.
+Decisão do Ricardo: os contactos 1 a 3 falam da MESMA casa e das MESMAS datas
+que o hóspede pediu, por isso vão para todos, com opt-out em cada email. Só o
+contacto 4 (outras casas) é marketing e continua a exigir consentimento de
+newsletter. Até aqui os contactos 3 e 4 exigiam-no, e em 30 dias de produção
+nenhum hóspede chegou a ver o Flex: 0 ofertas em 43 carrinhos abandonados.
 
-- O servidor grava `flex_gift_until` no intent (72 horas). O browser nunca
+Os contactos 2 e 3 refazem a cotação antes de sair (a do checkout morre às
+~23 horas), por isso já não dependem de ela estar viva.
+
+## O primeiro incentivo: Flex oferecido (contacto 2)
+
+O Flex vale ~10% das noites aos olhos do hóspede e só custa à Portugal Active
+se ele remarcar. Vai primeiro, às 24 horas, enquanto o interesse ainda é
+recente.
+
+- O servidor grava `flex_gift_until` no intent (48 horas). O browser nunca
   escreve este campo.
 - Enquanto for válido, o Flex conta **0** em `computeChargeBreakdown`, o
   cálculo que todas as cobranças usam (cartão, Apple/Google Pay, PayPal,
   Klarna). O checkout mostra o preço riscado e "Oferecido"; a confirmação
   também.
 - Só é oferecido quando a estadia está acima do limiar do Flex
-  (`FLEX_CONFIG.minTotal`). Abaixo, o contacto 3 vai sem incentivo.
+  (`FLEX_CONFIG.minTotal`). Abaixo, o contacto 2 vai sem incentivo.
 - Só é oferecido quando acrescenta dias ao cancelamento gratuito da tarifa
   (`flexExtraDays`): o Flex remarca até 7 dias antes da chegada, e a tarifa
-  moderate já cancela de graça até 7 dias antes, por isso nela o contacto 3 vai
+  moderate já cancela de graça até 7 dias antes, por isso nela o contacto 2 vai
   sem incentivo. Firm, strict, strict_60 e não reembolsável continuam a recebê-lo;
   com política desconhecida, como antes.
 - O Flex nunca se chama "seguro" em nenhuma língua.
+
+## O segundo incentivo: 5% no contacto 3
+
+Só às 72 horas, quando o Flex não chegou. Um desconto em percentagem tira
+margem e ensina os clientes a abandonar o carrinho, por isso vem depois do
+incentivo que não custa dinheiro, dura 48 horas e nunca se repete para o mesmo
+carrinho.
+
+- O valor vive num **cupão do Guesty** (Revenue Management), não no código do
+  site. Em Render, configurar `RECOVERY_DISCOUNT_COUPON=PORTUGALACTIVE5`; a percentagem
+  mostrada nos emails é `RECOVERY_DISCOUNT_PERCENT` e tem de bater com a do
+  cupão.
+- O site aplica o cupão à cotação (`applyCouponToBEQuote`) ANTES de enviar e
+  grava a cotação descontada no intent: o hóspede abre o link já com o valor
+  final e não escreve código nenhum.
+- `RECOVERY_DISCOUNT_COUPON` vazio (por omissão) = sem desconto, e o contacto 3
+  sai na mesma com as datas re-verificadas e o preço de hoje. O funil pode
+  entrar em produção antes de o cupão existir, e um cupão apagado nunca parte
+  o email.
+- Se o cupão não baixar o total, o email também sai sem desconto: nunca se
+  anuncia uma percentagem que a cotação não mostra.
+- A garantia do preço dura 23 horas. Se o hóspede atualizar o preço antes
+  de acabarem as 48 horas, o checkout pede um preço novo ao Guesty para a
+  mesma estadia e reaplica o desconto. A atualização não prolonga a oferta.
+- `discount_gift_until` guarda o prazo do benefício. O código do cupão
+  é partilhado com o campo de promoção do site. A nota da reserva Guesty e
+  o relatório do funil só atribuem o desconto ao contacto 3 quando o
+  servidor o aplicou à cotação da reserva.
 
 ## Regras fixas
 
@@ -111,7 +150,7 @@ DAYS=90 npm run report:recovery
 
 Mostra a taxa de reserva dos dois grupos, a diferença (o efeito real), as
 reservas por último contacto e quantas ofertas de Flex converteram. Os links
-levam `utm_campaign=checkout_recovery_1h|20h|3d|7d` e o checkout dispara
+levam `utm_campaign=checkout_recovery_1h|24h|3d|7d` e o checkout dispara
 `checkout_resume` no GA4.
 
 ## Ligar e desligar

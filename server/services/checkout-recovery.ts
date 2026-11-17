@@ -2,12 +2,17 @@
  * CHECKOUT RECOVERY — funil de recuperação de checkouts abandonados.
  * Regras e tempos: ./recovery-funnel.ts · Documento: docs/checkout_recovery.md
  *
- * Quatro contactos (1h, 20h, 72h, 7 dias), cada um com um argumento
+ * Quatro contactos (1h, 24h, 72h, 7 dias), cada um com um argumento
  * diferente; 10% de grupo de controlo sem emails; alerta ao concierge para
  * todos os abandonos no passo de pagamento (com ou sem telefone; decisão do
  * Ricardo, 29 out 2026). Os contactos 1 (no pagamento), 2 e 3 levam por baixo
  * do total o cancelamento gratuito da tarifa e as duas partes como o checkout
  * as oferece no momento do envio.
+ *
+ * Contactos 2 e 3 (17 nov 2026): o 2 oferece o Flex durante 48h e o 3 aplica
+ * 5% de desconto durante 48h, por cupão do Guesty já aplicado no link. Ambos
+ * refazem a cotação antes de sair e vão para todos; só o 4 exige
+ * consentimento de newsletter.
  *
  * Idempotência: cada contacto é reclamado com um UPDATE condicional em
  * `recovery_stage` ANTES de o email sair, por isso nunca se repete, mesmo com
@@ -25,19 +30,19 @@ import {
   claimRecoveryStage,
   hasNewsletterConsent,
   claimConciergeAlert,
-  updateBookingIntent,
 } from "../db";
 import { sendCheckoutRecovery, sendConciergeCallAlert, type RecoveryTwoParts } from "./transactional-email";
 import { getPropertiesForSite, isHiddenFromCatalog } from "./properties-store";
-import type { BookingIntent } from "../../drizzle/schema";
+import type { BookingIntent, InsertBookingIntent } from "../../drizzle/schema";
 import { canRemindRecoveryStay } from './recovery-eligibility';
 import {
   RECOVERY_TIMING,
+  RECOVERY_DISCOUNT_PERCENT,
+  recoveryDiscountCoupon,
   CONCIERGE_ALERT_MIN_TOTAL,
   isRecoveryHoldout,
   nextRecoveryStage,
   hasEnoughLeadTime,
-  calendarScarcity,
   flexExtraDays,
   klarnaCanPay,
   klarnaBillingCountryForcedPt,
@@ -87,7 +92,7 @@ export function recoveryOptoutUrl(intentId: string): string {
   return `${CHECKOUT_EMAIL_ORIGIN}/api/checkout/recovery-optout?intent=${encodeURIComponent(intentId)}&t=${recoveryOptoutToken(intentId)}`;
 }
 const SWEEP_INTERVAL_MS = 10 * 60 * 1000;
-const STAGE_TAG: Record<RecoveryStage, string> = { 1: "1h", 2: "20h", 3: "3d", 4: "7d" };
+const STAGE_TAG: Record<RecoveryStage, string> = { 1: "1h", 2: "24h", 3: "3d", 4: "7d" };
 
 function utm(stage: RecoveryStage): string {
   return `utm_source=email&utm_medium=recovery&utm_campaign=checkout_recovery_${STAGE_TAG[stage]}`;
@@ -114,8 +119,8 @@ function heroImageUrl(raw: string | undefined): string | undefined {
   return raw.replace("/image/upload/", "/image/upload/w_1200,ar_4:3,c_fill,q_auto,f_auto/");
 }
 
-/** First photo of the intent's property, by slug or Guesty listing id. Fail-soft. */
-async function resolvePropertyPhoto(intent: BookingIntent): Promise<string | undefined> {
+/** Até 3 fotos da casa do intent, por slug ou listing id do Guesty. Fail-soft. */
+async function resolvePropertyPhotos(intent: BookingIntent): Promise<string[]> {
   try {
     const props = await getPropertiesForSite();
     const prop = (props as any[]).find(
@@ -123,9 +128,10 @@ async function resolvePropertyPhoto(intent: BookingIntent): Promise<string | und
         (intent.propertySlug && p.slug === intent.propertySlug) ||
         (p.guestyId || p.listingId) === intent.listingId,
     );
-    return heroImageUrl(prop?.images?.[0]);
+    const images: unknown[] = Array.isArray(prop?.images) ? prop.images : [];
+    return images.slice(0, 3).map((img) => heroImageUrl(img as string)).filter((u): u is string => !!u);
   } catch {
-    return undefined;
+    return [];
   }
 }
 
@@ -135,76 +141,105 @@ type QuoteSnap = {
 };
 
 /** Escassez real do calendário (±21 dias à volta das datas). Fail-soft. */
-async function scarcityFor(intent: BookingIntent) {
-  try {
-    const { guestyClient } = await import("../lib/guesty");
-    const day = 24 * HOUR_MS;
-    const from = new Date(Date.parse(`${intent.checkIn}T00:00:00Z`) - 21 * day).toISOString().slice(0, 10);
-    const to = new Date(Date.parse(`${intent.checkOut}T00:00:00Z`) + 21 * day).toISOString().slice(0, 10);
-    const cal = await guestyClient.getListingCalendar(intent.listingId, from, to);
-    const days = Array.isArray(cal) ? cal : (cal?.days || []);
-    return calendarScarcity(days);
-  } catch {
-    return null;
-  }
-}
-
 /**
- * Contacto 3: refaz a cotação no Guesty. Devolve a cotação nova (e grava-a no
- * intent com nova validade e o Flex oferecido), "unavailable" se as datas já
- * não se vendem, ou null se o Guesty não respondeu (adiar, não perder).
+ * Contactos 2 e 3: refaz a cotação no Guesty. Devolve a cotação nova (e
+ * grava-a no intent com nova validade e o incentivo do contacto — o Flex no 2,
+ * o desconto no 3), "unavailable" se as datas já não se vendem, ou null se o
+ * Guesty não respondeu (adiar, não perder).
  */
-async function requoteForStage3(intent: BookingIntent): Promise<
+async function requoteForStage(intent: BookingIntent, stage: 2 | 3): Promise<
   | {
       kind: "ok";
       quote: QuoteSnap & { total: number };
       expiresAt: Date;
       flexGift: { until: Date; value: number; days: number } | null;
-      /** O que ficou gravado no intent: o email do contacto 3 lê o intent assim. */
-      patch: Record<string, unknown>;
+      discount: { until: Date; percent: number; before: number } | null;
+      /** O que ficou gravado no intent: o email do contacto lê o intent assim. */
+      patch: Partial<InsertBookingIntent>;
     }
   | { kind: "unavailable" }
   | null
 > {
   try {
-    const { createBEQuote } = await import("./guesty-booking");
+    const { createBEQuote, applyCouponToBEQuote } = await import("./guesty-booking");
     const be = await createBEQuote({
-      listingId: intent.listingId, checkIn: intent.checkIn, checkOut: intent.checkOut, guests: intent.guests,
+      listingId: intent.listingId, checkIn: intent.checkIn, checkOut: intent.checkOut, guests: intent.guests, fresh: true,
     });
-    const plans = be.ratePlanOptions ?? [];
-    const plan = plans.find((p) => p.ratePlanId === intent.ratePlanId)
-      ?? plans.find((p) => p.ratePlanId === be.ratePlanId)
+    // Contacto 3: o desconto é um cupão do Guesty aplicado à MESMA quote, por
+    // isso o hóspede abre o link já com o valor descontado e não escreve
+    // código nenhum. Sem cupão configurado, ou se o Guesty o recusar, o email
+    // sai à mesma com as datas re-verificadas e o preço de hoje.
+    const couponCode = stage === 3 ? recoveryDiscountCoupon() : null;
+    const selectedPlan = (quote: typeof be) => quote.ratePlanOptions?.find((p) => p.ratePlanId === intent.ratePlanId)
+      ?? quote.ratePlanOptions?.find((p) => p.ratePlanId === quote.ratePlanId)
       ?? null;
-    const total = plan?.total ?? be.total;
+    const originalPlan = selectedPlan(be);
+    const beforeTotal = originalPlan?.total ?? be.total;
+    let src: typeof be = be;
+    let recoveryDiscountReference: string | undefined;
+    if (couponCode) {
+      try {
+        const withCoupon = await applyCouponToBEQuote({
+          quoteId: be.quoteId,
+          coupons: [couponCode],
+          listingId: intent.listingId,
+          checkIn: intent.checkIn,
+          checkOut: intent.checkOut,
+        });
+        const landed = withCoupon.coupons.find((c) => c.code.toUpperCase() === couponCode);
+        const discountedPlan = selectedPlan(withCoupon);
+        const discountedTotal = discountedPlan?.total ?? withCoupon.total;
+        if (landed && (discountedPlan?.ratePlanId ?? withCoupon.ratePlanId) === (originalPlan?.ratePlanId ?? be.ratePlanId)
+            && discountedTotal > 0 && discountedTotal < beforeTotal) {
+          src = withCoupon as typeof be;
+          recoveryDiscountReference = landed.supplierReference ?? landed.code;
+        } else {
+          console.warn(`[Recovery] Cupão sem desconto aplicável no intent ${intent.id}`);
+          src = await createBEQuote({
+            listingId: intent.listingId, checkIn: intent.checkIn, checkOut: intent.checkOut, guests: intent.guests, fresh: true,
+          });
+        }
+      } catch (err: any) {
+        console.warn(`[Recovery] Não foi possível confirmar o cupão no intent ${intent.id}`);
+        src = await createBEQuote({
+          listingId: intent.listingId, checkIn: intent.checkIn, checkOut: intent.checkOut, guests: intent.guests, fresh: true,
+        });
+      }
+    }
+    const plans = src.ratePlanOptions ?? [];
+    const plan = selectedPlan(src);
+    const total = plan?.total ?? src.total;
     if (!(total > 0)) return null;
-    const cleaningFee = plan?.cleaningFee ?? be.pricing.cleaningFee;
-    const taxesAndFees = plan?.taxesAndFees ?? be.pricing.taxesAndFees ?? 0;
+    const cleaningFee = plan?.cleaningFee ?? src.pricing.cleaningFee;
+    const taxesAndFees = plan?.taxesAndFees ?? src.pricing.taxesAndFees ?? 0;
     const quote = {
-      nightlyRate: plan?.nightlyRate ?? be.pricing.nightlyRate,
+      nightlyRate: plan?.nightlyRate ?? src.pricing.nightlyRate,
       totalNights: total - cleaningFee - taxesAndFees,
       cleaningFee,
       taxesAndFees,
       total,
-      nights: be.nights,
-      currency: be.currency || "EUR",
+      nights: src.nights,
+      currency: src.currency || "EUR",
       quoteCreatedAt: Date.now(),
+      ...(recoveryDiscountReference && couponCode ? { couponCode, recoveryDiscountApplied: true as const, recoveryDiscountReference } : {}),
       ratePlanOptions: plans.map((o) => ({
         ratePlanId: o.ratePlanId, name: o.name, total: o.total, nightlyRate: o.nightlyRate,
         cleaningFee: o.cleaningFee, taxesAndFees: o.taxesAndFees ?? 0, cancellationPolicy: o.cancellationPolicy,
       })),
     };
     const expiresAt = new Date(Date.now() + RECOVERY_TIMING.requoteTtlMs);
-    // O Flex só existe acima do limiar (decisão de produto); abaixo, o
-    // contacto 3 vai sem incentivo em vez de oferecer algo que não se vende.
-    // E só se oferece quando acrescenta dias à tarifa: na moderate (cancela de
-    // graça até 7 dias antes) o Flex remarca até 7 dias antes, a mesma data,
-    // e "oferecê-lo" era oferecer nada. Política desconhecida: como antes.
-    const policy = planPolicyCode(plan ?? { cancellationPolicy: be.cancellationPolicy });
+    // O Flex vai no contacto 2 e só existe acima do limiar (decisão de
+    // produto); abaixo, o contacto vai sem incentivo em vez de oferecer algo
+    // que não se vende. E só se oferece quando acrescenta dias à tarifa: na
+    // moderate (cancela de graça até 7 dias antes) o Flex remarca até 7 dias
+    // antes, a mesma data, e "oferecê-lo" era oferecer nada. Política
+    // desconhecida: como antes.
+    const policy = planPolicyCode(plan ?? { cancellationPolicy: src.cancellationPolicy });
     const addsNothing = flexExtraDays(policy, FLEX_CONFIG.rescheduleDaysBefore) === 0;
-    if (addsNothing && total >= FLEX_CONFIG.minTotal) {
-      console.info(`[Recovery] Contacto 3 sem Flex oferecido (intent ${intent.id}): a tarifa ${policy} já cancela de graça até ao prazo do Flex`);
+    if (stage === 2 && addsNothing && total >= FLEX_CONFIG.minTotal) {
+      console.info(`[Recovery] Contacto 2 sem Flex oferecido (intent ${intent.id}): a tarifa ${policy} já cancela de graça até ao prazo do Flex`);
     }
-    const giftEligible = total >= FLEX_CONFIG.minTotal && !addsNothing;
+    const giftEligible = stage === 2 && total >= FLEX_CONFIG.minTotal && !addsNothing;
     const flexGift = giftEligible
       ? {
           until: new Date(Date.now() + RECOVERY_TIMING.flexGiftMs),
@@ -212,22 +247,28 @@ async function requoteForStage3(intent: BookingIntent): Promise<
           days: FLEX_CONFIG.rescheduleDaysBefore,
         }
       : null;
-    const patch: Record<string, unknown> = {
+    const discount = recoveryDiscountReference
+      ? {
+          until: new Date(Date.now() + RECOVERY_TIMING.discountGiftMs),
+          percent: RECOVERY_DISCOUNT_PERCENT,
+          before: beforeTotal,
+        }
+      : null;
+    const patch: Partial<InsertBookingIntent> = {
       quote: quote as any,
-      guestyQuoteId: be.quoteId,
-      ratePlanId: plan?.ratePlanId ?? be.ratePlanId,
+      guestyQuoteId: src.quoteId,
+      ratePlanId: plan?.ratePlanId ?? src.ratePlanId,
       expiresAt,
       // A origem da oferta fica gravada: o pagamento em duas partes retira o
       // Flex oferecido por pagamento integral, e nunca pode retirar este.
       // A escolha que o hóspede tinha ANTES da oferta fica guardada: quando as
-      // 72 horas passam, o Flex volta a ela (checkout-plan.ts,
+      // 48 horas passam, o Flex volta a ela (checkout-plan.ts,
       // effectiveFlexChoice). Sem isto o Flex ficava escolhido e a pagar para
       // quem nunca o pediu (auditoria de 14 nov 2026).
       ...(flexGift ? { flexGiftUntil: flexGift.until, flex: true, flexGiftReason: "recovery", flexGiftPrevFlex: effectiveFlexChoice(intent) } : {}),
+      ...(discount ? { discountGiftUntil: discount.until } : {}),
     };
-    const ok = await updateBookingIntent(intent.id, patch as any);
-    if (!ok) return null;
-    return { kind: "ok", quote, expiresAt, flexGift, patch };
+    return { kind: "ok", quote, expiresAt, flexGift, discount, patch };
   } catch (err: any) {
     const { describeGuestyError } = await import("./guesty");
     const reason = describeGuestyError(err);
@@ -442,8 +483,10 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       const stage = intent.recoveryStage ?? 0;
       const quoteValid = !!intent.expiresAt && intent.expiresAt.getTime() > now;
 
-      // O consentimento só importa depois de a cotação expirar (contactos 3/4)
-      const needsConsent = !quoteValid || ageMs >= RECOVERY_TIMING.stage3AfterMs;
+      // Só o contacto 4 (outras casas) exige consentimento de newsletter
+      // (Ricardo, 17 nov 2026). Os 1 a 3 falam da casa e das datas que o
+      // próprio hóspede pediu, com opt-out em cada email.
+      const needsConsent = ageMs >= RECOVERY_TIMING.stage4AfterMs;
       const consent = needsConsent ? await consentFor(intent.email) : false;
       let target = nextRecoveryStage({ stage, ageMs, quoteValid, consent });
       const holdout = isRecoveryHoldout(intent.id);
@@ -471,22 +514,28 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       let quote = intent.quote as QuoteSnap | null;
       let expiresAt = intent.expiresAt;
       let flexGift: { until: Date; value: number; days: number } | null = null;
-      // O intent como fica depois da preparação: no contacto 3, com a cotação
-      // refeita e o Flex oferecido já gravados (as linhas do email lêem-no assim).
+      let discount: { until: Date; percent: number; before: number } | null = null;
+      // O intent como fica depois da preparação: nos contactos 2 e 3, com a
+      // cotação refeita e o incentivo já gravados (as linhas do email lêem-no
+      // assim).
       let intentNow: BookingIntent = intent;
-      if (target === 3) {
-        const rq = await requoteForStage3(intent);
+      let recoveryPatch: Partial<InsertBookingIntent> | undefined;
+      if (target === 2 || target === 3) {
+        const rq = await requoteForStage(intent, target);
         if (!rq) { skip.deferred++; continue; }
         if (rq.kind === "unavailable") {
-          target = 4; // datas perdidas: saltar para as alternativas
+          // A indisponibilidade permite antecipar alternativas com consentimento.
+          if (!(consent || await consentFor(intent.email))) { skip.notDue++; continue; }
+          target = 4;
         } else {
           quote = rq.quote;
           expiresAt = rq.expiresAt;
           flexGift = rq.flexGift;
+          discount = rq.discount;
+          recoveryPatch = rq.patch;
           intentNow = { ...intent, ...rq.patch } as BookingIntent;
         }
       }
-      const scarcity = target === 2 ? await scarcityFor(intent) : null;
       const alt = target === 4 ? await alternativesFor(intent, 4) : null;
       // Contacto 1 no passo de pagamento: o texto depende de ter havido uma
       // tentativa de pagar; sem ela, o que o checkout ofereceria agora.
@@ -498,7 +547,9 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       const lineFacts = payFacts ?? bookingFacts;
 
       // Claim before sending — losing an email beats repeating one.
-      const claimed = await claimRecoveryStage(intent.id, stage, target);
+      const claimed = recoveryPatch
+        ? await claimRecoveryStage(intent.id, stage, target, recoveryPatch, intent.guestyQuoteId)
+        : await claimRecoveryStage(intent.id, stage, target);
       if (!claimed) continue;
 
       try {
@@ -512,7 +563,7 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
           guests: intent.guests,
           total: quote?.total,
           quote,
-          imageUrl: await resolvePropertyPhoto(intent),
+          imageUrls: await resolvePropertyPhotos(intent),
           expiresAt,
           resumeUrl: resumeUrl(intent, target),
           optoutUrl: recoveryOptoutUrl(intent.id),
@@ -523,8 +574,8 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
           klarna: payFacts?.klarna,
           cancellation: lineFacts?.cancellation,
           twoParts: lineFacts?.twoParts,
-          scarcity,
           flexGift,
+          discount,
           alternatives: alt?.alternatives,
           propertyUrl: alt?.ownUrl,
         });

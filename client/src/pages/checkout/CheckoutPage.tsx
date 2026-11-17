@@ -529,6 +529,7 @@ export default function CheckoutPage() {
       try {
         const d = await utils.booking.getQuote.fetch({
           listingId: intent.listingId,
+          recoveryIntentId: intent.id,
           checkIn: ci,
           checkOut: co,
           guests: g,
@@ -564,7 +565,7 @@ export default function CheckoutPage() {
         // quote first let the two answers cross, so the page showed the full price while Guesty held
         // the discount and the payment check refused the mismatch (production, 23 Sep 2026).
         let next: QuoteSnapshot = fresh;
-        const prevCoupon = quoteRef.current?.couponCode;
+        const prevCoupon = "recoveryProof" in d ? undefined : quoteRef.current?.couponCode;
         if (prevCoupon) {
           const dropCoupon = () => {
             // M14 (auditoria set/2026): o desconto caía em silêncio — o
@@ -633,6 +634,7 @@ export default function CheckoutPage() {
           checkOut: co,
           guests: g,
           guestyQuoteId: liveQuoteId,
+          ...("recoveryProof" in d ? { recoveryProof: d.recoveryProof } : {}),
           ratePlanId: planNext ?? undefined,
           quote: next,
         });

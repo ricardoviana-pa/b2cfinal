@@ -10,15 +10,23 @@ import { FLEX_CONFIG } from "../config/checkout-extras";
 const H = 3_600_000;
 
 describe("regras do funil de recuperação", () => {
-  it("contactos 1 e 2 só com a cotação viva, para todos", () => {
+  it("contacto 1 só com a cotação viva, para todos", () => {
     expect(nextRecoveryStage({ stage: 0, ageMs: 0.5 * H, quoteValid: true, consent: false })).toBeNull();
     expect(nextRecoveryStage({ stage: 0, ageMs: 2 * H, quoteValid: true, consent: false })).toBe(1);
-    expect(nextRecoveryStage({ stage: 1, ageMs: 21 * H, quoteValid: true, consent: false })).toBe(2);
-    expect(nextRecoveryStage({ stage: 0, ageMs: 21 * H, quoteValid: true, consent: false })).toBe(2); // nunca dois seguidos
+    expect(nextRecoveryStage({ stage: 0, ageMs: 2 * H, quoteValid: false, consent: false })).toBeNull();
   });
-  it("contactos 3 e 4 só com consentimento", () => {
-    expect(nextRecoveryStage({ stage: 2, ageMs: 80 * H, quoteValid: false, consent: false })).toBeNull();
+  it("contacto 2 às 24 horas, sem consentimento e sem a cotação original", () => {
+    // A cotação do checkout morre às ~23h: o contacto 2 refaz-la antes de sair.
+    expect(nextRecoveryStage({ stage: 1, ageMs: 21 * H, quoteValid: true, consent: false })).toBeNull();
+    expect(nextRecoveryStage({ stage: 1, ageMs: 25 * H, quoteValid: false, consent: false })).toBe(2);
+    expect(nextRecoveryStage({ stage: 0, ageMs: 25 * H, quoteValid: false, consent: false })).toBe(2); // nunca dois seguidos
+  });
+  it("contacto 3 às 72 horas, também sem consentimento (Ricardo, 17 nov 2026)", () => {
+    expect(nextRecoveryStage({ stage: 2, ageMs: 80 * H, quoteValid: false, consent: false })).toBe(3);
     expect(nextRecoveryStage({ stage: 2, ageMs: 80 * H, quoteValid: false, consent: true })).toBe(3);
+  });
+  it("só o contacto 4 (outras casas) exige consentimento", () => {
+    expect(nextRecoveryStage({ stage: 3, ageMs: 170 * H, quoteValid: false, consent: false })).toBeNull();
     expect(nextRecoveryStage({ stage: 3, ageMs: 170 * H, quoteValid: false, consent: true })).toBe(4);
   });
   it("nunca repete e sai do funil depois do último", () => {

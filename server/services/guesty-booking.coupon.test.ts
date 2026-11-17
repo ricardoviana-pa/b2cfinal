@@ -70,13 +70,13 @@ describe("applyCouponToBEQuote", () => {
     const named = { name: "PA2027 outras datas verao 2027", type: "percentage", adjustment: -10 };
     request.mockResolvedValueOnce({}).mockResolvedValueOnce(quote(1342.58, [named]));
     const r = await applyCouponToBEQuote({ ...input, coupons: ["pa2027"] });
-    expect(r.coupons).toEqual([{ code: "PA2027", type: "percentage", adjustment: -10 }]);
+    expect(r.coupons).toEqual([{ code: "PA2027", supplierReference: named.name, type: "percentage", adjustment: -10 }]);
   });
 
   it("uses the typed code when the single coupon's name does not contain it", async () => {
     request.mockResolvedValueOnce({}).mockResolvedValueOnce(quote(1368.9, [{ name: "Portugal Active 5%", type: "percentage" }]));
     const r = await applyCouponToBEQuote({ ...input, coupons: ["PORTUGALACTIVE5"] });
-    expect(r.coupons.map((c) => c.code)).toEqual(["PORTUGALACTIVE5"]);
+    expect(r.coupons[0]).toMatchObject({ code: "PORTUGALACTIVE5", supplierReference: "Portugal Active 5%" });
     expect(r.coupons[0].code).toMatch(/^[A-Za-z0-9_-]{0,40}$/);
   });
 

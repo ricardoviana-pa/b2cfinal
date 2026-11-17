@@ -216,6 +216,9 @@ export const PRIVATE_INTENT_FIELDS = [
   "recoveryStage",
   "recoveryOptout",
   "conciergeAlerted",
+  // O desconto do contacto 3 já está no preço da cotação: o browser não
+  // precisa de saber até quando a oferta durava, e nada no checkout o lê.
+  "discountGiftUntil",
   "flexGiftPrevFlex",
   "flexImmediateConsentAt",
   "flexConsentVersion",

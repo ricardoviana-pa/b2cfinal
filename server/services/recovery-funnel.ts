@@ -1,27 +1,30 @@
 /**
- * FUNIL DE RECUPERAÇÃO DO CHECKOUT — regras (set/2026).
+ * FUNIL DE RECUPERAÇÃO DO CHECKOUT — regras (nov/2026).
  * Documento de referência: docs/checkout_recovery.md.
  *
  * Quatro contactos, cada um com um argumento diferente:
  *   1 · 1h   A casa. Se parou no pagamento: sem tentativa de pagar, "ficou
  *            alguma dúvida?"; depois de uma tentativa, "ficou algo por
  *            resolver?" (checkout-recovery.ts, paymentStepFacts)
- *   2 · 20h  Urgência verdadeira: a hora exata a que o preço expira e,
- *            quando for verdade, a escassez real do calendário
- *   3 · 72h  Datas re-verificadas, preço de hoje, e o Flex oferecido 72h
+ *   2 · 24h  Datas re-verificadas, preço de hoje, e o Flex oferecido 48h
  *            (só quando acrescenta dias à tarifa: flexExtraDays)
+ *   3 · 72h  Datas re-verificadas e 5% de desconto durante 48h, já aplicado
+ *            no link (cupão do Guesty, sem código para escrever)
  *   4 · 7d   Alternativas na mesma região, livres nas mesmas datas. Último.
  *
- * Os contactos 1 e 2 falam da cotação que o hóspede pediu e vão para todos.
- * Os contactos 3 e 4 são marketing (incentivo, outras casas) e só vão para
- * quem deu consentimento de newsletter no checkout.
+ * Os contactos 1 a 3 falam da MESMA casa e das MESMAS datas que o hóspede
+ * pediu, por isso vão para todos, com opt-out em cada email. Só o contacto 4
+ * (outras casas) é marketing e exige consentimento de newsletter.
+ * Decisão do Ricardo, 17 nov 2026: até aí os contactos 3 e 4 exigiam
+ * consentimento e, em 30 dias, nenhum hóspede chegou a ver o Flex.
  *
  * 10% dos checkouts (grupo de controlo, determinístico pelo id) não recebem
  * nenhum email: é o que permite medir quantas reservas o funil gera de facto.
  *
  * Tudo aqui é puro (sem I/O) para ficar coberto por testes.
  */
-import { createHash } from "crypto";
+import { createHash, createHmac, timingSafeEqual } from "crypto";
+import { ENV } from "../_core/env";
 import { FREE_CANCELLATION_DAYS, type PolicyCode } from "@shared/cancellationPolicy";
 import { KLARNA_DEFAULT_COUNTRY, KLARNA_PAY_IN_3_MAX_CENTS, klarnaAvailable } from "@shared/klarna";
 
@@ -29,12 +32,14 @@ const HOUR_MS = 60 * 60 * 1000;
 
 export const RECOVERY_TIMING = {
   stage1AfterMs: 1 * HOUR_MS,
-  stage2AfterMs: 20 * HOUR_MS,
+  stage2AfterMs: 24 * HOUR_MS,
   stage3AfterMs: 72 * HOUR_MS,
   stage4AfterMs: 7 * 24 * HOUR_MS,
-  /** Validade do Flex oferecido no contacto 3 */
-  flexGiftMs: 72 * HOUR_MS,
-  /** Validade da cotação refeita no contacto 3 (igual à do checkout) */
+  /** Validade do Flex oferecido no contacto 2 */
+  flexGiftMs: 48 * HOUR_MS,
+  /** Validade do desconto oferecido no contacto 3 */
+  discountGiftMs: 48 * HOUR_MS,
+  /** Validade da cotação refeita nos contactos 2 e 3 (igual à do checkout) */
   requoteTtlMs: 23 * HOUR_MS,
   /** Sem contactos quando o check-in está a menos disto */
   minLeadDays: 2,
@@ -43,6 +48,44 @@ export const RECOVERY_TIMING = {
 } as const;
 
 export const HOLDOUT_PERCENT = 10;
+
+/**
+ * Desconto do contacto 3 (17 nov 2026). O valor vive num cupão do Guesty, não
+ * no código: o site só aplica o cupão à cotação antes de enviar o email, para
+ * o hóspede abrir o link já com o desconto feito, sem código para escrever.
+ *
+ * RECOVERY_DISCOUNT_COUPON vazio (por omissão) = sem desconto: o contacto 3
+ * sai na mesma, com as datas re-verificadas e o preço de hoje. Assim o funil
+ * pode entrar em produção antes de o cupão existir no Guesty, e um cupão
+ * apagado nunca parte o email.
+ */
+export const RECOVERY_DISCOUNT_PERCENT = 5;
+
+export function recoveryDiscountCoupon(env: NodeJS.ProcessEnv = process.env): string | null {
+  const raw = String(env.RECOVERY_DISCOUNT_COUPON ?? "").trim().toUpperCase();
+  return /^[A-Z0-9_-]{2,40}$/.test(raw) ? raw : null;
+}
+
+/** Guesty may return the internal coupon name in place of the public code. */
+export function isRecoveryDiscountCoupon(value?: string | null, coupon = recoveryDiscountCoupon()): boolean {
+  if (!coupon || !value) return false;
+  const normalized = value.trim().toUpperCase();
+  return normalized === coupon || normalized.startsWith(`${coupon} `) || normalized.startsWith(`${coupon}-`);
+}
+
+/** Prove that the server applied the offer to this particular Guesty quote. */
+export function recoveryQuoteProof(intentId: string, quoteId: string, until: Date, supplierReference: string): string {
+  return createHmac("sha256", ENV.cookieSecret)
+    .update(JSON.stringify(["recovery-discount", intentId, quoteId, until.getTime(), supplierReference.trim().toUpperCase()]))
+    .digest("hex");
+}
+
+export function verifiesRecoveryQuoteProof(
+  proof: string | undefined, intentId: string, quoteId: string, until: Date, supplierReference: string,
+): boolean {
+  if (!proof || !/^[a-f0-9]{64}$/.test(proof)) return false;
+  return timingSafeEqual(Buffer.from(proof, "hex"), Buffer.from(recoveryQuoteProof(intentId, quoteId, until, supplierReference), "hex"));
+}
 
 /**
  * Alerta ao concierge: abandono no pagamento a partir deste total (EUR).
@@ -121,9 +164,12 @@ export function nextRecoveryStage(i: {
 }): RecoveryStage | null {
   const T = RECOVERY_TIMING;
   if (i.ageMs > T.maxAgeMs) return null;
+  // Só o contacto 4 (outras casas) é marketing e exige consentimento.
   if (i.consent && i.stage < 4 && i.ageMs >= T.stage4AfterMs) return 4;
-  if (i.consent && i.stage < 3 && i.ageMs >= T.stage3AfterMs) return 3;
-  if (i.quoteValid && i.stage < 2 && i.ageMs >= T.stage2AfterMs) return 2;
+  // Os contactos 2 e 3 refazem a cotação antes de sair (a do checkout morre
+  // às ~23h), por isso não dependem de ela ainda ser válida.
+  if (i.stage < 3 && i.ageMs >= T.stage3AfterMs) return 3;
+  if (i.stage < 2 && i.ageMs >= T.stage2AfterMs) return 2;
   if (i.quoteValid && i.stage < 1 && i.ageMs >= T.stage1AfterMs) return 1;
   return null;
 }

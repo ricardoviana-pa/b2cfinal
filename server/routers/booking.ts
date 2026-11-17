@@ -19,6 +19,7 @@ import * as db from "../db";
 import { partnerFeesOf } from "../services/tripwix";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 import { ratePlanPolicyFor, withTimeout } from "../services/rate-plan-policy";
+import { isRecoveryDiscountCoupon, recoveryDiscountCoupon, recoveryQuoteProof } from "../services/recovery-funnel";
 import { planPolicyCode } from "@shared/cancellationPolicy";
 
 /** Policy of the rate booked, from the listing's rate plan in Guesty — for
@@ -477,7 +478,7 @@ export const bookingRouter = router({
           pricing: r.pricing,
           total: r.total,
           ratePlanOptions: r.ratePlanOptions,
-          coupons: r.coupons,
+          coupons: r.coupons.map(({supplierReference: _supplierReference, ...coupon}) => coupon),
         };
       } catch (error: any) {
         if (error?.message === "INVALID_COUPON") return { ok: false as const, reason: "invalid" as const };
@@ -492,10 +493,34 @@ export const bookingRouter = router({
         checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
         checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
         guests: z.number().int().min(1).max(30).default(2),
+        recoveryIntentId: z.string().uuid().optional(),
       })
     )
     .query(async ({ input }) => {
       try {
+        const coupon = input.recoveryIntentId ? recoveryDiscountCoupon() : null;
+        if (coupon && input.recoveryIntentId) {
+          const intent = await db.getBookingIntent(input.recoveryIntentId);
+          if (intent && ["draft", "contact_captured", "payment_pending"].includes(intent.status) &&
+              !intent.reservationId && intent.discountGiftUntil && intent.discountGiftUntil.getTime() > Date.now() &&
+              intent.listingId === input.listingId && intent.checkIn === input.checkIn &&
+              intent.checkOut === input.checkOut && intent.guests === input.guests) {
+            const fresh = await createBEQuote({ ...input, fresh: true });
+            const discounted = await applyCouponToBEQuote({ ...input, quoteId: fresh.quoteId, coupons: [coupon] });
+            const planId = intent.ratePlanId ?? fresh.ratePlanId;
+            const original = fresh.ratePlanOptions?.find(p => p.ratePlanId === planId);
+            const updated = discounted.ratePlanOptions?.find(p => p.ratePlanId === planId);
+            const applied = discounted.coupons.find(c => isRecoveryDiscountCoupon(c.code, coupon));
+            if (!applied ||
+                !original || !updated || updated.total <= 0 || updated.total >= original.total) {
+              throw new Error("Could not refresh the recovery offer.");
+            }
+            const { coupons: _coupons, ...quote } = discounted;
+            return { ...quote, recoveryProof: recoveryQuoteProof(intent.id, quote.quoteId, intent.discountGiftUntil, applied.supplierReference ?? applied.code), available: true, source: "live", pricing: {
+              ...quote.pricing, subtotal: quote.total, total: quote.total,
+            } } satisfies QuoteResult & { recoveryProof: string };
+          }
+        }
         return await getQuoteWithDeadline(input.listingId, input.checkIn, input.checkOut, input.guests, 20_000);
       } catch (error: any) {
         throw new Error(error.message || "Failed to get quote");

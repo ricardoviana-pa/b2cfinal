@@ -713,6 +713,8 @@ ${allUrls.join("\n")}
       for (const [col, ddl] of [
         ["flex_gift_until", "ALTER TABLE `booking_intents` ADD COLUMN `flex_gift_until` timestamp NULL"],
         ["concierge_alerted", "ALTER TABLE `booking_intents` ADD COLUMN `concierge_alerted` boolean NOT NULL DEFAULT false"],
+        // Contacto 3 do funil (nov/2026): desconto oferecido até esta data
+        ["discount_gift_until", "ALTER TABLE `booking_intents` ADD COLUMN `discount_gift_until` timestamp NULL"],
       ] as const) {
         try {
           await (db as any).execute(ddl);
