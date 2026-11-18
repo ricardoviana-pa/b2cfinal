@@ -816,10 +816,11 @@
     "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1784731465/production/6957de4388cba42d9e7a905e/mk4lwv5o2myxcudibmvr.jpg",
-      "https://assets.guesty.com/image/upload/v1784729939/production/6957de4388cba42d9e7a905e/v7uvztsft6sm2al8fxfg.jpg",
+      "https://assets.guesty.com/f/A1SU01M7Q97B9GZKHFX6ABZRH9J0TD/v1",
       "https://assets.guesty.com/image/upload/v1784731473/production/6957de4388cba42d9e7a905e/hcppj7uqlvdy6qeczsfh.jpg",
+      "https://assets.guesty.com/image/upload/v1784731465/production/6957de4388cba42d9e7a905e/mk4lwv5o2myxcudibmvr.jpg",
       "https://assets.guesty.com/image/upload/v1784731814/production/6957de4388cba42d9e7a905e/ilnqzcejwswqaro2tcqi.jpg",
+      "https://assets.guesty.com/image/upload/v1784729939/production/6957de4388cba42d9e7a905e/v7uvztsft6sm2al8fxfg.jpg",
       "https://assets.guesty.com/image/upload/v1784731476/production/6957de4388cba42d9e7a905e/srmly99agorplzzkdspl.jpg",
       "https://assets.guesty.com/image/upload/v1784731476/production/6957de4388cba42d9e7a905e/vulx10es5norbgkz3fzs.jpg",
       "https://assets.guesty.com/image/upload/v1784735671/production/6957de4388cba42d9e7a905e/woryqs7dicumga23parb.jpg",
@@ -1121,8 +1122,8 @@
     ],
     "averageRating": 4,
     "reviewCount": 3,
-    "lastModified": "2026-10-25",
-    "contentHash": "837961099a2dd1c2fd576e092576baade63eea45"
+    "lastModified": "2026-11-18",
+    "contentHash": "a46d62c309ff1a80c7c8d64455ccc3e10d107910"
   },
   {
     "id": "guesty-69c567ad7f6873000e9a3c37",
@@ -28084,8 +28085,8 @@
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
-    "bedrooms": 5,
-    "bathrooms": 5,
+    "bedrooms": 4,
+    "bathrooms": 3.5,
     "maxGuests": 8,
     "priceFrom": 280,
     "pricePerNight": 280,
@@ -28529,8 +28530,8 @@
     ],
     "averageRating": 4.5,
     "reviewCount": 6,
-    "lastModified": "2026-10-25",
-    "contentHash": "b16be9e4baa822c9cef489564c7426435ad21ff7"
+    "lastModified": "2026-11-18",
+    "contentHash": "10584973cf814ebba9f5764c868034f4373320f6"
   },
   {
     "id": "guesty-6a312c59a705e1001327708c",
