@@ -25,14 +25,18 @@ export function eligibleBlackFridayListing(home: any, listingId: string): boolea
  * On failure of an ELIGIBLE campaign coupon, throw and do NOT quietly quote
  * the full amount as though the advertised discount was present.
  */
+export async function isBlackFridayDirectListing(listingId: string): Promise<boolean> {
+  const homes = await getPropertiesForSite();
+  const home = homes.find((p: any) => String(p.guestyId || p.listingId || "") === listingId);
+  return eligibleBlackFridayListing(home, listingId);
+}
+
 export async function blackFridayPublicQuote(input: {
   listingId: string; checkIn: string; checkOut: string; guests: number;
 }): Promise<QuoteResult | null> {
   const code = blackFridayPublicCoupon();
   if (!code) return null;
-  const homes = await getPropertiesForSite();
-  const home = homes.find((p: any) => String(p.guestyId || p.listingId || "") === input.listingId);
-  if (!eligibleBlackFridayListing(home, input.listingId)) return null;
+  if (!(await isBlackFridayDirectListing(input.listingId))) return null;
 
   // The fresh quote is private to this request, not in the shared BE cache.
   const base = await createBEQuote({ ...input, fresh: true });
