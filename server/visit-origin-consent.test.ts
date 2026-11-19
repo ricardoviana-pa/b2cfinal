@@ -26,7 +26,7 @@ function setup(opts: {
   stored?: Record<string, string>; brokenStorage?: boolean; navigation?: string;
 } = {}) {
   const listeners = new Map<string, ((event: any) => void)[]>();
-  const initial = { ...(opts.stored ?? {}), ...(opts.consent ? { 'pa-cookies-consent': opts.consent } : {}) };
+  const initial = { ...(opts.stored ?? {}), ...(opts.consent ? { 'pa-cookies-consent': opts.consent === 'all' ? 'all-v2' : opts.consent } : {}) };
   const local = storage(initial, opts.brokenStorage);
   const win = {
     localStorage: local,

@@ -33,7 +33,7 @@ function storage(initial: Record<string, string> = {}) {
 }
 
 /** Minimal browser for measurementConsent/datalayer, with real event dispatch. */
-function setup(saved: Record<string, string> = { 'pa-cookies-consent': 'all' }) {
+function setup(saved: Record<string, string> = { 'pa-cookies-consent': 'all-v2' }) {
   const win = Object.assign(new EventTarget(), {
     localStorage: storage(saved),
     sessionStorage: storage(),
@@ -126,7 +126,7 @@ describe('installBokunAnalyticsGuard', () => {
   });
 
   it('with "Aceitar tudo" the renamed events enter the dataLayer; with "Apenas essenciais" nothing does', async () => {
-    let { win } = setup({ 'pa-cookies-consent': 'all' });
+    let { win } = setup({ 'pa-cookies-consent': 'all-v2' });
     let guard = await import('@/lib/bokunAnalyticsGuard');
     guard.installBokunAnalyticsGuard(win as any);
     win.dispatchEvent(message({ messageType: 'GaEvent', args: bokunPurchase }));

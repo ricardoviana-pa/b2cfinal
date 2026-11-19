@@ -23,13 +23,14 @@ function setup(saved?: string, readyState = 'complete') {
     dispatchEvent: vi.fn((event: Event) => { listeners.get(event.type)?.forEach(cb => cb(event)); return true; }),
     dataLayer: [] as any[],
     fbq: undefined as any,
+    oaiq: undefined as any,
     clarity: undefined as any,
   };
   const doc = {
     readyState,
     createElement: vi.fn(() => ({ dataset: {} })),
     head: { appendChild: vi.fn((script: any) => scripts.push(script)) },
-    get cookie() { return '_ga=old; _fbi=old; _clck=old; pa_booking=keep; session=keep'; },
+    get cookie() { return '_ga=old; _fbi=old; _clck=old; __oppref=old; __obref=old; pa_booking=keep; session=keep'; },
     set cookie(value: string) { cookieWrites.push(value); },
   };
   vi.stubGlobal('window', win); vi.stubGlobal('document', doc);
@@ -40,7 +41,7 @@ beforeEach(() => { vi.resetModules(); vi.useFakeTimers(); });
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe('measurement consent and booking isolation', () => {
-  it.each([undefined, 'essential', 'invalid'])('loads GTM in denied consent mode with choice %s', async saved => {
+  it.each([undefined, 'essential', 'invalid', 'all'])('loads GTM in denied consent mode with choice %s', async saved => {
     const b = setup(saved);
     const consent = await import('../client/src/lib/measurementConsent');
     await vi.runAllTimersAsync();
@@ -58,7 +59,10 @@ describe('measurement consent and booking isolation', () => {
     const b = setup();
     const consent = await import('../client/src/lib/measurementConsent');
     await vi.runAllTimersAsync();
+    b.win.oaiq = vi.fn();
     consent.saveCookieChoice('all');
+    expect(b.win.oaiq).toHaveBeenCalledWith('consent', true);
+    expect(b.win.localStorage.getItem('pa-cookies-consent')).toBe('all-v2');
     await vi.runAllTimersAsync();
     expect(b.scripts).toHaveLength(1);
     const grant = b.win.dataLayer.findIndex(entry => entry[0] === 'consent' && entry[1] === 'update' && entry[2]?.ad_storage === 'granted');
@@ -78,7 +82,7 @@ describe('measurement consent and booking isolation', () => {
     expect(b.scripts).toHaveLength(1);
   });
   it.each(['dev.portugalactive.com', 'preview.onrender.com', 'localhost'])('never loads production tracking on %s even with consent', async hostname => {
-    const b = setup('all'); b.win.location.hostname = hostname;
+    const b = setup('all-v2'); b.win.location.hostname = hostname;
     const consent = await import('../client/src/lib/measurementConsent');
     consent.saveCookieChoice('all');
     await vi.runAllTimersAsync();
@@ -87,7 +91,7 @@ describe('measurement consent and booking isolation', () => {
     expect(b.cookieWrites).toHaveLength(0);
   });
   it('restores an existing grant before loading GTM once', async () => {
-    const b = setup('all');
+    const b = setup('all-v2');
     const consent = await import('../client/src/lib/measurementConsent');
     consent.bootstrapMeasurement(); consent.saveCookieChoice('all');
     await vi.runAllTimersAsync();
@@ -117,11 +121,14 @@ describe('measurement consent and booking isolation', () => {
     expect(consent.willReloadForEssential()).toBe(false);
   });
   it('revokes vendors, removes measurement cookies and reloads without touching booking storage', async () => {
-    const b = setup('all'); const consent = await import('../client/src/lib/measurementConsent');
-    await vi.runAllTimersAsync(); b.win.fbq = vi.fn(); b.win.clarity = vi.fn();
+    const b = setup('all-v2'); const consent = await import('../client/src/lib/measurementConsent');
+    await vi.runAllTimersAsync(); b.win.fbq = vi.fn(); b.win.clarity = vi.fn(); b.win.oaiq = vi.fn();
     b.win.localStorage.setItem('pa-booking-draft', 'guest details');
     consent.saveCookieChoice('essential');
     expect(b.win.fbq).toHaveBeenCalledWith('consent', 'revoke');
+    expect(b.win.oaiq).toHaveBeenCalledWith('consent', false);
+    expect(b.cookieWrites.some(cookie => cookie.startsWith('__oppref='))).toBe(true);
+    expect(b.cookieWrites.some(cookie => cookie.startsWith('__obref='))).toBe(true);
     expect(b.win.clarity).toHaveBeenCalledWith('consentv2', { ad_Storage: 'denied', analytics_Storage: 'denied' });
     expect(b.win.location.reload).toHaveBeenCalledOnce();
     expect(b.win.localStorage.getItem('pa-booking-draft')).toBe('guest details');
@@ -178,7 +185,7 @@ describe('measurement consent and booking isolation', () => {
     expect(b.win.dataLayer.some(entry => entry.event === 'purchase')).toBe(false);
   });
   it('applies a withdrawal made in another tab', async () => {
-    const b = setup('all'); await import('../client/src/lib/measurementConsent');
+    const b = setup('all-v2'); await import('../client/src/lib/measurementConsent');
     await vi.runAllTimersAsync();
     b.win.localStorage.setItem('pa-cookies-consent', 'essential');
     b.listeners.get('storage')?.[0]({ key: 'pa-cookies-consent' });
@@ -197,7 +204,7 @@ describe('measurement consent and booking isolation', () => {
     });
   });
   it('fails closed when another tab clears all storage', async () => {
-    const b = setup('all');
+    const b = setup('all-v2');
     const consent = await import('../client/src/lib/measurementConsent');
     await vi.runAllTimersAsync();
     b.win.localStorage.removeItem('pa-cookies-consent');

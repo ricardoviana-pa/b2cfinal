@@ -15,8 +15,15 @@ and order_created for the current booking-intent checkout. It is independent of 
 
 ## Enable in Render
 
-Do not enable until the privacy notice, cookie information and consent scope cover this
-provider and its CAPI data; confirm any required renewed consent. Configure server-only
+The privacy and cookie notices and banner now name OpenAI Ads in nine languages;
+review those translations before deployment. The consent revision keeps existing
+essential-only choices and requests a fresh grant from users with legacy 'all'.
+On withdrawal the browser calls oaiq('consent', false), clears both OpenAI cookies,
+and reloads; active checkout consent sync removes the stored ad-signals record.
+A withdrawal outside checkout cannot retroactively recall a server event; it syncs
+on opening the intent again. Before enabling, review the scope and translations.
+In GTM, keep the additional ad consent checks and add oaiq('consent', true) before
+init in the base snippet (the SDK may remember a prior denial after reload). Configure server-only
 environment variables:
  
 - OPENAI_ADS_PIXEL_ID: the existing PA - Pixel Conv ID in Ads Manager.

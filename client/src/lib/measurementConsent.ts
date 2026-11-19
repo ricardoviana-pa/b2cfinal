@@ -7,6 +7,8 @@ import { VISIT_ORIGIN_STORAGE_KEY } from "@shared/visit-origin";
  *  `ad_storage` / `analytics_storage`) and fire on `pa_consent_granted`. */
 export type CookieChoice = 'all' | 'essential';
 export const COOKIE_CHOICE_KEY = 'pa-cookies-consent';
+// Previous grants did not name OpenAI; ask once again while keeping denials.
+const CURRENT_ALL_GRANT = 'all-v2';
 export const COOKIE_PREFERENCES_EVENT = 'pa:cookie-preferences';
 export const COOKIE_CHOICE_EVENT = 'pa:cookie-choice';
 const SESSION_DENIAL_KEY = 'pa-cookies-denied';
@@ -19,6 +21,7 @@ declare global {
     dataLayer: (Record<string, unknown> | IArguments)[];
     gtag?: (...args: unknown[]) => void;
     fbq?: (...args: unknown[]) => void;
+    oaiq?: (...args: unknown[]) => void;
     clarity?: ClarityFunction;
   }
 }
@@ -37,7 +40,7 @@ function storedChoice(): CookieChoice | null {
   } catch { /* Storage can be unavailable in private/embedded browsers. */ }
   try {
     const value = window.localStorage.getItem(COOKIE_CHOICE_KEY);
-    return value === 'all' || value === 'essential' ? value : null;
+    return value === CURRENT_ALL_GRANT ? 'all' : value === 'essential' ? 'essential' : null;
   } catch { return null; }
 }
 
@@ -61,13 +64,15 @@ function updateConsent(granted: boolean) {
   }
   window.clarity?.('consentv2', { ad_Storage: state, analytics_Storage: state });
   window.fbq?.('consent', granted ? 'grant' : 'revoke');
+  // The GTM base tag must explicitly grant consent before initialization as well.
+  try { window.oaiq?.('consent', granted); } catch { /* optional vendor must not break booking */ }
 }
 
 function clearMeasurementCookies() {
   if (!isLiveSiteHostname(window.location.hostname)) return;
   // Only known measurement cookies. Booking, login and basket storage are untouched.
   const names = document.cookie.split(';').map(part => part.split('=')[0].trim())
-    .filter(name => /^(_ga($|_)|_gid$|_gat($|_)|_gcl_|_fbi$|_fbp$|_fbc$|_clck$|_clsk$)/.test(name));
+    .filter(name => /^(_ga($|_)|_gid$|_gat($|_)|_gcl_|_fbi$|_fbp$|_fbc$|_clck$|_clsk$|__oppref$|__obref$)/.test(name));
   const host = window.location.hostname;
   const domains = ['', host];
   if (host === 'portugalactive.com' || host.endsWith('.portugalactive.com')) domains.push('portugalactive.com');
@@ -158,7 +163,7 @@ function applyChoice(value: CookieChoice | null) {
 
 export function saveCookieChoice(value: CookieChoice): void {
   try {
-    window.localStorage.setItem(COOKIE_CHOICE_KEY, value);
+    window.localStorage.setItem(COOKIE_CHOICE_KEY, value === 'all' ? CURRENT_ALL_GRANT : value);
     window.sessionStorage.removeItem(SESSION_DENIAL_KEY);
   } catch {
     if (value === 'essential') {

@@ -12,7 +12,7 @@ function storage(initial: Record<string, string> = {}) {
   };
 }
 
-function setup(hostname = 'www.portugalactive.com', saved: Record<string, string> = { 'pa-cookies-consent': 'all' }) {
+function setup(hostname = 'www.portugalactive.com', saved: Record<string, string> = { 'pa-cookies-consent': 'all-v2' }) {
   const win = {
     localStorage: storage(saved),
     sessionStorage: storage(),
