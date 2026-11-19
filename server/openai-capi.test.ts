@@ -45,6 +45,7 @@ describe("OpenAI CAPI", () => {
     expect(fetchMock).toHaveBeenCalledOnce();
     expect(fetchMock.mock.calls[0][0]).toBe("https://bzr.openai.com/v1/events?pid=pixel");
     expect(JSON.parse(fetchMock.mock.calls[0][1].body).validate_only).toBe(true);
-    expect(info).toHaveBeenCalledExactlyOnceWith("[OpenAI CAPI] order_created validated successfully");
+    expect(info).toHaveBeenCalledOnce();
+    expect(info).toHaveBeenCalledWith("[OpenAI CAPI] order_created validated successfully");
   });
 });
