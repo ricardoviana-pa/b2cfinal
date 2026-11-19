@@ -75,6 +75,9 @@ import { FLEX_IMMEDIATE_CONSENT_VERSION, renderTwoPartsMandate } from "../servic
 const adSignalsSchema = z.object({
   fbp: z.string().max(255).optional(),
   fbc: z.string().max(512).optional(),
+  oppref: z.string().max(1024).optional(),
+  obref: z.string().max(1024).optional(),
+  openaiMeasurement: z.boolean().optional(),
 });
 
 const quoteSnapshotSchema = z.object({
@@ -186,14 +189,23 @@ async function resolveIntentPhoto(intent: {
   }
 }
 
-/** Purchase na CAPI da Meta, só para intents com sinais (consentimento). */
+/** Purchase nas CAPIs, só para intents com sinais (consentimento). */
 async function sendCapiPurchase(m: any, intentId: string, value: number): Promise<void> {
   const { isMetaCapiConfigured, sendMetaEvent } = await import("../services/meta-capi");
-  if (!isMetaCapiConfigured()) return;
+  const { isOpenAICapiConfigured, sendOpenAIEvent } = await import("../services/openai-capi");
+  if (!isMetaCapiConfigured() && !isOpenAICapiConfigured()) return;
   const { getAdSignals } = await import("../services/ad-signals-store");
   const signals = await getAdSignals(intentId);
   if (!signals) return;
-  await sendMetaEvent({
+  await Promise.all([sendOpenAIEvent({
+    eventName: "order_created",
+    eventId: String(m.confirmationCode),
+    value,
+    currency: String(m.quote?.currency ?? "EUR"),
+    contentId: m.listingId,
+    contentName: m.propertyName,
+    signals,
+  }), sendMetaEvent({
     eventName: "Purchase",
     eventId: String(m.confirmationCode),
     value,
@@ -206,7 +218,7 @@ async function sendCapiPurchase(m: any, intentId: string, value: number): Promis
     phone: m.guestPhone,
     sourceUrl: `https://www.portugalactive.com/${m.locale || "en"}/checkout/${intentId}`,
     signals,
-  });
+  })]);
 }
 
 /**
@@ -503,7 +515,16 @@ export const checkoutRouter = router({
             const { sendMetaEvent } = await import("../services/meta-capi");
             const signals = await getAdSignals(created);
             if (!signals) return;
-            await sendMetaEvent({
+            const { sendOpenAIEvent } = await import("../services/openai-capi");
+            await Promise.all([sendOpenAIEvent({
+              eventName: "checkout_started",
+              eventId: input.initiateCheckoutEventId,
+              value: Number(trusted.quote.total ?? 0),
+              currency: String(trusted.quote.currency ?? "EUR"),
+              contentId: input.listingId,
+              contentName: input.propertyName,
+              signals,
+            }), sendMetaEvent({
               eventName: "InitiateCheckout",
               eventId: input.initiateCheckoutEventId,
               value: Number(trusted.quote.total ?? 0),
@@ -513,7 +534,7 @@ export const checkoutRouter = router({
               numItems: 1,
               sourceUrl: `https://www.portugalactive.com/${input.locale || "en"}/homes/${input.propertySlug || ""}`,
               signals,
-            });
+            })]);
           })
           .catch(() => {/* marketing nunca parte o funil */});
       }
