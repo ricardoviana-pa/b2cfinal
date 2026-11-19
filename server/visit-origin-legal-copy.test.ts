@@ -88,12 +88,21 @@ describe('visit origin in the legal pages', () => {
     }
   });
 
-  it('dates the change: October 2026 wherever the paragraphs were added', () => {
-    const october: Record<string, RegExp> = {
-      en: /October 2026/, fr: /octobre 2026/, es: /octubre 2026/, it: /ottobre 2026/, de: /Oktober 2026/,
-      nl: /oktober 2026/, sv: /oktober 2026/, fi: /lokakuu 2026/, pt: /outubro de 2026/,
+  it('describes OpenAI measurement and consent in all supported languages', () => {
+    for (const lng of LANGS) {
+      expect(RESOURCES[lng].privacy.s3AdsBody, lng).toContain('OpenAI Ads');
+      expect(RESOURCES[lng].cookiesPage.marketingBody, lng).toContain('__oppref');
+      expect(RESOURCES[lng].cookiesPage.marketingBody, lng).toContain('__obref');
+      expect(RESOURCES[lng].cookieBanner.description, lng).toContain('OpenAI Ads');
+    }
+  });
+
+  it('dates the current privacy and cookie revisions: November 2026', () => {
+    const november: Record<string, RegExp> = {
+      en: /November 2026/, fr: /novembre 2026/, es: /noviembre 2026/, it: /novembre 2026/, de: /November 2026/,
+      nl: /november 2026/, sv: /november 2026/, fi: /marraskuu 2026/, pt: /novembro de 2026/,
     };
-    for (const lng of LANGS) expect(RESOURCES[lng].privacy.lastUpdated, lng).toMatch(october[lng]);
-    for (const lng of LANGS.filter((l) => l !== 'pt')) expect(RESOURCES[lng].cookiesPage.lastUpdated, lng).toMatch(october[lng]);
+    for (const lng of LANGS) expect(RESOURCES[lng].privacy.lastUpdated, lng).toMatch(november[lng]);
+    for (const lng of LANGS) expect(RESOURCES[lng].cookiesPage.lastUpdated, lng).toMatch(november[lng]);
   });
 });

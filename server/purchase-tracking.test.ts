@@ -12,7 +12,7 @@ function storage(initial: Record<string, string> = {}) {
   };
 }
 
-function setup(hostname = 'www.portugalactive.com', saved: Record<string, string> = { 'pa-cookies-consent': 'all' }) {
+function setup(hostname = 'www.portugalactive.com', saved: Record<string, string> = { 'pa-cookies-consent': 'all-v2' }) {
   const win = {
     localStorage: storage(saved),
     sessionStorage: storage(),
@@ -144,7 +144,7 @@ describe('política de privacidade: envio à Meta pelo servidor', () => {
   // parágrafo anterior (s3Body) diz que o email em hash de quem já ficou
   // connosco ou nos deu o email pode seguir para as listas de anúncios da Meta,
   // com saída a pedido, seja qual for a escolha no aviso de cookies. Por isso a
-  // frase final do s3AdsBody só promete que os dados da reserva descritos nesse
+  // frase de recusa da Meta no s3AdsBody só promete que os dados da reserva descritos nesse
   // parágrafo ficam de fora; "não enviamos nada à Meta" contradiz o s3Body.
   const BOOKING_WORD: Record<string, string> = {
     en: 'booking', pt: 'reserva', fr: 'réservation', es: 'reserva', it: 'prenotazione',
@@ -161,7 +161,9 @@ describe('política de privacidade: envio à Meta pelo servidor', () => {
     // Premissa: o s3Body continua a nomear a Meta (listas de anúncios).
     expect(String(loc.privacy.s3Body).toLowerCase()).toContain('meta');
     const sentences = String(loc.privacy.s3AdsBody).trim().split(/(?<=\.)\s+/);
-    const last = sentences[sentences.length - 1].toLowerCase();
+    const openai = sentences.findIndex(sentence => sentence.includes('OpenAI Ads'));
+    expect(openai).toBeGreaterThan(0);
+    const last = sentences[openai - 1].toLowerCase();
     expect(last).toContain(String(loc.cookieBanner.essentialOnly).toLowerCase());
     expect(last).toContain('meta');
     expect(last, 'a frase final fala dos dados da reserva').toContain(BOOKING_WORD[lng]);
