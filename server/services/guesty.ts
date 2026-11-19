@@ -192,6 +192,8 @@ export interface QuoteResult {
   quoteId?: string;
   ratePlanId?: string;
   ratePlanOptions?: BERatePlanOption[];
+  /** Discount confirmed in the same supplier quote; no client-side percentage math. */
+  couponCode?: string;
 }
 
 export interface ReservationResult {
