@@ -14,10 +14,13 @@ import { eq, sql } from "drizzle-orm";
 import { bookingIntentAdSignals } from "../../drizzle/schema";
 import { getDb } from "../db";
 
-export type AdSignalsInput = { fbp?: string | null; fbc?: string | null };
+export type AdSignalsInput = { fbp?: string | null; fbc?: string | null; oppref?: string | null; obref?: string | null; openaiMeasurement?: boolean };
 export type StoredAdSignals = {
   fbp: string | null;
   fbc: string | null;
+  oppref?: string | null;
+  obref?: string | null;
+  openaiMeasurement?: boolean;
   userAgent: string | null;
   clientIp: string | null;
 };
@@ -29,6 +32,10 @@ function cleanCookie(v: unknown, max: number): string | null {
   if (typeof v !== "string") return null;
   const s = v.trim();
   return s.length <= max && FB_COOKIE_RE.test(s) ? s : null;
+}
+
+function cleanOpenAIRef(v: unknown): string | null {
+  return typeof v === "string" && v.length > 0 && v.length <= 1024 && !/[\x00-\x20\x7f]/.test(v) ? v : null;
 }
 
 /** IP do visitante atrás do Cloudflare e do proxy do Render. */
@@ -57,6 +64,9 @@ export async function saveAdSignals(
     const row = {
       fbp: cleanCookie(input.fbp, 255),
       fbc: cleanCookie(input.fbc, 512),
+      oppref: input.openaiMeasurement === true ? cleanOpenAIRef(input.oppref) : null,
+      obref: input.openaiMeasurement === true ? cleanOpenAIRef(input.obref) : null,
+      openaiMeasurement: input.openaiMeasurement === true,
       userAgent: requestUserAgent(headers),
       clientIp: requestClientIp(headers),
     };
@@ -68,6 +78,11 @@ export async function saveAdSignals(
         set: {
           ...(row.fbp ? { fbp: row.fbp } : {}),
           ...(row.fbc ? { fbc: row.fbc } : {}),
+          ...(row.openaiMeasurement ? {
+            ...(row.oppref ? { oppref: row.oppref } : {}),
+            ...(row.obref ? { obref: row.obref } : {}),
+          } : { oppref: null, obref: null }),
+          openaiMeasurement: row.openaiMeasurement,
           userAgent: row.userAgent,
           clientIp: row.clientIp,
         },
@@ -87,6 +102,9 @@ export async function getAdSignals(intentId: string): Promise<StoredAdSignals | 
       .select({
         fbp: bookingIntentAdSignals.fbp,
         fbc: bookingIntentAdSignals.fbc,
+        oppref: bookingIntentAdSignals.oppref,
+        obref: bookingIntentAdSignals.obref,
+        openaiMeasurement: bookingIntentAdSignals.openaiMeasurement,
         userAgent: bookingIntentAdSignals.userAgent,
         clientIp: bookingIntentAdSignals.clientIp,
       })
