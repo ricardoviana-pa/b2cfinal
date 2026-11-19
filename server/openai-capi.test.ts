@@ -8,7 +8,7 @@ const event: OpenAICapiEvent = {
     oppref: "click-test", obref: "browser-test", openaiMeasurement: true },
 };
 
-afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
+afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
 describe("OpenAI CAPI", () => {
   it("uses the shared id, EUR cents and OpenAI attribution only", () => {
@@ -29,6 +29,7 @@ describe("OpenAI CAPI", () => {
   });
 
   it("fails closed without explicit enablement, credentials or consent; validates without saving", async () => {
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
     const fetchMock = vi.fn().mockResolvedValue({ ok: true });
     vi.stubGlobal("fetch", fetchMock);
     vi.stubEnv("OPENAI_CAPI_ENABLED", "false");
@@ -44,5 +45,7 @@ describe("OpenAI CAPI", () => {
     expect(fetchMock).toHaveBeenCalledOnce();
     expect(fetchMock.mock.calls[0][0]).toBe("https://bzr.openai.com/v1/events?pid=pixel");
     expect(JSON.parse(fetchMock.mock.calls[0][1].body).validate_only).toBe(true);
+    expect(info).toHaveBeenCalledOnce();
+    expect(info).toHaveBeenCalledWith("[OpenAI CAPI] order_created validated successfully");
   });
 });

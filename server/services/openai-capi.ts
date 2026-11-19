@@ -51,17 +51,20 @@ export async function sendOpenAIEvent(d: OpenAICapiEvent): Promise<void> {
   const timeout = setTimeout(() => controller.abort(), 5000);
   try {
     const url = "https://bzr.openai.com/v1/events?pid=" + encodeURIComponent(process.env.OPENAI_ADS_PIXEL_ID!.trim());
+    const body = buildOpenAICapiBody(d);
     const res = await fetch(url, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + process.env.OPENAI_CONVERSIONS_API_KEY!.trim(),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(buildOpenAICapiBody(d)),
+      body: JSON.stringify(body),
       signal: controller.signal,
     });
     // Don't log payload, event IDs, response bodies, or secrets.
     if (!res.ok) console.warn("[OpenAI CAPI] event rejected: " + res.status);
+    else if (body.validate_only) console.info(`[OpenAI CAPI] ${d.eventName} validated successfully`);
+    else console.info(`[OpenAI CAPI] ${d.eventName} accepted successfully`);
   } catch {
     console.warn("[OpenAI CAPI] delivery failed");
   } finally {
