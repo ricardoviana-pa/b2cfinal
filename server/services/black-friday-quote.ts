@@ -45,11 +45,11 @@ export async function blackFridayPublicQuote(input: {
   });
   const containsCode = applied.coupons.some((c) => c.code.toUpperCase() === code);
   const basePlans = new Map((base.ratePlanOptions ?? []).map((p) => [p.ratePlanId, p.total]));
-  const planDiscounted = (applied.ratePlanOptions ?? []).some((p) => {
-    const before = basePlans.get(p.ratePlanId);
-    return typeof before === "number" && p.total > 0 && p.total < before;
-  });
-  if (!containsCode || !planDiscounted || applied.total <= 0 || applied.currency !== "EUR") {
+  // The chosen rate plan, not merely *some* rate plan, must actually be discounted.
+  const beforeSelected = basePlans.get(applied.ratePlanId);
+  const selectedDiscounted = typeof beforeSelected === "number"
+    && applied.total > 0 && applied.total < beforeSelected;
+  if (!containsCode || !selectedDiscounted || applied.currency !== "EUR") {
     throw new Error("Black Friday discount could not be confirmed by Guesty.");
   }
   return {
