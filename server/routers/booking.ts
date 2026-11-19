@@ -20,7 +20,7 @@ import { partnerFeesOf } from "../services/tripwix";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 import { ratePlanPolicyFor, withTimeout } from "../services/rate-plan-policy";
 import { recoveryDiscountCoupon, recoveryQuoteProof } from "../services/recovery-funnel";
-import { blackFridayPublicCoupon, blackFridayVipActive, BLACK_FRIDAY_2026_VIP_CODE } from "../services/black-friday-2026";
+import { blackFridayPublicCoupon, blackFridayVipActive, BLACK_FRIDAY_2026_VIP_CODE, BLACK_FRIDAY_2026_GENERAL_CODE } from "../services/black-friday-2026";
 import { blackFridayPublicQuote, isBlackFridayDirectListing } from "../services/black-friday-quote";
 import { planPolicyCode } from "@shared/cancellationPolicy";
 
@@ -466,7 +466,8 @@ export const bookingRouter = router({
       // During the campaign, removing a manual code returns to the public 15%,
       // not an undiscounted quote. The BE POST replaces the existing code.
       const entered = input.coupon.trim().toUpperCase();
-      if (entered === BLACK_FRIDAY_2026_VIP_CODE && !blackFridayVipActive()) {
+      if ((entered === BLACK_FRIDAY_2026_VIP_CODE && !blackFridayVipActive())
+        || (entered === BLACK_FRIDAY_2026_GENERAL_CODE && !blackFridayPublicCoupon())) {
         return { ok: false as const, reason: "invalid" as const };
       }
       const publicCode = blackFridayPublicCoupon() && await isBlackFridayDirectListing(input.listingId)
