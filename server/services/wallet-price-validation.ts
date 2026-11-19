@@ -1,5 +1,6 @@
 import { getBookingIntent } from '../db';
 import { createBEQuote } from './guesty-booking';
+import { blackFridayPublicQuote } from './black-friday-quote';
 import { trustedStayQuote, assertQuotedTotal } from './trusted-checkout-quote';
 import { breakdownFromIntent } from './checkout-card-charge';
 import { PETS_ONLY_SKUS } from '../config/checkout-extras';
@@ -30,7 +31,12 @@ export async function trustedWalletPrice(input: WalletSelection) {
     amount = breakdownFromIntent(safe, facts.bedrooms).totalCents;
     ratePlanId = trusted.ratePlanId;
   } else {
-    const quote = await createBEQuote({ listingId: input.listingId, checkIn: input.checkIn, checkOut: input.checkOut, guests });
+    // Legacy wallet flow has no booking intent. During Black Friday use the
+    // exact same supplier-verified public discount as the booking widget.
+    // The fresh quote has the coupon attached; never synthesize 15% locally.
+    const quote = await blackFridayPublicQuote({
+      listingId: input.listingId, checkIn: input.checkIn, checkOut: input.checkOut, guests,
+    }) ?? await createBEQuote({ listingId: input.listingId, checkIn: input.checkIn, checkOut: input.checkOut, guests });
     ratePlanId = input.ratePlanId || quote.ratePlanId;
     const plan = quote.ratePlanOptions?.find(p => p.ratePlanId === ratePlanId);
     if (!plan || quote.currency !== 'EUR') throw changed();
