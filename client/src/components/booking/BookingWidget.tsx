@@ -122,6 +122,8 @@ interface QuoteData {
   datesTaken?: boolean;
   /** Timestamp when the BE quote was created — valid for 24h */
   quoteCreatedAt?: number;
+  /** Supplier-verified coupon included in the quoted price. */
+  couponCode?: string;
 }
 
 /** BE quotes expire after 24h; warn at 23h to give buffer */
@@ -624,6 +626,7 @@ export default function BookingWidget({
         fallbackMessage: !isLivePrice ? ((d as any).fallbackMessage || "Price on request") : undefined,
         quoteId: beQuoteId,
         quoteCreatedAt: beQuoteId ? Date.now() : undefined,
+        couponCode: (d as any).couponCode,
         ratePlanId: (d as any).ratePlanId,
         // Collapse Guesty's messy plan list to exactly two: Flexible + Non-Refundable.
         ratePlanOptions: pickTwoRatePlans((d as any).ratePlanOptions, checkIn),
@@ -1495,6 +1498,7 @@ export default function BookingWidget({
                         nights: base.nights,
                         currency: base.currency || "EUR",
                         quoteCreatedAt: base.quoteCreatedAt ?? null,
+                        couponCode: base.couponCode,
                         ratePlanOptions: base.ratePlanOptions?.map(o => ({
                           ratePlanId: o.ratePlanId,
                           name: o.name,

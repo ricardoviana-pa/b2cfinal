@@ -575,6 +575,13 @@ export async function applyCouponToBEQuote(input: {
   // code the guest typed whenever the coupon on the quote is the one requested.
   const requested = input.coupons.map((code) => code.toUpperCase());
   const rawCoupons: any[] = Array.isArray(quote?.coupons) ? quote.coupons : [];
+  // The Booking Engine must not leave multiple coupons attached when a new
+  // code replaces the public offer. Multiple records could mean stacking;
+  // never present an unverified 15% as a successful substitution.
+  if (rawCoupons.length > 1) {
+    console.warn(`[BE Coupon] refused multiple coupons on quote ${input.quoteId}`);
+    throw new Error("INVALID_COUPON");
+  }
   const codeOf = (c: any): string => {
     if (c?.code) return String(c.code);
     const name = String(c?.name ?? "").trim();

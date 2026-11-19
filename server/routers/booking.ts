@@ -20,6 +20,8 @@ import { partnerFeesOf } from "../services/tripwix";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 import { ratePlanPolicyFor, withTimeout } from "../services/rate-plan-policy";
 import { recoveryDiscountCoupon, recoveryQuoteProof } from "../services/recovery-funnel";
+import { blackFridayPublicCoupon, blackFridayVipActive, BLACK_FRIDAY_2026_VIP_CODE, BLACK_FRIDAY_2026_GENERAL_CODE } from "../services/black-friday-2026";
+import { blackFridayPublicQuote, isBlackFridayDirectListing } from "../services/black-friday-quote";
 import { planPolicyCode } from "@shared/cancellationPolicy";
 
 /** Policy of the rate booked, from the listing's rate plan in Guesty — for
@@ -461,7 +463,17 @@ export const bookingRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      const coupons = input.coupon.trim() ? [input.coupon.trim().toUpperCase()] : [];
+      // During the campaign, removing a manual code returns to the public 15%,
+      // not an undiscounted quote. The BE POST replaces the existing code.
+      const entered = input.coupon.trim().toUpperCase();
+      if ((entered === BLACK_FRIDAY_2026_VIP_CODE && !blackFridayVipActive())
+        || (entered === BLACK_FRIDAY_2026_GENERAL_CODE && !blackFridayPublicCoupon())) {
+        return { ok: false as const, reason: "invalid" as const };
+      }
+      const publicCode = blackFridayPublicCoupon() && await isBlackFridayDirectListing(input.listingId)
+        ? blackFridayPublicCoupon() : null;
+      const effectiveCode = publicCode && (!entered || entered === recoveryDiscountCoupon()) ? publicCode : entered;
+      const coupons = effectiveCode ? [effectiveCode] : [];
       try {
         const r = await applyCouponToBEQuote({
           quoteId: input.quoteId,
@@ -470,6 +482,9 @@ export const bookingRouter = router({
           checkIn: input.checkIn,
           checkOut: input.checkOut,
         });
+        if (coupons.length && !r.coupons.some((c) => c.code.toUpperCase() === coupons[0])) {
+          return { ok: false as const, reason: "invalid" as const };
+        }
         return {
           ok: true as const,
           quoteId: r.quoteId,
@@ -498,6 +513,13 @@ export const bookingRouter = router({
     )
     .query(async ({ input }) => {
       try {
+        // Public 15% outranks abandoned-cart 5% while active. Always obtain
+        // a private quote to prevent mutating a quote shared in the BE cache.
+        // VIP/manual discounts may replace the public offer in checkout.
+        if (blackFridayPublicCoupon()) {
+          const campaign = await blackFridayPublicQuote(input);
+          if (campaign) return campaign;
+        }
         const coupon = input.recoveryIntentId ? recoveryDiscountCoupon() : null;
         if (coupon && input.recoveryIntentId) {
           const intent = await db.getBookingIntent(input.recoveryIntentId);

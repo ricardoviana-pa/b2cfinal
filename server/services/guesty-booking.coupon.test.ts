@@ -53,6 +53,12 @@ describe("applyCouponToBEQuote", () => {
     expect(request).toHaveBeenCalledTimes(1);
   });
 
+  it("rejects a re-read quote with two stacked coupon records", async () => {
+    request.mockResolvedValueOnce({})
+      .mockResolvedValueOnce(quote(1200, [pa2027, { code: "PABF15GERAL26", type: "percentage", adjustment: -15 }]));
+    await expect(applyCouponToBEQuote({ ...input, coupons: ["PABF15GERAL26"] })).rejects.toThrow("INVALID_COUPON");
+  });
+
   it("removes the code with an empty list and returns the full price", async () => {
     request.mockResolvedValueOnce({}).mockResolvedValueOnce(quote(1440.9));
     const r = await applyCouponToBEQuote({ ...input, coupons: [] });

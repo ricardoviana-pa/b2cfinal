@@ -500,6 +500,64 @@ describe("contacto 3: o desconto é um cupão do Guesty já aplicado no link (17
   });
 });
 
+describe("Black Friday: recuperação não acumula nem substitui 15% por 5%", () => {
+  const campaignAt = () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-25T12:00:00Z"));
+    vi.stubEnv("BLACK_FRIDAY_2026_AUTO_COUPON", "true");
+    vi.stubEnv("RECOVERY_DISCOUNT_COUPON", "RECUPERA5");
+    mock.properties.mockResolvedValue([{ guestyId: "listing-1", isActive: true, isPortfolio: false }]);
+    mock.beCoupon.mockResolvedValue({
+      quoteId: "q-new", total: 1938, currency: "EUR", nights: 5, ratePlanId: "rp1",
+      pricing: { nightlyRate: 351.6, totalNights: 1758, cleaningFee: 180, taxesAndFees: 0 },
+      ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 1938, nightlyRate: 351.6, cleaningFee: 180, taxesAndFees: 0 }],
+      coupons: [{ code: "PABF15GERAL26" }],
+    });
+  };
+
+  it.each([
+    [2, 25, 1],
+    [3, 80, 2],
+  ])("contacto %s uses 15%% public price without 48h recovery gift", async (contact, hours, precedingStage) => {
+    campaignAt();
+    const row = intent(hours, { recoveryStage: precedingStage, expiresAt: new Date(Date.now() - 3_600_000) });
+    mock.candidates.mockResolvedValue([row]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.beCoupon).toHaveBeenCalledWith(expect.objectContaining({ coupons: ["PABF15GERAL26"] }));
+    expect(mock.beCoupon).not.toHaveBeenCalledWith(expect.objectContaining({ coupons: ["RECUPERA5"] }));
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({
+      stage: contact, discount: null,
+      quote: expect.objectContaining({ total: 1938, couponCode: "PABF15GERAL26" }),
+    }));
+    expect(mock.claim.mock.calls[0][3]).toMatchObject({
+      quote: expect.objectContaining({ couponCode: "PABF15GERAL26" }),
+      discountGiftUntil: null,
+    });
+  });
+
+  it("Guesty refuses public 15%: defer instead of emailing a worse price", async () => {
+    campaignAt();
+    mock.beCoupon.mockRejectedValue(new Error("INVALID_COUPON"));
+    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
+    expect(mock.claim).not.toHaveBeenCalled();
+    expect(mock.send).not.toHaveBeenCalled();
+  });
+
+  it("non-eligible property keeps existing 5% recovery without claiming public 15%", async () => {
+    campaignAt();
+    mock.properties.mockResolvedValue([{ guestyId: "listing-1", isPortfolio: true }]);
+    mock.beCoupon.mockResolvedValue({
+      quoteId: "q-new", total: 2166, currency: "EUR", nights: 5, ratePlanId: "rp1",
+      ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2166, nightlyRate: 399, cleaningFee: 180, taxesAndFees: 0 }],
+      coupons: [{ code: "RECUPERA5" }],
+    });
+    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    await runCheckoutRecoverySweep();
+    expect(mock.beCoupon).toHaveBeenCalledWith(expect.objectContaining({ coupons: ["RECUPERA5"] }));
+  });
+});
+
 describe("contactos 2 e 3: cancelamento gratuito e duas partes por baixo do total (29 out 2026)", () => {
   const chargeAt = "2099-01-15T10:00:00.000Z";
   // Desde 17 nov 2026 o contacto 2 refaz a cotação antes de sair: as linhas

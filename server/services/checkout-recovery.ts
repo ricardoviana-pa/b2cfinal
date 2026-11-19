@@ -35,6 +35,8 @@ import { sendCheckoutRecovery, sendConciergeCallAlert, type RecoveryTwoParts } f
 import { getPropertiesForSite, isHiddenFromCatalog } from "./properties-store";
 import type { BookingIntent, InsertBookingIntent } from "../../drizzle/schema";
 import { canRemindRecoveryStay } from './recovery-eligibility';
+import { blackFridayPublicCoupon } from './black-friday-2026';
+import { isBlackFridayDirectListing } from './black-friday-quote';
 import {
   RECOVERY_TIMING,
   RECOVERY_DISCOUNT_PERCENT,
@@ -168,7 +170,14 @@ async function requoteForStage(intent: BookingIntent, stage: 2 | 3): Promise<
     // isso o hóspede abre o link já com o valor descontado e não escreve
     // código nenhum. Sem cupão configurado, ou se o Guesty o recusar, o email
     // sai à mesma com as datas re-verificadas e o preço de hoje.
-    const couponCode = stage === 3 ? recoveryDiscountCoupon() : null;
+    // During the public Black Friday window the 15% public offer is better
+    // than the recovery funnel's usual 5% (contact 3). Apply the public code
+    // to the actual Guesty quote of BOTH repriced email contacts, without
+    // making it a 48-hour private recovery offer.
+    const activePublicCode = blackFridayPublicCoupon();
+    const campaignCode = activePublicCode && await isBlackFridayDirectListing(intent.listingId)
+      ? activePublicCode : null;
+    const couponCode = campaignCode ?? (stage === 3 ? recoveryDiscountCoupon() : null);
     const selectedPlan = (quote: typeof be) => quote.ratePlanOptions?.find((p) => p.ratePlanId === intent.ratePlanId)
       ?? quote.ratePlanOptions?.find((p) => p.ratePlanId === quote.ratePlanId)
       ?? null;
@@ -191,14 +200,18 @@ async function requoteForStage(intent: BookingIntent, stage: 2 | 3): Promise<
         if (landed && (discountedPlan?.ratePlanId ?? withCoupon.ratePlanId) === (originalPlan?.ratePlanId ?? be.ratePlanId)
             && discountedTotal > 0 && discountedTotal < beforeTotal) {
           src = withCoupon as typeof be;
-          recoveryDiscountReference = landed.supplierReference ?? landed.code;
+          if (!campaignCode) recoveryDiscountReference = landed.supplierReference ?? landed.code;
         } else {
+          if (campaignCode) throw new Error("Black Friday coupon missing on recovery quote");
           console.warn(`[Recovery] Cupão sem desconto aplicável no intent ${intent.id}`);
           src = await createBEQuote({
             listingId: intent.listingId, checkIn: intent.checkIn, checkOut: intent.checkOut, guests: intent.guests, fresh: true,
           });
         }
       } catch (err: any) {
+        // Never send an email linked to a full-price quote when the public 15%
+        // is advertised. Defer the stage instead and retry next sweep.
+        if (campaignCode) throw err;
         console.warn(`[Recovery] Não foi possível confirmar o cupão no intent ${intent.id}`);
         src = await createBEQuote({
           listingId: intent.listingId, checkIn: intent.checkIn, checkOut: intent.checkOut, guests: intent.guests, fresh: true,
@@ -220,7 +233,8 @@ async function requoteForStage(intent: BookingIntent, stage: 2 | 3): Promise<
       nights: src.nights,
       currency: src.currency || "EUR",
       quoteCreatedAt: Date.now(),
-      ...(recoveryDiscountReference && couponCode ? { couponCode, recoveryDiscountApplied: true as const, recoveryDiscountReference } : {}),
+      ...(campaignCode ? { couponCode: campaignCode } : recoveryDiscountReference && couponCode
+        ? { couponCode, recoveryDiscountApplied: true as const, recoveryDiscountReference } : {}),
       ratePlanOptions: plans.map((o) => ({
         ratePlanId: o.ratePlanId, name: o.name, total: o.total, nightlyRate: o.nightlyRate,
         cleaningFee: o.cleaningFee, taxesAndFees: o.taxesAndFees ?? 0, cancellationPolicy: o.cancellationPolicy,
@@ -265,7 +279,7 @@ async function requoteForStage(intent: BookingIntent, stage: 2 | 3): Promise<
       // effectiveFlexChoice). Sem isto o Flex ficava escolhido e a pagar para
       // quem nunca o pediu (auditoria de 14 nov 2026).
       ...(flexGift ? { flexGiftUntil: flexGift.until, flex: true, flexGiftReason: "recovery", flexGiftPrevFlex: effectiveFlexChoice(intent) } : {}),
-      ...(discount ? { discountGiftUntil: discount.until } : {}),
+      ...(campaignCode ? { discountGiftUntil: null } : discount ? { discountGiftUntil: discount.until } : {}),
     };
     return { kind: "ok", quote, expiresAt, flexGift, discount, patch };
   } catch (err: any) {

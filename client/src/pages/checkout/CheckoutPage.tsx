@@ -572,6 +572,7 @@ export default function CheckoutPage() {
           nights: d.nights,
           currency: "EUR",
           quoteCreatedAt: Date.now(),
+          couponCode: (d as any).couponCode,
           // Colapsa a 2 tarifas (1 flexível + 1 não reembolsável, as mais
           // baratas de cada balde) — o Guesty pode devolver variantes
           // duplicadas e o requote mostrava-as todas (bug 12 jul)
@@ -584,7 +585,7 @@ export default function CheckoutPage() {
         // the discount and the payment check refused the mismatch (production, 23 Sep 2026).
         let next: QuoteSnapshot = fresh;
         const prevCoupon = "recoveryProof" in d ? undefined : quoteRef.current?.couponCode;
-        if (prevCoupon) {
+        if (prevCoupon && prevCoupon !== (d as any).couponCode) {
           const dropCoupon = () => {
             // M14 (auditoria set/2026): o desconto caía em silêncio — o
             // campo reabre com o código e uma nota diz porquê.
