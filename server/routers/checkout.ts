@@ -507,15 +507,26 @@ export const checkoutRouter = router({
         if (origin) await saveIntentOrigin(created, origin).catch(() => false);
         else console.warn(`[VisitOrigin] origem recusada (intent ${created}): formato inválido`);
       }
+      const diagOpenAI = process.env.OPENAI_CAPI_VALIDATE_ONLY === "true";
+      if (diagOpenAI) console.info("[OpenAI CAPI] checkout hook", {
+        created: !!created, signalsProvided: !!input.adSignals,
+        openaiMeasurement: input.adSignals?.openaiMeasurement === true,
+        eventIdProvided: !!input.initiateCheckoutEventId,
+      });
       if (created && input.adSignals) {
         const headers = ctx.req.headers as Record<string, unknown>;
         void saveAdSignals(created, input.adSignals, headers)
           .then(async (saved) => {
+            if (diagOpenAI) console.info("[OpenAI CAPI] checkout signals saved:", saved);
             if (!saved || !input.initiateCheckoutEventId) return;
             const { sendMetaEvent } = await import("../services/meta-capi");
             const signals = await getAdSignals(created);
+            if (diagOpenAI) console.info("[OpenAI CAPI] checkout signals loaded", {
+              found: !!signals, openaiMeasurement: signals?.openaiMeasurement === true,
+            });
             if (!signals) return;
             const { sendOpenAIEvent } = await import("../services/openai-capi");
+            if (diagOpenAI) console.info("[OpenAI CAPI] checkout invoking sender");
             await Promise.all([sendOpenAIEvent({
               eventName: "checkout_started",
               eventId: input.initiateCheckoutEventId,
@@ -536,7 +547,10 @@ export const checkoutRouter = router({
               signals,
             })]);
           })
-          .catch(() => {/* marketing nunca parte o funil */});
+          .catch(() => {
+            if (diagOpenAI) console.warn("[OpenAI CAPI] checkout hook failed");
+            // marketing nunca parte o funil
+          });
       }
       // null → DB unavailable; the client falls back to the legacy flow
       return { intentId: created };

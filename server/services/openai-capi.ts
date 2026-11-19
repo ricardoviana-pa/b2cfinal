@@ -46,7 +46,17 @@ export function buildOpenAICapiBody(d: OpenAICapiEvent, now = Date.now()) {
 }
 
 export async function sendOpenAIEvent(d: OpenAICapiEvent): Promise<void> {
-  if (!isOpenAICapiConfigured() || d.signals?.openaiMeasurement !== true || !d.eventId.trim()) return;
+  const diagnostic = process.env.OPENAI_CAPI_VALIDATE_ONLY === "true";
+  const configured = isOpenAICapiConfigured();
+  const consented = d.signals?.openaiMeasurement === true;
+  const eventIdPresent = !!d.eventId.trim();
+  if (!configured || !consented || !eventIdPresent) {
+    if (diagnostic) console.info("[OpenAI CAPI] sender skipped", {
+      configured, consented, eventIdPresent,
+    });
+    return;
+  }
+  if (diagnostic) console.info(`[OpenAI CAPI] ${d.eventName} attempting validation`);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 5000);
   try {
