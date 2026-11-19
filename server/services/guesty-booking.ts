@@ -13,6 +13,7 @@ import { guestyBEClient } from "../lib/guesty";
 import { BoundedMap } from "../lib/boundedMap";
 import { isNonRefundablePlan, policyGenerosity } from "@shared/cancellationPolicy";
 import { warnIfFeeDiffers } from "./rate-plan-policy";
+import { blockedBlackFridayCoupon } from "./black-friday-2026";
 
 /**
  * In-flight booking guard: prevents double-charging when the same quoteId
@@ -441,6 +442,20 @@ async function executeInstantReservation(input: {
   };
 
   console.info(`[BE Booking] START instant reservation`, JSON.stringify(logCtx));
+
+  // Legacy in-widget checkout can reach the /instant endpoint without going
+  // through checkout.createIntent. Re-read the actual supplier coupon here so
+  // a pre-launch cached quote cannot be booked using an early BF discount.
+  // Fail closed if the quote cannot be verified (never assume no coupon).
+  const supplierQuote = await guestyBEClient.request<any>(
+    "GET", `/api/reservations/quotes/${input.quoteId}`,
+  );
+  const couponLabels = Array.isArray(supplierQuote?.coupons)
+    ? supplierQuote.coupons.flatMap((c: any) => [c?.code, c?.name])
+    : [];
+  if (blockedBlackFridayCoupon(couponLabels)) {
+    throw new Error("Black Friday offer is not valid yet for this booking. Please refresh the price.");
+  }
 
   let reservation: any;
   try {

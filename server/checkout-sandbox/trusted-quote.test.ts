@@ -38,6 +38,25 @@ describe('supplier quote identity and price binding',()=>{
     // a escolha do hóspede continua a mandar
     expect(canonicalStayQuote(two,{...stay,ratePlanId:'nr'},now).ratePlanId).toBe('nr');
   });
+  it('blocks an already-discounted public Guesty quote on 19 Nov even if supplier expiry is valid',()=>{
+    const prelaunch = Date.parse('2026-11-19T18:00:00Z');
+    const q = { ...raw(), createdAt:'2026-11-19T12:00:00Z',
+      expiresAt:'2026-11-20T12:00:00Z',
+      coupons: [{code:'PABF15GERAL26'}] };
+    expect(()=>canonicalStayQuote(q,stay,prelaunch)).toThrow(/not valid yet/);
+  });
+  it('blocks a pre-launch discount preserved in the browser even when Guesty exposes no code',()=>{
+    const prelaunch = Date.parse('2026-11-19T18:00:00Z');
+    const q = { ...raw(), createdAt:'2026-11-19T12:00:00Z',
+      expiresAt:'2026-11-20T12:00:00Z' };
+    expect(()=>canonicalStayQuote(q,{...stay,quote:{couponCode:'PABF15GERAL26'}},prelaunch)).toThrow(/not valid yet/);
+  });
+  it('does not block other seasonal coupons before Black Friday',()=>{
+    const prelaunch = Date.parse('2026-11-19T18:00:00Z');
+    const q = { ...raw(), createdAt:'2026-11-19T12:00:00Z',
+      expiresAt:'2026-11-20T12:00:00Z', coupons:[{code:'RECUPERA5'}] };
+    expect(()=>canonicalStayQuote(q,stay,prelaunch)).not.toThrow();
+  });
   it('requires customer-visible total and currency to match before charging',()=>{
     expect(()=>assertQuotedTotal({total:1,currency:'EUR'},{total:1234.56,currency:'EUR'})).toThrow();
     expect(()=>assertQuotedTotal({total:1234.56,currency:'USD'},{total:1234.56,currency:'EUR'})).toThrow();

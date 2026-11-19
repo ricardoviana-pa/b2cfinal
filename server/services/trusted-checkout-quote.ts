@@ -2,8 +2,9 @@ import { TRPCError } from '@trpc/server';
 import { preferredRatePlanId } from '@shared/ratePlanDefault';
 import { guestyBEClient } from '../lib/guesty';
 import { parseBEQuote } from './guesty-booking';
+import { blockedBlackFridayCoupon } from './black-friday-2026';
 
-export type StayIdentity = { listingId: string; guestyQuoteId?: string | null; checkIn: string; checkOut: string; guests: number; ratePlanId?: string | null };
+export type StayIdentity = { listingId: string; guestyQuoteId?: string | null; checkIn: string; checkOut: string; guests: number; ratePlanId?: string | null; quote?: { couponCode?: string | null } | null };
 const invalid = () => new TRPCError({ code: 'PRECONDITION_FAILED', message: 'Please refresh your dates and price before continuing.' });
 
 /** Bind the supplier's quote to the stay before using any of its amounts. */
@@ -13,6 +14,19 @@ export function canonicalStayQuote(raw: any, stay: StayIdentity, now = Date.now(
   if (!stay.guestyQuoteId || String(raw?._id) !== stay.guestyQuoteId || listing !== stay.listingId ||
       raw?.checkInDateLocalized !== stay.checkIn || raw?.checkOutDateLocalized !== stay.checkOut ||
       Number(raw?.guestsCount) !== stay.guests || !Number.isFinite(expiresAt) || expiresAt <= now) throw invalid();
+  // A pre-launch coupon can survive a deployment in a browser checkout
+  // and inside a still-valid Guesty quote. Block it at the trusted supplier
+  // quote boundary, used both by checkout intent creation and by payment.
+  // Inspect the guest-typed code when available AND Guesty's internal labels.
+  const supplierCoupons: unknown[] = Array.isArray(raw.coupons)
+    ? raw.coupons.flatMap((c: any) => [c?.code, c?.name])
+    : [];
+  if (blockedBlackFridayCoupon([stay.quote?.couponCode, ...supplierCoupons], new Date(now))) {
+    throw new TRPCError({
+      code: 'PRECONDITION_FAILED',
+      message: 'Black Friday offer is not valid yet for this booking. Please refresh the price.',
+    });
+  }
   const parsed = parseBEQuote(raw, stay.listingId, stay.checkIn, stay.checkOut);
   // Sem tarifa no intent, a pré-selecionada é a reembolsável (a mesma regra
   // do widget e do checkout, shared/ratePlanDefault.ts), não a por omissão
