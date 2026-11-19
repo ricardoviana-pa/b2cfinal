@@ -25,3 +25,15 @@ export function blackFridayPublicCoupon(
   return day >= "2026-11-23" && day <= "2026-11-30"
     ? BLACK_FRIDAY_2026_GENERAL_CODE : null;
 }
+
+/** VIP access starts a day before the public campaign (22 Nov, Lisbon time). */
+export function blackFridayVipActive(at: Date = new Date()): boolean {
+  if (!Number.isFinite(at.getTime())) return false;
+  // Use explicit parts instead of relying on locale-specific date ordering.
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Lisbon", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(at);
+  const read = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  const ymd = `${read("year")}-${read("month")}-${read("day")}`;
+  return ymd >= "2026-11-22" && ymd <= "2026-11-30";
+}
