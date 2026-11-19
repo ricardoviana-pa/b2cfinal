@@ -835,6 +835,9 @@ ${allUrls.join("\n")}
           \`intent_id\` varchar(36) NOT NULL,
           \`fbp\` varchar(255) NULL,
           \`fbc\` varchar(512) NULL,
+          \`oppref\` varchar(1024) NULL,
+          \`obref\` varchar(1024) NULL,
+          \`openai_measurement\` boolean NOT NULL DEFAULT FALSE,
           \`user_agent\` varchar(512) NULL,
           \`client_ip\` varchar(64) NULL,
           \`updated_at\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -842,6 +845,13 @@ ${allUrls.join("\n")}
           INDEX \`idx_booking_intent_ad_signals_updated\` (\`updated_at\`)
         )
       `);
+      for (const [column, sqlType] of [["oppref", "varchar(1024) NULL"], ["obref", "varchar(1024) NULL"], ["openai_measurement", "boolean NOT NULL DEFAULT FALSE"]]) {
+        try {
+          await (db as any).execute(`ALTER TABLE \`booking_intent_ad_signals\` ADD COLUMN \`${column}\` ${sqlType}`);
+        } catch (err: any) {
+          if (!/duplicate column/i.test(String(err?.message))) throw err;
+        }
+      }
       console.info("[Migration] booking_intent_ad_signals table OK");
     }
   } catch (migErr: any) {
