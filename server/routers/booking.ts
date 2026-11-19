@@ -21,7 +21,7 @@ import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/tr
 import { ratePlanPolicyFor, withTimeout } from "../services/rate-plan-policy";
 import { recoveryDiscountCoupon, recoveryQuoteProof } from "../services/recovery-funnel";
 import { blackFridayPublicCoupon } from "../services/black-friday-2026";
-import { blackFridayPublicQuote } from "../services/black-friday-quote";
+import { blackFridayPublicQuote, isBlackFridayDirectListing } from "../services/black-friday-quote";
 import { planPolicyCode } from "@shared/cancellationPolicy";
 
 /** Policy of the rate booked, from the listing's rate plan in Guesty — for
@@ -466,7 +466,10 @@ export const bookingRouter = router({
       // During the campaign, removing a manual code returns to the public 15%,
       // not an undiscounted quote. The BE POST replaces the existing code.
       const entered = input.coupon.trim().toUpperCase();
-      const coupons = entered ? [entered] : (blackFridayPublicCoupon() ? [blackFridayPublicCoupon()!] : []);
+      const publicCode = blackFridayPublicCoupon() && await isBlackFridayDirectListing(input.listingId)
+        ? blackFridayPublicCoupon() : null;
+      const effectiveCode = publicCode && (!entered || entered === recoveryDiscountCoupon()) ? publicCode : entered;
+      const coupons = effectiveCode ? [effectiveCode] : [];
       try {
         const r = await applyCouponToBEQuote({
           quoteId: input.quoteId,
@@ -475,6 +478,9 @@ export const bookingRouter = router({
           checkIn: input.checkIn,
           checkOut: input.checkOut,
         });
+        if (coupons.length && !r.coupons.some((c) => c.code.toUpperCase() === coupons[0])) {
+          return { ok: false as const, reason: "invalid" as const };
+        }
         return {
           ok: true as const,
           quoteId: r.quoteId,
