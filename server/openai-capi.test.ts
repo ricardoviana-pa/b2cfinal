@@ -32,6 +32,7 @@ describe("OpenAI CAPI", () => {
     const info = vi.spyOn(console, "info").mockImplementation(() => {});
     const fetchMock = vi.fn().mockResolvedValue({ ok: true });
     vi.stubGlobal("fetch", fetchMock);
+    vi.stubEnv("OPENAI_CAPI_VALIDATE_ONLY", "false");
     vi.stubEnv("OPENAI_CAPI_ENABLED", "false");
     vi.stubEnv("OPENAI_ADS_PIXEL_ID", "pixel");
     vi.stubEnv("OPENAI_CONVERSIONS_API_KEY", "secret");
@@ -40,12 +41,16 @@ describe("OpenAI CAPI", () => {
     await sendOpenAIEvent({ ...event, signals: null });
     await sendOpenAIEvent({ ...event, signals: { ...event.signals!, openaiMeasurement: false } });
     expect(fetchMock).not.toHaveBeenCalled();
+    expect(info).not.toHaveBeenCalled();
     vi.stubEnv("OPENAI_CAPI_VALIDATE_ONLY", "true");
+    await sendOpenAIEvent({ ...event, signals: null });
+    expect(info).toHaveBeenCalledWith("[OpenAI CAPI] sender skipped", { configured: true, consented: false, eventIdPresent: true });
+    expect(fetchMock).not.toHaveBeenCalled();
     await sendOpenAIEvent(event);
     expect(fetchMock).toHaveBeenCalledOnce();
     expect(fetchMock.mock.calls[0][0]).toBe("https://bzr.openai.com/v1/events?pid=pixel");
     expect(JSON.parse(fetchMock.mock.calls[0][1].body).validate_only).toBe(true);
-    expect(info).toHaveBeenCalledOnce();
+    expect(info).toHaveBeenCalledWith("[OpenAI CAPI] order_created attempting validation");
     expect(info).toHaveBeenCalledWith("[OpenAI CAPI] order_created validated successfully");
   });
 });
