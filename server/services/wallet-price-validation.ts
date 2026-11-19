@@ -37,7 +37,7 @@ export async function trustedWalletPrice(input: WalletSelection) {
     const quote = await blackFridayPublicQuote({
       listingId: input.listingId, checkIn: input.checkIn, checkOut: input.checkOut, guests,
     }) ?? await createBEQuote({ listingId: input.listingId, checkIn: input.checkIn, checkOut: input.checkOut, guests });
-    ratePlanId = input.ratePlanId || quote.ratePlanId;
+    ratePlanId = input.ratePlanId || quote.ratePlanId || "";
     const plan = quote.ratePlanOptions?.find(p => p.ratePlanId === ratePlanId);
     if (!plan || quote.currency !== 'EUR') throw changed();
     amount = Math.round(plan.total * 100);
