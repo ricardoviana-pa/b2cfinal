@@ -37,10 +37,15 @@ describe("shared/company.ts: uma só fonte", () => {
   });
 
   it("o rodapé do site, o rodapé dos emails e o checkout leem daqui (nunca escrevem a empresa à mão)", () => {
+    // O rodapé já não mostra a empresa (pedido do Ricardo, 20 nov 2026): a
+    // identidade legal vive nos Termos, que o rodapé liga em todas as páginas.
     const footer = read("client/src/components/layout/Footer.tsx");
-    expect(footer).toMatch(/from '@shared\/company'/);
-    expect(footer).toMatch(/t\('legalFooter\.operatedBy', \{ company: COMPANY_LEGAL_NAME, nipc: COMPANY_NIPC \}\)/);
-    expect(footer).toMatch(/companyAddressLine\(\) \? ` · \$\{companyAddressLine\(\)\}` : ''/);
+    expect(footer).not.toMatch(/legalFooter\.operatedBy/);
+    expect(footer).toMatch(/href="\/legal\/terms"/);
+    const terms = read("client/src/pages/Terms.tsx");
+    expect(terms).toMatch(/from '@shared\/company'/);
+    expect(terms).toMatch(/t\('legalFooter\.operatedBy', \{ company: COMPANY_LEGAL_NAME, nipc: COMPANY_NIPC \}\)/);
+    expect(terms).toMatch(/companyAddressLine\(\) \? ` · \$\{companyAddressLine\(\)\}` : ''/);
     const email = read("server/services/transactional-email.ts");
     expect(email).toMatch(/import \{ companyLegalLine \} from "@shared\/company"/);
     expect(email).toMatch(/\$\{companyLegalLine\(\)\}<\/p>\s*\n<\/td><\/tr>`;\s*\n\}/);
@@ -48,7 +53,7 @@ describe("shared/company.ts: uma só fonte", () => {
     expect(block).toMatch(/from "@shared\/company"/);
     const form = read("client/src/components/booking/CheckoutPaymentForm.tsx");
     expect(form).toMatch(/from "@shared\/company"/);
-    for (const src of [footer, email, block, form, read("client/src/pages/checkout/CheckoutPage.tsx")]) {
+    for (const src of [footer, terms, email, block, form, read("client/src/pages/checkout/CheckoutPage.tsx")]) {
       expect(src).not.toMatch(/515363685/);
       expect(src).not.toMatch(/Torres Viana/);
     }
