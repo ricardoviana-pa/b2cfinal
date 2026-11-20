@@ -79,9 +79,24 @@ when a page leaves them.
   focus. On a touch screen there are none: the photo is swiped and the dots
   show the position.
 - Name 20 px serif, price 16 px medium, place 13 px gold.
-- The price row is one line on every card. The partner homes' note ("Other
-  charges to be confirmed") sits on that line, to the right, while no dates
-  are chosen; it wraps under itself only when the card is too narrow.
+- Partner homes get the same card as our own homes: no "Other charges to be
+  confirmed" note on the card or on the map labels (Ricardo, 20 Nov 2026).
+  The full note stays on the home's page, by the price, before reserving;
+  with dates, a partner card says "accommodation" instead of "total" while
+  cleaning and deposit are not known.
+
+### Destination field of the searches
+
+- Regions only, each with its number of homes: Minho, Porto and Douro, Douro
+  Valley, Lisbon, Alentejo, Algarve, Silver Coast (Ricardo, 20 Nov 2026). No
+  municipalities, no groups. An older link to a municipality
+  (`?location=caminha`) still filters and shows as the chosen value.
+
+### Homepage cover
+
+- Carcavelos Manor House (`/hero/home-carcavelos-cover-*.webp`, four sizes,
+  the 960 one for phones). The hero text carries a soft shadow
+  (`.home-hero-text`) because the photo has bright patches.
 
 ### Dates
 
