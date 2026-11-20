@@ -24,10 +24,13 @@ export default function StayCollections() {
                15 px label such as "Traga o seu cão" or "Häuser mit Pool" broke
                in two beside a one-line neighbour. 16 px of padding and a 6 px
                gap to the arrow give the label the 8 px it lacked; the arrow
-               stays on the first line when a label does need two. */
-            <Link key={slug} href={withEditorialTrip(`/collections/${slug}`, search)} className="group flex flex-col gap-6 rounded-xl border border-pa-sand bg-white p-4 sm:p-5 hover:border-pa-gold transition-colors">
+               stays on the first line when a label does need two. Between
+               1024 and 1279 px the four tiles are 231 px wide and the same
+               happened in French, Dutch, Swedish and Finnish: phone spacing
+               and a 14 px label there. */
+            <Link key={slug} href={withEditorialTrip(`/collections/${slug}`, search)} className="group flex flex-col gap-6 rounded-xl border border-pa-sand bg-white p-4 sm:p-5 lg:p-4 xl:p-5 hover:border-pa-gold transition-colors">
               <Icon size={22} className="text-pa-gold-aa" />
-              <span className="flex items-start justify-between gap-1.5 sm:gap-2 body-sm text-pa-dark font-medium">{t(`conversion.${key}`)}<ArrowUpRight size={17} className="mt-[3px] shrink-0 group-hover:translate-x-0.5 transition-transform" /></span>
+              <span className="flex items-start justify-between gap-1.5 sm:gap-2 lg:gap-1.5 xl:gap-2 body-sm lg:text-[14px] xl:text-[15px] text-pa-dark font-medium">{t(`conversion.${key}`)}<ArrowUpRight size={17} className="mt-[3px] shrink-0 group-hover:translate-x-0.5 transition-transform" /></span>
             </Link>
           ))}
         </div>

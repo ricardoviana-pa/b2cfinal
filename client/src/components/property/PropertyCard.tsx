@@ -346,7 +346,7 @@ export default function PropertyCard({
             complete house is the focus; individual units stay explorable in the
             PDP. Groups never show "unavailable" here — units may still be free. */}
         {!hidePrice && (
-          <div className="border-t border-[#E8E4DC] mt-3 pt-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+          <div className="border-t border-[#E8E4DC] mt-3 pt-3 flex flex-wrap items-baseline justify-between gap-x-2 @min-[340px]:gap-x-3 gap-y-1">
             {/* LEFT — price */}
             <div className="min-w-0">
               {(() => {
@@ -372,9 +372,9 @@ export default function PropertyCard({
                   // house isn't quotable for this search, but units may be —
                   // point into the PDP where the units section answers it.
                   if (nights > 0) {
-                    return <span className="text-pa-stone text-[15px]">{t('property.checkUnitAvailability', 'See unit availability')}</span>;
+                    return <span className="text-pa-stone text-[14px] @min-[340px]:text-[15px]">{t('property.checkUnitAvailability', 'See unit availability')}</span>;
                   }
-                  return <span className="text-pa-stone text-[15px]">{t('property.selectDatesForPrice')}</span>;
+                  return <span className="text-pa-stone text-[14px] @min-[340px]:text-[15px]">{t('property.selectDatesForPrice')}</span>;
                 }
                 if (nights > 0) {
                   if (quoteLoading && !liveQuote) {
@@ -409,7 +409,7 @@ export default function PropertyCard({
                       </span>
                     );
                   }
-                  return <span className="text-pa-stone text-[15px]">{t('property.priceOnRequest')}</span>;
+                  return <span className="text-pa-stone text-[14px] @min-[340px]:text-[15px]">{t('property.priceOnRequest')}</span>;
                 }
                 if (typeof fromPrice === 'number' && fromPrice > 0) {
                   return (
@@ -422,7 +422,7 @@ export default function PropertyCard({
                 // A partner home with no "from" (no calendar, or nothing open
                 // in 12 months): picking dates will not price it either, so
                 // "select dates for price" would be a false promise.
-                return <span className="text-pa-stone text-[15px]">{t(noPriceLabelKey(isPartner, fromPrice))}</span>;
+                return <span className="text-pa-stone text-[14px] @min-[340px]:text-[15px]">{t(noPriceLabelKey(isPartner, fromPrice))}</span>;
               })()}
               {/* Sem "IVA incluído": as nossas casas não o dizem e as dos
                   parceiros também não (o Ricardo, 29 out 2026).

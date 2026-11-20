@@ -268,7 +268,7 @@ describe('E12 — aviso de cookies: compacto no telemóvel, dois botões com o m
     // cada botão com a largura do seu texto, a dividir o que sobra (em duas
     // colunas iguais o francês partia "ESSENTIELS / UNIQUEMENT")
     expect(banner).toContain('<div className="flex gap-2 md:items-center md:gap-3 flex-shrink-0">');
-    expect(banner).toContain('flex-1 basis-auto md:flex-none px-2 md:px-5');
+    expect(banner).toContain('flex-1 basis-auto md:flex-none px-2 md:px-4 xl:px-5');
   });
 });
 

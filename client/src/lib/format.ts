@@ -121,6 +121,11 @@ export const noBreak = (text: string): string => text.replace(/ /g, '\u00A0');
 export const keepPhones = (text: string): string =>
   text.replace(/\+\d{2,3}(?: \d{2,4}){2,4}/g, (number) => number.replace(/ /g, '\u00A0'));
 
+/** A hyphenated word stays whole ("Fünf-Sterne-Service", "au-delà",
+ *  "Peneda-Gerês"): balanced wrapping likes to break at the hyphen. A WORD
+ *  JOINER after it forbids the break and keeps the same hyphen glyph. */
+export const keepHyphens = (text: string): string => text.replace(/(\p{L})-(?=\p{L})/gu, '$1-\u2060');
+
 /** A Portuguese postcode stays whole: a WORD JOINER after the hyphen stops the
  *  line breaking as "4900-" / "336" without changing how it looks or copies. */
 export const keepPostcode = (text: string): string => text.replace(/(\d{4})-(\d{3})/g, '$1-\u2060$2');

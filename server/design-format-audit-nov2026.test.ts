@@ -15,7 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { keepPhones, keepPostcode, noBreak } from '../client/src/lib/format';
+import { keepHyphens, keepPhones, keepPostcode, noBreak } from '../client/src/lib/format';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const read = (file: string) => fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -72,6 +72,10 @@ describe('nenhuma palavra sozinha na última linha', () => {
     expect(keepPhones('info@portugalactive.com or +351 258 358 434.')).toBe(`info@portugalactive.com or +351${NBSP}258${NBSP}358${NBSP}434.`);
     // um número de casas ou um preço não é um telefone
     expect(keepPhones('70 homes from 250 a night')).toBe('70 homes from 250 a night');
+    // palavras com hífen ficam inteiras; um intervalo ou um travessão não mudam
+    expect(keepHyphens('Fünf-Sterne-Service, auf Abruf')).toBe('Fünf-\u2060Sterne-\u2060Service, auf Abruf');
+    expect(keepHyphens('Peneda-Gerês')).toBe('Peneda-\u2060Gerês');
+    expect(keepHyphens('2-3 hours - easy')).toBe('2-3 hours - easy');
   });
   it('quem os usa: tarifa reembolsável, bloco legal do checkout, termos e privacidade', () => {
     expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('date: noBreak(formatBookingDate(m.freeUntil, lang, true))');
@@ -116,7 +120,9 @@ describe('cartão das casas', () => {
     expect(card).toContain('text-balance');
   });
   it('preço e contexto: a linha parte inteira, as frases não', () => {
-    expect(card).toContain('mt-3 pt-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1');
+    expect(card).toContain('mt-3 pt-3 flex flex-wrap items-baseline justify-between gap-x-2 @min-[340px]:gap-x-3 gap-y-1');
+    // num cartão estreito o rótulo do preço fica a 14 px, para caber ao lado de "5 unidades disponíveis"
+    expect(card.match(/<span className="text-pa-stone text-\[14px\] @min-\[340px\]:text-\[15px\]">/g)).toHaveLength(4);
     // o contexto à direita (unidades ou noites) é legenda: 13 px
     expect(card).toContain('<p className="text-[13px] text-pa-earth font-medium leading-tight">');
   });
@@ -149,7 +155,10 @@ describe('listagem', () => {
 describe('rodapé no telemóvel', () => {
   const footer = read('client/src/components/layout/Footer.tsx');
   it('ligações a 14 px (13 px abaixo de 375 px) em duas colunas, a primeira à largura do seu texto', () => {
-    expect(footer).toContain('grid grid-cols-[auto_minmax(0,1fr)] md:grid-cols-4');
+    expect(footer).toContain('grid grid-cols-[auto_minmax(0,1fr)] md:grid-cols-[repeat(3,auto)] md:justify-between lg:grid-cols-[1.15fr_1fr_1.1fr_0.9fr] lg:justify-normal');
+    // direitos e ligações legais lado a lado só a partir de 1024 px (num tablet não cabem numa linha)
+    expect(footer).toContain('lg:flex-row lg:items-center lg:justify-between lg:pr-16');
+    expect(footer).not.toContain('md:flex-row md:items-center md:justify-between');
     expect(footer.match(/text-\[13px\] min-\[375px\]:text-\[14px\] md:text-\[15px\] text-white\/65/g)!.length).toBeGreaterThanOrEqual(4);
   });
   it('o ponto de "Norte de Portugal · Minho" desce com a palavra seguinte', () => {

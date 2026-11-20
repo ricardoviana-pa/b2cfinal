@@ -48,6 +48,7 @@ import { selectFeaturedHomes } from '@/lib/featuredHomes';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { useFromPrices } from '@/hooks/useFromPrices';
 import { isPartnerHome } from '@shared/partnerHome';
+import { keepHyphens } from '@/lib/format';
 
 const destinations = destinationsData as unknown as Destination[];
 
@@ -441,9 +442,9 @@ export default function Home() {
                     {item.icon}
                   </div>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.1em] md:text-[12px]">{item.title}</p>
+                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.1em] md:text-[12px]">{keepHyphens(item.title)}</p>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="mt-1 max-w-none caption leading-tight text-pa-stone text-balance sm:text-[12px] sm:leading-snug md:text-[13px] md:leading-[1.55] font-body font-normal" >{item.sub}</p>
+                  <p className="mt-1 max-w-none caption leading-tight text-pa-stone text-balance sm:text-[12px] sm:leading-snug md:text-[13px] md:leading-[1.55] font-body font-normal" >{keepHyphens(item.sub)}</p>
                 </>
                 );
                 // The rate badge is a claim with terms — it links to them.
@@ -463,7 +464,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
               <h2 className="headline-lg text-pa-dark mb-3">{t('home.homesTitle')}</h2>
-              <p className="body-md max-w-2xl">
+              {/* max-w-3xl: at 16 px the sentence is about 700 px long and the
+                  672 px cap broke it in two. */}
+              <p className="body-md max-w-3xl">
                 {t('conversion.homesIntro')}
               </p>
             </div>
@@ -620,11 +623,11 @@ export default function Home() {
           {/* Right: text (40%) */}
           {/* 20 px at the sides on a phone, like every other section (it was
               32 px, and at 15 px the second point's title no longer fitted on
-              its line). */}
-          <div className="lg:col-span-2 flex items-center px-5 py-14 lg:px-10 xl:px-14 lg:py-16 bg-white">
+              its line); 32 px from 768 px, where the other sections have it. */}
+          <div className="lg:col-span-2 flex items-center px-5 md:px-8 py-14 lg:px-10 xl:px-14 lg:py-16 bg-white">
             <div className="max-w-md">
               <p className="caption font-medium text-pa-gold-aa mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.conceptOverline')}</p>
-              <h2 className="headline-lg text-pa-dark mb-5">{t('home.conceptTitle')}</h2>
+              <h2 className="headline-lg text-pa-dark mb-5 text-balance">{t('home.conceptTitle')}</h2>
               <p className="body-md mb-8">
                 {t('home.conceptBody')}
               </p>
@@ -713,7 +716,7 @@ export default function Home() {
                       redesign). */}
                   {/* eslint-disable-next-line no-restricted-syntax -- a narrow caption column; body-sm is too large for it */}
                   <p className="text-[14px] leading-[1.55] text-pa-earth mt-3 font-body font-normal" >
-                    {dest.description}
+                    {keepHyphens(dest.description)}
                   </p>
                 </Link>
               );
@@ -778,12 +781,15 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white text-[1rem] font-display mb-1">{exp.title}</h3>
-                    {/* Three lines are reserved (four between 1024 and 1280 px,
-                        where the cards are narrower) where the four cards sit side
-                        by side: the text is anchored to the foot of the photo,
-                        so a description one line longer than its neighbours'
-                        pushed that card's title up out of line. */}
-                    <p className="text-white/70 caption leading-relaxed font-body font-normal lg:min-h-[4lh] xl:min-h-[3lh]" >{exp.body}</p>
+                    {/* Three lines are reserved from 640 px, where the cards
+                        sit side by side: the text is anchored to the foot of
+                        the photo, so a description one line longer than its
+                        neighbours' pushed that card's title up out of line.
+                        Between 1024 and 1279 px the four cards are 225 px wide
+                        and the text keeps the 12 px it had: at 13 px it needed
+                        a fourth line, which lifted the text onto the subject
+                        of the photos. */}
+                    <p className="text-white/70 caption lg:text-[12px] xl:text-[13px] leading-relaxed font-body font-normal sm:min-h-[3lh]" >{exp.body}</p>
                   </div>
                 </div>
               </Link>

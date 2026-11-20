@@ -121,13 +121,13 @@ export default function CookieBanner() {
             <div className="flex gap-2 md:items-center md:gap-3 flex-shrink-0">
               <button
                 onClick={handleEssentialOnly}
-                className="pa-action flex-1 basis-auto md:flex-none px-2 md:px-5 py-2 text-[12px] leading-tight font-medium max-md:tracking-[0.04em]! uppercase text-white border border-white/50 hover:bg-white hover:text-[#1A1A18] transition-colors md:whitespace-nowrap"
+                className="pa-action flex-1 basis-auto md:flex-none px-2 md:px-4 xl:px-5 py-2 text-[12px] leading-tight font-medium max-md:tracking-[0.04em]! uppercase text-white border border-white/50 hover:bg-white hover:text-[#1A1A18] transition-colors md:whitespace-nowrap"
               >
                 {t('cookieBanner.essentialOnly')}
               </button>
               <button
                 onClick={handleAcceptAll}
-                className="pa-action flex-1 basis-auto md:flex-none px-2 md:px-5 py-2 text-[12px] leading-tight font-medium max-md:tracking-[0.04em]! uppercase text-white border border-white/50 hover:bg-white hover:text-[#1A1A18] transition-colors md:whitespace-nowrap"
+                className="pa-action flex-1 basis-auto md:flex-none px-2 md:px-4 xl:px-5 py-2 text-[12px] leading-tight font-medium max-md:tracking-[0.04em]! uppercase text-white border border-white/50 hover:bg-white hover:text-[#1A1A18] transition-colors md:whitespace-nowrap"
               >
                 {t('cookieBanner.acceptAll')}
               </button>

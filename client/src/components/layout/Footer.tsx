@@ -130,10 +130,15 @@ export default function Footer() {
 
       {/* Main link grid */}
       <div className="container py-10 lg:py-12">
-        <div className="grid grid-cols-[auto_minmax(0,1fr)] md:grid-cols-4 lg:grid-cols-[1.3fr_1fr_1fr_1fr] gap-x-4 gap-y-10 md:gap-10 lg:gap-8">
+        {/* Tablets (768 to 1023 px): the three link columns take the whole
+            row, each as wide as its links (in four equal tracks they had 146 px
+            and one track stayed empty, so 15 px links broke in two). From
+            1024 px the services column is a little wider: "Ein Haus kaufen
+            oder verkaufen" needs 217 px. */}
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] md:grid-cols-[repeat(3,auto)] md:justify-between lg:grid-cols-[1.15fr_1fr_1.1fr_0.9fr] lg:justify-normal gap-x-4 gap-y-10 md:gap-10 lg:gap-8">
 
           {/* Column 1: Brand */}
-          <div className="col-span-2 md:col-span-4 lg:col-span-1">
+          <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Link href="/">
               <img src={IMAGES.logoWhite} alt="Portugal Active — luxury villas in Portugal" className="h-8 lg:h-10 w-auto object-contain mb-5" />
             </Link>
@@ -272,10 +277,13 @@ export default function Footer() {
           </div>
 
           {/* Row 2: copyright + legal — single baseline, hairline divider.
+              Side by side only from 1024 px: at 13 px the two together need up
+              to 787 px (Spanish) and a tablet's row is 704 px, so between 768
+              and 1023 px they stay one above the other, each on one line.
               lg:pr-16 keeps the right-aligned links ("Cookie settings" last)
               out of the WhatsApp button's corner on desktop. */}
           <div
-            className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[13px] leading-none text-white/65 md:flex-row md:items-center md:justify-between lg:pr-16"
+            className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[13px] leading-none text-white/65 lg:flex-row lg:items-center lg:justify-between lg:pr-16"
             style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
           >
             <span className="leading-none">
