@@ -250,7 +250,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t('legalFooter.complaintsBookAria')}
-              className="inline-flex items-center gap-2.5 rounded-sm border border-white/25 px-3.5 py-2 text-[13px] leading-snug text-white/80 hover:border-white/50 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2.5 rounded-lg border border-white/25 px-3.5 py-2 text-[13px] leading-snug text-white/80 hover:border-white/50 hover:text-white transition-colors"
               style={{ fontFamily: 'var(--font-body)' }}
             >
               <BookOpen size={15} className="flex-shrink-0 text-[#C4A87C]" aria-hidden="true" />

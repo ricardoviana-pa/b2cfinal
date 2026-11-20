@@ -197,10 +197,9 @@ export default function ServiceDetail() {
                     href={`https://wa.me/351927161771?text=${whatsappMsg}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="pa-action flex items-center justify-center gap-3 w-full bg-[#1A1A18] text-white text-[15px] tracking-[0.08em] font-semibold py-5 hover:bg-[#333330] transition-colors"
-                    style={{ minHeight: '56px' }}
+                    className="btn-primary w-full"
                   >
-                    <MessageCircle className="w-5 h-5" />
+                    <MessageCircle className="w-4 h-4" />
                     {t('serviceDetail.chatOnWhatsApp', 'Chat on WhatsApp')}
                   </a>
                   <Link href={withEditorialTrip(`/contact?subject=services-enquiry&service=${encodeURIComponent(serviceProductSlug(item.slug))}`, search)} className="btn-ghost w-full mt-3">{planning?.requestLabel ?? t('contact.sendMessage')}</Link>

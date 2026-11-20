@@ -57,12 +57,40 @@ when a page leaves them.
 - Pills and round icon buttons: fully round (`rounded-full`).
 - Full-width heroes stay square.
 
+### Buttons
+
+- Two buttons and one height: the filled one (`btn-primary`; `btn-white` on a
+  photo or a dark block) and the outlined one (`btn-ghost`; `btn-ghost-light`
+  on dark). All four are 48 px tall, 12 px uppercase, 8 px corners.
+- "Show more", "show all" and other secondary actions are `btn-ghost`, not a
+  hand-built bordered button.
+- Filter chips (`pa-action`, 44 px, 8 px corners) and the search submit inside
+  a search bar are their own pieces; they are not a third button.
+
 ### Home cards
 
+- One card (`PropertyCard`) on the homepage, the listing, collections, the
+  destination pages, a home's "similar homes" and the 404 page. The Journal
+  keeps a compact card (photo, name, place) because an article loads only
+  those fields.
 - The photo arrows show when the card is hovered or one of them takes keyboard
   focus. On a touch screen there are none: the photo is swiped and the dots
   show the position.
 - Name 20 px serif, price 16 px medium, place 13 px gold.
+- The price row is one line on every card. The partner homes' note ("Other
+  charges to be confirmed") sits on that line, to the right, while no dates
+  are chosen; it wraps under itself only when the card is too narrow.
+
+### Dates
+
+- Dates are chosen in one calendar everywhere: `AvailabilityCalendar`. On a
+  home's page it shows that home's availability; in the homepage search and
+  the listing search (`SearchDatesPicker`, `search` mode) every future day is
+  open and there is no legend.
+- The native `<input type="date">` stays in those two searches for the moment
+  before React has loaded, and nowhere else is it visible to a guest.
+- A date field shows the date in words ("10 Dec 2026") or the field's name,
+  never the browser's "dd/mm/yyyy".
 
 ### Floating buttons and the cookie banner
 

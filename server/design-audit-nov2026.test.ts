@@ -292,3 +292,89 @@ describe('E02 — cantos: 12 px em fotografias e cartões, 8 px em botões e cam
     expect(read('client/src/pages/Contact.tsx')).not.toMatch(/(?<![\w-])rounded-md(?![\w-])/);
   });
 });
+
+describe('o mesmo calendário na homepage, na listagem e na página da casa', () => {
+  const picker = read('client/src/components/booking/SearchDatesPicker.tsx');
+  const hero = read('client/src/components/marketing/HeroSearch.tsx');
+  const homes = read('client/src/pages/Homes.tsx');
+  const calendar = read('client/src/components/booking/AvailabilityCalendar.tsx');
+
+  it('a pesquisa abre o calendário da casa, em modo de pesquisa (sem disponibilidade)', () => {
+    expect(picker).toContain('const AvailabilityCalendar = lazy(loadCalendar);');
+    expect(picker).toMatch(/<AvailabilityCalendar\s+search\s+days=\{NO_DAYS\}/);
+    // sem casa não há legenda de disponibilidade nem aviso de regras
+    expect(calendar).toContain('{!search && <div className="mx-4 mb-1 min-h-[46px] flex items-stretch">');
+    expect(calendar).toMatch(/\{!search && <div className="flex items-center gap-1\.5">\s*<span className="w-2\.5 h-2\.5 rounded-full bg-black" \/>/);
+  });
+
+  it('homepage: os dois campos de data abrem-no', () => {
+    expect(hero).toContain('const datePicker = useDateRangePicker(!!checkin);');
+    expect(hero).toContain('{calendarReady && <SearchDateButton');
+    expect(hero).toMatch(/<SearchDatesPicker picker=\{datePicker\} anchorRef=\{formRef\}/);
+  });
+
+  it('listagem: os quatro campos (computador e telemóvel) abrem-no e mostram a data por extenso', () => {
+    expect(homes.match(/<SearchDateCell/g)).toHaveLength(4);
+    expect(homes.match(/<SearchDatesPicker /g)).toHaveLength(2);
+    expect(homes).toContain("const shownDate = (iso: string) => (iso ? formatBookingDate(iso, i18n.language, true) : '');");
+    // o campo do browser ("dd/mm/yyyy") já não se vê em lado nenhum da listagem
+    expect(homes).not.toMatch(/type="date"/);
+  });
+
+  it('antes de a página estar interativa, o campo de datas do browser continua a funcionar', () => {
+    // o botão que o cobre só existe depois de o React arrancar…
+    expect(picker).toMatch(/export function useSearchDatesReady\(\): boolean \{\s*const \[ready, setReady\] = useState\(false\);\s*useEffect\(\(\) => \{ setReady\(true\); \}, \[\]\);/);
+    expect(picker).toContain('{ready && <SearchDateButton');
+    // …e até lá o campo nativo fica ao alcance do dedo e do teclado
+    expect(picker).toMatch(/nativeDateInputProps = \(ready: boolean\) =>\s*\(ready \? \{ tabIndex: -1/);
+    expect(hero).toContain('onClick={calendarReady ? undefined : e => openDatePickerWithin(e.currentTarget)}');
+    expect(hero).toContain('type="date"');
+  });
+
+  it('uma data sem a outra: a pesquisa abre o calendário na que falta', () => {
+    expect(hero).toContain('onInvalid={calendarReady ? e => { e.preventDefault(); datePicker.openField(field); } : undefined}');
+  });
+});
+
+describe('dois botões, uma altura', () => {
+  it('os "mostrar mais" e o "ver todas as comodidades" são o botão de contorno do site', () => {
+    for (const file of ['client/src/pages/Homes.tsx', 'client/src/pages/Collection.tsx', 'client/src/pages/Blog.tsx']) {
+      const src = read(file);
+      const at = src.indexOf('howMore\'');
+      expect(at, file).toBeGreaterThan(-1);
+      expect(src.slice(at - 320, at), file).toContain('className="btn-ghost"');
+    }
+    const pdp = read('client/src/pages/PropertyDetail.tsx');
+    const at = pdp.indexOf("t('propertyDetail.showAllAmenitiesCount'");
+    expect(pdp.slice(at - 260, at)).toContain('className="btn-ghost mt-6"');
+  });
+  it('página de serviço: os dois botões da caixa têm a mesma altura', () => {
+    const service = read('client/src/pages/ServiceDetail.tsx');
+    const at = service.indexOf("t('serviceDetail.chatOnWhatsApp'");
+    expect(service.slice(at - 320, at)).toContain('className="btn-primary w-full"');
+    expect(service).not.toContain("style={{ minHeight: '56px' }}");
+  });
+  it('os botões do site têm todos 48 px e 8 px de canto', () => {
+    for (const name of ['.btn-primary', '.btn-ghost', '.btn-white', '.btn-ghost-light']) {
+      const block = rule(`  ${name}`);
+      expect(block, name).toMatch(/min-height:\s*48px/);
+      expect(block, name).toContain('border-radius: var(--pa-action-radius)');
+    }
+    expect(css).toContain('--pa-action-radius: 8px;');
+  });
+  it('os filtros dos destinos têm os cantos dos das experiências', () => {
+    expect(read('client/src/pages/Destinations.tsx')).not.toMatch(/(?<![\w-])rounded-full(?![\w-])/);
+  });
+});
+
+describe('cartões das casas: a nota das casas de parceiros não os deixa mais altos', () => {
+  const card = read('client/src/components/property/PropertyCard.tsx');
+  it('sem datas, a nota fica na linha do preço, à direita', () => {
+    expect(card).toContain('const feesNoteBeside = hasPartnerPrice && nights === 0 && !isGroup;');
+    expect(card).toMatch(/\{feesNoteBeside \? \(\s*<p className="text-\[13px\] text-pa-stone leading-tight">\s*\{t\('partnerBooking\.feesPendingShort'\)\}/);
+  });
+  it('com datas continua por baixo do preço, e a frase é a mesma', () => {
+    expect(card).toContain("{hasPartnerPrice && !feesNoteBeside && (nights === 0 || !liveQuote?.feesKnown) && (");
+    expect(card.match(/t\('partnerBooking\.feesPendingShort'\)/g)).toHaveLength(2);
+  });
+});

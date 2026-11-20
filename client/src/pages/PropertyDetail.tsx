@@ -1544,7 +1544,7 @@ export default function PropertyDetail() {
                       <button
                         type="button"
                         onClick={() => setAmenitiesOpen(true)}
-                        className="pa-action mt-6 inline-flex items-center justify-center rounded-lg border border-pa-dark px-6 min-h-11 body-sm font-medium text-pa-dark hover:bg-pa-dark hover:text-white transition-colors"
+                        className="btn-ghost mt-6"
                       >
                         {t('propertyDetail.showAllAmenitiesCount', { count: amenityTotal })}
                       </button>

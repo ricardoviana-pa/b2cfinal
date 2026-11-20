@@ -61,6 +61,10 @@ interface AvailabilityCalendarProps {
   /** In the page itself (the availability section), not in a picker: always
    *  the grid, never the phone's full-screen dialog. */
   inline?: boolean;
+  /** A search with no home behind it (the homepage and the listing): every
+   *  future day is open, so there is no availability legend and no rule
+   *  notice, only the months and the two steps. */
+  search?: boolean;
 }
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -142,6 +146,7 @@ export default function AvailabilityCalendar({
   missingUntil,
   unknownNote,
   inline,
+  search,
 }: AvailabilityCalendarProps) {
   const { t, i18n } = useTranslation();
   const isMobile = useIsMobile() && !inline;
@@ -499,7 +504,7 @@ export default function AvailabilityCalendar({
           pushes the grid under the pointer and the next click lands on another
           day (auditoria set/2026, F2). One notice at a time: the rule for the
           chosen check-in wins over the month's general rule. */}
-      <div className="mx-4 mb-1 min-h-[46px] flex items-stretch">
+      {!search && <div className="mx-4 mb-1 min-h-[46px] flex items-stretch">
         {phase === "check-out" && requiredMinNights > 1 ? (
           <div className="flex-1 flex items-start gap-2 px-3 py-2 bg-amber-50/80 border border-amber-200/60">
             <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
@@ -529,7 +534,7 @@ export default function AvailabilityCalendar({
             </p>
           </div>
         ) : null}
-      </div>
+      </div>}
 
       {/* Calendar grid */}
       <div className={`px-3 pb-3 pt-1 ${isMobile || singleMonth ? "" : "flex gap-6"}`}>
@@ -537,18 +542,20 @@ export default function AvailabilityCalendar({
         {!isMobile && !singleMonth && renderMonth(secondYear, secondMonth, false)}
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-4 pb-4 pt-1 border-t border-black/[0.04]">
-        <div className="flex items-center gap-1.5">
+      {/* Legend (not in a search: with no home there is no availability to explain) */}
+      <div className={search
+        ? (!isMobile && onClose && checkIn && checkOut ? "flex items-center px-4 pb-4 pt-3 border-t border-black/[0.04]" : "hidden")
+        : "flex flex-wrap items-center gap-x-5 gap-y-2 px-4 pb-4 pt-1 border-t border-black/[0.04]"}>
+        {!search && <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black" />
           <span className="text-[12px] text-pa-stone-aa tracking-wide">{t("bookingWidget.availableLabel")}</span>
-        </div>
-        <div className="flex items-center gap-1.5">
+        </div>}
+        {!search && <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black/10 flex items-center justify-center">
             <span className="block w-1.5 h-px bg-black/25" />
           </span>
           <span className="text-[12px] text-pa-stone-aa tracking-wide">{t("bookingWidget.unavailableLabel")}</span>
-        </div>
+        </div>}
         {showsUnknown && (
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full border border-dashed border-pa-gold-aa" aria-hidden="true" />

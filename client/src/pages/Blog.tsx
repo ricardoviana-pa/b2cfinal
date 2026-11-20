@@ -270,7 +270,7 @@ export default function Blog() {
                 <button
                   type="button"
                   onClick={() => setVisibleCount((n) => n + JOURNAL_PAGE_SIZE)}
-                  className="pa-action px-8 py-3 border border-pa-dark rounded-lg body-sm font-medium text-pa-dark hover:bg-pa-dark hover:text-white transition-colors"
+                  className="btn-ghost"
                 >
                   {t('reviews.showMore', 'Show more')}
                 </button>
