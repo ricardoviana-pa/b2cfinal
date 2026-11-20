@@ -73,7 +73,7 @@ export default function ExperienceQuickFacts({
           const Icon = item.icon;
           return (
             <div key={i} className="flex items-start gap-3">
-              <div className="shrink-0 w-9 h-9 flex items-center justify-center bg-[#F5F1EB]">
+              <div className="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg bg-[#F5F1EB]">
                 <Icon className="w-4 h-4 text-pa-gold-aa" />
               </div>
               <div className="min-w-0">

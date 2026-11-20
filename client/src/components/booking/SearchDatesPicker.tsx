@@ -30,6 +30,9 @@ export const preloadSearchCalendar = (): void => {
 
 const NO_DAYS: never[] = [];
 
+/** The date field that opened the calendar: the keyboard focus goes back to it on close. */
+let lastOpener: HTMLElement | null = null;
+
 /** True once React runs in the browser. Until then the native date field does the job. */
 export function useSearchDatesReady(): boolean {
   const [ready, setReady] = useState(false);
@@ -61,7 +64,7 @@ export function SearchDateButton({ label, shown, expanded, onOpen, className }: 
       aria-haspopup="dialog"
       aria-expanded={expanded}
       aria-label={shown ? `${label}: ${shown}` : label}
-      onClick={onOpen}
+      onClick={(e) => { lastOpener = e.currentTarget; onOpen(); }}
       onPointerEnter={preloadSearchCalendar}
       onFocus={preloadSearchCalendar}
       className={cn(
@@ -183,6 +186,12 @@ export default function SearchDatesPicker({ picker, anchorRef, checkIn, checkOut
         onInteractOutside={(e) => {
           const target = e.target as Node | null;
           if (target && picker.containerRef.current?.contains(target)) e.preventDefault();
+        }}
+        // There is no popover trigger (two fields open it), so the focus is
+        // handed back by hand, to the field that opened the calendar.
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+          if (lastOpener?.isConnected) lastOpener.focus({ preventScroll: true });
         }}
         className="w-[min(680px,calc(100vw-2rem))] overflow-hidden rounded-xl border border-pa-sand bg-white p-0 shadow-[0_12px_40px_rgba(26,26,24,0.16)]"
       >

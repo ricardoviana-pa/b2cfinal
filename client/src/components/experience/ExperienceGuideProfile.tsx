@@ -38,10 +38,10 @@ export default function ExperienceGuideProfile({
             <img
               src={guidePhoto}
               alt={guideName}
-              className="w-32 h-32 md:w-40 md:h-40 object-cover bg-[#F5F1EB] border border-[#E8E4DC]"
+              className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-xl bg-[#F5F1EB] border border-[#E8E4DC]"
             />
           ) : (
-            <div className="w-32 h-32 md:w-40 md:h-40 flex items-center justify-center bg-[#F5F1EB] border border-[#E8E4DC]">
+            <div className="w-32 h-32 md:w-40 md:h-40 flex items-center justify-center rounded-xl bg-[#F5F1EB] border border-[#E8E4DC]">
               <span className="text-[32px] font-display text-pa-gold-aa">
                 {initials}
               </span>
@@ -76,7 +76,7 @@ export default function ExperienceGuideProfile({
                 {guideLanguages.map((lang, idx) => (
                   <span
                     key={idx}
-                    className="inline-block text-[13px] text-pa-earth bg-[#F5F1EB] px-3 py-1.5 border border-[#E8E4DC]"
+                    className="inline-block text-[13px] text-pa-earth bg-[#F5F1EB] px-3 py-1.5 rounded-full border border-[#E8E4DC]"
                     style={{ fontWeight: 400 }}
                   >
                     {lang}

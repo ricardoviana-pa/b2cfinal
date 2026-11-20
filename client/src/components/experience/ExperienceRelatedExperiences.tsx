@@ -113,7 +113,7 @@ export default function ExperienceRelatedExperiences({
             <button
               onClick={() => handleScroll('left')}
               disabled={!canScrollLeft}
-              className="w-12 h-12 flex items-center justify-center bg-white border border-[#E8E4DC] hover:border-[#1A1A18] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="w-12 h-12 flex items-center justify-center rounded-lg bg-white border border-[#E8E4DC] hover:border-[#1A1A18] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Scroll left"
             >
               <ChevronLeft className="w-5 h-5 text-[#1A1A18]" />
@@ -121,7 +121,7 @@ export default function ExperienceRelatedExperiences({
             <button
               onClick={() => handleScroll('right')}
               disabled={!canScrollRight}
-              className="w-12 h-12 flex items-center justify-center bg-white border border-[#E8E4DC] hover:border-[#1A1A18] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="w-12 h-12 flex items-center justify-center rounded-lg bg-white border border-[#E8E4DC] hover:border-[#1A1A18] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Scroll right"
             >
               <ChevronRight className="w-5 h-5 text-[#1A1A18]" />
@@ -145,7 +145,7 @@ export default function ExperienceRelatedExperiences({
                 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23E8E4DC" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="system-ui" font-size="14" fill="%23726D63"%3ENo image%3C/text%3E%3C/svg%3E';
 
               return (
-                <Link key={idx} href={href} className="flex-shrink-0 w-full md:w-80 snap-start block bg-white border border-[#E8E4DC] overflow-hidden hover:shadow-md transition-shadow">
+                <Link key={idx} href={href} className="flex-shrink-0 w-full md:w-80 snap-start block bg-white border border-[#E8E4DC] rounded-xl overflow-hidden hover:shadow-md transition-shadow">
                     {/* Image */}
                     <div className="aspect-video bg-[#E8E4DC] overflow-hidden">
                       <img

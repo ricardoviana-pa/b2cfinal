@@ -143,6 +143,9 @@ const SECTION_KEYS = [
 
 const WHATSAPP_NUMBER = '351927161771';
 
+/** A video file of ours (/videos/can-am.mp4), not an address on Vimeo. Its poster sits beside it: can-am-poster.webp. */
+const SELF_HOSTED_VIDEO = /\.(?:mp4|webm)$/i;
+
 /* ── Data lookup ── */
 
 function findExperience(slug: string): RawExperience | null {
@@ -414,7 +417,7 @@ export default function ExperienceDetail() {
             {exp.badges.map((badge, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1.5 text-[12px] tracking-[0.08em] uppercase font-medium px-3 py-1.5 bg-[#F5F1EB] text-pa-gold-aa border border-[#E8E4DC]"
+                className="inline-flex items-center gap-1.5 text-[12px] tracking-[0.08em] uppercase font-medium px-3 py-1.5 rounded-full bg-[#F5F1EB] text-pa-gold-aa border border-[#E8E4DC]"
               >
                 {badge === 'Bestseller' && <TrendingUp className="w-3 h-3" />}
                 {badge === 'Badge of Excellence' && <Award className="w-3 h-3" />}
@@ -533,7 +536,7 @@ export default function ExperienceDetail() {
 
               {/* Difficulty level */}
               {exp.difficultyLevel && (
-                <div className="mt-6 inline-flex items-center gap-2 text-[13px] text-pa-earth bg-[#F5F1EB] px-4 py-2.5">
+                <div className="mt-6 inline-flex items-center gap-2 text-[13px] text-pa-earth bg-[#F5F1EB] rounded-lg px-4 py-2.5">
                   <span className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium">
                     {t('experienceDetail.difficulty')}
                   </span>
@@ -542,22 +545,40 @@ export default function ExperienceDetail() {
               )}
             </section>
 
-            {/* Video embed */}
+            {/* Video embed. A Vimeo address goes to Vimeo's player with its
+                title, byline and portrait off (the like, watch later, share
+                and embed buttons, and the logo, are switched off in the
+                video's own embed settings on Vimeo: no address parameter hides
+                them). A file of ours (/videos/….mp4) plays in the browser's
+                own player: as a Vimeo id it showed "Sorry, this video does
+                not exist" (Can-Am, seen on the live site, 20 nov 2026). */}
             {exp.videoUrl && (
               <section id="video">
                 <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.seeInAction')}</h2>
                 <div
-                  className="relative w-full overflow-hidden bg-[#1A1A18]"
+                  className="relative w-full overflow-hidden rounded-xl bg-[#1A1A18]"
                   style={{ aspectRatio: '16/9' }}
                 >
-                  <iframe
-                    src={`https://player.vimeo.com/video/${exp.videoUrl.split('/').pop()}?title=0&byline=0&portrait=0&dnt=1`}
-                    className="absolute inset-0 w-full h-full"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    loading="lazy"
-                    title={`${exp.name} — Portugal Active`}
-                  />
+                  {SELF_HOSTED_VIDEO.test(exp.videoUrl) ? (
+                    <video
+                      src={exp.videoUrl}
+                      poster={exp.videoUrl.replace(SELF_HOSTED_VIDEO, '-poster.webp')}
+                      className="absolute inset-0 w-full h-full object-contain"
+                      controls
+                      playsInline
+                      preload="none"
+                      aria-label={`${exp.name} — Portugal Active`}
+                    />
+                  ) : (
+                    <iframe
+                      src={`https://player.vimeo.com/video/${exp.videoUrl.split('/').pop()}?title=0&byline=0&portrait=0&dnt=1`}
+                      className="absolute inset-0 w-full h-full"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                      loading="lazy"
+                      title={`${exp.name} — Portugal Active`}
+                    />
+                  )}
                 </div>
               </section>
             )}
@@ -718,7 +739,7 @@ export default function ExperienceDetail() {
                   )}
                 </div>
                 {exp.notSuitableFor && exp.notSuitableFor.length > 0 && (
-                  <div className="mt-6 p-5 bg-[#F5F1EB]">
+                  <div className="mt-6 p-5 rounded-xl bg-[#F5F1EB]">
                     <p className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium mb-3">
                       {t('experienceDetail.notSuitableFor')}
                     </p>

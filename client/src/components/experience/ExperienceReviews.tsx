@@ -123,7 +123,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
         <select
           value={sort}
           onChange={e => setSort(e.target.value as SortKey)}
-          className="text-[13px] bg-transparent border border-[#E8E4DC] px-4 py-2 text-[#1A1A18] focus:border-[#1A1A18] focus:outline-none cursor-pointer"
+          className="text-[13px] bg-transparent border border-[#E8E4DC] rounded-lg px-4 py-2 text-[#1A1A18] focus:border-[#1A1A18] focus:outline-none cursor-pointer"
           style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
         >
           <option value="recent">Most recent</option>

@@ -62,6 +62,8 @@ when a page leaves them.
 - Two buttons and one height: the filled one (`btn-primary`; `btn-white` on a
   photo or a dark block) and the outlined one (`btn-ghost`; `btn-ghost-light`
   on dark). All four are 48 px tall, 12 px uppercase, 8 px corners.
+- The one exception is the main action of a booking card ("Reserve" on a
+  home, "Book now" on an experience): the same button at 52 px.
 - "Show more", "show all" and other secondary actions are `btn-ghost`, not a
   hand-built bordered button.
 - Filter chips (`pa-action`, 44 px, 8 px corners) and the search submit inside

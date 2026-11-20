@@ -111,63 +111,68 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
             </div>
           ))}
         </div>
-        <div className="absolute bottom-3 left-3 z-10 text-white/90 text-[13px] bg-black/30 backdrop-blur-sm px-2.5 py-1">
+        <div className="absolute bottom-3 left-3 z-10 text-white/90 text-[13px] bg-black/30 backdrop-blur-sm rounded-lg px-2.5 py-1">
           {currentMobile + 1} / {total}
         </div>
       </div>
 
-      {/* Desktop — 1 large left + 2x2 grid right */}
-      <div className="hidden lg:grid container grid-cols-12 gap-2 pt-4">
-        <div
-          className="col-span-7 relative aspect-[4/3] overflow-hidden bg-[#F5F1EB] cursor-pointer group"
-          onClick={() => openLightbox(0)}
-        >
-          {main && (
-            <img
-              src={bokunResize(main, 1200)}
-              srcSet={bokunSrcSet(main, [768, 1200, 1600])}
-              sizes="(min-width: 1024px) 58vw, 100vw"
-              alt={`${alt} – main image`}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-            />
-          )}
-        </div>
-        <div className="col-span-5 grid grid-cols-2 grid-rows-2 gap-2">
-          {Array.from({ length: 4 }).map((_, i) => {
-            const img = grid[i];
-            const isLast = i === 3;
-            return (
-              <div
-                key={i}
-                className="relative aspect-[4/3] overflow-hidden bg-[#F5F1EB] cursor-pointer group"
-                onClick={() => openLightbox(Math.min(i + 1, total - 1))}
-              >
-                {img ? (
-                  <img
-                    src={bokunResize(img, 700)}
-                    srcSet={bokunSrcSet(img, [400, 700])}
-                    sizes="(min-width: 1024px) 21vw, 50vw"
-                    alt={`${alt} – image ${i + 2}`}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-[#E8E4DC]" />
-                )}
-                {isLast && total > 5 && (
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <span className="text-white text-[12px] font-medium tracking-[0.12em] uppercase">
-                      View all {total}
-                    </span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+      {/* Desktop — 1 large left + 2x2 grid right. One block with 12 px
+          corners, as the photos of a home (PropertyDetail.tsx). The four small
+          photos fill their half: each kept its own 4:3 before, which left a
+          gap between the two rows (auditoria de design, 14 nov 2026). */}
+      <div className="hidden lg:block container pt-4">
+        <div className="grid grid-cols-12 gap-2 overflow-hidden rounded-xl">
+          <div
+            className="col-span-7 relative aspect-[4/3] overflow-hidden bg-[#F5F1EB] cursor-pointer group"
+            onClick={() => openLightbox(0)}
+          >
+            {main && (
+              <img
+                src={bokunResize(main, 1200)}
+                srcSet={bokunSrcSet(main, [768, 1200, 1600])}
+                sizes="(min-width: 1024px) 58vw, 100vw"
+                alt={`${alt} – main image`}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+              />
+            )}
+          </div>
+          <div className="col-span-5 grid grid-cols-2 grid-rows-2 gap-2">
+            {Array.from({ length: 4 }).map((_, i) => {
+              const img = grid[i];
+              const isLast = i === 3;
+              return (
+                <div
+                  key={i}
+                  className="relative overflow-hidden bg-[#F5F1EB] cursor-pointer group"
+                  onClick={() => openLightbox(Math.min(i + 1, total - 1))}
+                >
+                  {img ? (
+                    <img
+                      src={bokunResize(img, 700)}
+                      srcSet={bokunSrcSet(img, [400, 700])}
+                      sizes="(min-width: 1024px) 21vw, 50vw"
+                      alt={`${alt} – image ${i + 2}`}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-[#E8E4DC]" />
+                  )}
+                  {isLast && total > 5 && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <span className="text-white text-[12px] font-medium tracking-[0.12em] uppercase">
+                        View all {total}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -191,21 +196,21 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
         <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center" onClick={closeLightbox}>
           <button
             onClick={closeLightbox}
-            className="absolute top-5 right-5 touch-target text-white hover:text-[#C4A87C] transition-colors"
+            className="absolute top-5 right-5 touch-target text-white hover:text-pa-gold-light transition-colors"
             aria-label="Close"
           >
             <X className="w-6 h-6" />
           </button>
           <button
             onClick={e => { e.stopPropagation(); prev(); }}
-            className="absolute left-5 top-1/2 -translate-y-1/2 touch-target text-white hover:text-[#C4A87C] transition-colors"
+            className="absolute left-5 top-1/2 -translate-y-1/2 touch-target text-white hover:text-pa-gold-light transition-colors"
             aria-label="Previous image"
           >
             <ChevronLeft className="w-8 h-8" />
           </button>
           <button
             onClick={e => { e.stopPropagation(); next(); }}
-            className="absolute right-5 top-1/2 -translate-y-1/2 touch-target text-white hover:text-[#C4A87C] transition-colors"
+            className="absolute right-5 top-1/2 -translate-y-1/2 touch-target text-white hover:text-pa-gold-light transition-colors"
             aria-label="Next image"
           >
             <ChevronRight className="w-8 h-8" />

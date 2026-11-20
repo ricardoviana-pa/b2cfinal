@@ -378,3 +378,63 @@ describe('cartões das casas: a nota das casas de parceiros não os deixa mais a
     expect(card.match(/t\('partnerBooking\.feesPendingShort'\)/g)).toHaveLength(2);
   });
 });
+
+describe('E14 — reservar uma experiência com o desenho do site', () => {
+  const card = read('client/src/components/experience/ExperienceBookingCard.tsx');
+  const bar = read('client/src/components/experience/ExperienceMobileBookingBar.tsx');
+  const modal = read('client/src/components/experience/BokunWidgetModal.tsx');
+  const widget = read('client/src/components/experience/BokunCalendarWidget.tsx');
+  const page = read('client/src/pages/ExperienceDetail.tsx');
+
+  it('o calendário do fornecedor já não aparece solto na página: só dentro do painel do site', () => {
+    expect(card).not.toContain('<BokunCalendarWidget');
+    expect(bar).not.toContain('<BokunCalendarWidget');
+    expect(page).not.toContain('<BokunCalendarWidget');
+    expect(modal.match(/<BokunCalendarWidget/g)).toHaveLength(1);
+    expect(card).toContain('<BokunWidgetModal');
+    expect(bar).toContain('<BokunWidgetModal');
+  });
+
+  it('o cartão é o cartão de reserva de uma casa: branco, contorno claro, 12 px, um botão do site', () => {
+    expect(card).toContain('<div className="overflow-hidden rounded-xl border border-pa-sand bg-white shadow-sm">');
+    expect(card.match(/className="btn-primary min-h-\[52px\] w-full whitespace-normal px-5"/g)).toHaveLength(2);
+    expect(bar.match(/className="btn-primary min-w-0"/g)).toHaveLength(2);
+  });
+
+  it('o painel é um diálogo a sério: nome, Escape, foco preso e devolvido, página parada por trás', () => {
+    expect(modal).toContain('role="dialog"');
+    expect(modal).toContain('aria-modal="true"');
+    expect(modal).toContain("if (e.key === 'Escape') {");
+    expect(modal).toContain('if (opener?.isConnected) opener.focus({ preventScroll: true });');
+    expect(modal).toContain("body.style.overflow = 'hidden'");
+    // enquanto a janela de pagamento do fornecedor está aberta, o teclado é dela
+    expect(modal).toContain('if (supplierCheckoutOpen()) return;');
+  });
+
+  it('o script do fornecedor só é pedido quando alguém vai reservar, e só no site ao vivo', () => {
+    // nada ao carregar o módulo: só dentro de funções chamadas pelo painel ou pelo botão
+    expect(widget).not.toMatch(/^ensureBokunLoader\(\);/m);
+    expect(widget).toContain('export function preloadBokunWidgets(): void {');
+    expect(widget).toContain('if (!isLiveSiteHostname(window.location.hostname)) return Promise.resolve(false);');
+    expect(card).toContain('onPointerEnter: preloadBokunWidgets');
+    expect(bar).toContain('onTouchStart={preloadBokunWidgets}');
+  });
+
+  it('se o calendário não chega, há outra forma de reservar', () => {
+    expect(widget).toContain("{status === 'failed' && (");
+    expect(widget).toContain("t('bookingWidget.tryAgain', 'Try again')");
+    expect(widget).toContain("t('experience.messageWhatsApp', 'Message us on WhatsApp to book')");
+  });
+
+  it('um vídeo nosso (ficheiro) toca no leitor do browser, não no Vimeo', () => {
+    expect(page).toContain('const SELF_HOSTED_VIDEO = /\\.(?:mp4|webm)$/i;');
+    expect(page).toMatch(/SELF_HOSTED_VIDEO\.test\(exp\.videoUrl\) \? \(\s*<video/);
+    for (const file of ['client/public/videos/can-am.mp4', 'client/public/videos/can-am-poster.webp']) {
+      expect(fs.existsSync(path.join(ROOT, file)), file).toBe(true);
+    }
+  });
+
+  it('a mensagem de WhatsApp não diz "Estimated total: €0" quando não há preço por pessoa', () => {
+    expect(card).toContain('if (priceFrom > 0) msg += `\\nEstimated total: €${priceFrom * 2}`;');
+  });
+});
