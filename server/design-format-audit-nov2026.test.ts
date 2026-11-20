@@ -15,7 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { keepHyphens, keepPhones, keepPostcode, noBreak } from '../client/src/lib/format';
+import { keepDashes, keepHyphens, keepPhones, keepPostcode, noBreak } from '../client/src/lib/format';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const read = (file: string) => fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -51,9 +51,9 @@ describe('uma classe nunca fica colada a um "${" (a causa do padding que mudou s
     }
     expect(glued).toEqual([]);
   });
-  it('a faixa de garantias: 6 px no telemóvel, 8 px a partir de 640 px, e sem divisória solta', () => {
+  it('a faixa de garantias: 10 px no telemóvel, 8 px a partir de 640 px, e sem divisória solta', () => {
     const home = read('client/src/pages/Home.tsx');
-    expect(home).toContain('px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}');
+    expect(home).toContain('px-2.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}');
     expect(home.match(/const cls = `[^`]*`/)![0]).not.toContain('md:px-5');
     // no telemóvel (duas colunas) só as células da esquerda têm divisória
     expect(home).toContain("i === 3 ? '' : i === 1 ? 'md:border-r border-[#E8E4DC]' : 'border-r border-[#E8E4DC]'");
@@ -76,6 +76,8 @@ describe('nenhuma palavra sozinha na última linha', () => {
     expect(keepHyphens('Fünf-Sterne-Service, auf Abruf')).toBe('Fünf-\u2060Sterne-\u2060Service, auf Abruf');
     expect(keepHyphens('Peneda-Gerês')).toBe('Peneda-\u2060Gerês');
     expect(keepHyphens('2-3 hours - easy')).toBe('2-3 hours - easy');
+    // o travessão fica com a palavra anterior
+    expect(keepDashes('the Algarve — the coasts')).toBe(`the Algarve${NBSP}— the coasts`);
   });
   it('quem os usa: tarifa reembolsável, bloco legal do checkout, termos e privacidade', () => {
     expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('date: noBreak(formatBookingDate(m.freeUntil, lang, true))');

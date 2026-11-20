@@ -48,8 +48,8 @@ export default function Footer() {
      others broke in two and the columns lost their rows. Below 768 px the
      links are 14 px (13 px before the redesign; still 13 px on a phone
      narrower than 375 px), the first column is as wide as its longest link
-     and the second takes the rest, 16 px apart: measured in the nine
-     languages at 390 and 360 px, no language has more broken links than it had.
+     and the second takes the rest, 24 px apart: measured in the nine
+     languages at 390, 375 and 360 px, no language has more broken links than it had.
      If a label still breaks, the dot goes down with the word after it
      ("Northern Portugal" / "· Minho"): the space after " · " is non-breaking. */
   const tied = (label: string) => label.replace(/ · /g, ' ·\u00A0');
@@ -135,7 +135,7 @@ export default function Footer() {
             and one track stayed empty, so 15 px links broke in two). From
             1024 px the services column is a little wider: "Ein Haus kaufen
             oder verkaufen" needs 217 px. */}
-        <div className="grid grid-cols-[auto_minmax(0,1fr)] md:grid-cols-[repeat(3,auto)] md:justify-between lg:grid-cols-[1.15fr_1fr_1.1fr_0.9fr] lg:justify-normal gap-x-4 gap-y-10 md:gap-10 lg:gap-8">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] md:grid-cols-[repeat(3,auto)] md:justify-between lg:grid-cols-[1.15fr_1fr_1.1fr_0.9fr] lg:justify-normal gap-x-6 gap-y-10 md:gap-10 lg:gap-8">
 
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
@@ -265,7 +265,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t('legalFooter.complaintsBookAria')}
-              className="inline-flex items-center gap-2.5 rounded-lg border border-white/25 px-3.5 py-2 text-[13px] leading-snug text-white/80 hover:border-white/50 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2.5 rounded-lg border border-white/25 px-3.5 py-2 text-[13px] max-[374px]:text-[12px] leading-snug text-white/80 hover:border-white/50 hover:text-white transition-colors"
               style={{ fontFamily: 'var(--font-body)' }}
             >
               <BookOpen size={15} className="flex-shrink-0 text-[#C4A87C]" aria-hidden="true" />

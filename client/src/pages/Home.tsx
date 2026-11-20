@@ -48,7 +48,7 @@ import { selectFeaturedHomes } from '@/lib/featuredHomes';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { useFromPrices } from '@/hooks/useFromPrices';
 import { isPartnerHome } from '@shared/partnerHome';
-import { keepHyphens } from '@/lib/format';
+import { keepDashes, keepHyphens } from '@/lib/format';
 
 const destinations = destinationsData as unknown as Destination[];
 
@@ -423,10 +423,11 @@ export default function Home() {
                   href: '/best-rate-guarantee',
                 },
               ].map((item: { icon: React.ReactNode; title: string; sub: string; href?: string }, i) => {
-                // Side padding: 6 px in the phone's two columns, 8 px from 640 px
-                // (what the live site always had; wider padding only wrapped the
-                // text more). The labels break evenly (text-balance), so they no
-                // longer run to the divider. This line used to end in
+                // Side padding: 10 px in the phone's two columns (with the label's
+                // letter-spacing at 0.04em there, so a label that fits one line
+                // no longer runs to the divider: it was 8.5 px from it, 15 px on
+                // the live site), 8 px from 640 px (what the live site always
+                // had). The labels break evenly (text-balance). This line used to end in
                 // "md:px-5" glued to the "${", a class Tailwind never emitted;
                 // when another file started using md:px-5 the rule appeared and
                 // the four cells silently went from 8 to 20 px, wrapping their
@@ -435,14 +436,14 @@ export default function Home() {
                 // Divider: between the two columns on a phone (cells 0 and 2),
                 // between the four from 768 px (cells 0, 1 and 2).
                 const divider = i === 3 ? '' : i === 1 ? 'md:border-r border-[#E8E4DC]' : 'border-r border-[#E8E4DC]';
-                const cls = `flex min-w-0 flex-col items-center text-center px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}`;
+                const cls = `flex min-w-0 flex-col items-center text-center px-2.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}`;
                 const inner = (
                 <>
                   <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand bg-pa-cream text-pa-gold-aa sm:mb-3 sm:h-9 sm:w-9">
                     {item.icon}
                   </div>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.1em] md:text-[12px]">{keepHyphens(item.title)}</p>
+                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.04em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.1em] md:text-[12px]">{keepHyphens(item.title)}</p>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
                   <p className="mt-1 max-w-none caption leading-tight text-pa-stone text-balance sm:text-[12px] sm:leading-snug md:text-[13px] md:leading-[1.55] font-body font-normal" >{keepHyphens(item.sub)}</p>
                 </>
@@ -655,7 +656,8 @@ export default function Home() {
                       {pillar.icon}
                     </div>
                     <div>
-                      <p className="body-sm font-semibold text-pa-dark mb-1">{pillar.title}</p>
+                      {/* eslint-disable-next-line no-restricted-syntax -- 14 px under 380 px: at 15 px the second title broke in two on a 375 px phone */}
+                      <p className="body-sm max-[379px]:text-[14px] font-semibold text-pa-dark mb-1">{pillar.title}</p>
                       <p className="body-sm text-pa-earth leading-relaxed font-body font-normal" >{pillar.body}</p>
                     </div>
                   </div>
@@ -675,7 +677,7 @@ export default function Home() {
             <div>
               <h2 className="headline-lg text-pa-dark mb-3">{t('home.destTitle')}</h2>
               <p className="body-md max-w-2xl">
-                {t('home.destBody')}
+                {keepDashes(t('home.destBody'))}
               </p>
             </div>
           </div>
@@ -716,7 +718,7 @@ export default function Home() {
                       redesign). */}
                   {/* eslint-disable-next-line no-restricted-syntax -- a narrow caption column; body-sm is too large for it */}
                   <p className="text-[14px] leading-[1.55] text-pa-earth mt-3 font-body font-normal" >
-                    {keepHyphens(dest.description)}
+                    {keepDashes(keepHyphens(dest.description))}
                   </p>
                 </Link>
               );
@@ -781,8 +783,9 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white text-[1rem] font-display mb-1">{exp.title}</h3>
-                    {/* Three lines are reserved from 640 px, where the cards
-                        sit side by side: the text is anchored to the foot of
+                    {/* Lines are reserved for the description (four in the
+                        phone carousel, where the cards are 220 px wide; three
+                        from 640 px): the text is anchored to the foot of
                         the photo, so a description one line longer than its
                         neighbours' pushed that card's title up out of line.
                         Between 1024 and 1279 px the four cards are 225 px wide
@@ -790,7 +793,7 @@ export default function Home() {
                         a fourth line, which lifted the text onto the subject
                         of the photos. */}
                     {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                    <p className="text-white/70 caption lg:text-[12px] xl:text-[13px] leading-relaxed font-body font-normal sm:min-h-[3lh]" >{exp.body}</p>
+                    <p className="text-white/70 caption lg:text-[12px] xl:text-[13px] leading-relaxed font-body font-normal min-h-[4lh] sm:min-h-[3lh]" >{exp.body}</p>
                   </div>
                 </div>
               </Link>

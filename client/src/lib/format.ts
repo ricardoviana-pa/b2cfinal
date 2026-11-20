@@ -126,6 +126,10 @@ export const keepPhones = (text: string): string =>
  *  JOINER after it forbids the break and keeps the same hyphen glyph. */
 export const keepHyphens = (text: string): string => text.replace(/(\p{L})-(?=\p{L})/gu, '$1-\u2060');
 
+/** A dash stays with the word before it ("the Algarve —" / "the coasts"),
+ *  never alone at the start of the next line. */
+export const keepDashes = (text: string): string => text.replace(/ ([—–]) /g, '\u00A0$1 ');
+
 /** A Portuguese postcode stays whole: a WORD JOINER after the hyphen stops the
  *  line breaking as "4900-" / "336" without changing how it looks or copies. */
 export const keepPostcode = (text: string): string => text.replace(/(\d{4})-(\d{3})/g, '$1-\u2060$2');
