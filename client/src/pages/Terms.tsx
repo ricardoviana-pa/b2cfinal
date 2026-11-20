@@ -8,6 +8,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { cancellationPolicyCopy, cancellationPolicySummary } from '@shared/cancellationPolicy';
 import { legalPageMeta } from '@shared/legalPageMeta';
+import { COMPANY_LEGAL_NAME, COMPANY_NIPC, companyAddressLine } from '@shared/company';
 
 export default function Terms() {
   const { t, i18n } = useTranslation();
@@ -40,6 +41,12 @@ export default function Terms() {
             <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.s5Body')}</p>
             <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.s6Title')}</h2>
             <p className="body-md" style={{ textTransform: 'none' }}>{t('terms.s6Body')}</p>
+            {/* Identidade legal: saiu do rodapé e vive aqui, a um clique do
+                link "Termos" que o rodapé já tem em todas as páginas. */}
+            <p className="body-md mt-10 text-pa-stone-aa" style={{ textTransform: 'none' }} data-testid="terms-legal-identity">
+              {t('legalFooter.operatedBy', { company: COMPANY_LEGAL_NAME, nipc: COMPANY_NIPC })}
+              {companyAddressLine() ? ` · ${companyAddressLine()}` : ''}
+            </p>
           </div>
         </div>
       </section>
