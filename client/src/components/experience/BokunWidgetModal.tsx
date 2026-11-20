@@ -52,7 +52,7 @@ export default function BokunWidgetModal({ open, onClose, bokunActivityId, exper
       <div className="relative w-full sm:max-w-[520px] max-h-full sm:max-h-[90vh] bg-white sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E4DC] shrink-0">
           <div className="min-w-0">
-            <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#8B7355]">Book your experience</p>
+            <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa">Book your experience</p>
             <h3 className="font-display text-[16px] text-[#1A1A18] leading-tight truncate">{experienceName}</h3>
           </div>
           <button

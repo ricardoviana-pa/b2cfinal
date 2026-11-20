@@ -185,7 +185,8 @@
     "unavailableHint": "Nämä kodit voivat olla saatavilla muina päivinä. Kysy conciergeltamme vaihtoehtoja.",
     "fromTotal": "Alkaen {{price}} koko majoitukselta",
     "metaTitle": "Huvilat ja Lomakodit Portugalissa",
-    "metaDescription": "Selaa {{homes}} luksushuvilaa ja lomakotia Minhossa, Portossa, Lissabonissa, Alentejossa ja Algarvessa. Suodata kohteen ja vieraiden mukaan. Varaa suoraan."
+    "metaDescription": "Selaa {{homes}} luksushuvilaa ja lomakotia Minhossa, Portossa, Lissabonissa, Alentejossa ja Algarvessa. Suodata kohteen ja vieraiden mukaan. Varaa suoraan.",
+    "showMore": "Näytä lisää"
   },
   "property": {
     "bedrooms": "Makuuhuoneet",

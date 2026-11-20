@@ -163,12 +163,12 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E4DC]">
             <div>
-              <p className="text-[11px] font-medium text-[#8B7355] tracking-[0.08em] mb-1">{t('itinerary.addToItinerary')}</p>
+              <p className="text-[13px] font-medium text-pa-gold-aa tracking-[0.08em] mb-1">{t('itinerary.addToItinerary')}</p>
               <h3 className="text-[1rem] font-display text-[#1A1A18]">{product.name}</h3>
             </div>
             <button
               onClick={onClose}
-              className="w-10 h-10 flex items-center justify-center text-[#6B6860] hover:text-[#1A1A18] transition-colors"
+              className="w-10 h-10 flex items-center justify-center text-pa-earth hover:text-[#1A1A18] transition-colors"
               style={{ minHeight: 'auto', minWidth: 'auto' }}
               aria-label="Close modal"
             >
@@ -180,7 +180,7 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
           <form id="lead-experience" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
             {fields.map(field => (
               <div key={field.key}>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-1.5 block">
+                <label className="text-[12px] font-medium tracking-[0.12em] text-pa-stone mb-1.5 block">
                   {field.label.toUpperCase()}{field.required ? ' *' : ''}
                 </label>
                 {field.type === 'text' && (
@@ -190,8 +190,8 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                     onChange={(e) => handleChange(field.key, e.target.value)}
                     placeholder={field.placeholder}
                     required={field.required}
-                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[14px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[15px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   />
                 )}
                 {field.type === 'number' && (
@@ -202,8 +202,8 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                     onChange={(e) => handleChange(field.key, parseInt(e.target.value) || 0)}
                     placeholder={field.placeholder}
                     required={field.required}
-                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[14px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[15px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   />
                 )}
                 {field.type === 'date' && (
@@ -214,8 +214,8 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                     onChange={(e) => handleChange(field.key, e.target.value)}
                     onClick={e => openDatePicker(e.currentTarget)}
                     required={field.required}
-                    className="pa-date-hit w-full px-3 py-2.5 border border-[#E8E4DC] text-[14px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors cursor-pointer"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="pa-date-hit w-full px-3 py-2.5 border border-[#E8E4DC] text-[15px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors cursor-pointer"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   />
                 )}
                 {field.type === 'time' && (
@@ -224,8 +224,8 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                     value={values[field.key] as string}
                     onChange={(e) => handleChange(field.key, e.target.value)}
                     required={field.required}
-                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[14px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[15px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   />
                 )}
                 {field.type === 'select' && field.options && (
@@ -233,8 +233,8 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                     value={values[field.key] as string}
                     onChange={(e) => handleChange(field.key, e.target.value)}
                     required={field.required}
-                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[14px] text-[#1A1A18] bg-white focus:outline-none focus:border-[#8B7355] transition-colors"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[15px] text-[#1A1A18] bg-white focus:outline-none focus:border-[#8B7355] transition-colors"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   >
                     <option value="">Select...</option>
                     {field.options.map(opt => (
@@ -247,8 +247,8 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                     value={values[field.key] as string}
                     onChange={(e) => handleChange(field.key, e.target.value)}
                     required={field.required}
-                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[14px] text-[#1A1A18] bg-white focus:outline-none focus:border-[#8B7355] transition-colors"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[15px] text-[#1A1A18] bg-white focus:outline-none focus:border-[#8B7355] transition-colors"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   >
                     <option value="">Select...</option>
                     {field.options?.map(opt => (
@@ -262,15 +262,15 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                     onChange={(e) => handleChange(field.key, e.target.value)}
                     placeholder={field.placeholder}
                     rows={3}
-                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[14px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] resize-none transition-colors"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[15px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] resize-none transition-colors"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   />
                 )}
               </div>
             ))}
 
             {(product.priceFrom ?? 0) > 0 && (
-              <p className="text-[13px] text-[#726D63]">
+              <p className="text-[15px] text-pa-stone">
                 Starting from €{(product.priceFrom ?? 0).toLocaleString()} per {product.priceSuffix || 'session'}
               </p>
             )}
@@ -278,12 +278,12 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
 
           {/* Footer */}
           <div className="border-t border-[#E8E4DC] px-6 py-4 space-y-3">
-            <p className="text-[11px] text-[#726D63] italic leading-relaxed">
+            <p className="text-[13px] text-pa-stone italic leading-relaxed">
               This is a request, not a confirmed booking. Our concierge will confirm availability and pricing.
             </p>
             <button
               onClick={handleSubmit as any}
-              className="w-full bg-[#8B7355] text-white text-[12px] tracking-[0.12em] font-medium py-3.5 hover:bg-[#7A6548] transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-[#8B7355] text-white text-[13px] tracking-[0.12em] font-medium py-3.5 hover:bg-[#7A6548] transition-colors flex items-center justify-center gap-2"
             >
               <Plus className="w-4 h-4" />
               ADD TO MY ITINERARY

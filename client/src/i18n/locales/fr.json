@@ -185,7 +185,8 @@
     "unavailableHint": "Ces maisons peuvent être disponibles à d'autres dates. Contactez notre concierge pour des alternatives.",
     "fromTotal": "À partir de {{price}} pour le séjour",
     "metaTitle": "Location de Villas et Maisons au Portugal",
-    "metaDescription": "Découvrez {{homes}} villas et maisons de luxe au Minho, à Porto, Lisbonne, en Alentejo et en Algarve. Filtrez par destination. Réservez en direct."
+    "metaDescription": "Découvrez {{homes}} villas et maisons de luxe au Minho, à Porto, Lisbonne, en Alentejo et en Algarve. Filtrez par destination. Réservez en direct.",
+    "showMore": "Voir plus"
   },
   "property": {
     "bedrooms": "Chambres",

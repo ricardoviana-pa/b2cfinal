@@ -25,7 +25,7 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }
 .destination-moments article {
   display: flex;
@@ -68,7 +68,7 @@
   font-weight: 600;
 }
 .destination-arrival-note {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: #4c5b45;
   max-width: 75ch;
   margin-bottom: 1.5rem;
@@ -117,7 +117,7 @@
 }
 .destination-homes-strip-note {
   margin-top: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: #6b6860;
 }
 .minho-editorial .destination-homes-strip article h3 {

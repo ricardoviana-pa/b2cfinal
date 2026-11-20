@@ -111,7 +111,7 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
             </div>
           ))}
         </div>
-        <div className="absolute bottom-3 left-3 z-10 text-white/90 text-[12px] bg-black/30 backdrop-blur-sm px-2.5 py-1">
+        <div className="absolute bottom-3 left-3 z-10 text-white/90 text-[13px] bg-black/30 backdrop-blur-sm px-2.5 py-1">
           {currentMobile + 1} / {total}
         </div>
       </div>
@@ -160,7 +160,7 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
                 )}
                 {isLast && total > 5 && (
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <span className="text-white text-[11px] font-medium tracking-[0.12em] uppercase">
+                    <span className="text-white text-[12px] font-medium tracking-[0.12em] uppercase">
                       View all {total}
                     </span>
                   </div>
@@ -180,7 +180,7 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
       <div className="hidden lg:flex container justify-end pt-3">
         <button
           onClick={() => openLightbox(0)}
-          className="pa-action lg:mr-16 text-[11px] font-medium tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
+          className="pa-action lg:mr-16 text-[12px] font-medium tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
         >
           View all photos ({total})
         </button>
@@ -219,7 +219,7 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
             decoding="async"
             onClick={e => e.stopPropagation()}
           />
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/70 text-[12px] tracking-[0.08em]">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/70 text-[13px] tracking-[0.08em]">
             {lightboxIndex + 1} / {total}
           </div>
         </div>

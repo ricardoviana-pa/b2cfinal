@@ -58,8 +58,8 @@ export default function ExperienceStickyNav({ sections }: ExperienceStickyNavPro
               key={s.id}
               href={`#${s.id}`}
               onClick={e => handleClick(e, s.id)}
-              className={`relative text-[11px] tracking-[0.08em] uppercase font-medium px-4 py-3 whitespace-nowrap transition-colors ${
-                isActive ? 'text-[#1A1A18]' : 'text-[#726D63] hover:text-[#1A1A18]'
+              className={`relative text-[12px] tracking-[0.08em] uppercase font-medium px-4 py-3 whitespace-nowrap transition-colors ${
+                isActive ? 'text-[#1A1A18]' : 'text-pa-stone hover:text-[#1A1A18]'
               }`}
             >
               {s.label}

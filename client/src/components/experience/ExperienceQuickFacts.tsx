@@ -74,13 +74,13 @@ export default function ExperienceQuickFacts({
           return (
             <div key={i} className="flex items-start gap-3">
               <div className="shrink-0 w-9 h-9 flex items-center justify-center bg-[#F5F1EB]">
-                <Icon className="w-4 h-4 text-[#8B7355]" />
+                <Icon className="w-4 h-4 text-pa-gold-aa" />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium mb-0.5">
+                <p className="text-[12px] tracking-[0.08em] uppercase text-pa-stone font-medium mb-0.5">
                   {item.label}
                 </p>
-                <p className="text-[13px] text-[#1A1A18]" style={{ fontWeight: 300 }}>
+                <p className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 400 }}>
                   {item.value}
                 </p>
               </div>

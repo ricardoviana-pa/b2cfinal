@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { BedDouble, Bath, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import type { Property } from '@/lib/types';
-import { formatQuotedEur, sanitizePropertyName } from '@/lib/format';
+import { sanitizePropertyName, formatStayEur } from '@/lib/format';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
@@ -103,7 +103,7 @@ export default function PropertyUnitsSection({
         <h2 className="text-[24px] lg:text-[28px] font-display text-[#1A1A18]">
           {t('property.unitsInPropertyTitle', { count: units.length, defaultValue: '{{count}} units in this property' })}
         </h2>
-        <p className="text-[12px] text-[#726D63] hidden sm:block">
+        <p className="text-[13px] text-pa-stone hidden sm:block">
           {t('property.unitsHint', 'Each unit can be reserved independently')}
         </p>
       </div>
@@ -132,11 +132,11 @@ export default function PropertyUnitsSection({
               />
 
               <div className="p-4 lg:p-5 flex-1 flex flex-col">
-                <h3 className="text-[15px] lg:text-[16px] font-display text-[#1A1A18] leading-tight mb-1 group-hover:text-[#8B7355] transition-colors">
+                <h3 className="text-[16px] lg:text-[16px] font-display text-[#1A1A18] leading-tight mb-1 group-hover:text-pa-gold-aa transition-colors">
                   {sanitizePropertyName(unit.name)}
                 </h3>
 
-                <div className="flex items-center gap-4 text-[12px] text-[#6B6860] mb-3">
+                <div className="flex items-center gap-4 text-[13px] text-pa-earth mb-3">
                   <span className="flex items-center gap-1">
                     <Users className="w-3.5 h-3.5" /> {unit.maxGuests}
                   </span>
@@ -160,36 +160,36 @@ export default function PropertyUnitsSection({
                          with a failed quote, which used to surface as "price on
                          request" / "unavailable" — reading as sold out when the
                          real answer is simply that this unit is smaller. Say so. */
-                      <p className="text-[12px] text-[#806A48]">
+                      <p className="text-[13px] text-[#806A48]">
                         {t('property.sleepsUpTo', {
                           count: unit.maxGuests,
                           defaultValue: 'Sleeps up to {{count}} guests',
                         })}
                       </p>
                     ) : q && q.available === false ? (
-                      <p className="text-[12px] text-[#DC2626]">
+                      <p className="text-[13px] text-[#DC2626]">
                         {t('property.unavailableForDates', 'Unavailable for these dates')}
                       </p>
                     ) : q && q.total > 0 && (q.source === 'live' || q.source === 'cached') ? (
                       <div className="flex items-baseline justify-between">
-                        <span className="text-[14px] text-[#1A1A18] font-medium">
-                          {formatQuotedEur(q.total, i18n.language)}
+                        <span className="text-[15px] text-[#1A1A18] font-medium">
+                          {formatStayEur(q.total, i18n.language)}
                         </span>
-                        <span className="text-[11px] text-[#726D63]">
+                        <span className="text-[13px] text-pa-stone">
                           {t('booking.nights', { count: q.nights })}
                         </span>
                       </div>
                     ) : (
-                      <span className="text-[12px] text-[#726D63]">
+                      <span className="text-[13px] text-pa-stone">
                         {t('property.priceOnRequest')}
                       </span>
                     )
                   ) : (
                     <div className="flex items-center justify-between">
-                      <span className="text-[12px] text-[#1A1A18] font-medium">
+                      <span className="text-[13px] text-[#1A1A18] font-medium">
                         {t('property.selectDatesForPrice')}
                       </span>
-                      <span className="text-[11px] text-[#8B7355] uppercase tracking-[0.04em]">
+                      <span className="text-[12px] text-pa-gold-aa uppercase tracking-[0.04em]">
                         {t('property.viewUnit', 'View unit')} →
                       </span>
                     </div>
@@ -271,7 +271,7 @@ function UnitImageCarousel({
       )}
 
       {badge && (
-        <span className="absolute top-3 left-3 z-10 bg-[#1A1A18] text-white text-[10px] font-medium tracking-[0.04em] uppercase px-2 py-1">
+        <span className="absolute top-3 left-3 z-10 bg-[#1A1A18] text-white text-[12px] font-medium tracking-[0.04em] uppercase px-2 py-1">
           {badge}
         </span>
       )}
@@ -282,7 +282,7 @@ function UnitImageCarousel({
             type="button"
             aria-label={prevLabel}
             onClick={guard(() => emblaApi?.scrollPrev())}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-8 h-8 rounded-full bg-white/90 text-[#1A1A18] shadow-sm opacity-0 group-hover:opacity-100 hover:bg-white transition-opacity duration-200"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-10 h-10 rounded-full bg-white/90 text-[#1A1A18] shadow-sm opacity-0 group-hover:opacity-100 hover:bg-white transition-opacity duration-200"
           >
             <ChevronLeft size={16} />
           </button>
@@ -290,7 +290,7 @@ function UnitImageCarousel({
             type="button"
             aria-label={nextLabel}
             onClick={guard(() => emblaApi?.scrollNext())}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-8 h-8 rounded-full bg-white/90 text-[#1A1A18] shadow-sm opacity-0 group-hover:opacity-100 hover:bg-white transition-opacity duration-200"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-10 h-10 rounded-full bg-white/90 text-[#1A1A18] shadow-sm opacity-0 group-hover:opacity-100 hover:bg-white transition-opacity duration-200"
           >
             <ChevronRight size={16} />
           </button>

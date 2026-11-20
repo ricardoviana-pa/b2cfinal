@@ -38,7 +38,7 @@ export default function BestRateGuarantee() {
           <ol className="space-y-4 mb-12">
             {steps.map((s, i) => (
               <li key={i} className="flex items-start gap-4">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#E8E4DC] bg-white text-[12px] font-medium text-[#806A48]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#E8E4DC] bg-white text-[13px] font-medium text-[#806A48]">
                   {i + 1}
                 </span>
                 <p className="body-md" style={{ textTransform: 'none' }}>{s}</p>

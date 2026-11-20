@@ -19,7 +19,7 @@
   max-height: 290px;
 }
 .minho-locator figcaption {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   color: #52644e;
   margin-top: 0.5rem;
 }
@@ -41,7 +41,7 @@
   align-items: flex-start;
   gap: 0.7rem;
   color: #65685d;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   line-height: 1.6;
 }
 .minho-first-facts svg {
@@ -52,7 +52,7 @@
 .minho-first-facts strong {
   display: block;
   color: #263a2b;
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   margin-bottom: 0.35rem;
 }
@@ -64,7 +64,7 @@
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
-  font-size: 0.85rem;
+  font-size: 0.9375rem;
   color: #6b6860;
   margin-top: 1.5rem;
 }
@@ -86,7 +86,7 @@
   min-height: 46px;
   padding: 0.6rem 1.5rem;
   border-radius: 999px;
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   color: #33472f;
 }
 .minho-duration-controls button[aria-pressed="true"] {
@@ -113,7 +113,7 @@
 }
 .minho-day-number {
   display: block;
-  font-size: 0.67rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.13em;
   color: #7e7057;
@@ -132,12 +132,12 @@
 }
 .minho-day-grid p {
   color: #6b6860;
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   margin-bottom: 1.2rem;
 }
 .minho-day-grid .minho-text-link {
   margin-top: auto;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }
 .minho-itinerary-footer {
   display: flex;
@@ -147,7 +147,7 @@
   margin-top: 2rem;
 }
 .minho-itinerary-footer p {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: #5c6856;
   max-width: 62ch;
 }
@@ -192,7 +192,7 @@
     max-height: 200px;
   }
   .minho-orientation-intro {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
   .minho-first-facts {
     gap: 1.1rem;
@@ -228,7 +228,7 @@
 }
 .minho-editorial .minho-kicker {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -290,7 +290,7 @@
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: white;
 }
 .minho-hero-copy {
@@ -336,7 +336,7 @@
   align-items: center;
   min-height: 44px;
   gap: 0.6rem;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: white;
   text-decoration: underline;
   text-underline-offset: 5px;
@@ -372,7 +372,7 @@
   align-items: center;
   min-height: 60px;
   color: #3a3a35;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }
 .minho-chapters a:hover {
   color: #806a48;
@@ -407,7 +407,7 @@
   gap: 0.5rem;
   padding: 3rem 1.25rem 1rem;
   color: white;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.78), transparent);
 }
 .minho-landscape-copy {
@@ -415,7 +415,7 @@
 }
 .minho-number {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   color: #806a48;
   margin-bottom: 0.75rem;
 }
@@ -426,7 +426,7 @@
   color: #6b6860;
 }
 .minho-practical-note {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: #6b6860;
   line-height: 1.6;
   border-top: 1px solid #e8e4dc;
@@ -445,7 +445,7 @@
   border-left: 1px solid #dedbd2;
 }
 .minho-base-tag {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   color: #806a48;
 }
@@ -467,7 +467,7 @@
   color: #806a48;
 }
 .minho-base-transport p {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 .minho-bases summary,
 .minho-restaurants summary {
@@ -477,11 +477,11 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }
 .minho-bases details p,
 .minho-restaurants details p {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   margin-block: 0.5rem;
 }
 .minho-text-link {
@@ -489,7 +489,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   text-align: left;
   text-decoration: underline;
   text-underline-offset: 5px;
@@ -522,7 +522,7 @@
   left: 0;
   right: 0;
   padding: 3rem 1.25rem 1rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: white;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), transparent);
 }
@@ -562,7 +562,7 @@
   flex-direction: column;
 }
 .minho-restaurants .minho-kicker {
-  font-size: 0.62rem;
+  font-size: 0.75rem;
 }
 .minho-restaurants h4 {
   font-family: var(--font-display);
@@ -571,14 +571,14 @@
   min-height: 3.5rem;
 }
 .minho-restaurants p {
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   color: #6b6860;
 }
 .minho-restaurants .minho-place {
   display: flex;
   align-items: start;
   gap: 0.3rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   margin-block: 0.75rem;
   min-height: 2.5rem;
 }
@@ -631,7 +631,7 @@
   border-left: 2px solid #849987;
   padding-left: 1rem;
   margin-top: 2rem;
-  font-size: 0.85rem;
+  font-size: 0.9375rem;
   line-height: 1.7;
   color: #4f5b51;
 }
@@ -649,7 +649,7 @@
   margin-bottom: 0.8rem;
 }
 .minho-culture-options p {
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
 }
 .minho-culture-options .minho-number {
   color: #4f6255;
@@ -675,7 +675,7 @@
   margin-bottom: 1.5rem;
 }
 .minho-seasons span {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #806a48;
@@ -685,7 +685,7 @@
   margin-block: 0.6rem 1rem;
 }
 .minho-seasons p {
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   color: #6b6860;
 }
 .minho-local-travel {
@@ -790,7 +790,7 @@
   }
   .minho-hero .minho-kicker {
     max-width: 19rem;
-    font-size: 0.62rem;
+    font-size: 0.75rem;
   }
   .minho-hero-region {
     font-size: clamp(2.75rem, 12vw, 3.15rem);
@@ -807,7 +807,7 @@
   }
   .minho-hero .minho-hero-intro {
     max-width: 20rem;
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
   .minho-chapters {
     padding-block: 0.5rem;

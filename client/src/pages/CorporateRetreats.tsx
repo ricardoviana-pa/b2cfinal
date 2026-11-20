@@ -44,7 +44,7 @@ export default function CorporateRetreats() {
           <Link href={corporateEnquiryHref(format.id)} className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-pa-brown">{format.cta}<ArrowRight className="w-4 h-4 shrink-0" /></Link>
         </div>)}
       </div>
-      <p className="text-sm text-pa-stone-aa max-w-3xl mt-5">{planning.note}</p>
+      <p className="text-[15px] text-pa-stone-aa max-w-3xl mt-5">{planning.note}</p>
     </section>}
     <section className="container py-12 lg:py-16">
       <h2 className="headline-lg mb-9">{t('corporate.planTitle')}</h2>

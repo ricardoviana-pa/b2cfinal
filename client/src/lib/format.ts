@@ -44,6 +44,45 @@ export const formatEur = (amount: number, lang?: string): string =>
 export const formatQuotedEur = (amount: number, lang?: string): string =>
   formatQuotedMoney(amount, intlLocale(lang));
 
+/* ── Whole euros before the checkout (decisão E07 do Ricardo, 20 nov 2026) ──
+   The listing and a home's page show "€2,997", not "€2,996.57"; the cents
+   appear in the checkout, which keeps formatQuotedEur everywhere.
+
+   Rounded UP to the euro: the exact amount in the checkout is then never
+   above what the guest saw on the way there. A saving is the difference of
+   the two prices as shown, so the three figures on a rate card always add up
+   and a saving is never overstated by the rounding. */
+
+/** 2996.57 → 2997 · 2997 → 2997 (cents first, so 0.1 + 0.2 is 30 cents, not 30.000000000000004). */
+export const stayEuros = (amount: number): number => Math.ceil(Math.round(amount * 100) / 100);
+
+/** A dated price as shown before the checkout: whole euros, rounded up. */
+export const formatStayEur = (amount: number, lang?: string): string =>
+  formatCurrency(stayEuros(amount), { locale: intlLocale(lang), decimals: 0 });
+
+/** "Save €266": the struck price as shown minus the price as shown (never negative). */
+export const staySavingsEuros = (compareTotal: number, total: number): number =>
+  Math.max(0, stayEuros(compareTotal) - stayEuros(total));
+
+/**
+ * The lines of a price breakdown in whole euros that add up to the total as
+ * shown (stayEuros(total)). Each line is rounded to the nearest euro and the
+ * first line (the nights, the largest) takes the euro or two the rounding
+ * leaves over, so "nights + cleaning + taxes" never disagrees with the total
+ * printed under it. When the lines do not add up to the total to begin with,
+ * they are only rounded.
+ */
+export function stayBreakdownEuros(parts: number[], total: number): number[] {
+  const shown = parts.map((p) => Math.round(Math.round(p * 100) / 100));
+  if (!shown.length) return shown;
+  // Lines that are not the whole total (a discount or a fee not listed) stay
+  // as they are: the first line must not absorb an amount that is not rounding.
+  const exact = parts.reduce((a, b) => a + b, 0);
+  if (Math.abs(exact - total) > 0.05) return shown;
+  shown[0] += stayEuros(total) - shown.reduce((a, b) => a + b, 0);
+  return shown;
+}
+
 /** Exact integer-cent amounts (reservation API / ThankYouStash). */
 export const formatEurCents = (
   cents: number | null | undefined,

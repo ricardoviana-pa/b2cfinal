@@ -35,19 +35,19 @@ export default function ListingReassurance({ whatsappHref, context, showCancella
   return (
     <ul
       data-testid="listing-reassurance"
-      className={`${showCancellation ? 'flex mb-3' : 'hidden'} lg:flex lg:mb-5 flex-row flex-wrap gap-x-6 gap-y-1.5 font-body text-[13px] leading-snug text-pa-earth`}
+      className={`${showCancellation ? 'flex mb-3' : 'hidden'} lg:flex lg:mb-5 flex-row flex-wrap gap-x-6 gap-y-1.5 font-body text-[15px] leading-snug text-pa-earth`}
     >
       {showCancellation && (
         <li>
           <Link href="/legal/cancellation-policy" className={item}>
-            <ShieldCheck aria-hidden className="mt-px h-3.5 w-3.5 shrink-0 text-pa-gold" />
+            <ShieldCheck aria-hidden className="mt-px h-3.5 w-3.5 shrink-0 text-pa-gold-aa" />
             <span>{t('listingReassurance.cancellation')}</span>
           </Link>
         </li>
       )}
       <li className="hidden lg:block">
         <a href={whatsappHref} target="_blank" rel="noopener noreferrer" {...trackAttributes('listing_reassurance', context)} className={item}>
-          <MessageCircle aria-hidden className="mt-px h-3.5 w-3.5 shrink-0 text-pa-gold" />
+          <MessageCircle aria-hidden className="mt-px h-3.5 w-3.5 shrink-0 text-pa-gold-aa" />
           <span>{t('listingReassurance.whatsapp')}</span>
         </a>
       </li>

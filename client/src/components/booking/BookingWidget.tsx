@@ -31,7 +31,7 @@ import { keepRevealed, rangeOf, whenFooterOnScreen } from "@/lib/bookingCardReve
 import productsData from "@/data/products.json";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
 import { phoneIssue, phoneIssueMessage } from "@/lib/phone";
-import { formatEur, formatQuotedEur, formatBookingDate, intlLocale } from "@/lib/format";
+import { formatEur, formatQuotedEur, formatBookingDate, intlLocale, formatStayEur, stayBreakdownEuros } from "@/lib/format";
 
 export interface BookingSelection {
   checkIn: string;
@@ -247,7 +247,7 @@ function EnhanceYourStay({
 
   return (
     <div className="space-y-2">
-      <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-black/30 flex items-center gap-1.5">
+      <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-pa-stone flex items-center gap-1.5">
         <ShoppingBag className="w-3 h-3" /> {t("bookingWidget.enhanceStay", "Enhance your stay")}
       </p>
 
@@ -297,11 +297,11 @@ function EnhanceYourStay({
                   <Check className="w-2.5 h-2.5 text-white" />
                 </div>
               )}
-              <Icon className={cn("w-4 h-4 mb-1.5", selected ? "text-black/50" : "text-black/30")} />
+              <Icon className={cn("w-4 h-4 mb-1.5", selected ? "text-pa-stone" : "text-pa-stone")} />
               <p className="caption text-black font-medium leading-tight">{item.name}</p>
-              <p className="caption text-black/50 mt-1 tabular-nums">
+              <p className="caption text-pa-stone mt-1 tabular-nums">
                 {t("bookingWidget.fromPrice", "from")} {formatEur(item.priceFrom, lang)}
-                <span className="text-black/30 font-normal"> / {item.priceSuffix}</span>
+                <span className="text-pa-stone font-normal"> / {item.priceSuffix}</span>
               </p>
             </button>
           );
@@ -312,14 +312,14 @@ function EnhanceYourStay({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="w-full flex items-center justify-center gap-1 caption text-black/50 font-medium tracking-[0.04em] py-1.5 hover:underline"
+          className="w-full flex items-center justify-center gap-1 caption text-pa-stone font-medium tracking-[0.04em] py-1.5 hover:underline"
         >
           {t("bookingWidget.showAllServices", "Show all services")} ({items.length})
           <ChevronDown className="w-3 h-3" />
         </button>
       )}
 
-      <p className="caption text-black/30 leading-relaxed">
+      <p className="caption text-pa-stone leading-relaxed">
         {t("bookingWidget.servicesNote", "Services confirmed separately by our concierge after booking. No charge now.")}
       </p>
     </div>
@@ -917,18 +917,18 @@ export default function BookingWidget({
           {/* Property + dates */}
           <div className="bg-black/[0.02] p-4 space-y-3">
             <p className="body-sm text-black font-medium">{propertyName}</p>
-            {destination && <p className="caption text-black/40">{destination}</p>}
+            {destination && <p className="caption text-pa-stone">{destination}</p>}
             <div className="grid grid-cols-3 gap-3 pt-1">
               <div>
-                <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.checkInLabel")}</p>
+                <p className="eyebrow text-pa-stone uppercase tracking-wider">{t("bookingWidget.checkInLabel")}</p>
                 <p className="body-sm text-black mt-0.5">{formatBookingDate(checkIn, lang, true)}</p>
               </div>
               <div>
-                <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.checkOutLabel")}</p>
+                <p className="eyebrow text-pa-stone uppercase tracking-wider">{t("bookingWidget.checkOutLabel")}</p>
                 <p className="body-sm text-black mt-0.5">{formatBookingDate(checkOut, lang, true)}</p>
               </div>
               <div>
-                <p className="eyebrow text-black/30 uppercase tracking-wider">{t("booking.guestsLabel", "Guests")}</p>
+                <p className="eyebrow text-pa-stone uppercase tracking-wider">{t("booking.guestsLabel", "Guests")}</p>
                 <p className="body-sm text-black mt-0.5">{guests}</p>
               </div>
             </div>
@@ -937,21 +937,21 @@ export default function BookingWidget({
           {/* Price breakdown */}
           {successQuote && successQuote.total > 0 && (
             <div className="bg-black/[0.02] p-4 space-y-2">
-              <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.priceSummary", { defaultValue: "Price summary" })}</p>
+              <p className="eyebrow text-pa-stone uppercase tracking-wider">{t("bookingWidget.priceSummary", { defaultValue: "Price summary" })}</p>
               <div className="space-y-1.5">
                 <div className="flex justify-between body-sm text-inherit">
-                  <span className="text-black/50">{successQuote.nights} {t("bookingWidget.nightsLabel", "nights")}</span>
+                  <span className="text-pa-stone">{successQuote.nights} {t("bookingWidget.nightsLabel", "nights")}</span>
                   <span className="text-black tabular-nums">{formatQuotedEur(successQuote.totalNights, lang)}</span>
                 </div>
                 {successQuote.cleaningFee > 0 && (
                   <div className="flex justify-between body-sm text-inherit">
-                    <span className="text-black/50">{t("property.cleaningFee")}</span>
+                    <span className="text-pa-stone">{t("property.cleaningFee")}</span>
                     <span className="text-black tabular-nums">{formatQuotedEur(successQuote.cleaningFee, lang)}</span>
                   </div>
                 )}
                 {(successQuote.taxesAndFees ?? 0) > 0 && (
                   <div className="flex justify-between body-sm text-inherit">
-                    <span className="text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
+                    <span className="text-pa-stone">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
                     <span className="text-black tabular-nums">{formatQuotedEur(successQuote.taxesAndFees!, lang)}</span>
                   </div>
                 )}
@@ -965,22 +965,22 @@ export default function BookingWidget({
                 code={quotePolicyCode(successQuote)}
                 checkIn={checkIn}
                 lang={lang}
-                className="caption text-black/30 pt-1"
+                className="caption text-pa-stone pt-1"
               />
             </div>
           )}
 
           {/* Guest info */}
           <div className="bg-black/[0.02] p-4 space-y-1">
-            <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.bookedBy", { defaultValue: "Booked by" })}</p>
+            <p className="eyebrow text-pa-stone uppercase tracking-wider">{t("bookingWidget.bookedBy", { defaultValue: "Booked by" })}</p>
             <p className="body-sm text-black">{guestFirstName} {guestLastName}</p>
-            <p className="caption text-black/50">{guestEmail}{guestPhone ? ` · ${guestPhone}` : ""}</p>
+            <p className="caption text-pa-stone">{guestEmail}{guestPhone ? ` · ${guestPhone}` : ""}</p>
           </div>
 
           {/* Upsells */}
           {selectedUpsells.size > 0 && (
             <div className="bg-black/[0.02] p-4 space-y-2">
-              <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.servicesRequested", { defaultValue: "Services requested" })}</p>
+              <p className="eyebrow text-pa-stone uppercase tracking-wider">{t("bookingWidget.servicesRequested", { defaultValue: "Services requested" })}</p>
               <div className="space-y-1">
                 {Array.from(selectedUpsells).map(id => {
                   const item = upsellItems.find((u: any) => u.id === id);
@@ -989,7 +989,7 @@ export default function BookingWidget({
                   ) : null;
                 })}
               </div>
-              <p className="caption text-black/40 leading-relaxed">
+              <p className="caption text-pa-stone leading-relaxed">
                 {t("bookingWidget.servicesConfirmNote", { defaultValue: "Our concierge will contact you within 2 hours to confirm details and pricing." })}
               </p>
             </div>
@@ -1007,13 +1007,19 @@ export default function BookingWidget({
             {t("bookingWidget.chatConcierge", { defaultValue: "Chat with your concierge" })}
           </a>
 
-          <p className="caption text-black/30 text-center leading-relaxed">
+          <p className="caption text-pa-stone text-center leading-relaxed">
             {t("bookingWidget.conciergeReachOut", { defaultValue: "Your dedicated concierge will reach out within 2 hours to help plan your stay." })}
           </p>
         </div>
       </div>
     );
   }
+
+  // Resumo do preço em euros inteiros, com parcelas que somam ao total mostrado
+  // (decisão E07, 20 nov 2026; lib/format.ts). O checkout mantém os cêntimos.
+  const breakdownEuros = effectiveQuote
+    ? stayBreakdownEuros([effectiveQuote.totalNights, effectiveQuote.cleaningFee || 0, effectiveQuote.taxesAndFees ?? 0], effectiveQuote.total)
+    : [0, 0, 0];
 
   // ── MAIN WIDGET ──
   return (
@@ -1023,12 +1029,14 @@ export default function BookingWidget({
         {hasLivePrice && effectiveQuote ? (
           <>
             <div className="flex items-baseline gap-2">
+              {/* Euros inteiros antes do checkout (decisão E07, 20 nov 2026): os
+                  cêntimos aparecem no resumo do checkout (lib/format.ts). */}
               <span className="text-[32px] font-light tracking-tight text-black tabular-nums">
-                {formatQuotedEur(effectiveQuote.total, lang)}
+                {formatStayEur(effectiveQuote.total, lang)}
               </span>
-              <span className="body-sm text-black/40 font-normal">{t("property.totalLabel")}</span>
+              <span className="body-sm text-pa-stone font-normal">{t("property.totalLabel")}</span>
             </div>
-            <p className="body-sm text-black/50 mt-1 tracking-wide">
+            <p className="body-sm text-pa-stone mt-1 tracking-wide">
               {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
             </p>
           </>
@@ -1052,7 +1060,7 @@ export default function BookingWidget({
               <p className="body-md text-pa-dark">{t("property.selectDatesForPrice")}</p>
             )}
             {effectiveMinNights > 1 && (
-              <p className="caption text-black/40 mt-1.5 flex items-center gap-1.5">
+              <p className="caption text-pa-stone mt-1.5 flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
                 {t("bookingWidget.minNightMinimum", { count: effectiveMinNights })}
               </p>
@@ -1086,8 +1094,8 @@ export default function BookingWidget({
                     active ? "bg-black/[0.04] shadow-[inset_0_-2px_0_#1A1A18]" : "hover:bg-black/[0.02]"
                   }`}
                 >
-                  <span className="block eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{label}</span>
-                  <span className={`block body-sm text-inherit font-normal ${value ? "text-black" : "text-black/30"}`}>
+                  <span className="block eyebrow font-medium tracking-[0.15em] uppercase text-pa-stone mb-1">{label}</span>
+                  <span className={`block body-sm text-inherit font-normal ${value ? "text-black" : "text-pa-stone"}`}>
                     {shown}
                   </span>
                 </button>
@@ -1100,7 +1108,7 @@ export default function BookingWidget({
             check-in is chosen — once they're picking, the calendar leads. */}
         {nextArrivals && !showCalendar && (
           <div className="px-1 pt-3">
-            <p className="caption text-black/50 mb-2">
+            <p className="caption text-pa-stone mb-2">
               {nextArrivals.showRule
                 ? t("bookingWidget.arrivalsRule", {
                     days: Array.from(new Set(nextArrivals.list.map(a =>
@@ -1144,8 +1152,8 @@ export default function BookingWidget({
           <div className="border border-black border-t-0 rounded-b-lg overflow-hidden shadow-[0_8px_24px_rgba(26,26,24,0.08)] bg-white">
             {calendarLoading ? (
               <div className="flex items-center justify-center py-10">
-                <Loader2 className="w-4 h-4 animate-spin text-black/30" />
-                <span className="ml-2 caption text-black/40">{t("bookingWidget.loadingCalendar", "Loading availability...")}</span>
+                <Loader2 className="w-4 h-4 animate-spin text-pa-stone" />
+                <span className="ml-2 caption text-pa-stone">{t("bookingWidget.loadingCalendar", "Loading availability...")}</span>
               </div>
             ) : (
               <AvailabilityCalendar
@@ -1177,7 +1185,7 @@ export default function BookingWidget({
             it (it did both, one under the price and one under the dates:
             auditoria 29 out 2026, o painel repetia "mínimo 2 noites"). */}
         {effectiveMinNights > 1 && ((hasLivePrice && effectiveQuote) || (loading && checkIn && checkOut)) && (
-          <p className="caption text-black/50 mt-2 flex items-center gap-1">
+          <p className="caption text-pa-stone mt-2 flex items-center gap-1">
             <Calendar className="w-3 h-3" />
             {t("bookingWidget.minNightMinimum", { count: effectiveMinNights })}
           </p>
@@ -1192,9 +1200,10 @@ export default function BookingWidget({
           </div>
         )}
 
-        {/* Guests selector */}
-        <div className="border border-black/15 mt-3 px-4 py-3">
-          <p className="eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-2">{t("booking.guestsLabel")}</p>
+        {/* Guests selector — os mesmos cantos da caixa das datas (auditoria de
+            design, 14 nov 2026: datas arredondadas e hóspedes de cantos retos) */}
+        <div className="border border-black/15 rounded-lg mt-3 px-4 py-3">
+          <p className="eyebrow font-medium tracking-[0.15em] uppercase text-pa-stone mb-2">{t("booking.guestsLabel")}</p>
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -1204,7 +1213,7 @@ export default function BookingWidget({
                 setError("");
               }}
               disabled={guests <= 1}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/15 text-black/40 transition-colors hover:border-black hover:text-black disabled:opacity-20"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-black/15 text-pa-stone transition-colors hover:border-black hover:text-black disabled:opacity-20"
               aria-label={t("booking.decreaseGuests", "Decrease guests")}
             >
               <Minus className="w-3 h-3" />
@@ -1218,7 +1227,7 @@ export default function BookingWidget({
                 setError("");
               }}
               disabled={guests >= (maxGuests > 0 ? maxGuests : 30)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/15 text-black/40 transition-colors hover:border-black hover:text-black disabled:opacity-20"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-black/15 text-pa-stone transition-colors hover:border-black hover:text-black disabled:opacity-20"
               aria-label={t("booking.increaseGuests", "Increase guests")}
             >
               <Plus className="w-3 h-3" />
@@ -1358,13 +1367,13 @@ export default function BookingWidget({
             {/* Mini summary so the guest sees what they're requesting — no price */}
             <div className="bg-black/[0.02] border border-black/5 p-3 space-y-1">
               <p className="caption text-black">{propertyName}</p>
-              <p className="caption text-black/40">
+              <p className="caption text-pa-stone">
                 {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
               </p>
             </div>
 
             {!quote?.datesTaken && (
-            <button onClick={resetDates} className="w-full caption text-black/30 hover:text-black transition py-1">
+            <button onClick={resetDates} className="w-full caption text-pa-stone hover:text-black transition py-1">
               {t("bookingWidget.changeDates")}
             </button>
             )}
@@ -1388,6 +1397,7 @@ export default function BookingWidget({
                 name="ratePlan"
                 columns={1}
                 twoPartsVariant="widget"
+                wholeEuros
                 containerRef={ratePlansRef}
                 selectedRef={selectedPlanRef}
                 onSelect={(opt, m) => {
@@ -1582,21 +1592,21 @@ export default function BookingWidget({
               <div className="p-5 space-y-3">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="body-sm text-black/50">
+                    <span className="body-sm text-pa-stone">
                       {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
                     </span>
-                    <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.totalNights, lang)}</span>
+                    <span className="body-sm text-black tabular-nums">{formatEur(breakdownEuros[0], lang)}</span>
                   </div>
                   {effectiveQuote.cleaningFee > 0 && (
                     <div className="flex justify-between items-center">
-                      <span className="body-sm text-black/50">{t("property.cleaningFee")}</span>
-                      <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.cleaningFee, lang)}</span>
+                      <span className="body-sm text-pa-stone">{t("property.cleaningFee")}</span>
+                      <span className="body-sm text-black tabular-nums">{formatEur(breakdownEuros[1], lang)}</span>
                     </div>
                   )}
                   {(effectiveQuote.taxesAndFees ?? 0) > 0 && (
                     <div className="flex justify-between items-center">
-                      <span className="body-sm text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
-                      <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.taxesAndFees!, lang)}</span>
+                      <span className="body-sm text-pa-stone">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
+                      <span className="body-sm text-black tabular-nums">{formatEur(breakdownEuros[2], lang)}</span>
                     </div>
                   )}
                 </div>
@@ -1604,11 +1614,11 @@ export default function BookingWidget({
                 <div className="border-t border-black/10 pt-3 flex justify-between items-baseline">
                   <span className="body-sm font-medium text-black">{t("property.total")}</span>
                   <span className="text-[24px] font-light text-black tabular-nums tracking-tight">
-                    {formatQuotedEur(effectiveQuote.total, lang)}
+                    {formatStayEur(effectiveQuote.total, lang)}
                   </span>
                 </div>
                 {selectedUpsells.size > 0 && (
-                  <p className="caption text-black/35 pt-1">
+                  <p className="caption text-pa-stone pt-1">
                     + {t("bookingWidget.servicesSelected", { count: selectedUpsells.size })}
                   </p>
                 )}
@@ -1693,15 +1703,15 @@ export default function BookingWidget({
               <>
                 {/* Booking summary confirmation before payment */}
                 <div className="bg-black/[0.02] border border-black/10 p-4 space-y-1.5">
-                  <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.bookingSummary", { defaultValue: "Booking summary" })}</p>
+                  <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-pa-stone">{t("bookingWidget.bookingSummary", { defaultValue: "Booking summary" })}</p>
                   <p className="body-sm text-black">{propertyName}</p>
-                  <p className="caption text-black/50">
+                  <p className="caption text-pa-stone">
                     {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {effectiveQuote?.nights || nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
                   </p>
                   <p className="body-sm text-black font-medium tabular-nums">{t("property.total")}: {formatQuotedEur(effectiveQuote?.total ?? quote.total, lang)}</p>
-                  <p className="caption text-black/30">{guestFirstName} {guestLastName} · {guestEmail}</p>
+                  <p className="caption text-pa-stone">{guestFirstName} {guestLastName} · {guestEmail}</p>
                 </div>
-                <Suspense fallback={<div className="flex items-center justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-black/40" /></div>}>
+                <Suspense fallback={<div className="flex items-center justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-pa-stone" /></div>}>
                   <CheckoutPaymentForm
                     listingId={guestyId}
                     checkIn={checkIn}
@@ -1750,7 +1760,7 @@ export default function BookingWidget({
             code={quotePolicyCode(effectiveQuote)}
             checkIn={checkIn}
             lang={lang}
-            className="caption text-black/35 text-center"
+            className="caption text-pa-stone text-center"
           />
         ) : null}
 
@@ -1761,7 +1771,7 @@ export default function BookingWidget({
             target="_blank"
             rel="noopener noreferrer"
             data-track-source="booking_widget"
-            className="flex items-center justify-center gap-1.5 caption text-pa-gold hover:text-black transition-colors pt-2.5 mt-0.5 border-t border-black/[0.06]"
+            className="flex items-center justify-center gap-1.5 caption text-pa-gold-aa hover:text-black transition-colors pt-2.5 mt-0.5 border-t border-black/[0.06]"
           >
             {t("property.needHelpConcierge", "Need help? Talk to the concierge")}
           </a>

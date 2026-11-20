@@ -185,7 +185,8 @@
     "unavailableHint": "Estas casas podem estar disponíveis noutras datas. Fale com o nosso concierge para alternativas.",
     "fromTotal": "Desde {{price}} pela estadia",
     "metaTitle": "Casas de Férias e Villas em Portugal",
-    "metaDescription": "Descubra {{homes}} casas de férias e villas de luxo no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. Filtre por destino e hóspedes. Reserve direto."
+    "metaDescription": "Descubra {{homes}} casas de férias e villas de luxo no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. Filtre por destino e hóspedes. Reserve direto.",
+    "showMore": "Ver mais"
   },
   "property": {
     "bedrooms": "Quartos",

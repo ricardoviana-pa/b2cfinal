@@ -151,7 +151,7 @@ describe('the listing float keeps off the first card', () => {
     expect(LISTING_FIRST_RESULT).toBe('[data-listing-results] article');
     expect(read('client/src/components/property/PropertyCard.tsx')).toMatch(/<article className="group cursor-pointer block">/);
     expect(read('client/src/pages/Homes.tsx')).toMatch(/<div className="min-w-0" data-listing-results="">\s*<ListingReassurance/);
-    expect(read('client/src/pages/Collection.tsx')).toMatch(/<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-listing-results="">\s*\{homes\.map/);
+    expect(read('client/src/pages/Collection.tsx')).toMatch(/<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-listing-results="">\s*\{homes\.slice\(0, visibleCount\)\.map/);
   });
 });
 

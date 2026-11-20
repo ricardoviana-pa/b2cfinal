@@ -139,7 +139,7 @@ export default function Destinations() {
           <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center max-w-5xl mx-auto">
             <div>
               <h2 className="text-lg font-medium mb-2">{t('destinationGrowth.corporateTitle')}</h2>
-              <p className="text-sm leading-relaxed text-pa-stone-aa max-w-2xl">{t('destinationGrowth.corporateIntro')}</p>
+              <p className="text-[15px] leading-relaxed text-pa-stone-aa max-w-2xl">{t('destinationGrowth.corporateIntro')}</p>
             </div>
             <Link href="/corporate-retreats" className="inline-flex min-h-11 gap-2 items-center underline underline-offset-4 text-sm self-start lg:self-center">{t('destinationGrowth.corporateCta')}<ArrowRight className="w-4 h-4" /></Link>
           </div>

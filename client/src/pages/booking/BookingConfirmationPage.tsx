@@ -45,7 +45,7 @@ export default function BookingConfirmationPage() {
       <Header />
       <section className="section-padding">
         <div className="container max-w-3xl">
-          <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-3">{t('bookingConfirmation.overline')}</p>
+          <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-3">{t('bookingConfirmation.overline')}</p>
           <h1 className="headline-lg text-pa-dark mb-3">{t('bookingConfirmation.title')}</h1>
           <p className="body-md mb-8">{t('bookingConfirmation.subtitle')}</p>
 
@@ -56,11 +56,11 @@ export default function BookingConfirmationPage() {
           ) : data ? (
             <div className="space-y-6">
               <div className="rounded-lg bg-white border border-pa-sand shadow-[0_4px_24px_rgba(26,26,24,0.06)] p-6">
-                <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('bookingConfirmation.reference')}</p>
+                <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-2">{t('bookingConfirmation.reference')}</p>
                 <button
                   type="button"
                   onClick={() => navigator.clipboard.writeText(data.confirmationCode)}
-                  className="headline-md text-pa-dark hover:text-pa-gold transition-colors"
+                  className="headline-md text-pa-dark hover:text-pa-gold-aa transition-colors"
                 >
                   {data.confirmationCode}
                 </button>
@@ -68,7 +68,7 @@ export default function BookingConfirmationPage() {
               </div>
 
               <div className="rounded-lg bg-white border border-pa-sand shadow-[0_4px_24px_rgba(26,26,24,0.06)] p-6">
-                <div className="grid md:grid-cols-2 gap-4 text-[13px]">
+                <div className="grid md:grid-cols-2 gap-4 text-[15px]">
                   <div>
                     <p className="text-pa-stone-aa mb-1">{t('bookingConfirmation.accommodation')}</p>
                     <p className="text-pa-dark">{data.listingName}</p>
@@ -107,7 +107,7 @@ export default function BookingConfirmationPage() {
               </div>
 
               <div className="rounded-lg bg-white border border-pa-sand shadow-[0_4px_24px_rgba(26,26,24,0.06)] p-6">
-                <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('bookingConfirmation.checkInInstructions')}</p>
+                <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-2">{t('bookingConfirmation.checkInInstructions')}</p>
                 <p className="body-md">{t('bookingConfirmation.checkInDefault')}</p>
               </div>
 

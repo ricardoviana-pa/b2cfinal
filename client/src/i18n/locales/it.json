@@ -185,7 +185,8 @@
     "unavailableHint": "Queste case potrebbero essere disponibili in altre date. Contatti il nostro concierge per alternative.",
     "fromTotal": "Da {{price}} per il soggiorno",
     "metaTitle": "Ville in Affitto e Case Vacanza in Portogallo",
-    "metaDescription": "Scopri {{homes}} ville e case di lusso tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. Filtra per destinazione, ospiti e servizi. Prenota diretto."
+    "metaDescription": "Scopri {{homes}} ville e case di lusso tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. Filtra per destinazione, ospiti e servizi. Prenota diretto.",
+    "showMore": "Mostra altre"
   },
   "property": {
     "bedrooms": "Camere",

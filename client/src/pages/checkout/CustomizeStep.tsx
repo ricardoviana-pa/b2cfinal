@@ -289,7 +289,7 @@ function OptionRow({
         ) : null}
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-1.5 body-sm font-medium text-pa-dark leading-snug">
-            {selected && <Check className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={2.5} />}
+            {selected && <Check className="w-3.5 h-3.5 text-pa-gold-aa shrink-0" strokeWidth={2.5} />}
             <span className="min-w-0">{name}</span>
           </p>
           {secondLine ? (
@@ -309,7 +309,7 @@ function OptionRow({
               )
             ) : item.pricingModel === "included_selectable" ? (
               <>
-                <p className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold">{t("checkout.included.badge")}</p>
+                <p className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold-aa">{t("checkout.included.badge")}</p>
                 {/* No telemóvel a regra do extra fica na linha da seleção ("2× · 25 €") */}
                 <p className="caption text-pa-stone-aa hidden sm:block">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
               </>
@@ -446,7 +446,7 @@ function ReceptionRows({
         <Row
           selected={choice?.type === "self"}
           name={t("checkout.reception.self.name")}
-          value={<span className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold">{t("checkout.included.badge")}</span>}
+          value={<span className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold-aa">{t("checkout.included.badge")}</span>}
           desc={t("checkout.reception.self.desc")}
           onClick={() => onChoose({ type: "self" })}
         />

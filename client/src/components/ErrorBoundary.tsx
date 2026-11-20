@@ -28,11 +28,11 @@ class ErrorBoundary extends Component<Props, State> {
         <div className="flex items-center justify-center min-h-screen p-8 bg-[#FAFAF7]">
           <div className="flex flex-col items-center w-full max-w-md p-10 text-center">
             <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-              <AlertTriangle size={24} className="text-[#726D63]" />
+              <AlertTriangle size={24} className="text-pa-stone" />
             </div>
 
             <h2 className="headline-sm text-[#1A1A18] mb-3">{i18n.t("errorBoundary.title", "Something went wrong")}</h2>
-            <p className="body-md mb-8" style={{ color: '#6B6860' }}>
+            <p className="body-md mb-8" style={{ color: '#5E5B54' }}>
               {i18n.t("errorBoundary.body", "Please try again. If the problem persists, contact our team.")}
             </p>
 
@@ -40,7 +40,7 @@ class ErrorBoundary extends Component<Props, State> {
               onClick={() => window.location.reload()}
               className={cn(
                 "pa-action flex items-center gap-2 px-8 py-3.5 rounded-full min-h-[48px]",
-                "bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase",
+                "bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.12em] uppercase",
                 "hover:bg-[#333330] transition-colors cursor-pointer"
               )}
             >

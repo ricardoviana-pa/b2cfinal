@@ -53,7 +53,7 @@ export default function LanguageSwitcher({
   const iconColor =
     tone === "dark"
       ? `text-white/70 hover:text-white ${open ? "bg-white/15 text-white" : ""}`
-      : `text-[#6B6860] hover:text-[#1A1A18] ${open ? "bg-[#F5F1EB] text-[#1A1A18]" : ""}`;
+      : `text-pa-earth hover:text-[#1A1A18] ${open ? "bg-[#F5F1EB] text-[#1A1A18]" : ""}`;
 
   const activeLabel = LANGUAGES.find((l) => l.code === active)?.label ?? "EN";
 
@@ -68,7 +68,7 @@ export default function LanguageSwitcher({
         aria-expanded={open}
       >
         <Globe className="w-[17px] h-[17px]" />
-        <span className="text-[11px] font-medium tracking-wide">
+        <span className="text-[13px] font-medium tracking-wide">
           {activeLabel}
         </span>
       </button>
@@ -111,24 +111,24 @@ export default function LanguageSwitcher({
           >
             <div className="flex items-center gap-3">
               <span
-                className={`text-[11px] font-medium tracking-wide ${
-                  active === lang.code ? "text-[#8B7355]" : "text-[#726D63]"
+                className={`text-[13px] font-medium tracking-wide ${
+                  active === lang.code ? "text-pa-gold-aa" : "text-pa-stone"
                 }`}
               >
                 {lang.label}
               </span>
               <span
-                className={`text-[13px] ${
+                className={`text-[15px] ${
                   active === lang.code
                     ? "text-[#1A1A18] font-medium"
-                    : "text-[#6B6860]"
+                    : "text-pa-earth"
                 }`}
               >
                 {lang.name}
               </span>
             </div>
             {active === lang.code && (
-              <Check className="w-3.5 h-3.5 text-[#8B7355]" />
+              <Check className="w-3.5 h-3.5 text-pa-gold-aa" />
             )}
           </button>
         ))}

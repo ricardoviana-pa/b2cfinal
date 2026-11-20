@@ -185,7 +185,8 @@
     "unavailableHint": "Diese Häuser sind möglicherweise an anderen Daten verfügbar. Fragen Sie unseren Concierge nach Alternativen.",
     "fromTotal": "Ab {{price}} für den Aufenthalt",
     "metaTitle": "Ferienvillen & Ferienhäuser in Portugal",
-    "metaDescription": "Entdecken Sie {{homes}} Luxusvillen und Ferienhäuser in Minho, Porto, Lissabon, Alentejo und Algarve. Nach Reiseziel und Gästen filtern. Direkt buchen."
+    "metaDescription": "Entdecken Sie {{homes}} Luxusvillen und Ferienhäuser in Minho, Porto, Lissabon, Alentejo und Algarve. Nach Reiseziel und Gästen filtern. Direkt buchen.",
+    "showMore": "Mehr anzeigen"
   },
   "property": {
     "bedrooms": "Schlafzimmer",

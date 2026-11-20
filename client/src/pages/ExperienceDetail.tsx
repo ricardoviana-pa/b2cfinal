@@ -365,7 +365,7 @@ export default function ExperienceDetail() {
 
       {/* ── Breadcrumb ── */}
       <nav aria-label="Breadcrumb" className="container pt-20 pb-3">
-        <ol className="flex items-center gap-0.5 text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
+        <ol className="flex items-center gap-0.5 text-[13px] text-pa-stone" style={{ fontWeight: 400 }}>
           <li>
             <Link
               href="/"
@@ -397,7 +397,7 @@ export default function ExperienceDetail() {
             </>
           )}
           <li className="text-[#E8E4DC]">/</li>
-          <li className="text-[#6B6860] truncate max-w-[260px] inline-flex items-center min-h-[44px] px-1.5">
+          <li className="text-pa-earth truncate max-w-[260px] inline-flex items-center min-h-[44px] px-1.5">
             {exp.name}
           </li>
         </ol>
@@ -414,7 +414,7 @@ export default function ExperienceDetail() {
             {exp.badges.map((badge, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.08em] uppercase font-medium px-3 py-1.5 bg-[#F5F1EB] text-[#8B7355] border border-[#E8E4DC]"
+                className="inline-flex items-center gap-1.5 text-[12px] tracking-[0.08em] uppercase font-medium px-3 py-1.5 bg-[#F5F1EB] text-pa-gold-aa border border-[#E8E4DC]"
               >
                 {badge === 'Bestseller' && <TrendingUp className="w-3 h-3" />}
                 {badge === 'Badge of Excellence' && <Award className="w-3 h-3" />}
@@ -426,7 +426,7 @@ export default function ExperienceDetail() {
         )}
 
         {/* Overline: destination + category */}
-        <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-3">
+        <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-3">
           {destName}
           {exp.experienceCategory && <> · {exp.experienceCategory}</>}
         </p>
@@ -438,28 +438,28 @@ export default function ExperienceDetail() {
 
         {/* Tagline */}
         {exp.tagline && (
-          <p className="body-lg italic text-[#6B6860] max-w-3xl mb-5">{exp.tagline}</p>
+          <p className="body-lg italic text-pa-earth max-w-3xl mb-5">{exp.tagline}</p>
         )}
 
         {/* Social proof row + actions */}
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[15px]">
             {exp.aggregateRating && (
               <>
-                <span className="italic text-[#1A1A18]" style={{ fontWeight: 300 }}>
+                <span className="italic text-[#1A1A18]" style={{ fontWeight: 400 }}>
                   <span className="font-display text-[20px] not-italic">
                     {exp.aggregateRating.value.toFixed(1)}
                   </span>{' '}
                   / 5
                 </span>
                 <span className="text-[#E8E4DC]">·</span>
-                <span className="text-[#6B6860]" style={{ fontWeight: 300 }}>
+                <span className="text-pa-earth" style={{ fontWeight: 400 }}>
                   {exp.aggregateRating.count} {t('experienceDetail.guestReviews')}
                 </span>
                 {exp.recommendedPercent && (
                   <>
                     <span className="text-[#E8E4DC]">·</span>
-                    <span className="text-[#6B8E4E]" style={{ fontWeight: 300 }}>
+                    <span className="text-[#6B8E4E]" style={{ fontWeight: 400 }}>
                       {t('experienceDetail.recommendedBy', { percent: exp.recommendedPercent })}
                     </span>
                   </>
@@ -467,7 +467,7 @@ export default function ExperienceDetail() {
                 {exp.aggregateRating.rank && (
                   <>
                     <span className="text-[#E8E4DC]">·</span>
-                    <span className="text-[#8B7355]" style={{ fontWeight: 300 }}>
+                    <span className="text-pa-gold-aa" style={{ fontWeight: 400 }}>
                       {exp.aggregateRating.rank}
                     </span>
                   </>
@@ -485,14 +485,14 @@ export default function ExperienceDetail() {
                   e.preventDefault();
                   document.getElementById('video')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
-                className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors font-medium"
+                className="inline-flex items-center gap-1.5 text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa hover:text-[#1A1A18] transition-colors font-medium"
               >
                 <Play className="w-3.5 h-3.5" /> {t('experienceDetail.watchVideo')}
               </a>
             )}
             <button
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] uppercase text-[#726D63] hover:text-[#1A1A18] transition-colors"
+              className="inline-flex items-center gap-1.5 text-[12px] tracking-[0.08em] uppercase text-pa-stone hover:text-[#1A1A18] transition-colors"
             >
               <Share2 className="w-3.5 h-3.5" /> {t('experienceDetail.share')}
             </button>
@@ -525,7 +525,7 @@ export default function ExperienceDetail() {
               <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.aboutExperience')}</h2>
               <div className="body-lg space-y-4">
                 {paragraphs.map((p, i) => (
-                  <p key={i} className="text-[15px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 300 }}>
+                  <p key={i} className="text-[16px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 400 }}>
                     {p}
                   </p>
                 ))}
@@ -533,11 +533,11 @@ export default function ExperienceDetail() {
 
               {/* Difficulty level */}
               {exp.difficultyLevel && (
-                <div className="mt-6 inline-flex items-center gap-2 text-[12px] text-[#6B6860] bg-[#F5F1EB] px-4 py-2.5">
-                  <span className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium">
+                <div className="mt-6 inline-flex items-center gap-2 text-[13px] text-pa-earth bg-[#F5F1EB] px-4 py-2.5">
+                  <span className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium">
                     {t('experienceDetail.difficulty')}
                   </span>
-                  <span style={{ fontWeight: 300 }}>{exp.difficultyLevel}</span>
+                  <span style={{ fontWeight: 400 }}>{exp.difficultyLevel}</span>
                 </div>
               )}
             </section>
@@ -570,7 +570,7 @@ export default function ExperienceDetail() {
                   {exp.highlights.map((h, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <div className="w-1 h-1 rounded-full bg-[#8B7355] mt-3 shrink-0" />
-                      <span className="text-[15px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 300 }}>
+                      <span className="text-[16px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 400 }}>
                         {h}
                       </span>
                     </li>
@@ -594,14 +594,14 @@ export default function ExperienceDetail() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {exp.included && exp.included.length > 0 && (
                     <div>
-                      <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-4">
+                      <p className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium mb-4">
                         {t('experienceDetail.included')}
                       </p>
                       <ul className="space-y-2.5">
                         {exp.included.map((item, i) => (
                           <li key={i} className="flex items-start gap-3">
                             <Check className="w-4 h-4 text-[#6B8E4E] shrink-0 mt-0.5" />
-                            <span className="text-[14px] text-[#1A1A18]" style={{ fontWeight: 300 }}>
+                            <span className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 400 }}>
                               {item}
                             </span>
                           </li>
@@ -611,14 +611,14 @@ export default function ExperienceDetail() {
                   )}
                   {exp.notIncluded && exp.notIncluded.length > 0 && (
                     <div>
-                      <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-4">
+                      <p className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium mb-4">
                         {t('experienceDetail.notIncluded')}
                       </p>
                       <ul className="space-y-2.5">
                         {exp.notIncluded.map((item, i) => (
                           <li key={i} className="flex items-start gap-3">
-                            <X className="w-4 h-4 text-[#726D63] shrink-0 mt-0.5" />
-                            <span className="text-[14px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+                            <X className="w-4 h-4 text-pa-stone shrink-0 mt-0.5" />
+                            <span className="text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
                               {item}
                             </span>
                           </li>
@@ -650,13 +650,13 @@ export default function ExperienceDetail() {
               <section id="meeting">
                 <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.meetingPoint')}</h2>
                 <div className="flex items-start gap-3 mb-4">
-                  <MapPin className="w-5 h-5 text-[#8B7355] shrink-0 mt-0.5" />
+                  <MapPin className="w-5 h-5 text-pa-gold-aa shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 300 }}>
+                    <p className="text-[16px] text-[#1A1A18]" style={{ fontWeight: 400 }}>
                       {exp.meetingPoint.address}
                     </p>
                     {exp.meetingPoint.instructions && (
-                      <p className="text-[13px] text-[#6B6860] mt-1.5" style={{ fontWeight: 300 }}>
+                      <p className="text-[15px] text-pa-earth mt-1.5" style={{ fontWeight: 400 }}>
                         {exp.meetingPoint.instructions}
                       </p>
                     )}
@@ -666,16 +666,16 @@ export default function ExperienceDetail() {
                   href={exp.meetingPoint.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="pa-action inline-flex items-center gap-2 text-[11px] tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
+                  className="pa-action inline-flex items-center gap-2 text-[12px] tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
                 >
                   {t('experienceDetail.openInGoogleMaps')}
                 </a>
                 {exp.meetingPoint.pickupAvailable && exp.meetingPoint.pickupNote && (
                   <div className="mt-5 pt-5 border-t border-[#E8E4DC]">
-                    <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-1">
+                    <p className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium mb-1">
                       {t('experienceDetail.optionalPickup')}
                     </p>
-                    <p className="text-[14px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+                    <p className="text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
                       {exp.meetingPoint.pickupNote}
                     </p>
                   </div>
@@ -690,12 +690,12 @@ export default function ExperienceDetail() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {exp.whatToBring && exp.whatToBring.length > 0 && (
                     <div>
-                      <h3 className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-4">
+                      <h3 className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-4">
                         {t('experienceDetail.whatToBring')}
                       </h3>
                       <ul className="space-y-2">
                         {exp.whatToBring.map((item, i) => (
-                          <li key={i} className="text-[14px] text-[#1A1A18]" style={{ fontWeight: 300 }}>
+                          <li key={i} className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 400 }}>
                             · {item}
                           </li>
                         ))}
@@ -704,12 +704,12 @@ export default function ExperienceDetail() {
                   )}
                   {exp.notAllowed && exp.notAllowed.length > 0 && (
                     <div>
-                      <h3 className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-4">
+                      <h3 className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-4">
                         {t('experienceDetail.notAllowed')}
                       </h3>
                       <ul className="space-y-2">
                         {exp.notAllowed.map((item, i) => (
-                          <li key={i} className="text-[14px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+                          <li key={i} className="text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
                             · {item}
                           </li>
                         ))}
@@ -719,12 +719,12 @@ export default function ExperienceDetail() {
                 </div>
                 {exp.notSuitableFor && exp.notSuitableFor.length > 0 && (
                   <div className="mt-6 p-5 bg-[#F5F1EB]">
-                    <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-3">
+                    <p className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium mb-3">
                       {t('experienceDetail.notSuitableFor')}
                     </p>
                     <ul className="space-y-1.5">
                       {exp.notSuitableFor.map((item, i) => (
-                        <li key={i} className="text-[13px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+                        <li key={i} className="text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
                           · {item}
                         </li>
                       ))}
@@ -743,14 +743,14 @@ export default function ExperienceDetail() {
                   {exp.cancellationPolicy && (
                     <details className="group border-b border-[#E8E4DC] py-5 first:pt-0 last:border-b-0">
                       <summary className="flex items-start justify-between gap-4 cursor-pointer list-none">
-                        <h3 className="text-[15px] font-medium text-[#1A1A18] group-open:text-[#8B7355] transition-colors">
+                        <h3 className="text-[16px] font-medium text-[#1A1A18] group-open:text-pa-gold-aa transition-colors">
                           {t('experienceDetail.cancellationPolicyQ', 'What is the cancellation policy?')}
                         </h3>
-                        <span className="text-[#8B7355] text-[20px] leading-none mt-0.5 group-open:rotate-45 transition-transform shrink-0">
+                        <span className="text-pa-gold-aa text-[20px] leading-none mt-0.5 group-open:rotate-45 transition-transform shrink-0">
                           +
                         </span>
                       </summary>
-                      <p className="text-[14px] text-[#6B6860] leading-relaxed mt-3 pr-10" style={{ fontWeight: 300 }}>
+                      <p className="text-[15px] text-pa-earth leading-relaxed mt-3 pr-10" style={{ fontWeight: 400 }}>
                         {exp.cancellationPolicy}
                       </p>
                     </details>
@@ -761,16 +761,16 @@ export default function ExperienceDetail() {
                       className="group border-b border-[#E8E4DC] py-5 first:pt-0 last:border-b-0"
                     >
                       <summary className="flex items-start justify-between gap-4 cursor-pointer list-none">
-                        <h3 className="text-[15px] font-medium text-[#1A1A18] group-open:text-[#8B7355] transition-colors">
+                        <h3 className="text-[16px] font-medium text-[#1A1A18] group-open:text-pa-gold-aa transition-colors">
                           {f.q}
                         </h3>
-                        <span className="text-[#8B7355] text-[20px] leading-none mt-0.5 group-open:rotate-45 transition-transform shrink-0">
+                        <span className="text-pa-gold-aa text-[20px] leading-none mt-0.5 group-open:rotate-45 transition-transform shrink-0">
                           +
                         </span>
                       </summary>
                       <p
-                        className="text-[14px] text-[#6B6860] leading-relaxed mt-3 pr-10"
-                        style={{ fontWeight: 300 }}
+                        className="text-[15px] text-pa-earth leading-relaxed mt-3 pr-10"
+                        style={{ fontWeight: 400 }}
                       >
                         {f.a}
                       </p>
@@ -806,7 +806,7 @@ export default function ExperienceDetail() {
                   href={`https://wa.me/${WHATSAPP_NUMBER}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[12px] text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                  className="inline-flex items-center gap-2 text-[13px] text-pa-gold-aa hover:text-[#1A1A18] transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" /> +351 927 161 771
                 </a>
@@ -843,7 +843,7 @@ export default function ExperienceDetail() {
         <div className="flex items-center justify-end">
           <Link
             href="/experiences"
-            className="inline-flex items-center gap-2 text-[13px] font-medium text-[#726D63] hover:text-[#1A1A18] transition-colors"
+            className="inline-flex items-center gap-2 text-[15px] font-medium text-pa-stone hover:text-[#1A1A18] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> {t('experienceDetail.allExperiences')}
           </Link>

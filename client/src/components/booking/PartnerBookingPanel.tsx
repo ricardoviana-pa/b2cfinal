@@ -349,7 +349,7 @@ export function PartnerBookingPanel({
         </div>
         {paid && (
           <div className="p-6 space-y-4">
-            <p className="text-[13px] text-black/60 leading-relaxed">
+            <p className="text-[15px] text-black/60 leading-relaxed">
               {onHold
                 ? t('partnerBooking.heldBody', {
                     amount: formatQuotedEur(Number(paid.total) || 0, lang),
@@ -361,17 +361,17 @@ export function PartnerBookingPanel({
                   })}
             </p>
             <div className="bg-black/[0.02] p-4 space-y-1">
-              <p className="text-[10px] text-black/30 uppercase tracking-wider mb-1">
+              <p className="text-[12px] text-pa-stone uppercase tracking-wider mb-1">
                 {t('partnerBooking.requestDetails', 'Request details')}
               </p>
-              <p className="text-[12px] text-black">{paid.propertyName || propertyName}</p>
+              <p className="text-[13px] text-black">{paid.propertyName || propertyName}</p>
               {paid.checkin && paid.checkout && (
-                <p className="text-[11px] text-black/40">
+                <p className="text-[13px] text-pa-stone">
                   {formatBookingDate(paid.checkin, lang)} → {formatBookingDate(paid.checkout, lang)} · {paid.guests}{' '}
                   {t('booking.guestsLabel', 'guests')}
                 </p>
               )}
-              {paid.reference && <p className="text-[11px] text-black/40">{paid.reference}</p>}
+              {paid.reference && <p className="text-[13px] text-pa-stone">{paid.reference}</p>}
             </div>
             <a
               href={whatsappUrl}
@@ -406,11 +406,11 @@ export function PartnerBookingPanel({
             )}
           </p>
           <div className="bg-black/[0.02] p-4 space-y-1">
-            <p className="text-[10px] text-black/30 uppercase tracking-wider mb-1">
+            <p className="text-[12px] text-pa-stone uppercase tracking-wider mb-1">
               {t('partnerBooking.requestDetails', 'Request details')}
             </p>
-            <p className="text-[12px] text-black">{propertyName}</p>
-            <p className="text-[11px] text-black/40">
+            <p className="text-[13px] text-black">{propertyName}</p>
+            <p className="text-[13px] text-pa-stone">
               {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)}
               {quote ? ` · ${quote.nights} ${t('bookingWidget.nightsLabel', 'nights')}` : ''} · {guests}{' '}
               {t('booking.guestsLabel', 'guests')}
@@ -447,13 +447,13 @@ export function PartnerBookingPanel({
               <span className="text-[32px] font-light tracking-tight text-black tabular-nums">
                 {formatQuotedEur(quote.total, lang)}
               </span>
-              <span className="text-sm text-black/40 font-normal">
+              <span className="text-sm text-pa-stone font-normal">
                 {quote.feesKnown
                   ? t('property.totalLabel')
                   : t('partnerBooking.soFarLabel', 'so far')}
               </span>
             </div>
-            <p className="text-sm text-black/50 mt-1 tracking-wide">
+            <p className="text-sm text-pa-stone mt-1 tracking-wide">
               {quote.nights} {t("bookingWidget.nightsLabel", "nights")}
             </p>
           </>
@@ -471,11 +471,11 @@ export function PartnerBookingPanel({
                 : t(noPriceLabelKey(true, fromPrice))}
             </span>
             {fromPrice ? (
-              <span className="text-[14px] text-[#726D63] ml-1">
+              <span className="text-[15px] text-pa-stone ml-1">
                 {t('partnerBooking.perNight', 'per night')}
               </span>
             ) : null}
-            <p className="text-[11.5px] text-[#806A48] mt-1" style={{ fontWeight: 400 }}>
+            <p className="text-[13px] text-[#806A48] mt-1" style={{ fontWeight: 400 }}>
               {/* No "from" at all (no calendar, or nothing open in 12 months),
                   or dates chosen that are on request: picking dates will not
                   produce a total, so do not promise one. */}
@@ -519,10 +519,10 @@ export function PartnerBookingPanel({
                       active ? 'bg-black/[0.04] shadow-[inset_0_-2px_0_#1A1A18]' : 'hover:bg-black/[0.02]'
                     }`}
                   >
-                    <span className="block text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">
+                    <span className="block text-[12px] font-medium tracking-[0.15em] uppercase text-pa-stone mb-1">
                       {label}
                     </span>
-                    <span className={`block text-[15px] font-normal ${value ? 'text-black' : 'text-black/30'}`}>
+                    <span className={`block text-[16px] font-normal ${value ? 'text-black' : 'text-pa-stone'}`}>
                       {shown}
                     </span>
                   </button>
@@ -535,8 +535,8 @@ export function PartnerBookingPanel({
             <div className="border border-black border-t-0 rounded-b-lg overflow-hidden shadow-[0_8px_24px_rgba(26,26,24,0.08)] bg-white">
               {calendarLoading ? (
                 <div className="flex items-center justify-center py-10">
-                  <Loader2 className="w-4 h-4 animate-spin text-black/30" />
-                  <span className="ml-2 text-xs text-black/40">
+                  <Loader2 className="w-4 h-4 animate-spin text-pa-stone" />
+                  <span className="ml-2 text-xs text-pa-stone">
                     {t('bookingWidget.loadingCalendar', 'Loading availability...')}
                   </span>
                 </div>
@@ -581,7 +581,7 @@ export function PartnerBookingPanel({
           )}
 
           {minNights && minNights > 1 && (
-            <p className="text-[11px] text-black/50 mt-2 flex items-center gap-1">
+            <p className="text-[13px] text-pa-stone mt-2 flex items-center gap-1">
               <Calendar className="w-3 h-3" />
               {t('bookingWidget.minNightMinimum', { count: minNights })}
             </p>
@@ -597,7 +597,7 @@ export function PartnerBookingPanel({
           )}
 
           <div className="border border-black/15 mt-3 px-4 py-3">
-            <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-2">
+            <p className="text-[12px] font-medium tracking-[0.15em] uppercase text-pa-stone mb-2">
               {t('booking.guestsLabel')}
             </p>
             <div className="flex items-center gap-4">
@@ -605,13 +605,13 @@ export function PartnerBookingPanel({
                 type="button"
                 onClick={() => setGuests((g) => Math.max(1, g - 1))}
                 disabled={guests <= 1}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-black/15 text-black/40 transition-colors hover:border-black hover:text-black disabled:opacity-20"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-black/15 text-pa-stone transition-colors hover:border-black hover:text-black disabled:opacity-20"
                 aria-label={t('booking.decreaseGuests', 'Decrease guests')}
               >
                 <Minus className="w-3 h-3" />
               </button>
               <span
-                className="min-w-[3ch] text-center text-[15px] text-black tabular-nums font-normal"
+                className="min-w-[3ch] text-center text-[16px] text-black tabular-nums font-normal"
                 aria-live="polite"
                 aria-atomic="true"
               >
@@ -621,7 +621,7 @@ export function PartnerBookingPanel({
                 type="button"
                 onClick={() => setGuests((g) => Math.min(maxGuests > 0 ? maxGuests : 30, g + 1))}
                 disabled={guests >= (maxGuests > 0 ? maxGuests : 30)}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-black/15 text-black/40 transition-colors hover:border-black hover:text-black disabled:opacity-20"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-black/15 text-pa-stone transition-colors hover:border-black hover:text-black disabled:opacity-20"
                 aria-label={t('booking.increaseGuests', 'Increase guests')}
               >
                 <Plus className="w-3 h-3" />
@@ -665,7 +665,7 @@ export function PartnerBookingPanel({
             <div className="bg-black/[0.02] border border-black/10 overflow-hidden">
               <div className="p-5 space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-black/50">
+                  <span className="text-sm text-pa-stone">
                     {quote.nights} {t("bookingWidget.nightsLabel", "nights")}
                   </span>
                   <span className="text-sm text-black tabular-nums">
@@ -675,13 +675,13 @@ export function PartnerBookingPanel({
 
                 {quote.cleaningFee > 0 && (
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-black/50">{t('property.cleaningFee', 'Final cleaning')}</span>
+                    <span className="text-sm text-pa-stone">{t('property.cleaningFee', 'Final cleaning')}</span>
                     <span className="text-sm text-black tabular-nums">{formatQuotedEur(quote.cleaningFee, lang)}</span>
                   </div>
                 )}
 
                 <div className="border-t border-black/10 pt-3 flex justify-between items-baseline">
-                  <span className="text-[15px] font-medium text-black">
+                  <span className="text-[16px] font-medium text-black">
                     {quote.feesKnown
                       ? t('partnerBooking.total', 'Total')
                       : t('partnerBooking.totalSoFar', 'Total so far')}
@@ -692,7 +692,7 @@ export function PartnerBookingPanel({
                 </div>
 
                 {(!quote.feesKnown || quote.securityDeposit > 0) && (
-                  <p className="text-[11px] text-black/35 leading-snug">
+                  <p className="text-[13px] text-pa-stone leading-snug">
                     {quote.feesKnown
                       ? t('partnerBooking.depositNote', { amount: formatQuotedEur(quote.securityDeposit, lang) })
                       : payable
@@ -804,14 +804,14 @@ export function PartnerBookingPanel({
             )}
           </button>
 
-          <p className="text-[11px] text-black/30 text-center leading-relaxed">
+          <p className="text-[13px] text-pa-stone text-center leading-relaxed">
             {payable
               ? t('partnerBooking.payNote', 'Your card is not charged now. The amount is held on your card, on a secure Stripe page, and only charged once we confirm the home, within 48 hours. If we cannot confirm it, the hold is released and nothing is charged.')
               : t('partnerBooking.noCharge', 'No payment now — our concierge confirms availability and the final total first.')}
           </p>
           </ReserveCtaSlot>
           </>) : (
-            <p className="text-[12px] text-pa-earth leading-relaxed pt-1">
+            <p className="text-[13px] text-pa-earth leading-relaxed pt-1">
               {t('partnerBooking.pickDatesFirst', 'Pick your dates above: we then ask for your details and send the request to the home.')}
             </p>
           )}
@@ -820,7 +820,7 @@ export function PartnerBookingPanel({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-1.5 text-[12px] text-[#8B7355] hover:text-black transition-colors pt-3 mt-1 border-t border-black/[0.06]"
+            className="flex items-center justify-center gap-1.5 text-[13px] text-pa-gold-aa hover:text-black transition-colors pt-3 mt-1 border-t border-black/[0.06]"
           >
             {t('property.needHelpConcierge', 'Need help? Talk to concierge')}
           </a>

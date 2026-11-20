@@ -185,7 +185,8 @@
     "unavailableHint": "Deze huizen zijn mogelijk op andere data beschikbaar. Vraag onze concierge naar alternatieven.",
     "fromTotal": "Vanaf {{price}} voor het verblijf",
     "metaTitle": "Villa's Huren & Vakantiehuizen in Portugal",
-    "metaDescription": "Ontdek {{homes}} luxevilla's en vakantiehuizen in Minho, Porto, Lissabon, Alentejo en de Algarve. Filter op bestemming en gasten. Boek direct."
+    "metaDescription": "Ontdek {{homes}} luxevilla's en vakantiehuizen in Minho, Porto, Lissabon, Alentejo en de Algarve. Filter op bestemming en gasten. Boek direct.",
+    "showMore": "Meer tonen"
   },
   "property": {
     "bedrooms": "Slaapkamers",

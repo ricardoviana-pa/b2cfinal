@@ -154,7 +154,7 @@ export default function BokunCalendarWidget({
       style={style}
     >
       {/* Placeholder while Bókun loads */}
-      <div className="flex items-center justify-center py-12 text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
+      <div className="flex items-center justify-center py-12 text-[13px] text-pa-stone" style={{ fontWeight: 400 }}>
         Loading booking calendar&hellip;
       </div>
     </div>

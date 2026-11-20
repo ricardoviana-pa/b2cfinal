@@ -185,7 +185,8 @@
     "unavailableHint": "Dessa hem kan vara tillgängliga andra datum. Kontakta vår concierge för alternativ.",
     "fromTotal": "Från {{price}} för vistelsen",
     "metaTitle": "Hyra Villa & Semesterhus i Portugal",
-    "metaDescription": "Utforska {{homes}} lyxvillor och semesterhus i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Filtrera efter resmål och gäster. Boka direkt."
+    "metaDescription": "Utforska {{homes}} lyxvillor och semesterhus i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Filtrera efter resmål och gäster. Boka direkt.",
+    "showMore": "Visa fler"
   },
   "property": {
     "bedrooms": "Sovrum",

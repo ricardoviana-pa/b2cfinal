@@ -87,18 +87,18 @@ export default function ExperienceMobileBookingBar({
           <div>
             {priceFrom > 0 ? (
               <>
-                <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium">
+                <p className="text-[12px] tracking-[0.08em] uppercase text-pa-stone font-medium">
                   {t('experience.from', 'From')}
                 </p>
                 <p className="text-[18px] font-display text-[#1A1A18] leading-none mt-0.5">
                   €{priceFrom}
-                  <span className="text-[11px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                  <span className="text-[13px] text-pa-stone ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                     {t('experience.perPerson', '/ person')}
                   </span>
                 </p>
               </>
             ) : (
-              <p className="text-[15px] font-display text-[#1A1A18] leading-tight">
+              <p className="text-[16px] font-display text-[#1A1A18] leading-tight">
                 {priceLabel || t('experience.priceOnRequest', 'Price on request')}
               </p>
             )}
@@ -126,7 +126,7 @@ export default function ExperienceMobileBookingBar({
                 }
                 setWidgetOpen(true);
               }}
-              className="pa-action bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5"
+              className="pa-action bg-[#1A1A18] text-white text-[12px] tracking-[0.14em] font-medium uppercase px-8 py-3.5"
               style={{ minHeight: '48px' }}
             >
               {t('experience.bookNow', 'Book now')}
@@ -136,7 +136,7 @@ export default function ExperienceMobileBookingBar({
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="pa-action bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5 flex items-center"
+              className="pa-action bg-[#1A1A18] text-white text-[12px] tracking-[0.14em] font-medium uppercase px-8 py-3.5 flex items-center"
               style={{ minHeight: '48px' }}
               onClick={() => {
                 if (!experienceSlug) return;
@@ -156,10 +156,10 @@ export default function ExperienceMobileBookingBar({
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E4DC] bg-white shrink-0">
             <div>
-              <p className="text-[10px] tracking-[0.14em] uppercase text-[#726D63] font-medium">
+              <p className="text-[12px] tracking-[0.14em] uppercase text-pa-stone font-medium">
                 {t('experience.reserve', 'Reserve')}
               </p>
-              <p className="text-[14px] font-display text-[#1A1A18] mt-0.5 leading-tight truncate max-w-[260px]">
+              <p className="text-[15px] font-display text-[#1A1A18] mt-0.5 leading-tight truncate max-w-[260px]">
                 {experienceName}
               </p>
             </div>
@@ -181,23 +181,23 @@ export default function ExperienceMobileBookingBar({
           <div className="flex-1 bg-white overflow-y-auto">
             {isMultiOption && (
               <div className="px-5 pt-5 pb-4 border-b border-[#E8E4DC]">
-                <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-3">
+                <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-stone mb-3">
                   {t('experience.chooseOption', 'Choose your option')}
                 </p>
                 <div className="space-y-2">
                   {bokunOptions!.map((opt, i) => (
                     <div key={i} className="flex items-center justify-between gap-3 p-3 border border-[#E8E4DC] rounded-lg">
                       <div className="min-w-0">
-                        <p className="text-[13px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
-                        {opt.detail && <p className="text-[11px] text-[#726D63] mt-0.5">{opt.detail}</p>}
+                        <p className="text-[15px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
+                        {opt.detail && <p className="text-[13px] text-pa-stone mt-0.5">{opt.detail}</p>}
                       </div>
                       {opt.priceFrom ? (
-                        <span className="text-[13px] text-[#1A1A18] font-medium whitespace-nowrap shrink-0">€{opt.priceFrom}</span>
+                        <span className="text-[15px] text-[#1A1A18] font-medium whitespace-nowrap shrink-0">€{opt.priceFrom}</span>
                       ) : null}
                     </div>
                   ))}
                 </div>
-                <p className="text-[11px] text-[#726D63] mt-3" style={{ fontWeight: 300 }}>
+                <p className="text-[13px] text-pa-stone mt-3" style={{ fontWeight: 400 }}>
                   {t('experience.pickOptionHint', 'Select a tour to check live availability')}
                 </p>
               </div>
@@ -213,14 +213,14 @@ export default function ExperienceMobileBookingBar({
           {/* Footer */}
           <div className="px-5 py-3 flex items-center justify-between border-t border-[#E8E4DC] bg-white shrink-0"
                style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}>
-            <span className="text-[11px] text-[#726D63]" style={{ fontWeight: 300 }}>
+            <span className="text-[13px] text-pa-stone" style={{ fontWeight: 400 }}>
               {t('experience.secureBooking', 'Secure booking by Bókun')}
             </span>
             <a
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] text-[#8B7355]"
+              className="inline-flex items-center gap-1 text-[13px] text-pa-gold-aa"
             >
               <MessageCircle className="w-3 h-3" /> WhatsApp
             </a>

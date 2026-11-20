@@ -16,7 +16,7 @@ import type { Ref } from "react";
 import { useTranslation } from "react-i18next";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatBookingDate, formatQuotedEur } from "@/lib/format";
+import { formatBookingDate, formatQuotedEur, formatEur, formatStayEur, staySavingsEuros } from "@/lib/format";
 import { cancellationPolicyCopy, cancellationPolicyPath } from "@/lib/cancellation";
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { rateCardModels, type RateCardModel, type RateCardOption } from "@/lib/rateCards";
@@ -31,6 +31,7 @@ export default function RatePlanCards<T extends RateCardOption>({
   name,
   columns = 1,
   twoPartsVariant = null,
+  wholeEuros = false,
   selectedRef,
   containerRef,
   className,
@@ -46,6 +47,8 @@ export default function RatePlanCards<T extends RateCardOption>({
   columns?: 1 | 2;
   /** Linha das duas partes debaixo do cartão reembolsável: "widget" (página da casa) ou "rate" (passo 1). */
   twoPartsVariant?: "widget" | "rate" | null;
+  /** Página da casa: preços em euros inteiros (lib/format.ts, formatStayEur); o checkout mantém os cêntimos. */
+  wholeEuros?: boolean;
   /** Widget: o cartão escolhido fica à vista por cima do RESERVE (bookingCardReveal). */
   selectedRef?: Ref<HTMLLabelElement>;
   containerRef?: Ref<HTMLDivElement>;
@@ -54,6 +57,10 @@ export default function RatePlanCards<T extends RateCardOption>({
   const { t } = useTranslation();
   const copy = cancellationPolicyCopy(lang);
   const models = rateCardModels(options, checkIn);
+  const money = (amount: number) => (wholeEuros ? formatStayEur(amount, lang) : formatQuotedEur(amount, lang));
+  /** A poupança mostrada: em euros inteiros é a diferença dos dois preços tal como aparecem. */
+  const savingsShown = (compareTotal: number, total: number, savings: number) =>
+    wholeEuros ? staySavingsEuros(compareTotal, total) : savings;
   const policyLink = (code: Parameters<typeof cancellationPolicyPath>[1], label: string) => (
     <a
       href={cancellationPolicyPath(lang, code)}
@@ -138,17 +145,17 @@ export default function RatePlanCards<T extends RateCardOption>({
                     </p>
                   </div>
                 </div>
-                <p className="body-md text-pa-dark font-medium tabular-nums leading-tight shrink-0 text-right">{formatQuotedEur(m.total, lang)}</p>
+                <p className="body-md text-pa-dark font-medium tabular-nums leading-tight shrink-0 text-right">{money(m.total)}</p>
               </div>
               {/* A poupança numa linha própria, à direita, debaixo do benefício: dentro
                   da coluna do preço empurrava o título para ~70 px a 360 px em alemão
                   ("Nicht erstattungsfähig" entrava pelo preço) e dividia o benefício em
                   três linhas. Assim o título e o benefício têm a largura toda. */}
-              {m.savings > 0 && m.compareTotal != null && (
+              {m.savings > 0 && m.compareTotal != null && savingsShown(m.compareTotal, m.total, m.savings) > 0 && (
                 <p className="caption -mt-1 leading-snug flex flex-wrap items-center justify-end gap-x-1.5 gap-y-1">
-                  <s className="text-pa-stone-aa tabular-nums">{formatQuotedEur(m.compareTotal, lang)}</s>
+                  <s className="text-pa-stone-aa tabular-nums">{money(m.compareTotal)}</s>
                   <span className={cn("inline-flex items-center rounded-full border border-pa-sand px-2 py-0.5 eyebrow font-medium tracking-[0.08em] uppercase text-pa-gold-aa whitespace-nowrap", selected ? "bg-white" : "bg-pa-warm")}>
-                    {t("bookingWidget.save", "Save")} {formatQuotedEur(m.savings, lang)}
+                    {t("bookingWidget.save", "Save")} {wholeEuros ? formatEur(savingsShown(m.compareTotal, m.total, m.savings), lang) : formatQuotedEur(m.savings, lang)}
                   </span>
                 </p>
               )}

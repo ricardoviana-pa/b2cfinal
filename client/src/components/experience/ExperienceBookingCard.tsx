@@ -81,10 +81,10 @@ export default function ExperienceBookingCard({
       <div className="px-7 pt-7 pb-5 border-b border-[#E8E4DC]">
         {priceFrom > 0 ? (
           <>
-            <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium mb-1">From</p>
+            <p className="text-[12px] tracking-[0.08em] uppercase text-pa-stone font-medium mb-1">From</p>
             <p className="text-[28px] font-display text-[#1A1A18] leading-none">
               €{priceFrom}
-              <span className="text-[12px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+              <span className="text-[13px] text-pa-stone ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                 / person
               </span>
             </p>
@@ -97,7 +97,7 @@ export default function ExperienceBookingCard({
           </p>
         )}
         {duration && (
-          <p className="text-[11px] text-[#6B6860] mt-2" style={{ fontWeight: 300 }}>
+          <p className="text-[13px] text-pa-earth mt-2" style={{ fontWeight: 400 }}>
             {duration} · Private experience
           </p>
         )}
@@ -109,7 +109,7 @@ export default function ExperienceBookingCard({
           calendar as before. */}
       {hasBokun && isMultiOption ? (
         <div className="bg-white px-7 py-6">
-          <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-3">
+          <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-stone mb-3">
             {t('experience.chooseOption', 'Choose your option')}
           </p>
           <div className="space-y-2.5 mb-5">
@@ -135,19 +135,19 @@ export default function ExperienceBookingCard({
                 className="group w-full flex items-center justify-between gap-3 text-left p-3.5 border border-[#E8E4DC] rounded-lg hover:border-[#1A1A18] hover:bg-[#FAFAF7] transition-all"
               >
                 <div className="min-w-0">
-                  <p className="text-[13px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
-                  {opt.detail && <p className="text-[11px] text-[#726D63] mt-0.5">{opt.detail}</p>}
+                  <p className="text-[15px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
+                  {opt.detail && <p className="text-[13px] text-pa-stone mt-0.5">{opt.detail}</p>}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {opt.priceFrom ? (
-                    <span className="text-[13px] text-[#1A1A18] font-medium whitespace-nowrap">€{opt.priceFrom}</span>
+                    <span className="text-[15px] text-[#1A1A18] font-medium whitespace-nowrap">€{opt.priceFrom}</span>
                   ) : null}
-                  <ChevronRight className="w-4 h-4 text-[#726D63] group-hover:text-[#1A1A18] group-hover:translate-x-0.5 transition-all" />
+                  <ChevronRight className="w-4 h-4 text-pa-stone group-hover:text-[#1A1A18] group-hover:translate-x-0.5 transition-all" />
                 </div>
               </button>
             ))}
           </div>
-          <p className="text-center text-[11px] text-[#726D63]" style={{ fontWeight: 300 }}>
+          <p className="text-center text-[13px] text-pa-stone" style={{ fontWeight: 400 }}>
             {t('experience.pickOptionHint', 'Select a tour to check live availability')}
           </p>
           <BokunWidgetModal
@@ -172,7 +172,7 @@ export default function ExperienceBookingCard({
             href={waHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="pa-action w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors mb-3"
+            className="pa-action w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[12px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors mb-3"
             style={{ minHeight: '52px' }}
             onClick={() => {
               if (!experienceSlug) return;
@@ -182,12 +182,12 @@ export default function ExperienceBookingCard({
           >
             Check availability
           </a>
-          <p className="text-center text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
+          <p className="text-center text-[13px] text-pa-stone" style={{ fontWeight: 400 }}>
             <a
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+              className="inline-flex items-center gap-1 text-pa-gold-aa hover:text-[#1A1A18] transition-colors"
             >
               <MessageCircle className="w-3 h-3" /> {t('experience.messageWhatsApp', 'Message us on WhatsApp to book')}
             </a>
@@ -198,29 +198,29 @@ export default function ExperienceBookingCard({
       {/* Trust signals */}
       <div className="px-7 py-5 border-t border-[#E8E4DC]">
         <div className="space-y-2.5">
-          <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+          <div className="flex items-center gap-2.5 text-[13px] text-pa-earth" style={{ fontWeight: 400 }}>
             <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
             <span>{t('experience.freeCancellation', 'Free cancellation up to {{hours}}h before', { hours: freeCancellationHours })}</span>
           </div>
           {reserveNowPayLater && (
-            <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+            <div className="flex items-center gap-2.5 text-[13px] text-pa-earth" style={{ fontWeight: 400 }}>
               <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
               <span>{t('experience.reserveNowPayLater', 'Reserve now, pay later')}</span>
             </div>
           )}
-          <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+          <div className="flex items-center gap-2.5 text-[13px] text-pa-earth" style={{ fontWeight: 400 }}>
             <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
             <span>{t('experience.instantConfirmation', 'Instant confirmation')}</span>
           </div>
         </div>
         {hasBokun && (
-          <p className="text-center text-[12px] text-[#726D63] mt-4" style={{ fontWeight: 300 }}>
+          <p className="text-center text-[13px] text-pa-stone mt-4" style={{ fontWeight: 400 }}>
             {t('experience.orLabel', 'or')}{' '}
             <a
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+              className="inline-flex items-center gap-1 text-pa-gold-aa hover:text-[#1A1A18] transition-colors"
             >
               <MessageCircle className="w-3 h-3" /> {t('experience.messageWhatsAppShort', 'message us on WhatsApp')}
             </a>

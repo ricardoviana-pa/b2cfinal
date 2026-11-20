@@ -46,11 +46,11 @@ export default function Footer() {
   const footerLinks = (label: string, href: string, external?: boolean) => (
     <li>
       {external ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[13px] text-white/65 hover:text-white transition-colors duration-200 inline-flex items-center gap-1" style={{ fontWeight: 300 }}>
+        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[15px] text-white/65 hover:text-white transition-colors duration-200 inline-flex items-center gap-1" style={{ fontWeight: 400 }}>
           {label} <ArrowUpRight size={10} className="opacity-0 group-hover:opacity-100" />
         </a>
       ) : (
-        <Link href={href} className="text-[13px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 300 }}>
+        <Link href={href} className="text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>
           {label}
         </Link>
       )}
@@ -67,23 +67,23 @@ export default function Footer() {
       {/* Newsletter banner */}
       <details className="border-b border-white/[0.1]">
         <summary className="container py-5 flex items-center justify-between gap-4 cursor-pointer list-none">
-          <span className="text-[14px] text-white/80">{t('footer.nlHeadline')}</span>
-          <span className="text-[12px] text-white/70 flex items-center gap-3">{t('footer.subscribe')} <span aria-hidden="true">+</span></span>
+          <span className="text-[15px] text-white/80">{t('footer.nlHeadline')}</span>
+          <span className="text-[13px] text-white/70 flex items-center gap-3">{t('footer.subscribe')} <span aria-hidden="true">+</span></span>
         </summary>
         <div className="container pb-6">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div className="max-w-md">
 
               <p
-                className="text-[13px] text-white/65 leading-relaxed"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                className="text-[15px] text-white/65 leading-relaxed"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 {t('footer.nlSub')}
               </p>
             </div>
             <div className="w-full lg:w-auto lg:min-w-[380px]">
               {subscribed ? (
-                <p className="text-[13px] flex items-center gap-2 text-[#C4A87C]" role="status" aria-live="polite">
+                <p className="text-[15px] flex items-center gap-2 text-[#C4A87C]" role="status" aria-live="polite">
                   <Check className="w-3.5 h-3.5" /> {t('footer.welcomeInbox')}
                 </p>
               ) : (
@@ -98,19 +98,19 @@ export default function Footer() {
                       required
                       autoComplete="email"
                       inputMode="email"
-                      className="flex-1 h-[48px] px-4 text-[13px] bg-white/[0.04] border border-white/10 text-white placeholder:text-white/65 focus:outline-none focus:border-white/30 transition-colors min-w-0"
-                      style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                      className="flex-1 h-[48px] px-4 text-[15px] bg-white/[0.04] border border-white/10 text-white placeholder:text-white/65 focus:outline-none focus:border-white/30 transition-colors min-w-0"
+                      style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                     />
                     <button
                       type="submit"
                       disabled={subscribing}
-                      className="pa-action h-[48px] px-6 bg-[#C4A87C] text-[#1A1A18] text-[11px] font-semibold hover:bg-[#D4B88C] transition-colors flex-shrink-0 disabled:opacity-50"
+                      className="pa-action h-[48px] px-6 bg-[#C4A87C] text-[#1A1A18] text-[13px] font-semibold hover:bg-[#D4B88C] transition-colors flex-shrink-0 disabled:opacity-50"
                       style={{ letterSpacing: '1.5px' }}
                     >
                       {subscribing ? '...' : t('footer.subscribe')}
                     </button>
                   </div>
-                  {nlError && <p className="text-[11px] text-red-400" role="alert" aria-live="assertive">{nlError}</p>}
+                  {nlError && <p className="text-[13px] text-red-400" role="alert" aria-live="assertive">{nlError}</p>}
                 </form>
               )}
             </div>
@@ -125,11 +125,11 @@ export default function Footer() {
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <Link href="/">
-              <img src={IMAGES.logoWhite} alt="Portugal Active — luxury villas in Portugal" className="h-5 lg:h-6 w-auto object-contain mb-5" />
+              <img src={IMAGES.logoWhite} alt="Portugal Active — luxury villas in Portugal" className="h-8 lg:h-10 w-auto object-contain mb-5" />
             </Link>
             <p
-              className="text-[13px] text-white/65 mb-5 leading-relaxed max-w-[260px]"
-              style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+              className="text-[15px] text-white/65 mb-5 leading-relaxed max-w-[260px]"
+              style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
             >
               {t('footer.tagline')}
             </p>
@@ -137,22 +137,22 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-2">
               <a href="tel:+351258358434" className="flex items-center gap-2 group">
                 <Phone size={13} className="text-white/65 group-hover:text-[#C4A87C] transition-colors" />
-                <span className="text-[12px] text-white/65 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>+351 258 358 434</span>
+                <span className="text-[13px] text-white/65 group-hover:text-white transition-colors" style={{ fontWeight: 400 }}>+351 258 358 434</span>
               </a>
             </div>
             <div className="flex items-center gap-3 mb-2">
               <a href="mailto:info@portugalactive.com" className="flex items-center gap-2 group">
                 <Mail size={13} className="text-white/65 group-hover:text-[#C4A87C] transition-colors" />
-                <span className="text-[12px] text-white/65 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>info@portugalactive.com</span>
+                <span className="text-[13px] text-white/65 group-hover:text-white transition-colors" style={{ fontWeight: 400 }}>info@portugalactive.com</span>
               </a>
             </div>
             <div className="flex items-center gap-3">
               <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group">
                 <MessageCircle size={13} className="text-white/65 group-hover:text-[#C4A87C] transition-colors" />
-                <span className="text-[12px] text-white/65 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>+351 927 161 771 · {t('header.whatsapp')}</span>
+                <span className="text-[13px] text-white/65 group-hover:text-white transition-colors" style={{ fontWeight: 400 }}>+351 927 161 771 · {t('header.whatsapp')}</span>
               </a>
             </div>
-            <p className="mt-4 text-[12px] leading-relaxed text-white/65">
+            <p className="mt-4 text-[13px] leading-relaxed text-white/65">
               <span className="block text-white/80 font-medium">{t('footer.offices')}</span>
               <Link href="/contact" className="hover:text-white transition-colors">Viana do Castelo · Lisboa</Link>
             </p>
@@ -160,7 +160,7 @@ export default function Footer() {
 
           {/* Column 2: Destinations */}
           <div>
-            <h4 className="text-[11px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
+            <h4 className="text-[12px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
               {t('footer.destinationsTitle')}
             </h4>
             <ul className="flex flex-col gap-3">
@@ -175,7 +175,7 @@ export default function Footer() {
 
           {/* Column 3: Services */}
           <div>
-            <h4 className="text-[11px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
+            <h4 className="text-[12px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
               {t('footer.servicesTitle')}
             </h4>
             <ul className="flex flex-col gap-3">
@@ -183,14 +183,14 @@ export default function Footer() {
               {footerLinks(t('footer.experiences'), '/experiences')}
               {footerLinks(t('footer.conciergeServices'), '/concierge')}
               {footerLinks(t('footer.events'), '/events')}
-              <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[13px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 300 }}>{t('footer.realEstate')}</a></li>
+              <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>{t('footer.realEstate')}</a></li>
 
             </ul>
           </div>
 
           {/* Column 4: Company */}
           <div>
-            <h4 className="text-[11px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
+            <h4 className="text-[12px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
               {t('footer.companyTitle')}
             </h4>
             <ul className="flex flex-col gap-3">
@@ -199,7 +199,7 @@ export default function Footer() {
               {footerLinks(t('footer.journal'), '/blog')}
               {footerLinks(t('footer.contact'), '/contact')}
               <li>
-                <a href={`https://www.portugalactive.com/management/${managementLanguage}`} className="text-[13px] text-white/65 hover:text-white transition-colors" style={{ fontWeight: 300 }}>
+                <a href={`https://www.portugalactive.com/management/${managementLanguage}`} className="text-[15px] text-white/65 hover:text-white transition-colors" style={{ fontWeight: 400 }}>
                   {t('footer.forOwners', 'For property owners')} →
                 </a>
               </li>
@@ -231,7 +231,7 @@ export default function Footer() {
 
             {/* Payments */}
             <div className="flex min-w-0 flex-col items-center gap-3 xl:items-end">
-              <span className="text-[10px] uppercase tracking-[0.16em] text-white/65 xl:pr-12" style={{ fontFamily: 'var(--font-body)' }}>
+              <span className="text-[12px] uppercase tracking-[0.16em] text-white/65 xl:pr-12" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('footer.paymentSecure', 'Secure payment')}
               </span>
               <FooterPaymentLogos />
@@ -250,7 +250,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t('legalFooter.complaintsBookAria')}
-              className="inline-flex items-center gap-2.5 rounded-sm border border-white/25 px-3.5 py-2 text-[12px] leading-snug text-white/80 hover:border-white/50 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2.5 rounded-sm border border-white/25 px-3.5 py-2 text-[13px] leading-snug text-white/80 hover:border-white/50 hover:text-white transition-colors"
               style={{ fontFamily: 'var(--font-body)' }}
             >
               <BookOpen size={15} className="flex-shrink-0 text-[#C4A87C]" aria-hidden="true" />
@@ -265,8 +265,8 @@ export default function Footer() {
               lg:pr-16 keeps the right-aligned links ("Cookie settings" last)
               out of the WhatsApp button's corner on desktop. */}
           <div
-            className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[11px] leading-none text-white/65 md:flex-row md:items-center md:justify-between lg:pr-16"
-            style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+            className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[13px] leading-none text-white/65 md:flex-row md:items-center md:justify-between lg:pr-16"
+            style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
           >
             <span className="leading-none">
               {t('footer.copyrightLine', { year: new Date().getFullYear(), rights: t('footer.allRightsReserved') })}

@@ -48,7 +48,7 @@ import { trpc } from '@/lib/trpc';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { hasSwimmingPool } from '@/lib/homeSearch';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
-import { formatQuotedEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
+import { formatBookingDate, getDisplayName, intlLocale, formatStayEur } from '@/lib/format';
 import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight, watchBookingCardUnderFloats } from '@/lib/fixedBottom';
 import {
   StructuredData,
@@ -263,7 +263,7 @@ function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onC
       {/* Top bar: counter + close */}
       <div className="flex items-center justify-between px-4 py-3 shrink-0">
         <div />
-        <span className="text-white/70 body-sm font-body font-light" >
+        <span className="text-white/70 body-sm font-body font-normal" >
           {idx + 1} / {total}
         </span>
         <button
@@ -421,7 +421,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
               {b.label && (
                 <h3 className="eyebrow font-semibold tracking-[0.12em] uppercase text-pa-stone mb-2.5">{labelFor(b)}</h3>
               )}
-              <div className={b.label ? 'space-y-3 body-sm text-pa-earth leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 300 } : undefined}>
+              <div className={b.label ? 'space-y-3 body-sm text-pa-earth leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 400 } : undefined}>
                 {b.paragraphs.map((para, i) => <p key={i}>{para}</p>)}
               </div>
             </div>
@@ -429,7 +429,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
           {hasMore && (
             <button
               onClick={() => setExpanded((v) => !v)}
-              className="body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-4"
+              className="body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors underline underline-offset-4"
             >
               {expanded ? t('common.readLess', 'Read less') : t('common.readMore', 'Read more')}
             </button>
@@ -459,7 +459,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
                 <div className="absolute -top-12 left-0 right-0 h-12 bg-gradient-to-t from-pa-cream to-transparent pointer-events-none" />
                 <button
                   onClick={() => setExpanded(true)}
-                  className="body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-4"
+                  className="body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors underline underline-offset-4"
                 >
                   {t('common.readMore', 'Read more')}
                 </button>
@@ -468,7 +468,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
             {expanded && needsTruncation && (
               <button
                 onClick={() => setExpanded(false)}
-                className="body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-4"
+                className="body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors underline underline-offset-4"
               >
                 {t('common.readLess', 'Read less')}
               </button>
@@ -1150,7 +1150,7 @@ export default function PropertyDetail() {
             </p>
           )}
           <div className="flex items-center gap-1.5 mb-4">
-            <BadgeCheck size={14} className="text-pa-gold" />
+            <BadgeCheck size={14} className="text-pa-gold-aa" />
             <span className="caption tracking-[0.02em] text-pa-stone font-medium">{t('property.directConcierge')}</span>
           </div>
           <div className="space-y-3">
@@ -1201,7 +1201,7 @@ export default function PropertyDetail() {
           ] as const).map((item, i) => (
             <div key={i} className="flex items-start gap-2">
               <item.icon size={14} className="text-pa-gold-aa shrink-0 mt-0.5" />
-              <span className="caption text-pa-dark leading-snug font-body font-light" >{item.label}</span>
+              <span className="caption text-pa-dark leading-snug font-body font-normal" >{item.label}</span>
             </div>
           ))}
         </div>
@@ -1230,7 +1230,7 @@ export default function PropertyDetail() {
 
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="container pt-20 pb-1 lg:pb-0">
-          <ol className="flex items-center gap-0.5 caption text-pa-stone font-light" >
+          <ol className="flex items-center gap-0.5 caption text-pa-stone font-normal" >
             <li><Link href="/" className="inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5 hover:text-pa-dark transition-colors">{t('propertyDetail.breadcrumbHome', 'Home')}</Link></li>
             <li className="text-pa-sand">/</li>
             <li><Link href="/homes" className="inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5 hover:text-pa-dark transition-colors">{t('propertyDetail.breadcrumbHomes', 'Homes')}</Link></li>
@@ -1305,7 +1305,7 @@ export default function PropertyDetail() {
                 {displayName}
               </h1>
               {property.tagline && (
-                <p className="body-sm text-pa-earth italic mt-2 max-w-2xl leading-relaxed font-body font-light" >{property.tagline}</p>
+                <p className="body-sm text-pa-earth italic mt-2 max-w-2xl leading-relaxed font-body font-normal" >{property.tagline}</p>
               )}
             </div>
             {(hasRating || property.tier === 'signature') && (
@@ -1377,7 +1377,7 @@ export default function PropertyDetail() {
                   features with their icons and the section links. */}
               <div>
                 <div className="flex items-center gap-2">
-                  <MapPin size={15} className="text-pa-gold shrink-0" aria-hidden="true" />
+                  <MapPin size={15} className="text-pa-gold-aa shrink-0" aria-hidden="true" />
                   <span className="body-md text-pa-dark font-normal">{property.locality}, Portugal</span>
                 </div>
                 <ul className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5 body-sm text-pa-earth">
@@ -1392,7 +1392,7 @@ export default function PropertyDetail() {
                   <ul className="mt-5 pt-5 border-t border-pa-sand grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
                     {keyAmenities.slice(0, 6).map((a) => (
                       <li key={a.key} className="flex items-center gap-2.5 body-sm text-pa-dark min-w-0">
-                        <a.icon size={18} strokeWidth={1.5} className="text-pa-gold shrink-0" aria-hidden="true" />
+                        <a.icon size={18} strokeWidth={1.5} className="text-pa-gold-aa shrink-0" aria-hidden="true" />
                         <span className="truncate">{a.label}</span>
                       </li>
                     ))}
@@ -1503,7 +1503,7 @@ export default function PropertyDetail() {
                               </button>
                           )}
                           <div className="p-5">
-                          <div className="flex flex-wrap items-center gap-1.5 text-pa-gold mb-4 min-h-[24px]" aria-hidden="true">
+                          <div className="flex flex-wrap items-center gap-1.5 text-pa-gold-aa mb-4 min-h-[24px]" aria-hidden="true">
                             {beds.flatMap((bed: any, bedIdx: number) => {
                               const BedIcon = bedTypeOf(String(bed?.type || ''))?.icon ?? Bed;
                               return Array.from({ length: Math.min(Math.max(Number(bed?.quantity) || 1, 1), 4) }, (_, k) => (
@@ -1535,7 +1535,7 @@ export default function PropertyDetail() {
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
                       {keyAmenities.map((a) => (
                         <li key={a.key} className="flex items-center gap-3 py-3 border-b border-pa-sand body-sm text-pa-dark">
-                          <a.icon size={20} strokeWidth={1.5} className="text-pa-gold shrink-0" aria-hidden="true" />
+                          <a.icon size={20} strokeWidth={1.5} className="text-pa-gold-aa shrink-0" aria-hidden="true" />
                           <span>{a.label}</span>
                         </li>
                       ))}
@@ -1575,7 +1575,7 @@ export default function PropertyDetail() {
               <section id="property-location" style={{ scrollMarginTop: '7rem' }}>
                 <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
                 <p className="body-sm text-pa-stone mb-4">
-                  <span className="font-medium text-pa-gold">{property.locality}</span>
+                  <span className="font-medium text-pa-gold-aa">{property.locality}</span>
                   {' · '}{t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
                   {(property as any).licenseNumber && (
                     <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
@@ -1618,7 +1618,7 @@ export default function PropertyDetail() {
                         {f.q}
                         <ChevronDown className="w-4 h-4 text-pa-stone transition-transform group-open:rotate-180 shrink-0 ml-3" />
                       </summary>
-                      <p className="body-sm text-pa-earth leading-relaxed pt-2 pr-8 font-light" >{f.a}</p>
+                      <p className="body-sm text-pa-earth leading-relaxed pt-2 pr-8 font-normal" >{f.a}</p>
                     </details>
                   ))}
                 </div>
@@ -1635,9 +1635,9 @@ export default function PropertyDetail() {
                   One team, one standard — on every home. */}
               <section className="py-6 lg:py-10 text-center">
                 <span className="mx-auto block h-px w-10 bg-[#C9A876]/70 mb-7" />
-                <p className="eyebrow font-semibold tracking-[0.2em] uppercase text-pa-gold mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
+                <p className="eyebrow font-semibold tracking-[0.2em] uppercase text-pa-gold-aa mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
                 <h2 className="font-display headline-md font-light leading-[1.3] text-pa-dark mb-5 max-w-[34rem] mx-auto">{t('conversion.helpTitle')}</h2>
-                <p className="body-sm text-pa-earth leading-relaxed max-w-[40rem] mx-auto font-light" >{t('conversion.helpBody')}</p>
+                <p className="body-sm text-pa-earth leading-relaxed max-w-[40rem] mx-auto font-normal" >{t('conversion.helpBody')}</p>
               </section>
 
               {/* 4. Services — in-house, delivered by our own team. Image-first
@@ -1649,15 +1649,20 @@ export default function PropertyDetail() {
                 <p className="body-md text-pa-stone mb-6">
                   {t('conversion.extrasNote')}
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                {/* On a phone each service is one compact row (photo beside the
+                    name and the price): three big cards took two screens, and
+                    with the experiences below about five before the related
+                    homes (auditoria de design, 14 nov 2026). From 640 px, the
+                    cards as before. */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
                   {(showAllServices ? services : services.slice(0, 3)).map(service => (
                     <button
                       key={service.slug}
                       type="button"
                       onClick={() => setModalProduct(service)}
-                      className="group block text-left bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                      className="group flex sm:block w-full text-left bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                     >
-                      <div className="relative aspect-[4/3] bg-pa-warm overflow-hidden">
+                      <div className="relative w-28 shrink-0 self-stretch sm:w-auto sm:aspect-[4/3] bg-pa-warm overflow-hidden">
                         {service.image ? (
                           <img
                             src={service.image}
@@ -1667,16 +1672,16 @@ export default function PropertyDetail() {
                           />
                         ) : null}
                       </div>
-                      <div className="p-5">
-                        <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
-                        <h3 className="font-display body-lg text-pa-dark mb-1.5 group-hover:text-pa-gold transition-colors">{service.name}</h3>
-                        <p className="body-sm text-pa-earth leading-relaxed mb-4 line-clamp-2 font-light" >{service.tagline}</p>
-                        <div className="flex items-baseline justify-between pt-3 border-t border-pa-sand">
+                      <div className="min-w-0 flex-1 p-3.5 sm:p-5">
+                        <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
+                        <h3 className="font-display body-lg text-pa-dark mb-2 sm:mb-1.5 group-hover:text-pa-gold-aa transition-colors">{service.name}</h3>
+                        <p className="body-sm text-pa-earth leading-relaxed mb-3 sm:mb-4 line-clamp-2 font-normal" >{service.tagline}</p>
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2.5 sm:pt-3 border-t border-pa-sand">
                           <p className="body-sm font-medium text-pa-dark">
                             {service.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(service.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('property.priceOnRequest')}
                             <span className="caption text-pa-stone font-normal ml-1">{service.priceSuffix}</span>
                           </p>
-                          <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
+                          <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold-aa group-hover:text-pa-dark transition-colors">
                             {t('propertyDetail.requestService', 'Request')} <ArrowRight className="w-3 h-3" />
                           </span>
                         </div>
@@ -1696,7 +1701,7 @@ export default function PropertyDetail() {
                 <section>
                   <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.adventuresTitle')}</h2>
                   <p className="body-md text-pa-stone mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName, ...destVars })}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
                     {adventures.slice(0, 6).map(adventure => {
                       const meta: string[] = [];
                       if ((adventure as any).duration) meta.push(localizeDuration(String((adventure as any).duration), t));
@@ -1705,9 +1710,9 @@ export default function PropertyDetail() {
                         <Link
                           key={adventure.slug}
                           href={`/experiences/${adventure.slug}`}
-                          className="group block bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                          className="group flex sm:block bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                         >
-                          <div className="relative aspect-[4/3] bg-pa-warm overflow-hidden">
+                          <div className="relative w-28 shrink-0 self-stretch sm:w-auto sm:aspect-[4/3] bg-pa-warm overflow-hidden">
                             {adventure.image ? (
                               <img
                                 src={adventure.image}
@@ -1717,7 +1722,7 @@ export default function PropertyDetail() {
                               />
                             ) : null}
                             {meta.length > 0 && (
-                              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5">
+                              <div className="absolute bottom-3 left-3 right-3 hidden sm:flex flex-wrap gap-1.5">
                                 {meta.slice(0, 2).map((m, i) => (
                                   <span key={i} className="eyebrow tracking-[0.06em] uppercase font-medium px-2 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
                                     {m}
@@ -1726,16 +1731,16 @@ export default function PropertyDetail() {
                               </div>
                             )}
                           </div>
-                          <div className="p-5">
-                            <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
-                            <h3 className="font-display body-lg text-pa-dark mb-1.5 group-hover:text-pa-gold transition-colors">{adventure.name}</h3>
-                            <p className="body-sm text-pa-earth leading-relaxed mb-4 line-clamp-2 font-light" >{adventure.tagline}</p>
-                            <div className="flex items-baseline justify-between pt-3 border-t border-pa-sand">
+                          <div className="min-w-0 flex-1 p-3.5 sm:p-5">
+                            <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
+                            <h3 className="font-display body-lg text-pa-dark mb-2 sm:mb-1.5 group-hover:text-pa-gold-aa transition-colors">{adventure.name}</h3>
+                            <p className="body-sm text-pa-earth leading-relaxed mb-3 sm:mb-4 line-clamp-2 font-normal" >{adventure.tagline}</p>
+                            <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2.5 sm:pt-3 border-t border-pa-sand">
                               <p className="body-sm font-medium text-pa-dark">
                                 {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(adventure.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('propertyDetail.custom')}
                                 <span className="caption text-pa-stone font-normal ml-1">{adventure.priceSuffix}</span>
                               </p>
-                              <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
+                              <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold-aa group-hover:text-pa-dark transition-colors">
                                 {t('propertyDetail.viewDetails', 'View')} <ArrowRight className="w-3 h-3" />
                               </span>
                             </div>
@@ -1746,7 +1751,7 @@ export default function PropertyDetail() {
                   </div>
                   <Link
                     href="/experiences"
-                    className="inline-flex items-center gap-2 mt-6 body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors"
+                    className="inline-flex items-center gap-2 mt-6 body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors"
                   >
                     {t('propertyDetail.viewAllExperiences', 'View all experiences')} <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
@@ -1790,7 +1795,7 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="body-sm text-pa-dark font-medium">
-                {bookingSelection?.total ? formatQuotedEur(bookingSelection.total, i18n.language) : stayDates.checkIn && stayDates.checkOut ? t('conversion.datesSelected') : barFromPrice ?? barNoPrice}
+                {bookingSelection?.total ? formatStayEur(bookingSelection.total, i18n.language) : stayDates.checkIn && stayDates.checkOut ? t('conversion.datesSelected') : barFromPrice ?? barNoPrice}
               </p>
               <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
                 {bookingSelection?.total ? (bookingSelection.isPartial ? t('partnerBooking.totalSoFar') : t('conversion.stayTotal')) : stayDates.checkIn ? formatBookingDate(stayDates.checkIn, i18n.language) : barFromPrice ? t('property.selectDatesForPrice') : t('property.conciergeShort')}
@@ -1847,11 +1852,11 @@ export default function PropertyDetail() {
             <div className="container">
               <div className="flex items-end justify-between mb-8">
                 <div>
-                  <p className="eyebrow font-medium tracking-[0.08em] text-pa-gold mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, ...destVars, defaultValue: `More ${destVars.inPlace}` })}</p>
+                  <p className="eyebrow font-medium tracking-[0.08em] text-pa-gold-aa mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, ...destVars, defaultValue: `More ${destVars.inPlace}` })}</p>
                   <h2 className="headline-lg text-pa-dark">{t('propertyDetail.relatedHomes', 'Related homes')}</h2>
                 </div>
                 {destObj && (
-                  <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors">
+                  <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors">
                     {t('propertyDetail.allDestHomes', { destination: destName, ...destVars, defaultValue: `All ${destName} homes` })} <ArrowRight className="w-4 h-4" />
                   </Link>
                 )}
@@ -1912,7 +1917,7 @@ export default function PropertyDetail() {
                     const Icon = amenityIcon(item);
                     return (
                       <li key={item} className="flex items-center gap-3 py-2.5 body-sm text-pa-dark">
-                        <Icon size={18} strokeWidth={1.5} className="text-pa-gold shrink-0" aria-hidden="true" />
+                        <Icon size={18} strokeWidth={1.5} className="text-pa-gold-aa shrink-0" aria-hidden="true" />
                         {item}
                       </li>
                     );

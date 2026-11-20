@@ -27,14 +27,14 @@ export default function NotFound() {
       <section className="pt-28 pb-14 md:pt-36 md:pb-20">
         <div className="container max-w-[1100px]">
           <div className="text-center mb-16 md:mb-20">
-            <p className="eyebrow mb-5" style={{ color: '#C4A87C' }}>{t('notFound.overline')}</p>
+            <p className="eyebrow mb-5">{t('notFound.overline')}</p>
             <h1
               className="font-display font-light text-[#1A1A18] mb-4"
               style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)', lineHeight: 1.15 }}
             >
               {t('notFound.title')}
             </h1>
-            <p className="body-lg max-w-md mx-auto mb-8" style={{ color: '#6B6860' }}>
+            <p className="body-lg max-w-md mx-auto mb-8" style={{ color: '#5E5B54' }}>
               {t('notFound.body')}
             </p>
             <Link href="/homes" className="btn-primary inline-flex items-center">

@@ -185,7 +185,8 @@
     "unavailableHint": "These homes may be available for different dates. Contact our concierge for alternatives.",
     "fromTotal": "From {{price}} for the stay",
     "metaTitle": "Villa Rentals & Holiday Homes in Portugal",
-    "metaDescription": "Browse {{homes}} luxury villas and holiday homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct."
+    "metaDescription": "Browse {{homes}} luxury villas and holiday homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct.",
+    "showMore": "Show more"
   },
   "property": {
     "bedrooms": "Bedrooms",

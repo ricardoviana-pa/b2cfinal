@@ -181,7 +181,7 @@ export default function LanguageSuggestion() {
       }`}
       style={{ transform: RISE_ABOVE_COOKIE_BANNER }}
     >
-      <p className="min-w-0 flex-1 font-body text-[13px] leading-snug text-pa-dark">
+      <p className="min-w-0 flex-1 font-body text-[15px] leading-snug text-pa-dark">
         {copy.prompt}{' '}
         <a
           href={href}

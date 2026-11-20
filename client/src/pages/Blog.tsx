@@ -3,7 +3,7 @@
    Hero, 6 categories, featured article, article grid
    ========================================================================== */
 
-import { useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { blogAuthorName, blogCategoryLabel } from '@/lib/blogLabels';
 import { journalLocale, type JournalCard } from '@shared/journal';
@@ -40,6 +40,9 @@ const FALLBACK_IMAGES: Record<string, string> = {
 function getArticleImage(article: JournalCard): string {
   return (article as any).coverImage || (article as any).featuredImage || FALLBACK_IMAGES[article.category] || FALLBACK_IMAGES.destinations;
 }
+
+/** Articles added to the grid by each "show more". */
+const JOURNAL_PAGE_SIZE = 12;
 
 export default function Blog() {
   const { t, i18n } = useTranslation();
@@ -111,6 +114,11 @@ export default function Blog() {
   }, [activeCategory, locArticles, searchText]);
   const featured = activeCategory === 'all' && !searchText.trim() ? filtered[0] : undefined;
   const rest = featured ? filtered.slice(1) : filtered;
+  // Twelve articles at a time (auditoria de design, 14 nov 2026: the Journal
+  // was 27 phone screens). The titles of the others are listed under the
+  // grid, so every article keeps a link in the served HTML.
+  const [visibleCount, setVisibleCount] = useState(JOURNAL_PAGE_SIZE);
+  useEffect(() => { setVisibleCount(JOURNAL_PAGE_SIZE); }, [activeCategory, searchText]);
 
   if (!indexQuery.data) return <JournalRequestState failed={indexQuery.isError} retry={() => { void indexQuery.refetch(); }} />;
 
@@ -122,9 +130,9 @@ export default function Blog() {
       {/* Hero */}
       <section className="page-intro">
         <div className="container">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('blog.overline')}</p>
+          <p className="text-[13px] font-medium text-pa-gold-aa mb-4 tracking-[0.08em]">{t('blog.overline')}</p>
           <h1 className="headline-xl text-[#1A1A18] mb-4">{t('blog.title')}</h1>
-          <p className="body-lg text-[#6B6860] max-w-xl">
+          <p className="body-lg text-pa-earth max-w-xl">
             {t('blog.subtitle')}
           </p>
         </div>
@@ -141,10 +149,10 @@ export default function Blog() {
               <button
                 key={`${cat.value}-${idx}`}
                 onClick={() => setActiveCategory(cat.value)}
-                className={`pa-action px-4 py-2 text-[13px] font-medium whitespace-nowrap transition-all ${
+                className={`pa-action px-4 py-2 text-[15px] font-medium whitespace-nowrap transition-all ${
                   activeCategory === cat.value
                     ? 'bg-[#1A1A18] text-white'
-                    : 'text-[#6B6860] hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
+                    : 'text-pa-earth hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
                 }`}
                 style={{ minHeight: '44px', minWidth: 'auto' }}
               >
@@ -183,12 +191,12 @@ export default function Blog() {
                   )}
                 </div>
                 <div className="flex flex-col justify-center">
-                  <p className="text-[11px] font-medium text-[#8B7355] mb-3 tracking-[0.08em]">{blogCategoryLabel(featured.category, t).toUpperCase()}</p>
-                  <h2 className="font-display text-[2rem] lg:text-[2.5rem] text-[#1A1A18] leading-tight mb-4 group-hover:text-[#8B7355] transition-colors">
+                  <p className="text-[13px] font-medium text-pa-gold-aa mb-3 tracking-[0.08em]">{blogCategoryLabel(featured.category, t).toUpperCase()}</p>
+                  <h2 className="font-display text-[2rem] lg:text-[2.5rem] text-[#1A1A18] leading-tight mb-4 group-hover:text-pa-gold-aa transition-colors">
                     {featured.title}
                   </h2>
-                  <p className="text-[15px] text-[#6B6860] font-light leading-relaxed mb-6 line-clamp-3">{featured.excerpt}</p>
-                  <div className="flex items-center gap-4 text-[12px] text-[#726D63] mb-6">
+                  <p className="text-[16px] text-pa-earth font-normal leading-relaxed mb-6 line-clamp-3">{featured.excerpt}</p>
+                  <div className="flex items-center gap-4 text-[13px] text-pa-stone mb-6">
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5" />
                       {articleDate(featured.publishDate, i18n.language)}
@@ -198,7 +206,7 @@ export default function Blog() {
                       {featured.readTime} {t("blog.minRead")}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-[12px] font-medium tracking-[0.06em] text-[#8B7355] group-hover:gap-3 transition-all">
+                  <div className="flex items-center gap-2 text-[13px] font-medium tracking-[0.06em] text-pa-gold-aa group-hover:gap-3 transition-all">
                     {t('blog.readArticle')} <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
@@ -213,11 +221,11 @@ export default function Blog() {
         <div className="container">
           {rest.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-[#726D63]">{t('blog.noArticles')}</p>
+              <p className="text-pa-stone">{t('blog.noArticles')}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {rest.map(article => (
+              {rest.slice(0, visibleCount).map(article => (
                 <Link key={article.id} href={withEditorialTrip(`/blog/${article.slug}`, search)} className="group block">
                   <div className="aspect-[4/3] overflow-hidden rounded-xl bg-[#F5F1EB] mb-4 relative">
                     <img
@@ -239,14 +247,14 @@ export default function Blog() {
                       </div>
                     )}
                   </div>
-                  <p className="text-[10px] font-medium text-[#8B7355] mb-2 tracking-[0.08em]">{blogCategoryLabel(article.category, t).toUpperCase()}</p>
-                  <h3 className="font-display text-[18px] text-[#1A1A18] mb-2 group-hover:text-[#8B7355] transition-colors line-clamp-2">
+                  <p className="text-[12px] font-medium text-pa-gold-aa mb-2 tracking-[0.08em]">{blogCategoryLabel(article.category, t).toUpperCase()}</p>
+                  <h3 className="font-display text-[18px] text-[#1A1A18] mb-2 group-hover:text-pa-gold-aa transition-colors line-clamp-2">
                     {article.title}
                   </h3>
-                  <p className="text-[13px] text-[#6B6860] font-light line-clamp-2 mb-3">{article.excerpt}</p>
+                  <p className="text-[15px] text-pa-earth font-normal line-clamp-2 mb-3">{article.excerpt}</p>
                   {/* One run of text that wraps between items, never inside
                       one ("30 de mar. de" / "2026" on two lines). */}
-                  <p className="text-[11px] leading-relaxed text-[#726D63]">
+                  <p className="text-[13px] leading-relaxed text-pa-stone">
                     <span className="whitespace-nowrap">{articleDate(article.publishDate, i18n.language)}</span>
                     <span aria-hidden="true"> · </span>
                     <span className="whitespace-nowrap">{article.readTime} {t("blog.minRead")}</span>
@@ -255,6 +263,30 @@ export default function Blog() {
                 </Link>
               ))}
             </div>
+          )}
+          {rest.length > visibleCount && (
+            <>
+              <div className="flex flex-col items-center gap-2 mt-12">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((n) => n + JOURNAL_PAGE_SIZE)}
+                  className="pa-action px-8 py-3 border border-pa-dark rounded-lg body-sm font-medium text-pa-dark hover:bg-pa-dark hover:text-white transition-colors"
+                >
+                  {t('reviews.showMore', 'Show more')}
+                </button>
+                <p className="caption text-pa-stone tabular-nums" aria-live="polite">{visibleCount} / {rest.length}</p>
+              </div>
+              <nav aria-labelledby="more-articles-index" className="mt-12 border-t border-pa-sand pt-8">
+                <h2 id="more-articles-index" className="eyebrow text-pa-stone mb-4">{t('blog.overline')}</h2>
+                <ul className="columns-1 md:columns-2 gap-x-10 body-sm">
+                  {rest.slice(visibleCount).map((article) => (
+                    <li key={article.id} className="break-inside-avoid py-1">
+                      <Link href={withEditorialTrip(`/blog/${article.slug}`, search)} className="text-pa-dark underline-offset-4 hover:underline">{article.title}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </>
           )}
         </div>
       </section>

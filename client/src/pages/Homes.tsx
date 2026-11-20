@@ -56,6 +56,9 @@ interface LiveQuote {
   feesKnown?: boolean;
 }
 
+/** Cards added to the grid by each "show more". */
+const HOMES_PAGE_SIZE = 12;
+
 export default function Homes() {
   const measurementAllowed = useMeasurementConsent();
   const { t, i18n } = useTranslation();
@@ -167,7 +170,12 @@ export default function Homes() {
   // render between a date change and the fetch starting — counts would read
   // "0 com disponibilidade confirmada" (auditoria set/2026).
   const [quotesFor, setQuotesFor] = useState('');
-  const [showAll, setShowAll] = useState(false);
+  // Twelve homes at a time, every one with its photo (decisão E11 do Ricardo,
+  // 20 nov 2026): the grid showed twelve cards and then the other 76 as a
+  // list of names. "Show more" adds twelve; the list of names of the homes
+  // not yet on screen moved to the end of the page, where it keeps every home
+  // one link away from the catalogue in the served HTML.
+  const [visibleCount, setVisibleCount] = useState(HOMES_PAGE_SIZE);
   const utils = trpc.useUtils();
   // Quotes, partner prices and the search hint answer the submitted search
   // (the URL), or 2 guests when it names none. The stepper above is picker
@@ -566,7 +574,7 @@ export default function Homes() {
                   type="button"
                   onClick={() => changeGuests(g => Math.max(1, g - 1))}
                   disabled={bookingGuests <= 1}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold-aa disabled:opacity-30"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
                   <Minus className="w-2.5 h-2.5" />
@@ -578,7 +586,7 @@ export default function Homes() {
                   type="button"
                   onClick={() => changeGuests(g => Math.min(30, g + 1))}
                   disabled={bookingGuests >= 30}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold-aa disabled:opacity-30"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
                   <Plus className="w-2.5 h-2.5" />
@@ -997,7 +1005,7 @@ export default function Homes() {
           {availableProperties.length > 0 && (
             <>
               <div className={`grid grid-cols-1 gap-6 md:grid-cols-2 ${showMap ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} md:gap-x-6 md:gap-y-10`}>
-                {(showAll ? availableProperties : availableProperties.slice(0, 12)).map((property, index) => (
+                {availableProperties.slice(0, visibleCount).map((property, index) => (
                   <div
                     key={property.id}
                     className="w-full"
@@ -1037,39 +1045,19 @@ export default function Homes() {
                   </div>
                 ))}
               </div>
-              {!showAll && availableProperties.length > 12 && (
-                <div className="flex justify-center mt-8">
+              {availableProperties.length > visibleCount && (
+                <div className="flex flex-col items-center gap-2 mt-10">
                   <button
-                    onClick={() => setShowAll(true)}
-                    className="pa-action px-6 py-3 border border-pa-sand rounded-full body-sm font-medium text-pa-dark hover:bg-pa-warm transition-colors"
+                    type="button"
+                    onClick={() => setVisibleCount((n) => n + HOMES_PAGE_SIZE)}
+                    className="pa-action px-8 py-3 border border-pa-dark rounded-lg body-sm font-medium text-pa-dark hover:bg-pa-dark hover:text-white transition-colors"
                   >
-                    {t('homes.showAll', 'Show all properties')} ({availableProperties.length})
+                    {t('homes.showMore', 'Show more')}
                   </button>
+                  <p className="caption text-pa-stone tabular-nums" aria-live="polite">
+                    {Math.min(visibleCount, availableProperties.length)} / {availableProperties.length}
+                  </p>
                 </div>
-              )}
-              {/* The grid shows 12 cards until "show all"; the rest are named
-                  here as plain links, so every home has a crawlable path from
-                  the catalogue in the served HTML (only 12 of 93 did,
-                  auditoria set/2026). Gone once the full grid is open. */}
-              {!showAll && availableProperties.length > 12 && (
-                <nav aria-labelledby="more-homes-index" className="mt-10 border-t border-pa-sand pt-6">
-                  <h2 id="more-homes-index" className="caption uppercase tracking-wider text-pa-stone mb-3">
-                    {t('homes.moreHomesIndex', 'More homes')}
-                  </h2>
-                  <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
-                    {availableProperties.slice(12).map((property) => (
-                      <li key={property.id} className="break-inside-avoid py-1">
-                        <Link
-                          href={propertyTripHref(property.slug, { checkin: searchCheckin, checkout: searchCheckout, guests: searchGuestsCount || undefined })}
-                          className="text-pa-dark underline-offset-4 hover:underline"
-                        >
-                          {getDisplayName(property)}
-                        </Link>
-                        {property.locality && <span className="text-pa-stone"> · {property.locality}</span>}
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
               )}
             </>
           )}
@@ -1180,6 +1168,32 @@ export default function Homes() {
       </section>
 
       <StayCollections />
+      {/* The homes not yet shown as cards, by name, at the end of the page:
+          every home keeps a crawlable path from the catalogue in the served
+          HTML (only 12 of 93 had one, auditoria set/2026). It shrinks as
+          "show more" brings them into the grid. */}
+      {availableProperties.length > visibleCount && (
+        <section className="bg-white border-t border-pa-sand py-10">
+          <nav aria-labelledby="more-homes-index" className="container">
+            <h2 id="more-homes-index" className="eyebrow text-pa-stone mb-4">
+              {t('homes.moreHomesIndex', 'More homes')}
+            </h2>
+            <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
+              {availableProperties.slice(visibleCount).map((property) => (
+                <li key={property.id} className="break-inside-avoid py-1">
+                  <Link
+                    href={propertyTripHref(property.slug, { checkin: searchCheckin, checkout: searchCheckout, guests: searchGuestsCount || undefined })}
+                    className="text-pa-dark underline-offset-4 hover:underline"
+                  >
+                    {getDisplayName(property)}
+                  </Link>
+                  {property.locality && <span className="text-pa-stone"> · {property.locality}</span>}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </section>
+      )}
       <Footer />
       <ListingWhatsApp href={listingWhatsAppHref} context={trackContext} />
     </div>

@@ -1,7 +1,7 @@
 /* ==========================================================================
    PROPERTY CARD â V3 FINAL (with real images)
    Tier badges (Signature/Select/New), image carousel,
-   touch-friendly swipe, no rounded corners, mobile-first
+   touch-friendly swipe, rounded photo (12px), mobile-first
    ========================================================================== */
 
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
@@ -10,7 +10,7 @@ import { Link } from 'wouter';
 import { propertyTripHref } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
-import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
+import { formatEur, getDisplayName, formatStayEur } from '@/lib/format';
 import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, cardSrcSet } from '@/lib/images';
@@ -87,7 +87,8 @@ export default function PropertyCard({
   const hasPartnerPrice = isPartner && (nights > 0
     ? !!liveQuote && liveQuote.available !== false && liveQuote.total > 0
     : typeof fromPrice === 'number' && fromPrice > 0);
-  const formatTotal = (amount: number) => formatQuotedEur(amount, i18n.language);
+  // Euros inteiros na listagem (decisão E07, 20 nov 2026); os cêntimos aparecem no checkout.
+  const formatTotal = (amount: number) => formatStayEur(amount, i18n.language);
   // Multi-unit treatment: when this listing is the parent of a curated group,
   // the card swaps name → group name, hides specs/price, and shows a
   // "X units available" line. The PDP route is unchanged — clicking opens the
@@ -249,19 +250,22 @@ export default function PropertyCard({
 
         {/* Urgency badge */}
         {urgencyBadge && (
-          <div className={`absolute top-3 left-3 z-10 ${urgencyBadge.color} text-white text-[10px] font-medium tracking-[0.04em] uppercase px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm`}>
+          <div className={`absolute top-3 left-3 z-10 ${urgencyBadge.color} text-white text-[12px] font-medium tracking-[0.04em] uppercase px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm`}>
             {urgencyBadge.icon && <urgencyBadge.icon className="w-3 h-3" />}
             {urgencyBadge.label}
           </div>
         )}
 
-        {/* Navigation Arrows — always visible so the slide is discoverable */}
+        {/* Navigation arrows: with a mouse they appear when the card is hovered
+            (or one of them takes keyboard focus); on a touch screen there are
+            none, the photo is swiped and the dots show the position (decisão
+            E05 do Ricardo, 20 nov 2026: 24 setas na grelha da homepage). */}
         {total > 1 && (
           <>
             <button
               type="button"
               onClick={prevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm hidden [@media(hover:hover)]:flex items-center justify-center shadow-sm hover:bg-white opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
               style={{ minHeight: 'auto', minWidth: 'auto' }}
               aria-label={t('property.prevImage', 'Previous image')}
             >
@@ -270,7 +274,7 @@ export default function PropertyCard({
             <button
               type="button"
               onClick={nextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm hidden [@media(hover:hover)]:flex items-center justify-center shadow-sm hover:bg-white opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
               style={{ minHeight: 'auto', minWidth: 'auto' }}
               aria-label={t('property.nextImage', 'Next image')}
             >
@@ -290,7 +294,7 @@ export default function PropertyCard({
                 }`}
               />
             ))}
-            {total > 5 && <span className="text-white/50 text-[10px] ml-1">{t('property.plusMoreImages', { count: total - 5 })}</span>}
+            {total > 5 && <span className="text-white/50 text-[12px] ml-1">{t('property.plusMoreImages', { count: total - 5 })}</span>}
           </div>
         )}
       </div>
@@ -298,19 +302,19 @@ export default function PropertyCard({
       {/* Content */}
       <div className="pt-3.5">
         {/* Location */}
-        <p className="text-[0.6875rem] font-medium tracking-[0.02em] text-pa-gold-aa mb-1">
+        <p className="text-[13px] font-medium tracking-[0.02em] text-pa-gold-aa mb-1">
           {property.locality}, Portugal
         </p>
 
         {/* Name + specs — the detail icons sit to the right of the name on
             every card (single and multi-unit), so the row reads consistently. */}
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-[1.0625rem] font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors leading-tight flex-1 min-w-0">
+          <h3 className="text-[1.25rem] font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors leading-tight flex-1 min-w-0">
             {displayName}
           </h3>
-          <div className="flex items-center gap-2.5 text-[0.8125rem] text-[#6B6860] shrink-0 pt-1">
+          <div className="flex items-center gap-2.5 text-[15px] text-pa-earth shrink-0 pt-1">
             {(property as any).petsAllowed && (
-              <PawPrint className="w-3.5 h-3.5 text-[#8B7355]" aria-label={t('property.petFriendly', 'Pet-friendly')} />
+              <PawPrint className="w-3.5 h-3.5 text-pa-gold-aa" aria-label={t('property.petFriendly', 'Pet-friendly')} />
             )}
             <span className="flex items-center gap-1">
               <Users className="w-3.5 h-3.5" /> {property.maxGuests}
@@ -338,7 +342,7 @@ export default function PropertyCard({
                 if (isGroup) {
                   if (nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0) {
                     return (
-                      <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
+                      <span className="text-[16px] text-[#1A1A18] font-medium">
                         {isPartner
                           ? `${formatTotal(liveQuote.total)} ${liveQuote.source === 'partner_calendar' && !liveQuote.feesKnown ? t('partnerBooking.accommodationLabel') : t('property.totalLabel')}`
                           : t('homes.fromTotal', { price: formatTotal(liveQuote.total) })}
@@ -347,9 +351,9 @@ export default function PropertyCard({
                   }
                   if (typeof fromPrice === 'number' && fromPrice > 0) {
                     return (
-                      <span className="text-[0.8125rem]">
-                        <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice, i18n.language)}</span>
-                        <span className="text-[#726D63]"> {t('property.perNight')}</span>
+                      <span className="text-[15px]">
+                        <span className="text-[16px] text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice, i18n.language)}</span>
+                        <span className="text-pa-stone"> {t('property.perNight')}</span>
                       </span>
                     );
                   }
@@ -357,9 +361,9 @@ export default function PropertyCard({
                   // house isn't quotable for this search, but units may be —
                   // point into the PDP where the units section answers it.
                   if (nights > 0) {
-                    return <span className="text-[#726D63] text-[0.8125rem]">{t('property.checkUnitAvailability', 'See unit availability')}</span>;
+                    return <span className="text-pa-stone text-[15px]">{t('property.checkUnitAvailability', 'See unit availability')}</span>;
                   }
-                  return <span className="text-[#726D63] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
+                  return <span className="text-pa-stone text-[15px]">{t('property.selectDatesForPrice')}</span>;
                 }
                 if (nights > 0) {
                   if (quoteLoading && !liveQuote) {
@@ -375,11 +379,11 @@ export default function PropertyCard({
                       <div className="w-full">
                         <div className="flex items-center gap-1.5">
                           <span className="inline-block w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
-                          <span className="text-[#DC2626] text-[0.8125rem] font-medium">
+                          <span className="text-[#DC2626] text-[15px] font-medium">
                             {t('property.unavailableForDates', 'Unavailable for these dates')}
                           </span>
                         </div>
-                        <p className="text-[0.6875rem] text-[#726D63] mt-1">
+                        <p className="text-[13px] text-pa-stone mt-1">
                           {t('property.tryOtherDates', 'Try different dates or contact us for alternatives')}
                         </p>
                       </div>
@@ -387,32 +391,32 @@ export default function PropertyCard({
                   }
                   if (liveQuote && liveQuote.total > 0) {
                     return (
-                      <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
+                      <span className="text-[16px] text-[#1A1A18] font-medium">
                         {isPartner
                           ? `${formatTotal(liveQuote.total)} ${liveQuote.source === 'partner_calendar' && !liveQuote.feesKnown ? t('partnerBooking.accommodationLabel') : t('property.totalLabel')}`
                           : t('homes.fromTotal', { price: formatTotal(liveQuote.total) })}
                       </span>
                     );
                   }
-                  return <span className="text-[#726D63] text-[0.8125rem]">{t('property.priceOnRequest')}</span>;
+                  return <span className="text-pa-stone text-[15px]">{t('property.priceOnRequest')}</span>;
                 }
                 if (typeof fromPrice === 'number' && fromPrice > 0) {
                   return (
-                    <span className="text-[0.8125rem]">
-                      <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice, i18n.language)}</span>
-                      <span className="text-[#726D63]"> {t('property.perNight')}</span>
+                    <span className="text-[15px]">
+                      <span className="text-[16px] text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice, i18n.language)}</span>
+                      <span className="text-pa-stone"> {t('property.perNight')}</span>
                     </span>
                   );
                 }
                 // A partner home with no "from" (no calendar, or nothing open
                 // in 12 months): picking dates will not price it either, so
                 // "select dates for price" would be a false promise.
-                return <span className="text-[#726D63] text-[0.8125rem]">{t(noPriceLabelKey(isPartner, fromPrice))}</span>;
+                return <span className="text-pa-stone text-[15px]">{t(noPriceLabelKey(isPartner, fromPrice))}</span>;
               })()}
               {/* Sem "IVA incluído": as nossas casas não o dizem e as dos
                   parceiros também não (o Ricardo, 29 out 2026). */}
               {hasPartnerPrice && (nights === 0 || !liveQuote?.feesKnown) && (
-                <p className="text-[0.6875rem] text-[#726D63] mt-1 leading-relaxed">
+                <p className="text-[13px] text-pa-stone mt-1 leading-relaxed">
                   {t('partnerBooking.feesPendingShort')}
                 </p>
               )}
@@ -421,7 +425,7 @@ export default function PropertyCard({
             {/* RIGHT — context: units (groups) or nights (single stays) */}
             <div className="text-right shrink-0">
               {isGroup ? (
-                <p className="text-[0.8125rem] text-[#6B6860] font-medium leading-tight">
+                <p className="text-[15px] text-pa-earth font-medium leading-tight">
                   {groupContextLabel ?? t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
                 </p>
               ) : nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0 ? (
@@ -432,11 +436,11 @@ export default function PropertyCard({
                       makes the total legible — the gap between rate × nights
                       and the total is exactly the cleaning fee. */}
                   {liveQuote.nightlyRate > 0 && (
-                    <p className="text-[0.75rem] text-[#726D63] leading-tight">
+                    <p className="text-[13px] text-pa-stone leading-tight">
                       <span className="text-[#1A1A18]">{formatEur(liveQuote.nightlyRate, i18n.language)}</span> {t('property.perNight')}
                     </p>
                   )}
-                  <p className="text-[0.75rem] text-[#726D63] leading-tight">
+                  <p className="text-[13px] text-pa-stone leading-tight">
                     {liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'partner_calendar'
                       ? t('booking.nights', { count: liveQuote.nights })
                       : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}

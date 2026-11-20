@@ -351,7 +351,11 @@ export default function Home() {
             fetchPriority="high"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
+          {/* On a phone the text runs the full width, over the white walls of
+              the house: an even shade behind it (auditoria de design, 14 nov
+              2026). From lg the text sits on the left and the shade fades to
+              the right, as before. */}
+          <div className="absolute inset-0 bg-black/45 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/55 lg:via-black/30 lg:to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/10" />
         </div>
 
@@ -371,28 +375,15 @@ export default function Home() {
             >
               {t('home.heroTitle')}
             </h1>
+            {/* Title, one sentence and the search: the count line and the two
+                links that repeated the menu left the hero (decisão E04 do
+                Ricardo, 20 nov 2026). */}
             <p
-              className="body-lg md:text-[20px] text-white/80 mb-6 lg:mb-4 leading-relaxed max-w-xl font-body font-light"
+              className="body-lg md:text-[20px] text-white/90 leading-relaxed max-w-xl font-body font-normal"
 
             >
               {t('conversion.homeIntro')}
             </p>
-
-            {/* Proof strip — above CTAs so it never collides with booking bar */}
-            <div className="hidden lg:flex hero-proof-strip flex-wrap items-center gap-x-5 gap-y-1 mb-4">
-              <span className="body-sm text-white/60 font-medium font-body" >
-                {t('home.proofHotels', { homes: HOME_COUNT_LABEL, defaultValue: '{{homes}} villas and private homes' })}
-              </span>
-              <span className="text-white/25">·</span>
-              <span className="body-sm text-white/60 font-medium font-body" >
-                {t('conversion.directSupport')}
-              </span>
-            </div>
-
-            <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6">
-              <Link href="/homes" className="hero-text-link">{t('home.heroCta')} <ArrowRight className="w-4 h-4" /></Link>
-              <Link href="/concierge" className="hero-text-link">{t('siteUx.exploreServices')} <ArrowRight className="w-4 h-4" /></Link>
-            </div>
           </div>
           <HeroSearch options={cityOptions} destination={searchDest} checkin={searchCheckin} checkout={searchCheckout} guests={searchGuests} guestsChosen={guestsChosen}
             onDestination={setSearchDest} onCheckin={handleCheckinChange} onCheckout={setSearchCheckout} onGuests={chooseGuests} />
@@ -431,13 +422,13 @@ export default function Home() {
                 }`;
                 const inner = (
                 <>
-                  <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand bg-pa-cream text-pa-gold sm:mb-3 sm:h-9 sm:w-9">
+                  <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand bg-pa-cream text-pa-gold-aa sm:mb-3 sm:h-9 sm:w-9">
                     {item.icon}
                   </div>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark sm:text-[10px] sm:tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]">{item.title}</p>
+                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark sm:text-[12px] sm:tracking-[0.1em] md:text-[12px] md:tracking-[0.12em]">{item.title}</p>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="mt-1 max-w-none caption leading-tight text-pa-stone sm:text-[10px] sm:leading-snug md:text-[12px] md:leading-[1.55] font-body font-light" >{item.sub}</p>
+                  <p className="mt-1 max-w-none caption leading-tight text-pa-stone sm:text-[12px] sm:leading-snug md:text-[13px] md:leading-[1.55] font-body font-normal" >{item.sub}</p>
                 </>
                 );
                 // The rate badge is a claim with terms — it links to them.
@@ -584,7 +575,7 @@ export default function Home() {
                   {step.num}
                 </p>
                 <h3 className="text-[1.1rem] font-display text-pa-dark mb-3">{step.title}</h3>
-                <p className="body-sm text-pa-earth leading-relaxed font-body font-light" >{step.body}</p>
+                <p className="body-sm text-pa-earth leading-relaxed font-body font-normal" >{step.body}</p>
               </div>
             ))}
           </div>
@@ -639,12 +630,12 @@ export default function Home() {
                   },
                 ].map((pillar, i) => (
                   <div key={i} className="flex gap-4">
-                    <div className="flex-shrink-0 w-9 h-9 rounded-full bg-pa-warm flex items-center justify-center text-pa-gold">
+                    <div className="flex-shrink-0 w-9 h-9 rounded-full bg-pa-warm flex items-center justify-center text-pa-gold-aa">
                       {pillar.icon}
                     </div>
                     <div>
                       <p className="body-sm font-semibold text-pa-dark mb-1">{pillar.title}</p>
-                      <p className="body-sm text-pa-earth leading-relaxed font-body font-light" >{pillar.body}</p>
+                      <p className="body-sm text-pa-earth leading-relaxed font-body font-normal" >{pillar.body}</p>
                     </div>
                   </div>
                 ))}
@@ -673,7 +664,7 @@ export default function Home() {
               const destinationImage = dest.regionImage || dest.coverImage;
               return (
                 <Link key={dest.id} href={`/destinations/${dest.slug}`} className="group block flex-shrink-0 w-[240px] sm:w-[260px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                  <div className="relative overflow-hidden bg-pa-sand" style={{ aspectRatio: '3/4' }}>
+                  <div className="relative overflow-hidden rounded-xl bg-pa-sand" style={{ aspectRatio: '3/4' }}>
                     {destinationImage ? (
                       <img
                         src={cdnResize(destinationImage, 640)}
@@ -698,7 +689,7 @@ export default function Home() {
                       <h3 className="text-white text-[1.25rem] font-display">{dest.name}</h3>
                     </div>
                   </div>
-                  <p className="body-sm text-pa-earth mt-3 leading-relaxed font-body font-light" >
+                  <p className="body-sm text-pa-earth mt-3 leading-relaxed font-body font-normal" >
                     {dest.description}
                   </p>
                 </Link>
@@ -744,7 +735,7 @@ export default function Home() {
               },
             ].map((exp, i) => (
               <Link key={i} href={exp.href} className="group block flex-shrink-0 w-[220px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                <div className="relative overflow-hidden bg-pa-sand" style={{ aspectRatio: '3/4' }}>
+                <div className="relative overflow-hidden rounded-xl bg-pa-sand" style={{ aspectRatio: '3/4' }}>
                   {(exp as any).video ? (
                     <LazyVideo
                       src={(exp as any).video}
@@ -764,7 +755,7 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white text-[1rem] font-display mb-1">{exp.title}</h3>
-                    <p className="text-white/70 caption leading-relaxed font-body font-light" >{exp.body}</p>
+                    <p className="text-white/70 caption leading-relaxed font-body font-normal" >{exp.body}</p>
                   </div>
                 </div>
               </Link>

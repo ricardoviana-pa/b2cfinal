@@ -136,7 +136,7 @@ export default function FlexBlock({
         <span
           className={cn(
             "shrink-0 w-10 h-10 rounded-md flex items-center justify-center transition-colors",
-            selected ? "bg-pa-gold text-white" : "bg-pa-warm text-pa-gold",
+            selected ? "bg-pa-gold text-white" : "bg-pa-warm text-pa-gold-aa",
           )}
         >
           <CalendarClock className="w-5 h-5" strokeWidth={1.8} />
@@ -154,7 +154,7 @@ export default function FlexBlock({
         </div>
         <div className="text-right shrink-0 hidden sm:block max-w-[150px]">
           {gifted ? (
-            <p className="body-sm font-medium tabular-nums"><s className="text-pa-stone-aa">{formatEur(config.price, lang)}</s> <span className="text-pa-gold">{t("checkout.flex.gifted", "Offered")}</span></p>
+            <p className="body-sm font-medium tabular-nums"><s className="text-pa-stone-aa">{formatEur(config.price, lang)}</s> <span className="text-pa-gold-aa">{t("checkout.flex.gifted", "Offered")}</span></p>
           ) : (
             <p className="body-sm text-pa-dark font-medium tabular-nums">{formatEur(config.price, lang)}</p>
           )}
@@ -165,7 +165,7 @@ export default function FlexBlock({
       {/* Mobile: preço numa linha própria — à direita do título fazia cascata */}
       <p className="sm:hidden mt-2 body-sm text-pa-dark tabular-nums">
         {gifted ? (
-          <span className="font-medium"><s className="text-pa-stone-aa">{formatEur(config.price, lang)}</s> <span className="text-pa-gold">{t("checkout.flex.gifted", "Offered")}</span></span>
+          <span className="font-medium"><s className="text-pa-stone-aa">{formatEur(config.price, lang)}</s> <span className="text-pa-gold-aa">{t("checkout.flex.gifted", "Offered")}</span></span>
         ) : (
           <span className="font-medium">{formatEur(config.price, lang)}</span>
         )}
@@ -175,7 +175,7 @@ export default function FlexBlock({
       <div className="mt-4 space-y-2">
         {benefits.map(({ icon: Icon, text }, i) => (
           <div key={i} className="flex items-center gap-2 body-sm text-pa-earth">
-            <Icon className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={1.8} />
+            <Icon className="w-3.5 h-3.5 text-pa-gold-aa shrink-0" strokeWidth={1.8} />
             {text}
           </div>
         ))}
@@ -190,7 +190,7 @@ export default function FlexBlock({
         <button
           type="button"
           onClick={() => setRulesOpen(true)}
-          className="inline-flex items-center gap-0.5 caption text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-2"
+          className="inline-flex items-center gap-0.5 caption text-pa-gold-aa hover:text-pa-dark transition-colors underline underline-offset-2"
         >
           {t("checkout.flex.howItWorks", "How it works")}
           <ChevronRight className="w-3 h-3" />
@@ -209,7 +209,7 @@ export default function FlexBlock({
             "pa-action min-h-[40px] px-5 rounded-full border eyebrow text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
             selected
               ? "bg-pa-gold border-pa-gold text-white"
-              : "border-pa-gold text-pa-gold hover:bg-pa-gold hover:text-white",
+              : "border-pa-gold text-pa-gold-aa hover:bg-pa-gold hover:text-white",
           )}
         >
           {selected ? (
@@ -237,7 +237,7 @@ export default function FlexBlock({
             <ol className="space-y-2.5">
               {rules.map((rule, i) => (
                 <li key={i} className="flex gap-2.5 body-sm leading-relaxed text-pa-earth">
-                  <span className="shrink-0 w-4 h-4 rounded-full bg-pa-warm text-pa-gold caption flex items-center justify-center mt-0.5">
+                  <span className="shrink-0 w-4 h-4 rounded-full bg-pa-warm text-pa-gold-aa caption flex items-center justify-center mt-0.5">
                     {i + 1}
                   </span>
                   {rule}

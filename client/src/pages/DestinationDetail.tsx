@@ -100,7 +100,7 @@ export default function DestinationDetail() {
         <Header variant="solid" />
         <div className="container pt-32 pb-20 text-center">
           <h1 className="headline-lg text-[#1A1A18] mb-4">{t('destinationsPage.notFound')}</h1>
-          <Link href="/destinations" className="text-[#8B7355] hover:underline">
+          <Link href="/destinations" className="text-pa-gold-aa hover:underline">
             {t('destinationsPage.backToDestinations')}
           </Link>
         </div>

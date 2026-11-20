@@ -65,12 +65,16 @@ const PALETTE = {
   "#1A1A18": "pa-dark",
   "#8B7355": "pa-gold",
   "#E8E4DC": "pa-sand",
+  // Greys since the design audit of 14 nov 2026 (index.css @theme): body text
+  // is #5E5B54 (pa-earth); secondary text is #6B6860 (pa-stone). The older
+  // values still found in a file map to the token that took their role.
+  "#5E5B54": "pa-earth",
   "#726D63": "pa-stone",
-  "#6B6860": "pa-earth",
+  "#6B6860": "pa-stone",
   "#FAFAF7": "pa-cream",
   "#F5F1EB": "pa-warm",
   "#C4A87C": "pa-gold-light",
-  "#78756F": "pa-stone-aa",
+  "#78756F": "pa-stone",
   "#806A48": "pa-gold-aa",
 };
 const HEX_RE = Object.keys(PALETTE).map((h) => h.slice(1)).join("|");

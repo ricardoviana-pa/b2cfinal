@@ -193,7 +193,7 @@ function focusField(id: string) {
 }
 
 const INPUT_CLASS =
-  "w-full h-[48px] border bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none";
+  "w-full h-[48px] border bg-white px-3 rounded-lg body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none";
 
 export default function CheckoutPage() {
   const { t, i18n } = useTranslation();
@@ -1575,7 +1575,7 @@ export default function CheckoutPage() {
               })()}
             </span>
           </span>
-          <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold eyebrow uppercase tracking-[0.08em]" : "text-pa-dark")}>
+          <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold-aa eyebrow uppercase tracking-[0.08em]" : "text-pa-dark")}>
             {amount === 0 ? t("checkout.included.badge") : formatQuotedEur(amount!, lang)}
           </span>
         </div>
@@ -1583,7 +1583,7 @@ export default function CheckoutPage() {
       {/* Flex */}
       {flexSelected && flexConfig && (
         <div className="flex justify-between items-center gap-2 body-sm text-inherit checkout-row-in">
-          <span className="flex items-center gap-1.5 text-pa-gold font-medium min-w-0">
+          <span className="flex items-center gap-1.5 text-pa-gold-aa font-medium min-w-0">
             {/* M2 (auditoria set/2026): a linha do Flex não tinha remover — se o
                 bloco desaparecesse (total abaixo do limiar) os 250 € ficavam
                 presos no total sem forma de sair */}
@@ -1598,7 +1598,7 @@ export default function CheckoutPage() {
             <span className="truncate">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
           </span>
           {flexGifted || flexIncludedByPlan ? (
-            <span className="tabular-nums shrink-0"><s className="text-pa-stone-aa">{formatQuotedEur(flexUnit, lang)}</s> <span className="text-pa-gold">{flexIncludedByPlan ? t("checkout.summary.flexIncludedShort", "Included") : t("checkout.flex.gifted", "Offered")}</span></span>
+            <span className="tabular-nums shrink-0"><s className="text-pa-stone-aa">{formatQuotedEur(flexUnit, lang)}</s> <span className="text-pa-gold-aa">{flexIncludedByPlan ? t("checkout.summary.flexIncludedShort", "Included") : t("checkout.flex.gifted", "Offered")}</span></span>
           ) : (
             <span className="text-pa-dark tabular-nums shrink-0">{formatQuotedEur(flexUnit, lang)}</span>
           )}
@@ -1607,8 +1607,8 @@ export default function CheckoutPage() {
       {/* Flex incluído por pagar tudo agora, sem o hóspede o ter escolhido */}
       {flexIncludedByPlan && !flexSelected && flexConfig && (
         <div className="flex justify-between items-center gap-2 body-sm text-inherit checkout-row-in">
-          <span className="text-pa-gold font-medium truncate">{t("checkout.summary.flexIncluded", "Flex · included")}</span>
-          <span className="text-pa-gold tabular-nums shrink-0">{formatQuotedEur(0, lang)}</span>
+          <span className="text-pa-gold-aa font-medium truncate">{t("checkout.summary.flexIncluded", "Flex · included")}</span>
+          <span className="text-pa-gold-aa tabular-nums shrink-0">{formatQuotedEur(0, lang)}</span>
         </div>
       )}
       </div>
@@ -1616,7 +1616,7 @@ export default function CheckoutPage() {
       <div className="border-t border-pa-sand pt-3 space-y-1.5">
         <div className="flex justify-between items-baseline gap-3">
           <span className="body-sm font-medium text-pa-dark">{twoParts ? t("checkout.summary.total", "Total") : t("checkout.todayTotal", "Total today")}</span>
-          <span className="checkout-total font-light text-pa-dark tabular-nums">{formatQuotedEur(displayedTotal, lang)}</span>
+          <span className="checkout-total font-normal text-pa-dark tabular-nums">{formatQuotedEur(displayedTotal, lang)}</span>
         </div>
         {twoParts && offer && (
           <div className="space-y-1">
@@ -1651,7 +1651,7 @@ export default function CheckoutPage() {
       ) : quote?.couponCode ? (
         <div className="flex items-center justify-between gap-2">
           <span className="inline-flex items-center gap-1.5 caption text-pa-dark bg-pa-warm border border-pa-sand rounded-full px-2.5 py-1">
-            <Tag className="w-3 h-3 text-pa-gold" /> {quote.couponCode}
+            <Tag className="w-3 h-3 text-pa-gold-aa" /> {quote.couponCode}
           </span>
           <button
             type="button"
@@ -1672,7 +1672,7 @@ export default function CheckoutPage() {
               onKeyDown={(e) => { if (e.key === "Enter" && couponInput.trim()) applyCoupon(couponInput.trim()); }}
               placeholder={t("checkout.coupon.field", "Promo code")}
               maxLength={40}
-              className="flex-1 min-w-0 h-[38px] border border-pa-sand bg-white px-3 rounded-md body-sm tracking-[0.04em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+              className="flex-1 min-w-0 h-[38px] border border-pa-sand bg-white px-3 rounded-lg body-sm tracking-[0.04em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
             />
             <button
               type="button"
@@ -1752,7 +1752,7 @@ export default function CheckoutPage() {
             só por ecrã, junto à decisão — no cartão da tarifa (passo 1) e
             mesmo acima do botão de pagar (passo 3, obrigatória). */}
         {guaranteeLabel && (
-          <p className="flex items-start gap-1.5 caption text-pa-gold leading-snug">
+          <p className="flex items-start gap-1.5 caption text-pa-gold-aa leading-snug">
             <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
           </p>
         )}
@@ -2063,12 +2063,12 @@ export default function CheckoutPage() {
                 <div className="flex items-center justify-between gap-3">
                   <p className="body-md text-pa-dark flex-1 min-w-0">
                     {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)}
-                    <span className="text-pa-earth"> · {guestsLine}</span>
+                    <span className="text-pa-earth"> · <span className="whitespace-nowrap">{guestsLine}</span></span>
                   </p>
                   <button
                     type="button"
                     onClick={() => (editingStay ? finishStayEdit() : setEditingStay(true))}
-                    className="shrink-0 flex items-center gap-1.5 caption text-pa-gold hover:text-pa-dark transition-colors"
+                    className="shrink-0 flex items-center gap-1.5 caption text-pa-gold-aa hover:text-pa-dark transition-colors"
                   >
                     <Pencil className="w-3.5 h-3.5" />
                     {editingStay ? t("checkout.doneEditing", "Done") : t("checkout.edit", "Edit")}
@@ -2117,7 +2117,7 @@ export default function CheckoutPage() {
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
-                      {requoting && <Loader2 className="w-4 h-4 animate-spin text-pa-gold" />}
+                      {requoting && <Loader2 className="w-4 h-4 animate-spin text-pa-gold-aa" />}
                     </div>
                   </div>
                 )}
@@ -2167,7 +2167,7 @@ export default function CheckoutPage() {
                   aria-describedby={emailHintVisible ? "checkout-email-hint" : undefined}
                   aria-invalid={(emailTouched && email.length > 0 && !isValidEmail(email)) || undefined}
                   className={cn(
-                    "w-full h-[48px] border bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none",
+                    "w-full h-[48px] border bg-white px-3 rounded-lg body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none",
                     emailNudge && !isValidEmail(email) ? "border-pa-dark ring-1 ring-pa-dark" : "border-pa-sand",
                   )}
                 />
@@ -2445,7 +2445,7 @@ export default function CheckoutPage() {
               <div className="pt-5 space-y-4" inert={couponBusy || undefined} aria-busy={couponBusy || undefined}>
                 {redirectFinalizing ? (
                   <div className="flex items-center justify-center gap-3 py-8" role="status">
-                    <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
+                    <Loader2 className="w-5 h-5 animate-spin text-pa-gold-aa" />
                     <p className="body-sm text-pa-dark">{t("checkout.confirmingPayment", "Payment received — confirming your booking…")}</p>
                   </div>
                 ) : !pricingSaves && quoteId && effective && !quoteStale && !requoting && !datesUnavailable && !quoteRefreshFailed ? (
@@ -2539,7 +2539,7 @@ export default function CheckoutPage() {
             {couponRow}
             {conciergeRequests}
             {guaranteeLabel && (
-              <p className="flex items-start gap-1.5 caption text-pa-gold leading-snug">
+              <p className="flex items-start gap-1.5 caption text-pa-gold-aa leading-snug">
                 <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
               </p>
             )}
