@@ -423,11 +423,14 @@ export default function Home() {
                   href: '/best-rate-guarantee',
                 },
               ].map((item: { icon: React.ReactNode; title: string; sub: string; href?: string }, i) => {
-                // Side padding: 10 px in the phone's two columns (with the label's
-                // letter-spacing at 0.04em there, so a label that fits one line
-                // no longer runs to the divider: it was 8.5 px from it, 15 px on
-                // the live site), 8 px from 640 px (what the live site always
-                // had). The labels break evenly (text-balance). This line used to end in
+                // Side padding: 6 px in the phone's two columns, 8 px from 640 px
+                // (what the live site always had; more padding only wraps the
+                // descriptions). The labels are 12 px where they were 11, so
+                // their letter-spacing shrinks to keep the width they had: 0.02em
+                // on a phone, 0.06em from 768 to 1279 px, 0.1em elsewhere.
+                // Measured in the nine languages at 360 to 1440 px: no label takes
+                // more lines than on the live site, and no text sits closer than
+                // 6 px to a divider. The labels break evenly (text-balance). This line used to end in
                 // "md:px-5" glued to the "${", a class Tailwind never emitted;
                 // when another file started using md:px-5 the rule appeared and
                 // the four cells silently went from 8 to 20 px, wrapping their
@@ -436,14 +439,14 @@ export default function Home() {
                 // Divider: between the two columns on a phone (cells 0 and 2),
                 // between the four from 768 px (cells 0, 1 and 2).
                 const divider = i === 3 ? '' : i === 1 ? 'md:border-r border-[#E8E4DC]' : 'border-r border-[#E8E4DC]';
-                const cls = `flex min-w-0 flex-col items-center text-center px-2.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}`;
+                const cls = `flex min-w-0 flex-col items-center text-center px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}`;
                 const inner = (
                 <>
                   <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand bg-pa-cream text-pa-gold-aa sm:mb-3 sm:h-9 sm:w-9">
                     {item.icon}
                   </div>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.04em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.1em] md:text-[12px]">{keepHyphens(item.title)}</p>
+                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.02em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.1em] md:text-[12px] md:tracking-[0.06em] xl:tracking-[0.1em]">{keepHyphens(item.title)}</p>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
                   <p className="mt-1 max-w-none caption leading-tight text-pa-stone text-balance sm:text-[12px] sm:leading-snug md:text-[13px] md:leading-[1.55] font-body font-normal" >{keepHyphens(item.sub)}</p>
                 </>

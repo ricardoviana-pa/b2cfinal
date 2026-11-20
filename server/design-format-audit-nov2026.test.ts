@@ -51,9 +51,11 @@ describe('uma classe nunca fica colada a um "${" (a causa do padding que mudou s
     }
     expect(glued).toEqual([]);
   });
-  it('a faixa de garantias: 10 px no telemóvel, 8 px a partir de 640 px, e sem divisória solta', () => {
+  it('a faixa de garantias: 6 px no telemóvel, 8 px a partir de 640 px, e sem divisória solta', () => {
     const home = read('client/src/pages/Home.tsx');
-    expect(home).toContain('px-2.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}');
+    expect(home).toContain('px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}');
+    // etiquetas a 12 px com a largura que tinham a 11 px: o espaçamento entre letras desce
+    expect(home).toContain('tracking-[0.02em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.1em] md:text-[12px] md:tracking-[0.06em] xl:tracking-[0.1em]');
     expect(home.match(/const cls = `[^`]*`/)![0]).not.toContain('md:px-5');
     // no telemóvel (duas colunas) só as células da esquerda têm divisória
     expect(home).toContain("i === 3 ? '' : i === 1 ? 'md:border-r border-[#E8E4DC]' : 'border-r border-[#E8E4DC]'");
