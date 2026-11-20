@@ -1018,6 +1018,7 @@
 /* Responsive homepage search */
 .home-hero { padding: 148px 0 48px; min-height: min(850px, 96svh); display: flex; align-items: center; }
 .home-hero-content { display: flex; flex-direction: column; gap: 40px; }
+.home-hero-text { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 26px rgba(0, 0, 0, 0.42); }
 .hero-text-link { display: inline-flex; align-items: center; justify-content: center; gap: .65rem; min-height: 44px; color: white; font-size: .875rem; font-weight: 400; letter-spacing: normal; text-transform: none; border-bottom: 1px solid #ffffff70; }
 .hero-text-link:hover { border-color: white; }
 .hero-text-link:focus-visible { outline: 2px solid white; outline-offset: 5px; }

@@ -86,32 +86,27 @@ describe('destination options model', () => {
     { destination: 'silver-coast', locality: 'Pataias', guestyId: 'd' },
   ];
 
-  it('lists regions first, with the number of listing cards each opens', () => {
+  it('lists the regions, with the number of listing cards each opens', () => {
     const model = buildDestinationOptions(localities, homes);
     expect(model.regions).toEqual([
       { region: 'minho', value: 'region:minho', count: 1 },   // child unit and inactive home not counted
       { region: 'porto', value: 'region:porto', count: 3 },   // Porto and Douro: Trofa + the two Douro homes
       { region: 'douro', value: 'region:douro', count: 2 },
       { region: 'algarve', value: 'region:algarve', count: 1 },
+      // No destination page, but a home: with the municipalities gone from
+      // the list (o Ricardo, 20 nov 2026) this is its only line.
+      { region: 'silver-coast', value: 'region:silver-coast', count: 1 },
     ]);
-    // Silver Coast has no destination page: no region choice, its municipality still there.
-    expect(model.regions.some((r) => r.region === 'silver-coast')).toBe(false);
   });
 
-  it('groups municipalities under their region, spokes under their hub, sorted by region then name', () => {
+  it('is regions only: the model carries no municipalities', () => {
     const model = buildDestinationOptions(localities, homes);
-    expect(model.groups.map((g) => [g.region, g.options.map((o) => o.value)])).toEqual([
-      ['minho', ['carreco', 'viana-do-castelo']],
-      ['porto', ['douro', 'trofa']],
-      ['algarve', ['albufeira']],
-      ['silver-coast', ['pataias']],
-    ]);
+    expect(Object.keys(model)).toEqual(['regions']);
   });
 
   it('while the catalogue loads, offers the regions the localities prove exist, without counts', () => {
     const model = buildDestinationOptions(localities, null);
     expect(model.regions.map((r) => [r.region, r.count])).toEqual([['minho', null], ['porto', null], ['douro', null], ['algarve', null]]);
-    expect(model.groups.at(-1)).toEqual({ region: null, options: [{ value: 'pataias', label: 'Pataias' }] });
   });
 
   it('labels municipalities by their real name, not the URL slug', () => {

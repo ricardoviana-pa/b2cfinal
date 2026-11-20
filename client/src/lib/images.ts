@@ -5,14 +5,15 @@ import partnerRenditions from '@/data/partner-card-renditions.json';
 
 export const IMAGES = {
   // Hero images
-  // Homepage cover — Mirante 1 (Albufeira, partner home): the private tennis
-  // court with the blue-trimmed villa behind it. The supplier's original is
-  // a grainy 1920×1080 JPEG; the shipped set (768/1280/1920/2560) and the
-  // social JPEG are derived from a Real-ESRGAN x2 master kept next to the
-  // original in exports/tripwix-photos (gitignored). The "court" basename
-  // replaced a first "tennis" cut so the 1 h edge cache could not keep
-  // serving the grainy files under the same URLs.
-  heroMain: '/hero/home-mirante-court-1920.webp',
+  // Homepage cover — Carcavelos Manor House (Vila Verde, one of our own
+  // homes): the manor behind its lawn and lap pool (decisão E03 do Ricardo,
+  // 20 nov 2026: "coloca a carcavelos manor house como foto de capa"). The
+  // set (768/960/1280/1920) is cut from the listing's 3000×2250 original at
+  // WebP quality 50: all that foliage makes it a heavy picture, and the hero
+  // lays a dark veil over it. The 960 size is for phones (390 px × 2); there
+  // is no 2560, which would be 700 KB. The social image (og:image) is still
+  // the Mirante 1 tennis court.
+  heroMain: '/hero/home-carcavelos-cover-1920.webp',
   // Auto-hospedada: o CDN da plataforma original (d2xsxph8kpxj0f.cloudfront.net)
   // comecou a devolver 403/503 em 24 ago 2026 e nao volta — qualquer imagem
   // que la ficasse desaparece assim que a cache de edge expira.

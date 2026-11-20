@@ -367,15 +367,56 @@ describe('dois botões, uma altura', () => {
   });
 });
 
-describe('cartões das casas: a nota das casas de parceiros não os deixa mais altos', () => {
+describe('casas de parceiros: o mesmo tratamento das nossas (o Ricardo, 20 nov 2026)', () => {
   const card = read('client/src/components/property/PropertyCard.tsx');
-  it('sem datas, a nota fica na linha do preço, à direita', () => {
-    expect(card).toContain('const feesNoteBeside = hasPartnerPrice && nights === 0 && !isGroup;');
-    expect(card).toMatch(/\{feesNoteBeside \? \(\s*<p className="text-\[13px\] text-pa-stone leading-tight">\s*\{t\('partnerBooking\.feesPendingShort'\)\}/);
+  const map = read('client/src/components/property/HomesMap.tsx');
+  it('o cartão não tem nota de "outros encargos", nem com datas nem sem elas', () => {
+    expect(card).not.toMatch(/t\('partnerBooking\.feesPendingShort'\)/);
+    expect(card).not.toContain('feesNoteBeside');
   });
-  it('com datas continua por baixo do preço, e a frase é a mesma', () => {
-    expect(card).toContain("{hasPartnerPrice && !feesNoteBeside && (nights === 0 || !liveQuote?.feesKnown) && (");
-    expect(card.match(/t\('partnerBooking\.feesPendingShort'\)/g)).toHaveLength(2);
+  it('as etiquetas do mapa também não', () => {
+    expect(map).not.toMatch(/t\('partnerBooking\.feesPendingShort'\)/);
+  });
+  it('a nota completa continua na página da casa, junto ao preço, antes de reservar', () => {
+    const panel = read('client/src/components/booking/PartnerBookingPanel.tsx');
+    expect(panel).toContain("'partnerBooking.feesPending'");
+  });
+  it('com datas, o cartão continua a dizer "accommodation" e não "total" enquanto os outros valores não são conhecidos', () => {
+    expect(card.match(/!liveQuote\.feesKnown \? t\('partnerBooking\.accommodationLabel'\) : t\('property\.totalLabel'\)/g)).toHaveLength(2);
+  });
+});
+
+describe('campo «Destino» da pesquisa: só regiões (o Ricardo, 20 nov 2026)', () => {
+  const options = read('client/src/components/marketing/DestinationOptions.tsx');
+  it('a lista não tem grupos nem localidades', () => {
+    expect(options).not.toContain('<optgroup');
+    expect(options).not.toContain('model.groups');
+    expect(options).toContain('{model.regions.map((r) => (');
+  });
+  it('uma ligação antiga para uma localidade continua a aparecer escolhida', () => {
+    expect(options).toContain("const municipality = current && !current.startsWith('region:') ? current : '';");
+    expect(options).toContain('{municipality && <option value={municipality}>{localityLabel(localities, municipality)}</option>}');
+    expect(read('client/src/pages/Homes.tsx')).toContain('<DestinationOptions model={destinationModel} current={bookingLocation} localities={localities} />');
+  });
+});
+
+describe('E03 — fotografia do topo: Carcavelos Manor House', () => {
+  it('a imagem, os quatro tamanhos e o texto alternativo nas nove línguas', () => {
+    expect(read('client/src/lib/images.ts')).toContain("heroMain: '/hero/home-carcavelos-cover-1920.webp',");
+    const home = read('client/src/pages/Home.tsx');
+    for (const w of [768, 960, 1280, 1920]) {
+      expect(home).toContain(`/hero/home-carcavelos-cover-${w}.webp ${w}w`);
+      expect(fs.existsSync(path.join(ROOT, `client/public/hero/home-carcavelos-cover-${w}.webp`)), String(w)).toBe(true);
+    }
+    for (const lang of ['en', 'pt', 'es', 'fr', 'de', 'it', 'nl', 'sv', 'fi']) {
+      const alt = JSON.parse(read(`client/src/i18n/locales/${lang}.json`)).home.heroAlt as string;
+      expect(alt, lang).toContain('Carcavelos Manor House');
+      expect(alt, lang).not.toMatch(/Mirante|tennis|ténis|tenis|Tennis|tenni/i);
+    }
+  });
+  it('a imagem mais pesada do topo não passa de 500 KB', () => {
+    const size = fs.statSync(path.join(ROOT, 'client/public/hero/home-carcavelos-cover-1920.webp')).size;
+    expect(size).toBeLessThan(500 * 1024);
   });
 });
 

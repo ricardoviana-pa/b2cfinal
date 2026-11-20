@@ -57,7 +57,7 @@ export default function HomesMap({ properties, fromPrices, quotes, checkin, chec
 
       const map = mapRef.current;
       const layer = map._pinLayer;
-      type Pin = { pos: [number, number]; label: string; note: string; title: string; href: string };
+      type Pin = { pos: [number, number]; label: string; title: string; href: string };
       const pins: Pin[] = [];
       for (const p of properties) {
         const lat = (p as any).address?.lat;
@@ -79,13 +79,14 @@ export default function HomesMap({ properties, fromPrices, quotes, checkin, chec
         const label = money
           ? hasDates ? `${money} ${t(partial ? 'partnerBooking.accommodationLabel' : 'property.totalLabel')}` : `${t('common.from')} ${money}`
           : '·';
-        const priceNote = isPartner && money && (!hasDates || partial) ? t('partnerBooking.feesPendingShort') : '';
+        // Sem nota de "outros encargos" nas etiquetas: as casas de parceiros
+        // têm o mesmo tratamento das nossas (o Ricardo, 20 nov 2026).
         const params = new URLSearchParams();
         if (hasDates) { params.set('checkin', checkin!); params.set('checkout', checkout!); }
         if (guests && guests > 1) params.set('guests', String(guests));
         pins.push({
-          pos, label, note: priceNote,
-          title: `${p.name}: ${money ? label : t('property.priceOnRequest')}. ${priceNote}`,
+          pos, label,
+          title: `${p.name}: ${money ? label : t('property.priceOnRequest')}`,
           href: `/homes/${p.slug}${params.size ? `?${params}` : ''}`,
         });
       }
@@ -125,7 +126,6 @@ export default function HomesMap({ properties, fromPrices, quotes, checkin, chec
             const el = document.createElement('span');
             el.className = 'pa-map-pin-label';
             el.textContent = pin.label;
-            el.title = pin.note;
             if (i > 0) el.style.transform = `translate(-50%, calc(-100% - ${i * 26}px))`;
             const marker = L.marker(pin.pos, { icon: L.divIcon({ className: 'pa-map-pin', html: el, iconSize: null }), title: pin.title });
             marker.on('click', () => navigateRef.current(pin.href));

@@ -1,8 +1,8 @@
 /**
  * The destination choices of every search picker (homepage hero, listing
- * page): regions first with their number of homes, then municipalities under
- * their region. One list, so the homepage and the listing can't drift apart
- * again (auditoria 29 out, ux-home-plp-05).
+ * page): the regions, each with its number of homes, and nothing else (o
+ * Ricardo, 20 nov 2026). One list, so the homepage and the listing can't
+ * drift apart again (auditoria 29 out, ux-home-plp-05).
  */
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,7 @@ import type { TFunction } from 'i18next';
 import { trpc } from '@/lib/trpc';
 import { getUniqueLocalities } from '@/lib/utils';
 import type { Property } from '@/lib/types';
-import { buildDestinationOptions, type DestinationOptionsModel, type LocalityChoice } from '@/lib/destinationSearch';
+import { buildDestinationOptions, localityLabel, type DestinationOptionsModel, type LocalityChoice } from '@/lib/destinationSearch';
 
 /** Region name in the page language. The five hubs use the long-standing
  *  destinations.* labels; Douro and the Silver Coast have their own. */
@@ -32,30 +32,29 @@ export function useDestinationOptions(homes?: Property[] | null): { model: Desti
   return { model, localities };
 }
 
-export default function DestinationOptions({ model }: { model: DestinationOptionsModel }) {
+/**
+ * `current` is the picker's value when it is a municipality: a search from a
+ * link made before the list was regions only (`?location=caminha`). It is
+ * shown as its own line, first, so the picker says what the listing is
+ * filtered on instead of falling back to its placeholder.
+ */
+export default function DestinationOptions({ model, current, localities }: {
+  model: DestinationOptionsModel;
+  current?: string;
+  localities?: LocalityChoice[];
+}) {
   const { t } = useTranslation();
+  const municipality = current && !current.startsWith('region:') ? current : '';
   return (
     <>
-      {model.regions.length > 0 && (
-        <optgroup label={t('destinationSearch.regions', 'Regions')}>
-          {model.regions.map((r) => (
-            <option key={r.value} value={r.value}>
-              {r.count == null
-                ? regionLabel(t, r.region)
-                : t('destinationSearch.regionWithCount', { region: regionLabel(t, r.region), count: r.count, defaultValue: '{{region}} ({{count}})' })}
-            </option>
-          ))}
-        </optgroup>
-      )}
-      {model.groups.map((g) =>
-        g.region ? (
-          <optgroup key={`g-${g.region}`} label={regionLabel(t, g.region)}>
-            {g.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </optgroup>
-        ) : (
-          g.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)
-        ),
-      )}
+      {municipality && <option value={municipality}>{localityLabel(localities, municipality)}</option>}
+      {model.regions.map((r) => (
+        <option key={r.value} value={r.value}>
+          {r.count == null
+            ? regionLabel(t, r.region)
+            : t('destinationSearch.regionWithCount', { region: regionLabel(t, r.region), count: r.count, defaultValue: '{{region}} ({{count}})' })}
+        </option>
+      ))}
     </>
   );
 }

@@ -84,9 +84,6 @@ export default function PropertyCard({
 }: PropertyCardProps) {
   const { t, i18n } = useTranslation();
   const isPartner = isPartnerHome(property);
-  const hasPartnerPrice = isPartner && (nights > 0
-    ? !!liveQuote && liveQuote.available !== false && liveQuote.total > 0
-    : typeof fromPrice === 'number' && fromPrice > 0);
   // Euros inteiros na listagem (decisão E07, 20 nov 2026); os cêntimos aparecem no checkout.
   const formatTotal = (amount: number) => formatStayEur(amount, i18n.language);
   // Multi-unit treatment: when this listing is the parent of a curated group,
@@ -95,12 +92,6 @@ export default function PropertyCard({
   // parent's PDP, which renders its own Units section.
   const group = getGroupByParentGuestyId(property.guestyId);
   const isGroup = !!group;
-  /* Without dates the right-hand side of the price row is empty, so the
-     partner fee note sits there, on the price's own line: a partner card is
-     then as tall as every other card instead of one line taller (design
-     audit, Nov 2026). With dates that side shows the nights, and the note
-     stays under the price. Same sentence either way. */
-  const feesNoteBeside = hasPartnerPrice && nights === 0 && !isGroup;
   const displayName = group?.name ?? getDisplayName(property);
   const [currentImage, setCurrentImage] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -343,7 +334,7 @@ export default function PropertyCard({
         {!hidePrice && (
           <div className="border-t border-[#E8E4DC] mt-3 pt-3 flex items-baseline justify-between gap-3">
             {/* LEFT — price */}
-            <div className={feesNoteBeside ? 'shrink-0' : 'min-w-0'}>
+            <div className="min-w-0">
               {(() => {
                 if (isGroup) {
                   if (nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0) {
@@ -420,22 +411,18 @@ export default function PropertyCard({
                 return <span className="text-pa-stone text-[15px]">{t(noPriceLabelKey(isPartner, fromPrice))}</span>;
               })()}
               {/* Sem "IVA incluído": as nossas casas não o dizem e as dos
-                  parceiros também não (o Ricardo, 29 out 2026). */}
-              {hasPartnerPrice && !feesNoteBeside && (nights === 0 || !liveQuote?.feesKnown) && (
-                <p className="text-[13px] text-pa-stone mt-1 leading-relaxed">
-                  {t('partnerBooking.feesPendingShort')}
-                </p>
-              )}
+                  parceiros também não (o Ricardo, 29 out 2026).
+                  Sem nota de "outros encargos" no cartão: as casas de
+                  parceiros têm o mesmo tratamento das nossas (o Ricardo,
+                  20 nov 2026). A nota completa continua na página da casa,
+                  junto ao preço, antes de reservar (PartnerBookingPanel);
+                  com datas, o cartão diz "accommodation" e não "total"
+                  enquanto a limpeza e a caução não forem conhecidas. */}
             </div>
 
-            {/* RIGHT — context: units (groups), nights (single stays), or the
-                partner fee note while no dates are chosen. */}
-            <div className={feesNoteBeside ? 'text-right min-w-0' : 'text-right shrink-0'}>
-              {feesNoteBeside ? (
-                <p className="text-[13px] text-pa-stone leading-tight">
-                  {t('partnerBooking.feesPendingShort')}
-                </p>
-              ) : isGroup ? (
+            {/* RIGHT — context: units (groups) or nights (single stays) */}
+            <div className="text-right shrink-0">
+              {isGroup ? (
                 <p className="text-[15px] text-pa-earth font-medium leading-tight">
                   {groupContextLabel ?? t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
                 </p>

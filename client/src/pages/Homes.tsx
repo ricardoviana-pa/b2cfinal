@@ -85,7 +85,6 @@ export default function Homes() {
   // The same destination choices as the homepage hero (regions first, with
   // their number of homes; then municipalities under their region).
   const { model: destinationModel, localities } = useDestinationOptions(propsData as Property[] | undefined);
-  const cityOptions = <DestinationOptions model={destinationModel} />;
   // "From €X" per card (lowest real bookable nightly), when no dates are picked.
   const fromListingIds = useMemo(
     () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
@@ -157,6 +156,8 @@ export default function Homes() {
   const setSort = (v: SortOption) => updateFilter('sort', v);
   const [bookingDestination, setBookingDestination] = useState(searchDestinationFromUrl);
   const [bookingLocation, setBookingLocation] = useState(searchLocationFromUrl);
+  // The picker's lines: the regions, plus the municipality of an older link when one is active.
+  const cityOptions = <DestinationOptions model={destinationModel} current={bookingLocation} localities={localities} />;
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
   const [bookingCheckout, setBookingCheckout] = useState(searchCheckout);
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);

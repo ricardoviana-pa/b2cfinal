@@ -122,9 +122,9 @@ export default function Home() {
     ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[],
   [propsData]);
 
-  // Destination choices shared with the listing page: regions first with their
-  // number of homes, then municipalities under their region (the localities
-  // query is tiny and SSR-prefetched, so the picker works on first paint).
+  // Destination choices shared with the listing page: the regions, each with
+  // its number of homes (the localities query is tiny and SSR-prefetched, so
+  // the picker has its regions on first paint, before the catalogue).
   const { model: destinationModel } = useDestinationOptions(propsData as Property[] | undefined);
   const cityOptions = <DestinationOptions model={destinationModel} />;
 
@@ -342,12 +342,12 @@ export default function Home() {
         <div className="absolute inset-0">
           <img
             src={IMAGES.heroMain}
-            srcSet="/hero/home-mirante-court-768.webp 768w, /hero/home-mirante-court-1280.webp 1280w, /hero/home-mirante-court-1920.webp 1920w, /hero/home-mirante-court-2560.webp 2560w"
+            srcSet="/hero/home-carcavelos-cover-768.webp 768w, /hero/home-carcavelos-cover-960.webp 960w, /hero/home-carcavelos-cover-1280.webp 1280w, /hero/home-carcavelos-cover-1920.webp 1920w"
             sizes="100vw"
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"
-            width={1600}
-            height={900}
+            width={1920}
+            height={1440}
             fetchPriority="high"
             loading="eager"
           />
@@ -361,9 +361,12 @@ export default function Home() {
 
         {/* Hero content */}
         <div className="relative container z-10 home-hero-content">
-          <div className="max-w-2xl">
+          {/* A soft shadow behind the words (index.css, .home-hero-text): the
+              cover photo has bright patches, the sky and the white wall of
+              the manor, right where the text runs. */}
+          <div className="max-w-2xl home-hero-text">
             <p
-              className="body-sm font-medium text-white/70 mb-5 font-body"
+              className="body-sm font-medium text-white/85 mb-5 font-body"
               style={{letterSpacing: '0.08em'}}
             >
               {t('home.heroOverline')}
