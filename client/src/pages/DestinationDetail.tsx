@@ -127,7 +127,11 @@ export default function DestinationDetail() {
       {graph && <StructuredData id={`destination-${dest.slug}`} data={graph} />}
       <Header />
 
+      {/* Keyed by destination: going from one guide to another starts the
+          page again, with its sections closed as on a first visit (phones,
+          decisão E15) instead of open because the last guide's were. */}
       <DestinationPage
+        key={dest.slug}
         destination={dest}
         properties={destProperties}
         articles={articles}

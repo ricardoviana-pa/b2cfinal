@@ -154,6 +154,7 @@ export function DestinationPage({
             destination={destination}
             adventures={adventures}
             onAddToItinerary={onAddToItinerary}
+            anchor="destination-experiences"
           />
         </div>
         <FAQSection destination={destination} />
@@ -207,10 +208,14 @@ export function DestinationPage({
           )}
         </div>
       </nav>
+      {/* On a phone the hero, the homes and the first section (why this
+          place) stay open; the seasons, the food and experiences and the
+          questions open on tap (GuideSection, decisão E15). Their chapter
+          links point at the element around each one, hence `anchor`. */}
       <WhereToStay destination={destination} properties={properties} />
       <WhyThisPlace destination={destination} />
       <div id="destination-seasons" className="scroll-mt-24">
-        <WhenToVisit destination={destination} />
+        <WhenToVisit destination={destination} anchor="destination-seasons" />
       </div>
       <div id="destination-guide" className="container py-8 scroll-mt-24">
         <h2 className="headline-lg mb-6">{t("siteUx.travelGuide")}</h2>
@@ -245,6 +250,7 @@ export function DestinationPage({
           destination={destination}
           adventures={adventures}
           onAddToItinerary={onAddToItinerary}
+          anchor="destination-experiences"
         />
       </div>
       <TheJournal destination={destination} articles={articles} />

@@ -9,6 +9,7 @@
   position: relative;
   margin-bottom: 1.5rem;
   height: clamp(320px, 43vw, 580px);
+  border-radius: 12px;
   overflow: hidden;
 }
 .destination-landscape-feature img {
@@ -59,17 +60,17 @@
 }
 .destination-route-controls button {
   min-height: 46px;
-  border-bottom: 2px solid #c4cebf;
+  border-bottom: 2px solid #e8e4dc;
   padding: 0.6rem 1rem;
-  color: #33472f;
+  color: #1a1a18;
 }
 .destination-route-controls button[aria-pressed="true"] {
-  border-color: #294c3a;
+  border-color: #1a1a18;
   font-weight: 600;
 }
 .destination-arrival-note {
   font-size: 0.9375rem;
-  color: #4c5b45;
+  color: #5e5b54;
   max-width: 75ch;
   margin-bottom: 1.5rem;
 }
@@ -134,11 +135,4 @@
     gap: 2rem;
     margin-bottom: 1.75rem;
   }
-}
-
-/* Kickers on the tinted sections: #806a48 is 4.47:1 on #edf0e8 and 4.37:1 on
-   #f0ece4 (axe, auditoria 29 out); this bronze is 4.9:1 and 4.8:1. */
-.minho-editorial .minho-itinerary .minho-kicker,
-.minho-editorial .minho-taste .minho-kicker {
-  color: #7a6444;
 }
