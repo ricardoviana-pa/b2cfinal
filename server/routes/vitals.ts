@@ -9,6 +9,7 @@
  */
 import type { Express, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
+import { visitorRateLimitKey } from "../lib/rate-limit-key";
 
 const METRICS = new Set(["LCP", "INP", "CLS", "FCP", "TTFB"]);
 const RATINGS = new Set(["good", "needs-improvement", "poor"]);
@@ -63,7 +64,10 @@ export function parseVitalRow(raw: unknown): VitalRow | null {
 }
 
 export function registerVitalsRoute(app: Express) {
-  const limiter = rateLimit({ windowMs: 60 * 1000, max: 30, standardHeaders: false, legacyHeaders: false });
+  // A mesma chave dos outros limites por IP (server/lib/rate-limit-key.ts):
+  // cada pedido aceite grava na base de dados, e com a chave por omissão um
+  // X-Forwarded-For inventado dava um contador novo a cada pedido.
+  const limiter = rateLimit({ keyGenerator: visitorRateLimitKey, windowMs: 60 * 1000, max: 30, standardHeaders: false, legacyHeaders: false });
   app.post("/api/vitals", limiter, async (req: Request, res: Response) => {
     res.status(204).end();
     const body = Array.isArray(req.body) ? req.body.slice(0, MAX_ROWS) : [];

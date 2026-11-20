@@ -15,6 +15,7 @@ import {
   SAVE_PROCEDURES,
   weightedTrpcLimiter,
 } from "../lib/checkout-write-rate-limit";
+import { visitorRateLimitKey } from "../lib/rate-limit-key";
 import { createServer } from "http";
 import net from "net";
 import fs from "fs";
@@ -83,6 +84,9 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
+  // Com `true`, o req.ip é o primeiro valor do X-Forwarded-For, que o cliente
+  // pode escrever. Serve para o protocolo e o host atrás do proxy; para contar
+  // pedidos por visitante usa-se visitorRateLimitKey (server/lib/rate-limit-key.ts).
   app.set("trust proxy", true);
   app.use(redirectLegacyRecoveryEmail);
   app.use(blockPreviewWrites);
@@ -140,9 +144,14 @@ async function startServer() {
   // Liveness para o Render e o monitor de uptime: antes de tudo o resto, sem BD.
   registerHealthRoutes(app);
 
-  const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false, message: { error: "Too many login attempts. Please try again later." } });
-  const apiLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, standardHeaders: true, legacyHeaders: false });
-  const leadLimiter = rateLimit({ windowMs: 60 * 1000, max: LEAD_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, message: { error: "Too many submissions. Please wait a moment." } });
+  // Todos os limites por IP contam pela mesma chave: o endereço que o
+  // Cloudflare indica (CF-Connecting-IP), que o cliente não consegue forjar, e
+  // o req.ip quando o pedido não veio pelo Cloudflare. Sem ela, um
+  // X-Forwarded-For inventado dava um contador novo a cada pedido
+  // (server/lib/rate-limit-key.ts explica o que se viu em produção).
+  const authLimiter = rateLimit({ keyGenerator: visitorRateLimitKey, windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false, message: { error: "Too many login attempts. Please try again later." } });
+  const apiLimiter = rateLimit({ keyGenerator: visitorRateLimitKey, windowMs: 60 * 1000, max: 60, standardHeaders: true, legacyHeaders: false });
+  const leadLimiter = rateLimit({ keyGenerator: visitorRateLimitKey, windowMs: 60 * 1000, max: LEAD_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, message: { error: "Too many submissions. Please wait a moment." } });
 
   app.use("/api/auth/google", authLimiter);
   app.use("/api/auth/dev-login", authLimiter);
@@ -157,17 +166,17 @@ async function startServer() {
   // e outro para "/checkout" que nunca apanharam pedido nenhum
   // (server/lib/checkout-write-rate-limit.ts explica porquê e os números).
   // singleCount: false porque um batch conta uma vez por chamada, de propósito.
-  const checkoutChargeLimiter = rateLimit({ windowMs: 60 * 1000, max: CHECKOUT_CHARGE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, validate: { singleCount: false } });
-  const checkoutSaveLimiter = rateLimit({ windowMs: 60 * 1000, max: CHECKOUT_SAVE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, validate: { singleCount: false } });
+  const checkoutChargeLimiter = rateLimit({ keyGenerator: visitorRateLimitKey, windowMs: 60 * 1000, max: CHECKOUT_CHARGE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, validate: { singleCount: false } });
+  const checkoutSaveLimiter = rateLimit({ keyGenerator: visitorRateLimitKey, windowMs: 60 * 1000, max: CHECKOUT_SAVE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, validate: { singleCount: false } });
   app.use("/api/trpc", weightedTrpcLimiter(checkoutChargeLimiter, CHARGE_PROCEDURES));
   app.use("/api/trpc", weightedTrpcLimiter(checkoutSaveLimiter, SAVE_PROCEDURES));
   // Página da 2.ª parte (pagamento em duas partes): os pedidos tRPC chegam
   // como /api/trpc/balance.view (ou num batch "a.b,balance.help"), que um
   // app.use("/api/trpc/balance") nunca apanha; o matcher decide pelo nome.
-  const balanceLimiter = rateLimit({ windowMs: 60 * 1000, max: BALANCE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false });
+  const balanceLimiter = rateLimit({ keyGenerator: visitorRateLimitKey, windowMs: 60 * 1000, max: BALANCE_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false });
   app.use("/api/trpc", balanceTrpcLimiter(balanceLimiter));
   // Pagamento das casas parceiras: mesmo motivo, decide pelo nome do procedimento.
-  const partnerPayLimiter = rateLimit({ windowMs: 60 * 1000, max: PARTNER_PAY_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, message: { error: "Too many submissions. Please wait a moment." } });
+  const partnerPayLimiter = rateLimit({ keyGenerator: visitorRateLimitKey, windowMs: 60 * 1000, max: PARTNER_PAY_RATE_LIMIT_PER_MIN, standardHeaders: true, legacyHeaders: false, message: { error: "Too many submissions. Please wait a moment." } });
   app.use("/api/trpc", partnerPayTrpcLimiter(partnerPayLimiter));
 
   // Guesty webhook needs raw body for signature validation
