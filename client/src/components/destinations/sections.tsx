@@ -166,7 +166,7 @@ export function WhereToStay({ destination: d, properties, heading, intro, sectio
             const recommendation = featured ? featuredDestinationHomes[d.slug]?.find(pick => pick.id === p.guestyId) : undefined;
             return <div key={p.id}>
               <PropertyCard key={p.id} property={p} checkin={trip.checkin} checkout={trip.checkout} guests={trip.guests} hidePrice={!!trip.checkin} listId={`destination_${d.slug}`} listName={d.name} itemIndex={index} fromPrice={p.supplierUid ? partner.prices[p.supplierUid] : fromPrices?.[p.guestyId ?? '']} />
-              {recommendation && <p className="mt-4 pl-4 border-l-2 border-pa-gold-aa text-sm leading-relaxed text-pa-stone-aa">{discoveryText(recommendation.reason, i18n.language)}</p>}
+              {recommendation && <p className="mt-4 pl-4 border-l-2 border-pa-gold-aa text-[15px] leading-relaxed text-pa-stone-aa">{discoveryText(recommendation.reason, i18n.language)}</p>}
             </div>;
           })}
         </div>
@@ -206,7 +206,7 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
           {articles.slice(0, 3).map((a, index) => (
             <Link key={a.slug} href={withEditorialTrip(`/blog/${a.slug}`, search)} className="group flex items-start gap-4 border-t border-pa-sand pt-5 pb-3">
               <div
-                className="relative shrink-0 overflow-hidden rounded-xl bg-pa-sand/40 w-24 h-28 flex items-center justify-center"
+                className="relative shrink-0 self-stretch overflow-hidden rounded-xl bg-pa-sand/40 w-24 min-h-28 flex items-center justify-center"
               >
                 {a.coverImage ? (
                   <img
@@ -304,7 +304,7 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
                       </span>
                     )}
                     <h4
-                      className="text-[16px] font-medium text-[#1A1A18] mb-2"
+                      className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-2 text-balance"
                       style={{ fontFamily: 'var(--font-display)' }}
                     >
                       {item.name}
@@ -369,7 +369,7 @@ export function WhenToVisit({ destination: d, anchor }: { destination: Destinati
             {seasons.map(s => (
               <div key={s.key} className="border-l-2 border-[#8B7355] pl-5 py-1">
                 <h3
-                  className="text-[16px] font-medium text-[#1A1A18] mb-2 tracking-[0.02em]"
+                  className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-2 tracking-[0.02em]"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   {s.label}
@@ -508,7 +508,7 @@ export function EatDrinkExperience({
                       </span>
                     )}
                     <h4
-                      className="text-[16px] font-medium text-[#1A1A18] mb-2"
+                      className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-2 text-balance"
                       style={{ fontFamily: 'var(--font-display)' }}
                     >
                       {r.name}
@@ -539,7 +539,7 @@ export function EatDrinkExperience({
                       </span>
                     )}
                     <h4
-                      className="text-[16px] font-medium text-[#1A1A18] mb-1.5"
+                      className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-1.5 text-balance"
                       style={{ fontFamily: 'var(--font-display)' }}
                     >
                       {s.name}
@@ -573,7 +573,7 @@ export function EatDrinkExperience({
                 {d.experiences!.map(e => (
                   <div key={e.name} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-5">
                     <h4
-                      className="text-[16px] font-medium text-[#1A1A18] mb-2"
+                      className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-2 text-balance"
                       style={{ fontFamily: 'var(--font-display)' }}
                     >
                       {e.name}
@@ -840,7 +840,7 @@ export function RelatedDestinationsAndOwnersCTA({
                       {r.name}
                     </h3>
                     {r.tagline && (
-                      <p className="text-[13px] text-white/70 line-clamp-2" style={{ fontWeight: 400 }}>
+                      <p className="text-[13px] text-white/70 line-clamp-3" style={{ fontWeight: 400 }}>
                         {r.tagline}
                       </p>
                     )}

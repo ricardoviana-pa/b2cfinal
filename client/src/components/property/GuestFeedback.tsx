@@ -93,7 +93,7 @@ export default forwardRef<HTMLDivElement>(function GuestFeedback(_, ref) {
             <span className="ml-2 font-normal text-pa-stone">· {reviewLanguageLabel(t, pageLang, r.language)}</span>
           )}
         </p>
-        <blockquote lang={r.language ?? undefined} className="body-sm text-pa-earth leading-relaxed line-clamp-6 flex-1">“{r.text}”</blockquote>
+        <blockquote lang={r.language ?? undefined} className="body-sm text-pa-earth leading-relaxed line-clamp-7 flex-1">“{r.text}”</blockquote>
         <p className="caption text-pa-earth mt-4">{r.guestName || t('reviews.verifiedGuest')}{reviewMonth(r.date, i18n.language)}</p>
         <Link href={`/homes/${r.property.slug}#property-reviews`} className="body-sm font-medium text-pa-dark underline underline-offset-4 pt-3 min-h-11">{getDisplayName(r.property)}</Link>
       </article>)}

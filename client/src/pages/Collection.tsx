@@ -209,7 +209,7 @@ export default function Collection() {
             <Link
               key={c.slug}
               href={withEditorialTrip(`/collections/${c.slug}`, search)}
-              className="pa-action min-h-[40px] inline-flex items-center px-4 border border-[#E8E4DC] bg-white text-[15px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
+              className="pa-action min-h-[40px] inline-flex items-center px-4 py-2 tracking-normal! text-left! border border-[#E8E4DC] bg-white text-[15px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
             >
               {((c as any)[lang] ?? c.en).title}
             </Link>
@@ -226,7 +226,7 @@ export default function Collection() {
                   <Link href={propertyTripHref(property.slug, { checkin: trip.checkin, checkout: trip.checkout, guests: trip.guests })} className="text-pa-dark underline-offset-4 hover:underline">
                     {getDisplayName(property)}
                   </Link>
-                  {property.locality && <span className="text-pa-stone"> · {property.locality}</span>}
+                  {property.locality && <> <span className="text-pa-stone whitespace-nowrap">· {property.locality}</span></>}
                 </li>
               ))}
             </ul>

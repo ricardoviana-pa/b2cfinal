@@ -36,7 +36,7 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useVisitOriginSync } from "@/hooks/useVisitOriginSync";
-import { formatQuotedEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
+import { formatQuotedEur, formatBookingDate, intlLocale, noBreak, sanitizePropertyName } from "@/lib/format";
 import { freeCancellationDeadline, isNonRefundablePlan, planPolicyCode, rateKind } from "@/lib/cancellation";
 import { freeCancellationDays } from "@shared/cancellationPolicy";
 import { preferredRatePlanId } from "@shared/ratePlanDefault";
@@ -1412,21 +1412,25 @@ export default function CheckoutPage() {
       ? t("booking.flexibleRate")
       : null;
   const guestsLine = t("search.guestsCount", { count: guests });
+  // The collapsed line breaks only after a dot: each part is one unbreakable
+  // run and the dot stays with the part before it. At 13 px on a phone it
+  // broke as "… · 4" / "hóspedes" and as "… 4 guests" / "· Refundable Rate".
+  const SUMMARY_DOT = "\u00A0· ";
   const staySummary = [
     `${formatBookingDate(checkIn, lang, true)} → ${formatBookingDate(checkOut, lang, true)}`,
     guestsLine,
     rateLabel,
-  ].filter(Boolean).join(" · ");
+  ].filter((part): part is string => !!part).map(noBreak).join(SUMMARY_DOT);
   const extrasSummary = [
     receptionChoice ? (receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")) : null,
     // Até dois extras, os nomes; a partir de três, a contagem
     selectedExtras.length === 0
       ? t("checkout.sections.noExtras", "No extras")
       : selectedExtras.length <= 2
-        ? selectedExtras.map(({ item }) => t(`checkout.extras.${item.sku}.name`)).join(" · ")
+        ? selectedExtras.map(({ item }) => t(`checkout.extras.${item.sku}.name`)).join(SUMMARY_DOT)
         : t("checkout.sections.extrasCount", { count: selectedExtras.length }),
     flexSelected && flexConfig ? "Flex" : null,
-  ].filter(Boolean).join(" · ");
+  ].filter(Boolean).join(SUMMARY_DOT);
 
   // ── Loading / not-found states ──
   if (intentQuery.isLoading && !isDemo) {
@@ -1672,13 +1676,13 @@ export default function CheckoutPage() {
               onKeyDown={(e) => { if (e.key === "Enter" && couponInput.trim()) applyCoupon(couponInput.trim()); }}
               placeholder={t("checkout.coupon.field", "Promo code")}
               maxLength={40}
-              className="flex-1 min-w-0 h-[38px] border border-pa-sand bg-white px-3 rounded-lg body-sm tracking-[0.04em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+              className="flex-1 min-w-0 h-11 border border-pa-sand bg-white px-3 rounded-lg body-sm tracking-[0.04em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
             />
             <button
               type="button"
               onClick={() => applyCoupon(couponInput.trim())}
               disabled={couponBusy || requoting || quoteStale || datesUnavailable || quoteRefreshFailed || !couponInput.trim() || (!isDemo && !quoteId)}
-              className="pa-action shrink-0 h-[38px] px-4 rounded-md border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
+              className="pa-action shrink-0 h-11 px-4 rounded-lg border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
             >
               {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
             </button>
@@ -2369,8 +2373,12 @@ export default function CheckoutPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1.5 min-w-0 body-sm">
-                    <span className="text-pa-earth shrink-0">{t("checkout.emailLineLabel")}</span>
+                  /* On a phone the label takes its own line and the address
+                     the whole next one: on a single line at 15 px an ordinary
+                     address was cut ("john.smith@gmail.…"), on the row whose
+                     job is to let the guest check it. */
+                  <div className="flex flex-wrap items-center gap-x-1.5 min-w-0 body-sm">
+                    <span className="text-pa-earth shrink-0 basis-full sm:basis-auto">{t("checkout.emailLineLabel")}</span>
                     <span className="text-pa-dark font-medium truncate min-w-0">{email}</span>
                     <span aria-hidden className="text-pa-stone-aa shrink-0">·</span>
                     <button

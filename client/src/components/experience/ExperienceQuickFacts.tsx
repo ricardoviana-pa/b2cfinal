@@ -68,11 +68,17 @@ export default function ExperienceQuickFacts({
 
   return (
     <div className="border-y border-[#E8E4DC] py-6">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 gap-y-5">
+      {/* One column on a phone, three from 640 px, and from 1280 px five
+          columns as wide as their own text. In two columns on a phone each
+          fact had 115 px beside its icon, and at 12 / 15 px the labels and
+          values broke in two ("FREE / CANCELLATION", "Up to 24h / before");
+          in five equal columns "CANCELAMENTO GRATUITO" missed by 3 px.
+          A single fact (the yacht's duration) takes the whole row. */}
+      <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 xl:grid-cols-[repeat(5,auto)] gap-x-6 gap-y-4 sm:gap-y-5">
         {items.slice(0, 5).map((item, i) => {
           const Icon = item.icon;
           return (
-            <div key={i} className="flex items-start gap-3">
+            <div key={i} className={`flex items-start gap-3 ${items.length === 1 ? 'col-span-full' : ''}`}>
               <div className="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg bg-[#F5F1EB]">
                 <Icon className="w-4 h-4 text-pa-gold-aa" />
               </div>
@@ -80,7 +86,7 @@ export default function ExperienceQuickFacts({
                 <p className="text-[12px] tracking-[0.08em] uppercase text-pa-stone font-medium mb-0.5">
                   {item.label}
                 </p>
-                <p className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 400 }}>
+                <p className="text-[15px] leading-snug text-[#1A1A18]" style={{ fontWeight: 400 }}>
                   {item.value}
                 </p>
               </div>

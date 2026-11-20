@@ -216,12 +216,12 @@ export default function Adventures() {
                     </div>
                     <div className="catalog-card-content">
                       <p className="flex items-start gap-1.5 text-xs text-pa-stone mb-3"><MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
-                        {adventure.destinations.map(d => t(`destinations.${d}`)).join(' · ')}</p>
+                        {adventure.destinations.map(d => t(`destinations.${d}`)).join('\u00A0· ')}</p>
                       <h3 className="font-display text-2xl text-pa-dark">{adventure.name}</h3>
                       <p className="body-md mt-2 flex-1">{adventure.tagline}</p>
                       {adventure.duration && <p className="flex items-center gap-2 text-[15px] text-pa-stone mt-4"><Clock className="w-4 h-4" aria-hidden="true" />{localizeDuration(adventure.duration, t)}</p>}
                       <div className="catalog-card-footer">
-                        <p className="text-[15px]">{(adventure.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)}</strong> <span className="text-pa-stone">{adventure.priceSuffix}</span></>}</p>
+                        <p className="text-[15px] min-h-[1.5em]">{(adventure.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)}</strong> <span className="text-pa-stone">{adventure.priceSuffix}</span></>}</p>
                         <span className="catalog-card-link">{t('siteUx.viewService')} <ArrowRight className="h-4 w-4 shrink-0" /></span>
                       </div>
                     </div>

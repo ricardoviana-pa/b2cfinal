@@ -127,8 +127,11 @@ describe('E05 — setas das fotografias dos cartões só ao passar o rato', () =
       expect(cls).toContain('opacity-0 group-hover:opacity-100 focus-visible:opacity-100');
     }
   });
-  it('nome a 20 px e preço a 16 px', () => {
-    expect(card).toContain('<h3 className="text-[1.25rem] font-display');
+  it('nome a 20 px (18 px num cartão com menos de 360 px) e preço a 16 px', () => {
+    // 20 px onde o cartão tem largura para isso; a auditoria de formatação
+    // mediu nomes de três palavras partidos em dois nos cartões estreitos.
+    expect(card).toContain('<h3 className="text-[1.0625rem] @min-[340px]:text-[1.125rem] @min-[360px]:text-[1.25rem] font-display');
+    expect(card).toContain('<div className="@container pt-3.5">');
     expect(card).toContain('<span className="text-[16px] text-[#1A1A18] font-medium">');
   });
 });
@@ -181,8 +184,10 @@ describe('E07 — preços em euros inteiros fora do checkout', () => {
 
 describe('E10 — meios de pagamento mais pequenos, com as cores', () => {
   const logos = read('client/src/components/layout/FooterPaymentLogos.tsx');
-  it('44 x 28 px no telemóvel, 52 x 32 px a partir de 640 px', () => {
-    expect(logos).toContain('h-7 w-11');
+  it('cerca de 44 x 28 px no telemóvel (sete numa linha), 52 x 32 px a partir de 640 px', () => {
+    // sete colunas iguais num máximo de 350 px: (350 - 6 x 6) / 7 = 44,9 px
+    expect(logos).toContain('grid max-w-[350px] grid-cols-7 gap-1.5');
+    expect(logos).toContain('aspect-[11/7] w-full');
     expect(logos).toContain('sm:h-8 sm:w-[52px]');
     expect(logos).not.toContain('sm:w-[76px]');
   });
@@ -236,8 +241,8 @@ describe('páginas compridas no telemóvel — coleções e Journal também de d
   });
   it('na página da casa, serviços e experiências são linhas compactas no telemóvel', () => {
     const pdp = read('client/src/pages/PropertyDetail.tsx');
-    expect(pdp.match(/className="group flex sm:block/g)).toHaveLength(2);
-    expect(pdp.match(/relative w-28 shrink-0 self-stretch sm:w-auto sm:aspect-\[4\/3\]/g)).toHaveLength(2);
+    expect(pdp.match(/className="group flex sm:flex-col/g)).toHaveLength(2);
+    expect(pdp.match(/relative w-24 shrink-0 self-stretch sm:w-auto sm:self-auto sm:aspect-\[4\/3\]/g)).toHaveLength(2);
   });
 });
 
@@ -260,7 +265,10 @@ describe('E12 — aviso de cookies: compacto no telemóvel, dois botões com o m
     expect(buttons[0]).toBe(buttons[1]);
   });
   it('lado a lado no telemóvel', () => {
-    expect(banner).toContain('grid grid-cols-2 gap-2 md:flex');
+    // cada botão com a largura do seu texto, a dividir o que sobra (em duas
+    // colunas iguais o francês partia "ESSENTIELS / UNIQUEMENT")
+    expect(banner).toContain('<div className="flex gap-2 md:items-center md:gap-3 flex-shrink-0">');
+    expect(banner).toContain('flex-1 basis-auto md:flex-none px-2 md:px-5');
   });
 });
 

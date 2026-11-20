@@ -202,8 +202,11 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               })}
             </nav>
 
-            {/* RIGHT: Language + Phone dropdown + BOOK NOW */}
-            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+            {/* RIGHT: Language + Phone dropdown + BOOK NOW. Between 1024 and
+                1279 px this group is 24 px narrower (gap and RESERVE's side
+                padding): with the eighth menu item the Dutch menu sat 11 px
+                from the logo and from the language button. */}
+            <div className="flex items-center gap-2 md:gap-3 lg:gap-2 xl:gap-3 flex-shrink-0">
               <LanguageSwitcher tone={isTransparent ? 'dark' : 'light'} />
 
               {/* Phone icon with dropdown (desktop) */}
@@ -277,7 +280,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               <Link
                 href={withEditorialTrip("/homes",search)}
                 onClick={onHomePage ? reserveHome : undefined}
-                className={`pa-action hidden md:inline-flex items-center px-6 py-2.5 text-[12px] font-medium uppercase transition-all duration-300 ${
+                className={`pa-action hidden md:inline-flex items-center px-6 lg:px-4 xl:px-6 py-2.5 text-[12px] font-medium uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/50 text-white hover:bg-white hover:text-[#1A1A18]'
                     : 'border border-[#1A1A18] text-[#1A1A18] hover:bg-[#1A1A18] hover:text-white'

@@ -289,7 +289,7 @@ export default function About() {
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="bg-[#F5F1EB] py-14 lg:py-16 border-y border-[#E8E4DC]">
         <div className="container max-w-[1200px] mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE]">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE] max-md:[&>*:nth-child(2n)]:border-r-0">
             {STATS.map((s, i) => (
               <div key={i} className="text-center px-2">
                 <p
@@ -298,7 +298,7 @@ export default function About() {
                 >
                   {s.value}
                 </p>
-                <p className="mt-2 text-[12px] tracking-[0.18em] uppercase text-pa-gold-aa" style={{ fontFamily: 'var(--font-body)' }}>
+                <p className="mt-2 text-[12px] tracking-[0.12em] md:tracking-[0.18em] uppercase text-pa-gold-aa" style={{ fontFamily: 'var(--font-body)' }}>
                   {s.label}
                 </p>
               </div>
@@ -457,7 +457,7 @@ export default function About() {
 
           <div
             ref={scrollRef}
-            className="flex gap-5 overflow-x-auto scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0 snap-x snap-mandatory"
+            className="flex gap-5 overflow-x-auto scrollbar-hide scroll-pl-4 lg:scroll-pl-0 -mx-4 px-4 lg:mx-0 lg:px-0 snap-x snap-mandatory"
           >
             {TEAM.map(member => {
               const initials = member.name

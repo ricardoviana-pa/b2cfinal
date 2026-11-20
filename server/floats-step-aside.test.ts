@@ -344,7 +344,11 @@ describe('P6: from 640 px «back to top» sits on top of the taller WhatsApp but
     expect(whatsappBottom + tw(whatsapp, 'sm:h') - phone).toBe(8);
   });
 
-  it('the footer’s clearance grows with it on tablets: last row ≥ 4 px above the arrow, with and without a home indicator', () => {
+  // "Back to top" no longer shows below 1024 px (design audit, E06): what the
+  // footer clears there is the WhatsApp button alone. The 40 px kept for the
+  // arrow were left as an empty band at the end of every page (auditoria de
+  // formatação, 20 nov 2026).
+  it('the footer’s clearance follows the WhatsApp button below lg: last row ≥ 4 px above it, with and without a home indicator', () => {
     const clearance = (media: string[]) => {
       const found = allRules.filter((r) => r.selectors.includes(':root') && JSON.stringify(r.media) === JSON.stringify(media) && r.declarations[FLOATS_CLEARANCE_VAR]);
       expect(found, `${media.join(' ')} ${FLOATS_CLEARANCE_VAR}`).toHaveLength(1);
@@ -352,9 +356,11 @@ describe('P6: from 640 px «back to top» sits on top of the taller WhatsApp but
     };
     const footerPadding = tw(read('client/src/components/layout/Footer.tsx').slice(read('client/src/components/layout/Footer.tsx').indexOf('{/* Bottom bar */}')), 'py'); // 28
     for (const safe of [0, 20, 34]) {
-      const phoneTop = cssPx(ruleOf('.back-to-top').declarations.bottom, { safe }) + tw(backToTop, 'h');
+      const whatsappBottomSafe = cssPx(ruleOf('.whatsapp-float').declarations.bottom, { safe });
+      const phoneTop = whatsappBottomSafe + tw(whatsapp, 'h'); // 88 + 48
       expect(cssPx(clearance([]), { safe }) + footerPadding).toBeGreaterThanOrEqual(phoneTop + 4);
-      const tabletTop = cssPx(ruleOf('.back-to-top', ['(min-width: 640px) and (max-width: 1023.98px)']).declarations.bottom, { safe }) + tw(backToTop, 'sm:h');
+      expect(cssPx(clearance([]), { safe }) + footerPadding, 'no empty band left for the arrow').toBeLessThan(phoneTop + 4 + 16);
+      const tabletTop = whatsappBottomSafe + tw(whatsapp, 'sm:h'); // 88 + 56
       expect(cssPx(clearance(['(min-width: 640px) and (max-width: 1023.98px)']), { safe }) + footerPadding).toBeGreaterThanOrEqual(tabletTop + 4);
     }
     expect(cssPx(clearance(['(min-width: 1024px)']))).toBe(0);

@@ -106,13 +106,13 @@ export default function ExperienceBookingCard({
         ) : (
           /* No fixed per-person price (e.g. private charter) — show the label;
              exact pricing comes from the live Bókun widget. */
-          <p className="body-md text-pa-dark">
+          <p className="text-[22px] font-light leading-tight tracking-tight text-pa-dark">
             {priceLabel || t('experience.priceOnRequest', 'Price on request')}
           </p>
         )}
         {duration && (
           <p className="body-sm mt-1.5 text-pa-stone">
-            {duration} · Private experience
+            {duration}{'\u00A0· '}<span className="whitespace-nowrap">Private experience</span>
           </p>
         )}
       </div>
@@ -230,19 +230,21 @@ export default function ExperienceBookingCard({
       </div>
 
       {/* Trust signals */}
-      <ul className="space-y-2 border-t border-pa-sand px-5 py-4">
-        <li className="caption flex items-center gap-2.5 text-pa-earth">
-          <Check className="h-3.5 w-3.5 shrink-0 text-[#6B8E4E]" aria-hidden="true" />
+      {/* The tick stays on the first line when a line needs two (the card is
+          288 px wide at 1024 px). */}
+      <ul className="space-y-2 border-t border-pa-sand px-4 xl:px-5 py-4">
+        <li className="caption flex items-start gap-2.5 text-pa-earth">
+          <Check className="mt-[3px] h-3.5 w-3.5 shrink-0 text-[#6B8E4E]" aria-hidden="true" />
           <span>{t('experience.freeCancellation', 'Free cancellation up to {{hours}}h before', { hours: freeCancellationHours })}</span>
         </li>
         {reserveNowPayLater && (
-          <li className="caption flex items-center gap-2.5 text-pa-earth">
-            <Check className="h-3.5 w-3.5 shrink-0 text-[#6B8E4E]" aria-hidden="true" />
+          <li className="caption flex items-start gap-2.5 text-pa-earth">
+            <Check className="mt-[3px] h-3.5 w-3.5 shrink-0 text-[#6B8E4E]" aria-hidden="true" />
             <span>{t('experience.reserveNowPayLater', 'Reserve now, pay later')}</span>
           </li>
         )}
-        <li className="caption flex items-center gap-2.5 text-pa-earth">
-          <Check className="h-3.5 w-3.5 shrink-0 text-[#6B8E4E]" aria-hidden="true" />
+        <li className="caption flex items-start gap-2.5 text-pa-earth">
+          <Check className="mt-[3px] h-3.5 w-3.5 shrink-0 text-[#6B8E4E]" aria-hidden="true" />
           <span>{t('experience.instantConfirmation', 'Instant confirmation')}</span>
         </li>
       </ul>
@@ -250,7 +252,7 @@ export default function ExperienceBookingCard({
       {/* The other way to book, as discreet as the concierge line of a
           home's card. */}
       {hasBokun && (
-        <p className="caption flex items-center justify-center gap-1.5 border-t border-black/[0.06] px-5 py-1 text-pa-stone">
+        <p className="caption flex flex-wrap items-center justify-center gap-x-1.5 border-t border-black/[0.06] px-3 xl:px-5 py-1 text-pa-stone">
           <span>{t('experience.orLabel', 'or')}</span>
           <a
             href={waHref}

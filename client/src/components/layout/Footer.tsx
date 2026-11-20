@@ -43,19 +43,28 @@ export default function Footer() {
     }
   };
 
-  const footerLinks = (label: string, href: string, external?: boolean) => (
+  /* On a phone the links sit in two columns. At 15 px in two equal columns
+     of 155 px, "Northern Portugal · Minho", "Reservar a sua estadia" and
+     others broke in two and the columns lost their rows. Below 768 px the
+     links are 14 px (13 px before the redesign), the first column is as wide
+     as its longest link and the second takes the rest, 16 px apart: measured
+     in the nine languages, no language has more broken links than it had.
+     If a label still breaks, the dot goes down with the word after it
+     ("Northern Portugal" / "· Minho"): the space after " · " is non-breaking. */
+  const tied = (label: string) => label.replace(/ · /g, ' ·\u00A0');
+  const footerLinks = (rawLabel: string, href: string, external?: boolean) => { const label = tied(rawLabel); return (
     <li>
       {external ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[15px] text-white/65 hover:text-white transition-colors duration-200 inline-flex items-center gap-1" style={{ fontWeight: 400 }}>
+        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200 inline-flex items-center gap-1" style={{ fontWeight: 400 }}>
           {label} <ArrowUpRight size={10} className="opacity-0 group-hover:opacity-100" />
         </a>
       ) : (
-        <Link href={href} className="text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>
+        <Link href={href} className="text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>
           {label}
         </Link>
       )}
     </li>
-  );
+  ); };
 
   return (
     // The bottom padding is the page's fixed bar (a home's or an experience's,
@@ -98,13 +107,13 @@ export default function Footer() {
                       required
                       autoComplete="email"
                       inputMode="email"
-                      className="flex-1 h-[48px] px-4 text-[15px] bg-white/[0.04] border border-white/10 text-white placeholder:text-white/65 focus:outline-none focus:border-white/30 transition-colors min-w-0"
+                      className="flex-1 h-[48px] px-4 text-[15px] rounded-l-lg bg-white/[0.04] border border-white/10 text-white placeholder:text-white/65 focus:outline-none focus:border-white/30 transition-colors min-w-0"
                       style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                     />
                     <button
                       type="submit"
                       disabled={subscribing}
-                      className="pa-action h-[48px] px-6 bg-[#C4A87C] text-[#1A1A18] text-[13px] font-semibold hover:bg-[#D4B88C] transition-colors flex-shrink-0 disabled:opacity-50"
+                      className="pa-action [--pa-action-radius:0_8px_8px_0] h-[48px] px-6 bg-[#C4A87C] text-[#1A1A18] text-[13px] font-semibold hover:bg-[#D4B88C] transition-colors flex-shrink-0 disabled:opacity-50"
                       style={{ letterSpacing: '1.5px' }}
                     >
                       {subscribing ? '...' : t('footer.subscribe')}
@@ -120,7 +129,7 @@ export default function Footer() {
 
       {/* Main link grid */}
       <div className="container py-10 lg:py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-[1.3fr_1fr_1fr_1fr] gap-10 lg:gap-8">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] md:grid-cols-4 lg:grid-cols-[1.3fr_1fr_1fr_1fr] gap-x-4 gap-y-10 md:gap-10 lg:gap-8">
 
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
@@ -183,7 +192,7 @@ export default function Footer() {
               {footerLinks(t('footer.experiences'), '/experiences')}
               {footerLinks(t('footer.conciergeServices'), '/concierge')}
               {footerLinks(t('footer.events'), '/events')}
-              <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>{t('footer.realEstate')}</a></li>
+              <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>{t('footer.realEstate')}</a></li>
 
             </ul>
           </div>
@@ -199,7 +208,7 @@ export default function Footer() {
               {footerLinks(t('footer.journal'), '/blog')}
               {footerLinks(t('footer.contact'), '/contact')}
               <li>
-                <a href={`https://www.portugalactive.com/management/${managementLanguage}`} className="text-[15px] text-white/65 hover:text-white transition-colors" style={{ fontWeight: 400 }}>
+                <a href={`https://www.portugalactive.com/management/${managementLanguage}`} className="text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors" style={{ fontWeight: 400 }}>
                   {t('footer.forOwners', 'For property owners')} →
                 </a>
               </li>
@@ -272,16 +281,20 @@ export default function Footer() {
               {t('footer.copyrightLine', { year: new Date().getFullYear(), rights: t('footer.allRightsReserved') })}
             </span>
             {/* Inline links (with middot separators) so they share the copyright's
-                text baseline reliably — a nested flex row mis-aligned them. */}
-            <span className="leading-relaxed text-center">
+                text baseline reliably — a nested flex row mis-aligned them.
+                On a phone there are no dots and the links are spaced apart and
+                free to wrap: as one unbreakable run at 13 px the French row was
+                wider than the screen, and in every language a dot was left
+                hanging at the end of the first line. */}
+            <span className="leading-loose md:leading-relaxed text-center [&>a]:mx-2.5 [&>button]:mx-2.5 md:[&>a]:mx-0 md:[&>button]:mx-0">
               <Link href="/legal/privacy" className="hover:text-white/60 transition-colors">{t('footer.privacy')}</Link>
-              <span className="mx-3 text-white/15" aria-hidden="true">·</span>
+              <span className="hidden md:inline mx-3 text-white/15" aria-hidden="true">·</span><wbr />
               <Link href="/legal/terms" className="hover:text-white/60 transition-colors">{t('footer.terms')}</Link>
-              <span className="mx-3 text-white/15" aria-hidden="true">·</span>
+              <span className="hidden md:inline mx-3 text-white/15" aria-hidden="true">·</span><wbr />
               <a href="/destinations/photography.html" className="hover:text-white/60 transition-colors">{({pt:"Fotografia",en:"Photography",de:"Fotografie",es:"Fotografía",fi:"Valokuvat",fr:"Photographie",it:"Fotografia",nl:"Fotografie",sv:"Fotografi"} as Record<string,string>)[language] || "Photography"}</a>
-              <span className="mx-3 text-white/15" aria-hidden="true">·</span>
+              <span className="hidden md:inline mx-3 text-white/15" aria-hidden="true">·</span><wbr />
               <Link href="/legal/cookies" className="hover:text-white/60 transition-colors">{t('footer.cookies')}</Link>
-              <span className="mx-3 text-white/15" aria-hidden="true">·</span>
+              <span className="hidden md:inline mx-3 text-white/15" aria-hidden="true">·</span><wbr />
               <button type="button" onClick={openCookiePreferences} className="hover:text-white transition-colors underline underline-offset-2">{t('cookieBanner.managePreferences')}</button>
             </span>
           </div>

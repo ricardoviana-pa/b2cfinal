@@ -138,7 +138,7 @@ export default function ServiceDetail() {
                     <p className="body-sm mt-3">{a}</p>
                   </details>)}
                 </div>
-                <Link href={withEditorialTrip('/blog/private-chef-portugal-villa', search)} className="text-sm text-[#756044] underline underline-offset-4">{planning.guideLabel}</Link>
+                <Link href={withEditorialTrip('/blog/private-chef-portugal-villa', search)} className="text-[15px] text-[#756044] underline underline-offset-4">{planning.guideLabel}</Link>
               </div>}
 
               {item.details && item.details.length > 0 && (
@@ -203,7 +203,7 @@ export default function ServiceDetail() {
                     {t('serviceDetail.chatOnWhatsApp', 'Chat on WhatsApp')}
                   </a>
                   <Link href={withEditorialTrip(`/contact?subject=services-enquiry&service=${encodeURIComponent(serviceProductSlug(item.slug))}`, search)} className="btn-ghost w-full mt-3">{planning?.requestLabel ?? t('contact.sendMessage')}</Link>
-                  <p className="text-[13px] text-pa-stone mt-4">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
+                  <p className="text-[13px] text-pa-stone mt-4 text-balance">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
                 </div>
               </div>
             </div>

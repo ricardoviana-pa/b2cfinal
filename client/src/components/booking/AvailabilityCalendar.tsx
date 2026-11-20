@@ -454,12 +454,19 @@ export default function AvailabilityCalendar({
       {/* Selection phase — the pills pick which date the next click changes.
           On a phone the picker covers the date fields, so the pills carry the
           dates too. */}
-      <div className="flex items-center gap-2 px-4 pt-4 pb-2">
+      {/* On a phone the pills carry the dates too: at 13 px the three did not
+          fit a 390 px screen (text ran out of the pill). 12 px and tighter
+          gaps below 640 px, and none of them may shrink; a longer language
+          wraps "Clear" to a second row instead of squeezing. */}
+      {/* Tighter above and below (pt-3, and pb-2 / pb-2.5 further down) than
+          before the larger type: with the calendar open in a home's booking
+          card the card grew 23 px and its button fell below a 900 px screen. */}
+      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 px-4 pt-3 pb-2">
         <button
           type="button"
           onClick={() => focusPhase("check-in")}
           aria-pressed={phase === "check-in"}
-          className={`flex items-center gap-1.5 px-2.5 py-1 whitespace-nowrap rounded-full text-[13px] font-medium tracking-wide transition-all cursor-pointer ${
+          className={`flex shrink-0 items-center gap-1.5 px-2 sm:px-2.5 py-1 whitespace-nowrap rounded-full text-[12px] sm:text-[13px] font-medium tracking-wide transition-all cursor-pointer ${
             phase === "check-in"
               ? "bg-black text-white"
               : "bg-black/[0.04] text-pa-stone hover:bg-black/[0.08] hover:text-black/70"
@@ -476,7 +483,7 @@ export default function AvailabilityCalendar({
           onClick={() => { if (checkIn) focusPhase("check-out"); }}
           disabled={!checkIn}
           aria-pressed={phase === "check-out"}
-          className={`flex items-center gap-1.5 px-2.5 py-1 whitespace-nowrap rounded-full text-[13px] font-medium tracking-wide transition-all ${
+          className={`flex shrink-0 items-center gap-1.5 px-2 sm:px-2.5 py-1 whitespace-nowrap rounded-full text-[12px] sm:text-[13px] font-medium tracking-wide transition-all ${
             !checkIn ? "cursor-not-allowed" : "cursor-pointer"
           } ${
             phase === "check-out"
@@ -491,9 +498,9 @@ export default function AvailabilityCalendar({
           <button
             type="button"
             onClick={() => { onSelectRange({ checkIn: "", checkOut: "", done: false }); setPhase("check-in"); }}
-            className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-full text-[13px] font-medium text-black/60 bg-black/[0.04] hover:bg-black/[0.08] hover:text-black transition-all"
+            className="ml-auto flex shrink-0 items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[12px] sm:text-[13px] font-medium text-black/60 bg-black/[0.04] hover:bg-black/[0.08] hover:text-black transition-all"
           >
-            <X className="w-3 h-3" />
+            <X className="w-3 h-3 shrink-0" />
             {t("bookingWidget.clearDates")}
           </button>
         )}
@@ -537,7 +544,7 @@ export default function AvailabilityCalendar({
       </div>}
 
       {/* Calendar grid */}
-      <div className={`px-3 pb-3 pt-1 ${isMobile || singleMonth ? "" : "flex gap-6"}`}>
+      <div className={`px-3 pb-2 pt-0.5 ${isMobile || singleMonth ? "" : "flex gap-6"}`}>
         {renderMonth(viewYear, viewMonth, true)}
         {!isMobile && !singleMonth && renderMonth(secondYear, secondMonth, false)}
       </div>
@@ -545,7 +552,7 @@ export default function AvailabilityCalendar({
       {/* Legend (not in a search: with no home there is no availability to explain) */}
       <div className={search
         ? (!isMobile && onClose && checkIn && checkOut ? "flex items-center px-4 pb-4 pt-3 border-t border-black/[0.04]" : "hidden")
-        : "flex flex-wrap items-center gap-x-5 gap-y-2 px-4 pb-4 pt-1 border-t border-black/[0.04]"}>
+        : "flex flex-wrap items-center gap-x-5 gap-y-2 px-4 pb-2.5 pt-1 border-t border-black/[0.04]"}>
         {!search && <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black" />
           <span className="text-[12px] text-pa-stone-aa tracking-wide">{t("bookingWidget.availableLabel")}</span>

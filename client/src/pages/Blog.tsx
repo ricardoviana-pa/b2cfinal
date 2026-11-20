@@ -248,7 +248,7 @@ export default function Blog() {
                     )}
                   </div>
                   <p className="text-[12px] font-medium text-pa-gold-aa mb-2 tracking-[0.08em]">{blogCategoryLabel(article.category, t).toUpperCase()}</p>
-                  <h3 className="font-display text-[18px] text-[#1A1A18] mb-2 group-hover:text-pa-gold-aa transition-colors line-clamp-2">
+                  <h3 className="font-display text-[20px] leading-snug text-[#1A1A18] mb-2 group-hover:text-pa-gold-aa transition-colors line-clamp-2">
                     {article.title}
                   </h3>
                   <p className="text-[15px] text-pa-earth font-normal line-clamp-2 mb-3">{article.excerpt}</p>
@@ -280,7 +280,10 @@ export default function Blog() {
                 <h2 id="more-articles-index" className="eyebrow text-pa-stone mb-4">{t('blog.overline')}</h2>
                 <ul className="columns-1 md:columns-2 gap-x-10 body-sm">
                   {rest.slice(visibleCount).map((article) => (
-                    <li key={article.id} className="break-inside-avoid py-1">
+                    /* On a phone most titles take two lines: tighter lines
+                       inside a title and more room between titles, so each
+                       one reads as a unit. */
+                    <li key={article.id} className="break-inside-avoid py-2 md:py-1 leading-snug md:leading-[1.6]">
                       <Link href={withEditorialTrip(`/blog/${article.slug}`, search)} className="text-pa-dark underline-offset-4 hover:underline">{article.title}</Link>
                     </li>
                   ))}

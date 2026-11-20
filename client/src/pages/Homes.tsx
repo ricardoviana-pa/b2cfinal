@@ -246,6 +246,10 @@ export default function Homes() {
     setBookingCheckout(next.checkOut);
   };
   const shownDate = (iso: string) => (iso ? formatBookingDate(iso, i18n.language, true) : '');
+  // The computer's one-line bar shows day and month ("22 Sept"): with the
+  // year a date at 15 px did not fit its cell in any language and was cut to
+  // "22 Sept 2…". The year is in the calendar that opens and in the accessible name.
+  const shownDateShort = (iso: string) => (iso ? formatBookingDate(iso, i18n.language) : '');
 
   const today = useMemo(() => new Date().toISOString().split('T')[0], []);
   const minCheckOut = useMemo(() => {
@@ -521,19 +525,24 @@ export default function Homes() {
 
   const catalogueIntro = (
       <section className="container pt-24 md:pt-28 pb-4 md:pb-5">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-          <div className="min-w-0 lg:shrink-0">
+        {/* Title and search bar side by side only from 1280 px: between 1024
+            and 1280 the bar did not fit beside the intro and its SEARCH button
+            ran off the screen (auditoria de formatação, 20 nov 2026). Side by
+            side, the bar is as wide as its own contents (they differ a lot
+            between languages) and the intro takes the rest. */}
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between xl:gap-10">
+          <div className="min-w-0 xl:flex-1">
             <h1 className="headline-lg text-pa-dark break-words">{collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title')}</h1>
             <p className="body-sm text-pa-stone mt-1.5 max-w-lg">{t('conversion.homesIntro')}</p>
           </div>
           {/* Desktop — pill (same as homepage) */}
-          <div className="hidden lg:block w-full lg:max-w-[760px] lg:flex-1">
+          <div className="hidden lg:block w-full lg:max-w-[760px] xl:w-auto xl:max-w-none xl:shrink-0">
             <div
               ref={desktopBarRef}
-              className="flex items-center w-full max-w-[780px] rounded-xl bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-pa-sand/60"
+              className="flex items-center w-full max-w-[780px] xl:w-auto rounded-xl bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-pa-sand/60"
               style={{ height: '52px' }}
             >
-              <div className="flex-[1.4] relative h-full min-w-0">
+              <div className="flex-1 xl:flex-none xl:w-[200px] relative h-full min-w-0">
                 <select
                   aria-label={t('home.searchDestination')}
                   value={bookingLocation || (bookingDestination ? `region:${bookingDestination}` : '')}
@@ -552,12 +561,16 @@ export default function Homes() {
               </div>
               <div className="w-px h-6 bg-pa-sand shrink-0" />
               <div ref={desktopDates.containerRef} className="contents">
+                {/* As wide as their text: the arrow sits at the same distance
+                    from "Check-in" and from "Check-out", and a chosen date is
+                    never cut. The destination takes the rest of the bar. */}
                 <SearchDateCell
-                  className="flex-1 h-full"
-                  textClassName="px-3"
+                  className="flex-none h-full"
+                  textClassName="px-3.5"
                   label={t('home.searchCheckin')}
                   value={bookingCheckin}
-                  shown={shownDate(bookingCheckin)}
+                  shown={shownDateShort(bookingCheckin)}
+                  spoken={shownDate(bookingCheckin)}
                   min={today}
                   ready={calendarReady}
                   expanded={desktopDates.open && desktopDates.phase === 'check-in'}
@@ -567,11 +580,12 @@ export default function Homes() {
                 />
                 <ArrowRight className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" aria-hidden />
                 <SearchDateCell
-                  className="flex-1 h-full"
-                  textClassName="px-3"
+                  className="flex-none h-full"
+                  textClassName="px-3.5"
                   label={t('home.searchCheckout')}
                   value={bookingCheckout}
-                  shown={shownDate(bookingCheckout)}
+                  shown={shownDateShort(bookingCheckout)}
+                  spoken={shownDate(bookingCheckout)}
                   min={minCheckOut}
                   ready={calendarReady}
                   expanded={desktopDates.open && desktopDates.phase === 'check-out'}
@@ -587,10 +601,10 @@ export default function Homes() {
                   type="button"
                   onClick={() => changeGuests(g => Math.max(1, g - 1))}
                   disabled={bookingGuests <= 1}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold-aa disabled:opacity-30"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold-aa disabled:opacity-30"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
-                  <Minus className="w-2.5 h-2.5" />
+                  <Minus className="w-3 h-3" />
                 </button>
                 <span className="body-sm text-pa-dark tabular-nums whitespace-nowrap font-body font-normal" >
                   {bookingGuests} <span className="text-pa-stone lowercase">{t('home.searchGuests')}</span>
@@ -599,10 +613,10 @@ export default function Homes() {
                   type="button"
                   onClick={() => changeGuests(g => Math.min(30, g + 1))}
                   disabled={bookingGuests >= 30}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold-aa disabled:opacity-30"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold-aa disabled:opacity-30"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
-                  <Plus className="w-2.5 h-2.5" />
+                  <Plus className="w-3 h-3" />
                 </button>
               </div>
               <button
@@ -640,7 +654,7 @@ export default function Homes() {
               <div ref={mobileDates.containerRef} className="grid grid-cols-2 gap-2">
                 <SearchDateCell
                   className="h-[48px] rounded-lg border border-pa-sand bg-white"
-                  textClassName="px-3"
+                  textClassName="px-3 text-base"
                   label={t('home.searchCheckin')}
                   value={bookingCheckin}
                   shown={shownDate(bookingCheckin)}
@@ -652,7 +666,7 @@ export default function Homes() {
                 />
                 <SearchDateCell
                   className="h-[48px] rounded-lg border border-pa-sand bg-white"
-                  textClassName="px-3"
+                  textClassName="px-3 text-base"
                   label={t('home.searchCheckout')}
                   value={bookingCheckout}
                   shown={shownDate(bookingCheckout)}
@@ -670,17 +684,21 @@ export default function Homes() {
                     type="button"
                     onClick={() => changeGuests(g => Math.max(1, g - 1))}
                     disabled={bookingGuests <= 1}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
                     aria-label={t('home.decreaseGuests', 'Decrease guests')}
                   >
                     <Minus className="w-3 h-3" />
                   </button>
-                  <span className="body-sm text-pa-dark tabular-nums flex-1 text-center">{bookingGuests} {t('home.searchGuests')}</span>
+                  {/* On a narrow phone only the number fits between the two
+                      round buttons (the people icon says what it counts): the
+                      word made a two-line label that touched the field and
+                      squashed the buttons. */}
+                  <span className="body-sm text-base text-pa-dark tabular-nums flex-1 text-center whitespace-nowrap">{bookingGuests}<span className="hidden min-[430px]:inline"> {t('home.searchGuests')}</span></span>
                   <button
                     type="button"
                     onClick={() => changeGuests(g => Math.min(30, g + 1))}
                     disabled={bookingGuests >= 30}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
                     aria-label={t('home.increaseGuests', 'Increase guests')}
                   >
                     <Plus className="w-3 h-3" />
@@ -1185,14 +1203,15 @@ export default function Homes() {
             </h2>
             <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
               {availableProperties.slice(visibleCount).map((property) => (
-                <li key={property.id} className="break-inside-avoid py-1">
+                <li key={property.id} className="break-inside-avoid py-1 leading-snug">
                   <Link
                     href={propertyTripHref(property.slug, { checkin: searchCheckin, checkout: searchCheckout, guests: searchGuestsCount || undefined })}
                     className="text-pa-dark underline-offset-4 hover:underline"
                   >
                     {getDisplayName(property)}
                   </Link>
-                  {property.locality && <span className="text-pa-stone"> · {property.locality}</span>}
+                  {/* The place moves to the next line whole, never "· Viana do / Castelo". */}
+                  {property.locality && <> <span className="text-pa-stone whitespace-nowrap">· {property.locality}</span></>}
                 </li>
               ))}
             </ul>

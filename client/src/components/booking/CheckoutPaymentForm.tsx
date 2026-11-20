@@ -40,7 +40,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
-import { formatQuotedEur } from "@/lib/format";
+import { formatQuotedEur, keepPostcode } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
 import { payButtonGate, splitFullName, walletGuestDetails, walletsVisible, type WalletGuest } from "@/lib/checkoutPayment";
@@ -437,7 +437,7 @@ function ExpressWalletInner({
 function WalletsAcceptLine({ lang, total }: { lang: string; total: number }) {
   const { t } = useTranslation();
   const link = "text-pa-dark underline hover:text-pa-gold-aa";
-  const address = companyAddressLine();
+  const address = keepPostcode(companyAddressLine() ?? "");
   const amount = formatQuotedEur(total, lang);
   return (
     <div className="space-y-1" data-testid="wallets-accept-line">

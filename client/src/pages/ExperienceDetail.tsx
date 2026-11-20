@@ -400,8 +400,10 @@ export default function ExperienceDetail() {
             </>
           )}
           <li className="text-[#E8E4DC]">/</li>
-          <li className="text-pa-earth truncate max-w-[260px] inline-flex items-center min-h-[44px] px-1.5">
-            {exp.name}
+          {/* The ellipsis needs a plain box: on the flex row itself the name
+              was cut mid-letter at the screen edge with no "…". */}
+          <li className="text-pa-earth min-w-0 max-w-[260px] inline-flex items-center min-h-[44px] px-1.5">
+            <span className="truncate">{exp.name}</span>
           </li>
         </ol>
       </nav>
@@ -455,13 +457,13 @@ export default function ExperienceDetail() {
                   </span>{' '}
                   / 5
                 </span>
-                <span className="text-[#E8E4DC]">·</span>
+                <span className="hidden sm:inline text-[#E8E4DC]">·</span>
                 <span className="text-pa-earth" style={{ fontWeight: 400 }}>
                   {exp.aggregateRating.count} {t('experienceDetail.guestReviews')}
                 </span>
                 {exp.recommendedPercent && (
                   <>
-                    <span className="text-[#E8E4DC]">·</span>
+                    <span className="hidden sm:inline text-[#E8E4DC]">·</span>
                     <span className="text-[#6B8E4E]" style={{ fontWeight: 400 }}>
                       {t('experienceDetail.recommendedBy', { percent: exp.recommendedPercent })}
                     </span>
@@ -469,7 +471,7 @@ export default function ExperienceDetail() {
                 )}
                 {exp.aggregateRating.rank && (
                   <>
-                    <span className="text-[#E8E4DC]">·</span>
+                    <span className="hidden sm:inline text-[#E8E4DC]">·</span>
                     <span className="text-pa-gold-aa" style={{ fontWeight: 400 }}>
                       {exp.aggregateRating.rank}
                     </span>
@@ -536,7 +538,7 @@ export default function ExperienceDetail() {
 
               {/* Difficulty level */}
               {exp.difficultyLevel && (
-                <div className="mt-6 inline-flex items-center gap-2 text-[13px] text-pa-earth bg-[#F5F1EB] rounded-lg px-4 py-2.5">
+                <div className="mt-6 inline-flex flex-col items-start gap-0.5 sm:flex-row sm:items-center sm:gap-2 text-[13px] text-pa-earth bg-[#F5F1EB] rounded-lg px-4 py-2.5">
                   <span className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium">
                     {t('experienceDetail.difficulty')}
                   </span>
@@ -716,7 +718,7 @@ export default function ExperienceDetail() {
                       </h3>
                       <ul className="space-y-2">
                         {exp.whatToBring.map((item, i) => (
-                          <li key={i} className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 400 }}>
+                          <li key={i} className="pl-3 -indent-3 text-[15px] text-[#1A1A18]" style={{ fontWeight: 400 }}>
                             · {item}
                           </li>
                         ))}
@@ -730,7 +732,7 @@ export default function ExperienceDetail() {
                       </h3>
                       <ul className="space-y-2">
                         {exp.notAllowed.map((item, i) => (
-                          <li key={i} className="text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
+                          <li key={i} className="pl-3 -indent-3 text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
                             · {item}
                           </li>
                         ))}
@@ -745,7 +747,7 @@ export default function ExperienceDetail() {
                     </p>
                     <ul className="space-y-1.5">
                       {exp.notSuitableFor.map((item, i) => (
-                        <li key={i} className="text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
+                        <li key={i} className="pl-3 -indent-3 text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
                           · {item}
                         </li>
                       ))}
@@ -764,7 +766,7 @@ export default function ExperienceDetail() {
                   {exp.cancellationPolicy && (
                     <details className="group border-b border-[#E8E4DC] py-5 first:pt-0 last:border-b-0">
                       <summary className="flex items-start justify-between gap-4 cursor-pointer list-none">
-                        <h3 className="text-[16px] font-medium text-[#1A1A18] group-open:text-pa-gold-aa transition-colors">
+                        <h3 className="text-[16px] font-medium text-[#1A1A18] text-balance group-open:text-pa-gold-aa transition-colors">
                           {t('experienceDetail.cancellationPolicyQ', 'What is the cancellation policy?')}
                         </h3>
                         <span className="text-pa-gold-aa text-[20px] leading-none mt-0.5 group-open:rotate-45 transition-transform shrink-0">
@@ -782,7 +784,7 @@ export default function ExperienceDetail() {
                       className="group border-b border-[#E8E4DC] py-5 first:pt-0 last:border-b-0"
                     >
                       <summary className="flex items-start justify-between gap-4 cursor-pointer list-none">
-                        <h3 className="text-[16px] font-medium text-[#1A1A18] group-open:text-pa-gold-aa transition-colors">
+                        <h3 className="text-[16px] font-medium text-[#1A1A18] text-balance group-open:text-pa-gold-aa transition-colors">
                           {f.q}
                         </h3>
                         <span className="text-pa-gold-aa text-[20px] leading-none mt-0.5 group-open:rotate-45 transition-transform shrink-0">

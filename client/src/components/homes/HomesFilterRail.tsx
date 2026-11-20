@@ -88,7 +88,7 @@ function KindSwitch({ value, counts, onChange, className = '' }: {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(k)}
-            className={`relative flex items-center font-body text-[12px] font-medium uppercase tracking-[0.14em] transition-colors ${
+            className={`relative flex items-center font-body text-[12px] font-medium uppercase tracking-[0.08em] sm:tracking-[0.14em] transition-colors ${
               active ? 'text-pa-dark' : 'text-pa-stone hover:text-pa-dark'
             } ${dim(counts[k])}`}
           >
@@ -158,7 +158,11 @@ function Strip<T extends string | number>({ options, value, onChange }: {
   options: { value: T; label: string; count: number }[]; value: T; onChange: (v: T) => void;
 }) {
   return (
-    <div className="grid rounded-lg border border-pa-sand overflow-hidden divide-x divide-pa-sand" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
+    /* The first cell ("Any": "Beliebig", "Cualquiera", "Qualsiasi") is as wide
+       as its word; the numbers share the rest equally. With equal cells the
+       word was cut at both sides in a 42 px cell (auditoria de formatação,
+       20 nov 2026). */
+    <div className="grid rounded-lg border border-pa-sand overflow-hidden divide-x divide-pa-sand" style={{ gridTemplateColumns: `auto repeat(${Math.max(1, options.length - 1)}, minmax(0, 1fr))` }}>
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -167,7 +171,7 @@ function Strip<T extends string | number>({ options, value, onChange }: {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(o.value)}
-            className={`flex flex-col items-center justify-center h-12 font-body transition-colors focus-visible:outline-offset-[-3px] ${
+            className={`flex min-w-0 flex-col items-center justify-center h-12 px-2.5 font-body whitespace-nowrap transition-colors focus-visible:outline-offset-[-3px] ${
               active ? 'bg-pa-dark text-white' : `bg-white text-pa-dark hover:bg-pa-warm ${dim(o.count)}`
             }`}
           >

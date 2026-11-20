@@ -2,7 +2,7 @@
 // never the outer dimensions, border or corner radius.
 // Smaller since 20 nov 2026 (decisão E10 do Ricardo: "mais pequenos sim mas deixa
 // ficar as cores"): seven 76 px tiles in colour spoke louder than the brand's own
-// logo above them. 44 x 28 px on a phone, 52 x 32 px from 640 px.
+// logo above them. About 44 x 28 px on a phone, 52 x 32 px from 640 px.
 const PAYMENTS = [
   { src: '/payments/visa-c.svg', alt: 'Visa', logoClass: 'h-8 w-8 sm:h-9 sm:w-9', background: '#ffffff' },
   { src: '/payments/mastercard-c.svg', alt: 'Mastercard', logoClass: 'h-[18px] w-auto sm:h-5', background: '#ffffff' },
@@ -15,11 +15,15 @@ const PAYMENTS = [
 
 export default function FooterPaymentLogos() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2 xl:justify-end xl:pr-12">
+    /* On a phone the seven tiles are one row of seven equal columns: at a
+       fixed 44 px they missed fitting a 390 px screen by 6 px and left Klarna
+       alone on a second row (and on a 360 px screen they still would). About
+       44 x 28 px at 390 px, 40 x 26 px at 360 px. From 640 px: 52 x 32 px. */
+    <div className="mx-auto grid max-w-[350px] grid-cols-7 gap-1.5 sm:mx-0 sm:flex sm:max-w-none sm:flex-wrap sm:items-center sm:justify-center sm:gap-2 xl:justify-end xl:pr-12">
       {PAYMENTS.map((payment) => (
         <span
           key={payment.alt}
-          className="inline-flex h-7 w-11 shrink-0 items-center justify-center overflow-hidden rounded-md ring-1 ring-inset ring-black/10 sm:h-8 sm:w-[52px]"
+          className="inline-flex aspect-[11/7] w-full min-w-0 shrink-0 items-center justify-center overflow-hidden rounded-md ring-1 ring-inset ring-black/10 sm:aspect-auto sm:h-8 sm:w-[52px]"
           style={{ backgroundColor: payment.background }}
         >
           <img

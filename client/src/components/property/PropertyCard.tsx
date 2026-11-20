@@ -296,8 +296,11 @@ export default function PropertyCard({
         )}
       </div>
 
-      {/* Content */}
-      <div className="pt-3.5">
+      {/* Content. A container, so the name and the figures beside it follow
+          the width of the card and not of the screen: the same card is 280 px
+          wide in a phone carousel, 304 px in a three-column grid at 1024 px,
+          332 px beside the map and 384 px in the listing. */}
+      <div className="@container pt-3.5">
         {/* Location */}
         <p className="text-[13px] font-medium tracking-[0.02em] text-pa-gold-aa mb-1">
           {property.locality}, Portugal
@@ -306,10 +309,21 @@ export default function PropertyCard({
         {/* Name + specs — the detail icons sit to the right of the name on
             every card (single and multi-unit), so the row reads consistently. */}
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-[1.25rem] font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors leading-tight flex-1 min-w-0">
+          {/* 20 px on a card of 360 px or more (the listing and the homepage
+              on a computer), 18 px from 340 px (a 390 px phone, a tablet) and
+              17 px, the size it always had, on anything narrower (a carousel,
+              three columns at 1024 px, the map view, a small phone). The name
+              shares its line with the guests / bedrooms / bathrooms: at 20 px
+              everywhere a three-word name broke in two on the narrow cards,
+              leaving one word alone and that card's price line lower than its
+              neighbours'. A name that still needs two lines breaks evenly. */}
+          <h3 className="text-[1.0625rem] @min-[340px]:text-[1.125rem] @min-[360px]:text-[1.25rem] font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors leading-tight flex-1 min-w-0 text-balance">
             {displayName}
           </h3>
-          <div className="flex items-center gap-2.5 text-[15px] text-pa-earth shrink-0 pt-1">
+          {/* 14 px, the size of the icons beside them (at 15 px the figures
+              were larger than their icons). The top padding keeps them on the
+              name's line. */}
+          <div className="flex items-center gap-2 @min-[360px]:gap-2.5 text-[14px] text-pa-earth shrink-0 pt-0.5 @min-[340px]:pt-[3px] @min-[360px]:pt-1">
             {(property as any).petsAllowed && (
               <PawPrint className="w-3.5 h-3.5 text-pa-gold-aa" aria-label={t('property.petFriendly', 'Pet-friendly')} />
             )}
@@ -332,7 +346,7 @@ export default function PropertyCard({
             complete house is the focus; individual units stay explorable in the
             PDP. Groups never show "unavailable" here — units may still be free. */}
         {!hidePrice && (
-          <div className="border-t border-[#E8E4DC] mt-3 pt-3 flex items-baseline justify-between gap-3">
+          <div className="border-t border-[#E8E4DC] mt-3 pt-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
             {/* LEFT — price */}
             <div className="min-w-0">
               {(() => {
@@ -420,10 +434,13 @@ export default function PropertyCard({
                   enquanto a limpeza e a caução não forem conhecidas. */}
             </div>
 
-            {/* RIGHT — context: units (groups) or nights (single stays) */}
+            {/* RIGHT — context: units (groups) or nights (single stays), both
+                at the caption size. When the two sides do not fit on one line
+                (a multi-unit home on a narrow card) the context goes under the
+                price as a whole: the row wraps, the phrases do not break. */}
             <div className="text-right shrink-0">
               {isGroup ? (
-                <p className="text-[15px] text-pa-earth font-medium leading-tight">
+                <p className="text-[13px] text-pa-earth font-medium leading-tight">
                   {groupContextLabel ?? t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
                 </p>
               ) : nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0 ? (

@@ -72,11 +72,11 @@ export default function ExperienceGuideProfile({
               <p className="text-[12px] tracking-[0.08em] uppercase text-pa-stone font-medium mb-2">
                 Languages
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {guideLanguages.map((lang, idx) => (
                   <span
                     key={idx}
-                    className="inline-block text-[13px] text-pa-earth bg-[#F5F1EB] px-3 py-1.5 rounded-full border border-[#E8E4DC]"
+                    className="inline-block text-[13px] text-pa-earth bg-[#F5F1EB] px-2.5 sm:px-3 py-1.5 rounded-full border border-[#E8E4DC]"
                     style={{ fontWeight: 400 }}
                   >
                     {lang}

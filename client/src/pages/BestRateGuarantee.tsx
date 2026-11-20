@@ -50,7 +50,7 @@ export default function BestRateGuarantee() {
           <ul className="space-y-3 mb-12">
             {terms.map((term, i) => (
               <li key={i} className="flex items-start gap-3">
-                <ShieldCheck size={16} className="text-[#806A48] shrink-0 mt-1" />
+                <ShieldCheck size={16} className="text-[#806A48] shrink-0 mt-1.5" />
                 <p className="body-md" style={{ textTransform: 'none' }}>{term}</p>
               </li>
             ))}

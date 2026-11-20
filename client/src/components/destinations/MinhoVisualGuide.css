@@ -419,8 +419,10 @@
   font-size: 0.8125rem;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.78), transparent);
 }
+/* 1 px less at the sides: the card gained a 1 px border, and those 2 px were
+   what kept "The Atlantic on your doorstep" on one line. */
 .minho-landscape-copy {
-  padding: 1.5rem;
+  padding: 1.5rem calc(1.5rem - 1px);
 }
 .minho-number {
   display: block;
@@ -800,8 +802,10 @@
     padding-top: 1rem;
     padding-bottom: 2.5rem;
   }
+  /* No width cap: at 12 px the line needs 314 px and the 19rem (304 px) cap,
+     sized for the old 10 px text, broke it in two inside a 350 px column. */
   .minho-hero .minho-kicker {
-    max-width: 19rem;
+    max-width: none;
     font-size: 0.75rem;
   }
   .minho-hero-region {
@@ -818,7 +822,7 @@
     font-size: 2.1rem;
   }
   .minho-hero .minho-hero-intro {
-    max-width: 20rem;
+    max-width: 22rem;
     font-size: 1rem;
   }
   .minho-chapters {
@@ -899,5 +903,11 @@
      the body that is out of the layout. */
   .guide-section[data-open="false"] .minho-section-heading {
     margin-bottom: 0;
+  }
+  /* Closed: label, heading and one line, like every other band. The round
+     icon of the culture section is for the open state only (closed, it put
+     the heading 86 px lower than in the seven bands around it). */
+  .guide-section[data-open="false"] .minho-culture-icon {
+    display: none;
   }
 }

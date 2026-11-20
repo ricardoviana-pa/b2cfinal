@@ -189,6 +189,10 @@ function priceFormula(item: CatalogExtra, sel: ExtraSelection, lang: string, t: 
   }
 }
 
+/** Separador de um resumo: o ponto fica colado à parte anterior (espaço
+ *  inseparável), para uma linha nunca começar por "·". */
+const DOT = "\u00A0· ";
+
 /** Resumo curto da seleção para a linha adicionada ("2 mudas · 90 €"). */
 function selectionSummary(item: CatalogExtra, sel: ExtraSelection, amount: number | null, lang: string, t: any): string {
   const bits: string[] = [];
@@ -199,7 +203,7 @@ function selectionSummary(item: CatalogExtra, sel: ExtraSelection, amount: numbe
   if (amount != null) {
     bits.push(amount === 0 && item.pricingModel === "included_selectable" ? t("checkout.included.badge") : formatEur(amount, lang));
   }
-  return bits.join(" · ");
+  return bits.join(DOT);
 }
 
 /** Botão redondo de adicionar/retirar: "+" vazio, ✓ cheio quando adicionado. */
@@ -268,13 +272,20 @@ function OptionRow({
     ? selectionSummary(item, sel!, amount, lang, t)
     : [desc, !selected && item.fulfillment === "needs_confirmation" ? t("checkout.confirm24h", "Confirmed within 2 hours") : ""]
         .filter(Boolean)
-        .join(" · ");
+        .join(DOT);
 
   const hasSteppers = selected && !onRequest && item.pricingModel !== "per_stay";
+  const unit = unitSuffix();
 
   return (
     <div className={cn("px-4 py-3.5 sm:px-5 transition-colors", selected && "bg-pa-warm", item.parentSku && "pl-9 sm:pl-10")}>
-      <div className="flex items-center gap-3">
+      {/* .pa-option (index.css). On a phone: photo | name over price | add
+          button, then the description under them at the full width of the
+          row. From 640 px: the single line it always was. On one line a phone
+          left the name and its description a column of 47 to 150 px beside
+          the price, one or two words per line (auditoria de formatação,
+          20 nov 2026). */}
+      <div className="pa-option" data-photo={item.photo ? "true" : undefined}>
         {item.photo ? (
           <img
             src={item.photo}
@@ -283,29 +294,31 @@ function OptionRow({
             height={48}
             loading="lazy"
             decoding="async"
-            className="w-12 h-12 rounded-md object-cover shrink-0 bg-pa-sand"
+            className="pa-option-photo w-12 h-12 rounded-md object-cover shrink-0 bg-pa-sand"
             onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
           />
         ) : null}
-        <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-1.5 body-sm font-medium text-pa-dark leading-snug">
-            {selected && <Check className="w-3.5 h-3.5 text-pa-gold-aa shrink-0" strokeWidth={2.5} />}
+        <div className="pa-option-text">
+          <p className="pa-option-name flex items-start gap-1.5 body-sm font-medium text-pa-dark leading-snug">
+            {selected && <Check className="mt-[3px] w-3.5 h-3.5 text-pa-gold-aa shrink-0" strokeWidth={2.5} />}
             <span className="min-w-0">{name}</span>
           </p>
           {secondLine ? (
-            <p className={cn("caption leading-snug mt-0.5", selected && !onRequest ? "text-pa-dark" : "text-pa-stone-aa")}>{secondLine}</p>
+            <p className={cn("pa-option-desc caption leading-snug", selected && !onRequest ? "text-pa-dark" : "text-pa-stone-aa")}>{secondLine}</p>
           ) : null}
         </div>
-        <div className="shrink-0 flex items-center gap-2 sm:gap-3">
-          <div className="text-right max-w-[9.5rem] sm:max-w-none">
+        <div className="pa-option-side">
+          {/* Under the name on a phone, the price and its unit on one line
+              ("25 € / per person · day"); to the right of it from 640 px. */}
+          <div className="pa-option-price flex flex-wrap items-baseline gap-x-2 sm:block">
             {onRequest ? (
               item.priceFrom != null ? (
                 <>
-                  <p className="body-sm text-pa-dark tabular-nums">{t("checkout.fromPrice", { price: formatEur(item.priceFrom, lang) })}</p>
-                  <p className="caption text-pa-stone-aa">{t("checkout.noChargeNow", "no charge now")}</p>
+                  <p className="body-sm text-pa-dark tabular-nums whitespace-nowrap">{t("checkout.fromPrice", { price: formatEur(item.priceFrom, lang) })}</p>
+                  <p className="caption text-pa-stone-aa whitespace-nowrap">{t("checkout.noChargeNow", "no charge now")}</p>
                 </>
               ) : (
-                <p className="caption text-pa-stone-aa max-w-[120px] leading-snug">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
+                <p className="caption text-pa-stone-aa sm:max-w-[120px] leading-snug">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
               )
             ) : item.pricingModel === "included_selectable" ? (
               <>
@@ -315,26 +328,23 @@ function OptionRow({
               </>
             ) : (
               <>
-                {/* No telemóvel a unidade desce para a linha de baixo: ao lado
-                    do preço espremia o nome do item ("Bringing a / pet") */}
                 <p className="body-sm text-pa-dark tabular-nums leading-snug">
                   {formatEur(item.unitPrice!, lang)}
-                  <span className="caption text-pa-stone-aa block sm:inline">
-                    <span className="hidden sm:inline"> / </span>
-                    {unitSuffix()}
-                  </span>
+                  {unit ? <span className="caption text-pa-stone-aa"> / {unit}</span> : null}
                 </p>
                 {item.minPeople ? (
-                  <p className="caption text-pa-stone-aa">{t("checkout.minPeople", { count: item.minPeople })}</p>
+                  <p className="caption text-pa-stone-aa whitespace-nowrap">{t("checkout.minPeople", { count: item.minPeople })}</p>
                 ) : null}
               </>
             )}
           </div>
-          <ToggleButton
-            selected={selected}
-            label={`${selected ? t("checkout.remove", "Remove") : onRequest ? t("checkout.request", "Request") : t("checkout.add", "Add")}: ${name}`}
-            onClick={() => onToggle(item)}
-          />
+          <div className="pa-option-toggle">
+            <ToggleButton
+              selected={selected}
+              label={`${selected ? t("checkout.remove", "Remove") : onRequest ? t("checkout.request", "Request") : t("checkout.add", "Add")}: ${name}`}
+              onClick={() => onToggle(item)}
+            />
+          </div>
         </div>
       </div>
 
@@ -366,7 +376,7 @@ function OptionRow({
                   type="button"
                   onClick={() => onAdjust(item.sku, { days: Math.max(1, nights) })}
                   className={cn(
-                    "caption text-inherit h-8 px-3 rounded-full border transition-colors",
+                    "caption text-inherit h-8 px-3 rounded-full border whitespace-nowrap transition-colors",
                     (sel!.days ?? 1) === Math.max(1, nights)
                       ? "border-pa-dark bg-pa-dark text-white"
                       : "border-pa-sand bg-white text-pa-earth hover:border-pa-dark",
@@ -384,7 +394,10 @@ function OptionRow({
           {(() => {
             const f = priceFormula(item, sel!, lang, t);
             return f ? (
-              <span className="caption text-pa-earth tabular-nums">
+              /* On a phone the sum has its own line under the steppers in
+                 every row; beside them it fitted in some rows and fell under
+                 in others. */
+              <span className="basis-full text-right sm:basis-auto caption text-pa-earth tabular-nums">
                 {f}{amount != null && amount > 0 ? ` = ${formatEur(amount, lang)}` : ""}
               </span>
             ) : null;
@@ -425,11 +438,17 @@ function ReceptionRows({
       >
         {selected && <span className="w-2 h-2 rounded-full bg-pa-dark" />}
       </span>
+      {/* Name and value share the first line; the description runs under
+          both at the full width of the row. Beside the value it lost that
+          width for its whole height: a line more on a phone, and a last word
+          alone on a computer ("After 21h: / €90."). */}
       <span className="min-w-0 flex-1">
-        <span className="block body-sm font-medium text-pa-dark leading-snug">{name}</span>
+        <span className="flex items-baseline justify-between gap-3">
+          <span className="min-w-0 body-sm font-medium text-pa-dark leading-snug">{name}</span>
+          <span className="shrink-0">{value}</span>
+        </span>
         <span className="block caption text-pa-stone-aa leading-snug mt-0.5">{desc}</span>
       </span>
-      <span className="shrink-0 pt-0.5">{value}</span>
     </button>
   );
 
@@ -462,7 +481,10 @@ function ReceptionRows({
           onClick={() => onChoose({ type: "hosted", late: choice?.type === "hosted" ? choice.late : false })}
         />
         {choice?.type === "hosted" && (
-          <div className="flex items-center gap-2 px-4 py-2.5 sm:px-5 bg-pa-warm">
+          /* The pills never break their label ("Antes das 21h" was two
+             lines inside a 32 px pill on a phone): tighter on a phone, and
+             the row wraps as a whole in a longer language. */
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2 sm:gap-x-2 px-4 py-2.5 sm:px-5 bg-pa-warm">
             <span className="caption text-pa-earth">{t("checkout.reception.arrivalWindow")}</span>
             {[false, true].map((late) => (
               <button
@@ -471,7 +493,7 @@ function ReceptionRows({
                 onClick={() => onChoose({ type: "hosted", late })}
                 aria-pressed={(choice?.late ?? false) === late}
                 className={cn(
-                  "caption text-inherit h-8 px-3 rounded-full border transition-colors",
+                  "caption text-inherit h-8 px-2.5 sm:px-3 rounded-full border whitespace-nowrap transition-colors",
                   (choice?.late ?? false) === late
                     ? "border-pa-dark bg-pa-dark text-white"
                     : "border-pa-sand bg-white text-pa-earth hover:border-pa-dark",

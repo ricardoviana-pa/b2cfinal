@@ -294,7 +294,7 @@ export default function Events() {
                 height={750}
                 decoding="async"
               />
-              <div className="absolute -bottom-4 -right-4 bg-[#1A1A18] text-white px-6 py-4 hidden lg:block">
+              <div className="absolute -bottom-4 -right-4 rounded-xl bg-[#1A1A18] text-white px-6 py-4 hidden lg:block">
                 <p className="font-display text-[1.1rem] text-white">15+ {t('events.venueLabel')}</p>
                 <p className="text-[13px] text-white/50 mt-0.5">{t('events.venueRegions')}</p>
               </div>
@@ -327,7 +327,7 @@ export default function Events() {
           HOW WE WORK — Process steps
           ================================================================ */}
       <section className="section-padding bg-white">
-        <div className="container max-w-4xl mx-auto">
+        <div className="container max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-[13px] font-medium text-pa-gold-aa mb-3 tracking-[0.14em]">{t('events.processOverline')}</p>
             <h2 className="font-display text-[2rem] md:text-[2.3rem] text-[#1A1A18]">{t('events.processTitle')}</h2>
@@ -341,8 +341,8 @@ export default function Events() {
             ].map(item => (
               <div key={item.step} className="text-center md:text-left">
                 <p className="font-display text-[2rem] text-[#E8E4DC] mb-3">{item.step}</p>
-                <h4 className="font-display text-[16px] text-[#1A1A18] mb-2">{item.title}</h4>
-                <p className="text-[15px] text-pa-earth font-normal leading-relaxed">{item.desc}</p>
+                <h4 className="font-display text-[19px] leading-snug text-[#1A1A18] mb-2">{item.title}</h4>
+                <p className="text-[15px] text-pa-earth font-normal leading-relaxed text-balance md:text-pretty">{item.desc}</p>
               </div>
             ))}
           </div>

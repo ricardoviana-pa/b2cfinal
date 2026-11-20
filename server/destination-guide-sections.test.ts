@@ -208,7 +208,8 @@ describe('GuideSection.css — fechar é só no telemóvel, e só no ecrã', () 
     expect(minho.slice(blockAt).replace(/\s+/g, ' ').trim()).toBe(
       '@media screen and (max-width: 767.98px) { '
       + '.guide-section .minho-section-heading > div { align-self: stretch; } '
-      + '.guide-section[data-open="false"] .minho-section-heading { margin-bottom: 0; } }',
+      + '.guide-section[data-open="false"] .minho-section-heading { margin-bottom: 0; } '
+      + '.guide-section[data-open="false"] .minho-culture-icon { display: none; } }',
     );
     expect(read(`${DIR}/DestinationVisualGuide.css`)).not.toContain('guide-section');
   });

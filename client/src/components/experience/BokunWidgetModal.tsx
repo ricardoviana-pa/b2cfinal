@@ -160,12 +160,12 @@ export default function BokunWidgetModal({
         aria-labelledby={`${id}-label ${id}-title`}
         className="relative flex w-full flex-col overflow-hidden bg-white shadow-2xl animate-in fade-in-0 duration-200 sm:h-[760px] sm:max-h-[90vh] sm:max-w-[520px] sm:rounded-xl sm:border sm:border-pa-sand"
       >
-        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-pa-sand px-5 py-4">
+        <div className="flex shrink-0 items-start justify-between gap-3 border-b border-pa-sand px-5 py-4">
           <div className="min-w-0">
             <p id={`${id}-label`} className="eyebrow text-pa-stone">
               {t('experience.reserve', 'Reserve')}
             </p>
-            <h2 id={`${id}-title`} className="mt-1.5 truncate font-display text-[22px] font-light leading-tight text-pa-dark">
+            <h2 id={`${id}-title`} className="mt-1.5 line-clamp-2 font-display text-[22px] font-light leading-tight text-pa-dark">
               {experienceName}
             </h2>
           </div>

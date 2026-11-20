@@ -82,13 +82,16 @@ export function SearchDateButton({ label, shown, expanded, onOpen, className }: 
  * on top, the button that opens the site's calendar.
  */
 export function SearchDateCell({
-  label, value, shown, min, ready, expanded, onOpen, onNativeChange, inputRef, className, textClassName,
+  label, value, shown, spoken, min, ready, expanded, onOpen, onNativeChange, inputRef, className, textClassName,
 }: {
   label: string;
   /** ISO date or "" */
   value: string;
   /** `value` formatted for the guest, or "" */
   shown: string;
+  /** The date in full for the button's accessible name, when `shown` is a
+   *  short form (a compact bar shows "22 Sept", a screen reader hears the year). */
+  spoken?: string;
   min?: string;
   ready: boolean;
   expanded: boolean;
@@ -124,7 +127,7 @@ export function SearchDateCell({
         className="pa-date-hit"
         {...nativeDateInputProps(ready)}
       />
-      {ready && <SearchDateButton label={label} shown={shown} expanded={expanded} onOpen={onOpen} />}
+      {ready && <SearchDateButton label={label} shown={spoken || shown} expanded={expanded} onOpen={onOpen} />}
     </div>
   );
 }

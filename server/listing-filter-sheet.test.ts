@@ -36,7 +36,7 @@ describe('the Filters sheet takes keyboard focus', () => {
     // the site's ring is 3 px, 2 px outside the element; the row hides overflow for its rounded corners
     expect(css).toMatch(/:focus-visible \{\s*outline: 3px solid #C4A87C;\s*outline-offset: 2px;/);
     expect(strip).toMatch(/className="grid rounded-lg border border-pa-sand overflow-hidden/);
-    expect(strip).toMatch(/className=\{`flex flex-col items-center justify-center h-12 font-body transition-colors focus-visible:outline-offset-\[-3px\] /);
+    expect(strip).toMatch(/className=\{`flex min-w-0 flex-col items-center justify-center h-12 px-2\.5 font-body whitespace-nowrap transition-colors focus-visible:outline-offset-\[-3px\] /);
   });
 
   it('returnFocusTo cancels Radix’s own return (no trigger) and focuses the button without scrolling', () => {

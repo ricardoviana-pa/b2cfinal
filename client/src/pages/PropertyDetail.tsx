@@ -144,6 +144,22 @@ const HERO_WIDTHS = [640, 828, 1080, 1440];
 // Desktop: the large tile is half the container (≈46vw at 1440 px).
 const HERO_SIZES = '(min-width: 1024px) 46vw, 100vw';
 
+/* Service and experience cards on a home's page: two grids, one layout.
+   From 640 px the card is a column with its footer pinned to the bottom, so
+   the dividers and prices of a row line up whether a name takes one line or
+   two. The footer is the same in every card: the price on the left with its
+   unit ("per person") on a second line, the action on the right of the first
+   line. It used to wrap by chance: at 15 px "From €65 per person" + "VIEW" no
+   longer fitted the 206 px column, and the action fell under the price on
+   some cards and not on others (auditoria de formatação, 20 nov 2026).
+   Three lines of description: at 15 px two lines cut every sentence. */
+const ADDON_BODY = 'flex min-w-0 flex-1 flex-col p-3.5 sm:p-5';
+const ADDON_TITLE = 'font-display body-lg text-pa-dark mb-2 sm:mb-1.5 text-balance group-hover:text-pa-gold-aa transition-colors';
+const ADDON_TAGLINE = 'body-sm text-pa-earth leading-relaxed mb-3 sm:mb-4 line-clamp-3 font-normal';
+const ADDON_FOOT = 'mt-auto flex items-baseline justify-between gap-x-2 pt-2.5 sm:pt-3 border-t border-pa-sand';
+const ADDON_PRICE = 'min-w-0 body-sm leading-snug font-medium text-pa-dark';
+const ADDON_ACTION = 'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold-aa group-hover:text-pa-dark transition-colors';
+
 function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onClose, t }: {
   images: string[];
   rawImages?: string[];
@@ -752,6 +768,11 @@ export default function PropertyDetail() {
     ).map(p => localizeProduct(p, i18n.language)!);
   }, [property, i18n.language]);
 
+  // A grid where at least one card has a unit under its price ("per person")
+  // reserves that second line in every card, so the footers have one height.
+  const servicesHaveSuffix = services.some(s => !!s.priceSuffix);
+  const adventuresHaveSuffix = adventures.slice(0, 6).some(a => !!a.priceSuffix);
+
   const destObj = useMemo(() => {
     if (!property) return null;
     // Prefer match by destination slug
@@ -1214,10 +1235,14 @@ export default function PropertyDetail() {
           parceiros): sem nome de pessoa nem "equipa local em X". O Ricardo,
           29 out 2026: "Portugal Active é Portugal Active". */}
       <p className="mt-4 body-sm text-pa-dark leading-tight">
-        {t('host.hostedBy', 'Hosted by Portugal Active')} ·{' '}
-        <Link href="/about" className="caption text-pa-gold-aa hover:underline">
-          {t('host.meetUs', 'Meet us')}
-        </Link>
+        {t('host.hostedBy', 'Hosted by Portugal Active')}{' '}
+        {/* The dot and the link stay together: on a narrow phone the whole
+            link goes to the second line instead of breaking in the middle. */}
+        <span className="whitespace-nowrap">·{' '}
+          <Link href="/about" className="caption text-pa-gold-aa hover:underline">
+            {t('host.meetUs', 'Meet us')}
+          </Link>
+        </span>
       </p>
     </>
   );
@@ -1380,12 +1405,12 @@ export default function PropertyDetail() {
                   <MapPin size={15} className="text-pa-gold-aa shrink-0" aria-hidden="true" />
                   <span className="body-md text-pa-dark font-normal">{property.locality}, Portugal</span>
                 </div>
-                <ul className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5 body-sm text-pa-earth">
+                {/* pa-dots: when the facts wrap, no line starts with the
+                    separator (at 15 px the row is three lines on a phone and
+                    two of them began with a stray dot). */}
+                <ul className="pa-dots gap-y-1 mt-1.5 body-sm text-pa-earth">
                   {facts.map((fact, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      {i > 0 && <span className="text-pa-sand" aria-hidden="true">·</span>}
-                      {fact}
-                    </li>
+                    <li key={i} className="whitespace-nowrap">{fact}</li>
                   ))}
                 </ul>
                 {keyAmenities.length > 0 && (
@@ -1473,7 +1498,7 @@ export default function PropertyDetail() {
                     {t('propertyDetail.sleepsSummary', { beds: property.bedrooms, guests: property.maxGuests, defaultValue: '{{beds}} bedrooms · sleeps {{guests}}' })}
                     {bedTotal > 0 && <> · {t('propertyDetail.bedTotal', { count: bedTotal })}</>}
                   </p>
-                  <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-5 px-5 pb-1 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
+                  <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-1 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
                     {property.rooms.map((room: any, roomIdx: number) => {
                       const beds: any[] = Array.isArray(room?.beds) ? room.beds : [];
                       // A curated photo of this bedroom (catalogue index); the
@@ -1660,9 +1685,9 @@ export default function PropertyDetail() {
                       key={service.slug}
                       type="button"
                       onClick={() => setModalProduct(service)}
-                      className="group flex sm:block w-full text-left bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                      className="group flex sm:flex-col w-full text-left bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                     >
-                      <div className="relative w-28 shrink-0 self-stretch sm:w-auto sm:aspect-[4/3] bg-pa-warm overflow-hidden">
+                      <div className="relative w-24 shrink-0 self-stretch sm:w-auto sm:self-auto sm:aspect-[4/3] bg-pa-warm overflow-hidden">
                         {service.image ? (
                           <img
                             src={service.image}
@@ -1672,16 +1697,16 @@ export default function PropertyDetail() {
                           />
                         ) : null}
                       </div>
-                      <div className="min-w-0 flex-1 p-3.5 sm:p-5">
+                      <div className={ADDON_BODY}>
                         <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
-                        <h3 className="font-display body-lg text-pa-dark mb-2 sm:mb-1.5 group-hover:text-pa-gold-aa transition-colors">{service.name}</h3>
-                        <p className="body-sm text-pa-earth leading-relaxed mb-3 sm:mb-4 line-clamp-2 font-normal" >{service.tagline}</p>
-                        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2.5 sm:pt-3 border-t border-pa-sand">
-                          <p className="body-sm font-medium text-pa-dark">
+                        <h3 className={ADDON_TITLE}>{service.name}</h3>
+                        <p className={ADDON_TAGLINE}>{service.tagline}</p>
+                        <div className={ADDON_FOOT}>
+                          <p className={`${ADDON_PRICE} ${servicesHaveSuffix ? 'min-h-[2.5rem]' : ''}`}>
                             {service.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(service.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('property.priceOnRequest')}
-                            <span className="caption text-pa-stone font-normal ml-1">{service.priceSuffix}</span>
+                            {service.priceSuffix ? <span className="block caption leading-snug text-pa-stone font-normal">{service.priceSuffix}</span> : null}
                           </p>
-                          <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold-aa group-hover:text-pa-dark transition-colors">
+                          <span className={ADDON_ACTION}>
                             {t('propertyDetail.requestService', 'Request')} <ArrowRight className="w-3 h-3" />
                           </span>
                         </div>
@@ -1710,9 +1735,9 @@ export default function PropertyDetail() {
                         <Link
                           key={adventure.slug}
                           href={`/experiences/${adventure.slug}`}
-                          className="group flex sm:block bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                          className="group flex sm:flex-col bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                         >
-                          <div className="relative w-28 shrink-0 self-stretch sm:w-auto sm:aspect-[4/3] bg-pa-warm overflow-hidden">
+                          <div className="relative w-24 shrink-0 self-stretch sm:w-auto sm:self-auto sm:aspect-[4/3] bg-pa-warm overflow-hidden">
                             {adventure.image ? (
                               <img
                                 src={adventure.image}
@@ -1722,25 +1747,25 @@ export default function PropertyDetail() {
                               />
                             ) : null}
                             {meta.length > 0 && (
-                              <div className="absolute bottom-3 left-3 right-3 hidden sm:flex flex-wrap gap-1.5">
+                              <div className="absolute bottom-3 left-2 right-2 hidden sm:flex flex-wrap gap-1.5">
                                 {meta.slice(0, 2).map((m, i) => (
-                                  <span key={i} className="eyebrow tracking-[0.06em] uppercase font-medium px-2 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
+                                  <span key={i} className="eyebrow tracking-[0.04em] uppercase font-medium whitespace-nowrap px-1.5 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
                                     {m}
                                   </span>
                                 ))}
                               </div>
                             )}
                           </div>
-                          <div className="min-w-0 flex-1 p-3.5 sm:p-5">
+                          <div className={ADDON_BODY}>
                             <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
-                            <h3 className="font-display body-lg text-pa-dark mb-2 sm:mb-1.5 group-hover:text-pa-gold-aa transition-colors">{adventure.name}</h3>
-                            <p className="body-sm text-pa-earth leading-relaxed mb-3 sm:mb-4 line-clamp-2 font-normal" >{adventure.tagline}</p>
-                            <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2.5 sm:pt-3 border-t border-pa-sand">
-                              <p className="body-sm font-medium text-pa-dark">
+                            <h3 className={ADDON_TITLE}>{adventure.name}</h3>
+                            <p className={ADDON_TAGLINE}>{adventure.tagline}</p>
+                            <div className={ADDON_FOOT}>
+                              <p className={`${ADDON_PRICE} ${adventuresHaveSuffix ? 'min-h-[2.5rem]' : ''}`}>
                                 {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(adventure.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('propertyDetail.custom')}
-                                <span className="caption text-pa-stone font-normal ml-1">{adventure.priceSuffix}</span>
+                                {adventure.priceSuffix ? <span className="block caption leading-snug text-pa-stone font-normal">{adventure.priceSuffix}</span> : null}
                               </p>
-                              <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold-aa group-hover:text-pa-dark transition-colors">
+                              <span className={ADDON_ACTION}>
                                 {t('propertyDetail.viewDetails', 'View')} <ArrowRight className="w-3 h-3" />
                               </span>
                             </div>
@@ -1794,7 +1819,11 @@ export default function PropertyDetail() {
         >
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <p className="body-sm text-pa-dark font-medium">
+              {/* Caption size (13 px, as it was) and a button with 16 px at
+                  its sides: beside a button that takes 58% of the bar, a 15 px
+                  title broke "Datas selecionadas" in two and the bar grew
+                  from 73 to 95 px, covering more of every screen. */}
+              <p className="caption leading-snug text-pa-dark font-medium">
                 {bookingSelection?.total ? formatStayEur(bookingSelection.total, i18n.language) : stayDates.checkIn && stayDates.checkOut ? t('conversion.datesSelected') : barFromPrice ?? barNoPrice}
               </p>
               <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
@@ -1808,14 +1837,14 @@ export default function PropertyDetail() {
               <button
                 type="button"
                 onClick={() => setBookingOpen(true)}
-                className="btn-primary shrink-0"
+                className="btn-primary shrink-0 max-sm:px-4!"
               >
                 {bookingSelection?.total ? t('conversion.viewBooking') : t('property.checkAvailability')}
               </button>
             ) : (
               <Link
                 href={`/contact?property=${encodeURIComponent(property.slug)}&intent=availability`}
-                className="btn-primary shrink-0"
+                className="btn-primary shrink-0 max-sm:px-4!"
               >
                 {t('property.checkAvailability')}
               </Link>
@@ -1904,11 +1933,15 @@ export default function PropertyDetail() {
       {/* Every amenity, by category — the raw Guesty list with a pictogram
           each; the page itself shows only the key ones. */}
       <Dialog open={amenitiesOpen} onOpenChange={setAmenitiesOpen}>
-        <DialogContent aria-describedby={undefined} className="max-w-[calc(100%-2rem)] sm:max-w-2xl max-h-[85vh] overflow-y-auto p-0 gap-0 rounded-xl border-pa-sand bg-pa-cream">
-          <DialogHeader className="sticky top-0 z-10 bg-pa-cream/95 backdrop-blur-sm px-6 pt-6 pb-4 border-b border-pa-sand text-left">
+        {/* The list scrolls, not the whole dialog: the title bar and the
+            close button stay in place. With the dialog as the scroller the
+            sticky title bar covered the close button, and there was no visible
+            way to close it. */}
+        <DialogContent aria-describedby={undefined} className="flex flex-col max-w-[calc(100%-2rem)] sm:max-w-2xl max-h-[85vh] overflow-hidden p-0 gap-0 rounded-xl border-pa-sand bg-pa-cream [&>[data-slot=dialog-close]]:z-20">
+          <DialogHeader className="shrink-0 bg-pa-cream pl-6 pr-14 pt-6 pb-4 border-b border-pa-sand text-left">
             <DialogTitle className="font-display headline-sm font-light text-pa-dark">{t('propertyDetail.amenitiesTitle')}</DialogTitle>
           </DialogHeader>
-          <div className="px-6 py-5 space-y-7">
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 space-y-7">
             {amenityGroups.map((group) => (
               <div key={group.category}>
                 <h3 className="eyebrow font-semibold tracking-[0.14em] uppercase text-pa-stone mb-1">{t(group.label)}</h3>

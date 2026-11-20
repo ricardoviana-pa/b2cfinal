@@ -155,7 +155,11 @@ export default function Concierge() {
       {/* Section Nav */}
       <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">
         <div className="container">
-          <div className="flex gap-6 overflow-x-auto scrollbar-hide py-3">
+          {/* 16 px between the tabs on a phone and no shrinking: at 15 px the
+              four tabs filled a 390 px screen to the pixel and the last one
+              was cut ("Additiona") on a 375 or 360 px phone. The row reaches
+              the screen edges, so what scrolls is cut there and not mid-gutter. */}
+          <div className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide py-3 -mx-5 px-5 sm:mx-0 sm:px-0">
             {[
               { label: t('services.navGastronomy'), href: '#gastronomy' },
               { label: t('services.navWellness'), href: '#wellness' },
@@ -165,7 +169,7 @@ export default function Concierge() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-[15px] font-medium text-pa-earth hover:text-[#1A1A18] transition-colors whitespace-nowrap py-1"
+                className="inline-flex shrink-0 items-center text-[15px] font-medium text-pa-earth hover:text-[#1A1A18] transition-colors whitespace-nowrap"
               >
                 {link.label}
               </a>

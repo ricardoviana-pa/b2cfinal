@@ -160,6 +160,11 @@
        para browsers antigos que ignoram clip. */
     overflow-x: hidden;
     overflow-x: clip;
+    /* No single word alone on the last line of a text. With the larger type
+       several one-line intros and labels began to break and left "estadia."
+       or "stay" by itself (auditoria de formatação, 20 nov 2026). Inherited
+       by every element; a browser that does not know the value ignores it. */
+    text-wrap: pretty;
   }
 
   #root {
@@ -868,18 +873,21 @@
     }
   }
 
-  /* Below lg the floating buttons sit over the footer's right edge at the end
-     of the page ("back to top" up to 5rem + 56px + 40px = 176px from the
-     bottom on a phone, 5.5rem + 56px + 40px = 184px from 640 px). The footer
-     keeps this much free under its last row (plus its own 1.75rem padding and
-     4px of air): FOOTER_BOTTOM_INSET in lib/fixedBottom.ts. From lg the last
-     row keeps clear of them sideways (Footer.tsx, lg:pr-16). */
+  /* Below lg the WhatsApp button sits over the footer's right edge at the end
+     of the page (5.5rem + 48px = 136px from the bottom on a phone, 5.5rem +
+     56px = 144px from 640 px). The footer keeps this much free under its last
+     row (plus its own 1.75rem padding and 4px of air): FOOTER_BOTTOM_INSET in
+     lib/fixedBottom.ts. It was 9.5rem / 10rem while "back to top" sat above
+     the WhatsApp button; that button no longer shows below 1024 px (E06), and
+     its 40 px were left as an empty dark band at the end of every page
+     (auditoria de formatação, 20 nov 2026). From lg the last row keeps clear
+     of the floats sideways (Footer.tsx, lg:pr-16). */
   :root {
-    --floats-clearance: calc(9.5rem + env(safe-area-inset-bottom, 0px));
+    --floats-clearance: calc(7rem + env(safe-area-inset-bottom, 0px));
   }
   @media (min-width: 640px) and (max-width: 1023.98px) {
     :root {
-      --floats-clearance: calc(10rem + env(safe-area-inset-bottom, 0px));
+      --floats-clearance: calc(7.5rem + env(safe-area-inset-bottom, 0px));
     }
   }
   @media (min-width: 1024px) {
@@ -1034,6 +1042,46 @@
    indicator glyph at the right edge. Stretching that indicator over the whole
    field makes the entire box open the picker — including before hydration,
    which a JS-only fix can't do. See client/src/lib/datePicker.ts. */
+/* One extra in the checkout (CustomizeStep › OptionRow).
+   Phone: photo | name over price | add button, then the description under
+   them at the full width of the row. From 640 px: one line, as it always was
+   on a computer. */
+@layer components {
+  .pa-option {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "name toggle" "price toggle" "desc desc";
+    column-gap: 0.75rem;
+    align-items: start;
+  }
+  .pa-option[data-photo="true"] {
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    grid-template-areas: "photo name toggle" "photo price toggle" "desc desc desc";
+  }
+  .pa-option-text, .pa-option-side { display: contents; }
+  .pa-option-photo { grid-area: photo; }
+  .pa-option-name { grid-area: name; }
+  .pa-option-price { grid-area: price; margin-top: 0.125rem; }
+  .pa-option-desc { grid-area: desc; margin-top: 0.5rem; }
+  .pa-option-toggle { grid-area: toggle; align-self: center; }
+  @media (min-width: 640px) {
+    .pa-option { display: flex; align-items: center; gap: 0.75rem; }
+    .pa-option-text { display: block; min-width: 0; flex: 1 1 0%; }
+    .pa-option-side { display: flex; flex: none; align-items: center; gap: 0.75rem; }
+    .pa-option-price { margin-top: 0; text-align: right; }
+    .pa-option-desc { margin-top: 0.125rem; }
+  }
+}
+
+/* A wrapping run of facts separated by middots ("13 guests · 5 bedrooms ·
+   200 m²") in which no line ever begins with the dot. Every item carries a
+   leading dot in a 1rem box; the row is pulled 1rem to the left and that strip
+   is clipped, so the first dot of each line is cut away. Use on the row:
+   <ul class="pa-dots">, items as direct children. */
+.pa-dots { display: flex; flex-wrap: wrap; align-items: center; margin-left: -1rem; clip-path: inset(-4px -4px -4px calc(1rem - 3px)); }
+.pa-dots > * { display: inline-flex; align-items: center; min-width: 0; }
+.pa-dots > *::before { content: "·"; flex: none; width: 1rem; text-align: center; color: var(--pa-dot-color, #D8D2C6); }
+
 .pa-date-hit { position: relative; }
 /* A search-bar date cell (SearchDateCell): the native input lies invisible over the cell's own text. */
 .pa-date-cell input[type="date"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
@@ -1045,13 +1093,18 @@
    (auditoria 29 out, Regression:P4). editorial.addDates is kept short enough
    for 360px. A chosen date (dd/mm/yyyy) is never clipped. */
 .hero-search-date-value.is-placeholder { overflow: hidden; text-overflow: ellipsis; }
+/* On a phone under 380 px the placeholder keeps the 15 px it had: at 16 px
+   "Datum wählen" and "Añadir fechas" were cut with an ellipsis. */
+@media (max-width: 380px) { .hero-search-date-value.is-placeholder { font-size: 15px; } }
 .hero-search-submit { height: 100%; min-height: 64px; padding: 16px 24px; white-space: nowrap; letter-spacing: .04em; }
 
 /* Editorial pages: a shared scale, action hierarchy and catalogue treatment. */
 .editorial-hero { position: relative; isolation: isolate; min-height: 540px; display: flex; align-items: flex-end; padding: 148px 0 60px; color: white; background: #282923; }
 .editorial-hero h1 { color: white; font-family: var(--font-display); font-size: clamp(2.65rem, 5vw, 4.5rem); font-weight: 300; letter-spacing: -.025em; line-height: 1.06; max-width: 18ch; margin-bottom: 24px; }
 .editorial-eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 16px; }
-.editorial-hero-description { max-width: 560px; font-size: 18px; line-height: 1.65; color: #ffffffe6; }
+/* 600 px: at the regular weight the About sentence is 565 px wide and the old
+   560 px cap left its last word alone on a second line. */
+.editorial-hero-description { max-width: 600px; font-size: 18px; line-height: 1.65; color: #ffffffe6; }
 .editorial-actions { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; margin-top: 28px; }
 .editorial-proof { background: #F5F1EB; border-bottom: 1px solid #E8E4DC; }
 .editorial-proof-item { padding: 32px 28px; }
@@ -1077,6 +1130,9 @@
 @media (max-width: 767px) {
   .editorial-hero { min-height: 510px; padding: 116px 0 40px; }
   .editorial-hero-description { font-size: 16px; }
+  /* At 12 px and .16em the About label is 350.1 px in a 350 px column and
+     left "PORTUGAL" alone on a second line. */
+  .editorial-eyebrow { letter-spacing: .08em; }
   .editorial-proof-item, .editorial-proof-item:first-child { padding: 24px 0; }
   .editorial-proof-item + .editorial-proof-item { border-left: 0; border-top: 1px solid #E8E4DC; }
   .catalog-heading { align-items: stretch; flex-direction: column; }

@@ -74,7 +74,7 @@ export default function ExperienceMobileBookingBar({
           footer's last row clear of it (lib/fixedBottom.ts). */}
       <div
         ref={publishBottomBarHeight}
-        className={`lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-pa-sand px-4 pt-3 transition-transform duration-300 ${
+        className={`lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-pa-sand px-5 pt-3 transition-transform duration-300 ${
           visible ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))', transform: visible ? RISE_ABOVE_COOKIE_BANNER : undefined }}

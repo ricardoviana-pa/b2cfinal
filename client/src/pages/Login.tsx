@@ -37,7 +37,9 @@ export default function Login() {
 
           {/* Role selector — shown when no role is chosen */}
           {!role && (
-            <div className="max-w-[520px] mx-auto text-center">
+            /* 600 px: at 520 px each card had a 186 px column and its 15 px
+               description took three lines with one word alone on the last. */
+            <div className="max-w-[600px] mx-auto text-center">
               <p
                 className="text-[12px] font-medium tracking-[0.14em] uppercase text-pa-gold-aa mb-4"
                 style={{ fontFamily: 'var(--font-body)' }}
@@ -109,7 +111,7 @@ export default function Login() {
                 {t('login.ownerPortalTitle', 'Owner Portal')}
               </h1>
               <p
-                className="text-[16px] text-pa-earth mb-10 leading-relaxed"
+                className="text-[16px] text-pa-earth mb-10 leading-relaxed text-balance"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 {t('login.ownerPortalDesc', 'Manage your property, view reservations, and track performance through the Guesty Owners Portal.')}
@@ -157,7 +159,7 @@ export default function Login() {
                     {t('login.title', 'Welcome back.')}
                   </h1>
                   <p
-                    className="text-[16px] text-pa-earth mb-10 leading-relaxed"
+                    className="text-[16px] text-pa-earth mb-10 leading-relaxed text-balance"
                     style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   >
                     {t('login.subtitle', 'Sign in to manage your stays, earn loyalty points, and access exclusive member benefits.')}

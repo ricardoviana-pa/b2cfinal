@@ -68,7 +68,7 @@ export default function LanguageSwitcher({
         aria-expanded={open}
       >
         <Globe className="w-[17px] h-[17px]" />
-        <span className="text-[13px] font-medium tracking-wide">
+        <span className="max-[339px]:hidden text-[13px] font-medium tracking-wide">
           {activeLabel}
         </span>
       </button>

@@ -16,7 +16,7 @@ import type { Ref } from "react";
 import { useTranslation } from "react-i18next";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatBookingDate, formatQuotedEur, formatEur, formatStayEur, staySavingsEuros } from "@/lib/format";
+import { formatBookingDate, formatQuotedEur, formatEur, formatStayEur, noBreak, staySavingsEuros } from "@/lib/format";
 import { cancellationPolicyCopy, cancellationPolicyPath } from "@/lib/cancellation";
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { rateCardModels, type RateCardModel, type RateCardOption } from "@/lib/rateCards";
@@ -134,7 +134,7 @@ export default function RatePlanCards<T extends RateCardOption>({
                     </div>
                     <p id={benefitId} className={cn("caption mt-0.5 leading-snug", nonRef ? "text-pa-earth" : "text-pa-dark")}>
                       {m.kind === "refundable" && m.freeUntil
-                        ? t("booking.freeCancellation", { date: formatBookingDate(m.freeUntil, lang, true) })
+                        ? t("booking.freeCancellation", { date: noBreak(formatBookingDate(m.freeUntil, lang, true)) })
                         : nonRef
                           ? policyLink("non_refundable", t("checkout.rateCard.noRefund", "No refund if you cancel"))
                           : (

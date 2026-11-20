@@ -7,6 +7,7 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { legalPageMeta } from '@shared/legalPageMeta';
+import { keepPhones } from '@/lib/format';
 
 export default function Privacy() {
   const { t, i18n } = useTranslation();
@@ -35,7 +36,7 @@ export default function Privacy() {
             <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('privacy.s4Title')}</h2>
             <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('privacy.s4Body')}</p>
             <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('privacy.s5Title')}</h2>
-            <p className="body-md" style={{ textTransform: 'none' }}>{t('privacy.s5Body')}</p>
+            <p className="body-md" style={{ textTransform: 'none' }}>{keepPhones(t('privacy.s5Body'))}</p>
           </div>
         </div>
       </section>

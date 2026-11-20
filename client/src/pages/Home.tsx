@@ -367,7 +367,9 @@ export default function Home() {
           <div className="max-w-2xl home-hero-text">
             <p
               className="body-sm font-medium text-white/85 mb-5 font-body"
-              style={{letterSpacing: '0.08em'}}
+              // 0.04em: at 15 px with 0.08em the line no longer fitted a 375 or
+              // 360 px phone and left "Portugal" alone on a second line.
+              style={{letterSpacing: '0.04em'}}
             >
               {t('home.heroOverline')}
             </p>
@@ -420,18 +422,28 @@ export default function Home() {
                   href: '/best-rate-guarantee',
                 },
               ].map((item: { icon: React.ReactNode; title: string; sub: string; href?: string }, i) => {
-                const cls = `flex min-w-0 flex-col items-center text-center px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 md:px-5${
-                  i < 3 ? ' border-r border-[#E8E4DC]' : ''
-                }`;
+                // Side padding: 6 px in the phone's two columns, 8 px from 640 px
+                // (what the live site always had; wider padding only wrapped the
+                // text more). The labels break evenly (text-balance), so they no
+                // longer run to the divider. This line used to end in
+                // "md:px-5" glued to the "${", a class Tailwind never emitted;
+                // when another file started using md:px-5 the rule appeared and
+                // the four cells silently went from 8 to 20 px, wrapping their
+                // text (auditoria de formatação, 20 nov 2026). Keep a space
+                // before every "${" in a class string.
+                // Divider: between the two columns on a phone (cells 0 and 2),
+                // between the four from 768 px (cells 0, 1 and 2).
+                const divider = i === 3 ? '' : i === 1 ? 'md:border-r border-[#E8E4DC]' : 'border-r border-[#E8E4DC]';
+                const cls = `flex min-w-0 flex-col items-center text-center px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}`;
                 const inner = (
                 <>
                   <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand bg-pa-cream text-pa-gold-aa sm:mb-3 sm:h-9 sm:w-9">
                     {item.icon}
                   </div>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark sm:text-[12px] sm:tracking-[0.1em] md:text-[12px] md:tracking-[0.12em]">{item.title}</p>
+                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.1em] md:text-[12px]">{item.title}</p>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="mt-1 max-w-none caption leading-tight text-pa-stone sm:text-[12px] sm:leading-snug md:text-[13px] md:leading-[1.55] font-body font-normal" >{item.sub}</p>
+                  <p className="mt-1 max-w-none caption leading-tight text-pa-stone text-balance sm:text-[12px] sm:leading-snug md:text-[13px] md:leading-[1.55] font-body font-normal" >{item.sub}</p>
                 </>
                 );
                 // The rate badge is a claim with terms — it links to them.
@@ -606,7 +618,10 @@ export default function Home() {
           </div>
 
           {/* Right: text (40%) */}
-          <div className="lg:col-span-2 flex items-center px-8 py-14 lg:px-14 lg:py-16 bg-white">
+          {/* 20 px at the sides on a phone, like every other section (it was
+              32 px, and at 15 px the second point's title no longer fitted on
+              its line). */}
+          <div className="lg:col-span-2 flex items-center px-5 py-14 lg:px-10 xl:px-14 lg:py-16 bg-white">
             <div className="max-w-md">
               <p className="caption font-medium text-pa-gold-aa mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.conceptOverline')}</p>
               <h2 className="headline-lg text-pa-dark mb-5">{t('home.conceptTitle')}</h2>
@@ -692,7 +707,12 @@ export default function Home() {
                       <h3 className="text-white text-[1.25rem] font-display">{dest.name}</h3>
                     </div>
                   </div>
-                  <p className="body-sm text-pa-earth mt-3 leading-relaxed font-body font-normal" >
+                  {/* 14 px: the column is 224 to 260 px wide at every screen
+                      size, and at 15 px these two or three sentences ran to
+                      nine lines of three or four words (13 px before the
+                      redesign). */}
+                  {/* eslint-disable-next-line no-restricted-syntax -- a narrow caption column; body-sm is too large for it */}
+                  <p className="text-[14px] leading-[1.55] text-pa-earth mt-3 font-body font-normal" >
                     {dest.description}
                   </p>
                 </Link>
@@ -758,7 +778,12 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white text-[1rem] font-display mb-1">{exp.title}</h3>
-                    <p className="text-white/70 caption leading-relaxed font-body font-normal" >{exp.body}</p>
+                    {/* Three lines are reserved (four between 1024 and 1280 px,
+                        where the cards are narrower) where the four cards sit side
+                        by side: the text is anchored to the foot of the photo,
+                        so a description one line longer than its neighbours'
+                        pushed that card's title up out of line. */}
+                    <p className="text-white/70 caption leading-relaxed font-body font-normal lg:min-h-[4lh] xl:min-h-[3lh]" >{exp.body}</p>
                   </div>
                 </div>
               </Link>

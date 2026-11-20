@@ -81,7 +81,7 @@ describe("o componente e quem o usa", () => {
   });
 
   it("benefício, total, total riscado com 'Poupe X €' e a linha das duas partes debaixo da reembolsável", () => {
-    expect(cards).toMatch(/t\("booking\.freeCancellation", \{ date: formatBookingDate\(m\.freeUntil, lang, true\) \}\)/);
+    expect(cards).toMatch(/t\("booking\.freeCancellation", \{ date: noBreak\(formatBookingDate\(m\.freeUntil, lang, true\)\) \}\)/);
     expect(cards).toMatch(/checkout\.rateCard\.noRefund/);
     // Os valores passam por money(): cêntimos no checkout, euros inteiros na
     // página da casa (wholeEuros; decisão E07 de 20 nov 2026, lib/format.ts).

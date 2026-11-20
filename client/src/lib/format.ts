@@ -112,6 +112,19 @@ export const formatBookingDate = (
   return includeYear ? `${day} ${month} ${date.getFullYear()}` : `${day} ${month}`;
 };
 
+/** "13 Dec 2026" with non-breaking spaces: a line may break before the date,
+ *  never inside it ("until 13 Dec" / "2026"). */
+export const noBreak = (text: string): string => text.replace(/ /g, '\u00A0');
+
+/** A phone number in a sentence ("+351 258 358 434") stays whole: at 16 px the
+ *  legal pages broke it as "+351 258 358" / "434." */
+export const keepPhones = (text: string): string =>
+  text.replace(/\+\d{2,3}(?: \d{2,4}){2,4}/g, (number) => number.replace(/ /g, '\u00A0'));
+
+/** A Portuguese postcode stays whole: a WORD JOINER after the hyphen stops the
+ *  line breaking as "4900-" / "336" without changing how it looks or copies. */
+export const keepPostcode = (text: string): string => text.replace(/(\d{4})-(\d{3})/g, '$1-\u2060$2');
+
 /** Editorial EUR formatting: no decimals for whole amounts, symbol prefix, en-US comma separator. */
 export const formatEurEditorial = (amount: number): string => {
   const rounded = Math.round(amount);
