@@ -148,9 +148,9 @@ describe('listagem', () => {
 
 describe('rodapé no telemóvel', () => {
   const footer = read('client/src/components/layout/Footer.tsx');
-  it('ligações a 14 px em duas colunas, a primeira à largura do seu texto', () => {
+  it('ligações a 14 px (13 px abaixo de 375 px) em duas colunas, a primeira à largura do seu texto', () => {
     expect(footer).toContain('grid grid-cols-[auto_minmax(0,1fr)] md:grid-cols-4');
-    expect(footer.match(/text-\[14px\] md:text-\[15px\] text-white\/65/g)!.length).toBeGreaterThanOrEqual(4);
+    expect(footer.match(/text-\[13px\] min-\[375px\]:text-\[14px\] md:text-\[15px\] text-white\/65/g)!.length).toBeGreaterThanOrEqual(4);
   });
   it('o ponto de "Norte de Portugal · Minho" desce com a palavra seguinte', () => {
     expect(footer).toContain("label.replace(/ · /g, ' ·\\u00A0')");

@@ -46,20 +46,21 @@ export default function Footer() {
   /* On a phone the links sit in two columns. At 15 px in two equal columns
      of 155 px, "Northern Portugal · Minho", "Reservar a sua estadia" and
      others broke in two and the columns lost their rows. Below 768 px the
-     links are 14 px (13 px before the redesign), the first column is as wide
-     as its longest link and the second takes the rest, 16 px apart: measured
-     in the nine languages, no language has more broken links than it had.
+     links are 14 px (13 px before the redesign; still 13 px on a phone
+     narrower than 375 px), the first column is as wide as its longest link
+     and the second takes the rest, 16 px apart: measured in the nine
+     languages at 390 and 360 px, no language has more broken links than it had.
      If a label still breaks, the dot goes down with the word after it
      ("Northern Portugal" / "· Minho"): the space after " · " is non-breaking. */
   const tied = (label: string) => label.replace(/ · /g, ' ·\u00A0');
   const footerLinks = (rawLabel: string, href: string, external?: boolean) => { const label = tied(rawLabel); return (
     <li>
       {external ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200 inline-flex items-center gap-1" style={{ fontWeight: 400 }}>
+        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[13px] min-[375px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200 inline-flex items-center gap-1" style={{ fontWeight: 400 }}>
           {label} <ArrowUpRight size={10} className="opacity-0 group-hover:opacity-100" />
         </a>
       ) : (
-        <Link href={href} className="text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>
+        <Link href={href} className="text-[13px] min-[375px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>
           {label}
         </Link>
       )}
@@ -192,7 +193,7 @@ export default function Footer() {
               {footerLinks(t('footer.experiences'), '/experiences')}
               {footerLinks(t('footer.conciergeServices'), '/concierge')}
               {footerLinks(t('footer.events'), '/events')}
-              <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>{t('footer.realEstate')}</a></li>
+              <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[13px] min-[375px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>{t('footer.realEstate')}</a></li>
 
             </ul>
           </div>
@@ -208,7 +209,7 @@ export default function Footer() {
               {footerLinks(t('footer.journal'), '/blog')}
               {footerLinks(t('footer.contact'), '/contact')}
               <li>
-                <a href={`https://www.portugalactive.com/management/${managementLanguage}`} className="text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors" style={{ fontWeight: 400 }}>
+                <a href={`https://www.portugalactive.com/management/${managementLanguage}`} className="text-[13px] min-[375px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors" style={{ fontWeight: 400 }}>
                   {t('footer.forOwners', 'For property owners')} →
                 </a>
               </li>
