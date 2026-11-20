@@ -789,6 +789,7 @@ export default function Home() {
                         and the text keeps the 12 px it had: at 13 px it needed
                         a fourth line, which lifted the text onto the subject
                         of the photos. */}
+                    {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
                     <p className="text-white/70 caption lg:text-[12px] xl:text-[13px] leading-relaxed font-body font-normal sm:min-h-[3lh]" >{exp.body}</p>
                   </div>
                 </div>
