@@ -10,7 +10,7 @@ import { Link } from 'wouter';
 import { propertyTripHref } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
-import { formatEur, getDisplayName, formatStayEur } from '@/lib/format';
+import { formatEur, getDisplayName, formatStayEur, keepDashes } from '@/lib/format';
 import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, cardSrcSet } from '@/lib/images';
@@ -214,11 +214,15 @@ export default function PropertyCard({
     <Link
       href={propertyTripHref(property.slug, {checkin, checkout, guests})}
       onClick={handleCardClick}
+      className="flex h-full flex-col"
     >
-      <article className="group cursor-pointer block">
+      {/* A column as tall as its row of the grid, with the price line at the
+          bottom: when one name of a row takes two lines, the dividers and the
+          prices of that row stay level (they sat 24 px lower on that card). */}
+      <article className="group cursor-pointer flex flex-1 flex-col">
       {/* Image Carousel â 4:3 aspect */}
       <div
-        className="relative overflow-hidden rounded-xl bg-[#E8E4DC] img-fallback"
+        className="relative shrink-0 overflow-hidden rounded-xl bg-[#E8E4DC] img-fallback"
         style={{ aspectRatio: '4/3', touchAction: 'pan-y' }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -300,7 +304,7 @@ export default function PropertyCard({
           the width of the card and not of the screen: the same card is 280 px
           wide in a phone carousel, 304 px in a three-column grid at 1024 px,
           332 px beside the map and 384 px in the listing. */}
-      <div className="@container pt-3.5">
+      <div className="@container flex flex-1 flex-col pt-3.5">
         {/* Location */}
         <p className="text-[13px] font-medium tracking-[0.02em] text-pa-gold-aa mb-1">
           {property.locality}, Portugal
@@ -308,22 +312,24 @@ export default function PropertyCard({
 
         {/* Name + specs — the detail icons sit to the right of the name on
             every card (single and multi-unit), so the row reads consistently. */}
-        <div className="flex items-start justify-between gap-3">
-          {/* 20 px on a card of 360 px or more (the listing and the homepage
-              on a computer), 18 px from 340 px (a 390 px phone, a tablet) and
-              17 px, the size it always had, on anything narrower (a carousel,
-              three columns at 1024 px, the map view, a small phone). The name
-              shares its line with the guests / bedrooms / bathrooms: at 20 px
-              everywhere a three-word name broke in two on the narrow cards,
-              leaving one word alone and that card's price line lower than its
-              neighbours'. A name that still needs two lines breaks evenly. */}
-          <h3 className="text-[1.0625rem] @min-[340px]:text-[1.125rem] @min-[360px]:text-[1.25rem] font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors leading-tight flex-1 min-w-0 text-balance">
-            {displayName}
+        <div className={`flex items-start justify-between gap-3 ${hidePrice ? '' : 'mb-3'}`}>
+          {/* 20 px on a computer card of 360 px or more (the listing and the
+              homepage), 18 px from 340 px (a phone, a tablet) and 17 px, the
+              size it always had, on anything narrower (a carousel, three
+              columns at 1024 px, the map view, a small phone). The name shares
+              its line with the guests / bedrooms / bathrooms: at 20 px a
+              three-word name broke in two on the narrow cards, and on a 402
+              to 430 px phone five names of 88 did where one did before, so a
+              one-column phone card stays at 18 px however wide it is. A name
+              that still needs two lines breaks evenly, and never before a
+              dash. */}
+          <h3 className="text-[1.0625rem] @min-[340px]:text-[1.125rem] lg:@min-[360px]:text-[1.25rem] font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors leading-tight flex-1 min-w-0 text-balance">
+            {keepDashes(displayName)}
           </h3>
           {/* 14 px, the size of the icons beside them (at 15 px the figures
               were larger than their icons). The top padding keeps them on the
               name's line. */}
-          <div className="flex items-center gap-2 @min-[360px]:gap-2.5 text-[14px] text-pa-earth shrink-0 pt-0.5 @min-[340px]:pt-[3px] @min-[360px]:pt-1">
+          <div className="flex items-center gap-2 lg:@min-[360px]:gap-2.5 text-[14px] text-pa-earth shrink-0 pt-0.5 @min-[340px]:pt-[3px] lg:@min-[360px]:pt-1">
             {(property as any).petsAllowed && (
               <PawPrint className="w-3.5 h-3.5 text-pa-gold-aa" aria-label={t('property.petFriendly', 'Pet-friendly')} />
             )}
@@ -346,7 +352,7 @@ export default function PropertyCard({
             complete house is the focus; individual units stay explorable in the
             PDP. Groups never show "unavailable" here — units may still be free. */}
         {!hidePrice && (
-          <div className="border-t border-[#E8E4DC] mt-3 pt-3 flex flex-wrap items-baseline justify-between gap-x-2 @min-[340px]:gap-x-3 gap-y-1">
+          <div className="border-t border-[#E8E4DC] mt-auto pt-3 flex flex-wrap items-baseline justify-between gap-x-2 @min-[340px]:gap-x-3 gap-y-1">
             {/* LEFT — price */}
             <div className="min-w-0">
               {(() => {

@@ -92,8 +92,9 @@ describe('nenhuma palavra sozinha na última linha', () => {
 
 describe('listas separadas por pontos: nenhuma linha começa com o ponto', () => {
   it('.pa-dots: o ponto vem antes de cada item e o primeiro de cada linha fica cortado', () => {
-    expect(css).toMatch(/\.pa-dots \{ display: flex; flex-wrap: wrap; align-items: center; margin-left: -1rem; clip-path: inset\(-4px -4px -4px calc\(1rem - 3px\)\); \}/);
-    expect(css).toMatch(/\.pa-dots > \*::before \{ content: "·"; flex: none; width: 1rem;/);
+    // 12 px para o ponto e o espaço à volta, como o " · " no texto corrido
+    expect(css).toMatch(/\.pa-dots \{ display: flex; flex-wrap: wrap; align-items: center; margin-left: -0\.75rem; clip-path: inset\(-4px -4px -4px calc\(0\.75rem - 3px\)\); \}/);
+    expect(css).toMatch(/\.pa-dots > \*::before \{ content: "·"; flex: none; width: 0\.75rem;/);
   });
   it('usada nos factos da casa e na linha por baixo do nome de quem avaliou', () => {
     expect(read('client/src/pages/PropertyDetail.tsx')).toContain('<ul className="pa-dots gap-y-1 mt-1.5 body-sm text-pa-earth">');
@@ -116,15 +117,27 @@ describe('listas separadas por pontos: nenhuma linha começa com o ponto', () =>
 describe('cartão das casas', () => {
   const card = read('client/src/components/property/PropertyCard.tsx');
   it('o nome e os números seguem a largura do cartão, não a do ecrã', () => {
-    expect(card).toContain('@min-[360px]:text-[1.25rem]');
-    expect(card).toContain('gap-2 @min-[360px]:gap-2.5');
+    // 20 px só no computador: num telemóvel de 402 a 430 px o cartão de uma
+    // coluna tem 362 a 390 px e cinco nomes partiam em dois (um, no site de hoje)
+    expect(card).toContain('lg:@min-[360px]:text-[1.25rem]');
+    expect(card).not.toContain(' @min-[360px]:text-[1.25rem]');
+    expect(card).toContain('gap-2 lg:@min-[360px]:gap-2.5');
     // os números (14 px, como os ícones) ficam na linha do nome
     expect(card).toContain('text-[14px] text-pa-earth shrink-0');
-    expect(card).toContain('@min-[340px]:text-[1.125rem] @min-[360px]:text-[1.25rem]');
+    expect(card).toContain('@min-[340px]:text-[1.125rem] lg:@min-[360px]:text-[1.25rem]');
     expect(card).toContain('text-balance');
+    // um hífen entre espaços não começa a segunda linha
+    expect(card).toContain('{keepDashes(displayName)}');
+    expect(keepDashes('Quinta do Merouço - Casa do Rio')).toBe(`Quinta do Merouço${NBSP}- Casa do Rio`);
+  });
+  it('a linha do preço fica no fundo do cartão: filas niveladas mesmo com um nome em duas linhas', () => {
+    expect(card).toContain('className="flex h-full flex-col"');
+    expect(card).toContain('<article className="group cursor-pointer flex flex-1 flex-col">');
+    expect(card).toContain('<div className="@container flex flex-1 flex-col pt-3.5">');
+    expect(card).toContain("${hidePrice ? '' : 'mb-3'}");
   });
   it('preço e contexto: a linha parte inteira, as frases não', () => {
-    expect(card).toContain('mt-3 pt-3 flex flex-wrap items-baseline justify-between gap-x-2 @min-[340px]:gap-x-3 gap-y-1');
+    expect(card).toContain('mt-auto pt-3 flex flex-wrap items-baseline justify-between gap-x-2 @min-[340px]:gap-x-3 gap-y-1');
     // num cartão estreito o rótulo do preço fica a 14 px, para caber ao lado de "5 unidades disponíveis"
     expect(card.match(/<span className="text-pa-stone text-\[14px\] @min-\[340px\]:text-\[15px\]">/g)).toHaveLength(4);
     // o contexto à direita (unidades ou noites) é legenda: 13 px
@@ -134,9 +147,19 @@ describe('cartão das casas', () => {
 
 describe('listagem', () => {
   const homes = read('client/src/pages/Homes.tsx');
-  it('título e pesquisa lado a lado só a partir de 1280 px', () => {
-    expect(homes).toContain('flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between xl:gap-10');
+  it('título e pesquisa lado a lado só a partir de 1280 px (e nunca com o título de uma coleção)', () => {
+    expect(homes).toContain("`flex flex-col gap-5 ${collection ? '' : 'xl:flex-row xl:items-end xl:justify-between xl:gap-10'}`");
     expect(homes).not.toContain('lg:flex-row lg:items-end');
+  });
+  it('a barra do computador tem largura fixa: escolher uma data não a faz deslizar nem ao calendário', () => {
+    expect(homes).toContain('<div className="hidden lg:block w-full lg:max-w-[760px] xl:w-[760px] xl:shrink-0">');
+    expect(homes).not.toContain('xl:w-auto');
+    // o destino fica com o que as datas deixam
+    expect(homes).toContain('<div className="flex-1 relative h-full min-w-0">');
+  });
+  it('telemóvel: a palavra "hóspedes" só aparece onde cabe, em qualquer língua', () => {
+    expect(homes).toContain('flex h-6 min-w-0 flex-1 flex-wrap justify-center gap-x-1 overflow-hidden px-1"><span>{bookingGuests}</span><span>{t(\'home.searchGuests\')}</span></span>');
+    expect(homes).not.toContain('min-[430px]:inline');
   });
   it('datas da barra do computador: dia e mês, células à largura do texto, o ano no nome acessível', () => {
     expect(homes).toContain("const shownDateShort = (iso: string) => (iso ? formatBookingDate(iso, i18n.language) : '');");
@@ -145,14 +168,21 @@ describe('listagem', () => {
     expect(homes).toContain('spoken={shownDate(bookingCheckin)}');
     expect(read('client/src/components/booking/SearchDatesPicker.tsx')).toContain('shown={spoken || shown}');
   });
-  it('a lista "mais casas" não parte o nome da localidade', () => {
-    expect(homes).toContain('<span className="text-pa-stone whitespace-nowrap">· {property.locality}</span>');
+  it('a lista "mais casas" não parte o nome da localidade nem começa uma linha pelo ponto', () => {
+    for (const file of [homes, read('client/src/pages/Collection.tsx')]) {
+      expect(file).toContain("{property.locality && <>{'\\u00A0'}<span className=\"text-pa-stone whitespace-nowrap\">· {property.locality}</span></>}");
+      expect(file).toContain('<ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm text-sm">');
+      expect(file).toMatch(/<li key=\{property\.id\} className="break-inside-avoid py-1 leading-snug text-balance">/);
+    }
+  });
+  it('filtros: o valor escolhido não é cortado e o acento de "Équipements" vê-se', () => {
+    expect(read('client/src/components/homes/HomesFilterRail.tsx')).toContain('<span className="truncate max-w-[240px] leading-[1.4]">{value || label}</span>');
   });
   it('a linha de cancelamento e WhatsApp volta ao tamanho de legenda no computador', () => {
     expect(read('client/src/components/homes/ListingReassurance.tsx')).toContain('text-[15px] lg:text-[13px]');
   });
   it('filtro "Espaço": a primeira célula tem a largura da palavra ("Beliebig", "Cualquiera")', () => {
-    expect(read('client/src/components/homes/HomesFilterRail.tsx')).toContain('`auto repeat(${Math.max(1, options.length - 1)}, minmax(0, 1fr))`');
+    expect(read('client/src/components/homes/HomesFilterRail.tsx')).toContain('`minmax(max-content, 1fr) repeat(${Math.max(1, options.length - 1)}, minmax(0, 1fr))`');
   });
 });
 
@@ -179,7 +209,7 @@ describe('página da casa: cartões de serviços e experiências', () => {
   const pdp = read('client/src/pages/PropertyDetail.tsx');
   it('o rodapé do cartão é sempre igual: preço à esquerda, unidade por baixo, ação à direita', () => {
     // sem flex-wrap: a ação caía para baixo do preço nuns cartões e noutros não
-    expect(pdp).toContain("const ADDON_FOOT = 'mt-auto flex items-baseline justify-between gap-x-2 pt-2.5 sm:pt-3 border-t border-pa-sand';");
+    expect(pdp).toContain("const ADDON_FOOT = '@container mt-auto flex items-baseline justify-between gap-x-2 pt-2.5 sm:pt-3 border-t border-pa-sand';");
     expect(pdp).toContain("const ADDON_ACTION = 'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap");
     expect(pdp.match(/className=\{ADDON_FOOT\}/g)).toHaveLength(2);
     expect(pdp.match(/<span className="block caption leading-snug text-pa-stone font-normal">/g)).toHaveLength(2);
@@ -194,7 +224,7 @@ describe('página da casa: cartões de serviços e experiências', () => {
     // as mesmas peças, com as mesmas classes, nos dois ficheiros
     for (const shared of [
       '<div className="border border-black/15 rounded-lg mt-3 px-4 py-3">',
-      'block eyebrow font-medium tracking-[0.15em] uppercase text-pa-stone mb-1',
+      'block eyebrow font-medium tracking-[0.15em] lg:max-xl:tracking-[0.06em] uppercase text-pa-stone mb-1',
       'eyebrow font-medium tracking-[0.15em] uppercase text-pa-stone mb-2',
       'shadow-[inset_0_-2px_0_var(--color-pa-dark)]',
       'bg-black/[0.02] border border-black/10 rounded-lg overflow-hidden',
@@ -275,5 +305,83 @@ describe('guias de destino', () => {
     const sections = read('client/src/components/destinations/sections.tsx');
     expect(sections).not.toMatch(/className="text-\[16px\] font-medium text-\[#1A1A18\] mb-(?:2|1\.5)(?: tracking-\[0\.02em\])?"\s*style=\{\{ fontFamily: 'var\(--font-display\)' \}\}/);
     expect(sections.match(/text-\[19px\] leading-snug font-medium text-\[#1A1A18\]/g)!.length).toBeGreaterThanOrEqual(5);
+  });
+});
+
+describe('2.ª ronda da auditoria de formatação (21 nov 2026)', () => {
+  const pdp = read('client/src/pages/PropertyDetail.tsx');
+  const partner = read('client/src/components/booking/PartnerBookingPanel.tsx');
+  const own = read('client/src/components/booking/BookingWidget.tsx');
+  it('serviços e experiências: a palavra da ação só onde cabe ao lado do preço, e duas colunas até 1279 px', () => {
+    expect(pdp).toContain("const ADDON_ACTION_WORD = '@max-[15rem]:sr-only';");
+    expect(pdp.match(/<span className=\{ADDON_ACTION_WORD\}>/g)).toHaveLength(2);
+    expect(pdp.match(/grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5/g)).toHaveLength(2);
+    expect(pdp).not.toContain('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5');
+    // "Can-Am" não parte no hífen
+    expect(pdp).toContain('{keepHyphens(adventure.name)}');
+    expect(pdp).toContain('{keepHyphens(service.name)}');
+    // no telemóvel a duração e a dificuldade (que no computador estão na fotografia) ficam no lugar do sobretítulo
+    expect(pdp).toContain('<span className="pa-dots gap-y-1 sm:hidden!">');
+    expect(pdp).toContain('{meta.slice(0, 2).map((m, i) => <span key={i} className="whitespace-nowrap">{m}</span>)}');
+  });
+  it('linhas com pontos: anfitrião e quartos sem ponto no início nem no fim de uma linha', () => {
+    expect(pdp).toContain('<p className="pa-dots mt-4 body-sm text-pa-dark leading-tight">');
+    expect(pdp).toContain('<Link href="/about" className="min-h-0 caption text-pa-gold-aa hover:underline">');
+    expect(pdp).toContain(".replace('Portugal Active', 'Portugal\\u00A0Active')");
+    expect(pdp).toContain('<p className="pa-dots body-sm text-pa-earth mb-5">');
+    expect(pdp).toContain(".flatMap((s) => s.split(' · '))");
+  });
+  it('características principais em duas linhas em vez de cortadas; migalhas com reticências; pergunta equilibrada', () => {
+    expect(pdp).not.toContain('<span className="truncate">{a.label}</span>');
+    expect(pdp).toContain('<span className="min-w-0">{a.label}</span>');
+    expect(pdp).toContain('<span className="truncate">{displayName}</span>');
+    expect(pdp).toContain('<span className="text-balance">{f.q}</span>');
+    expect(pdp).toContain('bookableOnline || partnerUid ? "container pt-5 lg:pt-6 pb-8 lg:pb-16"');
+  });
+  it('avaliações: data e língua por baixo do nome, à largura toda da coluna', () => {
+    const reviews = read('client/src/components/property/ReviewsSection.tsx');
+    expect(reviews).toContain('<div className="flex items-center gap-2.5 mb-3">');
+    expect(reviews).toContain('<div className="min-w-0 flex-1">');
+    expect(reviews).not.toContain('<span key={i} className="whitespace-nowrap">{part}</span>');
+  });
+  it('calendário: avisos em duas linhas cabem no espaço reservado; no telemóvel o Limpar é só a cruz', () => {
+    const cal = read('client/src/components/booking/AvailabilityCalendar.tsx');
+    expect(cal.match(/<p className="text-\[12px\] text-[^"]* font-medium leading-\[1\.3\]">/g)).toHaveLength(2);
+    expect(cal).toContain('<span className="max-sm:sr-only">{t("bookingWidget.clearDates")}</span>');
+  });
+  it('casas de parceiros como as nossas: euros inteiros antes do pagamento, mínimo de noites no topo, campos de 48 px', () => {
+    expect(partner).toContain('stayBreakdownEuros([quote.accommodation, quote.cleaningFee || 0], quote.total)');
+    expect(partner.match(/\{formatStayEur\(quote\.total, lang\)\}/g)).toHaveLength(2);
+    expect(partner).toContain("t('partnerBooking.payCta', { amount: formatStayEur(quote.total, lang)");
+    // o recibo depois de pagar mantém os cêntimos
+    expect(partner.match(/formatQuotedEur\(Number\(paid\.total\) \|\| 0, lang\)/g)).toHaveLength(2);
+    expect(partner.match(/w-full h-\[48px\] rounded-lg border border-black\/15/g)).toHaveLength(2);
+    expect(own.match(/w-full h-\[48px\] rounded-lg border border-black\/15/g)).toHaveLength(3);
+    for (const file of [partner, own]) {
+      expect(file).toContain('caption text-center text-pa-gold-aa hover:text-black transition-colors pt-2.5 mt-0.5 border-t border-black/[0.06]');
+      expect(file).toContain("<p className=\"caption text-pa-stone mt-1.5 flex items-center gap-1.5\">");
+    }
+  });
+  it('resumo da estadia sem ponto no fim de linha; data da política de cancelamento inteira', () => {
+    expect(own.match(/<p className="pa-dots caption text-pa-stone">/g)).toHaveLength(2);
+    expect(read('client/src/lib/cancellation.ts')).toContain('formatDate: (ymd) => noBreak(formatBookingDate(ymd, lang, true))');
+    expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('body-sm lg:max-xl:text-sm text-pa-dark font-medium leading-snug');
+  });
+  it('rodapé, cookies e diálogos', () => {
+    const footer = read('client/src/components/layout/Footer.tsx');
+    expect(footer).toContain('text-[13px] max-[389px]:text-[12px] leading-snug text-white/80');
+    expect(footer).toContain("<span className=\"whitespace-nowrap\">{t('legalFooter.complaintsBook')}</span>");
+    expect(read('client/src/components/layout/CookieBanner.tsx')).toContain('underline underline-offset-2 transition-colors whitespace-nowrap');
+    const dialog = read('client/src/components/ui/dialog.tsx');
+    expect(dialog).toContain('absolute top-4 right-4 inline-flex items-center justify-center');
+    expect(dialog).toContain('focus-visible:ring-2 focus-visible:ring-offset-2');
+  });
+  it('francês: os dois pontos, o ponto de interrogação e o de exclamação não começam uma linha', () => {
+    const fr = read('client/src/i18n/locales/fr.json');
+    expect(fr).not.toMatch(/ [:;!?»]/);
+    expect(fr).not.toMatch(/« /);
+  });
+  it('legendas dos destinos na homepage a 13 px, o tamanho de legenda', () => {
+    expect(read('client/src/pages/Home.tsx')).toContain('<p className="caption leading-[1.55] text-pa-earth mt-3 font-body font-normal" >');
   });
 });

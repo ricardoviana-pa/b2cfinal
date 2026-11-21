@@ -5,7 +5,7 @@ import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
 import { isImplicitSubmitKey } from '@/lib/implicitSubmit';
 import type { BookingSelection } from './BookingWidget';
-import { formatQuotedEur, intlLocale, formatBookingDate } from '@/lib/format';
+import { formatEur, formatQuotedEur, formatStayEur, intlLocale, formatBookingDate, stayBreakdownEuros } from '@/lib/format';
 import { partnerCalendarView, partnerQuoteNotice, partnerRequestQuoteStatus } from '@/lib/partnerAvailability';
 import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import AvailabilityCalendar from './AvailabilityCalendar';
@@ -236,6 +236,9 @@ export function PartnerBookingPanel({
   // anything leaves it, so a partner night and one of our own compare like for
   // like instead of one being quoted net.
   const shortStay = quote && minNights ? quote.nights < minNights : false;
+  // The breakdown in whole euros adding up to the total as shown, as on our
+  // own homes (decisão E07: cents only on the payment page and the receipt).
+  const partnerRows = quote ? stayBreakdownEuros([quote.accommodation, quote.cleaningFee || 0], quote.total) : [0, 0];
 
   useEffect(() => {
     if (!quote) return;
@@ -445,7 +448,7 @@ export function PartnerBookingPanel({
           <>
             <div className="flex items-baseline gap-2">
               <span className="text-[32px] font-light tracking-tight text-black tabular-nums">
-                {formatQuotedEur(quote.total, lang)}
+                {formatStayEur(quote.total, lang)}
               </span>
               <span className="body-sm text-pa-stone font-normal">
                 {quote.feesKnown
@@ -474,6 +477,12 @@ export function PartnerBookingPanel({
               </div>
             ) : (
               <p className="body-md text-pa-dark">{t(noPriceLabelKey(true, fromPrice))}</p>
+            )}
+            {minNights && minNights > 1 && (
+              <p className="caption text-pa-stone mt-1.5 flex items-center gap-1.5">
+                <Calendar className="w-3 h-3" />
+                {t('bookingWidget.minNightMinimum', { count: minNights })}
+              </p>
             )}
             <p className="caption text-pa-gold-aa mt-1.5">
               {/* No "from" at all (no calendar, or nothing open in 12 months),
@@ -519,7 +528,7 @@ export function PartnerBookingPanel({
                       active ? 'bg-black/[0.04] shadow-[inset_0_-2px_0_var(--color-pa-dark)]' : 'hover:bg-black/[0.02]'
                     }`}
                   >
-                    <span className="block eyebrow font-medium tracking-[0.15em] uppercase text-pa-stone mb-1">
+                    <span className="block eyebrow font-medium tracking-[0.15em] lg:max-xl:tracking-[0.06em] uppercase text-pa-stone mb-1">
                       {label}
                     </span>
                     <span className={`block body-sm text-inherit font-normal ${value ? 'text-black' : 'text-pa-stone'}`}>
@@ -580,15 +589,8 @@ export function PartnerBookingPanel({
             </div>
           )}
 
-          {minNights && minNights > 1 && (
-            <p className="text-[13px] text-pa-stone mt-2 flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              {t('bookingWidget.minNightMinimum', { count: minNights })}
-            </p>
-          )}
-
           {shortStay && (
-            <div className="flex items-start gap-2.5 p-3 mt-2 bg-amber-50/80 border border-amber-200/60">
+            <div className="rounded-lg flex items-start gap-2.5 p-3 mt-2 bg-amber-50/80 border border-amber-200/60">
               <span className="text-amber-600 body-sm text-inherit shrink-0 leading-none mt-0.5">!</span>
               <p className="caption text-inherit text-amber-800 font-medium leading-snug">
                 {t('partnerBooking.minNights', 'This home has a {{min}}-night minimum.', { min: minNights })}
@@ -634,7 +636,7 @@ export function PartnerBookingPanel({
 
         <div className="px-5 pt-4 pb-5 space-y-3">
           {quoteNotice === 'error' && (
-            <div data-booking-notice="" className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
+            <div data-booking-notice="" className="rounded-lg flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium caption text-inherit">!</span>
               <p className="text-red-600 leading-snug caption text-inherit">
                 {t('partnerBooking.quoteError', 'We could not price these dates just now. Send the request and the concierge will confirm the total.')}
@@ -646,7 +648,7 @@ export function PartnerBookingPanel({
               not a fault, and not booked — the request goes to the concierge,
               who confirms both. Nothing here claims why the price is missing. */}
           {quoteNotice === 'on-request' && (
-            <div data-booking-notice="" className="flex items-start gap-2.5 p-3 bg-[#F5F1EB] border border-[#E8E4DC]" role="status">
+            <div data-booking-notice="" className="rounded-lg flex items-start gap-2.5 p-3 bg-[#F5F1EB] border border-[#E8E4DC]" role="status">
               <span className="text-[#806A48] body-sm text-inherit shrink-0 leading-none mt-0.5" aria-hidden="true">i</span>
               <p className="caption text-inherit text-[#1A1A18] leading-snug">
                 {t('partnerBooking.onRequestDates', 'We cannot show a price online for these dates. Send the request and our concierge will confirm availability and the total.')}
@@ -655,7 +657,7 @@ export function PartnerBookingPanel({
           )}
 
           {quoteNotice === 'taken' && (
-            <div data-booking-notice="" className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
+            <div data-booking-notice="" className="rounded-lg flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
               <span className="text-amber-600 body-sm text-inherit shrink-0 leading-none mt-0.5">!</span>
               <p className="caption text-inherit text-amber-800 font-medium leading-snug">
                 {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
@@ -671,14 +673,14 @@ export function PartnerBookingPanel({
                     {quote.nights} {t("bookingWidget.nightsLabel", "nights")}
                   </span>
                   <span className="body-sm text-black tabular-nums">
-                    {formatQuotedEur(quote.accommodation, lang)}
+                    {formatEur(partnerRows[0], lang)}
                   </span>
                 </div>
 
                 {quote.cleaningFee > 0 && (
                   <div className="flex justify-between items-center">
                     <span className="body-sm text-pa-stone">{t('property.cleaningFee', 'Final cleaning')}</span>
-                    <span className="body-sm text-black tabular-nums">{formatQuotedEur(quote.cleaningFee, lang)}</span>
+                    <span className="body-sm text-black tabular-nums">{formatEur(partnerRows[1], lang)}</span>
                   </div>
                 )}
 
@@ -689,14 +691,14 @@ export function PartnerBookingPanel({
                       : t('partnerBooking.totalSoFar', 'Total so far')}
                   </span>
                   <span className="text-[24px] font-light tabular-nums tracking-tight text-black">
-                    {formatQuotedEur(quote.total, lang)}
+                    {formatStayEur(quote.total, lang)}
                   </span>
                 </div>
 
                 {(!quote.feesKnown || quote.securityDeposit > 0) && (
                   <p className="text-[13px] text-pa-stone leading-snug">
                     {quote.feesKnown
-                      ? t('partnerBooking.depositNote', { amount: formatQuotedEur(quote.securityDeposit, lang) })
+                      ? t('partnerBooking.depositNote', { amount: formatStayEur(quote.securityDeposit, lang) })
                       : payable
                         ? t(
                             'partnerBooking.payFeesPending',
@@ -713,7 +715,7 @@ export function PartnerBookingPanel({
           )}
 
           {quote && !quote.available && (
-            <div data-booking-notice="" className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
+            <div data-booking-notice="" className="rounded-lg flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
               <span className="text-amber-600 body-sm text-inherit shrink-0 leading-none mt-0.5">!</span>
               <p className="caption text-inherit text-amber-800 font-medium leading-snug">
                 {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
@@ -742,7 +744,7 @@ export function PartnerBookingPanel({
               placeholder={t('partnerBooking.name', 'Full name *')}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full h-11 rounded-lg border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-pa-stone focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
+              className="w-full h-[48px] rounded-lg border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-pa-stone focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
             />
             <input
               ref={emailRef}
@@ -751,7 +753,7 @@ export function PartnerBookingPanel({
               placeholder={t('partnerBooking.email', 'Email *')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full h-11 rounded-lg border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-pa-stone focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
+              className="w-full h-[48px] rounded-lg border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-pa-stone focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
             />
             <PhoneInput
               value={phone}
@@ -772,14 +774,14 @@ export function PartnerBookingPanel({
               ordem do Tab e do leitor de ecrã). */}
           <ReserveCtaSlot footerRef={requestFooterRef}>
           {submitError && (
-            <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
+            <div className="rounded-lg flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium caption text-inherit">!</span>
               <p className="text-red-600 leading-snug caption text-inherit">{submitError}</p>
             </div>
           )}
 
           {payUnconfirmed && (
-            <div className="flex items-start gap-2 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
+            <div className="rounded-lg flex items-start gap-2 p-3 bg-amber-50/80 border border-amber-200/60" role="status">
               <span className="text-amber-600 body-sm text-inherit shrink-0 leading-none mt-0.5">!</span>
               <p className="caption text-inherit text-amber-800 leading-snug">
                 {t('partnerBooking.payNotConfirmed', 'We could not confirm your payment on this page. If you completed it, you will receive an email shortly: please do not pay again. If no email arrives, message the concierge.')}
@@ -800,7 +802,7 @@ export function PartnerBookingPanel({
                 {payable ? t('partnerBooking.paying', 'Opening secure payment…') : t('partnerBooking.sending', 'Sending…')}
               </span>
             ) : payable && quote ? (
-              t('partnerBooking.payCta', { amount: formatQuotedEur(quote.total, lang), defaultValue: 'Reserve now · {{amount}}' })
+              t('partnerBooking.payCta', { amount: formatStayEur(quote.total, lang), defaultValue: 'Reserve now · {{amount}}' })
             ) : (
               t('partnerBooking.submit', 'Request these dates')
             )}
@@ -822,7 +824,7 @@ export function PartnerBookingPanel({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-1.5 text-[13px] text-pa-gold-aa hover:text-black transition-colors pt-3 mt-1 border-t border-black/[0.06]"
+            className="flex items-center justify-center gap-1.5 caption text-center text-pa-gold-aa hover:text-black transition-colors pt-2.5 mt-0.5 border-t border-black/[0.06]"
           >
             {t('property.needHelpConcierge', 'Need help? Talk to concierge')}
           </a>

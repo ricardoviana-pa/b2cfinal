@@ -48,7 +48,7 @@ import { trpc } from '@/lib/trpc';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { hasSwimmingPool } from '@/lib/homeSearch';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
-import { formatBookingDate, getDisplayName, intlLocale, formatStayEur } from '@/lib/format';
+import { formatBookingDate, getDisplayName, intlLocale, formatStayEur, keepHyphens } from '@/lib/format';
 import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight, watchBookingCardUnderFloats } from '@/lib/fixedBottom';
 import {
   StructuredData,
@@ -156,9 +156,16 @@ const HERO_SIZES = '(min-width: 1024px) 46vw, 100vw';
 const ADDON_BODY = 'flex min-w-0 flex-1 flex-col p-3.5 sm:p-5';
 const ADDON_TITLE = 'font-display body-lg text-pa-dark mb-2 sm:mb-1.5 text-balance group-hover:text-pa-gold-aa transition-colors';
 const ADDON_TAGLINE = 'body-sm text-pa-earth leading-relaxed mb-3 sm:mb-4 line-clamp-3 font-normal';
-const ADDON_FOOT = 'mt-auto flex items-baseline justify-between gap-x-2 pt-2.5 sm:pt-3 border-t border-pa-sand';
+const ADDON_FOOT = '@container mt-auto flex items-baseline justify-between gap-x-2 pt-2.5 sm:pt-3 border-t border-pa-sand';
 const ADDON_PRICE = 'min-w-0 body-sm leading-snug font-medium text-pa-dark';
 const ADDON_ACTION = 'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold-aa group-hover:text-pa-dark transition-colors';
+/* The word beside the arrow ("Request", "Anfragen", "Solicitar") shows only
+   where the foot is 15rem or wider, room for it beside the price in every
+   language; in a narrower foot (a phone row, three cards across on a
+   computer) the arrow alone, the word kept for screen readers. With the word,
+   "Price on request" broke in two in five languages on a computer and in all
+   of them on a small phone (auditoria de formatação, 2.ª ronda). */
+const ADDON_ACTION_WORD = '@max-[15rem]:sr-only';
 
 function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onClose, t }: {
   images: string[];
@@ -1234,12 +1241,14 @@ export default function PropertyDetail() {
       {/* Quem recebe é a Portugal Active, em todas as casas (próprias ou de
           parceiros): sem nome de pessoa nem "equipa local em X". O Ricardo,
           29 out 2026: "Portugal Active é Portugal Active". */}
-      <p className="mt-4 body-sm text-pa-dark leading-tight">
-        {t('host.hostedBy', 'Hosted by Portugal Active')}{' '}
-        {/* The dot and the link stay together: on a narrow phone the whole
-            link goes to the second line instead of breaking in the middle. */}
-        <span className="whitespace-nowrap">·{' '}
-          <Link href="/about" className="caption text-pa-gold-aa hover:underline">
+      {/* pa-dots: when the link does not fit beside the host it goes to the
+          next line whole and without the dot; "Portugal Active" never splits.
+          min-h-0: a link in a line of text (as it was), not a 44 px block that
+          made the line 44 px tall. */}
+      <p className="pa-dots mt-4 body-sm text-pa-dark leading-tight">
+        <span>{t('host.hostedBy', 'Hosted by Portugal Active').replace('Portugal Active', 'Portugal\u00A0Active')}</span>
+        <span>
+          <Link href="/about" className="min-h-0 caption text-pa-gold-aa hover:underline">
             {t('host.meetUs', 'Meet us')}
           </Link>
         </span>
@@ -1266,7 +1275,7 @@ export default function PropertyDetail() {
               </>
             )}
             <li className="text-pa-sand">/</li>
-            <li className="text-pa-earth truncate max-w-[220px] inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5">{displayName}</li>
+            <li className="text-pa-earth min-w-0 max-w-[220px] inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5"><span className="truncate">{displayName}</span></li>
           </ol>
         </nav>
 
@@ -1394,7 +1403,7 @@ export default function PropertyDetail() {
         </div>
 
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
-        <div className={bookableOnline ? "container pt-5 lg:pt-6 pb-8 lg:pb-16" : "container pt-5 lg:pt-6 pb-24 lg:pb-16"}>
+        <div className={bookableOnline || partnerUid ? "container pt-5 lg:pt-6 pb-8 lg:pb-16" : "container pt-5 lg:pt-6 pb-24 lg:pb-16"}>
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-1 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12">
@@ -1416,9 +1425,11 @@ export default function PropertyDetail() {
                 {keyAmenities.length > 0 && (
                   <ul className="mt-5 pt-5 border-t border-pa-sand grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
                     {keyAmenities.slice(0, 6).map((a) => (
-                      <li key={a.key} className="flex items-center gap-2.5 body-sm text-pa-dark min-w-0">
-                        <a.icon size={18} strokeWidth={1.5} className="text-pa-gold-aa shrink-0" aria-hidden="true" />
-                        <span className="truncate">{a.label}</span>
+                      <li key={a.key} className="flex items-start gap-2.5 body-sm leading-snug text-pa-dark min-w-0">
+                        <a.icon size={18} strokeWidth={1.5} className="text-pa-gold-aa shrink-0 mt-px" aria-hidden="true" />
+                        {/* Two lines rather than "Yksityinen uima-a…": at 15 px
+                            the longer languages no longer fit half a phone. */}
+                        <span className="min-w-0">{a.label}</span>
                       </li>
                     ))}
                   </ul>
@@ -1494,9 +1505,14 @@ export default function PropertyDetail() {
               {property.rooms && property.rooms.length > 0 && (
                 <section id="property-bedrooms" style={{ scrollMarginTop: '7rem' }}>
                   <h2 className="font-display headline-sm font-light text-pa-dark mb-1.5">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
-                  <p className="body-sm text-pa-earth mb-5">
-                    {t('propertyDetail.sleepsSummary', { beds: property.bedrooms, guests: property.maxGuests, defaultValue: '{{beds}} bedrooms · sleeps {{guests}}' })}
-                    {bedTotal > 0 && <> · {t('propertyDetail.bedTotal', { count: bedTotal })}</>}
+                  {/* pa-dots: no line ends or starts with a dot ("… 13 huéspedes ·" / "10 camas"). */}
+                  <p className="pa-dots body-sm text-pa-earth mb-5">
+                    {[
+                      t('propertyDetail.sleepsSummary', { beds: property.bedrooms, guests: property.maxGuests, defaultValue: '{{beds}} bedrooms · sleeps {{guests}}' }),
+                      ...(bedTotal > 0 ? [t('propertyDetail.bedTotal', { count: bedTotal })] : []),
+                    ].flatMap((s) => s.split(' · ')).map((part, i) => (
+                      <span key={i} className="whitespace-nowrap">{part}</span>
+                    ))}
                   </p>
                   <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-1 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
                     {property.rooms.map((room: any, roomIdx: number) => {
@@ -1640,7 +1656,7 @@ export default function PropertyDetail() {
                   {pdpFaq.map((f, i) => (
                     <details key={i} className="group py-3">
                       <summary className="flex items-center justify-between cursor-pointer list-none body-sm text-pa-dark font-medium min-h-[32px]">
-                        {f.q}
+                        <span className="text-balance">{f.q}</span>
                         <ChevronDown className="w-4 h-4 text-pa-stone transition-transform group-open:rotate-180 shrink-0 ml-3" />
                       </summary>
                       <p className="body-sm text-pa-earth leading-relaxed pt-2 pr-8 font-normal" >{f.a}</p>
@@ -1679,7 +1695,7 @@ export default function PropertyDetail() {
                     with the experiences below about five before the related
                     homes (auditoria de design, 14 nov 2026). From 640 px, the
                     cards as before. */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
                   {(showAllServices ? services : services.slice(0, 3)).map(service => (
                     <button
                       key={service.slug}
@@ -1698,8 +1714,8 @@ export default function PropertyDetail() {
                         ) : null}
                       </div>
                       <div className={ADDON_BODY}>
-                        <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
-                        <h3 className={ADDON_TITLE}>{service.name}</h3>
+                        <p className="eyebrow font-medium tracking-[0.08em] sm:tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
+                        <h3 className={ADDON_TITLE}>{keepHyphens(service.name)}</h3>
                         <p className={ADDON_TAGLINE}>{service.tagline}</p>
                         <div className={ADDON_FOOT}>
                           <p className={`${ADDON_PRICE} ${servicesHaveSuffix ? 'min-h-[2.5rem]' : ''}`}>
@@ -1707,7 +1723,7 @@ export default function PropertyDetail() {
                             {service.priceSuffix ? <span className="block caption leading-snug text-pa-stone font-normal">{service.priceSuffix}</span> : null}
                           </p>
                           <span className={ADDON_ACTION}>
-                            {t('propertyDetail.requestService', 'Request')} <ArrowRight className="w-3 h-3" />
+                            <span className={ADDON_ACTION_WORD}>{t('propertyDetail.requestService', 'Request')}</span><ArrowRight className="w-3 h-3" aria-hidden />
                           </span>
                         </div>
                       </div>
@@ -1726,7 +1742,7 @@ export default function PropertyDetail() {
                 <section>
                   <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.adventuresTitle')}</h2>
                   <p className="body-md text-pa-stone mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName, ...destVars })}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
                     {adventures.slice(0, 6).map(adventure => {
                       const meta: string[] = [];
                       if ((adventure as any).duration) meta.push(localizeDuration(String((adventure as any).duration), t));
@@ -1757,8 +1773,20 @@ export default function PropertyDetail() {
                             )}
                           </div>
                           <div className={ADDON_BODY}>
-                            <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
-                            <h3 className={ADDON_TITLE}>{adventure.name}</h3>
+                            {/* On a phone the 96 px photo has no room for the duration and
+                                difficulty labels it carries from 640 px, so
+                                they take the place of the overline there. */}
+                            <p className="eyebrow font-medium tracking-[0.08em] sm:tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">
+                              {meta.length > 0 ? (
+                                <>
+                                  <span className="pa-dots gap-y-1 sm:hidden!">
+                                    {meta.slice(0, 2).map((m, i) => <span key={i} className="whitespace-nowrap">{m}</span>)}
+                                  </span>
+                                  <span className="hidden sm:inline">{t('propertyDetail.adventureOverline', 'Curated experience')}</span>
+                                </>
+                              ) : t('propertyDetail.adventureOverline', 'Curated experience')}
+                            </p>
+                            <h3 className={ADDON_TITLE}>{keepHyphens(adventure.name)}</h3>
                             <p className={ADDON_TAGLINE}>{adventure.tagline}</p>
                             <div className={ADDON_FOOT}>
                               <p className={`${ADDON_PRICE} ${adventuresHaveSuffix ? 'min-h-[2.5rem]' : ''}`}>
@@ -1766,7 +1794,7 @@ export default function PropertyDetail() {
                                 {adventure.priceSuffix ? <span className="block caption leading-snug text-pa-stone font-normal">{adventure.priceSuffix}</span> : null}
                               </p>
                               <span className={ADDON_ACTION}>
-                                {t('propertyDetail.viewDetails', 'View')} <ArrowRight className="w-3 h-3" />
+                                <span className={ADDON_ACTION_WORD}>{t('propertyDetail.viewDetails', 'View')}</span><ArrowRight className="w-3 h-3" aria-hidden />
                               </span>
                             </div>
                           </div>

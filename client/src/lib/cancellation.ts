@@ -10,7 +10,7 @@ import {
   freeCancellationDeadline as sharedFreeCancellationDeadline,
   type CancellationDescription,
 } from "@shared/cancellationPolicy";
-import { formatBookingDate } from "./format";
+import { formatBookingDate, noBreak } from "./format";
 
 type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
 
@@ -36,7 +36,8 @@ export function cancellationPolicyInfo(
   return describeCancellationPolicy(rawCode, {
     lang,
     checkIn,
-    formatDate: (ymd) => formatBookingDate(ymd, lang, true),
+    // The date never splits ("(26 Apr" / "2027);"), as on the rate card.
+    formatDate: (ymd) => noBreak(formatBookingDate(ymd, lang, true)),
   });
 }
 

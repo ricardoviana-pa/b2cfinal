@@ -70,7 +70,8 @@ describe('new listing strings', () => {
     // phone/tablet row: Filters never shrinks, the count truncates, the view switch never shrinks
     // 15 px since the design audit of nov/2026 (E01: nothing in running UI text below 15 px here)
     expect(rail).toMatch(/className="inline-flex shrink-0 items-center gap-2 h-full font-body text-\[15px\] text-pa-dark"/);
-    expect(rail).toMatch(/status\('flex min-w-0 flex-1 justify-end'\)/);
+    // 13 px below 380 px: with a filter on, the Finnish count was cut ("86 vapa…")
+    expect(rail).toMatch(/status\('flex min-w-0 flex-1 justify-end max-\[379px\]:text-\[13px\]'\)/);
     expect(rail).toMatch(/<span aria-hidden className="truncate">\{resultLabel\}<\/span>/);
     expect(rail).toMatch(/role="group" aria-label=\{t\('homes\.filters\.view', 'View'\)\} className="inline-flex shrink-0/);
     expect(rail).toMatch(/detail\('plp-status-detail', /);

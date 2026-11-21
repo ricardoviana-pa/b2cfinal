@@ -715,12 +715,11 @@ export default function Home() {
                       <h3 className="text-white text-[1.25rem] font-display">{dest.name}</h3>
                     </div>
                   </div>
-                  {/* 14 px: the column is 224 to 260 px wide at every screen
-                      size, and at 15 px these two or three sentences ran to
-                      nine lines of three or four words (13 px before the
-                      redesign). */}
-                  {/* eslint-disable-next-line no-restricted-syntax -- a narrow caption column; body-sm is too large for it */}
-                  <p className="text-[14px] leading-[1.55] text-pa-earth mt-3 font-body font-normal" >
+                  {/* A caption under its photo: 13 px, the caption size (E01).
+                      The column is 176 to 260 px wide; at 15 px these two or
+                      three sentences ran to nine lines of three or four words,
+                      at 14 px still one line more than before the redesign. */}
+                  <p className="caption leading-[1.55] text-pa-earth mt-3 font-body font-normal" >
                     {keepDashes(keepHyphens(dest.description))}
                   </p>
                 </Link>

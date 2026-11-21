@@ -127,11 +127,11 @@ describe('E05 — setas das fotografias dos cartões só ao passar o rato', () =
       expect(cls).toContain('opacity-0 group-hover:opacity-100 focus-visible:opacity-100');
     }
   });
-  it('nome a 20 px (18 px num cartão com menos de 360 px) e preço a 16 px', () => {
+  it('nome a 20 px no computador (18 px num cartão com menos de 360 px e no telemóvel) e preço a 16 px', () => {
     // 20 px onde o cartão tem largura para isso; a auditoria de formatação
     // mediu nomes de três palavras partidos em dois nos cartões estreitos.
-    expect(card).toContain('<h3 className="text-[1.0625rem] @min-[340px]:text-[1.125rem] @min-[360px]:text-[1.25rem] font-display');
-    expect(card).toContain('<div className="@container pt-3.5">');
+    expect(card).toContain('<h3 className="text-[1.0625rem] @min-[340px]:text-[1.125rem] lg:@min-[360px]:text-[1.25rem] font-display');
+    expect(card).toContain('<div className="@container flex flex-1 flex-col pt-3.5">');
     expect(card).toContain('<span className="text-[16px] text-[#1A1A18] font-medium">');
   });
 });

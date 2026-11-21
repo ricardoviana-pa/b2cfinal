@@ -106,7 +106,10 @@ function MenuTrigger({ label, value, open }: { label: string; value?: string | n
     <span className={`relative inline-flex items-center gap-1.5 font-body text-[15px] leading-none transition-colors ${
       value ? 'text-pa-dark font-medium' : 'text-pa-dark hover:text-pa-gold-aa'
     }`}>
-      <span className="truncate max-w-[180px]">{value || label}</span>
+      {/* Its own line height: on the trigger's (1) the box was as tall as the
+          letters and cut the accent of "Équipements". 240 px: the longest
+          value ("5–6 makuuhuonetta · 12+ vierasta") needs 237. */}
+      <span className="truncate max-w-[240px] leading-[1.4]">{value || label}</span>
       <ChevronDown className={`w-3 h-3 shrink-0 text-pa-stone transition-transform ${open ? 'rotate-180' : ''}`} />
       {value && <span aria-hidden className="absolute -top-1 -right-2.5 h-1.5 w-1.5 rounded-full bg-pa-gold" />}
     </span>
@@ -158,11 +161,12 @@ function Strip<T extends string | number>({ options, value, onChange }: {
   options: { value: T; label: string; count: number }[]; value: T; onChange: (v: T) => void;
 }) {
   return (
-    /* The first cell ("Any": "Beliebig", "Cualquiera", "Qualsiasi") is as wide
-       as its word; the numbers share the rest equally. With equal cells the
-       word was cut at both sides in a 42 px cell (auditoria de formatação,
-       20 nov 2026). */
-    <div className="grid rounded-lg border border-pa-sand overflow-hidden divide-x divide-pa-sand" style={{ gridTemplateColumns: `auto repeat(${Math.max(1, options.length - 1)}, minmax(0, 1fr))` }}>
+    /* Equal cells, except that the first ("Any": "Beliebig", "Cualquiera",
+       "Qualsiasi") is never narrower than its word: in the 258 px computer
+       popover an equal share was 42 px and cut the word at both sides; in the
+       wide sheet below 1280 px every cell is the same width again (with
+       "auto" the chosen cell was a 48 px sliver beside 230 px numbers). */
+    <div className="grid rounded-lg border border-pa-sand overflow-hidden divide-x divide-pa-sand" style={{ gridTemplateColumns: `minmax(max-content, 1fr) repeat(${Math.max(1, options.length - 1)}, minmax(0, 1fr))` }}>
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -388,7 +392,7 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
           the taps on the bottom of Map and Filters (revisão 2 do PR #175). */}
       <div className="xl:hidden">
         <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="justify-between md:justify-start md:gap-x-10 border-y border-pa-sand h-11 [&>button]:px-0" />
-        <div className={`flex items-center gap-3 h-[52px] ${resultDetail ? '' : 'border-b border-pa-sand'}`}>
+        <div className={`flex items-center gap-3 max-[379px]:gap-2 h-[52px] ${resultDetail ? '' : 'border-b border-pa-sand'}`}>
           <button
             ref={filtersButton}
             type="button"
@@ -401,7 +405,9 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
             <span>{t('conversion.filters', 'Filters')}</span>
             {activeCount > 0 && <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-pa-dark px-1 text-[12px] font-medium text-white">{activeCount}</span>}
           </button>
-          {status('flex min-w-0 flex-1 justify-end')}
+          {/* 13 px below 380 px: with a filter on (the badge beside
+              "Suodattimet") the Finnish count was cut: "86 vapa…". */}
+          {status('flex min-w-0 flex-1 justify-end max-[379px]:text-[13px]')}
           <ViewSwitch value={view} onChange={onView} compact />
         </div>
         {detail('plp-status-detail', 'pb-2 border-b border-pa-sand')}

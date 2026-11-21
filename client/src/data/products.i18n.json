@@ -358,7 +358,7 @@
     },
     "fr": {
       "name": "Ménage quotidien",
-      "tagline": "Un ménage digne d'un hôtel pendant tout votre séjour. Trois niveaux : Quick Refresh, Full Service ou Sur Mesure.",
+      "tagline": "Un ménage digne d'un hôtel pendant tout votre séjour. Trois niveaux : Quick Refresh, Full Service ou Sur Mesure.",
       "description": "Un ménage digne d'un hôtel pendant tout votre séjour. Quick Refresh (rangement, poubelles, lits faits), Full Service (draps et serviettes lavés, ménage complet, produits d'accueil réapprovisionnés) ou Sur Mesure (dites-nous ce dont vous avez besoin).",
       "priceSuffix": "par visite"
     },
@@ -558,8 +558,8 @@
     },
     "fr": {
       "name": "Randonnée, baignade et dîner",
-      "tagline": "Une aventure d'une journée : randonnez jusqu'à des cascades cachées, baignez-vous dans des piscines naturelles et terminez par un déjeuner traditionnel.",
-      "description": "Une aventure d'une journée : randonnez jusqu'à des cascades cachées, baignez-vous dans des piscines naturelles et terminez par un déjeuner traditionnel dans un restaurant familial local.",
+      "tagline": "Une aventure d'une journée : randonnez jusqu'à des cascades cachées, baignez-vous dans des piscines naturelles et terminez par un déjeuner traditionnel.",
+      "description": "Une aventure d'une journée : randonnez jusqu'à des cascades cachées, baignez-vous dans des piscines naturelles et terminez par un déjeuner traditionnel dans un restaurant familial local.",
       "priceSuffix": "par personne"
     },
     "es": {

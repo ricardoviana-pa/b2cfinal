@@ -66,7 +66,7 @@ describe('the dated-search detail line clears the List/Map pill', () => {
     expect(viewSwitch).not.toMatch(/min-h-|minHeight/);
     expect(viewSwitch).toMatch(/className="inline-flex shrink-0 items-center rounded-full border border-pa-sand bg-white p-0\.5"/);
     const pill = 44 + 2 * 2 + 2 * 1; // buttons + p-0.5 + border
-    const row = phoneRail.match(/<div className=\{`flex items-center gap-3 h-\[(\d+)px\]/);
+    const row = phoneRail.match(/<div className=\{`flex items-center gap-3 (?:max-\[379px\]:gap-2 )?h-\[(\d+)px\]/);
     expect(row, 'row height in px').not.toBeNull();
     expect(Number(row![1])).toBeGreaterThanOrEqual(pill);
   });

@@ -265,13 +265,15 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t('legalFooter.complaintsBookAria')}
-              className="inline-flex items-center gap-2.5 rounded-lg border border-white/25 px-3.5 py-2 text-[13px] max-[374px]:text-[12px] leading-snug text-white/80 hover:border-white/50 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2.5 rounded-lg border border-white/25 px-3.5 py-2 text-[13px] max-[389px]:text-[12px] leading-snug text-white/80 hover:border-white/50 hover:text-white transition-colors"
               style={{ fontFamily: 'var(--font-body)' }}
             >
               <BookOpen size={15} className="flex-shrink-0 text-[#C4A87C]" aria-hidden="true" />
-              <span>
+              {/* 12 px below 390 px: in Spanish and French the label broke
+                  in two at 375 and 360 px. The translation never splits. */}
+              <span className="text-center">
                 <span lang="pt" className="font-medium">{COMPLAINTS_BOOK_NAME}</span>
-                {language !== 'pt' && <span className="text-white/65"> · {t('legalFooter.complaintsBook')}</span>}
+                {language !== 'pt' && <span className="text-white/65"> · <span className="whitespace-nowrap">{t('legalFooter.complaintsBook')}</span></span>}
               </span>
             </a>
           </div>
@@ -286,7 +288,7 @@ export default function Footer() {
             className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[13px] leading-none text-white/65 lg:flex-row lg:items-center lg:justify-between lg:pr-16"
             style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
           >
-            <span className="leading-none">
+            <span className="leading-none max-lg:leading-snug max-lg:text-center">
               {t('footer.copyrightLine', { year: new Date().getFullYear(), rights: t('footer.allRightsReserved') })}
             </span>
             {/* Inline links (with middot separators) so they share the copyright's

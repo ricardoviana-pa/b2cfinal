@@ -49,7 +49,7 @@ describe('prefilled concierge message', () => {
   });
 
   it('has its own opening for a dead end (no match / no availability), still in the page language', async () => {
-    expect(listingWhatsAppMessage(await tFor('fr'), 'fr', { reason: 'noAvailability' })).toMatch(/^Bonjour ! Je n’ai pas trouvé .* disponible à mes dates/);
+    expect(listingWhatsAppMessage(await tFor('fr'), 'fr', { reason: 'noAvailability' })).toMatch(/^Bonjour\u00A0! Je n’ai pas trouvé .* disponible à mes dates/);
     expect(listingWhatsAppMessage(await tFor('pt'), 'pt', { reason: 'noMatch' })).toMatch(/^Olá! Não encontrei .* que corresponda/);
   });
 
@@ -149,7 +149,7 @@ describe('the listing float keeps off the first card', () => {
 
   it('/homes and the collections mark the block that holds their cards', () => {
     expect(LISTING_FIRST_RESULT).toBe('[data-listing-results] article');
-    expect(read('client/src/components/property/PropertyCard.tsx')).toMatch(/<article className="group cursor-pointer block">/);
+    expect(read('client/src/components/property/PropertyCard.tsx')).toMatch(/<article className="group cursor-pointer flex flex-1 flex-col">/);
     expect(read('client/src/pages/Homes.tsx')).toMatch(/<div className="min-w-0" data-listing-results="">\s*<ListingReassurance/);
     expect(read('client/src/pages/Collection.tsx')).toMatch(/<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-listing-results="">\s*\{homes\.slice\(0, visibleCount\)\.map/);
   });

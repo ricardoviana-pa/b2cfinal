@@ -149,7 +149,7 @@ export default function Collection() {
       </div></section>
 
       <section className="container pt-8 pb-12 md:pb-16">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8 border-b border-pa-sand pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8 border-b border-pa-sand pb-8">
           {planning && <div className="max-w-xl">
             <h2 className="text-xl font-display text-pa-dark mb-2">{planning.title}</h2>
             <p className="body-sm text-pa-earth">{planning.help}</p>
@@ -220,13 +220,13 @@ export default function Collection() {
         <section className="bg-white border-t border-pa-sand py-10">
           <nav aria-labelledby="more-homes-index" className="container">
             <h2 id="more-homes-index" className="eyebrow text-pa-stone mb-4">{t('homes.moreHomesIndex', 'More homes')}</h2>
-            <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
+            <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm text-sm">
               {homes.slice(visibleCount).map((property) => (
-                <li key={property.id} className="break-inside-avoid py-1">
+                <li key={property.id} className="break-inside-avoid py-1 leading-snug text-balance">
                   <Link href={propertyTripHref(property.slug, { checkin: trip.checkin, checkout: trip.checkout, guests: trip.guests })} className="text-pa-dark underline-offset-4 hover:underline">
                     {getDisplayName(property)}
                   </Link>
-                  {property.locality && <> <span className="text-pa-stone whitespace-nowrap">· {property.locality}</span></>}
+                  {property.locality && <>{'\u00A0'}<span className="text-pa-stone whitespace-nowrap">· {property.locality}</span></>}
                 </li>
               ))}
             </ul>

@@ -39,7 +39,7 @@ export default function ListingReassurance({ whatsappHref, context, showCancella
        15 px on a phone, where only the cancellation note shows. */
     <ul
       data-testid="listing-reassurance"
-      className={`${showCancellation ? 'flex mb-4' : 'hidden'} lg:flex lg:mb-5 flex-row flex-wrap gap-x-6 gap-y-1.5 font-body text-[15px] lg:text-[13px] leading-snug text-pa-earth`}
+      className={`${showCancellation ? 'flex mb-5' : 'hidden'} lg:flex lg:mb-5 flex-row flex-wrap gap-x-6 gap-y-1.5 font-body text-[15px] lg:text-[13px] leading-snug text-pa-earth`}
     >
       {showCancellation && (
         <li>

@@ -127,8 +127,10 @@ export const keepPhones = (text: string): string =>
 export const keepHyphens = (text: string): string => text.replace(/(\p{L})-(?=\p{L})/gu, '$1-\u2060');
 
 /** A dash stays with the word before it ("the Algarve —" / "the coasts"),
- *  never alone at the start of the next line. */
-export const keepDashes = (text: string): string => text.replace(/ ([—–]) /g, '\u00A0$1 ');
+ *  never alone at the start of the next line. A hyphen between spaces is a
+ *  dash too ("Quinta do Merouço - Casa do Rio": balanced wrapping put the
+ *  "- " at the start of the second line of the card). */
+export const keepDashes = (text: string): string => text.replace(/ ([—–-]) /g, '\u00A0$1 ');
 
 /** A Portuguese postcode stays whole: a WORD JOINER after the hyphen stops the
  *  line breaking as "4900-" / "336" without changing how it looks or copies. */

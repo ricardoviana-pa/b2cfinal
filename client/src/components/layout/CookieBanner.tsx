@@ -106,7 +106,7 @@ export default function CookieBanner() {
                 {t('cookieBanner.description')}{' '}
                 <Link
                   href="/legal/cookies"
-                  className="text-[#C4A87C] hover:text-white underline underline-offset-2 transition-colors"
+                  className="text-[#C4A87C] hover:text-white underline underline-offset-2 transition-colors whitespace-nowrap"
                 >
                   {t('cookieBanner.policyLink')}
                 </Link>

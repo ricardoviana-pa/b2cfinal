@@ -1078,9 +1078,11 @@
    leading dot in a 1rem box; the row is pulled 1rem to the left and that strip
    is clipped, so the first dot of each line is cut away. Use on the row:
    <ul class="pa-dots">, items as direct children. */
-.pa-dots { display: flex; flex-wrap: wrap; align-items: center; margin-left: -1rem; clip-path: inset(-4px -4px -4px calc(1rem - 3px)); }
+.pa-dots { display: flex; flex-wrap: wrap; align-items: center; margin-left: -0.75rem; clip-path: inset(-4px -4px -4px calc(0.75rem - 3px)); }
 .pa-dots > * { display: inline-flex; align-items: center; min-width: 0; }
-.pa-dots > *::before { content: "·"; flex: none; width: 1rem; text-align: center; color: var(--pa-dot-color, #D8D2C6); }
+/* 12 px for the dot and the room around it, about what " · " took in running
+   text (16 px made the facts line one item too long for a 390 px phone). */
+.pa-dots > *::before { content: "·"; flex: none; width: 0.75rem; text-align: center; color: var(--pa-dot-color, #D8D2C6); }
 
 .pa-date-hit { position: relative; }
 /* A search-bar date cell (SearchDateCell): the native input lies invisible over the cell's own text. */

@@ -527,22 +527,26 @@ export default function Homes() {
       <section className="container pt-24 md:pt-28 pb-4 md:pb-5">
         {/* Title and search bar side by side only from 1280 px: between 1024
             and 1280 the bar did not fit beside the intro and its SEARCH button
-            ran off the screen (auditoria de formatação, 20 nov 2026). Side by
-            side, the bar is as wide as its own contents (they differ a lot
-            between languages) and the intro takes the rest. */}
-        <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between xl:gap-10">
+            ran off the screen (auditoria de formatação, 20 nov 2026). The bar
+            is 760 px wide at every computer width, as it was a fixed 648 px
+            before: as wide as its contents, it narrowed when a date replaced
+            "Check-in", slid to the right and took the open calendar with it,
+            under the pointer. The destination takes what the dates leave.
+            A collection's title is long ("Together, 12+ guests · Portugal"):
+            it keeps the bar under it at every width. */}
+        <div className={`flex flex-col gap-5 ${collection ? '' : 'xl:flex-row xl:items-end xl:justify-between xl:gap-10'}`}>
           <div className="min-w-0 xl:flex-1">
             <h1 className="headline-lg text-pa-dark break-words">{collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title')}</h1>
             <p className="body-sm text-pa-stone mt-1.5 max-w-lg">{t('conversion.homesIntro')}</p>
           </div>
           {/* Desktop — pill (same as homepage) */}
-          <div className="hidden lg:block w-full lg:max-w-[760px] xl:w-auto xl:max-w-none xl:shrink-0">
+          <div className="hidden lg:block w-full lg:max-w-[760px] xl:w-[760px] xl:shrink-0">
             <div
               ref={desktopBarRef}
-              className="flex items-center w-full max-w-[780px] xl:w-auto rounded-xl bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-pa-sand/60"
+              className="flex items-center w-full max-w-[780px] rounded-xl bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-pa-sand/60"
               style={{ height: '52px' }}
             >
-              <div className="flex-1 xl:flex-none xl:w-[200px] relative h-full min-w-0">
+              <div className="flex-1 relative h-full min-w-0">
                 <select
                   aria-label={t('home.searchDestination')}
                   value={bookingLocation || (bookingDestination ? `region:${bookingDestination}` : '')}
@@ -678,7 +682,7 @@ export default function Homes() {
                 />
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-pa-sand bg-white px-3">
+                <div className="flex items-center gap-2 flex-1 min-w-0 h-[48px] rounded-lg border border-pa-sand bg-white px-3">
                   <Users className="w-4 h-4 text-pa-stone shrink-0" aria-hidden />
                   <button
                     type="button"
@@ -689,11 +693,13 @@ export default function Homes() {
                   >
                     <Minus className="w-3 h-3" />
                   </button>
-                  {/* On a narrow phone only the number fits between the two
-                      round buttons (the people icon says what it counts): the
-                      word made a two-line label that touched the field and
-                      squashed the buttons. */}
-                  <span className="body-sm text-base text-pa-dark tabular-nums flex-1 text-center whitespace-nowrap">{bookingGuests}<span className="hidden min-[430px]:inline"> {t('home.searchGuests')}</span></span>
+                  {/* The word shows only where it fits between the two round
+                      buttons, in whatever language (the people icon says what
+                      the number counts): the label is one line tall and the
+                      word, when it has no room beside the number, wraps to a
+                      second line that is not shown. A fixed breakpoint was
+                      right for English and 8 px short for "Voyageurs". */}
+                  <span className="body-sm text-base leading-6 text-pa-dark tabular-nums flex h-6 min-w-0 flex-1 flex-wrap justify-center gap-x-1 overflow-hidden px-1"><span>{bookingGuests}</span><span>{t('home.searchGuests')}</span></span>
                   <button
                     type="button"
                     onClick={() => changeGuests(g => Math.min(30, g + 1))}
@@ -1201,17 +1207,19 @@ export default function Homes() {
             <h2 id="more-homes-index" className="eyebrow text-pa-stone mb-4">
               {t('homes.moreHomesIndex', 'More homes')}
             </h2>
-            <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
+            <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm text-sm">
               {availableProperties.slice(visibleCount).map((property) => (
-                <li key={property.id} className="break-inside-avoid py-1 leading-snug">
+                <li key={property.id} className="break-inside-avoid py-1 leading-snug text-balance">
                   <Link
                     href={propertyTripHref(property.slug, { checkin: searchCheckin, checkout: searchCheckout, guests: searchGuestsCount || undefined })}
                     className="text-pa-dark underline-offset-4 hover:underline"
                   >
                     {getDisplayName(property)}
                   </Link>
-                  {/* The place moves to the next line whole, never "· Viana do / Castelo". */}
-                  {property.locality && <> <span className="text-pa-stone whitespace-nowrap">· {property.locality}</span></>}
+                  {/* The place stays whole and stays with the last word of the
+                      name: a second line never starts with the dot and never
+                      splits "Viana do / Castelo". */}
+                  {property.locality && <>{'\u00A0'}<span className="text-pa-stone whitespace-nowrap">· {property.locality}</span></>}
                 </li>
               ))}
             </ul>

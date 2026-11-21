@@ -500,8 +500,11 @@ export default function AvailabilityCalendar({
             onClick={() => { onSelectRange({ checkIn: "", checkOut: "", done: false }); setPhase("check-in"); }}
             className="ml-auto flex shrink-0 items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[12px] sm:text-[13px] font-medium text-black/60 bg-black/[0.04] hover:bg-black/[0.08] hover:text-black transition-all"
           >
-            <X className="w-3 h-3 shrink-0" />
-            {t("bookingWidget.clearDates")}
+            {/* The cross alone below 640 px: with the dates in the two pills,
+                "Clear" ("Zurücksetzen", "Tyhjennä") dropped alone to a second
+                row and pushed the month down. */}
+            <X className="w-3 h-3 shrink-0" aria-hidden />
+            <span className="max-sm:sr-only">{t("bookingWidget.clearDates")}</span>
           </button>
         )}
       </div>
@@ -513,16 +516,18 @@ export default function AvailabilityCalendar({
           chosen check-in wins over the month's general rule. */}
       {!search && <div className="mx-4 mb-1 min-h-[46px] flex items-stretch">
         {phase === "check-out" && requiredMinNights > 1 ? (
-          <div className="flex-1 flex items-start gap-2 px-3 py-2 bg-amber-50/80 border border-amber-200/60">
+          <div className="flex-1 flex items-start gap-2 px-3 py-1.5 rounded-lg bg-amber-50/80 border border-amber-200/60">
             <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
-            <p className="text-[13px] text-amber-800 font-medium leading-snug">
+            {/* 12 px: two lines fit the 46 px slot, so the month does not move
+                when the notice appears after the first tap. */}
+            <p className="text-[12px] text-amber-800 font-medium leading-[1.3]">
               {t("booking.minStayNotice", { count: requiredMinNights })}
             </p>
           </div>
         ) : monthRule ? (
-          <div className="flex-1 flex items-start gap-2 px-3 py-2 bg-[#F5F1EB] border border-[#E8E4DC]">
+          <div className="flex-1 flex items-start gap-2 px-3 py-1.5 rounded-lg bg-[#F5F1EB] border border-[#E8E4DC]">
             <span className="text-[#806A48] text-sm shrink-0 leading-none mt-0.5">i</span>
-            <p className="text-[13px] text-[#1A1A18] font-medium leading-snug">
+            <p className="text-[12px] text-[#1A1A18] font-medium leading-[1.3]">
               {monthRule.restrictedArrivals
                 ? monthRule.minNights > 1
                   ? t("booking.arrivalDaysNotice", {

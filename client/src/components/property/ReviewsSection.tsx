@@ -115,11 +115,13 @@ export default function ReviewsSection({ reviews, averageRating, reviewCount }: 
           ].filter((x): x is string => !!x);
           return (
           <div key={idx} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-lg p-5 hover:border-[#8B7355]/30 transition-colors">
-            {/* The stars stay on the name's line; when the date and the
-                language do not fit one line (a phone, in German) they break
-                between the two, never with a dot starting the second line. */}
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <div className="flex min-w-0 items-center gap-2.5">
+            {/* The stars share the name's line only; the date and the
+                language run under the name at the whole width of the text
+                column (beside the stars they had 130 to 176 px and broke in two
+                or were cut: "Auf Portugiesisch verfa"). When they still do not
+                fit one line they break between the two, never with a dot
+                starting the second line. */}
+            <div className="flex items-center gap-2.5 mb-3">
                 {review.guestPhoto ? (
                   <img
                     src={review.guestPhoto}
@@ -137,16 +139,17 @@ export default function ReviewsSection({ reviews, averageRating, reviewCount }: 
                     <Check className="w-4 h-4" />
                   </div>
                 )}
-                <div className="min-w-0">
-                  <p className="text-[15px] font-medium text-[#1A1A18]">{displayName}</p>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="min-w-0 text-[15px] font-medium text-[#1A1A18]">{displayName}</p>
+                    <div className="shrink-0 pt-1"><Stars value={review.rating} className="w-3.5 h-3.5" labelled /></div>
+                  </div>
                   <div className="pa-dots text-[13px] text-pa-stone">
                     {meta.map((part, i) => (
-                      <span key={i} className="whitespace-nowrap">{part}</span>
+                      <span key={i}>{part}</span>
                     ))}
                   </div>
                 </div>
-              </div>
-              <div className="shrink-0 pt-1"><Stars value={review.rating} className="w-3.5 h-3.5" labelled /></div>
             </div>
             <details className="group/review" lang={language ?? undefined}>
               <summary className="cursor-pointer list-none">

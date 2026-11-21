@@ -125,7 +125,9 @@ export default function RatePlanCards<T extends RateCardOption>({
                   </span>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="body-sm text-pa-dark font-medium leading-snug">{label}</p>
+                      {/* 14 px from 1024 to 1279 px, where the card is 283 px: "Não
+                          Reembolsável" broke with "Não" alone. */}
+                      <p className="body-sm lg:max-xl:text-sm text-pa-dark font-medium leading-snug">{label}</p>
                       {recommended && (
                         <span className={cn("eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 text-pa-gold-aa border border-pa-sand rounded-sm", selected ? "bg-white" : "bg-pa-warm")}>
                           {t("bookingWidget.recommended", "Recommended")}

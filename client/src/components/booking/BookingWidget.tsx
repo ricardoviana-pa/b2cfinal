@@ -907,7 +907,7 @@ export default function BookingWidget({
         <div className="p-6 space-y-4">
           {/* Email confirmation notice */}
           {guestEmail && (
-            <div className="bg-pa-warm border border-pa-sand px-4 py-3 text-center">
+            <div className="rounded-lg bg-pa-warm border border-pa-sand px-4 py-3 text-center">
               <p className="caption text-pa-earth">
                 {t("bookingWidget.confirmationEmailSent", { defaultValue: "Confirmation email sent to" })} <span className="font-medium">{guestEmail}</span>
               </p>
@@ -1094,7 +1094,7 @@ export default function BookingWidget({
                     active ? "bg-black/[0.04] shadow-[inset_0_-2px_0_var(--color-pa-dark)]" : "hover:bg-black/[0.02]"
                   }`}
                 >
-                  <span className="block eyebrow font-medium tracking-[0.15em] uppercase text-pa-stone mb-1">{label}</span>
+                  <span className="block eyebrow font-medium tracking-[0.15em] lg:max-xl:tracking-[0.06em] uppercase text-pa-stone mb-1">{label}</span>
                   <span className={`block body-sm text-inherit font-normal ${value ? "text-black" : "text-pa-stone"}`}>
                     {shown}
                   </span>
@@ -1192,7 +1192,7 @@ export default function BookingWidget({
         )}
 
         {isBelow && (
-          <div className="flex items-start gap-2.5 p-3 mt-2 bg-amber-50/80 border border-amber-200/60">
+          <div className="rounded-lg flex items-start gap-2.5 p-3 mt-2 bg-amber-50/80 border border-amber-200/60">
             <span className="text-amber-600 body-sm text-inherit shrink-0 leading-none mt-0.5">!</span>
             <p className="caption text-inherit text-amber-800 font-medium leading-snug">
               {t("bookingWidget.belowMinNightsWarning", { count: effectiveMinNights })}
@@ -1245,7 +1245,7 @@ export default function BookingWidget({
           const daysUntilCheckIn = Math.ceil((new Date(checkIn).getTime() - Date.now()) / 86400000);
           if (daysUntilCheckIn === 0) {
             return (
-              <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
+              <div className="rounded-lg flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
                 <span className="text-amber-600 body-sm text-inherit shrink-0 leading-none mt-0.5">!</span>
                 <div>
                   <p className="caption text-inherit text-amber-800 font-medium leading-snug">
@@ -1263,7 +1263,7 @@ export default function BookingWidget({
 
         {/* Error (validation feedback while still choosing dates; pricing failures are handled in the quote step) */}
         {error && step === "dates" && (
-          <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50 body-sm text-inherit" role="alert">
+          <div className="rounded-lg flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50 body-sm text-inherit" role="alert">
             <span className="text-red-500 mt-0.5 shrink-0 font-medium caption text-inherit">!</span>
             <p className="text-red-600 leading-snug caption text-inherit">{error}</p>
           </div>
@@ -1294,7 +1294,7 @@ export default function BookingWidget({
         {step === "quote" && !hasLivePrice && (
           <>
             {quote?.requestOnly ? (
-              <div ref={pricingIssueRef} className="p-3 bg-pa-warm border border-pa-sand" role="status">
+              <div ref={pricingIssueRef} className="rounded-lg p-3 bg-pa-warm border border-pa-sand" role="status">
                 <p className="caption text-inherit text-pa-dark leading-snug font-medium">
                   {t("bookingWidget.requestOnlyTitle", "This home is booked on request for these dates.")}
                 </p>
@@ -1303,13 +1303,13 @@ export default function BookingWidget({
                 </p>
               </div>
             ) : quote?.datesTaken ? (
-              <div ref={pricingIssueRef} className="p-3 bg-pa-warm border border-pa-sand" role="status">
+              <div ref={pricingIssueRef} className="rounded-lg p-3 bg-pa-warm border border-pa-sand" role="status">
                 <p className="caption text-inherit text-pa-dark leading-snug font-medium">
                   {t("booking.datesUnavailable", "These dates are no longer available")}
                 </p>
               </div>
             ) : (
-            <div ref={pricingIssueRef} className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
+            <div ref={pricingIssueRef} className="rounded-lg flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium caption text-inherit">!</span>
               <p className="text-red-600 leading-snug caption text-inherit font-medium">
                 {t("bookingWidget.pricingUnavailableMessage", "We couldn't confirm pricing for these dates. Please contact a Concierge.")}
@@ -1365,10 +1365,12 @@ export default function BookingWidget({
             </a>
 
             {/* Mini summary so the guest sees what they're requesting — no price */}
-            <div className="bg-black/[0.02] border border-black/5 p-3 space-y-1">
+            <div className="rounded-lg bg-black/[0.02] border border-black/5 p-3 space-y-1">
               <p className="caption text-black">{propertyName}</p>
-              <p className="caption text-pa-stone">
-                {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
+              <p className="pa-dots caption text-pa-stone">
+                <span className="whitespace-nowrap">{formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)}</span>
+                <span className="whitespace-nowrap">{nights} {t("bookingWidget.nightsLabel", "nights")}</span>
+                <span className="whitespace-nowrap">{guests} {t("booking.guestsLabel", "guests")}</span>
               </p>
             </div>
 
@@ -1660,16 +1662,16 @@ export default function BookingWidget({
             <div className="grid grid-cols-2 gap-2">
               <input type="text" placeholder={t("bookingWidget.firstNamePh")} value={guestFirstName}
                 onChange={e => setGuestFirstName(e.target.value)}
-                className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black font-normal"
+                className="w-full h-[48px] rounded-lg border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black font-normal"
               />
               <input type="text" placeholder={t("bookingWidget.lastNamePh")} value={guestLastName}
                 onChange={e => setGuestLastName(e.target.value)}
-                className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black font-normal"
+                className="w-full h-[48px] rounded-lg border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black font-normal"
               />
             </div>
             <input type="email" placeholder={t("bookingWidget.emailShortPh")} value={guestEmail}
               onChange={e => setGuestEmail(e.target.value)}
-              className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black font-normal"
+              className="w-full h-[48px] rounded-lg border border-black/15 bg-white px-3 py-2 body-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black font-normal"
             />
             <PhoneInput value={guestPhone} onChange={setGuestPhone} onBlur={() => setPhoneTouched(true)} placeholder={t("bookingWidget.phonePh", "Phone number *")} />
             {/* Terms & Cancellation Policy acceptance */}
@@ -1702,11 +1704,13 @@ export default function BookingWidget({
             {termsAccepted && guestFirstName.trim() && guestLastName.trim() && isValidEmail(guestEmail) && isValidPhone(guestPhone) ? (
               <>
                 {/* Booking summary confirmation before payment */}
-                <div className="bg-black/[0.02] border border-black/10 p-4 space-y-1.5">
+                <div className="rounded-lg bg-black/[0.02] border border-black/10 p-4 space-y-1.5">
                   <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-pa-stone">{t("bookingWidget.bookingSummary", { defaultValue: "Booking summary" })}</p>
                   <p className="body-sm text-black">{propertyName}</p>
-                  <p className="caption text-pa-stone">
-                    {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {effectiveQuote?.nights || nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
+                  <p className="pa-dots caption text-pa-stone">
+                    <span className="whitespace-nowrap">{formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)}</span>
+                    <span className="whitespace-nowrap">{effectiveQuote?.nights || nights} {t("bookingWidget.nightsLabel", "nights")}</span>
+                    <span className="whitespace-nowrap">{guests} {t("booking.guestsLabel", "guests")}</span>
                   </p>
                   <p className="body-sm text-black font-medium tabular-nums">{t("property.total")}: {formatQuotedEur(effectiveQuote?.total ?? quote.total, lang)}</p>
                   <p className="caption text-pa-stone">{guestFirstName} {guestLastName} · {guestEmail}</p>
@@ -1771,7 +1775,7 @@ export default function BookingWidget({
             target="_blank"
             rel="noopener noreferrer"
             data-track-source="booking_widget"
-            className="flex items-center justify-center gap-1.5 caption text-pa-gold-aa hover:text-black transition-colors pt-2.5 mt-0.5 border-t border-black/[0.06]"
+            className="flex items-center justify-center gap-1.5 caption text-center text-pa-gold-aa hover:text-black transition-colors pt-2.5 mt-0.5 border-t border-black/[0.06]"
           >
             {t("property.needHelpConcierge", "Need help? Talk to the concierge")}
           </a>
