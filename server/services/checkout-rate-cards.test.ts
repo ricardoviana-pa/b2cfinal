@@ -83,13 +83,16 @@ describe("o componente e quem o usa", () => {
   it("benefício, total, total riscado com 'Poupe X €' e a linha das duas partes debaixo da reembolsável", () => {
     expect(cards).toMatch(/t\("booking\.freeCancellation", \{ date: formatBookingDate\(m\.freeUntil, lang, true\) \}\)/);
     expect(cards).toMatch(/checkout\.rateCard\.noRefund/);
-    expect(cards).toMatch(/<s className="text-pa-stone-aa tabular-nums">\{formatQuotedEur\(m\.compareTotal, lang\)\}<\/s>/);
-    expect(cards).toMatch(/t\("bookingWidget\.save", "Save"\)\} \{formatQuotedEur\(m\.savings, lang\)\}/);
+    // Os valores passam por money(): cêntimos no checkout, euros inteiros na
+    // página da casa (wholeEuros; decisão E07 de 20 nov 2026, lib/format.ts).
+    expect(cards).toMatch(/const money = \(amount: number\) => \(wholeEuros \? formatStayEur\(amount, lang\) : formatQuotedEur\(amount, lang\)\);/);
+    expect(cards).toMatch(/<s className="text-pa-stone-aa tabular-nums">\{money\(m\.compareTotal\)\}<\/s>/);
+    expect(cards).toMatch(/t\("bookingWidget\.save", "Save"\)\} \{wholeEuros \? formatEur\(savingsShown\(m\.compareTotal, m\.total, m\.savings\), lang\) : formatQuotedEur\(m\.savings, lang\)\}/);
     expect(cards).toMatch(/\{twoPartsVariant && m\.twoPartsCandidate && \(\s*<TwoPartsHint/);
     // A poupança fica numa linha própria debaixo da linha do título e do benefício,
     // nunca dentro da coluna do preço: a 360 px em alemão essa coluna (preço riscado
     // + "Sparen Sie 270 €") deixava ~70 px ao título e "erstattungsfähig" entrava pelo preço.
-    expect(cards).toMatch(/leading-tight shrink-0 text-right">\{formatQuotedEur\(m\.total, lang\)\}<\/p>\s*<\/div>\s*\{\/\*[\s\S]*?\*\/\}\s*\{m\.savings > 0 && m\.compareTotal != null && \(\s*<p className="caption -mt-1 leading-snug flex flex-wrap items-center justify-end/);
+    expect(cards).toMatch(/leading-tight shrink-0 text-right">\{money\(m\.total\)\}<\/p>\s*<\/div>\s*\{\/\*[\s\S]*?\*\/\}\s*\{m\.savings > 0 && m\.compareTotal != null && savingsShown\(m\.compareTotal, m\.total, m\.savings\) > 0 && \(\s*<p className="caption -mt-1 leading-snug flex flex-wrap items-center justify-end/);
     // tokens de contraste em fundo claro (nunca text-pa-gold como texto)
     expect(cards).not.toMatch(/text-pa-gold["\s]/);
     expect(cards).not.toMatch(/text-\[#9E9A90\]|text-\[#8B7355\]/);

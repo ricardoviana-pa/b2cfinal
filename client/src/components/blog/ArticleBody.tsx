@@ -56,23 +56,23 @@ export default function ArticleBody({ content, onLink }: { content: string; onLi
             decoding="async"
             className="w-full h-auto aspect-[3/2] object-cover rounded-lg bg-[#F5F1EB]"
           />
-          {photo.caption && <figcaption className="mt-3 text-sm text-[#726D63]">{inline(photo.caption)}</figcaption>}
+          {photo.caption && <figcaption className="mt-3 text-[15px] text-pa-stone">{inline(photo.caption)}</figcaption>}
         </figure>;
       }
       if (text.startsWith('### ')) return <h3 id={headings.find(h=>h.index===index)?.id} key={index} className="scroll-mt-28 text-[#1A1A18] font-display text-xl md:text-2xl mt-10 mb-4">{inline(text.slice(4))}</h3>;
       if (text.startsWith('## ')) return <h2 id={headings.find(h=>h.index===index)?.id} key={index} className="scroll-mt-28 text-[#1A1A18] font-display text-2xl md:text-3xl mt-12 mb-5">{inline(text.slice(3))}</h2>;
       const lines = text.split('\n');
-      if (lines.every(line => /^-\s/.test(line))) return <ul key={index} className="list-disc pl-6 space-y-3 text-[#6B6860]">{lines.map((line, i) => <li key={i}>{inline(line.slice(2))}</li>)}</ul>;
+      if (lines.every(line => /^-\s/.test(line))) return <ul key={index} className="list-disc pl-6 space-y-3 text-pa-earth">{lines.map((line, i) => <li key={i}>{inline(line.slice(2))}</li>)}</ul>;
       if (lines.length >= 2 && /^\|\s*:?-{3,}/.test(lines[1])) {
         const cells = (line: string) => line.trim().replace(/^\||\|$/g, '').split('|').map(cell => cell.trim());
         return <div key={index} className="my-8 rounded-lg border border-[#E8E4DC] overflow-x-auto">
           <table className="w-full text-sm text-left border-collapse">
             <thead><tr className="bg-[#F5F1EB]">{cells(lines[0]).map((cell, i) => <th key={i} scope="col" className="px-4 py-3 font-medium text-[#1A1A18] border-b border-[#E8E4DC]">{inline(cell)}</th>)}</tr></thead>
-            <tbody>{lines.slice(2).map((line, i) => <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF7]'}>{cells(line).map((cell, j) => <td key={j} className="px-4 py-3 text-[#6B6860] border-b border-[#E8E4DC] align-top">{inline(cell)}</td>)}</tr>)}</tbody>
+            <tbody>{lines.slice(2).map((line, i) => <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF7]'}>{cells(line).map((cell, j) => <td key={j} className="px-4 py-3 text-pa-earth border-b border-[#E8E4DC] align-top">{inline(cell)}</td>)}</tr>)}</tbody>
           </table>
         </div>;
       }
-      return <p key={index} className="text-[#6B6860] leading-relaxed mb-6">{inline(text)}</p>;
+      return <p key={index} className="text-pa-earth leading-relaxed mb-6">{inline(text)}</p>;
     })}
   </div>;
 }

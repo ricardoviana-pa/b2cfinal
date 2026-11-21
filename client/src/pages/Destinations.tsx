@@ -76,7 +76,7 @@ export default function Destinations() {
               <p className="body-md max-w-md">{pt ? 'Comece pelo que lhe apetece. Estas são as nossas sugestões para escolher uma região.' : 'Start with what you love. These are our suggestions for finding your region.'}</p>
             </div>
             <div className="flex flex-wrap gap-3" role="group" aria-label={pt ? 'Tipo de viagem' : 'Type of trip'}>
-              {tripInterests.map(item => <button key={item.id} type="button" aria-pressed={interest === item.id} onClick={() => { setInterest(item.id); track('index', item.id, 'filter'); }} className={`min-h-12 px-5 py-3 rounded-full text-sm border transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 ${interest === item.id ? 'bg-pa-dark text-white border-pa-dark' : 'bg-white border-pa-sand hover:border-pa-dark'}`}>{tx(item.label)}</button>)}
+              {tripInterests.map(item => <button key={item.id} type="button" aria-pressed={interest === item.id} onClick={() => { setInterest(item.id); track('index', item.id, 'filter'); }} className={`min-h-12 px-5 py-3 rounded-lg text-sm border transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 ${interest === item.id ? 'bg-pa-dark text-white border-pa-dark' : 'bg-white border-pa-sand hover:border-pa-dark'}`}>{tx(item.label)}</button>)}
             </div>
             <p className="text-xs text-pa-stone-aa mt-4" role="status">{pt ? `${suggested.length} regiões para explorar · Durações sugeridas, à sua medida` : `${suggested.length} regions to explore · Suggested lengths, yours to adapt`}</p>
           </div>}
@@ -132,14 +132,14 @@ export default function Destinations() {
             ['villas-with-private-pool', pt ? 'Casas com piscina' : 'Homes with a pool'],
             ['beach-villas', pt ? 'Perto da praia no Norte' : 'Beach stays in the North'],
             ['large-group-villas', pt ? 'Casas para 12 ou mais' : 'Homes for 12 or more'],
-          ].map(([slug, label]) => <Link key={slug} href={withEditorialTrip(`/collections/${slug}`, search)} onClick={() => track('index', slug, 'homes')} className="inline-flex min-h-12 items-center gap-3 rounded-full border border-pa-sand px-5 py-3 text-sm hover:bg-white">{label}<ArrowRight size={16} /></Link>)}</div>
+          ].map(([slug, label]) => <Link key={slug} href={withEditorialTrip(`/collections/${slug}`, search)} onClick={() => track('index', slug, 'homes')} className="inline-flex min-h-12 items-center gap-3 rounded-lg border border-pa-sand px-5 py-3 text-sm hover:bg-white">{label}<ArrowRight size={16} /></Link>)}</div>
         </section>}
         <LocalStaySupport />
         <section className="container py-10 border-t border-pa-sand">
           <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center max-w-5xl mx-auto">
             <div>
               <h2 className="text-lg font-medium mb-2">{t('destinationGrowth.corporateTitle')}</h2>
-              <p className="text-sm leading-relaxed text-pa-stone-aa max-w-2xl">{t('destinationGrowth.corporateIntro')}</p>
+              <p className="text-[15px] leading-relaxed text-pa-stone-aa max-w-2xl">{t('destinationGrowth.corporateIntro')}</p>
             </div>
             <Link href="/corporate-retreats" className="inline-flex min-h-11 gap-2 items-center underline underline-offset-4 text-sm self-start lg:self-center">{t('destinationGrowth.corporateCta')}<ArrowRight className="w-4 h-4" /></Link>
           </div>

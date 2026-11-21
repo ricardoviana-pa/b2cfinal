@@ -35,6 +35,7 @@ import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import PropertyCard from '@/components/property/PropertyCard';
+import { GuideBody, GuideHeading, GuideSection } from './GuideSection';
 
 /* ── 1. HERO EDITORIAL ────────────────────────────────────────────────── */
 
@@ -74,7 +75,7 @@ export function WhyThisPlace({ destination: d }: { destination: Destination }) {
     <section className="section-padding bg-white">
       <div className="container max-w-3xl mx-auto">
         {d.whyOverline && (
-          <p className="text-[11px] font-medium text-pa-gold-aa mb-4 tracking-[0.08em]">
+          <p className="text-[13px] font-medium text-pa-gold-aa mb-4 tracking-[0.08em]">
             {d.whyOverline}
           </p>
         )}
@@ -92,7 +93,7 @@ export function WhyThisPlace({ destination: d }: { destination: Destination }) {
             >
               “{d.pullQuote.text}”
             </p>
-            <footer className="text-[12px] text-[#6B6860] mt-3 tracking-[0.04em]">
+            <footer className="text-[13px] text-pa-earth mt-3 tracking-[0.04em]">
               — {d.pullQuote.source}
               {d.pullQuote.year ? `, ${d.pullQuote.year}` : ''}
             </footer>
@@ -198,14 +199,14 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
     <section className="section-padding bg-[#FAFAF7]">
       <div className="container">
         <h2 className="headline-lg text-[#1A1A18] mb-3">{heading}</h2>
-        <p className="body-lg text-[#6B6860] mb-8">
+        <p className="body-lg text-pa-earth mb-8">
           {t('destinationGrowth.journalIntro')}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {articles.slice(0, 3).map((a, index) => (
             <Link key={a.slug} href={withEditorialTrip(`/blog/${a.slug}`, search)} className="group flex items-start gap-4 border-t border-pa-sand pt-5 pb-3">
               <div
-                className="relative shrink-0 overflow-hidden bg-pa-sand/40 w-24 h-28 flex items-center justify-center"
+                className="relative shrink-0 overflow-hidden rounded-xl bg-pa-sand/40 w-24 h-28 flex items-center justify-center"
               >
                 {a.coverImage ? (
                   <img
@@ -228,7 +229,7 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
                 {a.title}
               </h3>
               {a.excerpt && (
-                <p className="text-[13px] text-[#6B6860] leading-relaxed line-clamp-2" style={{ fontWeight: 300 }}>
+                <p className="text-[15px] text-pa-earth leading-relaxed line-clamp-2" style={{ fontWeight: 400 }}>
                   {a.excerpt}
                 </p>
               )}
@@ -253,17 +254,17 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
         <section className="section-padding bg-[#F5F1EB]">
           <div className="container">
             <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.seeAndDoTitle')}</h2>
-            <p className="body-lg text-[#6B6860] mb-8">{t('destinationDetail.guide.conciergePicks', destVars(d, i18n.language))}</p>
+            <p className="body-lg text-pa-earth mb-8">{t('destinationDetail.guide.conciergePicks', destVars(d, i18n.language))}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {d.insiderRecommendations.map((rec, i) => (
-                <div key={i} className="bg-white border border-[#E8E4DC] p-6">
+                <div key={i} className="bg-white border border-[#E8E4DC] rounded-xl p-6">
                   {rec.category && (
-                    <span className="text-[11px] font-medium tracking-[0.02em] text-[#726D63] mb-2 block">
+                    <span className="text-[13px] font-medium tracking-[0.02em] text-pa-stone mb-2 block">
                       {rec.category.replace('-', ' ')}
                     </span>
                   )}
                   <h3 className="font-display text-lg text-[#1A1A18] mb-2">{rec.name}</h3>
-                  <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
+                  <p className="text-[15px] text-pa-earth leading-relaxed" style={{ fontWeight: 400 }}>
                     {rec.description}
                   </p>
                 </div>
@@ -281,7 +282,7 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
         <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.seeAndDoTitleNamed', destVars(d, i18n.language))}</h2>
         <p
           className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
-          style={{ fontWeight: 300 }}
+          style={{ fontWeight: 400 }}
         >
           {intro ?? t('destinationDetail.guide.seeAndDoIntroFallback')}
         </p>
@@ -296,19 +297,19 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {group.items.map(item => (
-                  <div key={item.name} className="bg-white border border-[#E8E4DC] p-5">
+                  <div key={item.name} className="bg-white border border-[#E8E4DC] rounded-xl p-5">
                     {item.category && (
-                      <span className="text-[11px] font-medium tracking-[0.04em] text-[#726D63] mb-2 block uppercase">
+                      <span className="text-[12px] font-medium tracking-[0.04em] text-pa-stone mb-2 block uppercase">
                         {item.category}
                       </span>
                     )}
                     <h4
-                      className="text-[15px] font-medium text-[#1A1A18] mb-2"
+                      className="text-[16px] font-medium text-[#1A1A18] mb-2"
                       style={{ fontFamily: 'var(--font-display)' }}
                     >
                       {item.name}
                     </h4>
-                    <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
+                    <p className="text-[15px] text-pa-earth leading-relaxed" style={{ fontWeight: 400 }}>
                       {item.description}
                     </p>
                   </div>
@@ -331,7 +332,9 @@ const SEASON_LABEL_KEY: Record<string, string> = {
   winter: 'seasonWinter',
 };
 
-export function WhenToVisit({ destination: d }: { destination: Destination }) {
+/** `anchor`: the id of the element around this section that the chapter row
+ *  links to. A link to it opens the section on a phone (GuideSection). */
+export function WhenToVisit({ destination: d, anchor }: { destination: Destination; anchor?: string }) {
   const { t, i18n } = useTranslation();
   // No structured seasons → fall back to the single-line bestTimeToVisit.
   if (!d.seasons) {
@@ -352,40 +355,44 @@ export function WhenToVisit({ destination: d }: { destination: Destination }) {
   }
   if (seasons.length === 0 && !d.seasons.bestForFirstTime) return null;
 
+  // The gap under the intro line belongs to the body (mt-10, as the mb-10 the
+  // line had): closed on a phone, the section ends at the line.
   return (
-    <section className="section-padding bg-white">
+    <GuideSection className="section-padding bg-white" anchors={anchor ? [anchor] : undefined}>
       <div className="container max-w-5xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.whenToVisitTitleNamed', destVars(d, i18n.language))}</h2>
+        <GuideHeading className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.whenToVisitTitleNamed', destVars(d, i18n.language))}</GuideHeading>
         {d.bestTimeToVisit && (
-          <p className="body-lg text-[#6B6860] mb-10 max-w-2xl">{d.bestTimeToVisit}</p>
+          <p className="body-lg text-pa-earth max-w-2xl">{d.bestTimeToVisit}</p>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {seasons.map(s => (
-            <div key={s.key} className="border-l-2 border-[#8B7355] pl-5 py-1">
-              <h3
-                className="text-[15px] font-medium text-[#1A1A18] mb-2 tracking-[0.02em]"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {s.label}
-              </h3>
-              <p className="text-[14px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 300 }}>
-                {s.text}
+        <GuideBody className={d.bestTimeToVisit ? 'mt-10' : undefined}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {seasons.map(s => (
+              <div key={s.key} className="border-l-2 border-[#8B7355] pl-5 py-1">
+                <h3
+                  className="text-[16px] font-medium text-[#1A1A18] mb-2 tracking-[0.02em]"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  {s.label}
+                </h3>
+                <p className="text-[15px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 400 }}>
+                  {s.text}
+                </p>
+              </div>
+            ))}
+          </div>
+          {d.seasons.bestForFirstTime && (
+            <div className="mt-10 max-w-3xl mx-auto bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-6">
+              <p className="text-[12px] font-medium tracking-[0.14em] uppercase text-pa-gold-aa mb-3">
+                {t('destinationDetail.guide.bestForFirstTime')}
+              </p>
+              <p className="text-[15px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 400 }}>
+                {d.seasons.bestForFirstTime}
               </p>
             </div>
-          ))}
-        </div>
-        {d.seasons.bestForFirstTime && (
-          <div className="mt-10 max-w-3xl mx-auto bg-[#FAFAF7] border border-[#E8E4DC] p-6">
-            <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-pa-gold-aa mb-3">
-              {t('destinationDetail.guide.bestForFirstTime')}
-            </p>
-            <p className="text-[14px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 300 }}>
-              {d.seasons.bestForFirstTime}
-            </p>
-          </div>
-        )}
+          )}
+        </GuideBody>
       </div>
-    </section>
+    </GuideSection>
   );
 }
 
@@ -423,14 +430,14 @@ export function HowToGetHere({ destination: d }: { destination: Destination }) {
           {populated.map(({ key, Icon }) => (
             <div
               key={key}
-              className="flex items-start gap-4 p-5 bg-white border border-[#E8E4DC]"
+              className="flex items-start gap-4 p-5 bg-white border border-[#E8E4DC] rounded-xl"
             >
-              <Icon className="w-5 h-5 text-[#8B7355] mt-0.5 flex-shrink-0" />
+              <Icon className="w-5 h-5 text-pa-gold-aa mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-[14px] font-medium text-[#1A1A18] mb-1.5">{t('destinationDetail.guide.' + key)}</p>
+                <p className="text-[15px] font-medium text-[#1A1A18] mb-1.5">{t('destinationDetail.guide.' + key)}</p>
                 <p
-                  className="text-[13px] text-[#6B6860] leading-relaxed"
-                  style={{ fontWeight: 300 }}
+                  className="text-[15px] text-pa-earth leading-relaxed"
+                  style={{ fontWeight: 400 }}
                 >
                   {d.transport![key]}
                 </p>
@@ -438,7 +445,7 @@ export function HowToGetHere({ destination: d }: { destination: Destination }) {
             </div>
           ))}
         </div>
-        <p className="mt-8 text-[13px] text-[#6B6860] text-center" style={{ fontWeight: 300 }}>
+        <p className="mt-8 text-[15px] text-pa-earth text-center" style={{ fontWeight: 400 }}>
           {t('destinationDetail.guide.transferNote')}
         </p>
       </div>
@@ -453,12 +460,16 @@ interface EatDrinkExperienceProps {
   /** Optional dynamic adventures pulled from products.json. */
   adventures?: Product[];
   onAddToItinerary?: (product: Product) => void;
+  /** The id of the element around this section that the chapter row links
+   *  to. A link to it opens the section on a phone (GuideSection). */
+  anchor?: string;
 }
 
 export function EatDrinkExperience({
   destination: d,
   adventures = [],
   onAddToItinerary,
+  anchor,
 }: EatDrinkExperienceProps) {
   const { t } = useTranslation();
   const hasRestaurants = (d.restaurants?.length ?? 0) > 0;
@@ -466,185 +477,189 @@ export function EatDrinkExperience({
   const hasExperiences = (d.experiences?.length ?? 0) > 0;
   if (!hasRestaurants && !hasSpecialties && !hasExperiences && adventures.length === 0)
     return null;
+  // The gap under the intro line belongs to the body (mt-10, as the mb-10 the
+  // line had): closed on a phone, the section ends at the line.
   return (
-    <section className="section-padding bg-white">
+    <GuideSection className="section-padding bg-white" anchors={anchor ? [anchor] : undefined}>
       <div className="container max-w-6xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.eatDrinkTitle')}</h2>
+        <GuideHeading className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.eatDrinkTitle')}</GuideHeading>
         <p
-          className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
-          style={{ fontWeight: 300 }}
+          className="body-lg text-[#3A3A35] max-w-3xl leading-relaxed"
+          style={{ fontWeight: 400 }}
         >
           {d.eatDrinkIntro ?? t('destinationDetail.guide.eatDrinkIntroFallback')}
         </p>
+        <GuideBody className="mt-10">
 
-        {hasRestaurants && (
-          <div className="mb-12">
-            <h3
-              className="text-[17px] font-medium text-[#1A1A18] mb-5"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              {t('destinationDetail.guide.whereToEat')}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {d.restaurants!.map(r => (
-                <div key={r.name} className="bg-[#FAFAF7] border border-[#E8E4DC] p-5">
-                  {r.category && (
-                    <span className="text-[11px] font-medium tracking-[0.04em] text-[#726D63] mb-2 block uppercase">
-                      {r.category}
-                    </span>
-                  )}
-                  <h4
-                    className="text-[15px] font-medium text-[#1A1A18] mb-2"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                  >
-                    {r.name}
-                  </h4>
-                  <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                    {r.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {hasSpecialties && (
-          <div className="mb-12">
-            <h3
-              className="text-[17px] font-medium text-[#1A1A18] mb-5"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              {t('destinationDetail.guide.localSpecialties')}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {d.specialties!.map(s => (
-                <div key={s.name} className="border-l-2 border-[#8B7355] pl-5 py-2">
-                  {s.category && (
-                    <span className="text-[11px] font-medium tracking-[0.04em] text-[#726D63] mb-1.5 block uppercase">
-                      {s.category}
-                    </span>
-                  )}
-                  <h4
-                    className="text-[15px] font-medium text-[#1A1A18] mb-1.5"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                  >
-                    {s.name}
-                  </h4>
-                  <p className="text-[13px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 300 }}>
-                    {s.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {hasExperiences && (
-          <div>
-            <h3
-              className="text-[17px] font-medium text-[#1A1A18] mb-3"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              {t('destinationDetail.guide.whatToDo')}
-            </h3>
-            {d.experiencesIntro && (
-              <p
-                className="text-[14px] text-[#3A3A35] mb-6 max-w-3xl leading-relaxed"
-                style={{ fontWeight: 300 }}
+          {hasRestaurants && (
+            <div className="mb-12">
+              <h3
+                className="text-[17px] font-medium text-[#1A1A18] mb-5"
+                style={{ fontFamily: 'var(--font-display)' }}
               >
-                {d.experiencesIntro}
-              </p>
-            )}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {d.experiences!.map(e => (
-                <div key={e.name} className="bg-[#FAFAF7] border border-[#E8E4DC] p-5">
-                  <h4
-                    className="text-[15px] font-medium text-[#1A1A18] mb-2"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                  >
-                    {e.name}
-                  </h4>
-                  <p
-                    className="text-[13px] text-[#6B6860] leading-relaxed mb-3"
-                    style={{ fontWeight: 300 }}
-                  >
-                    {e.description}
-                  </p>
-                  {(e.duration || e.season) && (
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-pa-gold-aa tracking-[0.02em]">
-                      {e.duration && <span>{localizeDuration(e.duration, t)}</span>}
-                      {e.season && <span>· {e.season}</span>}
-                    </div>
-                  )}
-                </div>
-              ))}
+                {t('destinationDetail.guide.whereToEat')}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {d.restaurants!.map(r => (
+                  <div key={r.name} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-5">
+                    {r.category && (
+                      <span className="text-[12px] font-medium tracking-[0.04em] text-pa-stone mb-2 block uppercase">
+                        {r.category}
+                      </span>
+                    )}
+                    <h4
+                      className="text-[16px] font-medium text-[#1A1A18] mb-2"
+                      style={{ fontFamily: 'var(--font-display)' }}
+                    >
+                      {r.name}
+                    </h4>
+                    <p className="text-[15px] text-pa-earth leading-relaxed" style={{ fontWeight: 400 }}>
+                      {r.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {adventures.length > 0 && (
-          <div className="mt-12">
-            <h3
-              className="text-[17px] font-medium text-[#1A1A18] mb-5"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              {t('destinationDetail.guide.bookOnline')}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {adventures.map(adv => (
-                <div key={adv.id} className="group">
-                  <div
-                    className="relative overflow-hidden bg-[#E8E4DC] mb-3"
-                    style={{ aspectRatio: '3/2' }}
-                  >
-                    {adv.image ? (
-                      <img
-                        src={adv.image}
-                        alt={`${adv.name} — ${d.name}, Portugal`}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        loading="lazy"
-                        width={800}
-                        height={600}
-                      />
-                    ) : (
-                      <div className="w-full h-full placeholder-image" />
+          {hasSpecialties && (
+            <div className="mb-12">
+              <h3
+                className="text-[17px] font-medium text-[#1A1A18] mb-5"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                {t('destinationDetail.guide.localSpecialties')}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {d.specialties!.map(s => (
+                  <div key={s.name} className="border-l-2 border-[#8B7355] pl-5 py-2">
+                    {s.category && (
+                      <span className="text-[12px] font-medium tracking-[0.04em] text-pa-stone mb-1.5 block uppercase">
+                        {s.category}
+                      </span>
                     )}
+                    <h4
+                      className="text-[16px] font-medium text-[#1A1A18] mb-1.5"
+                      style={{ fontFamily: 'var(--font-display)' }}
+                    >
+                      {s.name}
+                    </h4>
+                    <p className="text-[15px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 400 }}>
+                      {s.description}
+                    </p>
                   </div>
-                  <h4
-                    className="text-[15px] font-medium text-[#1A1A18] mb-1"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
-                    {adv.name}
-                  </h4>
-                  <p
-                    className="text-[13px] text-[#6B6860] mb-2 leading-relaxed line-clamp-2"
-                    style={{ fontWeight: 300 }}
-                  >
-                    {adv.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    {(adv.priceFrom ?? 0) > 0 && (
-                      <p className="text-[13px] text-pa-gold-aa">
-                        {t('common.from')} {formatEurEditorial(adv.priceFrom ?? 0)}
-                      </p>
-                    )}
-                    {onAddToItinerary && (
-                      <button
-                        onClick={() => onAddToItinerary(adv)}
-                        className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-pa-gold-aa transition-colors"
-                        style={{ minHeight: 'auto', minWidth: 'auto' }}
-                      >
-                        <Plus className="w-3.5 h-3.5" /> {t('destinationDetail.guide.addToItinerary')}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {hasExperiences && (
+            <div>
+              <h3
+                className="text-[17px] font-medium text-[#1A1A18] mb-3"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                {t('destinationDetail.guide.whatToDo')}
+              </h3>
+              {d.experiencesIntro && (
+                <p
+                  className="text-[15px] text-[#3A3A35] mb-6 max-w-3xl leading-relaxed"
+                  style={{ fontWeight: 400 }}
+                >
+                  {d.experiencesIntro}
+                </p>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {d.experiences!.map(e => (
+                  <div key={e.name} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-5">
+                    <h4
+                      className="text-[16px] font-medium text-[#1A1A18] mb-2"
+                      style={{ fontFamily: 'var(--font-display)' }}
+                    >
+                      {e.name}
+                    </h4>
+                    <p
+                      className="text-[15px] text-pa-earth leading-relaxed mb-3"
+                      style={{ fontWeight: 400 }}
+                    >
+                      {e.description}
+                    </p>
+                    {(e.duration || e.season) && (
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-pa-gold-aa tracking-[0.02em]">
+                        {e.duration && <span>{localizeDuration(e.duration, t)}</span>}
+                        {e.season && <span>· {e.season}</span>}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {adventures.length > 0 && (
+            <div className="mt-12">
+              <h3
+                className="text-[17px] font-medium text-[#1A1A18] mb-5"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                {t('destinationDetail.guide.bookOnline')}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {adventures.map(adv => (
+                  <div key={adv.id} className="group">
+                    <div
+                      className="relative overflow-hidden rounded-xl bg-[#E8E4DC] mb-3"
+                      style={{ aspectRatio: '3/2' }}
+                    >
+                      {adv.image ? (
+                        <img
+                          src={adv.image}
+                          alt={`${adv.name} — ${d.name}, Portugal`}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                          loading="lazy"
+                          width={800}
+                          height={600}
+                        />
+                      ) : (
+                        <div className="w-full h-full placeholder-image" />
+                      )}
+                    </div>
+                    <h4
+                      className="text-[16px] font-medium text-[#1A1A18] mb-1"
+                      style={{ fontFamily: 'var(--font-body)' }}
+                    >
+                      {adv.name}
+                    </h4>
+                    <p
+                      className="text-[15px] text-pa-earth mb-2 leading-relaxed line-clamp-2"
+                      style={{ fontWeight: 400 }}
+                    >
+                      {adv.description}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      {(adv.priceFrom ?? 0) > 0 && (
+                        <p className="text-[15px] text-pa-gold-aa">
+                          {t('common.from')} {formatEurEditorial(adv.priceFrom ?? 0)}
+                        </p>
+                      )}
+                      {onAddToItinerary && (
+                        <button
+                          onClick={() => onAddToItinerary(adv)}
+                          className="flex items-center gap-1.5 text-[13px] font-medium text-[#1A1A18] hover:text-pa-gold-aa transition-colors"
+                          style={{ minHeight: 'auto', minWidth: 'auto' }}
+                        >
+                          <Plus className="w-3.5 h-3.5" /> {t('destinationDetail.guide.addToItinerary')}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </GuideBody>
       </div>
-    </section>
+    </GuideSection>
   );
 }
 
@@ -661,7 +676,7 @@ export function EventsAndPlanning({ destination: d, compact = false }: { destina
         {d.eventsIntro && (
           <p
             className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
-            style={{ fontWeight: 300 }}
+            style={{ fontWeight: 400 }}
           >
             {d.eventsIntro}
           </p>
@@ -670,12 +685,12 @@ export function EventsAndPlanning({ destination: d, compact = false }: { destina
           {d.events.map(ev => (
             <div
               key={ev.name}
-              className="flex items-start gap-4 p-5 bg-white border border-[#E8E4DC]"
+              className="flex items-start gap-4 p-5 bg-white border border-[#E8E4DC] rounded-xl"
             >
-              <Calendar className="w-5 h-5 text-[#8B7355] mt-0.5 flex-shrink-0" />
+              <Calendar className="w-5 h-5 text-pa-gold-aa mt-0.5 flex-shrink-0" />
               <div className="flex-1">
                 <h3
-                  className="text-[15px] font-medium text-[#1A1A18] mb-1"
+                  className="text-[16px] font-medium text-[#1A1A18] mb-1"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   {ev.url ? (
@@ -686,10 +701,10 @@ export function EventsAndPlanning({ destination: d, compact = false }: { destina
                     ev.name
                   )}
                 </h3>
-                <p className="text-[11px] font-medium tracking-[0.04em] uppercase text-pa-gold-aa mb-2">
+                <p className="text-[12px] font-medium tracking-[0.04em] uppercase text-pa-gold-aa mb-2">
                   {ev.dates}
                 </p>
-                <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
+                <p className="text-[15px] text-pa-earth leading-relaxed" style={{ fontWeight: 400 }}>
                   {ev.description}
                 </p>
               </div>
@@ -709,13 +724,13 @@ export function PressAccolades({ destination: d, compact = false }: { destinatio
   return (
     <section className={`${compact ? 'py-8 mb-6 rounded-xl' : 'py-16'} bg-[#1A1A18] text-white`}>
       <div className="container max-w-5xl mx-auto">
-        <h2 className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3 text-center">
+        <h2 className="text-[12px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3 text-center">
           {t('destinationDetail.guide.pressTitle')}
         </h2>
         {d.pressIntro && (
           <p
-            className="text-[13px] text-white/70 max-w-2xl mx-auto mb-10 text-center leading-relaxed"
-            style={{ fontWeight: 300 }}
+            className="text-[15px] text-white/70 max-w-2xl mx-auto mb-10 text-center leading-relaxed"
+            style={{ fontWeight: 400 }}
           >
             {d.pressIntro}
           </p>
@@ -729,7 +744,7 @@ export function PressAccolades({ destination: d, compact = false }: { destinatio
               >
                 “{q.quote}”
               </p>
-              <footer className="text-[11px] tracking-[0.08em] uppercase text-white/50">
+              <footer className="text-[12px] tracking-[0.08em] uppercase text-white/50">
                 {q.url ? (
                   <a href={q.url} target="_blank" rel="noopener noreferrer" className="hover:text-white">
                     {q.source}
@@ -752,27 +767,31 @@ export function PressAccolades({ destination: d, compact = false }: { destinatio
 export function FAQSection({ destination: d }: { destination: Destination }) {
   const { t } = useTranslation();
   if (!d.faqs || d.faqs.length === 0) return null;
+  // The gap under the heading belongs to the body (mt-8, as the mb-8 the
+  // heading had): closed on a phone, the section ends at the heading.
   return (
-    <section className="section-padding bg-white">
+    <GuideSection className="section-padding bg-white">
       <div className="container max-w-3xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-8">{t('destinationDetail.guide.faqsTitle')}</h2>
-        <dl className="space-y-6">
-          {d.faqs.map((f, i) => (
-            <div key={i} className="border-b border-[#E8E4DC] pb-6 last:border-b-0">
-              <dt
-                className="text-[16px] font-medium text-[#1A1A18] mb-3"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {f.question}
-              </dt>
-              <dd className="text-[14px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 300 }}>
-                {f.answer}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <GuideHeading className="headline-lg text-[#1A1A18]">{t('destinationDetail.guide.faqsTitle')}</GuideHeading>
+        <GuideBody className="mt-8">
+          <dl className="space-y-6">
+            {d.faqs.map((f, i) => (
+              <div key={i} className="border-b border-[#E8E4DC] pb-6 last:border-b-0">
+                <dt
+                  className="text-[16px] font-medium text-[#1A1A18] mb-3"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  {f.question}
+                </dt>
+                <dd className="text-[15px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 400 }}>
+                  {f.answer}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </GuideBody>
       </div>
-    </section>
+    </GuideSection>
   );
 }
 
@@ -821,7 +840,7 @@ export function RelatedDestinationsAndOwnersCTA({
                       {r.name}
                     </h3>
                     {r.tagline && (
-                      <p className="text-[12px] text-white/70 line-clamp-2" style={{ fontWeight: 300 }}>
+                      <p className="text-[13px] text-white/70 line-clamp-2" style={{ fontWeight: 400 }}>
                         {r.tagline}
                       </p>
                     )}

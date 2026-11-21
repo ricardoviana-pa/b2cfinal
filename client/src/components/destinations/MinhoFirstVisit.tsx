@@ -9,8 +9,9 @@ import {
   Compass,
 } from "lucide-react";
 import { withEditorialTrip } from "@shared/editorialTripContext";
-import { PORTUGAL_MAINLAND_OUTLINE } from "./PortugalMap";
+import { LOCATOR, PORTUGAL_MAINLAND_OUTLINE } from "./PortugalMap";
 import { trackPlanning } from "./PlanningGuide";
+import { GuideBody, GuideHeading, GuideSection } from "./GuideSection";
 
 export function MinhoOrientation({ language }: { language: string }) {
   const pt = language.split("-")[0] === "pt";
@@ -32,28 +33,40 @@ export function MinhoOrientation({ language }: { language: string }) {
           >
             <path
               d={PORTUGAL_MAINLAND_OUTLINE}
-              fill="#dce5db"
-              stroke="#9baa99"
+              fill={LOCATOR.land}
+              stroke={LOCATOR.coast}
               strokeWidth="1"
             />
-            <circle cx="105.2" cy="59.3" r="26" fill="#9cb797" opacity=".35" />
-            <circle cx="105.2" cy="59.3" r="5" fill="#294c3a" />
-            <text x="122" y="47" fontSize="17" fill="#294c3a" fontWeight="600">
+            <circle
+              cx="105.2"
+              cy="59.3"
+              r="26"
+              fill={LOCATOR.halo}
+              opacity=".35"
+            />
+            <circle cx="105.2" cy="59.3" r="5" fill={LOCATOR.place} />
+            <text
+              x="122"
+              y="47"
+              fontSize="17"
+              fill={LOCATOR.place}
+              fontWeight="600"
+            >
               Minho
             </text>
-            <circle cx="104.7" cy="100.9" r="3" fill="#677463" />
-            <text x="116" y="107" fontSize="13" fill="#465442">
+            <circle cx="104.7" cy="100.9" r="3" fill={LOCATOR.city} />
+            <text x="116" y="107" fontSize="13" fill={LOCATOR.label}>
               Porto
             </text>
-            <circle cx="78.1" cy="259.5" r="3" fill="#677463" />
-            <text x="89" y="265" fontSize="13" fill="#465442">
+            <circle cx="78.1" cy="259.5" r="3" fill={LOCATOR.city} />
+            <text x="89" y="265" fontSize="13" fill={LOCATOR.label}>
               {pt ? "Lisboa" : "Lisbon"}
             </text>
             <text
               x="141"
               y="230"
               fontSize="10"
-              fill="#677463"
+              fill={LOCATOR.label}
               letterSpacing="2"
               transform="rotate(-90 141 230)"
             >
@@ -208,7 +221,7 @@ export function MinhoStayLength({ language }: { language: string }) {
         7: "A week to add mountains and culture to your coastal days.",
       };
   return (
-    <section
+    <GuideSection
       id="destination-stay-length"
       className="minho-section minho-itinerary"
     >
@@ -218,9 +231,9 @@ export function MinhoStayLength({ language }: { language: string }) {
             <p className="minho-kicker">
               {pt ? "IMAGINE OS SEUS DIAS AQUI" : "PICTURE YOUR DAYS HERE"}
             </p>
-            <h2>
+            <GuideHeading>
               {pt ? "Quanto tempo tem para ficar?" : "How long can you stay?"}
-            </h2>
+            </GuideHeading>
           </div>
           <p>
             {pt
@@ -228,108 +241,110 @@ export function MinhoStayLength({ language }: { language: string }) {
               : "A starting point for a first visit, based around Viana. Adapt the order to your home’s location and your interests."}
           </p>
         </div>
-        <div
-          className="minho-duration-controls"
-          role="group"
-          aria-label={
-            pt ? "Duração sugerida da estadia" : "Suggested length of stay"
-          }
-        >
-          {([3, 5, 7] as const).map(value => (
-            <button
-              key={value}
-              type="button"
-              aria-pressed={nights === value}
-              aria-controls="minho-suggested-days"
-              onClick={() => {
-                setNights(value);
-                trackPlanning(
-                  "minho",
-                  language,
-                  `stay_${value}_nights`,
-                  "chapter"
-                );
-              }}
-            >
-              {value} {pt ? "noites" : "nights"}
-            </button>
-          ))}
-        </div>
-        <p className="minho-duration-summary" aria-live="polite">
-          {summary[nights]}
-        </p>
-        <ol id="minho-suggested-days" className="minho-day-grid">
-          {days.slice(0, nights).map((day, i) => (
-            <li key={i}>
-              <span className="minho-day-number">
-                {i === 0
-                  ? pt
-                    ? "CHEGADA"
-                    : "ARRIVAL"
-                  : `${pt ? "DIA" : "DAY"} ${i + 1}`}
-              </span>
-              <span className="minho-place">
-                <MapPin size={14} aria-hidden="true" />
-                {Array.isArray(day.place) ? day.place[n] : day.place}
-              </span>
-              <h3>{day.title[n]}</h3>
-              <p>{day.text[n]}</p>
-              {day.href.startsWith("#") ? (
-                <a
-                  href={day.href}
-                  className="minho-text-link"
-                  onClick={() =>
-                    trackPlanning(
-                      "minho",
-                      language,
-                      "itinerary_culture",
-                      "chapter"
-                    )
-                  }
-                >
-                  {pt ? "Explorar este momento" : "Explore this moment"}
-                  <ArrowRight size={16} aria-hidden="true" />
-                </a>
-              ) : (
-                <Link
-                  href={href(day.href)}
-                  className="minho-text-link"
-                  onClick={() =>
-                    trackPlanning(
-                      "minho",
-                      language,
-                      `itinerary_day_${i + 1}`,
-                      "guide"
-                    )
-                  }
-                >
-                  {pt ? "Explorar este momento" : "Explore this moment"}
-                  <ArrowRight size={16} aria-hidden="true" />
-                </Link>
-              )}
-            </li>
-          ))}
-        </ol>
-        <div className="minho-itinerary-footer">
-          <p>
-            {pt
-              ? "No dia de partida, deixe tempo para o pequeno-almoço e a viagem. Esta é uma sugestão de roteiro; visitas, atividades e transportes são combinados à parte."
-              : "On departure day, leave time for breakfast and the journey. This is a suggested itinerary; visits, activities and transport are arranged separately."}
-          </p>
-          <Link
-            href={href("/homes?destination=minho")}
-            onClick={() =>
-              trackPlanning("minho", language, "itinerary", "homes")
+        <GuideBody>
+          <div
+            className="minho-duration-controls"
+            role="group"
+            aria-label={
+              pt ? "Duração sugerida da estadia" : "Suggested length of stay"
             }
-            className="btn-primary"
           >
-            {pt
-              ? "Escolher a casa para estes dias"
-              : "Find a home for these days"}
-            <ArrowRight size={17} aria-hidden="true" />
-          </Link>
-        </div>
+            {([3, 5, 7] as const).map(value => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={nights === value}
+                aria-controls="minho-suggested-days"
+                onClick={() => {
+                  setNights(value);
+                  trackPlanning(
+                    "minho",
+                    language,
+                    `stay_${value}_nights`,
+                    "chapter"
+                  );
+                }}
+              >
+                {value} {pt ? "noites" : "nights"}
+              </button>
+            ))}
+          </div>
+          <p className="minho-duration-summary" aria-live="polite">
+            {summary[nights]}
+          </p>
+          <ol id="minho-suggested-days" className="minho-day-grid">
+            {days.slice(0, nights).map((day, i) => (
+              <li key={i}>
+                <span className="minho-day-number">
+                  {i === 0
+                    ? pt
+                      ? "CHEGADA"
+                      : "ARRIVAL"
+                    : `${pt ? "DIA" : "DAY"} ${i + 1}`}
+                </span>
+                <span className="minho-place">
+                  <MapPin size={14} aria-hidden="true" />
+                  {Array.isArray(day.place) ? day.place[n] : day.place}
+                </span>
+                <h3>{day.title[n]}</h3>
+                <p>{day.text[n]}</p>
+                {day.href.startsWith("#") ? (
+                  <a
+                    href={day.href}
+                    className="minho-text-link"
+                    onClick={() =>
+                      trackPlanning(
+                        "minho",
+                        language,
+                        "itinerary_culture",
+                        "chapter"
+                      )
+                    }
+                  >
+                    {pt ? "Explorar este momento" : "Explore this moment"}
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </a>
+                ) : (
+                  <Link
+                    href={href(day.href)}
+                    className="minho-text-link"
+                    onClick={() =>
+                      trackPlanning(
+                        "minho",
+                        language,
+                        `itinerary_day_${i + 1}`,
+                        "guide"
+                      )
+                    }
+                  >
+                    {pt ? "Explorar este momento" : "Explore this moment"}
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ol>
+          <div className="minho-itinerary-footer">
+            <p>
+              {pt
+                ? "No dia de partida, deixe tempo para o pequeno-almoço e a viagem. Esta é uma sugestão de roteiro; visitas, atividades e transportes são combinados à parte."
+                : "On departure day, leave time for breakfast and the journey. This is a suggested itinerary; visits, activities and transport are arranged separately."}
+            </p>
+            <Link
+              href={href("/homes?destination=minho")}
+              onClick={() =>
+                trackPlanning("minho", language, "itinerary", "homes")
+              }
+              className="btn-primary"
+            >
+              {pt
+                ? "Escolher a casa para estes dias"
+                : "Find a home for these days"}
+              <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
+        </GuideBody>
       </div>
-    </section>
+    </GuideSection>
   );
 }

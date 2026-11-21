@@ -185,7 +185,8 @@
     "unavailableHint": "Estas casas pueden estar disponibles en otras fechas. Hable con nuestro concierge para alternativas.",
     "fromTotal": "Desde {{price}} por la estancia",
     "metaTitle": "Alquiler de Villas y Casas en Portugal",
-    "metaDescription": "Descubra {{homes}} villas y casas de lujo en Minho, Oporto, Duero, Lisboa, Alentejo y Algarve. Filtre por destino, huéspedes y servicios. Reserve directo."
+    "metaDescription": "Descubra {{homes}} villas y casas de lujo en Minho, Oporto, Duero, Lisboa, Alentejo y Algarve. Filtre por destino, huéspedes y servicios. Reserve directo.",
+    "showMore": "Ver más"
   },
   "property": {
     "bedrooms": "Dormitorios",

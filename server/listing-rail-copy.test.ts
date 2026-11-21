@@ -68,7 +68,8 @@ describe('new listing strings', () => {
     const rail = fs.readFileSync(new URL('../client/src/components/homes/HomesFilterRail.tsx', import.meta.url), 'utf8');
     const homes = fs.readFileSync(new URL('../client/src/pages/Homes.tsx', import.meta.url), 'utf8');
     // phone/tablet row: Filters never shrinks, the count truncates, the view switch never shrinks
-    expect(rail).toMatch(/className="inline-flex shrink-0 items-center gap-2 h-full font-body text-\[13px\] text-pa-dark"/);
+    // 15 px since the design audit of nov/2026 (E01: nothing in running UI text below 15 px here)
+    expect(rail).toMatch(/className="inline-flex shrink-0 items-center gap-2 h-full font-body text-\[15px\] text-pa-dark"/);
     expect(rail).toMatch(/status\('flex min-w-0 flex-1 justify-end'\)/);
     expect(rail).toMatch(/<span aria-hidden className="truncate">\{resultLabel\}<\/span>/);
     expect(rail).toMatch(/role="group" aria-label=\{t\('homes\.filters\.view', 'View'\)\} className="inline-flex shrink-0/);

@@ -30,6 +30,7 @@ import {
 import { trackPlanning } from "./PlanningGuide";
 import { DestinationAccess } from "./DestinationAccess";
 import { MinhoOrientation, MinhoStayLength } from "./MinhoFirstVisit";
+import { GuideBody, GuideHeading, GuideSection } from "./GuideSection";
 import "./MinhoVisualGuide.css";
 
 const landscapes = [
@@ -294,15 +295,20 @@ export function MinhoVisualGuide({
           ))}
         </div>
       </nav>
+      {/* On a phone the hero, the first section and the homes stay open;
+          every other chapter opens on tap (GuideSection, decisão E15). */}
       <MinhoOrientation language={language} />
-      <section id="destination-nature" className="minho-section bg-pa-cream">
+      <GuideSection
+        id="destination-nature"
+        className="minho-section bg-pa-cream"
+      >
         <div className="container">
           <div className="minho-section-heading">
             <div>
               <p className="minho-kicker">
                 {pt ? "ESCOLHA O SEU RITMO" : "FIND YOUR OWN PACE"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt ? (
                   <>
                     Três paisagens.
@@ -316,7 +322,7 @@ export function MinhoVisualGuide({
                     So many reasons to stay.
                   </>
                 )}
-              </h2>
+              </GuideHeading>
             </div>
             <p>
               {pt
@@ -324,42 +330,44 @@ export function MinhoVisualGuide({
                 : "From the coast to the valleys, the Minho draws you outdoors. Choose a base, explore nearby places and leave room for unhurried days."}
             </p>
           </div>
-          <div className="minho-landscapes">
-            {landscapes.map(({ image, name, place, text, plan, Icon }, i) => (
-              <article key={place}>
-                <div className="minho-landscape-photo">
-                  <EditorialPhoto
-                    src={image}
-                    alt={
-                      (pt
-                        ? [
-                            "Dunas, Atlântico e estuário do Cávado em Esposende",
-                            "Ponte e rio Lima em Ponte de Lima",
-                            "Montanhas da Peneda-Gerês",
-                          ]
-                        : [
-                            "Dunes, Atlantic and Cávado estuary in Esposende",
-                            "Bridge and Lima river in Ponte de Lima",
-                            "Mountains of Peneda-Gerês",
-                          ])[i]
-                    }
-                  />
-                  <span>
-                    <Icon size={16} aria-hidden="true" />
-                    {place}
-                  </span>
-                </div>
-                <div className="minho-landscape-copy">
-                  <span className="minho-number">0{i + 1}</span>
-                  <h3>{name[n]}</h3>
-                  <p>{text[n]}</p>
-                  <div className="minho-practical-note">{plan[n]}</div>
-                </div>
-              </article>
-            ))}
-          </div>
+          <GuideBody>
+            <div className="minho-landscapes">
+              {landscapes.map(({ image, name, place, text, plan, Icon }, i) => (
+                <article key={place}>
+                  <div className="minho-landscape-photo">
+                    <EditorialPhoto
+                      src={image}
+                      alt={
+                        (pt
+                          ? [
+                              "Dunas, Atlântico e estuário do Cávado em Esposende",
+                              "Ponte e rio Lima em Ponte de Lima",
+                              "Montanhas da Peneda-Gerês",
+                            ]
+                          : [
+                              "Dunes, Atlantic and Cávado estuary in Esposende",
+                              "Bridge and Lima river in Ponte de Lima",
+                              "Mountains of Peneda-Gerês",
+                            ])[i]
+                      }
+                    />
+                    <span>
+                      <Icon size={16} aria-hidden="true" />
+                      {place}
+                    </span>
+                  </div>
+                  <div className="minho-landscape-copy">
+                    <span className="minho-number">0{i + 1}</span>
+                    <h3>{name[n]}</h3>
+                    <p>{text[n]}</p>
+                    <div className="minho-practical-note">{plan[n]}</div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
       <WhereToStay
         destination={d}
         properties={properties}
@@ -374,14 +382,16 @@ export function MinhoVisualGuide({
         }
       />
       <LocalStaySupport destination={d.slug} />
-      <section id="destination-areas" className="minho-section bg-white">
+      <GuideSection id="destination-areas" className="minho-section bg-white">
         <div className="container">
           <div className="minho-section-heading">
             <div>
               <p className="minho-kicker">
                 {pt ? "UM LUGAR PARA CHAMAR SEU" : "SOMEWHERE TO CALL YOUR OWN"}
               </p>
-              <h2>{pt ? "Escolher a sua base" : "Choose your base"}</h2>
+              <GuideHeading>
+                {pt ? "Escolher a sua base" : "Choose your base"}
+              </GuideHeading>
             </div>
             <p>
               {pt
@@ -389,71 +399,76 @@ export function MinhoVisualGuide({
                 : "More city, more beach or more countryside? Where you stay sets the tone for your trip."}
             </p>
           </div>
-          <div className="minho-bases">
-            {guide.areas.map((area, i) => (
-              <article key={area.name}>
-                <span className="minho-base-tag">
-                  {
-                    (pt
-                      ? ["CIDADE + COSTA", "PRAIA + VILA", "VALE + CAMPO"]
-                      : [
-                          "CITY + COAST",
-                          "BEACH + TOWN",
-                          "VALLEY + COUNTRYSIDE",
-                        ])[i]
-                  }
-                </span>
-                <h3>{area.name}</h3>
-                <p>{area.bestFor}</p>
-                <div className="minho-base-transport">
-                  <TrainFront size={18} aria-hidden="true" />
-                  <p>{area.transport}</p>
-                </div>
-                <details>
-                  <summary>
-                    {pt ? "Antes de escolher" : "Before you choose"}
-                    <Plus size={16} />
-                  </summary>
-                  <p>{area.limitation}</p>
-                </details>
-                <Link
-                  href={href(
-                    i === 0
-                      ? "/destinations/viana-do-castelo"
-                      : i === 1
-                        ? "/destinations/caminha"
-                        : "/homes?location=ponte-de-lima"
-                  )}
-                  onClick={() => track("base", i === 2 ? "homes" : "guide")}
-                  className="minho-text-link"
-                >
-                  {pt
-                    ? i === 2
-                      ? "Ver casas no vale"
-                      : "Explorar esta base"
-                    : i === 2
-                      ? "Find valley homes"
-                      : "Explore this base"}
-                  <ArrowRight size={16} />
-                </Link>
-              </article>
-            ))}
-          </div>
+          <GuideBody>
+            <div className="minho-bases">
+              {guide.areas.map((area, i) => (
+                <article key={area.name}>
+                  <span className="minho-base-tag">
+                    {
+                      (pt
+                        ? ["CIDADE + COSTA", "PRAIA + VILA", "VALE + CAMPO"]
+                        : [
+                            "CITY + COAST",
+                            "BEACH + TOWN",
+                            "VALLEY + COUNTRYSIDE",
+                          ])[i]
+                    }
+                  </span>
+                  <h3>{area.name}</h3>
+                  <p>{area.bestFor}</p>
+                  <div className="minho-base-transport">
+                    <TrainFront size={18} aria-hidden="true" />
+                    <p>{area.transport}</p>
+                  </div>
+                  <details>
+                    <summary>
+                      {pt ? "Antes de escolher" : "Before you choose"}
+                      <Plus size={16} />
+                    </summary>
+                    <p>{area.limitation}</p>
+                  </details>
+                  <Link
+                    href={href(
+                      i === 0
+                        ? "/destinations/viana-do-castelo"
+                        : i === 1
+                          ? "/destinations/caminha"
+                          : "/homes?location=ponte-de-lima"
+                    )}
+                    onClick={() => track("base", i === 2 ? "homes" : "guide")}
+                    className="minho-text-link"
+                  >
+                    {pt
+                      ? i === 2
+                        ? "Ver casas no vale"
+                        : "Explorar esta base"
+                      : i === 2
+                        ? "Find valley homes"
+                        : "Explore this base"}
+                    <ArrowRight size={16} />
+                  </Link>
+                </article>
+              ))}
+            </div>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
       <MinhoStayLength language={language} />
-      <section id="destination-taste" className="minho-section minho-taste">
+      <GuideSection
+        id="destination-taste"
+        className="minho-section minho-taste"
+      >
         <div className="container">
           <div className="minho-section-heading">
             <div>
               <p className="minho-kicker">
                 {pt ? "SABOREAR O LUGAR" : "A TASTE OF THE PLACE"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt
                   ? "O Minho também se vive à mesa."
                   : "The Minho is a place to savour."}
-              </h2>
+              </GuideHeading>
             </div>
             <p>
               {pt
@@ -461,139 +476,144 @@ export function MinhoVisualGuide({
                 : "From coastal fish to valley cooking and Vinho Verde. Some days are best planned around lunch."}
             </p>
           </div>
-          <div className="minho-taste-feature">
-            <figure>
-              <EditorialPhoto
-                src={IMAGES.expGastronomy}
-                alt={
-                  pt
-                    ? "Chef Portugal Active a preparar uma refeição"
-                    : "Portugal Active chef preparing a meal"
-                }
-              />
-              <figcaption>
-                {pt
-                  ? "Chef Portugal Active · serviço por marcação"
-                  : "Portugal Active chef · arranged on request"}
-              </figcaption>
-            </figure>
-            <div className="minho-taste-stories">
-              {[
-                {
-                  Icon: Utensils,
-                  title: pt
-                    ? "Da costa para a mesa"
-                    : "From the coast to the table",
-                  text: pt
-                    ? "Peixe, marisco e bacalhau à moda de Viana. Na costa, guarde tempo para uma refeição depois da praia."
-                    : "Fish, seafood and Viana-style cod. Along the coast, leave time for a proper meal after the beach.",
-                },
-                {
-                  Icon: Wine,
-                  title: pt
-                    ? "Um copo, um vale, uma quinta"
-                    : "A glass, a valley, a vineyard",
-                  text: pt
-                    ? "Loureiro no vale do Lima; Alvarinho em Monção e Melgaço. Uma visita a um produtor dá outro sentido à paisagem — e pede transporte de regresso combinado."
-                    : "Loureiro in the Lima valley; Alvarinho in Monção and Melgaço. A producer visit brings the landscape to life — with the return journey arranged ahead.",
-                },
-                {
-                  Icon: Leaf,
-                  title: pt
-                    ? "Ficar em casa também é um plano"
-                    : "Staying in is a plan, too",
-                  text: pt
-                    ? "Traga produtos do mercado ou peça-nos uma experiência de chef. Menu, disponibilidade e preço são combinados antes da reserva do serviço."
-                    : "Bring back market produce or ask us about a chef experience. Menu, availability and price are agreed before the service is booked.",
-                },
-              ].map(({ Icon, title, text }) => (
-                <article key={title}>
-                  <Icon size={22} aria-hidden="true" />
-                  <div>
-                    <h3>{title}</h3>
-                    <p>{text}</p>
-                  </div>
-                </article>
-              ))}
-              <Link
-                className="minho-text-link"
-                href={href("/concierge")}
-                onClick={() => track("chef", "guide")}
-              >
-                {pt ? "Planear um momento à mesa" : "Plan a food experience"}
-                <ArrowRight size={16} />
-              </Link>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-3 justify-between items-end mt-12 mb-6">
-            <h3 className="minho-subtitle">
-              {pt ? "Paragens para guardar" : "Places to keep in mind"}
-            </h3>
-            <p className="text-sm text-pa-earth">
-              {pt
-                ? "Consulte a ementa e abertura atuais; reserve quando necessário."
-                : "Check current menus and opening; reserve where needed."}
-            </p>
-          </div>
-          <div className="minho-restaurants">
-            {restaurants.map((r, i) => (
-              <article key={r.name}>
-                <span className="minho-kicker">{r.category}</span>
-                <h4>{r.name}</h4>
-                <p className="minho-place">
-                  <MapPin size={14} />
-                  {restaurantPlaces[i]}
-                </p>
-                <p>{restaurantNotes[i]}</p>
-                <details>
-                  <summary>
-                    {pt ? "Informação para a visita" : "Plan your visit"}
-                    <Plus size={15} />
-                  </summary>
-                  <p>{r.description}</p>
-                </details>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name + " " + restaurantPlaces[i])}`}
+          <GuideBody>
+            <div className="minho-taste-feature">
+              <figure>
+                <EditorialPhoto
+                  src={IMAGES.expGastronomy}
+                  alt={
+                    pt
+                      ? "Chef Portugal Active a preparar uma refeição"
+                      : "Portugal Active chef preparing a meal"
+                  }
+                />
+                <figcaption>
+                  {pt
+                    ? "Chef Portugal Active · serviço por marcação"
+                    : "Portugal Active chef · arranged on request"}
+                </figcaption>
+              </figure>
+              <div className="minho-taste-stories">
+                {[
+                  {
+                    Icon: Utensils,
+                    title: pt
+                      ? "Da costa para a mesa"
+                      : "From the coast to the table",
+                    text: pt
+                      ? "Peixe, marisco e bacalhau à moda de Viana. Na costa, guarde tempo para uma refeição depois da praia."
+                      : "Fish, seafood and Viana-style cod. Along the coast, leave time for a proper meal after the beach.",
+                  },
+                  {
+                    Icon: Wine,
+                    title: pt
+                      ? "Um copo, um vale, uma quinta"
+                      : "A glass, a valley, a vineyard",
+                    text: pt
+                      ? "Loureiro no vale do Lima; Alvarinho em Monção e Melgaço. Uma visita a um produtor dá outro sentido à paisagem — e pede transporte de regresso combinado."
+                      : "Loureiro in the Lima valley; Alvarinho in Monção and Melgaço. A producer visit brings the landscape to life — with the return journey arranged ahead.",
+                  },
+                  {
+                    Icon: Leaf,
+                    title: pt
+                      ? "Ficar em casa também é um plano"
+                      : "Staying in is a plan, too",
+                    text: pt
+                      ? "Traga produtos do mercado ou peça-nos uma experiência de chef. Menu, disponibilidade e preço são combinados antes da reserva do serviço."
+                      : "Bring back market produce or ask us about a chef experience. Menu, availability and price are agreed before the service is booked.",
+                  },
+                ].map(({ Icon, title, text }) => (
+                  <article key={title}>
+                    <Icon size={22} aria-hidden="true" />
+                    <div>
+                      <h3>{title}</h3>
+                      <p>{text}</p>
+                    </div>
+                  </article>
+                ))}
+                <Link
                   className="minho-text-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={href("/concierge")}
+                  onClick={() => track("chef", "guide")}
                 >
-                  {pt ? "Ver localização" : "View location"}
-                  <ArrowUpRight size={15} />
-                </a>
-              </article>
-            ))}
-          </div>
-          <details className="minho-details mt-8">
-            <summary>
-              {pt ? "Mais sabores da região" : "More local flavours"}
-              <Plus size={18} />
-            </summary>
-            <div className="grid md:grid-cols-2 gap-6 py-6">
-              {d.specialties?.map(s => (
-                <article key={s.name}>
-                  <h4 className="font-display text-2xl mb-2">{s.name}</h4>
-                  <p className="text-pa-earth leading-relaxed">
-                    {s.description}
+                  {pt ? "Planear um momento à mesa" : "Plan a food experience"}
+                  <ArrowRight size={16} />
+                </Link>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3 justify-between items-end mt-12 mb-6">
+              <h3 className="minho-subtitle">
+                {pt ? "Paragens para guardar" : "Places to keep in mind"}
+              </h3>
+              <p className="text-sm text-pa-earth">
+                {pt
+                  ? "Consulte a ementa e abertura atuais; reserve quando necessário."
+                  : "Check current menus and opening; reserve where needed."}
+              </p>
+            </div>
+            <div className="minho-restaurants">
+              {restaurants.map((r, i) => (
+                <article key={r.name}>
+                  <span className="minho-kicker">{r.category}</span>
+                  <h4>{r.name}</h4>
+                  <p className="minho-place">
+                    <MapPin size={14} />
+                    {restaurantPlaces[i]}
                   </p>
+                  <p>{restaurantNotes[i]}</p>
+                  <details>
+                    <summary>
+                      {pt ? "Informação para a visita" : "Plan your visit"}
+                      <Plus size={15} />
+                    </summary>
+                    <p>{r.description}</p>
+                  </details>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name + " " + restaurantPlaces[i])}`}
+                    className="minho-text-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {pt ? "Ver localização" : "View location"}
+                    <ArrowUpRight size={15} />
+                  </a>
                 </article>
               ))}
             </div>
-          </details>
+            <details className="minho-details mt-8">
+              <summary>
+                {pt ? "Mais sabores da região" : "More local flavours"}
+                <Plus size={18} />
+              </summary>
+              <div className="grid md:grid-cols-2 gap-6 py-6">
+                {d.specialties?.map(s => (
+                  <article key={s.name}>
+                    <h4 className="font-display text-2xl mb-2">{s.name}</h4>
+                    <p className="text-pa-earth leading-relaxed">
+                      {s.description}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </details>
+          </GuideBody>
         </div>
-      </section>
-      <section id="destination-experiences" className="minho-section bg-white">
+      </GuideSection>
+      <GuideSection
+        id="destination-experiences"
+        className="minho-section bg-white"
+      >
         <div className="container">
           <div className="minho-section-heading">
             <div>
               <p className="minho-kicker">
                 {pt ? "FAZER PARTE DA PAISAGEM" : "BE PART OF THE LANDSCAPE"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt
                   ? "Dias para sentir, não só para ver."
                   : "Days to feel, not just to see."}
-              </h2>
+              </GuideHeading>
             </div>
             <p>
               {pt
@@ -601,65 +621,71 @@ export function MinhoVisualGuide({
                 : "On the water, on horseback or catching your first wave. Find an experience at your pace; we can help with the details."}
             </p>
           </div>
-          <div className="minho-experiences">
-            {featured.map(adv => (
-              <article key={adv.id}>
-                <EditorialPhoto src={adv.image} alt={adv.name} />
-                <div>
-                  <h3>{adv.name}</h3>
-                  <p>
-                    {pt
-                      ? adv.id === "a2"
-                        ? "Ver as margens do Lima a partir da água, num percurso adaptado às condições do dia."
-                        : adv.id === "a3"
-                          ? "Conhecer a paisagem de outra forma, com percurso e nível combinados com o centro hípico."
-                          : "Dar os primeiros passos ou voltar ao mar com uma aula ajustada ao seu nível."
-                      : adv.id === "a2"
-                        ? "See the Lima riverbanks from the water, on a route suited to the day’s conditions."
-                        : adv.id === "a3"
-                          ? "Discover the landscape differently, with a route and level agreed with the riding centre."
-                          : "Find your first wave or return to the sea with a lesson suited to your level."}
-                  </p>
-                  {onAddToItinerary && (
-                    <button
-                      type="button"
-                      onClick={() => onAddToItinerary(adv)}
-                      className="minho-text-link"
-                    >
-                      {pt ? "Adicionar ao itinerário" : "Add to itinerary"}
-                      <Plus size={17} />
-                    </button>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-          <p className="text-sm text-pa-earth mt-6">
-            {pt
-              ? "Atividades por reserva, com preço e disponibilidade próprios. Percurso, equipamento e requisitos são confirmados antes da atividade."
-              : "Activities are booked separately, with their own price and availability. Route, equipment and requirements are confirmed before the activity."}
-          </p>
-          <details className="minho-details mt-8">
-            <summary>
-              {pt
-                ? "Mais ideias para sair e explorar"
-                : "More ways to get out and explore"}
-              <Plus size={18} />
-            </summary>
-            <div className="grid md:grid-cols-2 gap-6 py-6">
-              {d.experiences?.map(e => (
-                <article key={e.name}>
-                  <h4 className="font-display text-2xl mb-2">{e.name}</h4>
-                  <p className="text-pa-earth leading-relaxed">
-                    {e.description}
-                  </p>
+          <GuideBody>
+            <div className="minho-experiences">
+              {featured.map(adv => (
+                <article key={adv.id}>
+                  <EditorialPhoto src={adv.image} alt={adv.name} />
+                  <div>
+                    <h3>{adv.name}</h3>
+                    <p>
+                      {pt
+                        ? adv.id === "a2"
+                          ? "Ver as margens do Lima a partir da água, num percurso adaptado às condições do dia."
+                          : adv.id === "a3"
+                            ? "Conhecer a paisagem de outra forma, com percurso e nível combinados com o centro hípico."
+                            : "Dar os primeiros passos ou voltar ao mar com uma aula ajustada ao seu nível."
+                        : adv.id === "a2"
+                          ? "See the Lima riverbanks from the water, on a route suited to the day’s conditions."
+                          : adv.id === "a3"
+                            ? "Discover the landscape differently, with a route and level agreed with the riding centre."
+                            : "Find your first wave or return to the sea with a lesson suited to your level."}
+                    </p>
+                    {onAddToItinerary && (
+                      <button
+                        type="button"
+                        onClick={() => onAddToItinerary(adv)}
+                        className="minho-text-link"
+                      >
+                        {pt ? "Adicionar ao itinerário" : "Add to itinerary"}
+                        <Plus size={17} />
+                      </button>
+                    )}
+                  </div>
                 </article>
               ))}
             </div>
-          </details>
+            <p className="text-sm text-pa-earth mt-6">
+              {pt
+                ? "Atividades por reserva, com preço e disponibilidade próprios. Percurso, equipamento e requisitos são confirmados antes da atividade."
+                : "Activities are booked separately, with their own price and availability. Route, equipment and requirements are confirmed before the activity."}
+            </p>
+            <details className="minho-details mt-8">
+              <summary>
+                {pt
+                  ? "Mais ideias para sair e explorar"
+                  : "More ways to get out and explore"}
+                <Plus size={18} />
+              </summary>
+              <div className="grid md:grid-cols-2 gap-6 py-6">
+                {d.experiences?.map(e => (
+                  <article key={e.name}>
+                    <h4 className="font-display text-2xl mb-2">{e.name}</h4>
+                    <p className="text-pa-earth leading-relaxed">
+                      {e.description}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </details>
+          </GuideBody>
         </div>
-      </section>
-      <section id="destination-culture" className="minho-section minho-culture">
+      </GuideSection>
+      <GuideSection
+        id="destination-culture"
+        className="minho-section minho-culture"
+        parts={["intro"]}
+      >
         <span
           id="destination-rain"
           className="minho-legacy-anchor"
@@ -675,23 +701,25 @@ export function MinhoVisualGuide({
                 ? "HISTÓRIAS QUE FAZEM PARTE DA VIAGEM"
                 : "STORIES TO TAKE HOME"}
             </p>
-            <h2>
+            <GuideHeading>
               {pt
                 ? "Entre palácios, tradições e um copo de vinho."
                 : "Palaces, local traditions and a glass of wine."}
-            </h2>
-            <p className="mt-5">
-              {pt
-                ? "A filigrana de Viana, os vinhos do Lima e o património de Braga dão outra profundidade à viagem. Guimarães acrescenta um centro histórico classificado pela UNESCO: escolha uma cidade e dê-lhe tempo."
-                : "Viana’s goldwork, Lima valley wines and Braga’s heritage bring another dimension to your stay. Guimarães adds a UNESCO-listed historic centre: choose a city and give it time."}
-            </p>
-            <div className="minho-culture-tip">
-              {pt
-                ? "Com crianças, o Aquamuseu de Cerveira dá vida à história do rio. Para uma tarde a dois, combine uma prova de vinho com um passeio em Ponte de Lima."
-                : "With children, Cerveira’s Aquamuseum brings the river’s story to life. For an afternoon together, pair a wine tasting with a walk in Ponte de Lima."}
-            </div>
+            </GuideHeading>
+            <GuideBody part="intro">
+              <p className="mt-5">
+                {pt
+                  ? "A filigrana de Viana, os vinhos do Lima e o património de Braga dão outra profundidade à viagem. Guimarães acrescenta um centro histórico classificado pela UNESCO: escolha uma cidade e dê-lhe tempo."
+                  : "Viana’s goldwork, Lima valley wines and Braga’s heritage bring another dimension to your stay. Guimarães adds a UNESCO-listed historic centre: choose a city and give it time."}
+              </p>
+              <div className="minho-culture-tip">
+                {pt
+                  ? "Com crianças, o Aquamuseu de Cerveira dá vida à história do rio. Para uma tarde a dois, combine uma prova de vinho com um passeio em Ponte de Lima."
+                  : "With children, Cerveira’s Aquamuseum brings the river’s story to life. For an afternoon together, pair a wine tasting with a walk in Ponte de Lima."}
+              </div>
+            </GuideBody>
           </div>
-          <div className="minho-culture-options">
+          <GuideBody className="minho-culture-options">
             {guide.rain.map((item, i) => (
               <article key={item.title}>
                 <span className="minho-number">0{i + 1}</span>
@@ -709,21 +737,21 @@ export function MinhoVisualGuide({
                 </div>
               </article>
             ))}
-          </div>
+          </GuideBody>
         </div>
-      </section>
-      <section id="destination-seasons" className="minho-section bg-white">
+      </GuideSection>
+      <GuideSection id="destination-seasons" className="minho-section bg-white">
         <div className="container">
           <div className="minho-section-heading">
             <div>
               <p className="minho-kicker">
                 {pt ? "QUAL É A SUA ÉPOCA?" : "FIND YOUR SEASON"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt
                   ? "O Minho muda. A vontade de voltar fica."
                   : "A changing landscape. A reason to return."}
-              </h2>
+              </GuideHeading>
             </div>
             <Link
               className="minho-text-link"
@@ -734,33 +762,38 @@ export function MinhoVisualGuide({
               <ArrowRight size={16} />
             </Link>
           </div>
-          <div className="minho-seasons">
-            {seasons.map(([season, title, text], i) => {
-              const Icon = [Leaf, Sun, Wine, Coffee][i];
-              return (
-                <article key={season}>
-                  <Icon size={24} aria-hidden="true" />
-                  <span>{season}</span>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </article>
-              );
-            })}
-          </div>
+          <GuideBody>
+            <div className="minho-seasons">
+              {seasons.map(([season, title, text], i) => {
+                const Icon = [Leaf, Sun, Wine, Coffee][i];
+                return (
+                  <article key={season}>
+                    <Icon size={24} aria-hidden="true" />
+                    <span>{season}</span>
+                    <h3>{title}</h3>
+                    <p>{text}</p>
+                  </article>
+                );
+              })}
+            </div>
+          </GuideBody>
         </div>
-      </section>
-      <section id="destination-arrival" className="minho-section bg-pa-cream">
+      </GuideSection>
+      <GuideSection
+        id="destination-arrival"
+        className="minho-section bg-pa-cream"
+      >
         <div className="container">
           <div className="minho-section-heading">
             <div>
               <p className="minho-kicker">
                 {pt ? "DO VOO À SUA CASA" : "FROM YOUR FLIGHT TO YOUR HOME"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt
                   ? "Chegar pode ser a parte simples."
                   : "Getting here can be the easy part."}
-              </h2>
+              </GuideHeading>
             </div>
             <p>
               {pt
@@ -768,28 +801,30 @@ export function MinhoVisualGuide({
                 : "Airport, shuttle, train or car: plan the arrival, then decide how you want to explore."}
             </p>
           </div>
-          <DestinationAccess slug={d.slug} language={language} />
-          <div className="minho-local-travel">
-            {guide.arrival.map(item => (
-              <article key={item.title}>
-                <TrainFront size={22} aria-hidden="true" />
-                <div>
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                  <a
-                    href={item.sourceUrl}
-                    onClick={() => track("arrival", "source")}
-                    className="minho-text-link"
-                  >
-                    {item.sourceLabel}
-                    <ArrowUpRight size={15} />
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
+          <GuideBody>
+            <DestinationAccess slug={d.slug} language={language} />
+            <div className="minho-local-travel">
+              {guide.arrival.map(item => (
+                <article key={item.title}>
+                  <TrainFront size={22} aria-hidden="true" />
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.text}</p>
+                    <a
+                      href={item.sourceUrl}
+                      onClick={() => track("arrival", "source")}
+                      className="minho-text-link"
+                    >
+                      {item.sourceLabel}
+                      <ArrowUpRight size={15} />
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
       <TheJournal destination={d} articles={articles} />
       <section className="minho-section bg-pa-cream">
         <div className="container max-w-4xl">

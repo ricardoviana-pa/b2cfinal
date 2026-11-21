@@ -105,7 +105,7 @@ export default function PromoBar() {
         className="pa-promobar-btn block w-full h-full cursor-pointer"
       >
         {copied ? (
-          <span className="flex items-center justify-center gap-1.5 h-full text-[11.5px] tracking-[0.14em] uppercase text-pa-gold-light">
+          <span className="flex items-center justify-center gap-1.5 h-full text-[12px] tracking-[0.14em] uppercase text-pa-gold-light">
             <Check className="w-3.5 h-3.5" aria-hidden /> {copiedLabel} — {code}
           </span>
         ) : (
@@ -113,7 +113,7 @@ export default function PromoBar() {
             {items.map((_, i) => (
               <span
                 key={i}
-                className="flex items-center gap-2 px-8 text-[11.5px] tracking-[0.14em] uppercase"
+                className="flex items-center gap-2 px-8 text-[12px] tracking-[0.14em] uppercase"
               >
                 {message}
                 <span className="text-pa-gold-light">·</span>

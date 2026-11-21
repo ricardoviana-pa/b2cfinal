@@ -2,7 +2,123 @@
 
 > **Source of truth** for replicating the exact visual language of the Portugal Active website.
 > Visual references: Aesop, Aman Resorts, Sublime Comporta.
-> Last updated: March 2026.
+> Last updated: November 2026 (section 0). Sections 1 to 10 date from March 2026:
+> where they disagree with section 0, section 0 wins.
+
+---
+
+## 0. Rules in force (design audit of 14 Nov 2026, decisions of 20 Nov 2026)
+
+The audit measured 25 pages on a computer and on a phone: 74% of the text was
+13 px or smaller, 43% of it in the thin weight, and the site used 47 font
+sizes, 31 button shapes and four different corner radii on the same page. These
+are the rules that came out of it. `server/design-audit-nov2026.test.ts` fails
+when a page leaves them.
+
+### Type
+
+| Role | Class | Size | Weight |
+|---|---|---|---|
+| Lead paragraph | `body-lg` | 17 to 19 px | 400 |
+| Running text | `body-md`, bare `<p>` | 16 px | 400 |
+| Running text in dense zones (cards, booking card, checkout) | `body-sm` | 15 px | 400 |
+| Captions, notes, metadata | `caption` | 13 px | 400 |
+| Uppercase labels | `eyebrow` | 12 px | 500 |
+| Buttons | `btn-primary`, `btn-ghost`, `btn-white` | 12 px uppercase | 500 |
+
+- Nothing below 12 px, anywhere.
+- The thin weight (300) is for display type only: the serif headings and large
+  numerals (20 px and up). Never for running text.
+- Two families and no others: Cormorant Garamond for headings, DM Sans for the rest.
+- A hand-written size (`text-[13px]`) is a last resort outside the booking
+  pages and a lint error inside them (`eslint.config.js`); use the classes above.
+
+### Colour of text
+
+| Token | Hex | Use | Contrast on cream / warm |
+|---|---|---|---|
+| `text-pa-dark` | `#1A1A18` | Headings, values, primary text | 16.6 / 15.4 |
+| `text-pa-earth` | `#5E5B54` | Running text | 6.5 / 6.0 |
+| `text-pa-stone` (= `text-pa-stone-aa`) | `#6B6860` | Secondary text, captions, labels | 5.3 / 4.95 |
+| `text-pa-gold-aa` | `#806A48` | Gold text on light surfaces | 4.9 / 4.6 |
+| `text-pa-gold-light` | `#C4A87C` | Gold text on dark surfaces | 7.7 on `#1A1A18` |
+
+- `#8B7355` (`pa-gold`) is for borders, fills and focus rings. It is not a text
+  colour: 4.3:1 on cream.
+- No `text-black/30`, `/40` or `/50` for text: use `text-pa-stone`. A disabled
+  control may stay faint.
+- A `<p>` has its own colour (`#5E5B54`): inside a dark block give it
+  `text-white` (or `text-white/80`), or it stays dark grey on dark.
+
+### Corners
+
+- Photos and cards: 12 px (`rounded-xl`).
+- Buttons and form fields: 8 px (`rounded-lg`; the action classes take it from `--pa-action-radius`).
+- Pills and round icon buttons: fully round (`rounded-full`).
+- Full-width heroes stay square.
+
+### Buttons
+
+- Two buttons and one height: the filled one (`btn-primary`; `btn-white` on a
+  photo or a dark block) and the outlined one (`btn-ghost`; `btn-ghost-light`
+  on dark). All four are 48 px tall, 12 px uppercase, 8 px corners.
+- The one exception is the main action of a booking card ("Reserve" on a
+  home, "Book now" on an experience): the same button at 52 px.
+- "Show more", "show all" and other secondary actions are `btn-ghost`, not a
+  hand-built bordered button.
+- Filter chips (`pa-action`, 44 px, 8 px corners) and the search submit inside
+  a search bar are their own pieces; they are not a third button.
+
+### Home cards
+
+- One card (`PropertyCard`) on the homepage, the listing, collections, the
+  destination pages, a home's "similar homes" and the 404 page. The Journal
+  keeps a compact card (photo, name, place) because an article loads only
+  those fields.
+- The photo arrows show when the card is hovered or one of them takes keyboard
+  focus. On a touch screen there are none: the photo is swiped and the dots
+  show the position.
+- Name 20 px serif, price 16 px medium, place 13 px gold.
+- The price row is one line on every card. The partner homes' note ("Other
+  charges to be confirmed") sits on that line, to the right, while no dates
+  are chosen; it wraps under itself only when the card is too narrow.
+
+### Dates
+
+- Dates are chosen in one calendar everywhere: `AvailabilityCalendar`. On a
+  home's page it shows that home's availability; in the homepage search and
+  the listing search (`SearchDatesPicker`, `search` mode) every future day is
+  open and there is no legend.
+- The native `<input type="date">` stays in those two searches for the moment
+  before React has loaded, and nowhere else is it visible to a guest.
+- A date field shows the date in words ("10 Dec 2026") or the field's name,
+  never the browser's "dd/mm/yyyy".
+
+### Floating buttons and the cookie banner
+
+- Below 1024 px only the WhatsApp button floats. "Back to top" is for 1024 px and up.
+- On pages with a booking bar the WhatsApp contact is inside the bar.
+- The cookie banner's two choices look exactly the same. On a phone they sit
+  side by side under the notice.
+
+### Prices
+
+- Before the checkout (listing, a home's page): whole euros, rounded up
+  (`formatStayEur`, `client/src/lib/format.ts`). The lines of a breakdown are
+  made to add up to the total as shown (`stayBreakdownEuros`).
+- In the checkout: the exact amount with its cents (`formatQuotedEur`).
+- "From" prices per night keep `formatEur`.
+
+### Navigation
+
+- One list and one order on a computer and on a phone: Homes, Destinations,
+  Experiences, Concierge, Events, Journal, About, Contact (`Header.tsx`).
+
+### Lists
+
+- The catalogue shows twelve homes at a time; "show more" adds twelve. The
+  names of the homes not yet in the grid are listed at the end of the page, so
+  every home has a link in the served HTML.
 
 ---
 

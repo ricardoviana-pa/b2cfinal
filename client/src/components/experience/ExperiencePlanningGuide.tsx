@@ -18,9 +18,9 @@ export default function ExperiencePlanningGuide({ slug }: { slug: string }) {
     <Link href={withEditorialTrip(`/blog/${guide.slug}`, search)} className="group grid sm:grid-cols-[150px_1fr] items-center">
       <img src={guide.image} alt="" width={300} height={200} loading="lazy" className="w-full h-36 sm:h-full object-cover" />
       <div className="p-5">
-        <p className="text-xs text-[#756044] mb-2">Portugal Active Journal</p>
+        <p className="text-[13px] text-pa-gold-aa mb-2">Portugal Active Journal</p>
         <h2 className="font-display text-xl text-[#1A1A18] mb-2">{guide[language]}</h2>
-        <span className="text-sm text-[#756044] underline underline-offset-4">{language === 'pt' ? 'Ler o guia para preparar a experiência' : 'Read the guide to planning your experience'}</span>
+        <span className="text-[15px] text-pa-gold-aa underline underline-offset-4">{language === 'pt' ? 'Ler o guia para preparar a experiência' : 'Read the guide to planning your experience'}</span>
       </div>
     </Link>
   </aside>;

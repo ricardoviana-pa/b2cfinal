@@ -1106,7 +1106,7 @@ function SummaryRow({ label, value, strong }: { label: string; value: string; st
   return (
     <div className="flex items-baseline justify-between gap-4 py-3">
       <dt className="body-sm text-pa-earth shrink-0">{label}</dt>
-      <dd className={cn("text-right tabular-nums text-pa-dark", strong ? "text-[17px] font-medium" : "text-[14px] font-medium")}>{value}</dd>
+      <dd className={cn("text-right tabular-nums text-pa-dark", strong ? "text-[17px] font-medium" : "text-[15px] font-medium")}>{value}</dd>
     </div>
   );
 }

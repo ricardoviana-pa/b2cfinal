@@ -33,7 +33,7 @@ export default function Careers() {
             <p className="body-lg mb-6">
               {t('careers.lookingBody')}
             </p>
-            <p className="text-[15px] text-[#6B6860] mb-8" style={{ fontWeight: 300 }}>
+            <p className="text-[16px] text-pa-earth mb-8" style={{ fontWeight: 400 }}>
               {t('careers.sendCv')}
             </p>
             <a

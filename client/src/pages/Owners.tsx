@@ -140,7 +140,7 @@ export default function Owners() {
           </p>
           <a
             href="#contact-form"
-            className="pa-action inline-flex items-center gap-2 rounded-full bg-white text-[#1A1A18] text-[12px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#F5F1EB] transition-colors"
+            className="pa-action inline-flex items-center gap-2 rounded-full bg-white text-[#1A1A18] text-[13px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#F5F1EB] transition-colors"
           >
             {t('owners.requestAssessment')} <ArrowRight className="w-4 h-4" />
           </a>
@@ -172,7 +172,7 @@ export default function Owners() {
             ].map(item => (
               <div key={item.label} className="text-center py-4 flex-shrink-0 w-[200px] lg:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <div className="font-display text-[2.8rem] lg:text-[3.5rem] text-[#1A1A18] leading-none mb-2">{item.stat}</div>
-                <div className="text-[12px] font-medium text-[#726D63] tracking-[0.06em]">{item.label}</div>
+                <div className="text-[13px] font-medium text-pa-stone tracking-[0.06em]">{item.label}</div>
               </div>
             ))}
           </div>
@@ -183,9 +183,9 @@ export default function Owners() {
       <section className="section-padding">
         <div className="container">
           <div className="max-w-3xl mx-auto mb-12">
-            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('owners.whatWeDoOverline')}</p>
+            <p className="text-[13px] font-medium text-pa-gold-aa mb-4 tracking-[0.08em]">{t('owners.whatWeDoOverline')}</p>
             <h2 className="headline-lg text-[#1A1A18] mb-5">{t('owners.whatWeDoTitle')}</h2>
-            <p className="body-lg text-[#6B6860]">
+            <p className="body-lg text-pa-earth">
               {t('owners.whatWeDoBody')}
             </p>
           </div>
@@ -196,7 +196,7 @@ export default function Owners() {
                   <Check className="w-4 h-4 text-white" />
                 </div>
                 <h3 className="font-display text-[20px] text-[#1A1A18] mb-3">{item.title}</h3>
-                <p className="text-[14px] text-[#6B6860] font-light leading-relaxed">{item.body}</p>
+                <p className="text-[15px] text-pa-earth font-normal leading-relaxed">{item.body}</p>
               </div>
             ))}
           </div>
@@ -206,7 +206,7 @@ export default function Owners() {
       {/* How It Works */}
       <section className="section-padding bg-[#F5F1EB]">
         <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('owners.howItWorksOverline')}</p>
+          <p className="text-[13px] font-medium text-pa-gold-aa mb-4 tracking-[0.08em]">{t('owners.howItWorksOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-10">{t('owners.howItWorksTitle')}</h2>
           <div className="flex gap-6 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:flex-col md:gap-8 md:overflow-visible">
             {HOW_IT_WORKS.map((step, idx) => (
@@ -214,7 +214,7 @@ export default function Owners() {
                 <div className="font-display text-[3rem] text-[#E8E4DC] leading-none shrink-0 w-16">{step.step}</div>
                 <div className="pt-2">
                   <h3 className="font-display text-[20px] text-[#1A1A18] mb-2">{step.title}</h3>
-                  <p className="text-[14px] text-[#6B6860] font-light leading-relaxed">{step.body}</p>
+                  <p className="text-[15px] text-pa-earth font-normal leading-relaxed">{step.body}</p>
                 </div>
               </div>
             ))}
@@ -227,13 +227,13 @@ export default function Owners() {
         <div className="container max-w-3xl mx-auto">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div>
-              <p className="text-[11px] font-medium text-[#8B7355] mb-2 tracking-[0.08em]">{t('owners.portalOverline')}</p>
+              <p className="text-[13px] font-medium text-pa-gold-aa mb-2 tracking-[0.08em]">{t('owners.portalOverline')}</p>
               <h3 className="font-display text-[22px] text-[#1A1A18] mb-2">{t('owners.portalTitle')}</h3>
-              <p className="text-[14px] text-[#6B6860] font-light">{t('owners.portalBody')}</p>
+              <p className="text-[15px] text-pa-earth font-normal">{t('owners.portalBody')}</p>
             </div>
             <a
               href={managementUrl(i18n.resolvedLanguage || i18n.language)}
-              className="pa-action inline-flex items-center gap-2 rounded-full border border-[#1A1A18] text-[#1A1A18] text-[12px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#1A1A18] hover:text-white transition-colors shrink-0"
+              className="pa-action inline-flex items-center gap-2 rounded-full border border-[#1A1A18] text-[#1A1A18] text-[13px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#1A1A18] hover:text-white transition-colors shrink-0"
             >
               {t('owners.portalCta')} <ExternalLink className="w-4 h-4" />
             </a>
@@ -244,9 +244,9 @@ export default function Owners() {
       {/* Submission Form */}
       <section id="contact-form" className="section-padding bg-[#FAFAF7]">
         <div className="container max-w-2xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('owners.formOverline')}</p>
+          <p className="text-[13px] font-medium text-pa-gold-aa mb-4 tracking-[0.08em]">{t('owners.formOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-3">{t('owners.formTitle')}</h2>
-          <p className="body-lg text-[#6B6860] mb-10">
+          <p className="body-lg text-pa-earth mb-10">
             {t('owners.formBody')}
           </p>
 
@@ -262,7 +262,7 @@ export default function Owners() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formName')} <span className="text-[#DC2626]">*</span></label>
+                  <label className="text-[12px] font-medium tracking-[0.12em] text-pa-stone mb-2 block">{t('owners.formName')} <span className="text-[#DC2626]">*</span></label>
                   <input
                     type="text"
                     required
@@ -271,12 +271,12 @@ export default function Owners() {
                     onBlur={() => handleFieldBlur('ownerName', ownerName)}
                     autoComplete="name"
                     className={`w-full h-[52px] px-4 bg-white border text-[16px] text-[#1A1A18] focus:outline-none transition-colors ${touched.ownerName && fieldErrors.ownerName ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10' : 'border-[#E8E4DC] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C]'}`}
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   />
-                  {touched.ownerName && fieldErrors.ownerName && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.ownerName}</p>}
+                  {touched.ownerName && fieldErrors.ownerName && <p className="text-[13px] text-[#DC2626] mt-1.5">{fieldErrors.ownerName}</p>}
                 </div>
                 <div>
-                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formEmail')} <span className="text-[#DC2626]">*</span></label>
+                  <label className="text-[12px] font-medium tracking-[0.12em] text-pa-stone mb-2 block">{t('owners.formEmail')} <span className="text-[#DC2626]">*</span></label>
                   <input
                     type="email"
                     required
@@ -286,13 +286,13 @@ export default function Owners() {
                     autoComplete="email"
                     inputMode="email"
                     className={`w-full h-[52px] px-4 bg-white border text-[16px] text-[#1A1A18] focus:outline-none transition-colors ${touched.ownerEmail && fieldErrors.ownerEmail ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10' : 'border-[#E8E4DC] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C]'}`}
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   />
-                  {touched.ownerEmail && fieldErrors.ownerEmail && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.ownerEmail}</p>}
+                  {touched.ownerEmail && fieldErrors.ownerEmail && <p className="text-[13px] text-[#DC2626] mt-1.5">{fieldErrors.ownerEmail}</p>}
                 </div>
               </div>
               <div>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formPhone')}</label>
+                <label className="text-[12px] font-medium tracking-[0.12em] text-pa-stone mb-2 block">{t('owners.formPhone')}</label>
                 <input
                   type="tel"
                   value={ownerPhone}
@@ -300,11 +300,11 @@ export default function Owners() {
                   autoComplete="tel"
                   inputMode="tel"
                   className="w-full h-[52px] px-4 bg-white border border-[#E8E4DC] text-[16px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C] transition-colors"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 />
               </div>
               <div>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formLocation')} <span className="text-[#DC2626]">*</span></label>
+                <label className="text-[12px] font-medium tracking-[0.12em] text-pa-stone mb-2 block">{t('owners.formLocation')} <span className="text-[#DC2626]">*</span></label>
                 <input
                   type="text"
                   required
@@ -313,18 +313,18 @@ export default function Owners() {
                   onBlur={() => handleFieldBlur('ownerLocation', ownerLocation)}
                   placeholder={t('owners.formLocationPh')}
                   autoComplete="address-level2"
-                  className={`w-full h-[52px] px-4 bg-white border text-[16px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none transition-colors ${touched.ownerLocation && fieldErrors.ownerLocation ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10' : 'border-[#E8E4DC] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C]'}`}
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                  className={`w-full h-[52px] px-4 bg-white border text-[16px] text-[#1A1A18] placeholder:text-pa-stone focus:outline-none transition-colors ${touched.ownerLocation && fieldErrors.ownerLocation ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10' : 'border-[#E8E4DC] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C]'}`}
+                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 />
-                {touched.ownerLocation && fieldErrors.ownerLocation && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.ownerLocation}</p>}
+                {touched.ownerLocation && fieldErrors.ownerLocation && <p className="text-[13px] text-[#DC2626] mt-1.5">{fieldErrors.ownerLocation}</p>}
               </div>
               <div>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formType')}</label>
+                <label className="text-[12px] font-medium tracking-[0.12em] text-pa-stone mb-2 block">{t('owners.formType')}</label>
                 <select
                   value={ownerType}
                   onChange={e => setOwnerType(e.target.value)}
                   className="w-full h-[52px] px-4 bg-white border border-[#E8E4DC] text-[16px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C] transition-colors appearance-none cursor-pointer"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 >
                   <option value="">{t('owners.formTypeSelect')}</option>
                   <option value="villa">{t('owners.formTypeVilla')}</option>
@@ -335,28 +335,28 @@ export default function Owners() {
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formDescription')}</label>
+                <label className="text-[12px] font-medium tracking-[0.12em] text-pa-stone mb-2 block">{t('owners.formDescription')}</label>
                 <textarea
                   rows={4}
                   value={ownerDescription}
                   onChange={e => setOwnerDescription(e.target.value)}
                   placeholder={t('owners.formDescriptionPh')}
-                  className="w-full px-4 py-3.5 bg-white border border-[#E8E4DC] text-[16px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C] transition-colors resize-none"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                  className="w-full px-4 py-3.5 bg-white border border-[#E8E4DC] text-[16px] text-[#1A1A18] placeholder:text-pa-stone focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C] transition-colors resize-none"
+                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 />
               </div>
 
               {submitError && (
                 <div className="flex items-start gap-2 p-3 bg-red-50 border border-[#DC2626]/20 rounded-md" role="alert" aria-live="assertive">
-                  <p className="text-[13px] text-[#DC2626]">{submitError}</p>
-                  <button type="button" onClick={() => setSubmitError('')} className="text-[#DC2626] text-[12px] underline ml-auto shrink-0">{t('owners.dismiss', 'Dismiss')}</button>
+                  <p className="text-[15px] text-[#DC2626]">{submitError}</p>
+                  <button type="button" onClick={() => setSubmitError('')} className="text-[#DC2626] text-[13px] underline ml-auto shrink-0">{t('owners.dismiss', 'Dismiss')}</button>
                 </div>
               )}
 
               <button
                 type="submit"
                 disabled={submitting}
-                className="pa-action rounded-full bg-[#8B7355] text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#7A6548] transition-colors self-start inline-flex items-center gap-2 disabled:opacity-50 min-h-[52px]"
+                className="pa-action rounded-full bg-[#8B7355] text-white text-[13px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#7A6548] transition-colors self-start inline-flex items-center gap-2 disabled:opacity-50 min-h-[52px]"
               >
                 {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 {submitting ? t('owners.formSending', 'Sending...') : t('owners.formSubmit')}

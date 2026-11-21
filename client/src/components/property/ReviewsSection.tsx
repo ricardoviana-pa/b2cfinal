@@ -87,14 +87,14 @@ export default function ReviewsSection({ reviews, averageRating, reviewCount }: 
                 <Stars value={stats.average} className="w-4 h-4" />
               </>
             )}
-            <span className="text-[13px] text-[#726D63]">{stats.average !== null ? `(${countLabel})` : countLabel}</span>
+            <span className="text-[15px] text-pa-stone">{stats.average !== null ? `(${countLabel})` : countLabel}</span>
           </div>
         )}
       </div>
 
       {/* Anonymous cards can read as fabricated; one line explains the
           provenance without naming (or promoting) the OTAs they came through. */}
-      <p className="text-[12px] text-[#726D63] -mt-4 mb-6" style={{ fontWeight: 300 }}>
+      <p className="text-[13px] text-pa-stone -mt-4 mb-6" style={{ fontWeight: 400 }}>
         {t('reviews.verifiedNote', 'All reviews are from completed stays, collected through our booking channels.')}
       </p>
 
@@ -126,7 +126,7 @@ export default function ReviewsSection({ reviews, averageRating, reviewCount }: 
                     onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                   />
                 ) : realName ? (
-                  <div className="w-8 h-8 rounded-full bg-[#8B7355] flex items-center justify-center text-[#FAFAF7] text-[12px] font-medium shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[#8B7355] flex items-center justify-center text-[#FAFAF7] text-[13px] font-medium shrink-0">
                     {realName.charAt(0).toUpperCase()}
                   </div>
                 ) : (
@@ -135,8 +135,8 @@ export default function ReviewsSection({ reviews, averageRating, reviewCount }: 
                   </div>
                 )}
                 <div>
-                  <p className="text-[13px] font-medium text-[#1A1A18]">{displayName}</p>
-                  <div className="flex flex-wrap items-center gap-x-1.5 text-[11px] text-[#726D63]">
+                  <p className="text-[15px] font-medium text-[#1A1A18]">{displayName}</p>
+                  <div className="flex flex-wrap items-center gap-x-1.5 text-[13px] text-pa-stone">
                     {meta.map((part, i) => (
                       <span key={i} className="inline-flex items-center gap-1.5">
                         {i > 0 && <span className="text-[#D8D2C6]" aria-hidden="true">·</span>}
@@ -150,10 +150,10 @@ export default function ReviewsSection({ reviews, averageRating, reviewCount }: 
             </div>
             <details className="group/review" lang={language ?? undefined}>
               <summary className="cursor-pointer list-none">
-                <p className="text-[13px] text-pa-earth leading-relaxed line-clamp-3 group-open/review:hidden">{review.text}</p>
+                <p className="text-[15px] text-pa-earth leading-relaxed line-clamp-3 group-open/review:hidden">{review.text}</p>
                 <span className="inline-block min-h-11 pt-3 caption text-pa-gold-aa underline">{t('conversion.readReview')}</span>
               </summary>
-              <p className="text-[13px] text-pa-earth leading-relaxed">{review.text}</p>
+              <p className="text-[15px] text-pa-earth leading-relaxed">{review.text}</p>
             </details>
           </div>
           );
@@ -166,7 +166,7 @@ export default function ReviewsSection({ reviews, averageRating, reviewCount }: 
         <button
           type="button"
           onClick={() => setShowAll(prev => !prev)}
-          className="mt-5 text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] hover:text-[#6B5A3F] transition-colors"
+          className="mt-5 text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa hover:text-[#6B5A3F] transition-colors"
         >
           {showAll ? t('reviews.showFewer', 'Show fewer') : t('reviews.showMore', 'Show more')}
         </button>

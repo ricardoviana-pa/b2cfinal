@@ -88,7 +88,7 @@ function KindSwitch({ value, counts, onChange, className = '' }: {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(k)}
-            className={`relative flex items-center font-body text-[11px] font-medium uppercase tracking-[0.14em] transition-colors ${
+            className={`relative flex items-center font-body text-[12px] font-medium uppercase tracking-[0.14em] transition-colors ${
               active ? 'text-pa-dark' : 'text-pa-stone hover:text-pa-dark'
             } ${dim(counts[k])}`}
           >
@@ -103,7 +103,7 @@ function KindSwitch({ value, counts, onChange, className = '' }: {
 
 function MenuTrigger({ label, value, open }: { label: string; value?: string | null; open?: boolean }) {
   return (
-    <span className={`relative inline-flex items-center gap-1.5 font-body text-[13px] leading-none transition-colors ${
+    <span className={`relative inline-flex items-center gap-1.5 font-body text-[15px] leading-none transition-colors ${
       value ? 'text-pa-dark font-medium' : 'text-pa-dark hover:text-pa-gold-aa'
     }`}>
       <span className="truncate max-w-[180px]">{value || label}</span>
@@ -130,7 +130,7 @@ function OptionRow({ label, count, selected, onClick, box }: {
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={`flex w-full items-center justify-between h-10 font-body text-[13px] text-pa-dark ${dim(count ?? 1)}`}
+      className={`flex w-full items-center justify-between h-10 font-body text-[15px] text-pa-dark ${dim(count ?? 1)}`}
     >
       <span className="flex items-center gap-3">
         {box && (
@@ -143,8 +143,8 @@ function OptionRow({ label, count, selected, onClick, box }: {
         <span className={selected ? 'font-medium' : ''}>{label}</span>
       </span>
       <span className="flex items-center gap-2">
-        {typeof count === 'number' && <span className="font-body text-[11px] tabular-nums text-pa-stone">{count}</span>}
-        {!box && selected && <Check className="w-3.5 h-3.5 text-pa-gold" strokeWidth={2} />}
+        {typeof count === 'number' && <span className="font-body text-[13px] tabular-nums text-pa-stone">{count}</span>}
+        {!box && selected && <Check className="w-3.5 h-3.5 text-pa-gold-aa" strokeWidth={2} />}
       </span>
     </button>
   );
@@ -171,8 +171,8 @@ function Strip<T extends string | number>({ options, value, onChange }: {
               active ? 'bg-pa-dark text-white' : `bg-white text-pa-dark hover:bg-pa-warm ${dim(o.count)}`
             }`}
           >
-            <span className="text-[13px] leading-none">{o.label}</span>
-            <span className={`mt-1 text-[10px] leading-none tabular-nums ${active ? 'text-white/60' : 'text-pa-stone'}`}>{o.count}</span>
+            <span className="text-[15px] leading-none">{o.label}</span>
+            <span className={`mt-1 text-[12px] leading-none tabular-nums ${active ? 'text-white/60' : 'text-pa-stone'}`}>{o.count}</span>
           </button>
         );
       })}
@@ -197,7 +197,7 @@ function ViewSwitch({ value, onChange, compact }: { value: CatalogueView; onChan
             aria-pressed={active}
             aria-label={label}
             onClick={() => onChange(v)}
-            className={`inline-flex items-center gap-1.5 h-8 rounded-full font-body text-[12px] transition-colors ${compact ? 'px-2.5' : 'px-3.5'} ${
+            className={`inline-flex items-center gap-1.5 h-8 rounded-full font-body text-[13px] transition-colors ${compact ? 'px-2.5' : 'px-3.5'} ${
               active ? 'bg-pa-dark text-white' : 'text-pa-earth hover:text-pa-dark'
             }`}
           >
@@ -334,7 +334,7 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
   // the line under it. Screen readers get the whole sentence once.
   // #726D63 (pa-stone): pa-stone-aa (#78756F) is 4.39:1 on the cream rail.
   const status = (className: string) => (
-    <span className={`items-center gap-2 font-body text-[13px] text-pa-stone ${className}`} role="status">
+    <span className={`items-center gap-2 font-body text-[15px] text-pa-stone ${className}`} role="status">
       {spinner}
       <span aria-hidden className="truncate">{resultLabel}</span>
       <span className="sr-only">{resultFull ?? resultLabel}</span>
@@ -391,11 +391,11 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
             onClick={() => setSheetOpen(true)}
             aria-haspopup="dialog"
             aria-expanded={sheetOpen}
-            className="inline-flex shrink-0 items-center gap-2 h-full font-body text-[13px] text-pa-dark"
+            className="inline-flex shrink-0 items-center gap-2 h-full font-body text-[15px] text-pa-dark"
           >
             <SlidersHorizontal className="w-4 h-4 shrink-0" />
             <span>{t('conversion.filters', 'Filters')}</span>
-            {activeCount > 0 && <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-pa-dark px-1 text-[10px] font-medium text-white">{activeCount}</span>}
+            {activeCount > 0 && <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-pa-dark px-1 text-[12px] font-medium text-white">{activeCount}</span>}
           </button>
           {status('flex min-w-0 flex-1 justify-end')}
           <ViewSwitch value={view} onChange={onView} compact />
@@ -418,7 +418,7 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
               <FeaturesPanel {...props} />
             </div>
             <div className="flex items-center justify-between gap-4 border-t border-pa-sand bg-pa-cream px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-              <button type="button" onClick={onClearAll} className="min-h-11 font-body text-[13px] text-pa-stone underline underline-offset-4">
+              <button type="button" onClick={onClearAll} className="min-h-11 font-body text-[15px] text-pa-stone underline underline-offset-4">
                 {t('homes.filters.clearAll', 'Clear all')}
               </button>
               <button type="button" onClick={() => setSheetOpen(false)} className="btn-primary min-h-11">

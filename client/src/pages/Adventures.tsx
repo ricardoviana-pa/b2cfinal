@@ -150,7 +150,7 @@ export default function Adventures() {
       <section id="experiences-list" className="section-padding scroll-mt-40">
         <div className="container">
           <div className="catalog-heading">
-            <div><p className="editorial-eyebrow text-pa-gold">{t('adventures.allDestinations')}</p>
+            <div><p className="editorial-eyebrow text-pa-gold-aa">{t('adventures.allDestinations')}</p>
               <h2 className="headline-lg">{t('services.browseExperiences')}</h2></div>
             <label className="catalog-search"><Search className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span className="sr-only">{t('editorial.searchExperiences')}</span>
@@ -162,7 +162,7 @@ export default function Adventures() {
               className={`pa-action px-4 py-2 text-sm border ${destination === d.value ? 'bg-pa-dark text-white border-pa-dark' : 'bg-white text-pa-dark border-pa-sand hover:border-pa-gold'}`}>{d.label}</button>)}
           </div>
           <div className="flex items-center justify-between gap-4 mb-6 min-h-11">
-            <p className="text-sm text-pa-stone" role="status" aria-live="polite">{t('adventures.available', { count: filtered.length })}</p>
+            <p className="text-[15px] text-pa-stone" role="status" aria-live="polite">{t('adventures.available', { count: filtered.length })}</p>
             {(destination !== 'all' || query) && <button type="button" className="pa-action inline-flex items-center gap-2 text-sm px-3" onClick={() => { setQuery(''); setDestination('all'); }}><X className="w-4 h-4" />{t('filters.clearAll')}</button>}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -219,9 +219,9 @@ export default function Adventures() {
                         {adventure.destinations.map(d => t(`destinations.${d}`)).join(' · ')}</p>
                       <h3 className="font-display text-2xl text-pa-dark">{adventure.name}</h3>
                       <p className="body-md mt-2 flex-1">{adventure.tagline}</p>
-                      {adventure.duration && <p className="flex items-center gap-2 text-sm text-pa-stone mt-4"><Clock className="w-4 h-4" aria-hidden="true" />{localizeDuration(adventure.duration, t)}</p>}
+                      {adventure.duration && <p className="flex items-center gap-2 text-[15px] text-pa-stone mt-4"><Clock className="w-4 h-4" aria-hidden="true" />{localizeDuration(adventure.duration, t)}</p>}
                       <div className="catalog-card-footer">
-                        <p className="text-sm">{(adventure.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)}</strong> <span className="text-pa-stone">{adventure.priceSuffix}</span></>}</p>
+                        <p className="text-[15px]">{(adventure.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)}</strong> <span className="text-pa-stone">{adventure.priceSuffix}</span></>}</p>
                         <span className="catalog-card-link">{t('siteUx.viewService')} <ArrowRight className="h-4 w-4 shrink-0" /></span>
                       </div>
                     </div>
@@ -233,7 +233,7 @@ export default function Adventures() {
 
           {filtered.length === 0 && (
             <div className="text-center py-20">
-              <p className="text-[#6B6860] text-lg mb-6">
+              <p className="text-pa-earth text-lg mb-6">
                 {t('editorial.noExperiences')}
               </p>
               <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">

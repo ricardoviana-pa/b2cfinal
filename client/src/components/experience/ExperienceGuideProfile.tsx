@@ -38,11 +38,11 @@ export default function ExperienceGuideProfile({
             <img
               src={guidePhoto}
               alt={guideName}
-              className="w-32 h-32 md:w-40 md:h-40 object-cover bg-[#F5F1EB] border border-[#E8E4DC]"
+              className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-xl bg-[#F5F1EB] border border-[#E8E4DC]"
             />
           ) : (
-            <div className="w-32 h-32 md:w-40 md:h-40 flex items-center justify-center bg-[#F5F1EB] border border-[#E8E4DC]">
-              <span className="text-[32px] font-display text-[#8B7355]">
+            <div className="w-32 h-32 md:w-40 md:h-40 flex items-center justify-center rounded-xl bg-[#F5F1EB] border border-[#E8E4DC]">
+              <span className="text-[32px] font-display text-pa-gold-aa">
                 {initials}
               </span>
             </div>
@@ -57,27 +57,27 @@ export default function ExperienceGuideProfile({
           </h3>
 
           {/* Role */}
-          <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-5">
+          <p className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium mb-5">
             {guideRole}
           </p>
 
           {/* Description */}
-          <p className="text-[14px] text-[#6B6860] leading-relaxed mb-6" style={{ fontWeight: 300 }}>
+          <p className="text-[15px] text-pa-earth leading-relaxed mb-6" style={{ fontWeight: 400 }}>
             {guideDescription}
           </p>
 
           {/* Languages */}
           {guideLanguages.length > 0 && (
             <div>
-              <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium mb-2">
+              <p className="text-[12px] tracking-[0.08em] uppercase text-pa-stone font-medium mb-2">
                 Languages
               </p>
               <div className="flex flex-wrap gap-2">
                 {guideLanguages.map((lang, idx) => (
                   <span
                     key={idx}
-                    className="inline-block text-[12px] text-[#6B6860] bg-[#F5F1EB] px-3 py-1.5 border border-[#E8E4DC]"
-                    style={{ fontWeight: 300 }}
+                    className="inline-block text-[13px] text-pa-earth bg-[#F5F1EB] px-3 py-1.5 rounded-full border border-[#E8E4DC]"
+                    style={{ fontWeight: 400 }}
                   >
                     {lang}
                   </span>

@@ -35,14 +35,14 @@ export default function PaymentProcessing({
             {failed ? (
               <AlertCircle className="h-7 w-7 text-[#DC2626]" strokeWidth={1.8} />
             ) : (
-              <Loader2 className="h-7 w-7 animate-spin text-[#8B7355]" strokeWidth={1.8} />
+              <Loader2 className="h-7 w-7 animate-spin text-pa-gold-aa" strokeWidth={1.8} />
             )}
           </div>
 
           <h1 className="headline-md mb-2 text-[#1A1A18]">
             {title || (failed ? t("paymentReturn.failedTitle") : t("paymentReturn.processingTitle"))}
           </h1>
-          <p className="body-sm mx-auto max-w-[340px] text-[#6b6860]">{status}</p>
+          <p className="body-sm mx-auto max-w-[340px] text-pa-earth">{status}</p>
 
           {action && <div className="mt-6">{action}</div>}
 
@@ -51,8 +51,8 @@ export default function PaymentProcessing({
               <div className="relative mx-auto mt-7 h-1.5 w-full overflow-hidden rounded-full bg-[#EFEBE3]">
                 <span className="progress-indeterminate" />
               </div>
-              <div className="mt-6 flex items-center justify-center gap-2 text-[12px] text-[#726D63]">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#8B7355]" strokeWidth={1.8} />
+              <div className="mt-6 flex items-center justify-center gap-2 text-[13px] text-pa-stone">
+                <ShieldCheck className="h-3.5 w-3.5 text-pa-gold-aa" strokeWidth={1.8} />
                 {t("paymentReturn.secureNote")}
               </div>
             </>

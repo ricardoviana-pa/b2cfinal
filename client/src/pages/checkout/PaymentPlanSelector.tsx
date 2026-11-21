@@ -129,7 +129,7 @@ export function PaymentPlanSelector({
 
   return (
     <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
-      <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold">
+      <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa">
         {t("checkout.payPlan.title", "When would you like to pay?")}
       </p>
       <div className="space-y-2" role="radiogroup" aria-label={t("checkout.payPlan.title", "When would you like to pay?")}>
@@ -156,7 +156,7 @@ export function PaymentPlanSelector({
       {plan === "two_parts" && (
         <div className="border-t border-pa-sand pt-3">
           <p className="caption text-pa-stone-aa leading-snug flex items-start gap-1.5">
-            <Check className="w-3 h-3 mt-0.5 text-pa-gold shrink-0" />
+            <Check className="w-3 h-3 mt-0.5 text-pa-gold-aa shrink-0" />
             {t("checkout.payPlan.split.walletNote", "Apple Pay and Google Pay pay the whole stay today. To pay in two parts, use your card.")}
           </p>
         </div>

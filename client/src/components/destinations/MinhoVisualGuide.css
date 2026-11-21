@@ -19,12 +19,12 @@
   max-height: 290px;
 }
 .minho-locator figcaption {
-  font-size: 0.72rem;
-  color: #52644e;
+  font-size: 0.8125rem;
+  color: #6b6860;
   margin-top: 0.5rem;
 }
 .minho-orientation-intro {
-  color: #6b6860;
+  color: #5e5b54;
   margin-top: 1.4rem;
   max-width: 70ch;
 }
@@ -34,25 +34,25 @@
   gap: 1.5rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #deded5;
+  border-top: 1px solid #e8e4dc;
 }
 .minho-first-facts a {
   display: flex;
   align-items: flex-start;
   gap: 0.7rem;
-  color: #65685d;
-  font-size: 0.8rem;
+  color: #5e5b54;
+  font-size: 0.8125rem;
   line-height: 1.6;
 }
 .minho-first-facts svg {
   flex-shrink: 0;
   margin-top: 0.25rem;
-  color: #52644e;
+  color: #806a48;
 }
 .minho-first-facts strong {
   display: block;
-  color: #263a2b;
-  font-size: 0.9rem;
+  color: #1a1a18;
+  font-size: 0.9375rem;
   font-weight: 500;
   margin-bottom: 0.35rem;
 }
@@ -64,8 +64,8 @@
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
-  font-size: 0.85rem;
-  color: #6b6860;
+  font-size: 0.9375rem;
+  color: #5e5b54;
   margin-top: 1.5rem;
 }
 .minho-fit svg {
@@ -73,29 +73,30 @@
   margin-top: 0.2rem;
 }
 .minho-itinerary {
-  background: #edf0e8;
+  background: #f5f1eb;
 }
 .minho-duration-controls {
   display: inline-flex;
   padding: 0.3rem;
   gap: 0.3rem;
-  border: 1px solid #c4cebf;
-  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
 }
 .minho-duration-controls button {
   min-height: 46px;
   padding: 0.6rem 1.5rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  color: #33472f;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  color: #1a1a18;
 }
 .minho-duration-controls button[aria-pressed="true"] {
-  background: #294c3a;
+  background: #1a1a18;
   color: white;
 }
 .minho-duration-summary {
   margin: 1.2rem 0 1.8rem;
-  color: #4c5b45;
+  color: #5e5b54;
 }
 .minho-day-grid {
   list-style: none;
@@ -105,7 +106,9 @@
   gap: 1rem;
 }
 .minho-day-grid li {
-  background: #fffdf8;
+  background: #fff;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -113,10 +116,10 @@
 }
 .minho-day-number {
   display: block;
-  font-size: 0.67rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.13em;
-  color: #7e7057;
+  color: #806a48;
   margin-bottom: 1.2rem;
 }
 .minho-day-grid .minho-place {
@@ -124,20 +127,20 @@
   align-items: center;
   gap: 0.35rem;
   margin: 0 0 0.7rem;
-  color: #52644e;
+  color: #5e5b54;
 }
 .minho-day-grid h3 {
   font-size: 1.6rem;
   margin-bottom: 0.8rem;
 }
 .minho-day-grid p {
-  color: #6b6860;
-  font-size: 0.9rem;
+  color: #5e5b54;
+  font-size: 0.9375rem;
   margin-bottom: 1.2rem;
 }
 .minho-day-grid .minho-text-link {
   margin-top: auto;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }
 .minho-itinerary-footer {
   display: flex;
@@ -147,8 +150,8 @@
   margin-top: 2rem;
 }
 .minho-itinerary-footer p {
-  font-size: 0.8rem;
-  color: #5c6856;
+  font-size: 0.8125rem;
+  color: #5e5b54;
   max-width: 62ch;
 }
 .minho-itinerary-footer a {
@@ -192,7 +195,7 @@
     max-height: 200px;
   }
   .minho-orientation-intro {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
   .minho-first-facts {
     gap: 1.1rem;
@@ -226,9 +229,12 @@
 .minho-editorial p {
   line-height: 1.65;
 }
+/* The site's gold for text. On the guides' three backgrounds: 5.16:1 on
+   white, 4.93:1 on #fafaf7, 4.58:1 on #f5f1eb. It fails on #e8e4dc (4.07:1),
+   so no section or card that carries a kicker uses that tone. */
 .minho-editorial .minho-kicker {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -251,14 +257,14 @@
 }
 .minho-section-heading > p {
   max-width: 25rem;
-  color: #6b6860;
+  color: #5e5b54;
   flex-shrink: 0;
 }
 .minho-hero {
   height: min(790px, 88svh);
   min-height: 580px;
   position: relative;
-  background: #273d33;
+  background: #1a1a18;
   margin-top: calc(4rem + var(--pa-promobar-h, 0px));
   color: white;
 }
@@ -273,8 +279,8 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(11, 29, 21, 0.4), rgba(11, 29, 21, 0.02) 90%),
-    linear-gradient(0deg, rgba(8, 24, 17, 0.55), transparent 82%);
+    linear-gradient(90deg, rgba(26, 26, 24, 0.4), rgba(26, 26, 24, 0.02) 90%),
+    linear-gradient(0deg, rgba(26, 26, 24, 0.55), transparent 82%);
 }
 .minho-hero-content {
   position: relative;
@@ -290,7 +296,7 @@
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: white;
 }
 .minho-hero-copy {
@@ -336,7 +342,7 @@
   align-items: center;
   min-height: 44px;
   gap: 0.6rem;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: white;
   text-decoration: underline;
   text-underline-offset: 5px;
@@ -372,7 +378,7 @@
   align-items: center;
   min-height: 60px;
   color: #3a3a35;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }
 .minho-chapters a:hover {
   color: #806a48;
@@ -386,6 +392,9 @@
 }
 .minho-landscapes > article {
   background: white;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
+  overflow: hidden;
 }
 .minho-landscape-photo {
   position: relative;
@@ -407,7 +416,7 @@
   gap: 0.5rem;
   padding: 3rem 1.25rem 1rem;
   color: white;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.78), transparent);
 }
 .minho-landscape-copy {
@@ -415,7 +424,7 @@
 }
 .minho-number {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   color: #806a48;
   margin-bottom: 0.75rem;
 }
@@ -423,11 +432,11 @@
   margin-bottom: 0.8rem;
 }
 .minho-landscape-copy p {
-  color: #6b6860;
+  color: #5e5b54;
 }
 .minho-practical-note {
-  font-size: 0.875rem;
-  color: #6b6860;
+  font-size: 0.9375rem;
+  color: #5e5b54;
   line-height: 1.6;
   border-top: 1px solid #e8e4dc;
   margin-top: 1.25rem;
@@ -436,16 +445,17 @@
 .minho-bases {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border: 1px solid #dedbd2;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
 }
 .minho-bases > article {
   padding: 2rem;
 }
 .minho-bases > article + article {
-  border-left: 1px solid #dedbd2;
+  border-left: 1px solid #e8e4dc;
 }
 .minho-base-tag {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   color: #806a48;
 }
@@ -453,7 +463,7 @@
   margin: 1rem 0;
 }
 .minho-bases p {
-  color: #6b6860;
+  color: #5e5b54;
 }
 .minho-base-transport {
   display: flex;
@@ -467,7 +477,7 @@
   color: #806a48;
 }
 .minho-base-transport p {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 .minho-bases summary,
 .minho-restaurants summary {
@@ -477,11 +487,11 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }
 .minho-bases details p,
 .minho-restaurants details p {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   margin-block: 0.5rem;
 }
 .minho-text-link {
@@ -489,7 +499,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   text-align: left;
   text-decoration: underline;
   text-underline-offset: 5px;
@@ -498,7 +508,7 @@
   flex-shrink: 0;
 }
 .minho-taste {
-  background: #f0ece4;
+  background: #fafaf7;
 }
 .minho-taste-feature {
   display: grid;
@@ -509,6 +519,8 @@
 .minho-taste-feature figure {
   position: relative;
   height: 540px;
+  border-radius: 12px;
+  overflow: hidden;
 }
 .minho-taste-feature figure img {
   width: 100%;
@@ -522,7 +534,7 @@
   left: 0;
   right: 0;
   padding: 3rem 1.25rem 1rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: white;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), transparent);
 }
@@ -531,7 +543,7 @@
   align-items: start;
   gap: 1.25rem;
   padding-block: 1.6rem;
-  border-bottom: 1px solid #d4cec2;
+  border-bottom: 1px solid #e8e4dc;
 }
 .minho-taste-stories article:first-child {
   padding-top: 0;
@@ -545,7 +557,7 @@
   margin-bottom: 0.7rem;
 }
 .minho-taste-stories p {
-  color: #5b584f;
+  color: #5e5b54;
 }
 .minho-taste-stories > a {
   margin-top: 1rem;
@@ -556,13 +568,15 @@
   gap: 1rem;
 }
 .minho-restaurants article {
-  background: #fafaf7;
+  background: #fff;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
   padding: 1.4rem;
   display: flex;
   flex-direction: column;
 }
 .minho-restaurants .minho-kicker {
-  font-size: 0.62rem;
+  font-size: 0.75rem;
 }
 .minho-restaurants h4 {
   font-family: var(--font-display);
@@ -571,14 +585,14 @@
   min-height: 3.5rem;
 }
 .minho-restaurants p {
-  font-size: 0.9rem;
-  color: #6b6860;
+  font-size: 0.9375rem;
+  color: #5e5b54;
 }
 .minho-restaurants .minho-place {
   display: flex;
   align-items: start;
   gap: 0.3rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   margin-block: 0.75rem;
   min-height: 2.5rem;
 }
@@ -600,6 +614,7 @@
   aspect-ratio: 4/3;
   height: auto;
   object-fit: cover;
+  border-radius: 12px;
 }
 .minho-experiences article > div {
   padding-block: 1.3rem;
@@ -608,32 +623,30 @@
   margin-bottom: 0.7rem;
 }
 .minho-experiences p {
-  color: #6b6860;
+  color: #5e5b54;
   margin-bottom: 0.8rem;
 }
 .minho-culture {
-  background: #e8ede7;
+  background: #f5f1eb;
 }
 .minho-culture p {
-  color: #4f5b51;
-}
-.minho-culture .minho-kicker {
-  color: #4f6255;
+  color: #5e5b54;
 }
 .minho-culture-icon {
   display: inline-flex;
   padding: 1rem;
-  border: 1px solid #b6c4b8;
+  background: #fff;
+  border: 1px solid #e8e4dc;
   border-radius: 50%;
   margin-bottom: 1.5rem;
 }
 .minho-culture-tip {
-  border-left: 2px solid #849987;
+  border-left: 2px solid #806a48;
   padding-left: 1rem;
   margin-top: 2rem;
-  font-size: 0.85rem;
+  font-size: 0.9375rem;
   line-height: 1.7;
-  color: #4f5b51;
+  color: #5e5b54;
 }
 .minho-culture-options {
   display: grid;
@@ -641,7 +654,9 @@
   gap: 1rem;
 }
 .minho-culture-options article {
-  background: #fafbf8;
+  background: #fff;
+  border: 1px solid #e8e4dc;
+  border-radius: 12px;
   padding: 1.5rem;
 }
 .minho-culture-options h3 {
@@ -649,10 +664,7 @@
   margin-bottom: 0.8rem;
 }
 .minho-culture-options p {
-  font-size: 0.9rem;
-}
-.minho-culture-options .minho-number {
-  color: #4f6255;
+  font-size: 0.9375rem;
 }
 .minho-culture-options .minho-text-link {
   margin-top: 0.4rem;
@@ -675,7 +687,7 @@
   margin-bottom: 1.5rem;
 }
 .minho-seasons span {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #806a48;
@@ -685,8 +697,8 @@
   margin-block: 0.6rem 1rem;
 }
 .minho-seasons p {
-  font-size: 0.9rem;
-  color: #6b6860;
+  font-size: 0.9375rem;
+  color: #5e5b54;
 }
 .minho-local-travel {
   display: grid;
@@ -698,7 +710,7 @@
   display: flex;
   gap: 1rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #dedbd2;
+  border-top: 1px solid #e8e4dc;
 }
 .minho-local-travel article > svg {
   flex-shrink: 0;
@@ -710,10 +722,10 @@
   margin-bottom: 0.65rem;
 }
 .minho-local-travel p {
-  color: #6b6860;
+  color: #5e5b54;
 }
 .minho-details {
-  border-bottom: 1px solid #d8d3c8;
+  border-bottom: 1px solid #e8e4dc;
 }
 .minho-details > summary {
   display: flex;
@@ -790,7 +802,7 @@
   }
   .minho-hero .minho-kicker {
     max-width: 19rem;
-    font-size: 0.62rem;
+    font-size: 0.75rem;
   }
   .minho-hero-region {
     font-size: clamp(2.75rem, 12vw, 3.15rem);
@@ -807,7 +819,7 @@
   }
   .minho-hero .minho-hero-intro {
     max-width: 20rem;
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
   .minho-chapters {
     padding-block: 0.5rem;
@@ -834,7 +846,7 @@
   }
   .minho-bases > article + article {
     border-left: 0;
-    border-top: 1px solid #dedbd2;
+    border-top: 1px solid #e8e4dc;
   }
   .minho-taste-feature figure {
     height: 420px;
@@ -870,7 +882,22 @@
   .minho-seasons article,
   .minho-seasons article:first-child {
     border: 0;
-    border-top: 1px solid #dedbd2;
+    border-top: 1px solid #e8e4dc;
     padding: 1.2rem 0 0;
+  }
+}
+
+/* Sections that open on tap on a phone (GuideSection.css, the same query:
+   screen only, so paper is left alone). */
+@media screen and (max-width: 767.98px) {
+  /* The heading's box runs the full width, whatever the length of the
+     heading, so every chevron sits at the right edge. */
+  .guide-section .minho-section-heading > div {
+    align-self: stretch;
+  }
+  /* Closed: the heading and its intro line, with no gap left under them for
+     the body that is out of the layout. */
+  .guide-section[data-open="false"] .minho-section-heading {
+    margin-bottom: 0;
   }
 }

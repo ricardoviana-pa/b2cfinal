@@ -39,45 +39,45 @@ export default function PriceBreakdown({
     <div className="rounded-lg bg-white border border-[#E8E4DC] shadow-[0_4px_24px_rgba(0,0,0,0.08)] p-5">
       <div className="flex items-end justify-between gap-4 mb-4">
         <div>
-          <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-2">{t("priceBreakdown.title")}</p>
+          <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-2">{t("priceBreakdown.title")}</p>
           <p className="headline-sm text-[#1A1A18]">{formatEurCents(totalAfterTax, lang)}</p>
           <p className="body-sm mt-1">{t("priceBreakdown.perNightLabel", { amount: formatEurCents(perNight, lang) })}</p>
         </div>
-        <p className="text-[12px] text-[#726D63]">{t("priceBreakdown.nights", { count: nights })}</p>
+        <p className="text-[13px] text-pa-stone">{t("priceBreakdown.nights", { count: nights })}</p>
       </div>
 
       <Accordion type="single" collapsible defaultValue="closed">
         <AccordionItem value="breakdown" className="border-b-0">
-          <AccordionTrigger className="py-0 hover:no-underline text-[13px] text-[#1A1A18]">
+          <AccordionTrigger className="py-0 hover:no-underline text-[15px] text-[#1A1A18]">
             {t("priceBreakdown.viewDetails")}
           </AccordionTrigger>
           <AccordionContent className="pt-4">
-            <div className="space-y-3 text-[13px]">
+            <div className="space-y-3 text-[15px]">
               <div className="flex justify-between">
-                <span className="text-[#6B6860]">{t("priceBreakdown.accommodation")}</span>
+                <span className="text-pa-earth">{t("priceBreakdown.accommodation")}</span>
                 <span className="text-[#1A1A18]">{formatEurCents(baseRent, lang)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#6B6860]">{t("priceBreakdown.cleaning")}</span>
+                <span className="text-pa-earth">{t("priceBreakdown.cleaning")}</span>
                 <span className="text-[#1A1A18]">{formatEurCents(cleaningFee, lang)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#6B6860]">{t("priceBreakdown.serviceFee")}</span>
+                <span className="text-pa-earth">{t("priceBreakdown.serviceFee")}</span>
                 <span className="text-[#1A1A18]">{formatEurCents(serviceFee, lang)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#6B6860]">{t("priceBreakdown.touristTax")}</span>
+                <span className="text-pa-earth">{t("priceBreakdown.touristTax")}</span>
                 <span className="text-[#1A1A18]">{formatEurCents(touristTax, lang)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#6B6860]">{t("priceBreakdown.vat")}</span>
+                <span className="text-pa-earth">{t("priceBreakdown.vat")}</span>
                 <span className="text-[#1A1A18]">{formatEurCents(vat, lang)}</span>
               </div>
               <div className="flex justify-between pt-3 border-t border-[#E8E4DC]">
-                <span className="text-[#6B6860]">{t("priceBreakdown.subtotal")}</span>
+                <span className="text-pa-earth">{t("priceBreakdown.subtotal")}</span>
                 <span className="text-[#1A1A18]">{formatEurCents(totalBeforeTax, lang)}</span>
               </div>
-              <div className="flex justify-between text-[14px] font-medium">
+              <div className="flex justify-between text-[15px] font-medium">
                 <span className="text-[#1A1A18]">{t("property.total")}</span>
                 <span className="text-[#1A1A18]">{formatEurCents(totalAfterTax, lang)}</span>
               </div>

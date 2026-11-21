@@ -89,9 +89,9 @@ export default function FAQ() {
       {/* Hero */}
       <section className="page-intro">
         <div className="container max-w-3xl">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('faq.overline')}</p>
+          <p className="text-[13px] font-medium text-pa-gold-aa mb-4 tracking-[0.08em]">{t('faq.overline')}</p>
           <h1 className="headline-xl text-[#1A1A18] mb-4">{t('faq.title')}</h1>
-          <p className="body-lg text-[#6B6860]">{t('faq.subtitle')}</p>
+          <p className="body-lg text-pa-earth">{t('faq.subtitle')}</p>
         </div>
       </section>
 
@@ -109,7 +109,7 @@ export default function FAQ() {
       {/* Final CTA */}
       <section className="section-padding bg-[#F5F1EB]">
         <div className="container max-w-3xl text-center">
-          <p className="body-lg text-[#6B6860] mb-6">{t('faq.cantFind')}</p>
+          <p className="body-lg text-pa-earth mb-6">{t('faq.cantFind')}</p>
           <div className="flex flex-wrap justify-center gap-3">
           <Link href="/homes" className="btn-primary">{t('siteUx.findStay')}</Link>
           <Link

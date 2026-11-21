@@ -8,9 +8,9 @@
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { collectionUnitOptionCount, selectCollectionHomes } from '@/lib/collectionHomes';
 import { getDisplayName } from '@/lib/format';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearch } from 'wouter';
-import { editorialTripContext, withEditorialTrip } from '@shared/editorialTripContext';
+import { editorialTripContext, propertyTripHref, withEditorialTrip } from '@shared/editorialTripContext';
 import { collectionPlanning, collectionUnitOptionsLabel, collectionCapacityCopy } from '@/data/collectionPlanning';
 import FaqItem from '@/components/ui/FaqItem';
 import { useTranslation } from 'react-i18next';
@@ -37,12 +37,21 @@ interface CollectionDef {
 }
 const COLLECTIONS = collectionsData as CollectionDef[];
 
+/** Cards added to the grid by each "show more". */
+const COLLECTION_PAGE_SIZE = 12;
+
 export default function Collection() {
   const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const search = useSearch();
   const trip = editorialTripContext(search);
   const def = COLLECTIONS.find(c => c.slug === slug);
+  // Twelve homes at a time, as in the catalogue (auditoria de design, 14 nov
+  // 2026: "Villas with pools" was 35 phone screens of cards). The names of
+  // the homes not yet in the grid are listed at the end of the page, so each
+  // keeps a link in the served HTML.
+  const [visibleCount, setVisibleCount] = useState(COLLECTION_PAGE_SIZE);
+  useEffect(() => { setVisibleCount(COLLECTION_PAGE_SIZE); }, [slug]);
 
   const { data: propsData, isLoading } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
   const lang = (i18n.language || 'en').split('-')[0];
@@ -117,21 +126,21 @@ export default function Collection() {
       {graph && <StructuredData id={`collection-${slug}`} data={graph} />}
       <Header />
       <section className="page-intro"><div className="container">
-        <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#806A48] mb-3">
+        <p className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#806A48] mb-3">
           {t('collections.eyebrow', 'Curated collection')}
         </p>
         <h1 className="font-display text-[clamp(1.8rem,4vw,2.6rem)] font-light text-[#1A1A18] mb-3" style={{ textWrap: 'balance' as any }}>
           {copy.title}
         </h1>
-        <p className="text-[15px] text-[#726D63] max-w-[62ch] leading-relaxed" style={{ fontWeight: 300 }}>
+        <p className="text-[16px] text-pa-stone max-w-[62ch] leading-relaxed" style={{ fontWeight: 400 }}>
           {copy.intro}
         </p>
         {homes.length > 0 && (
-          <p className="text-[13px] text-[#726D63] mt-3">
+          <p className="text-[15px] text-pa-stone mt-3">
             {t('collections.count', '{{count}} homes in this collection', { count: homes.length })}
           </p>
         )}
-        {capacityContext && <div className="mt-3 text-[13px] text-[#726D63]">
+        {capacityContext && <div className="mt-3 text-[15px] text-pa-stone">
           <p>{capacityContext.context}</p>
           <Link href={capacityResetHref} className="inline-flex min-h-11 items-center text-pa-gold-aa underline underline-offset-4">
             {capacityContext.reset}
@@ -155,7 +164,7 @@ export default function Collection() {
 
         {/* data-listing-results: the WhatsApp float waits until its first card has scrolled away. */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-listing-results="">
-          {homes.map((property, idx) => (
+          {homes.slice(0, visibleCount).map((property, idx) => (
             <PropertyCard
               key={property.id}
               property={property}
@@ -171,6 +180,18 @@ export default function Collection() {
             />
           ))}
         </div>
+        {homes.length > visibleCount && (
+          <div className="flex flex-col items-center gap-2 mt-10">
+            <button
+              type="button"
+              onClick={() => setVisibleCount((n) => n + COLLECTION_PAGE_SIZE)}
+              className="btn-ghost"
+            >
+              {t('homes.showMore', 'Show more')}
+            </button>
+            <p className="caption text-pa-stone tabular-nums" aria-live="polite">{visibleCount} / {homes.length}</p>
+          </div>
+        )}
       </section>
 
       {planning && <section className="container max-w-4xl pb-12 md:pb-16">
@@ -180,7 +201,7 @@ export default function Collection() {
 
       {/* Cross-links — internal linking is the point of a programmatic set */}
       <section className="container pb-16">
-        <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#806A48] mb-4">
+        <p className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#806A48] mb-4">
           {t('collections.more', 'More collections')}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -188,13 +209,30 @@ export default function Collection() {
             <Link
               key={c.slug}
               href={withEditorialTrip(`/collections/${c.slug}`, search)}
-              className="pa-action min-h-[40px] inline-flex items-center px-4 border border-[#E8E4DC] bg-white text-[13px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
+              className="pa-action min-h-[40px] inline-flex items-center px-4 border border-[#E8E4DC] bg-white text-[15px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
             >
               {((c as any)[lang] ?? c.en).title}
             </Link>
           ))}
         </div>
       </section>
+      {homes.length > visibleCount && (
+        <section className="bg-white border-t border-pa-sand py-10">
+          <nav aria-labelledby="more-homes-index" className="container">
+            <h2 id="more-homes-index" className="eyebrow text-pa-stone mb-4">{t('homes.moreHomesIndex', 'More homes')}</h2>
+            <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
+              {homes.slice(visibleCount).map((property) => (
+                <li key={property.id} className="break-inside-avoid py-1">
+                  <Link href={propertyTripHref(property.slug, { checkin: trip.checkin, checkout: trip.checkout, guests: trip.guests })} className="text-pa-dark underline-offset-4 hover:underline">
+                    {getDisplayName(property)}
+                  </Link>
+                  {property.locality && <span className="text-pa-stone"> · {property.locality}</span>}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </section>
+      )}
       <Footer />
       <ListingWhatsApp
         href={whatsappHref}

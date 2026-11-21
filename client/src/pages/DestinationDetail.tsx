@@ -100,7 +100,7 @@ export default function DestinationDetail() {
         <Header variant="solid" />
         <div className="container pt-32 pb-20 text-center">
           <h1 className="headline-lg text-[#1A1A18] mb-4">{t('destinationsPage.notFound')}</h1>
-          <Link href="/destinations" className="text-[#8B7355] hover:underline">
+          <Link href="/destinations" className="text-pa-gold-aa hover:underline">
             {t('destinationsPage.backToDestinations')}
           </Link>
         </div>
@@ -127,7 +127,11 @@ export default function DestinationDetail() {
       {graph && <StructuredData id={`destination-${dest.slug}`} data={graph} />}
       <Header />
 
+      {/* Keyed by destination: going from one guide to another starts the
+          page again, with its sections closed as on a first visit (phones,
+          decisão E15) instead of open because the last guide's were. */}
       <DestinationPage
+        key={dest.slug}
         destination={dest}
         properties={destProperties}
         articles={articles}

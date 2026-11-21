@@ -30,7 +30,10 @@ function render(partner = false, feesKnown = false) {
 describe("the search price describes the rate the guest is opening", () => {
   it("labels the minimum Guesty rate as a starting stay price; the PDP may default to a refundable rate", () => {
     const html = render();
-    expect(html).toMatch(/From [^<]*5[,.]176[,.]44[^<]* for the stay/);
+    // Whole euros on the listing, rounded up (decisão E07 do Ricardo, 20 nov
+    // 2026): 5 176,44 € shows as 5 177 €; the cents appear in the checkout.
+    expect(html).toMatch(/From [^<]*5[,.]177[^<,.\d]* for the stay/);
+    expect(html).not.toMatch(/5[,.]176[,.]44/);
     expect(html).toContain("checkin=2027-05-10&amp;checkout=2027-05-17&amp;guests=1");
   });
   it("keeps a supplier accommodation-only amount distinct from a final total", () => {

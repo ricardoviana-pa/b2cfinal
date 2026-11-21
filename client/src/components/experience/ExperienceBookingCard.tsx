@@ -1,14 +1,18 @@
 /* ==========================================================================
    EXPERIENCE BOOKING CARD — sticky right rail
-   Embeds the Bókun booking widget (calendar + participants + checkout) inline
-   using the official BokunWidgetsLoader embed method for seamless checkout.
+   The same card as a home's booking card (BookingWidget.tsx): white, a light
+   border, 12 px corners, the price, one dark button, the notes in grey.
+   The button opens the Bókun booking widget (calendar + participants +
+   checkout) in the site's panel (BokunWidgetModal) instead of showing the
+   supplier's calendar raw in the page (decisão E14 da auditoria de design,
+   20 nov 2026).
    Fallback: WhatsApp prefill when Bókun not configured or no activityId.
    ========================================================================== */
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, MessageCircle, ChevronRight } from 'lucide-react';
-import BokunCalendarWidget from './BokunCalendarWidget';
+import { preloadBokunWidgets } from './BokunCalendarWidget';
 import BokunWidgetModal from './BokunWidgetModal';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
 
@@ -29,8 +33,8 @@ interface ExperienceBookingCardProps {
   maxGroupSize?: number;
   bokunActivityId?: number;
   /** When the Bókun activity has multiple rates/routes, list them here. The
-   *  card then shows the options + a button that opens the full widget modal
-   *  (with the rate selector) instead of the single-rate inline calendar. */
+   *  card then shows the options, each a button that opens the panel with
+   *  that option above the calendar. */
   bokunOptions?: BokunOption[];
   // Tracking
   experienceSlug?: string;
@@ -60,6 +64,10 @@ export default function ExperienceBookingCard({
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
   const isMultiOption = (bokunOptions?.length ?? 0) > 1;
   const [modalOpen, setModalOpen] = useState(false);
+  /** The option whose button opened the panel (activities with several). */
+  const [chosenOption, setChosenOption] = useState<BokunOption | null>(null);
+  /** The button that opened the panel, so the focus can go back to it. */
+  const openerRef = useRef<HTMLElement | null>(null);
 
   // Funil (out/2026): este cartão disparava begin_checkout ao abrir a página
   // no desktop. A página da experiência já envia view_item, e o
@@ -69,164 +77,203 @@ export default function ExperienceBookingCard({
   const finalMessage = useMemo(() => {
     let msg = whatsappMessage || `Hi Portugal Active, I'd like to book the ${experienceName} experience.`;
     msg += `\nParticipants: 2 adults`;
-    msg += `\nEstimated total: €${priceFrom * 2}`;
+    // No per-person price (the yacht charter): no "Estimated total: €0" in the guest's message.
+    if (priceFrom > 0) msg += `\nEstimated total: €${priceFrom * 2}`;
     return msg;
   }, [whatsappMessage, experienceName, priceFrom]);
 
   const waHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(finalMessage)}`;
 
+  /** The supplier's script starts loading when the guest reaches for a button that needs it. */
+  const warmUp = {
+    onPointerEnter: preloadBokunWidgets,
+    onFocus: preloadBokunWidgets,
+    onTouchStart: preloadBokunWidgets,
+  };
+
   return (
-    <div className="bg-[#F5F1EB] border border-[#E8E4DC]">
+    <div className="overflow-hidden rounded-xl border border-pa-sand bg-white shadow-sm">
       {/* Price headline */}
-      <div className="px-7 pt-7 pb-5 border-b border-[#E8E4DC]">
+      <div className="px-5 pt-5 pb-4">
         {priceFrom > 0 ? (
           <>
-            <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium mb-1">From</p>
-            <p className="text-[28px] font-display text-[#1A1A18] leading-none">
-              €{priceFrom}
-              <span className="text-[12px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                / person
-              </span>
+            <p className="eyebrow text-pa-stone">{t('experience.from', 'From')}</p>
+            <p className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-[32px] font-light leading-none tracking-tight text-pa-dark tabular-nums">€{priceFrom}</span>
+              <span className="body-sm text-pa-stone">{t('experience.perPerson', '/ person')}</span>
             </p>
           </>
         ) : (
           /* No fixed per-person price (e.g. private charter) — show the label;
-             exact pricing comes from the live Bókun widget below. */
-          <p className="text-[22px] font-display text-[#1A1A18] leading-tight">
-            {priceLabel || 'Price on request'}
+             exact pricing comes from the live Bókun widget. */
+          <p className="body-md text-pa-dark">
+            {priceLabel || t('experience.priceOnRequest', 'Price on request')}
           </p>
         )}
         {duration && (
-          <p className="text-[11px] text-[#6B6860] mt-2" style={{ fontWeight: 300 }}>
+          <p className="body-sm mt-1.5 text-pa-stone">
             {duration} · Private experience
           </p>
         )}
       </div>
 
-      {/* Bókun booking. Multi-option activities (e.g. ebike: City / Road /
-          Gravel) list their routes and open the full widget modal with the
-          rate selector. Single-option activities embed the compact inline
-          calendar as before. */}
-      {hasBokun && isMultiOption ? (
-        <div className="bg-white px-7 py-6">
-          <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-3">
-            {t('experience.chooseOption', 'Choose your option')}
-          </p>
-          <div className="space-y-2.5 mb-5">
-            {bokunOptions!.map((opt, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => {
-                  setModalOpen(true);
-                  if (experienceSlug) {
-                    // Abre o widget Bókun: intenção real, mas a compra acontece no
-                    // Bókun. Evento próprio para não contar como checkout de casa.
-                    pushEcommerce({
-                      event: 'experience_booking_open',
-                      ecommerce: {
-                        currency: 'EUR',
-                        value: opt.priceFrom || priceOta || 0,
-                        items: [{ item_id: `EXP-${experienceSlug}-${i}`, item_name: `${experienceName} — ${opt.name}`, item_category: experienceCategory || '', price: opt.priceFrom || priceOta || 0, quantity: 1 }],
-                      },
-                    });
-                  }
-                }}
-                className="group w-full flex items-center justify-between gap-3 text-left p-3.5 border border-[#E8E4DC] rounded-lg hover:border-[#1A1A18] hover:bg-[#FAFAF7] transition-all"
+      {/* Bókun booking, in the site's panel. Multi-option activities (e.g.
+          ebike: City / Road / Gravel) list their routes, each a button that
+          opens the calendar with that route above it. Single-option
+          activities have one button that opens the calendar. */}
+      <div className="px-5 pb-5">
+        {hasBokun && isMultiOption ? (
+          <>
+            <p className="eyebrow mb-3 text-pa-stone">
+              {t('experience.chooseOption', 'Choose your option')}
+            </p>
+            <div className="mb-3 space-y-2">
+              {bokunOptions!.map((opt, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  {...warmUp}
+                  onClick={(e) => {
+                    openerRef.current = e.currentTarget;
+                    setChosenOption(opt);
+                    setModalOpen(true);
+                    if (experienceSlug) {
+                      // Abre o widget Bókun: intenção real, mas a compra acontece no
+                      // Bókun. Evento próprio para não contar como checkout de casa.
+                      pushEcommerce({
+                        event: 'experience_booking_open',
+                        ecommerce: {
+                          currency: 'EUR',
+                          value: opt.priceFrom || priceOta || 0,
+                          items: [{ item_id: `EXP-${experienceSlug}-${i}`, item_name: `${experienceName} — ${opt.name}`, item_category: experienceCategory || '', price: opt.priceFrom || priceOta || 0, quantity: 1 }],
+                        },
+                      });
+                    }
+                  }}
+                  className="group flex w-full items-center justify-between gap-3 rounded-lg border border-black/15 px-4 py-3 text-left transition-colors hover:border-pa-dark hover:bg-pa-cream"
+                >
+                  <div className="min-w-0">
+                    <p className="body-sm font-medium leading-tight text-pa-dark">{opt.name}</p>
+                    {opt.detail && <p className="caption mt-0.5 text-pa-stone">{opt.detail}</p>}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {opt.priceFrom ? (
+                      <span className="body-sm whitespace-nowrap font-medium tabular-nums text-pa-dark">€{opt.priceFrom}</span>
+                    ) : null}
+                    <ChevronRight className="h-4 w-4 text-pa-stone transition-all group-hover:translate-x-0.5 group-hover:text-pa-dark" aria-hidden="true" />
+                  </div>
+                </button>
+              ))}
+            </div>
+            <p className="caption text-center text-pa-stone">
+              {t('experience.pickOptionHint', 'Select a tour to check live availability')}
+            </p>
+          </>
+        ) : hasBokun ? (
+          <button
+            type="button"
+            {...warmUp}
+            onClick={(e) => {
+              openerRef.current = e.currentTarget;
+              if (experienceSlug) {
+                // Abre o widget Bókun; a compra acontece lá. O mesmo evento, com
+                // os mesmos campos, do botão da barra do telemóvel.
+                pushEcommerce({
+                  event: 'experience_booking_open',
+                  ecommerce: {
+                    currency: 'EUR',
+                    value: priceOta || 0,
+                    items: [{
+                      item_id: `EXP-${experienceSlug}`,
+                      item_name: experienceName,
+                      item_category: experienceCategory || '',
+                      price: priceOta || 0,
+                      quantity: 1,
+                    }],
+                  },
+                });
+              }
+              setModalOpen(true);
+            }}
+            className="btn-primary min-h-[52px] w-full whitespace-normal px-5"
+          >
+            {t('experience.bookNow', 'Book now')}
+          </button>
+        ) : (
+          <>
+            {/* WhatsApp CTA fallback */}
+            <a
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary min-h-[52px] w-full whitespace-normal px-5"
+              onClick={() => {
+                if (!experienceSlug) return;
+                // Abre o WhatsApp, não um checkout: conta como contacto
+                pushDL({ event: 'whatsapp_click', source: 'experience_card', item_id: `EXP-${experienceSlug}`, value: priceOta || 0 });
+              }}
+            >
+              {t('experience.checkAvailability', 'Check availability')}
+            </a>
+            <p className="caption mt-1 text-center text-pa-stone">
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-pa-gold-aa transition-colors hover:text-pa-dark"
               >
-                <div className="min-w-0">
-                  <p className="text-[13px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
-                  {opt.detail && <p className="text-[11px] text-[#726D63] mt-0.5">{opt.detail}</p>}
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {opt.priceFrom ? (
-                    <span className="text-[13px] text-[#1A1A18] font-medium whitespace-nowrap">€{opt.priceFrom}</span>
-                  ) : null}
-                  <ChevronRight className="w-4 h-4 text-[#726D63] group-hover:text-[#1A1A18] group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </button>
-            ))}
-          </div>
-          <p className="text-center text-[11px] text-[#726D63]" style={{ fontWeight: 300 }}>
-            {t('experience.pickOptionHint', 'Select a tour to check live availability')}
-          </p>
-          <BokunWidgetModal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-            bokunActivityId={bokunActivityId!}
-            experienceName={experienceName}
-          />
-        </div>
-      ) : hasBokun ? (
-        <div className="bg-white">
-          <BokunCalendarWidget
-            bokunActivityId={bokunActivityId!}
-            experienceName={experienceName}
-            style={{ minHeight: '480px' }}
-          />
-        </div>
-      ) : (
-        <div className="px-7 py-6">
-          {/* WhatsApp CTA fallback */}
+                <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" /> {t('experience.messageWhatsApp', 'Message us on WhatsApp to book')}
+              </a>
+            </p>
+          </>
+        )}
+      </div>
+
+      {/* Trust signals */}
+      <ul className="space-y-2 border-t border-pa-sand px-5 py-4">
+        <li className="caption flex items-center gap-2.5 text-pa-earth">
+          <Check className="h-3.5 w-3.5 shrink-0 text-[#6B8E4E]" aria-hidden="true" />
+          <span>{t('experience.freeCancellation', 'Free cancellation up to {{hours}}h before', { hours: freeCancellationHours })}</span>
+        </li>
+        {reserveNowPayLater && (
+          <li className="caption flex items-center gap-2.5 text-pa-earth">
+            <Check className="h-3.5 w-3.5 shrink-0 text-[#6B8E4E]" aria-hidden="true" />
+            <span>{t('experience.reserveNowPayLater', 'Reserve now, pay later')}</span>
+          </li>
+        )}
+        <li className="caption flex items-center gap-2.5 text-pa-earth">
+          <Check className="h-3.5 w-3.5 shrink-0 text-[#6B8E4E]" aria-hidden="true" />
+          <span>{t('experience.instantConfirmation', 'Instant confirmation')}</span>
+        </li>
+      </ul>
+
+      {/* The other way to book, as discreet as the concierge line of a
+          home's card. */}
+      {hasBokun && (
+        <p className="caption flex items-center justify-center gap-1.5 border-t border-black/[0.06] px-5 py-1 text-pa-stone">
+          <span>{t('experience.orLabel', 'or')}</span>
           <a
             href={waHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="pa-action w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors mb-3"
-            style={{ minHeight: '52px' }}
-            onClick={() => {
-              if (!experienceSlug) return;
-              // Abre o WhatsApp, não um checkout: conta como contacto
-              pushDL({ event: 'whatsapp_click', source: 'experience_card', item_id: `EXP-${experienceSlug}`, value: priceOta || 0 });
-            }}
+            className="inline-flex min-h-11 items-center gap-1.5 text-pa-gold-aa transition-colors hover:text-pa-dark"
           >
-            Check availability
+            <MessageCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> {t('experience.messageWhatsAppShort', 'message us on WhatsApp')}
           </a>
-          <p className="text-center text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[#8B7355] hover:text-[#1A1A18] transition-colors"
-            >
-              <MessageCircle className="w-3 h-3" /> {t('experience.messageWhatsApp', 'Message us on WhatsApp to book')}
-            </a>
-          </p>
-        </div>
+        </p>
       )}
 
-      {/* Trust signals */}
-      <div className="px-7 py-5 border-t border-[#E8E4DC]">
-        <div className="space-y-2.5">
-          <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
-            <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-            <span>{t('experience.freeCancellation', 'Free cancellation up to {{hours}}h before', { hours: freeCancellationHours })}</span>
-          </div>
-          {reserveNowPayLater && (
-            <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
-              <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-              <span>{t('experience.reserveNowPayLater', 'Reserve now, pay later')}</span>
-            </div>
-          )}
-          <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
-            <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-            <span>{t('experience.instantConfirmation', 'Instant confirmation')}</span>
-          </div>
-        </div>
-        {hasBokun && (
-          <p className="text-center text-[12px] text-[#726D63] mt-4" style={{ fontWeight: 300 }}>
-            {t('experience.orLabel', 'or')}{' '}
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[#8B7355] hover:text-[#1A1A18] transition-colors"
-            >
-              <MessageCircle className="w-3 h-3" /> {t('experience.messageWhatsAppShort', 'message us on WhatsApp')}
-            </a>
-          </p>
-        )}
-      </div>
+      {hasBokun && (
+        <BokunWidgetModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          bokunActivityId={bokunActivityId!}
+          experienceName={experienceName}
+          selectedOption={isMultiOption ? chosenOption : null}
+          whatsappHref={waHref}
+          returnFocusTo={openerRef}
+        />
+      )}
     </div>
   );
 }

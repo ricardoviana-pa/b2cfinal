@@ -53,10 +53,14 @@
   --color-pa-cream: #FAFAF7;
   --color-pa-warm: #F5F1EB;
   --color-pa-sand: #E8E4DC;
-  --color-pa-stone: #726D63;
-  --color-pa-stone-aa: #78756F; /* WCAG AA compliant on #FAFAF7 (4.5:1) */
+  /* Greys, one step darker since the design audit of 14 nov 2026 (E01):
+     body text #5E5B54 (6.5:1 on cream, 6.0:1 on warm); secondary text
+     #6B6860 (5.3:1 on cream, 4.95:1 on warm). The two "stone" names are now
+     the same tone: #726D63 gave 4.06:1 on sand and #78756F 4.39:1 on cream. */
+  --color-pa-stone: #6B6860;
+  --color-pa-stone-aa: #6B6860;
   --color-pa-gold-aa: #806A48; /* gold for text on light backgrounds (AA) */
-  --color-pa-earth: #6B6860;
+  --color-pa-earth: #5E5B54;
   --color-pa-dark: #1A1A18;
   --color-pa-gold: #8B7355;
   --color-pa-gold-light: #C4A87C;
@@ -83,7 +87,7 @@
   --secondary: #F5F1EB;
   --secondary-foreground: #1A1A18;
   --muted: #F5F1EB;
-  --muted-foreground: #6B6860; /* 5.3:1 on #FAFAF7 — AA compliant */
+  --muted-foreground: #5E5B54; /* 6.5:1 on #FAFAF7 */
   --accent: #F5F1EB;
   --accent-foreground: #1A1A18;
   --destructive: #DC2626;
@@ -200,8 +204,8 @@
     font-family: var(--font-body);
     font-size: 1rem;
     line-height: 1.7;
-    color: #6B6860;
-    font-weight: 300;
+    color: #5E5B54;
+    font-weight: 400;
   }
 
   /* Links */
@@ -319,43 +323,46 @@
   }
 
   /* Body text â Inter, clean and readable */
+  /* Type scale since the design audit (E01, 20 nov 2026): running text 16 px
+     (15 px in dense zones), nothing below 12 px, normal weight. Thin (300)
+     stays for display type only. */
   .body-lg {
     font-family: var(--font-body);
-    font-size: clamp(1rem, 1.2vw, 1.125rem);
-    font-weight: 300;
+    font-size: clamp(1.0625rem, 1.25vw, 1.1875rem);
+    font-weight: 400;
     line-height: 1.7;
-    color: #6B6860;
+    color: #5E5B54;
   }
 
   .body-md {
     font-family: var(--font-body);
-    font-size: 0.9375rem;
-    font-weight: 300;
+    font-size: 1rem;
+    font-weight: 400;
     line-height: 1.7;
-    color: #6B6860;
+    color: #5E5B54;
   }
 
   .body-sm {
     font-family: var(--font-body);
-    font-size: 0.8125rem;
-    font-weight: 300;
+    font-size: 0.9375rem;
+    font-weight: 400;
     line-height: 1.6;
-    color: #6B6860;
+    color: #5E5B54;
   }
 
-  /* Caption — metadata, helper text (12px) */
+  /* Caption — metadata, helper text (13px) */
   .caption {
     font-family: var(--font-body);
-    font-size: 0.75rem;
-    font-weight: 300;
+    font-size: 0.8125rem;
+    font-weight: 400;
     line-height: 1.5;
-    color: #78756F;
+    color: #6B6860;
   }
 
   /* Button text â UPPERCASE label style */
   .btn-text {
     font-family: var(--font-body);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -365,11 +372,13 @@
   /* Overline â uppercase label */
   .eyebrow {
     font-family: var(--font-body);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #8B7355;
+    /* gold for text on light surfaces (4.9:1 on cream); on a dark surface the
+       element sets text-pa-gold-light itself */
+    color: #806A48;
     line-height: 1;
   }
 
@@ -665,7 +674,7 @@
   }
 
   .text-pa-dark { color: #1A1A18; }
-  .text-pa-earth { color: #6B6860; }
+  .text-pa-earth { color: #5E5B54; }
   .text-pa-gold { color: #8B7355; }
 
   .bg-pa-cream { background-color: #FAFAF7; }
@@ -708,11 +717,6 @@
 
   /* Landscape: cap hero sections so user doesn't scroll endlessly */
   @media (orientation: landscape) and (max-height: 500px) {
-  }
-
-  /* Hide hero proof strip on short viewports to avoid booking-bar overlap */
-  @media (max-height: 759px) {
-    .hero-proof-strip { display: none !important; }
   }
 
   @keyframes marquee {
@@ -821,6 +825,18 @@
   @media (min-width: 640px) and (max-width: 1023.98px) {
     .back-to-top {
       bottom: calc(5.5rem + 56px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  /* No "back to top" on a phone or a tablet (decisão E06 do Ricardo, 20 nov
+     2026): two round buttons sat over the text on every screen. Below lg only
+     the WhatsApp button floats, and on the pages with a booking bar it is
+     inside the bar already. The rules around this one keep the button's
+     place for the day it comes back; `html` gives it the weight to beat the
+     button's own `flex` utility. */
+  @media (max-width: 1023.98px) {
+    html .back-to-top {
+      display: none;
     }
   }
 
@@ -1007,8 +1023,8 @@
 .hero-text-link:focus-visible { outline: 2px solid white; outline-offset: 5px; }
 .hero-search { display: grid; grid-template-columns: minmax(170px, 1.3fr) repeat(2, minmax(150px, 1fr)) minmax(85px,.6fr) auto; gap: 8px; padding: 10px; width: 100%; max-width: 1100px; margin-inline: auto; background: #fff; border-radius: 14px; box-shadow: 0 12px 36px #0002; color: #1A1A18; }
 .hero-search-field { position: relative; min-width: 0; display: flex; flex-direction: column; justify-content: center; min-height: 64px; padding: 8px 14px; border: 1px solid #E8E4DC; border-radius: 8px; text-align: left; }
-.hero-search-field > span:first-child { display: block; font-size: 11px; font-weight: 500; color: #6B6860; line-height: 1.4; margin-bottom: 5px; }
-.hero-search-field select { border: 0; background: transparent; width: 100%; min-width: 0; min-height: 0; padding: 0 18px 0 0; appearance: none; font-size: 15px; line-height: 1.5; cursor: pointer; }
+.hero-search-field > span:first-child { display: block; font-size: 12px; font-weight: 500; color: #5E5B54; line-height: 1.4; margin-bottom: 5px; }
+.hero-search-field select { border: 0; background: transparent; width: 100%; min-width: 0; min-height: 0; padding: 0 18px 0 0; appearance: none; font-size: 16px; line-height: 1.5; cursor: pointer; }
 .hero-search-field:focus-within { outline: 2px solid #8B7355; outline-offset: 2px; }
 .hero-search-field select:focus { outline: none; }
 .hero-search-icon { position: absolute; pointer-events: none; right: 12px; bottom: 14px; width: 15px; height: 15px; color: #726D63; }
@@ -1018,8 +1034,10 @@
    field makes the entire box open the picker — including before hydration,
    which a JS-only fix can't do. See client/src/lib/datePicker.ts. */
 .pa-date-hit { position: relative; }
+/* A search-bar date cell (SearchDateCell): the native input lies invisible over the cell's own text. */
+.pa-date-cell input[type="date"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 .pa-date-hit::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: auto; height: auto; margin: 0; padding: 0; background: transparent; color: transparent; opacity: 0; cursor: pointer; }
-.hero-search-date-value { font-size: 15px; padding-right: 16px; white-space: nowrap; line-height: 1.5; }
+.hero-search-date-value { font-size: 16px; padding-right: 16px; white-space: nowrap; line-height: 1.5; }
 /* The empty-state placeholder never runs under the calendar icon (the icon
    starts 28px from the field's right edge; the text ends 31px from it), in any
    language or width: copy that still does not fit ends in an ellipsis
@@ -1031,7 +1049,7 @@
 /* Editorial pages: a shared scale, action hierarchy and catalogue treatment. */
 .editorial-hero { position: relative; isolation: isolate; min-height: 540px; display: flex; align-items: flex-end; padding: 148px 0 60px; color: white; background: #282923; }
 .editorial-hero h1 { color: white; font-family: var(--font-display); font-size: clamp(2.65rem, 5vw, 4.5rem); font-weight: 300; letter-spacing: -.025em; line-height: 1.06; max-width: 18ch; margin-bottom: 24px; }
-.editorial-eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 16px; }
+.editorial-eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 16px; }
 .editorial-hero-description { max-width: 560px; font-size: 18px; line-height: 1.65; color: #ffffffe6; }
 .editorial-actions { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; margin-top: 28px; }
 .editorial-proof { background: #F5F1EB; border-bottom: 1px solid #E8E4DC; }
@@ -1047,7 +1065,7 @@
 .catalog-card:focus-visible { outline: 2px solid #8B7355; outline-offset: 4px; }
 .catalog-card-content { padding: 24px; display: flex; flex-direction: column; flex: 1; }
 .catalog-card-footer { border-top: 1px solid #E8E4DC; margin-top: 20px; padding-top: 16px; display: flex; align-items: flex-start; flex-direction: column; gap: 8px; }
-.catalog-card-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; font-size: 13px; min-height: 32px; }
+.catalog-card-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; font-size: 15px; min-height: 32px; }
 @media (max-width: 1023px) {
   .home-hero { padding: 120px 0 32px; min-height: auto; }
   .home-hero-content { gap: 28px; }

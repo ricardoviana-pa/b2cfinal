@@ -18,7 +18,7 @@ export default function Cookies() {
       <div className="pt-28 md:pt-36 pb-16">
         <div className="container max-w-3xl mx-auto">
           <h1 className="headline-lg mb-8" style={{ color: '#1A1A18' }}>{t('cookiesPage.title')}</h1>
-          <div className="space-y-6 text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '15px', lineHeight: 1.8 }}>
+          <div className="space-y-6 text-pa-earth" style={{ fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: '15px', lineHeight: 1.8 }}>
             <p>{t('cookiesPage.lastUpdated')}</p>
 
             <h2 className="headline-sm !text-[#1A1A18] !mt-10">{t('cookiesPage.whatTitle')}</h2>
