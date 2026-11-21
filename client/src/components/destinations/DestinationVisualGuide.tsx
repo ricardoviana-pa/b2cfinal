@@ -38,6 +38,7 @@ import {
 } from "./sections";
 import "./MinhoVisualGuide.css";
 import "./DestinationVisualGuide.css";
+import { keepSeparators } from "@/lib/format";
 
 function Photo({
   src,
@@ -262,7 +263,7 @@ export function DestinationVisualGuide({
                 PORTUGAL
               </text>
             </svg>
-            <figcaption>{tx(e.name)} · Portugal</figcaption>
+            <figcaption>{tx(e.name)}{"\u00A0· "}Portugal</figcaption>
           </figure>
           <div>
             <p className="minho-kicker">
@@ -345,7 +346,7 @@ export function DestinationVisualGuide({
               {e.moments.map((m, i) => (
                 <article key={m.place[0]} className="minho-landscape-copy">
                   <span className="minho-number">
-                    0{i + 1} · {tx(m.place)}
+                    0{i + 1}{"\u00A0· "}{keepSeparators(tx(m.place))}
                   </span>
                   <h3>{tx(m.title)}</h3>
                   <p>{tx(m.text)}</p>
@@ -395,7 +396,7 @@ export function DestinationVisualGuide({
               {e.bases.map(b => (
                 <article key={b.name}>
                   <span className="minho-base-tag">{tx(b.tag)}</span>
-                  <h3>{b.name}</h3>
+                  <h3>{keepSeparators(b.name)}</h3>
                   <p>{tx(b.text)}</p>
                   <div className="minho-base-transport">
                     <CarFront size={19} />
@@ -547,7 +548,7 @@ export function DestinationVisualGuide({
               {e.tables.map((t, i) => (
                 <article key={t.name}>
                   <span className="minho-number">0{i + 1}</span>
-                  <p className="minho-kicker">{tx(t.place)}</p>
+                  <p className="minho-kicker">{keepSeparators(tx(t.place))}</p>
                   <h3>{t.name}</h3>
                   <p className="mt-4">{tx(t.text)}</p>
                   {sourceLink(t.source, "taste")}
@@ -597,7 +598,7 @@ export function DestinationVisualGuide({
               {e.culture.map((c, i) => (
                 <article key={c.place[0] + c.source}>
                   <span className="minho-number">
-                    0{i + 1} · {tx(c.place)}
+                    0{i + 1}{"\u00A0· "}{keepSeparators(tx(c.place))}
                   </span>
                   <div>
                     <h3>{tx(c.title)}</h3>

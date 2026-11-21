@@ -12,7 +12,7 @@ import productsData from '@/data/products.json';
 import experienceDetailsData from '@/data/experienceDetails.json';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import type { Product, DestinationSlug } from '@/lib/types';
-import { formatEurEditorial } from '@/lib/format';
+import { formatEurEditorial, noBreak, keepSeparators, keepHyphens } from '@/lib/format';
 import { localizeProduct } from '@/lib/localizeProduct';
 import EditorialHero from '@/components/marketing/EditorialHero';
 import Header from '@/components/layout/Header';
@@ -215,13 +215,15 @@ export default function Adventures() {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} decoding="async" />}
                     </div>
                     <div className="catalog-card-content">
-                      <p className="flex items-start gap-1.5 text-xs text-pa-stone mb-3"><MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
-                        {adventure.destinations.map(d => t(`destinations.${d}`)).join('\u00A0· ')}</p>
-                      <h3 className="font-display text-2xl text-pa-dark">{adventure.name}</h3>
-                      <p className="body-md mt-2 flex-1">{adventure.tagline}</p>
+                      {/* Each region stays whole ("Porto and Douro") and a line
+                          breaks only after a dot, in balanced lines. */}
+                      <p className="flex items-start gap-1.5 text-xs text-pa-stone mb-3 text-balance"><MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
+                        {adventure.destinations.map(d => noBreak(t(`destinations.${d}`))).join('\u00A0· ')}</p>
+                      <h3 className="font-display text-2xl text-pa-dark">{keepSeparators(keepHyphens(adventure.name))}</h3>
+                      <p className="body-md mt-2 flex-1 text-balance">{adventure.tagline}</p>
                       {adventure.duration && <p className="flex items-center gap-2 text-[15px] text-pa-stone mt-4"><Clock className="w-4 h-4" aria-hidden="true" />{localizeDuration(adventure.duration, t)}</p>}
                       <div className="catalog-card-footer">
-                        <p className="text-[15px] min-h-[1.5em]">{(adventure.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)}</strong> <span className="text-pa-stone">{adventure.priceSuffix}</span></>}</p>
+                        <p className="text-[15px] sm:min-h-[1.7em]">{(adventure.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)}</strong> <span className="text-pa-stone">{adventure.priceSuffix}</span></>}</p>
                         <span className="catalog-card-link">{t('siteUx.viewService')} <ArrowRight className="h-4 w-4 shrink-0" /></span>
                       </div>
                     </div>

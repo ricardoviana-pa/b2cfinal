@@ -495,6 +495,9 @@
 .minho-restaurants details p {
   font-size: 0.9375rem;
   margin-block: 0.5rem;
+  /* Short notes in 164-241 px columns: pretty still left one word alone
+     ("arrangements.", "restaurante."); balanced lines do not. */
+  text-wrap: balance;
 }
 .minho-text-link {
   min-height: 44px;

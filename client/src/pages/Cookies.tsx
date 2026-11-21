@@ -29,24 +29,24 @@ export default function Cookies() {
             <h2 className="headline-sm !text-[#1A1A18] !mt-10">{t('cookiesPage.howTitle')}</h2>
             <p>{t('cookiesPage.howBody')}</p>
 
-            <h3 className="text-[17px] font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.essentialTitle')}</h3>
+            <h3 className="text-[20px] leading-snug font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.essentialTitle')}</h3>
             <p>
               {t('cookiesPage.essentialBody')}
             </p>
 
-            <h3 className="text-[17px] font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.analyticsTitle')}</h3>
+            <h3 className="text-[20px] leading-snug font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.analyticsTitle')}</h3>
             <p>
               {t('cookiesPage.analyticsBody')}
             </p>
             {/* pa-origin (origem da visita, shared/visit-origin.ts), nas 9 línguas. */}
             <p>{t('cookiesPage.originBody')}</p>
 
-            <h3 className="text-[17px] font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.functionalTitle')}</h3>
+            <h3 className="text-[20px] leading-snug font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.functionalTitle')}</h3>
             <p>
               {t('cookiesPage.functionalBody')}
             </p>
 
-            <h3 className="text-[17px] font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.marketingTitle')}</h3>
+            <h3 className="text-[20px] leading-snug font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.marketingTitle')}</h3>
             <p>
               {t('cookiesPage.marketingBody')}
             </p>

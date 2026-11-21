@@ -13,6 +13,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
+import { keepHyphens } from '@/lib/format';
 
 const EVENT_TYPES_SCHEMA = [
   { type: 'Corporate Retreats', description: 'Host corporate retreats and team offsites in private Portuguese villas with full concierge' },
@@ -181,7 +182,7 @@ export default function Events() {
             {TRUST_ITEMS.map(item => (
               <div key={item.label}>
                 <p className="font-display text-[1.6rem] text-white mb-1">{item.value}</p>
-                <p className="text-[13px] text-white/40 tracking-[0.06em]">{item.label}</p>
+                <p className="text-[13px] text-white/40 tracking-[0.06em] max-lg:tracking-normal text-balance">{item.label}</p>
               </div>
             ))}
           </div>
@@ -218,10 +219,13 @@ export default function Events() {
                 </div>
                 <div className="p-6 flex flex-col flex-1">
                   <p className="text-[15px] text-pa-earth font-normal leading-relaxed mb-4 flex-1">
-                    {event.subtitle}
+                    {keepHyphens(event.subtitle)}
                   </p>
-                  <div className="flex items-center justify-between">
-                    {event.id !== 'corporate' && <span className="inline-flex items-center gap-1.5 text-[13px] text-pa-stone">
+                  {/* When the guest count and the link do not fit side by side
+                      the link drops whole under the count: both broke in two
+                      ("Até 120 / convidados", "INFORMAR- / SE") and touched. */}
+                  <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                    {event.id !== 'corporate' && <span className="inline-flex items-center gap-1.5 text-[13px] text-pa-stone whitespace-nowrap">
                       <Users className="w-3.5 h-3.5" />
                       {t('events.upToGuests', { count: event.guestCount })}
                     </span>}
@@ -229,9 +233,9 @@ export default function Events() {
                       href={`https://wa.me/351927161771?text=${enquireMsg(event.title)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[#1A1A18] text-[13px] tracking-[0.08em] font-medium hover:text-pa-gold-aa transition-colors"
+                      className="ml-auto inline-flex items-center gap-1.5 whitespace-nowrap text-[#1A1A18] text-[13px] tracking-[0.08em] font-medium hover:text-pa-gold-aa transition-colors"
                     >
-                      {t('events.enquire')} <ArrowRight className="w-3.5 h-3.5" />
+                      {t('events.enquire')} <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                     </a>
                   </div>
                 </div>
@@ -332,7 +336,9 @@ export default function Events() {
             <p className="text-[13px] font-medium text-pa-gold-aa mb-3 tracking-[0.14em]">{t('events.processOverline')}</p>
             <h2 className="font-display text-[2rem] md:text-[2.3rem] text-[#1A1A18]">{t('events.processTitle')}</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Two by two on a tablet: in four columns of 152-165 px the steps
+              ran to 6-8 lines and a Finnish word stuck out of its column. */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { step: '01', title: t('events.step1Title'), desc: t('events.step1Desc') },
               { step: '02', title: t('events.step2Title'), desc: t('events.step2Desc') },

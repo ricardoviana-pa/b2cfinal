@@ -72,7 +72,9 @@ export default function CheckoutSection({
           >
             {title}
           </h2>
-          {done && summary ? <p className="caption text-pa-earth leading-snug line-clamp-2 mt-0.5">{summary}</p> : null}
+          {/* Three lines on a phone: dates, guests and the rate need them at
+              360 px in the longer languages, and the rate is what was chosen. */}
+          {done && summary ? <p className="caption text-pa-earth leading-snug line-clamp-3 sm:line-clamp-2 mt-0.5">{summary}</p> : null}
         </div>
         {done && onEdit ? (
           <button

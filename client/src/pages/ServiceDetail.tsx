@@ -244,7 +244,7 @@ export default function ServiceDetail() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
                 <h3 className="headline-sm mb-1 text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors">{other.name}</h3>
-                <p className="text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>{other.tagline}</p>
+                <p className="text-[15px] text-pa-earth text-balance" style={{ fontWeight: 400 }}>{other.tagline}</p>
               </Link>
             ))}
           </div>

@@ -9,7 +9,7 @@ import Footer from '@/components/layout/Footer';
 import { cancellationPolicyCopy, cancellationPolicySummary } from '@shared/cancellationPolicy';
 import { legalPageMeta } from '@shared/legalPageMeta';
 import { COMPANY_LEGAL_NAME, COMPANY_NIPC, companyAddressLine } from '@shared/company';
-import { keepPhones } from '@/lib/format';
+import { keepPhones, keepPostcode, keepSeparators, noBreak } from '@/lib/format';
 
 export default function Terms() {
   const { t, i18n } = useTranslation();
@@ -45,8 +45,12 @@ export default function Terms() {
             {/* Identidade legal: saiu do rodapé e vive aqui, a um clique do
                 link "Termos" que o rodapé já tem em todas as páginas. */}
             <p className="body-md mt-10 text-pa-stone-aa" style={{ textTransform: 'none' }} data-testid="terms-legal-identity">
-              {t('legalFooter.operatedBy', { company: COMPANY_LEGAL_NAME, nipc: COMPANY_NIPC })}
-              {companyAddressLine() ? ` · ${companyAddressLine()}` : ''}
+              {/* The company name, the NIPC with its number, the street and
+                  the postcode with the town never split; a line breaks only
+                  after a dot or a comma (the name and the town both split at
+                  360 px). The name and address still come from shared/company. */}
+              {keepSeparators(t('legalFooter.operatedBy', { company: noBreak(COMPANY_LEGAL_NAME), nipc: COMPANY_NIPC }).replace('NIPC ', 'NIPC\u00A0'))}
+              {companyAddressLine() ? `\u00A0· ${companyAddressLine()!.split(', ').map((part) => keepPostcode(noBreak(part))).join(', ')}` : ''}
             </p>
           </div>
         </div>

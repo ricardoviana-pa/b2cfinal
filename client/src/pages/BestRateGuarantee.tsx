@@ -11,6 +11,7 @@ import { ShieldCheck, MessageCircle } from 'lucide-react';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { keepHyphens } from '@/lib/format';
 
 const WHATSAPP_URL = 'https://wa.me/351927161771';
 
@@ -51,7 +52,7 @@ export default function BestRateGuarantee() {
             {terms.map((term, i) => (
               <li key={i} className="flex items-start gap-3">
                 <ShieldCheck size={16} className="text-[#806A48] shrink-0 mt-1.5" />
-                <p className="body-md" style={{ textTransform: 'none' }}>{term}</p>
+                <p className="body-md" style={{ textTransform: 'none' }}>{keepHyphens(term)}</p>
               </li>
             ))}
           </ul>

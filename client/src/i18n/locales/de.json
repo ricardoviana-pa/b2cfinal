@@ -1359,7 +1359,7 @@
     "bookExperience": "Dieses Erlebnis buchen",
     "whatsappSubtitle": "Schreiben Sie direkt unserem Concierge-Team. Wir antworten in der Regel innerhalb weniger Minuten.",
     "chatOnWhatsApp": "Auf WhatsApp schreiben",
-    "whatsappNote": "Täglich von 9 bis 21 Uhr (Lissabonner Zeit)"
+    "whatsappNote": "Täglich von 9 bis 21 Uhr (Lissabonner Zeit)"
   },
   "bedConfig": {
     "notAvailable": "Bettenkonfiguration nicht verfügbar"
@@ -1854,7 +1854,7 @@
         "name": "Persönlicher Empfang",
         "desc": "Ein Gastgeber empfängt Sie, zeigt das Haus und bringt alles zum Laufen."
       },
-      "lateNote": "Nach {{hour}} Uhr: {{price}}."
+      "lateNote": "Nach {{hour}} Uhr: {{price}}."
     },
     "seeAll": "Alle Services ansehen",
     "seeAllExperiences": "Alle Erlebnisse ansehen",

@@ -144,12 +144,15 @@ export default function Blog() {
       {/* Category Filter */}
       <section className="border-b border-[#E8E4DC] sticky top-16 md:top-20 bg-[#FAFAF7]/95 backdrop-blur-md z-30">
         <div className="container">
-          <div className="flex gap-1 overflow-x-auto no-scrollbar py-3">
+          {/* On a phone the row scrolls to the screen edge (the next chip
+              showed as a lone "P" at the container's edge); 14 px chips from
+              768 to 1023 px, where at 15 px the last one was cut. */}
+          <div className="flex gap-1 overflow-x-auto no-scrollbar py-3 -mx-5 px-5 md:mx-0 md:px-0">
             {CATEGORIES.map((cat, idx) => (
               <button
                 key={`${cat.value}-${idx}`}
                 onClick={() => setActiveCategory(cat.value)}
-                className={`pa-action px-4 py-2 text-[15px] font-medium whitespace-nowrap transition-all ${
+                className={`pa-action px-4 md:max-lg:px-3 py-2 text-[15px] md:max-lg:text-[14px] font-medium whitespace-nowrap transition-all ${
                   activeCategory === cat.value
                     ? 'bg-[#1A1A18] text-white'
                     : 'text-pa-earth hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
@@ -248,17 +251,21 @@ export default function Blog() {
                     )}
                   </div>
                   <p className="text-[12px] font-medium text-pa-gold-aa mb-2 tracking-[0.08em]">{blogCategoryLabel(article.category, t).toUpperCase()}</p>
-                  <h3 className="font-display text-[20px] leading-snug text-[#1A1A18] mb-2 group-hover:text-pa-gold-aa transition-colors line-clamp-2">
+                  {/* 20 px with up to three lines on a phone (one column: nothing
+                      to line up with), 18 px and two lines from 768 to 1279 px
+                      (at 20 px long titles were cut with "…"), 20 px from
+                      1280 px. */}
+                  <h3 className="font-display text-[20px] md:max-xl:text-[18px] leading-snug text-[#1A1A18] mb-2 group-hover:text-pa-gold-aa transition-colors line-clamp-3 md:line-clamp-2 text-balance">
                     {article.title}
                   </h3>
                   <p className="text-[15px] text-pa-earth font-normal line-clamp-2 mb-3">{article.excerpt}</p>
-                  {/* One run of text that wraps between items, never inside
-                      one ("30 de mar. de" / "2026" on two lines). */}
-                  <p className="text-[13px] leading-relaxed text-pa-stone">
+                  {/* A dot list that wraps between items, never inside one
+                      ("30 de mar. de" / "2026"), and no line starts or ends
+                      with a dot. */}
+                  <p className="pa-dots text-[13px] leading-relaxed text-pa-stone">
                     <span className="whitespace-nowrap">{articleDate(article.publishDate, i18n.language)}</span>
-                    <span aria-hidden="true"> · </span>
                     <span className="whitespace-nowrap">{article.readTime} {t("blog.minRead")}</span>
-                    {article.author?.name && (<><span aria-hidden="true"> · </span><span className="whitespace-nowrap">{blogAuthorName(article.author, t)}</span></>)}
+                    {article.author?.name && <span className="whitespace-nowrap">{blogAuthorName(article.author, t)}</span>}
                   </p>
                 </Link>
               ))}
@@ -283,7 +290,7 @@ export default function Blog() {
                     /* On a phone most titles take two lines: tighter lines
                        inside a title and more room between titles, so each
                        one reads as a unit. */
-                    <li key={article.id} className="break-inside-avoid py-2 md:py-1 leading-snug md:leading-[1.6]">
+                    <li key={article.id} className="break-inside-avoid py-2 lg:py-1 leading-snug lg:leading-[1.6]">
                       <Link href={withEditorialTrip(`/blog/${article.slug}`, search)} className="text-pa-dark underline-offset-4 hover:underline">{article.title}</Link>
                     </li>
                   ))}

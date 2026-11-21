@@ -93,8 +93,10 @@ export default function ExperienceBookingCard({
 
   return (
     <div className="overflow-hidden rounded-xl border border-pa-sand bg-white shadow-sm">
-      {/* Price headline */}
-      <div className="px-5 pt-5 pb-4">
+      {/* Price headline. Every row of the card shares one edge: 16 px below
+          1280 px (the ticks needed it for "Cancelamento gratuito até 24h
+          antes"), 20 px from 1280 px. */}
+      <div className="px-4 xl:px-5 pt-5 pb-4">
         {priceFrom > 0 ? (
           <>
             <p className="eyebrow text-pa-stone">{t('experience.from', 'From')}</p>
@@ -111,8 +113,8 @@ export default function ExperienceBookingCard({
           </p>
         )}
         {duration && (
-          <p className="body-sm mt-1.5 text-pa-stone">
-            {duration}{'\u00A0· '}<span className="whitespace-nowrap">Private experience</span>
+          <p className="pa-dots body-sm mt-1.5 text-pa-stone">
+            <span>{duration}</span><span className="whitespace-nowrap">Private experience</span>
           </p>
         )}
       </div>
@@ -121,7 +123,7 @@ export default function ExperienceBookingCard({
           ebike: City / Road / Gravel) list their routes, each a button that
           opens the calendar with that route above it. Single-option
           activities have one button that opens the calendar. */}
-      <div className="px-5 pb-5">
+      <div className="px-4 xl:px-5 pb-5">
         {hasBokun && isMultiOption ? (
           <>
             <p className="eyebrow mb-3 text-pa-stone">
@@ -150,11 +152,13 @@ export default function ExperienceBookingCard({
                       });
                     }
                   }}
-                  className="group flex w-full items-center justify-between gap-3 rounded-lg border border-black/15 px-4 py-3 text-left transition-colors hover:border-pa-dark hover:bg-pa-cream"
+                  className="group flex w-full items-center justify-between gap-3 rounded-lg border border-black/15 px-3 xl:px-4 py-3 text-left transition-colors hover:border-pa-dark hover:bg-pa-cream"
                 >
                   <div className="min-w-0">
                     <p className="body-sm font-medium leading-tight text-pa-dark">{opt.name}</p>
-                    {opt.detail && <p className="caption mt-0.5 text-pa-stone">{opt.detail}</p>}
+                    {/* A dot list: "4 hours ·" / "Saturdays 10:00" ended its
+                        first line on the dot at 1024 px. */}
+                    {opt.detail && <p className="pa-dots caption mt-0.5 text-pa-stone">{opt.detail.split(' · ').map((part) => <span key={part}>{part}</span>)}</p>}
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     {opt.priceFrom ? (

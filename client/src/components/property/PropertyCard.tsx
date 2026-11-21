@@ -10,7 +10,7 @@ import { Link } from 'wouter';
 import { propertyTripHref } from '@shared/editorialTripContext';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
-import { formatEur, getDisplayName, formatStayEur, keepDashes } from '@/lib/format';
+import { formatEur, getDisplayName, formatStayEur, keepNameParts } from '@/lib/format';
 import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, cardSrcSet } from '@/lib/images';
@@ -61,6 +61,11 @@ interface PropertyCardProps {
   /** Preload the first photo when this media query matches (cards that share
    *  the first row with the LCP card on wider screens); the <img> stays lazy. */
   preloadMedia?: string;
+  /** Stretch to the height of the grid cell so the price line sits at the
+   *  foot of every card of a row (default). Off where something follows the
+   *  card in the same cell (a guide's recommendation note): a card as tall as
+   *  its cell pushed the note out of it, under the next card's photo. */
+  fillCell?: boolean;
 }
 
 export default function PropertyCard({
@@ -81,6 +86,7 @@ export default function PropertyCard({
   groupContextLabel,
   priority,
   preloadMedia,
+  fillCell = true,
 }: PropertyCardProps) {
   const { t, i18n } = useTranslation();
   const isPartner = isPartnerHome(property);
@@ -214,7 +220,7 @@ export default function PropertyCard({
     <Link
       href={propertyTripHref(property.slug, {checkin, checkout, guests})}
       onClick={handleCardClick}
-      className="flex h-full flex-col"
+      className={fillCell ? 'flex h-full flex-col' : 'flex flex-col'}
     >
       {/* A column as tall as its row of the grid, with the price line at the
           bottom: when one name of a row takes two lines, the dividers and the
@@ -324,7 +330,7 @@ export default function PropertyCard({
               that still needs two lines breaks evenly, and never before a
               dash. */}
           <h3 className="text-[1.0625rem] @min-[340px]:text-[1.125rem] lg:@min-[360px]:text-[1.25rem] font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors leading-tight flex-1 min-w-0 text-balance">
-            {keepDashes(displayName)}
+            {keepNameParts(displayName)}
           </h3>
           {/* 14 px, the size of the icons beside them (at 15 px the figures
               were larger than their icons). The top padding keeps them on the

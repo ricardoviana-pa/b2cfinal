@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 import { blogAuthorName, blogAuthorRole, blogCategoryLabel } from '@/lib/blogLabels';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
-import { noBreak } from '@/lib/format';
 import { ArrowLeft, Clock, Calendar, Share2, ArrowRight, Play, ExternalLink } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -347,12 +346,13 @@ export default function BlogArticle() {
                     {getDisplayName(home)}
                   </h3>
                   {(home.locality || home.bedrooms || home.maxGuests) && (
-                    <p className="text-sm text-pa-stone-aa mt-1">
+                    /* A dot list: a line breaks between facts and none starts
+                       or ends with the dot. */
+                    <p className="pa-dots text-sm text-pa-stone-aa mt-1">
                       {[home.locality, home.bedrooms ? t('blogArticle.bedroomCount', { count: home.bedrooms }) : null,
                         home.maxGuests ? t('search.guestsCount', { count: home.maxGuests }) : null]
                         .filter((part): part is string => !!part)
-                        .map(noBreak)
-                        .join('\u00A0· ')}
+                        .map((part) => <span key={part} className="whitespace-nowrap">{part}</span>)}
                     </p>
                   )}
                 </Link>

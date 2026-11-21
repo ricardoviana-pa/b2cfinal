@@ -1049,11 +1049,11 @@ export default function BookingWidget({
           /* Pre-selection / no confirmed live price — advertised "From" nightly rate only, never an estimate */
           <>
             {displayRate > 0 ? (
-              <div className="flex items-baseline gap-1">
-                <span className="text-[28px] text-pa-dark font-display" >
+              <div className="flex flex-wrap items-baseline gap-x-1">
+                <span className="text-[28px] text-pa-dark font-display whitespace-nowrap" >
                   {t("property.fromPerNight", { price: Math.round(displayRate).toLocaleString(intlLocale(lang)) })}
                 </span>
-                <span className="body-sm text-pa-stone">{t("property.perNight")}</span>
+                <span className="body-sm text-pa-stone whitespace-nowrap">{t("property.perNight")}</span>
               </div>
             ) : (
               /* Sem "desde" calculado: nunca o valor de referência do Guesty. */

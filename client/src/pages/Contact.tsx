@@ -218,7 +218,7 @@ export default function Contact() {
       {/* Form + Contact channels */}
       <section id="contact-form" className="py-10 md:py-14 scroll-mt-28">
         <div className="container max-w-[1100px]">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-14 lg:gap-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-14 lg:gap-20">
 
             {/* Left: Form */}
             <div>
@@ -443,7 +443,7 @@ export default function Contact() {
                           <p className="text-[15px] text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors truncate" style={{ fontWeight: 500 }}>
                             {title}
                           </p>
-                          <p className="text-[13px] text-pa-stone mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+                          <p className="text-[13px] text-pa-stone mt-0.5 text-balance" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                             {sub}
                           </p>
                         </div>

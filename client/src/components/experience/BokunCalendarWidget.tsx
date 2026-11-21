@@ -308,7 +308,7 @@ export default function BokunCalendarWidget({
                 className="btn-primary w-full whitespace-normal px-5"
               >
                 <MessageCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
-                {t('experience.messageWhatsApp', 'Message us on WhatsApp to book')}
+                <span className="text-balance">{t('experience.messageWhatsApp', 'Message us on WhatsApp to book')}</span>
               </a>
             )}
           </div>

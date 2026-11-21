@@ -32,6 +32,7 @@ import { DestinationAccess } from "./DestinationAccess";
 import { MinhoOrientation, MinhoStayLength } from "./MinhoFirstVisit";
 import { GuideBody, GuideHeading, GuideSection } from "./GuideSection";
 import "./MinhoVisualGuide.css";
+import { keepSeparators } from "@/lib/format";
 
 const landscapes = [
   {
@@ -311,15 +312,16 @@ export function MinhoVisualGuide({
               <GuideHeading>
                 {pt ? (
                   <>
-                    Três paisagens.
-                    <br />
-                    Mil razões para ficar.
+                    <span className="block">Três paisagens.</span>
+                    <span className="block">Mil razões para ficar.</span>
                   </>
                 ) : (
+                  /* Each sentence its own block, so each balances on its own:
+                     with a <br> the second broke as "So many reasons to" /
+                     "stay." at 375 and 360 px. */
                   <>
-                    Three landscapes.
-                    <br />
-                    So many reasons to stay.
+                    <span className="block">Three landscapes.</span>
+                    <span className="block">So many reasons to stay.</span>
                   </>
                 )}
               </GuideHeading>
@@ -353,7 +355,7 @@ export function MinhoVisualGuide({
                     />
                     <span>
                       <Icon size={16} aria-hidden="true" />
-                      {place}
+                      {keepSeparators(place)}
                     </span>
                   </div>
                   <div className="minho-landscape-copy">
@@ -724,7 +726,7 @@ export function MinhoVisualGuide({
               <article key={item.title}>
                 <span className="minho-number">0{i + 1}</span>
                 <div>
-                  <h3>{item.title}</h3>
+                  <h3>{keepSeparators(item.title)}</h3>
                   <p>{item.text}</p>
                   <a
                     href={item.sourceUrl}
@@ -749,7 +751,7 @@ export function MinhoVisualGuide({
               </p>
               <GuideHeading>
                 {pt
-                  ? "O Minho muda. A vontade de voltar fica."
+                  ? "O Minho muda. A\u00A0vontade de voltar fica."
                   : "A changing landscape. A reason to return."}
               </GuideHeading>
             </div>
@@ -810,13 +812,21 @@ export function MinhoVisualGuide({
                   <div>
                     <h3>{item.title}</h3>
                     <p>{item.text}</p>
+                    {/* The arrow follows the last word: as a flex sibling it sat
+                        at the column's right edge when the label wrapped ("GET
+                        BUS · Ponte de Lima /" … "Porto Airport"   ↗). */}
                     <a
                       href={item.sourceUrl}
                       onClick={() => track("arrival", "source")}
                       className="minho-text-link"
                     >
-                      {item.sourceLabel}
-                      <ArrowUpRight size={15} />
+                      <span>
+                        {keepSeparators(item.sourceLabel.slice(0, item.sourceLabel.lastIndexOf(" ") + 1))}
+                        <span className="whitespace-nowrap">
+                          {item.sourceLabel.slice(item.sourceLabel.lastIndexOf(" ") + 1)}
+                          <ArrowUpRight size={15} className="ml-2.5 inline-block align-[-2px]" />
+                        </span>
+                      </span>
                     </a>
                   </div>
                 </article>

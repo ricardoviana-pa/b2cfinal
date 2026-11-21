@@ -1854,7 +1854,7 @@
         "name": "Personlig mottagning",
         "desc": "En värd tar emot dig, visar huset och får allt att fungera."
       },
-      "lateNote": "Efter kl {{hour}}: {{price}}."
+      "lateNote": "Efter kl {{hour}}: {{price}}."
     },
     "seeAll": "Se alla tjänster",
     "seeAllExperiences": "Se alla upplevelser",

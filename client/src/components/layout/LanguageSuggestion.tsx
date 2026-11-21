@@ -181,7 +181,9 @@ export default function LanguageSuggestion() {
       }`}
       style={{ transform: RISE_ABOVE_COOKIE_BANNER }}
     >
-      <p className="min-w-0 flex-1 font-body text-[15px] leading-snug text-pa-dark">
+      {/* 14 px on a phone, the link never split: at 15 px the Dutch card
+          took three lines and grew up into the WhatsApp button. */}
+      <p className="min-w-0 flex-1 font-body text-[14px] sm:text-[15px] leading-snug text-pa-dark">
         {copy.prompt}{' '}
         <a
           href={href}
@@ -190,7 +192,7 @@ export default function LanguageSuggestion() {
             rememberLanguage(target);
             pushDL({ event: 'language_suggestion', suggestion_action: 'switch', suggested_language: target });
           }}
-          className="font-medium underline underline-offset-4 decoration-pa-gold hover:text-pa-gold-aa"
+          className="font-medium underline underline-offset-4 decoration-pa-gold hover:text-pa-gold-aa whitespace-nowrap"
         >
           {copy.action}
         </a>

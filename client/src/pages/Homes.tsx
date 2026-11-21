@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
-import { formatBookingDate, getDisplayName } from '@/lib/format';
+import { formatBookingDate, getDisplayName, keepSeparators } from '@/lib/format';
 import { propertyTripHref } from '@shared/editorialTripContext';
 import { Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -536,7 +536,10 @@ export default function Homes() {
             it keeps the bar under it at every width. */}
         <div className={`flex flex-col gap-5 ${collection ? '' : 'xl:flex-row xl:items-end xl:justify-between xl:gap-10'}`}>
           <div className="min-w-0 xl:flex-1">
-            <h1 className="headline-lg text-pa-dark break-words">{collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title')}</h1>
+            {/* Beside the 760 px bar the title column has 400 px: from 1280 px
+                the title keeps the 44.8 px it has at 1280 (at 48 px "Os nossos
+                alojamentos." broke in two at 1440). */}
+            <h1 className={`headline-lg text-pa-dark break-words ${collection ? '' : 'xl:text-[2.8rem]'}`}>{keepSeparators(collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title'))}</h1>
             <p className="body-sm text-pa-stone mt-1.5 max-w-lg">{t('conversion.homesIntro')}</p>
           </div>
           {/* Desktop — pill (same as homepage) */}

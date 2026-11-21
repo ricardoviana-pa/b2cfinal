@@ -43,7 +43,7 @@ function ServiceCard({ product }: { product: Product | undefined }) {
       </div>
       <div className="catalog-card-content">
         <h3 className="font-display text-2xl text-pa-dark">{product.name}</h3>
-        <p className="body-md mt-2 flex-1">{product.tagline}</p>
+        <p className="body-md mt-2 flex-1 text-balance">{product.tagline}</p>
         <div className="catalog-card-footer">
           <p className="text-[15px]">{(product.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom!)}</strong> <span className="text-pa-stone">{product.priceSuffix}</span></>}</p>
           <span className="catalog-card-link">{t('siteUx.viewService')} <ArrowRight className="h-4 w-4 shrink-0" /></span>
@@ -159,7 +159,9 @@ export default function Concierge() {
               four tabs filled a 390 px screen to the pixel and the last one
               was cut ("Additiona") on a 375 or 360 px phone. The row reaches
               the screen edges, so what scrolls is cut there and not mid-gutter. */}
-          <div className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide py-3 -mx-5 px-5 sm:mx-0 sm:px-0">
+          {/* 12 px between tabs under 400 px: at 16 px the last tab was cut by
+              a letter at the screen edge in French, Finnish and Portuguese. */}
+          <div className="flex gap-3 min-[400px]:gap-4 sm:gap-6 overflow-x-auto scrollbar-hide py-3 -mx-5 px-5 sm:mx-0 sm:px-0">
             {[
               { label: t('services.navGastronomy'), href: '#gastronomy' },
               { label: t('services.navWellness'), href: '#wellness' },

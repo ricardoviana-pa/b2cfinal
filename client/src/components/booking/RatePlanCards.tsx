@@ -125,16 +125,25 @@ export default function RatePlanCards<T extends RateCardOption>({
                   </span>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      {/* 14 px from 1024 to 1279 px, where the card is 283 px: "Não
-                          Reembolsável" broke with "Não" alone. */}
-                      <p className="body-sm lg:max-xl:text-sm text-pa-dark font-medium leading-snug">{label}</p>
+                      {/* 13 px from 1024 to 1279 px, where the card is 257-283 px
+                          ("Tarifa Reembolsável" broke one word per line at 14 px),
+                          and 14 px under 375 px ("Återbetalningsbart / pris"). */}
+                      <p className="body-sm max-[374px]:text-sm lg:max-xl:text-[13px] text-pa-dark font-medium leading-snug">{label}</p>
                       {recommended && (
                         <span className={cn("eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 text-pa-gold-aa border border-pa-sand rounded-sm", selected ? "bg-white" : "bg-pa-warm")}>
                           {t("bookingWidget.recommended", "Recommended")}
                         </span>
                       )}
                     </div>
-                    <p id={benefitId} className={cn("caption mt-0.5 leading-snug", nonRef ? "text-pa-earth" : "text-pa-dark")}>
+                  </div>
+                </div>
+                <p className="body-md text-pa-dark font-medium tabular-nums leading-tight shrink-0 text-right">{money(m.total)}</p>
+              </div>
+              {/* The cancellation line runs under the name and the price, at the
+                  card's whole width (indented by the radio): in the column beside
+                  the price it broke into stacks of two words at 1024 px and on
+                  the 820 px tablet ("Cancelamento / gratuito até / 14 dez 2026"). */}
+              <p id={benefitId} className={cn("caption -mt-2 pl-[26px] leading-snug", nonRef ? "text-pa-earth" : "text-pa-dark")}>
                       {m.kind === "refundable" && m.freeUntil
                         ? t("booking.freeCancellation", { date: noBreak(formatBookingDate(m.freeUntil, lang, true)) })
                         : nonRef
@@ -144,11 +153,7 @@ export default function RatePlanCards<T extends RateCardOption>({
                               {copy.unknown} {policyLink(m.policyCode, copy.termsLink)}
                             </>
                           )}
-                    </p>
-                  </div>
-                </div>
-                <p className="body-md text-pa-dark font-medium tabular-nums leading-tight shrink-0 text-right">{money(m.total)}</p>
-              </div>
+              </p>
               {/* A poupança numa linha própria, à direita, debaixo do benefício: dentro
                   da coluna do preço empurrava o título para ~70 px a 360 px em alemão
                   ("Nicht erstattungsfähig" entrava pelo preço) e dividia o benefício em

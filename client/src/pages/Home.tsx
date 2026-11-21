@@ -427,7 +427,8 @@ export default function Home() {
                 // (what the live site always had; more padding only wraps the
                 // descriptions). The labels are 12 px where they were 11, so
                 // their letter-spacing shrinks to keep the width they had: 0.02em
-                // on a phone, 0.06em from 768 to 1279 px, 0.1em elsewhere.
+                // on a phone, 0.06em from 640 to 1279 px (at 0.1em Spanish took two
+                // lines from 700 to 767 px), 0.1em from 1280 px.
                 // Measured in the nine languages at 360 to 1440 px: no label takes
                 // more lines than on the live site, and no text sits closer than
                 // 6 px to a divider. The labels break evenly (text-balance). This line used to end in
@@ -446,7 +447,7 @@ export default function Home() {
                     {item.icon}
                   </div>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.02em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.1em] md:text-[12px] md:tracking-[0.06em] xl:tracking-[0.1em]">{keepHyphens(item.title)}</p>
+                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.02em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.06em] md:text-[12px] xl:tracking-[0.1em]">{keepHyphens(item.title)}</p>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
                   <p className="mt-1 max-w-none caption leading-tight text-pa-stone text-balance sm:text-[12px] sm:leading-snug md:text-[13px] md:leading-[1.55] font-body font-normal" >{keepHyphens(item.sub)}</p>
                 </>
@@ -631,7 +632,7 @@ export default function Home() {
           <div className="lg:col-span-2 flex items-center px-5 md:px-8 py-14 lg:px-10 xl:px-14 lg:py-16 bg-white">
             <div className="max-w-md">
               <p className="caption font-medium text-pa-gold-aa mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.conceptOverline')}</p>
-              <h2 className="headline-lg text-pa-dark mb-5 text-balance">{t('home.conceptTitle')}</h2>
+              <h2 className="headline-lg text-pa-dark mb-5 text-balance">{keepHyphens(t('home.conceptTitle'))}</h2>
               <p className="body-md mb-8">
                 {t('home.conceptBody')}
               </p>
@@ -795,7 +796,7 @@ export default function Home() {
                         a fourth line, which lifted the text onto the subject
                         of the photos. */}
                     {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                    <p className="text-white/70 caption lg:text-[12px] xl:text-[13px] leading-relaxed font-body font-normal min-h-[4lh] sm:min-h-[3lh]" >{exp.body}</p>
+                    <p className="text-white/70 caption lg:text-[12px] xl:text-[13px] leading-relaxed font-body font-normal min-h-[4lh] sm:min-h-[3lh] text-wrap" >{exp.body}</p>
                   </div>
                 </div>
               </Link>

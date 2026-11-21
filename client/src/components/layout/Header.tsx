@@ -233,7 +233,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                     href="tel:+351258358434"
                     className="flex items-center gap-3 px-4 py-3 hover:bg-[#FAFAF7] transition-colors group"
                   >
-                    <div className="w-8 h-8 flex items-center justify-center bg-[#F5F1EB] group-hover:bg-[#1A1A18] group-hover:text-white transition-colors">
+                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#F5F1EB] group-hover:bg-[#1A1A18] group-hover:text-white transition-colors">
                       <Phone className="w-3.5 h-3.5 text-pa-gold-aa group-hover:text-white" />
                     </div>
                     <div>
@@ -246,7 +246,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                     href="mailto:info@portugalactive.com"
                     className="flex items-center gap-3 px-4 py-3 hover:bg-[#FAFAF7] transition-colors group"
                   >
-                    <div className="w-8 h-8 flex items-center justify-center bg-[#F5F1EB] group-hover:bg-[#1A1A18] group-hover:text-white transition-colors">
+                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#F5F1EB] group-hover:bg-[#1A1A18] group-hover:text-white transition-colors">
                       <Mail className="w-3.5 h-3.5 text-pa-gold-aa group-hover:text-white" />
                     </div>
                     <div>
@@ -263,7 +263,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 px-4 py-3 hover:bg-[#FAFAF7] transition-colors group"
                   >
-                    <div className="w-8 h-8 flex items-center justify-center bg-[#F5F1EB] group-hover:bg-[#8B7355] group-hover:text-white transition-colors">
+                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#F5F1EB] group-hover:bg-[#8B7355] group-hover:text-white transition-colors">
                       <MessageCircle className="w-3.5 h-3.5 text-pa-gold-aa group-hover:text-white" />
                     </div>
                     <div>

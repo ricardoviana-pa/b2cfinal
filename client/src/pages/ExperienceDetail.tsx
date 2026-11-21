@@ -7,6 +7,11 @@
 
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { keepDashes, keepHyphens } from '@/lib/format';
+
+/** List items: a dash never starts a line and "e-bike", "off-road" never split
+ *  at the hyphen (the larger type broke them more often than before). */
+const tidyLine = (text: string) => keepDashes(keepHyphens(text));
 import { useRoute, Link } from 'wouter';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import {
@@ -457,13 +462,13 @@ export default function ExperienceDetail() {
                   </span>{' '}
                   / 5
                 </span>
-                <span className="hidden sm:inline text-[#E8E4DC]">·</span>
+                <span className="hidden lg:inline text-[#E8E4DC]">·</span>
                 <span className="text-pa-earth" style={{ fontWeight: 400 }}>
                   {exp.aggregateRating.count} {t('experienceDetail.guestReviews')}
                 </span>
                 {exp.recommendedPercent && (
                   <>
-                    <span className="hidden sm:inline text-[#E8E4DC]">·</span>
+                    <span className="hidden lg:inline text-[#E8E4DC]">·</span>
                     <span className="text-[#6B8E4E]" style={{ fontWeight: 400 }}>
                       {t('experienceDetail.recommendedBy', { percent: exp.recommendedPercent })}
                     </span>
@@ -471,7 +476,7 @@ export default function ExperienceDetail() {
                 )}
                 {exp.aggregateRating.rank && (
                   <>
-                    <span className="hidden sm:inline text-[#E8E4DC]">·</span>
+                    <span className="hidden lg:inline text-[#E8E4DC]">·</span>
                     <span className="text-pa-gold-aa" style={{ fontWeight: 400 }}>
                       {exp.aggregateRating.rank}
                     </span>
@@ -594,7 +599,7 @@ export default function ExperienceDetail() {
                     <li key={i} className="flex items-start gap-3">
                       <div className="w-1 h-1 rounded-full bg-[#8B7355] mt-3 shrink-0" />
                       <span className="text-[16px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 400 }}>
-                        {h}
+                        {tidyLine(h)}
                       </span>
                     </li>
                   ))}
@@ -625,7 +630,7 @@ export default function ExperienceDetail() {
                           <li key={i} className="flex items-start gap-3">
                             <Check className="w-4 h-4 text-[#6B8E4E] shrink-0 mt-0.5" />
                             <span className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 400 }}>
-                              {item}
+                              {tidyLine(item)}
                             </span>
                           </li>
                         ))}
@@ -642,7 +647,7 @@ export default function ExperienceDetail() {
                           <li key={i} className="flex items-start gap-3">
                             <X className="w-4 h-4 text-pa-stone shrink-0 mt-0.5" />
                             <span className="text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
-                              {item}
+                              {tidyLine(item)}
                             </span>
                           </li>
                         ))}
@@ -719,7 +724,7 @@ export default function ExperienceDetail() {
                       <ul className="space-y-2">
                         {exp.whatToBring.map((item, i) => (
                           <li key={i} className="pl-3 -indent-3 text-[15px] text-[#1A1A18]" style={{ fontWeight: 400 }}>
-                            · {item}
+                            <span aria-hidden className="inline-block w-3 indent-0">·</span>{tidyLine(item)}
                           </li>
                         ))}
                       </ul>
@@ -733,7 +738,7 @@ export default function ExperienceDetail() {
                       <ul className="space-y-2">
                         {exp.notAllowed.map((item, i) => (
                           <li key={i} className="pl-3 -indent-3 text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
-                            · {item}
+                            <span aria-hidden className="inline-block w-3 indent-0">·</span>{tidyLine(item)}
                           </li>
                         ))}
                       </ul>
@@ -748,7 +753,7 @@ export default function ExperienceDetail() {
                     <ul className="space-y-1.5">
                       {exp.notSuitableFor.map((item, i) => (
                         <li key={i} className="pl-3 -indent-3 text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
-                          · {item}
+                          <span aria-hidden className="inline-block w-3 indent-0">·</span>{tidyLine(item)}
                         </li>
                       ))}
                     </ul>

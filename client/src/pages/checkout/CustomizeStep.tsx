@@ -29,7 +29,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronDown, ChevronUp, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatEur } from "@/lib/format";
+import { formatEur, keepDashes, keepHyphens } from "@/lib/format";
 
 export type ExtraChapter = "arrival" | "home" | "table" | "wellness" | "experiences";
 
@@ -268,11 +268,14 @@ function OptionRow({
 
   // Segunda linha: a descrição; depois de adicionar, o resumo da seleção.
   // Serviços com confirmação do concierge dizem-no logo aqui, antes de adicionar.
-  const secondLine = selected && !onRequest && item.pricingModel !== "per_stay"
-    ? selectionSummary(item, sel!, amount, lang, t)
-    : [desc, !selected && item.fulfillment === "needs_confirmation" ? t("checkout.confirm24h", "Confirmed within 2 hours") : ""]
-        .filter(Boolean)
-        .join(DOT);
+  // The concierge note goes on a line of its own, not after a dot: joined to
+  // the description, a line ended on the dot ("…per person. ·" / "Confirmed
+  // within 2 hours"). Hyphenated words and dashes keep together.
+  const showsSummary = selected && !onRequest && item.pricingModel !== "per_stay";
+  const secondLine = showsSummary ? selectionSummary(item, sel!, amount, lang, t) : keepDashes(keepHyphens(desc));
+  const confirmNote = !showsSummary && !selected && item.fulfillment === "needs_confirmation"
+    ? t("checkout.confirm24h", "Confirmed within 2 hours")
+    : "";
 
   const hasSteppers = selected && !onRequest && item.pricingModel !== "per_stay";
   const unit = unitSuffix();
@@ -303,8 +306,11 @@ function OptionRow({
             {selected && <Check className="mt-[3px] w-3.5 h-3.5 text-pa-gold-aa shrink-0" strokeWidth={2.5} />}
             <span className="min-w-0">{name}</span>
           </p>
-          {secondLine ? (
-            <p className={cn("pa-option-desc caption leading-snug", selected && !onRequest ? "text-pa-dark" : "text-pa-stone-aa")}>{secondLine}</p>
+          {secondLine || confirmNote ? (
+            <p className={cn("pa-option-desc caption leading-snug", selected && !onRequest ? "text-pa-dark" : "text-pa-stone-aa")}>
+              {secondLine}
+              {confirmNote ? <span className={secondLine ? "block" : undefined}>{confirmNote}</span> : null}
+            </p>
           ) : null}
         </div>
         <div className="pa-option-side">
@@ -397,7 +403,7 @@ function OptionRow({
               /* On a phone the sum has its own line under the steppers in
                  every row; beside them it fitted in some rows and fell under
                  in others. */
-              <span className="basis-full text-right sm:basis-auto caption text-pa-earth tabular-nums">
+              <span className="basis-full text-right sm:basis-auto sm:ml-auto caption text-pa-earth tabular-nums">
                 {f}{amount != null && amount > 0 ? ` = ${formatEur(amount, lang)}` : ""}
               </span>
             ) : null;
@@ -466,7 +472,7 @@ function ReceptionRows({
           selected={choice?.type === "self"}
           name={t("checkout.reception.self.name")}
           value={<span className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold-aa">{t("checkout.included.badge")}</span>}
-          desc={t("checkout.reception.self.desc")}
+          desc={keepHyphens(t("checkout.reception.self.desc"))}
           onClick={() => onChoose({ type: "self" })}
         />
         <Row
@@ -477,7 +483,7 @@ function ReceptionRows({
               {formatEur(choice?.type === "hosted" && choice?.late ? config.hostedLatePrice : config.hostedPrice, lang)}
             </span>
           }
-          desc={`${t("checkout.reception.hosted.desc")} ${t("checkout.reception.lateNote", { hour: config.lateFromHour, price: formatEur(config.hostedLatePrice, lang) })}`}
+          desc={keepHyphens(`${t("checkout.reception.hosted.desc")} ${t("checkout.reception.lateNote", { hour: config.lateFromHour, price: formatEur(config.hostedLatePrice, lang) })}`)}
           onClick={() => onChoose({ type: "hosted", late: choice?.type === "hosted" ? choice.late : false })}
         />
         {choice?.type === "hosted" && (
@@ -648,7 +654,7 @@ export default function CustomizeStep({
                       onClick={() => switchAirport(ap)}
                       aria-pressed={shownAirport === ap}
                       className={cn(
-                        "caption text-inherit h-8 px-3 rounded-full border transition-colors",
+                        "caption text-inherit h-8 px-2.5 sm:px-3 rounded-full border whitespace-nowrap transition-colors",
                         shownAirport === ap
                           ? "border-pa-dark bg-pa-dark text-white"
                           : "border-pa-sand bg-white text-pa-earth hover:border-pa-dark",
@@ -691,7 +697,7 @@ export default function CustomizeStep({
             </button>
           )}
           {chargeNoteVisible && (
-            <p className="caption text-pa-stone-aa leading-relaxed mt-3">{t("checkout.extrasChargeNote")}</p>
+            <p className="caption text-pa-stone-aa leading-relaxed mt-3">{keepHyphens(t("checkout.extrasChargeNote"))}</p>
           )}
         </Group>
       )}

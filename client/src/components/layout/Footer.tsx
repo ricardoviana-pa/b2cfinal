@@ -14,6 +14,7 @@ import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
 import { COMPLAINTS_BOOK_NAME, COMPLAINTS_BOOK_URL } from '@/lib/legalLinks';
 import { FOOTER_BOTTOM_INSET } from '@/lib/fixedBottom';
+import { keepDashes } from '@/lib/format';
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
@@ -56,11 +57,11 @@ export default function Footer() {
   const footerLinks = (rawLabel: string, href: string, external?: boolean) => { const label = tied(rawLabel); return (
     <li>
       {external ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[13px] min-[375px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200 inline-flex items-center gap-1" style={{ fontWeight: 400 }}>
+        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[13px] min-[390px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200 inline-flex items-center gap-1" style={{ fontWeight: 400 }}>
           {label} <ArrowUpRight size={10} className="opacity-0 group-hover:opacity-100" />
         </a>
       ) : (
-        <Link href={href} className="text-[13px] min-[375px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>
+        <Link href={href} className="text-[13px] min-[390px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>
           {label}
         </Link>
       )}
@@ -85,10 +86,10 @@ export default function Footer() {
             <div className="max-w-md">
 
               <p
-                className="text-[15px] text-white/65 leading-relaxed"
+                className="text-[15px] text-white/65 leading-relaxed text-balance"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
-                {t('footer.nlSub')}
+                {keepDashes(t('footer.nlSub'))}
               </p>
             </div>
             <div className="w-full lg:w-auto lg:min-w-[380px]">
@@ -130,17 +131,22 @@ export default function Footer() {
 
       {/* Main link grid */}
       <div className="container py-10 lg:py-12">
-        {/* Tablets (768 to 1023 px): the three link columns take the whole
+        {/* Phones up to 479 px: the first column as wide as its longest link
+            ("Northern Portugal · Minho"), links 13 px below 390 px (French
+            "Services de conciergerie" broke at 375 px with 14 px links); from
+            480 px two equal columns (as wide as its link, the first left 128
+            to 288 px empty at the right).
+            Tablets (768 to 1023 px): the three link columns take the whole
             row, each as wide as its links (in four equal tracks they had 146 px
             and one track stayed empty, so 15 px links broke in two). From
             1024 px the services column is a little wider: "Ein Haus kaufen
             oder verkaufen" needs 217 px. */}
-        <div className="grid grid-cols-[auto_minmax(0,1fr)] md:grid-cols-[repeat(3,auto)] md:justify-between lg:grid-cols-[1.15fr_1fr_1.1fr_0.9fr] lg:justify-normal gap-x-6 gap-y-10 md:gap-10 lg:gap-8">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] min-[480px]:grid-cols-2 md:grid-cols-[repeat(3,auto)] md:justify-between lg:grid-cols-[1.15fr_1fr_1.1fr_0.9fr] lg:justify-normal gap-x-6 gap-y-10 md:gap-10 lg:gap-8">
 
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Link href="/">
-              <img src={IMAGES.logoWhite} alt="Portugal Active — luxury villas in Portugal" className="h-8 lg:h-10 w-auto object-contain mb-5" />
+              <img src={IMAGES.logoWhite} alt="Portugal Active — luxury villas in Portugal" className="h-8 lg:h-10 w-auto object-contain mb-5 -ml-1.5 lg:-ml-2" />
             </Link>
             <p
               className="text-[15px] text-white/65 mb-5 leading-relaxed max-w-[260px]"
@@ -198,7 +204,7 @@ export default function Footer() {
               {footerLinks(t('footer.experiences'), '/experiences')}
               {footerLinks(t('footer.conciergeServices'), '/concierge')}
               {footerLinks(t('footer.events'), '/events')}
-              <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[13px] min-[375px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>{t('footer.realEstate')}</a></li>
+              <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[13px] min-[390px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 400 }}>{t('footer.realEstate')}</a></li>
 
             </ul>
           </div>
@@ -214,7 +220,7 @@ export default function Footer() {
               {footerLinks(t('footer.journal'), '/blog')}
               {footerLinks(t('footer.contact'), '/contact')}
               <li>
-                <a href={`https://www.portugalactive.com/management/${managementLanguage}`} className="text-[13px] min-[375px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors" style={{ fontWeight: 400 }}>
+                <a href={`https://www.portugalactive.com/management/${managementLanguage}`} className="text-[13px] min-[390px]:text-[14px] md:text-[15px] text-white/65 hover:text-white transition-colors" style={{ fontWeight: 400 }}>
                   {t('footer.forOwners', 'For property owners')} →
                 </a>
               </li>

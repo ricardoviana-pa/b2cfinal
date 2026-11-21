@@ -103,7 +103,7 @@ function KindSwitch({ value, counts, onChange, className = '' }: {
 
 function MenuTrigger({ label, value, open }: { label: string; value?: string | null; open?: boolean }) {
   return (
-    <span className={`relative inline-flex items-center gap-1.5 font-body text-[15px] leading-none transition-colors ${
+    <span className={`relative inline-flex max-w-full items-center gap-1.5 font-body text-[15px] leading-none transition-colors ${
       value ? 'text-pa-dark font-medium' : 'text-pa-dark hover:text-pa-gold-aa'
     }`}>
       {/* Its own line height: on the trigger's (1) the box was as tall as the
@@ -313,7 +313,7 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
   const menu = (key: NonNullable<typeof openMenu>, label: string, value: string | null, panel: ReactNode, align: 'start' | 'end' = 'start') => (
     <Popover open={openMenu === key} onOpenChange={(o) => setOpenMenu(o ? key : null)}>
       <PopoverTrigger asChild>
-        <button type="button" className="h-[52px] outline-none focus-visible:ring-2 focus-visible:ring-pa-gold rounded-sm">
+        <button type="button" className={`h-[52px] ${key === 'space' ? 'min-w-0' : 'shrink-0'} outline-none focus-visible:ring-2 focus-visible:ring-pa-gold rounded-sm`}>
           <MenuTrigger label={label} value={value} open={openMenu === key} />
         </button>
       </PopoverTrigger>
@@ -359,15 +359,18 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
       {/* Desktop: one rule, everything on it. From 1280 px: on narrower screens the
           rule ran past the screen edge and hid Map (ux-home-plp-09). */}
       <div className="hidden xl:block border-y border-pa-sand">
+        {/* Only the Space value gives way when the rule is full: with a long
+            one ("5–6 dormitorios · 12+ huéspedes") the count was cut, the
+            first type tab broke in two and the gold dot touched "Price". */}
         <div className="flex items-stretch gap-x-7 min-h-[52px]">
-          <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="gap-x-6" />
-          <div className="flex items-stretch gap-x-6 pl-7 border-l border-pa-sand">
+          <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="shrink-0 gap-x-6 [&>button]:shrink-0 [&>button]:whitespace-nowrap" />
+          <div className="flex min-w-0 items-stretch gap-x-6 pl-7 border-l border-pa-sand">
             {menu('space', t('homes.filters.space', 'Space'), spaceValue, <><SpacePanel {...props} first /></>)}
             {menu('price', t('homes.filters.price', 'Price'), priceValue, <PricePanel {...props} first />)}
             {menu('features', t('homes.filters.features', 'Features'), featuresValue, <FeaturesPanel {...props} first />)}
           </div>
-          <div className="ml-auto flex min-w-0 items-center gap-x-5">
-            {status('inline-flex min-w-0 whitespace-nowrap')}
+          <div className="ml-auto flex shrink-0 items-center gap-x-5">
+            {status('inline-flex shrink-0 whitespace-nowrap')}
             <span aria-hidden className="h-4 w-px shrink-0 bg-pa-sand" />
             {menu('sort', t('homes.filters.sort', 'Sort'), null, <SortPanel {...props} first />, 'end')}
             <ViewSwitch value={view} onChange={onView} />

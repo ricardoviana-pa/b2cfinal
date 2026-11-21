@@ -206,7 +206,7 @@ export default function About() {
             <div className="editorial-proof-item" key={title}>
               <span className="editorial-eyebrow text-pa-gold-aa">0{index + 1}</span>
               <h2 className="font-display text-2xl mb-3">{t(`about.${title}`, { points: CHECKLIST_POINTS })}</h2>
-              <p className="body-md">{t(`about.${body}`)}</p>
+              <p className="body-md text-balance">{t(`about.${body}`)}</p>
             </div>
           ))}
         </div>
@@ -298,7 +298,7 @@ export default function About() {
                 >
                   {s.value}
                 </p>
-                <p className="mt-2 text-[12px] tracking-[0.12em] md:tracking-[0.18em] uppercase text-pa-gold-aa" style={{ fontFamily: 'var(--font-body)' }}>
+                <p className="mt-2 text-[12px] tracking-[0.12em] lg:tracking-[0.18em] uppercase text-pa-gold-aa" style={{ fontFamily: 'var(--font-body)' }}>
                   {s.label}
                 </p>
               </div>
@@ -457,7 +457,7 @@ export default function About() {
 
           <div
             ref={scrollRef}
-            className="flex gap-5 overflow-x-auto scrollbar-hide scroll-pl-4 lg:scroll-pl-0 -mx-4 px-4 lg:mx-0 lg:px-0 snap-x snap-mandatory"
+            className="flex gap-5 overflow-x-auto scrollbar-hide scroll-pl-5 md:scroll-pl-8 lg:scroll-pl-0 -mx-5 px-5 md:-mx-8 md:px-8 lg:mx-0 lg:px-0 snap-x snap-mandatory"
           >
             {TEAM.map(member => {
               const initials = member.name

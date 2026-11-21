@@ -1264,7 +1264,9 @@ export default function PropertyDetail() {
 
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="container pt-20 pb-1 lg:pb-0">
-          <ol className="flex items-center gap-0.5 caption text-pa-stone font-normal" >
+          {/* 12 px under 400 px: at 13 px the German crumbs cut the home's
+              name ("Lima River Hous…") on 375 and 390 px phones. */}
+          <ol className="flex items-center gap-0.5 caption max-[399px]:text-xs text-pa-stone font-normal" >
             <li><Link href="/" className="inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5 hover:text-pa-dark transition-colors">{t('propertyDetail.breadcrumbHome', 'Home')}</Link></li>
             <li className="text-pa-sand">/</li>
             <li><Link href="/homes" className="inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5 hover:text-pa-dark transition-colors">{t('propertyDetail.breadcrumbHomes', 'Homes')}</Link></li>
@@ -1429,7 +1431,7 @@ export default function PropertyDetail() {
                         <a.icon size={18} strokeWidth={1.5} className="text-pa-gold-aa shrink-0 mt-px" aria-hidden="true" />
                         {/* Two lines rather than "Yksityinen uima-a…": at 15 px
                             the longer languages no longer fit half a phone. */}
-                        <span className="min-w-0">{a.label}</span>
+                        <span className="min-w-0">{keepHyphens(a.label)}</span>
                       </li>
                     ))}
                   </ul>
@@ -1462,7 +1464,10 @@ export default function PropertyDetail() {
                 )}
                 <nav aria-label={t('pdpUx.navigation')} className="mt-5 pt-5 border-t border-pa-sand flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap">
                   {sectionLinks.map(([id, label]) => (
-                    <a key={id} href={`#${id}`} className="pa-action shrink-0 inline-flex items-center min-h-11 lg:min-h-9 rounded-full border border-pa-sand px-4 body-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark whitespace-nowrap">{label}</a>
+                    /* 14 px with 14 px sides on a phone: at 15 px the second pill
+                       ended a letter past the screen ("Amenities and feature|s"),
+                       which read as a typo rather than "scroll for more". */
+                    <a key={id} href={`#${id}`} className="pa-action shrink-0 inline-flex items-center min-h-11 lg:min-h-9 rounded-full border border-pa-sand px-3.5 sm:px-4 body-sm max-sm:text-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark whitespace-nowrap">{label}</a>
                   ))}
                 </nav>
               </div>
@@ -1656,7 +1661,7 @@ export default function PropertyDetail() {
                   {pdpFaq.map((f, i) => (
                     <details key={i} className="group py-3">
                       <summary className="flex items-center justify-between cursor-pointer list-none body-sm text-pa-dark font-medium min-h-[32px]">
-                        <span className="text-balance">{f.q}</span>
+                        <span className="text-balance">{keepHyphens(f.q)}</span>
                         <ChevronDown className="w-4 h-4 text-pa-stone transition-transform group-open:rotate-180 shrink-0 ml-3" />
                       </summary>
                       <p className="body-sm text-pa-earth leading-relaxed pt-2 pr-8 font-normal" >{f.a}</p>
@@ -1773,15 +1778,15 @@ export default function PropertyDetail() {
                             )}
                           </div>
                           <div className={ADDON_BODY}>
-                            {/* On a phone the 96 px photo has no room for the duration and
-                                difficulty labels it carries from 640 px, so
-                                they take the place of the overline there. */}
+                            {/* On a phone the 96 px photo has no room for the labels it
+                                carries from 640 px, so the duration takes the place of
+                                the overline there. The duration only: the difficulty
+                                exists in English alone ("MEIO DIA · MODERATE"), and
+                                with it the overline took two lines at 360 px. */}
                             <p className="eyebrow font-medium tracking-[0.08em] sm:tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">
-                              {meta.length > 0 ? (
+                              {(adventure as any).duration ? (
                                 <>
-                                  <span className="pa-dots gap-y-1 sm:hidden!">
-                                    {meta.slice(0, 2).map((m, i) => <span key={i} className="whitespace-nowrap">{m}</span>)}
-                                  </span>
+                                  <span className="sm:hidden">{meta[0]}</span>
                                   <span className="hidden sm:inline">{t('propertyDetail.adventureOverline', 'Curated experience')}</span>
                                 </>
                               ) : t('propertyDetail.adventureOverline', 'Curated experience')}

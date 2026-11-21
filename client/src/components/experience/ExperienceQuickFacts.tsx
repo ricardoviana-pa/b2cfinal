@@ -23,7 +23,7 @@ export default function ExperienceQuickFacts({
   pickupIncluded,
 }: ExperienceQuickFactsProps) {
   const { t } = useTranslation();
-  const items: { icon: typeof Clock; label: string; value: string }[] = [];
+  const items: { icon: typeof Clock; label: string; value: string; parts?: string[] }[] = [];
 
   if (duration) {
     items.push({ icon: Clock, label: t('experience.duration', 'Duration'), value: duration });
@@ -47,6 +47,7 @@ export default function ExperienceQuickFacts({
       icon: Globe,
       label: t('experience.languages', 'Languages'),
       value: languages.slice(0, 3).join(' · '),
+      parts: languages.slice(0, 3),
     });
   }
   if (mobileTicket) {
@@ -73,12 +74,16 @@ export default function ExperienceQuickFacts({
           fact had 115 px beside its icon, and at 12 / 15 px the labels and
           values broke in two ("FREE / CANCELLATION", "Up to 24h / before");
           in five equal columns "CANCELAMENTO GRATUITO" missed by 3 px.
-          A single fact (the yacht's duration) takes the whole row. */}
+          A single fact (the yacht's duration) takes the whole row.
+          From 640 to 1279 px the icon sits above the text, which then has the
+          column's whole width: beside the icon (171 px at 820) "CANCELAMENTO
+          GRATUITO" broke where its neighbours did not. The languages are a
+          dot list: no line starts or ends with a dot. */}
       <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 xl:grid-cols-[repeat(5,auto)] gap-x-6 gap-y-4 sm:gap-y-5">
         {items.slice(0, 5).map((item, i) => {
           const Icon = item.icon;
           return (
-            <div key={i} className={`flex items-start gap-3 ${items.length === 1 ? 'col-span-full' : ''}`}>
+            <div key={i} className={`flex items-start gap-3 sm:max-xl:flex-col sm:max-xl:gap-2 ${items.length === 1 ? 'col-span-full' : ''}`}>
               <div className="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg bg-[#F5F1EB]">
                 <Icon className="w-4 h-4 text-pa-gold-aa" />
               </div>
@@ -86,9 +91,15 @@ export default function ExperienceQuickFacts({
                 <p className="text-[12px] tracking-[0.08em] uppercase text-pa-stone font-medium mb-0.5">
                   {item.label}
                 </p>
-                <p className="text-[15px] leading-snug text-[#1A1A18]" style={{ fontWeight: 400 }}>
-                  {item.value}
-                </p>
+                {item.parts ? (
+                  <p className="pa-dots text-[15px] leading-snug text-[#1A1A18]" style={{ fontWeight: 400 }}>
+                    {item.parts.map((part) => <span key={part} className="whitespace-nowrap">{part}</span>)}
+                  </p>
+                ) : (
+                  <p className="text-[15px] leading-snug text-[#1A1A18]" style={{ fontWeight: 400 }}>
+                    {item.value}
+                  </p>
+                )}
               </div>
             </div>
           );

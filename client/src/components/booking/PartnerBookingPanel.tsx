@@ -5,7 +5,7 @@ import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
 import { isImplicitSubmitKey } from '@/lib/implicitSubmit';
 import type { BookingSelection } from './BookingWidget';
-import { formatEur, formatQuotedEur, formatStayEur, intlLocale, formatBookingDate, stayBreakdownEuros } from '@/lib/format';
+import { formatEur, formatQuotedEur, formatStayEur, intlLocale, formatBookingDate, stayBreakdownEuros, keepSeparators } from '@/lib/format';
 import { partnerCalendarView, partnerQuoteNotice, partnerRequestQuoteStatus } from '@/lib/partnerAvailability';
 import { noPriceLabelKey } from '@/lib/partnerPriceLabel';
 import AvailabilityCalendar from './AvailabilityCalendar';
@@ -469,16 +469,16 @@ export function PartnerBookingPanel({
                 cards and the phone bar, "Select dates for price"; only none
                 (null) is "on request". */}
             {fromPrice ? (
-              <div className="flex items-baseline gap-1">
-                <span className="text-[28px] text-pa-dark font-display">
+              <div className="flex flex-wrap items-baseline gap-x-1">
+                <span className="text-[28px] text-pa-dark font-display whitespace-nowrap">
                   {t('property.fromPerNight', { price: Math.round(fromPrice).toLocaleString(intlLocale(lang)) })}
                 </span>
-                <span className="body-sm text-pa-stone">{t('partnerBooking.perNight', 'per night')}</span>
+                <span className="body-sm text-pa-stone whitespace-nowrap">{t('partnerBooking.perNight', 'per night')}</span>
               </div>
             ) : (
               <p className="body-md text-pa-dark">{t(noPriceLabelKey(true, fromPrice))}</p>
             )}
-            {minNights && minNights > 1 && (
+            {(minNights ?? 0) > 1 && (
               <p className="caption text-pa-stone mt-1.5 flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
                 {t('bookingWidget.minNightMinimum', { count: minNights })}
@@ -587,6 +587,16 @@ export function PartnerBookingPanel({
                 />
               )}
             </div>
+          )}
+
+          {/* With a total in the header (or one on its way) the minimum goes
+              under the dates, as on our own homes; without one the header
+              says it. It vanished from the panel once a total showed. */}
+          {(minNights ?? 0) > 1 && !shortStay && (quote || (isFetching && datesValid)) && (
+            <p className="caption text-pa-stone mt-2 flex items-center gap-1">
+              <Calendar className="w-3 h-3" />
+              {t('bookingWidget.minNightMinimum', { count: minNights })}
+            </p>
           )}
 
           {shortStay && (
@@ -802,7 +812,7 @@ export function PartnerBookingPanel({
                 {payable ? t('partnerBooking.paying', 'Opening secure payment…') : t('partnerBooking.sending', 'Sending…')}
               </span>
             ) : payable && quote ? (
-              t('partnerBooking.payCta', { amount: formatStayEur(quote.total, lang), defaultValue: 'Reserve now · {{amount}}' })
+              keepSeparators(t('partnerBooking.payCta', { amount: formatStayEur(quote.total, lang), defaultValue: 'Reserve now · {{amount}}' }))
             ) : (
               t('partnerBooking.submit', 'Request these dates')
             )}

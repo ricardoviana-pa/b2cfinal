@@ -60,14 +60,14 @@ export default function Login() {
                 {/* Guest card */}
                 <button
                   onClick={() => setRole('guest')}
-                  className="group relative flex flex-col items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-8 hover:border-[#8B7355] hover:shadow-lg transition-all duration-300 text-left"
+                  className="group relative flex flex-col items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-6 sm:p-8 hover:border-[#8B7355] hover:shadow-lg transition-all duration-300 text-left"
                 >
                   <div className="w-14 h-14 rounded-full bg-[#F5F1EB] flex items-center justify-center group-hover:bg-[#8B7355]/10 transition-colors">
                     <Home size={22} className="text-pa-gold-aa" />
                   </div>
                   <div className="text-center">
                     <p className="text-[16px] font-medium text-[#1A1A18] mb-1">{t('login.guestTitle', "I'm a Guest")}</p>
-                    <p className="text-[15px] text-pa-earth leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+                    <p className="text-[15px] text-pa-earth leading-relaxed text-balance" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                       {t('login.guestSub', 'Book stays, earn points, and access member benefits.')}
                     </p>
                   </div>
@@ -77,14 +77,14 @@ export default function Login() {
                 {/* Owner card */}
                 <button
                   onClick={() => setRole('owner')}
-                  className="group relative flex flex-col items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-8 hover:border-[#8B7355] hover:shadow-lg transition-all duration-300 text-left"
+                  className="group relative flex flex-col items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-6 sm:p-8 hover:border-[#8B7355] hover:shadow-lg transition-all duration-300 text-left"
                 >
                   <div className="w-14 h-14 rounded-full bg-[#F5F1EB] flex items-center justify-center group-hover:bg-[#8B7355]/10 transition-colors">
                     <Key size={22} className="text-pa-gold-aa" />
                   </div>
                   <div className="text-center">
                     <p className="text-[16px] font-medium text-[#1A1A18] mb-1">{t('login.ownerTitle', "I'm an Owner")}</p>
-                    <p className="text-[15px] text-pa-earth leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+                    <p className="text-[15px] text-pa-earth leading-relaxed text-balance" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                       {t('login.ownerSub', 'Access your property dashboard and owner portal.')}
                     </p>
                   </div>

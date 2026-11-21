@@ -99,8 +99,10 @@ export default function PropertyUnitsSection({
 
   return (
     <section className="mt-12 lg:mt-16">
-      <div className="flex items-baseline justify-between mb-6">
-        <h2 className="text-[24px] lg:text-[28px] font-display text-[#1A1A18]">
+      {/* The note drops under the title when both do not fit (German at
+          1024-1279 broke the title as "3 Einheiten in dieser" / "Unterkunft"). */}
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-6">
+        <h2 className="text-[24px] lg:text-[28px] font-display text-[#1A1A18] text-balance">
           {t('property.unitsInPropertyTitle', { count: units.length, defaultValue: '{{count}} units in this property' })}
         </h2>
         <p className="text-[13px] text-pa-stone hidden sm:block">
@@ -185,12 +187,14 @@ export default function PropertyUnitsSection({
                       </span>
                     )
                   ) : (
-                    <div className="flex items-center justify-between">
-                      <span className="text-[13px] text-[#1A1A18] font-medium">
+                    /* Only the prompt may wrap: the arrow stays with "View unit"
+                       (German left "→" alone on a second line). */
+                    <div className="flex items-center justify-between gap-x-3">
+                      <span className="min-w-0 text-[13px] text-[#1A1A18] font-medium text-balance">
                         {t('property.selectDatesForPrice')}
                       </span>
-                      <span className="text-[12px] text-pa-gold-aa uppercase tracking-[0.04em]">
-                        {t('property.viewUnit', 'View unit')} →
+                      <span className="shrink-0 whitespace-nowrap text-[12px] text-pa-gold-aa uppercase tracking-[0.04em]">
+                        {t('property.viewUnit', 'View unit')}{'\u00A0'}→
                       </span>
                     </div>
                   )}

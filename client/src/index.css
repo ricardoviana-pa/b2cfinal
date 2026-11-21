@@ -929,6 +929,11 @@
     body:has(#mobile-menu-panel:not([inert])) [data-cookie-banner] {
       z-index: 49;
     }
+    /* With the tablet / phone menu open the WhatsApp button stayed bright
+       and tappable over the dimmed page, beside the menu (z-90 over 55). */
+    body:has(#mobile-menu-panel:not([inert])) .whatsapp-float {
+      display: none;
+    }
   }
 
   /* Broken image fallback — hides browser icon, shows styled placeholder */
@@ -992,6 +997,9 @@
   transition: background-color .18s, color .18s, border-color .18s, box-shadow .18s;
 }
 .pa-action { min-height: 44px; }
+/* The arrow after a label never gives up its width: in wide button pairs
+   (About, Events) it was squeezed to a 0-7 px sliver. */
+:is(.btn, .btn-primary, .btn-ghost, .btn-white, .btn-ghost-light) > svg { flex-shrink: 0; }
 :is(.btn-primary, .btn-ghost, .btn-white, .btn-ghost-light, .pa-action):focus-visible {
   outline: 2px solid #8B7355;
   outline-offset: 4px;
@@ -1002,7 +1010,7 @@
 }
 .page-hero { position: relative; min-height: 440px; padding-top: 112px; display: flex; align-items: flex-end; overflow: hidden; }
 .page-intro { padding: 8rem 0 2.5rem; background: #FAFAF7; border-bottom: 1px solid #E8E4DC; }
-.page-intro h1 { max-width: 18ch; }
+.page-intro h1 { max-width: 18ch; text-wrap: balance; }
 .page-intro p { max-width: 60ch; }
 .site-faq { border-bottom: 1px solid #E8E4DC; }
 .site-faq > summary { display:flex; align-items:center; justify-content:space-between; gap:1.5rem; padding:1.25rem 0; cursor:pointer; list-style:none; font-size:1rem; font-weight:400; color:#1A1A18; }
@@ -1083,7 +1091,11 @@
    leading dot in a 1rem box; the row is pulled 1rem to the left and that strip
    is clipped, so the first dot of each line is cut away. Use on the row:
    <ul class="pa-dots">, items as direct children. */
-.pa-dots { display: flex; flex-wrap: wrap; align-items: center; margin-left: -0.75rem; clip-path: inset(-4px -4px -4px calc(0.75rem - 3px)); }
+.pa-dots { display: flex; flex-wrap: wrap; align-items: center; margin-left: -0.75rem; clip-path: inset(-8px -8px -8px calc(0.75rem - 3px)); }
+/* A link's keyboard ring inside a dot list sits close to it: the clip keeps
+   3 px left of each line's first item (the dot's box is hidden), and with the
+   usual 2 px offset the ring lost its top, bottom and left edges. */
+.pa-dots a:focus-visible, .pa-dots button:focus-visible { outline-offset: 0; }
 .pa-dots > * { display: inline-flex; align-items: center; min-width: 0; }
 /* 12 px for the dot and the room around it, about what " · " took in running
    text (16 px made the facts line one item too long for a 390 px phone). */

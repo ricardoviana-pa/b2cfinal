@@ -461,12 +461,19 @@ export default function AvailabilityCalendar({
       {/* Tighter above and below (pt-3, and pb-2 / pb-2.5 further down) than
           before the larger type: with the calendar open in a home's booking
           card the card grew 23 px and its button fell below a 900 px screen. */}
-      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 px-4 pt-3 pb-2">
+      {/* Sized by the calendar's own width, not the screen's (a container):
+          in a home's booking card (244 px at 1024-1279, 324 px from 1280)
+          "Clear" wrapped to a second row once a check-in was picked, so the
+          days moved 37 px under the pointer and the main button left the
+          screen. Under 28rem the pills are 12 px and Clear is the cross;
+          under 16rem the chevron goes too (Swedish and Finnish). */}
+      <div className="@container">
+      <div className="flex flex-wrap items-center gap-1.5 @min-[28rem]:gap-2 px-4 pt-3 pb-2">
         <button
           type="button"
           onClick={() => focusPhase("check-in")}
           aria-pressed={phase === "check-in"}
-          className={`flex shrink-0 items-center gap-1.5 px-2 sm:px-2.5 py-1 whitespace-nowrap rounded-full text-[12px] sm:text-[13px] font-medium tracking-wide transition-all cursor-pointer ${
+          className={`flex shrink-0 items-center gap-1.5 px-2 @max-[16rem]:px-1.5 @min-[28rem]:px-2.5 py-1 whitespace-nowrap rounded-full text-[12px] @min-[28rem]:text-[13px] font-medium tracking-wide transition-all cursor-pointer ${
             phase === "check-in"
               ? "bg-black text-white"
               : "bg-black/[0.04] text-pa-stone hover:bg-black/[0.08] hover:text-black/70"
@@ -475,7 +482,7 @@ export default function AvailabilityCalendar({
           {t("bookingWidget.checkInLabel")}
           {isMobile && checkIn && <span className="font-normal opacity-80">· {fmtShort(checkIn)}</span>}
         </button>
-        <svg className="w-3 h-3 text-black/20 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-3 h-3 text-black/20 shrink-0 @max-[16rem]:hidden" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
         <button
@@ -483,7 +490,7 @@ export default function AvailabilityCalendar({
           onClick={() => { if (checkIn) focusPhase("check-out"); }}
           disabled={!checkIn}
           aria-pressed={phase === "check-out"}
-          className={`flex shrink-0 items-center gap-1.5 px-2 sm:px-2.5 py-1 whitespace-nowrap rounded-full text-[12px] sm:text-[13px] font-medium tracking-wide transition-all ${
+          className={`flex shrink-0 items-center gap-1.5 px-2 @max-[16rem]:px-1.5 @min-[28rem]:px-2.5 py-1 whitespace-nowrap rounded-full text-[12px] @min-[28rem]:text-[13px] font-medium tracking-wide transition-all ${
             !checkIn ? "cursor-not-allowed" : "cursor-pointer"
           } ${
             phase === "check-out"
@@ -498,15 +505,17 @@ export default function AvailabilityCalendar({
           <button
             type="button"
             onClick={() => { onSelectRange({ checkIn: "", checkOut: "", done: false }); setPhase("check-in"); }}
-            className="ml-auto flex shrink-0 items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[12px] sm:text-[13px] font-medium text-black/60 bg-black/[0.04] hover:bg-black/[0.08] hover:text-black transition-all"
+            className="relative ml-auto flex shrink-0 items-center justify-center gap-1 px-2 @max-[16rem]:px-1.5 @min-[28rem]:px-2.5 py-1 min-h-[calc(1lh_+_0.5rem)] rounded-full text-[12px] @min-[28rem]:text-[13px] font-medium text-black/60 bg-black/[0.04] hover:bg-black/[0.08] hover:text-black transition-all after:absolute after:-inset-y-2 after:-left-1 after:-right-3 after:content-['']"
           >
-            {/* The cross alone below 640 px: with the dates in the two pills,
-                "Clear" ("Zurücksetzen", "Tyhjennä") dropped alone to a second
-                row and pushed the month down. */}
+            {/* The cross alone under 28rem: with the dates in the pills (phone)
+                or in a booking card, "Clear" ("Zurücksetzen", "Tyhjennä")
+                dropped to a second row and pushed the month down. As tall as
+                the date pills, with a larger invisible tap area. */}
             <X className="w-3 h-3 shrink-0" aria-hidden />
-            <span className="max-sm:sr-only">{t("bookingWidget.clearDates")}</span>
+            <span className="@max-[28rem]:sr-only">{t("bookingWidget.clearDates")}</span>
           </button>
         )}
+      </div>
       </div>
 
       {/* Notice slot — fixed height, always rendered, so a notice that appears

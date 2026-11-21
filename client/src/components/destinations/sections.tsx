@@ -127,6 +127,7 @@ export function WhereToStay({ destination: d, properties, heading, intro, sectio
   // Starts from the prices the server put into the page (useFromPrices).
   const { data: fromPrices } = useFromPrices(listingIds);
   const partner = usePartnerPrices(visibleHomes);
+  const hasNotes = featured && visibleHomes.some(p => featuredDestinationHomes[d.slug]?.some(pick => pick.id === p.guestyId));
   if (properties.length === 0) {
     if (d.comingSoon) return null;
     return (
@@ -165,7 +166,12 @@ export function WhereToStay({ destination: d, properties, heading, intro, sectio
           {visibleHomes.map((p, index) => {
             const recommendation = featured ? featuredDestinationHomes[d.slug]?.find(pick => pick.id === p.guestyId) : undefined;
             return <div key={p.id}>
-              <PropertyCard key={p.id} property={p} checkin={trip.checkin} checkout={trip.checkout} guests={trip.guests} hidePrice={!!trip.checkin} listId={`destination_${d.slug}`} listName={d.name} itemIndex={index} fromPrice={p.supplierUid ? partner.prices[p.supplierUid] : fromPrices?.[p.guestyId ?? '']} />
+              {/* With notes under the cards, each card keeps its own height
+                  (as before the price line was pinned to the card's foot):
+                  a card as tall as its cell pushed its note out of the cell,
+                  under the next row's photo, and a card with no note grew to
+                  its neighbour's note. */}
+              <PropertyCard key={p.id} property={p} checkin={trip.checkin} checkout={trip.checkout} guests={trip.guests} hidePrice={!!trip.checkin} listId={`destination_${d.slug}`} listName={d.name} itemIndex={index} fromPrice={p.supplierUid ? partner.prices[p.supplierUid] : fromPrices?.[p.guestyId ?? '']} fillCell={!hasNotes} />
               {recommendation && <p className="mt-4 pl-4 border-l-2 border-pa-gold-aa text-[15px] leading-relaxed text-pa-stone-aa">{discoveryText(recommendation.reason, i18n.language)}</p>}
             </div>;
           })}
@@ -223,7 +229,7 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
               </div>
               <div className="min-w-0 flex-1">
               <h3
-                className="text-[16px] font-medium text-[#1A1A18] mb-1.5 group-hover:text-pa-gold-aa transition-colors"
+                className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-1.5 group-hover:text-pa-gold-aa transition-colors text-balance"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {a.title}
@@ -290,19 +296,22 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
           {d.thingsToDo.map(group => (
             <div key={group.heading}>
               <h3
-                className="text-[18px] font-medium text-[#1A1A18] mb-5 tracking-[0.01em]"
+                className="text-[22px] leading-snug font-medium text-[#1A1A18] mb-5 tracking-[0.01em]"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {group.heading}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Each card is three rows of the grid (a subgrid): the titles of
+                  a row share a height, so when one takes two lines at 19 px the
+                  texts of that row still start level. */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-y-0">
                 {group.items.map(item => (
-                  <div key={item.name} className="bg-white border border-[#E8E4DC] rounded-xl p-5">
-                    {item.category && (
+                  <div key={item.name} className="bg-white border border-[#E8E4DC] rounded-xl p-5 md:grid md:grid-rows-subgrid md:row-span-3 md:mb-4">
+                    {item.category ? (
                       <span className="text-[12px] font-medium tracking-[0.04em] text-pa-stone mb-2 block uppercase">
                         {item.category}
                       </span>
-                    )}
+                    ) : <span aria-hidden className="hidden md:block" />}
                     <h4
                       className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-2 text-balance"
                       style={{ fontFamily: 'var(--font-display)' }}
@@ -494,19 +503,19 @@ export function EatDrinkExperience({
           {hasRestaurants && (
             <div className="mb-12">
               <h3
-                className="text-[17px] font-medium text-[#1A1A18] mb-5"
+                className="text-[22px] leading-snug font-medium text-[#1A1A18] mb-5"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {t('destinationDetail.guide.whereToEat')}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-y-0">
                 {d.restaurants!.map(r => (
-                  <div key={r.name} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-5">
-                    {r.category && (
+                  <div key={r.name} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-5 md:grid md:grid-rows-subgrid md:row-span-3 md:mb-4">
+                    {r.category ? (
                       <span className="text-[12px] font-medium tracking-[0.04em] text-pa-stone mb-2 block uppercase">
                         {r.category}
                       </span>
-                    )}
+                    ) : <span aria-hidden className="hidden md:block" />}
                     <h4
                       className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-2 text-balance"
                       style={{ fontFamily: 'var(--font-display)' }}
@@ -525,19 +534,19 @@ export function EatDrinkExperience({
           {hasSpecialties && (
             <div className="mb-12">
               <h3
-                className="text-[17px] font-medium text-[#1A1A18] mb-5"
+                className="text-[22px] leading-snug font-medium text-[#1A1A18] mb-5"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {t('destinationDetail.guide.localSpecialties')}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-y-0">
                 {d.specialties!.map(s => (
-                  <div key={s.name} className="border-l-2 border-[#8B7355] pl-5 py-2">
-                    {s.category && (
+                  <div key={s.name} className="border-l-2 border-[#8B7355] pl-5 py-2 md:grid md:grid-rows-subgrid md:row-span-3 md:mb-4">
+                    {s.category ? (
                       <span className="text-[12px] font-medium tracking-[0.04em] text-pa-stone mb-1.5 block uppercase">
                         {s.category}
                       </span>
-                    )}
+                    ) : <span aria-hidden className="hidden md:block" />}
                     <h4
                       className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-1.5 text-balance"
                       style={{ fontFamily: 'var(--font-display)' }}
@@ -556,7 +565,7 @@ export function EatDrinkExperience({
           {hasExperiences && (
             <div>
               <h3
-                className="text-[17px] font-medium text-[#1A1A18] mb-3"
+                className="text-[22px] leading-snug font-medium text-[#1A1A18] mb-3"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {t('destinationDetail.guide.whatToDo')}
@@ -569,9 +578,9 @@ export function EatDrinkExperience({
                   {d.experiencesIntro}
                 </p>
               )}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-y-0">
                 {d.experiences!.map(e => (
-                  <div key={e.name} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-5">
+                  <div key={e.name} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-5 md:grid md:grid-rows-subgrid md:row-span-3 md:mb-4">
                     <h4
                       className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-2 text-balance"
                       style={{ fontFamily: 'var(--font-display)' }}
@@ -584,12 +593,12 @@ export function EatDrinkExperience({
                     >
                       {e.description}
                     </p>
-                    {(e.duration || e.season) && (
+                    {(e.duration || e.season) ? (
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-pa-gold-aa tracking-[0.02em]">
                         {e.duration && <span>{localizeDuration(e.duration, t)}</span>}
                         {e.season && <span>· {e.season}</span>}
                       </div>
-                    )}
+                    ) : <span aria-hidden className="hidden md:block" />}
                   </div>
                 ))}
               </div>
@@ -599,7 +608,7 @@ export function EatDrinkExperience({
           {adventures.length > 0 && (
             <div className="mt-12">
               <h3
-                className="text-[17px] font-medium text-[#1A1A18] mb-5"
+                className="text-[22px] leading-snug font-medium text-[#1A1A18] mb-5"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {t('destinationDetail.guide.bookOnline')}
@@ -625,7 +634,7 @@ export function EatDrinkExperience({
                       )}
                     </div>
                     <h4
-                      className="text-[16px] font-medium text-[#1A1A18] mb-1"
+                      className="text-[17px] leading-snug font-medium text-[#1A1A18] mb-1"
                       style={{ fontFamily: 'var(--font-body)' }}
                     >
                       {adv.name}
@@ -690,7 +699,7 @@ export function EventsAndPlanning({ destination: d, compact = false }: { destina
               <Calendar className="w-5 h-5 text-pa-gold-aa mt-0.5 flex-shrink-0" />
               <div className="flex-1">
                 <h3
-                  className="text-[16px] font-medium text-[#1A1A18] mb-1"
+                  className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-1"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   {ev.url ? (
@@ -752,7 +761,7 @@ export function PressAccolades({ destination: d, compact = false }: { destinatio
                 ) : (
                   q.source
                 )}
-                {q.year ? ` · ${q.year}` : ''}
+                {q.year ? `\u00A0· ${q.year}` : ''}
               </footer>
             </blockquote>
           ))}
@@ -778,7 +787,7 @@ export function FAQSection({ destination: d }: { destination: Destination }) {
             {d.faqs.map((f, i) => (
               <div key={i} className="border-b border-[#E8E4DC] pb-6 last:border-b-0">
                 <dt
-                  className="text-[16px] font-medium text-[#1A1A18] mb-3"
+                  className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-3 text-balance"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   {f.question}
@@ -834,16 +843,17 @@ export function RelatedDestinationsAndOwnersCTA({
                   ) : (
                     <div className="absolute inset-0 placeholder-image" />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  {/* The tagline always takes its three lines, so the three
+                      titles sit level (a card with a three-line tagline lifted
+                      its title 43 px); the shade reaches higher with it. */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-5">
                     <h3 className="text-white text-[18px] font-medium" style={{ fontFamily: 'var(--font-display)' }}>
                       {r.name}
                     </h3>
-                    {r.tagline && (
-                      <p className="text-[13px] text-white/70 line-clamp-3" style={{ fontWeight: 400 }}>
-                        {r.tagline}
-                      </p>
-                    )}
+                    <p className="text-[13px] text-white/70 line-clamp-3 min-h-[3lh]" style={{ fontWeight: 400 }}>
+                      {r.tagline}
+                    </p>
                   </div>
                 </Link>
               ))}

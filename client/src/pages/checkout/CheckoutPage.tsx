@@ -36,7 +36,7 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useVisitOriginSync } from "@/hooks/useVisitOriginSync";
-import { formatQuotedEur, formatBookingDate, intlLocale, noBreak, sanitizePropertyName } from "@/lib/format";
+import { formatQuotedEur, formatBookingDate, intlLocale, noBreak, sanitizePropertyName, keepBrand } from "@/lib/format";
 import { freeCancellationDeadline, isNonRefundablePlan, planPolicyCode, rateKind } from "@/lib/cancellation";
 import { freeCancellationDays } from "@shared/cancellationPolicy";
 import { preferredRatePlanId } from "@shared/ratePlanDefault";
@@ -1416,11 +1416,15 @@ export default function CheckoutPage() {
   // run and the dot stays with the part before it. At 13 px on a phone it
   // broke as "… · 4" / "hóspedes" and as "… 4 guests" / "· Refundable Rate".
   const SUMMARY_DOT = "\u00A0· ";
+  // Each date and "4 guests" never split; the range may break after its arrow
+  // and the rate name between its words. Whole parts as one run hid the rate
+  // behind the clamp at 360 px (fr, es, nl, sv) and ran the date past the box
+  // in German and Finnish (cut without "…" under 360 px).
   const staySummary = [
-    `${formatBookingDate(checkIn, lang, true)} → ${formatBookingDate(checkOut, lang, true)}`,
-    guestsLine,
+    `${noBreak(formatBookingDate(checkIn, lang, true))}\u00A0→ ${noBreak(formatBookingDate(checkOut, lang, true))}`,
+    guestsLine ? noBreak(guestsLine) : null,
     rateLabel,
-  ].filter((part): part is string => !!part).map(noBreak).join(SUMMARY_DOT);
+  ].filter((part): part is string => !!part).join(SUMMARY_DOT);
   const extrasSummary = [
     receptionChoice ? (receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")) : null,
     // Até dois extras, os nomes; a partir de três, a contagem
@@ -2065,9 +2069,12 @@ export default function CheckoutPage() {
                     grelha CHECK-IN / CHECK-OUT / HÓSPEDES repetia rótulos para
                     três factos que se leem de uma vez. */}
                 <div className="flex items-center justify-between gap-3">
-                  <p className="body-md text-pa-dark flex-1 min-w-0">
-                    {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)}
-                    <span className="text-pa-earth"> · <span className="whitespace-nowrap">{guestsLine}</span></span>
+                  {/* A dot list: "· 4 guests" no longer starts the second line,
+                      and a date never splits ("26 Dez" / "2026"); the range may
+                      break after its arrow. */}
+                  <p className="pa-dots body-md text-pa-dark flex-1 min-w-0">
+                    <span>{noBreak(formatBookingDate(checkIn, lang, true))}{"\u00A0"}→ {noBreak(formatBookingDate(checkOut, lang, true))}</span>
+                    <span className="whitespace-nowrap text-pa-earth">{guestsLine}</span>
                   </p>
                   <button
                     type="button"
@@ -2195,7 +2202,7 @@ export default function CheckoutPage() {
                     className="mt-[1px] h-[14px] w-[14px] shrink-0 accent-pa-dark cursor-pointer"
                   />
                   <span className="caption text-pa-stone-aa leading-relaxed">
-                    {t("checkout.newsletterOptIn", "Keep me updated by email.")}
+                    {keepBrand(t("checkout.newsletterOptIn", "Keep me updated by email."))}
                   </span>
                 </label>
                 {/* Nunca parado (auditoria do funil, n.º 2): sem email válido
@@ -2373,13 +2380,14 @@ export default function CheckoutPage() {
                     )}
                   </div>
                 ) : (
-                  /* On a phone the label takes its own line and the address
-                     the whole next one: on a single line at 15 px an ordinary
-                     address was cut ("john.smith@gmail.…"), on the row whose
-                     job is to let the guest check it. */
-                  <div className="flex flex-wrap items-center gap-x-1.5 min-w-0 body-sm">
-                    <span className="text-pa-earth shrink-0 basis-full sm:basis-auto">{t("checkout.emailLineLabel")}</span>
-                    <span className="text-pa-dark font-medium truncate min-w-0">{email}</span>
+                  /* On a phone "Confirmation to · change" is the first line and
+                     the address has the whole next one, broken where needed: on
+                     one line at 15 px an ordinary address was cut, and with the
+                     address between them "change" fell alone to a third line.
+                     From 640 px one line, a long address cut with "…". */
+                  <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-1.5 min-w-0 body-sm">
+                    <span className="text-pa-earth shrink-0">{t("checkout.emailLineLabel")}</span>
+                    <span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0">{email}</span>
                     <span aria-hidden className="text-pa-stone-aa shrink-0">·</span>
                     <button
                       type="button"

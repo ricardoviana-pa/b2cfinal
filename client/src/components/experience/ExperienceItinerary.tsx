@@ -5,6 +5,7 @@
 
 import type { ExperienceItineraryStep } from '@/lib/types';
 import { MapPin, Mountain, Waves, UtensilsCrossed, Car, Info, Anchor, Bike, Camera, ArrowDown } from 'lucide-react';
+import { keepDashes, keepHyphens } from '@/lib/format';
 
 const ICON_MAP: Record<NonNullable<ExperienceItineraryStep['icon']>, typeof MapPin> = {
   pickup: Car,
@@ -57,10 +58,10 @@ export default function ExperienceItinerary({ steps }: ExperienceItineraryProps)
                   )}
                 </div>
                 <h3 className="text-[18px] font-display text-[#1A1A18] mb-1.5">
-                  {step.title}
+                  {keepHyphens(step.title)}
                 </h3>
                 <p className="text-[15px] text-pa-earth leading-relaxed" style={{ fontWeight: 400 }}>
-                  {step.description}
+                  {keepDashes(keepHyphens(step.description))}
                 </p>
               </div>
             </div>

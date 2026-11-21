@@ -132,6 +132,22 @@ export const keepHyphens = (text: string): string => text.replace(/(\p{L})-(?=\p
  *  "- " at the start of the second line of the card). */
 export const keepDashes = (text: string): string => text.replace(/ ([—–-]) /g, '\u00A0$1 ');
 
+/** A separator stays with the word before it (" · ", " / "), so a line never
+ *  starts with it: body text-wrap: pretty moved the break before the
+ *  separator ("Booking.com Traveller Review Awards" / "· 2024", "Olhão" /
+ *  "/ Tavira"). The line may end with it, as before the larger type. */
+export const keepSeparators = (text: string): string => text.replace(/ ([·/]) /g, '\u00A0$1 ');
+
+/** A home's name on a card: dashes and separators as above, an initial stays
+ *  with the next word ("S. Silvestre"), and a two-word name before a spaced
+ *  dash stays whole (balanced wrapping broke "Diamante" / "Azul - Mansion"). */
+export const keepNameParts = (name: string): string =>
+  keepSeparators(keepDashes(name.replace(/^(\S+) (\S+)(?= [—–-] )/u, '$1\u00A0$2')))
+    .replace(/(^|\s)(\p{Lu}\.) (?=\p{L})/gu, '$1$2\u00A0');
+
+/** The brand never splits across lines ("Portugal" / "Active"). */
+export const keepBrand = (text: string): string => text.replace(/Portugal Active/g, 'Portugal\u00A0Active');
+
 /** A Portuguese postcode stays whole: a WORD JOINER after the hyphen stops the
  *  line breaking as "4900-" / "336" without changing how it looks or copies. */
 export const keepPostcode = (text: string): string => text.replace(/(\d{4})-(\d{3})/g, '$1-\u2060$2');
