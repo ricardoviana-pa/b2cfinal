@@ -384,4 +384,7 @@ describe('2.ª ronda da auditoria de formatação (21 nov 2026)', () => {
   it('legendas dos destinos na homepage a 13 px, o tamanho de legenda', () => {
     expect(read('client/src/pages/Home.tsx')).toContain('<p className="caption leading-[1.55] text-pa-earth mt-3 font-body font-normal" >');
   });
+  it('títulos de secção a 20 px no telemóvel e no tablet, a partir em linhas iguais', () => {
+    expect(css).toMatch(/\.headline-sm \{[^}]*font-size: clamp\(1\.25rem, 2vw, 1\.5rem\);[^}]*text-wrap: balance;/);
+  });
 });
