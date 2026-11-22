@@ -2390,7 +2390,7 @@ export default function CheckoutPage() {
                      From 640 px one line, a long address cut with "…". */
                   <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-1.5 min-w-0 body-sm">
                     <span className="text-pa-earth shrink-0">{t("checkout.emailLineLabel")}</span>
-                    <span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0">
+                    <span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0 sm:[&>wbr]:hidden">
                       {/* Break points after "@" and before each "." first
                           ("…oliveira@" / "outlook.com", never "…outlook.c" / "om");
                           any letter only for a single part longer than the line. */}

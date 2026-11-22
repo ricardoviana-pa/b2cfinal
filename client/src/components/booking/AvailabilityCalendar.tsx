@@ -452,7 +452,8 @@ export default function AvailabilityCalendar({
   const calendarNode = (
     // A container: the legend under the months follows the calendar's own
     // width too (in the 244 px booking-card calendar the Dutch and Italian
-    // legend took two rows and pushed the main button off a 900 px screen).
+    // legend took two rows and pushed the main button off a 900 px screen;
+    // the partner panel's three-item legend did the same at 324 px).
     <div className="@container bg-white">
       {/* Selection phase — the pills pick which date the next click changes.
           On a phone the picker covers the date fields, so the pills carry the
@@ -569,21 +570,21 @@ export default function AvailabilityCalendar({
       {/* Legend (not in a search: with no home there is no availability to explain) */}
       <div className={search
         ? (!isMobile && onClose && checkIn && checkOut ? "flex items-center px-4 pb-4 pt-3 border-t border-black/[0.04]" : "hidden")
-        : "flex flex-wrap items-center gap-x-5 @max-[16rem]:gap-x-3 gap-y-2 px-4 pb-2.5 pt-1 border-t border-black/[0.04]"}>
+        : "flex flex-wrap items-center gap-x-5 @max-[21rem]:gap-x-3 gap-y-2 px-4 pb-2.5 pt-1 border-t border-black/[0.04]"}>
         {!search && <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black" />
-          <span className="text-[12px] text-pa-stone-aa tracking-wide @max-[16rem]:tracking-normal">{t("bookingWidget.availableLabel")}</span>
+          <span className="text-[12px] text-pa-stone-aa tracking-wide @max-[21rem]:tracking-normal">{t("bookingWidget.availableLabel")}</span>
         </div>}
         {!search && <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black/10 flex items-center justify-center">
             <span className="block w-1.5 h-px bg-black/25" />
           </span>
-          <span className="text-[12px] text-pa-stone-aa tracking-wide @max-[16rem]:tracking-normal">{t("bookingWidget.unavailableLabel")}</span>
+          <span className="text-[12px] text-pa-stone-aa tracking-wide @max-[21rem]:tracking-normal">{t("bookingWidget.unavailableLabel")}</span>
         </div>}
         {showsUnknown && (
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full border border-dashed border-pa-gold-aa" aria-hidden="true" />
-            <span className="text-[12px] text-pa-stone-aa tracking-wide @max-[16rem]:tracking-normal">{t("bookingWidget.onRequestLabel", "On request")}</span>
+            <span className="text-[12px] text-pa-stone-aa tracking-wide @max-[21rem]:tracking-normal">{t("bookingWidget.onRequestLabel", "On request")}</span>
           </div>
         )}
         {/* After changing only the check-in the calendar stays open on the

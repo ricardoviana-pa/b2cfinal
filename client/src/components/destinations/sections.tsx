@@ -598,7 +598,7 @@ export function EatDrinkExperience({
                     {(e.duration || e.season) ? (
                       /* A dot list: "· Toute l'année…" no longer starts a line of
                          its own, and the dot sits at the usual 12 px. */
-                      <div className="pa-dots gap-y-1 text-[13px] text-pa-gold-aa tracking-[0.02em]">
+                      <div className="pa-dots gap-y-1 self-start text-[13px] text-pa-gold-aa tracking-[0.02em]">
                         {e.duration && <span className="whitespace-nowrap">{localizeDuration(e.duration, t)}</span>}
                         {e.season && <span>{e.season}</span>}
                       </div>
@@ -850,15 +850,17 @@ export function RelatedDestinationsAndOwnersCTA({
                   {/* The text stays at the foot of the photo, over its shade. Three
                       lines on a phone (one card per row: the whole sentence), two
                       where three cards share a row, so their titles differ by one
-                      line at most, as on the live site. Reserving three lines
-                      lifted the titles into the bright part of the photos. */}
+                      line at most, as on the live site, at its 12 px from 768 px
+                      (at 13 px two lines cut sentences the live site shows whole).
+                      Reserving three lines lifted the titles into the bright part
+                      of the photos. */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-5">
                     <h3 className="text-white text-[18px] font-medium" style={{ fontFamily: 'var(--font-display)' }}>
                       {r.name}
                     </h3>
                     {r.tagline && (
-                      <p className="text-[13px] text-white/70 line-clamp-3 md:line-clamp-2" style={{ fontWeight: 400 }}>
+                      <p className="text-[13px] md:text-[12px] text-white/70 line-clamp-3 md:line-clamp-2" style={{ fontWeight: 400 }}>
                         {r.tagline}
                       </p>
                     )}

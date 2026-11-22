@@ -1464,8 +1464,11 @@ export default function PropertyDetail() {
                 )}
                 {/* On a phone the row fades out at the screen edge, so a pill cut
                     there reads as "more to scroll" and not as a word with its last
-                    letter missing ("Amenities and feature|s"). */}
-                <nav aria-label={t('pdpUx.navigation')} className="mt-5 pt-5 border-t border-pa-sand flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap max-sm:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]">
+                    letter missing ("Amenities and feature|s"). The divider above
+                    is on a wrapper, so it does not fade; 40 px at the row's end
+                    keep the last pill clear of the fade. */}
+                <div className="mt-5 pt-5 border-t border-pa-sand -mx-5 sm:mx-0">
+                <nav aria-label={t('pdpUx.navigation')} className="flex gap-2 overflow-x-auto no-scrollbar px-5 max-sm:pr-10 sm:px-0 sm:flex-wrap max-sm:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]">
                   {sectionLinks.map(([id, label]) => (
                     /* 14 px with 14 px sides on a phone: at 15 px the second pill
                        ended a letter past the screen ("Amenities and feature|s"),
@@ -1473,6 +1476,7 @@ export default function PropertyDetail() {
                     <a key={id} href={`#${id}`} className="pa-action shrink-0 inline-flex items-center min-h-11 lg:min-h-9 rounded-full border border-pa-sand px-3.5 sm:px-4 body-sm max-sm:text-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark whitespace-nowrap">{label}</a>
                   ))}
                 </nav>
+                </div>
               </div>
 
 

@@ -128,13 +128,18 @@ export default function RatePlanCards<T extends RateCardOption>({
                     {selected && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
                   </span>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {/* By the card's text width: 15 px from 292 px, 14 px from
-                          280 px, 13 px below ("Tarifa Reembolsável", "Återbetalnings-
-                          bart pris", "Restitueerbaar tarief" broke one word per line). */}
-                      <p className="body-sm @max-[18.25rem]:text-sm @max-[17.5rem]:text-[13px] text-pa-dark font-medium leading-snug">{label}</p>
+                    {/* The badge stays beside the name where the live site had it:
+                        at 12 px (11 px live) it is held to the live width with
+                        tighter letter-spacing and 4 px sides. */}
+                    <div className="flex items-center gap-x-1.5 gap-y-1 flex-wrap">
+                      {/* By the card's text width, room for the name AND the
+                          RECOMMENDED badge beside it: 15 px from 400 px, 14 px from
+                          336 px, 13 px below (larger, the badge dropped under the
+                          name on 393-440 px phones and iPads, and names broke one
+                          word per line in narrow cards). */}
+                      <p className="body-sm @max-[25rem]:text-sm @max-[21rem]:text-[13px] text-pa-dark font-medium leading-snug">{label}</p>
                       {recommended && (
-                        <span className={cn("eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 text-pa-gold-aa border border-pa-sand rounded-sm", selected ? "bg-white" : "bg-pa-warm")}>
+                        <span className={cn("eyebrow font-medium tracking-wide uppercase px-1 py-0.5 text-pa-gold-aa border border-pa-sand rounded-sm", selected ? "bg-white" : "bg-pa-warm")}>
                           {t("bookingWidget.recommended", "Recommended")}
                         </span>
                       )}

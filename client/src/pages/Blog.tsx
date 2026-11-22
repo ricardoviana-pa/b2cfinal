@@ -148,7 +148,7 @@ export default function Blog() {
           {/* On a phone the row scrolls to the screen edge (the next chip
               showed as a lone "P" at the container's edge); 14 px chips from
               768 to 1023 px, where at 15 px the last one was cut. */}
-          <div className="flex gap-1 overflow-x-auto no-scrollbar py-3 -mx-5 px-5 md:mx-0 md:px-0 max-md:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]">
+          <div className="flex gap-1 overflow-x-auto no-scrollbar py-3 -mx-5 px-5 max-md:pr-10 md:mx-0 md:px-0 max-md:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]">
             {CATEGORIES.map((cat, idx) => (
               <button
                 key={`${cat.value}-${idx}`}
@@ -255,9 +255,10 @@ export default function Blog() {
                   {/* 20 px with up to three lines on a phone (one column: nothing
                       to line up with), 18 px and two lines from 768 to 1279 px
                       (at 20 px long titles were cut with "…"), 20 px from
-                      1280 px. Not balanced: balancing split German compounds at
-                      their hyphen ("Yoga- / Session"). French spacing kept. */}
-                  <h3 className="font-display text-[20px] md:max-xl:text-[18px] leading-snug text-[#1A1A18] mb-2 group-hover:text-pa-gold-aa transition-colors line-clamp-3 md:line-clamp-2">
+                      1280 px. Balanced on a phone only (unbalanced, "A Two- /
+                      Day Stay" split there); from 768 px balancing split German
+                      compounds ("Yoga- / Session"). French spacing kept. */}
+                  <h3 className="font-display text-[20px] md:max-xl:text-[18px] leading-snug text-[#1A1A18] mb-2 group-hover:text-pa-gold-aa transition-colors line-clamp-3 md:line-clamp-2 max-md:text-balance">
                     {frenchSpacing(article.title, i18n.language)}
                   </h3>
                   <p className="text-[15px] text-pa-earth font-normal line-clamp-2 mb-3">{article.excerpt}</p>

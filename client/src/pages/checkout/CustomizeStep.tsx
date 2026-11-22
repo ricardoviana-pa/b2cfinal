@@ -284,7 +284,7 @@ function OptionRow({
     <div className={cn("px-4 py-3.5 sm:px-5 transition-colors", selected && "bg-pa-warm", item.parentSku && "pl-9 sm:pl-10")}>
       {/* .pa-option (index.css). On a phone: photo | name over price | add
           button, then the description under them at the full width of the
-          row. From 480 px: the single line it always was. On one line a phone
+          row. From 512 px: the single line it always was. On one line a phone
           left the name and its description a column of 47 to 150 px beside
           the price, one or two words per line (auditoria de formatação,
           20 nov 2026). */}
@@ -315,8 +315,8 @@ function OptionRow({
         </div>
         <div className="pa-option-side">
           {/* Under the name on a phone, the price and its unit on one line
-              ("25 € / per person · day"); to the right of it from 480 px. */}
-          <div className="pa-option-price flex flex-wrap items-baseline gap-x-2 min-[480px]:block">
+              ("25 € / per person · day"); to the right of it from 512 px. */}
+          <div className="pa-option-price flex flex-wrap items-baseline gap-x-2 min-[512px]:block min-[512px]:max-sm:max-w-[9.5rem]">
             {onRequest ? (
               item.priceFrom != null ? (
                 <>
@@ -324,19 +324,22 @@ function OptionRow({
                   <p className="caption text-pa-stone-aa whitespace-nowrap">{t("checkout.noChargeNow", "no charge now")}</p>
                 </>
               ) : (
-                <p className="caption text-pa-stone-aa min-[480px]:max-w-[120px] leading-snug">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
+                <p className="caption text-pa-stone-aa min-[512px]:max-w-[120px] leading-snug">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
               )
             ) : item.pricingModel === "included_selectable" ? (
               <>
                 <p className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold-aa">{t("checkout.included.badge")}</p>
                 {/* No telemóvel a regra do extra fica na linha da seleção ("2× · 25 €") */}
-                <p className="caption text-pa-stone-aa hidden min-[480px]:block">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
+                <p className="caption text-pa-stone-aa hidden sm:block">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
               </>
             ) : (
               <>
                 <p className="body-sm text-pa-dark tabular-nums leading-snug">
                   {formatEur(item.unitPrice!, lang)}
-                  {unit ? <span className="caption text-pa-stone-aa"> / {unit}</span> : null}
+                  {/* From 512 to 639 px (one line, the price column at the
+                      right, at most 9.5rem as on the live site) the unit goes
+                      under the price; beside it, it squeezed the name. */}
+                  {unit ? <span className="caption text-pa-stone-aa min-[512px]:max-sm:block"><span className="min-[512px]:max-sm:hidden"> / </span>{unit}</span> : null}
                 </p>
                 {item.minPeople ? (
                   <p className="caption text-pa-stone-aa whitespace-nowrap">{t("checkout.minPeople", { count: item.minPeople })}</p>
@@ -403,7 +406,7 @@ function OptionRow({
               /* On a phone the sum has its own line under the steppers in
                  every row; beside them it fitted in some rows and fell under
                  in others. */
-              <span className="basis-full text-right sm:basis-auto sm:ml-auto caption text-pa-earth tabular-nums">
+              <span className="basis-full text-right min-[512px]:basis-auto min-[512px]:ml-auto caption text-pa-earth tabular-nums">
                 {f}{amount != null && amount > 0 ? ` = ${formatEur(amount, lang)}` : ""}
               </span>
             ) : null;
@@ -646,12 +649,13 @@ export default function CustomizeStep({
               <OptionRow key={item.sku} item={item} sel={selection[item.sku]} {...rowProps} />
             ))}
             {expanded && transferRows.length > 0 && (
-              /* The pills never shrink: when the label and the pills do not fit
-                 side by side (a long single word, "Aankomstluchthaven", at 320 px)
-                 the pills drop under the label, at the right. Squeezed to the
-                 44 px tap minimum, their text ran out of the pill. */
+              /* The pills never shrink. A label of several words wraps beside
+                 them (w-min grow: its narrowest width decides the line, then it
+                 takes the rest); a long single word ("Aankomstluchthaven" at 320
+                 px) sends the pills under it, at the right. Squeezed to the 44 px
+                 tap minimum, their text ran out of the pill. */
               <div className="px-4 py-2.5 sm:px-5 flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 bg-pa-cream">
-                <span className="caption text-pa-earth min-w-0">{t("checkout.arrivalAirport", "Arrival airport")}</span>
+                <span className="caption text-pa-earth min-w-0 w-min grow">{t("checkout.arrivalAirport", "Arrival airport")}</span>
                 <div className="ml-auto flex shrink-0 items-center gap-1.5" role="group" aria-label={t("checkout.arrivalAirport", "Arrival airport")}>
                   {(["porto", "lisbon"] as const).map((ap) => (
                     <button

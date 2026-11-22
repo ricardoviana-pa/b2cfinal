@@ -863,7 +863,7 @@
     "preferToTalk": "¿Prefiere hablar?",
     "phoneAvailable": "Disponible de 9:00 a 21:00",
     "whatsapp": "WhatsApp",
-    "whatsappSub": "Escríbanos directamente",
+    "whatsappSub": "Escríbanos directamente",
     "emailResponse": "Respondemos en menos de 2 horas",
     "scheduleCall": "Programar una llamada",
     "scheduleCallSub": "Reserve una llamada de 15 minutos",
@@ -1359,7 +1359,7 @@
     "bookExperience": "Reservar esta experiencia",
     "whatsappSubtitle": "Escriba directamente a nuestro equipo de concierge. Solemos responder en minutos.",
     "chatOnWhatsApp": "Chatear por WhatsApp",
-    "whatsappNote": "Todos los días, de 9 a 21 h (hora de Lisboa)"
+    "whatsappNote": "Todos los días, de 9 a 21 h (hora de Lisboa)"
   },
   "bedConfig": {
     "notAvailable": "Configuración de camas no disponible"

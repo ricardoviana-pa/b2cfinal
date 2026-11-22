@@ -99,9 +99,10 @@ export default function PropertyUnitsSection({
 
   return (
     <section className="mt-12 lg:mt-16">
-      {/* The note drops under the title when both do not fit (German at
-          1024-1279 broke the title as "3 Einheiten in dieser" / "Unterkunft"). */}
-      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 mb-6">
+      {/* The note drops under the title when both do not fit with 24 px
+          between them (German at 1024-1279 broke the title as "3 Einheiten in
+          dieser" / "Unterkunft"; at 8 px the two read as one run-on line). */}
+      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-6">
         <h2 className="text-[24px] lg:text-[28px] font-display text-[#1A1A18] text-balance">
           {t('property.unitsInPropertyTitle', { count: units.length, defaultValue: '{{count}} units in this property' })}
         </h2>

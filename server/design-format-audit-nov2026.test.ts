@@ -273,12 +273,12 @@ describe('checkout no telemóvel', () => {
     expect(block).toContain('grid-template-areas: "name toggle" "price toggle" "desc desc";');
     expect(block).toContain('grid-template-areas: "photo name toggle" "photo price toggle" "desc desc desc";');
     // do tablet para cima volta a ser uma linha, como sempre foi no computador
-    // a linha única a partir de 480 px (entre 480 e 639 px a disposição do telemóvel deixava a lista 39 % mais alta)
-    expect(block).toMatch(/@media \(min-width: 480px\) \{\s*\.pa-option \{ display: flex;/);
+    // a linha única a partir de 512 px (entre 512 e 639 px a disposição do telemóvel deixava a lista 39 % mais alta; entre 480 e 511 px a linha única espremia os nomes)
+    expect(block).toMatch(/@media \(min-width: 512px\) \{\s*\.pa-option \{ display: flex;/);
   });
   it('a conta fica na sua linha e as pastilhas não partem o texto', () => {
-    // à direita mesmo quando desce para baixo dos contadores (sm:ml-auto)
-    expect(step).toContain('<span className="basis-full text-right sm:basis-auto sm:ml-auto caption text-pa-earth tabular-nums">');
+    // à direita mesmo quando desce para baixo dos contadores; ao lado deles a partir de 512 px, com a linha única
+    expect(step).toContain('<span className="basis-full text-right min-[512px]:basis-auto min-[512px]:ml-auto caption text-pa-earth tabular-nums">');
     // as pastilhas da chegada, "Todos os dias" e as do aeroporto nunca partem o texto
     expect(step.match(/rounded-full border whitespace-nowrap transition-colors/g)).toHaveLength(3);
   });
@@ -286,7 +286,8 @@ describe('checkout no telemóvel', () => {
     const page = read('client/src/pages/checkout/CheckoutPage.tsx');
     // no telemóvel "Confirmação para · alterar" na primeira linha e o endereço na seguinte, inteiro
     expect(page).toContain('<div className="flex flex-wrap sm:flex-nowrap items-center gap-x-1.5 min-w-0 body-sm">');
-    expect(page).toContain('<span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0">');
+    // a partir de 640 px sem pontos de quebra: uma linha com reticências
+    expect(page).toContain('<span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0 sm:[&>wbr]:hidden">');
     // partes depois de "@" e antes de cada ".", sem lookbehind (o Safari antigo não o lê)
     expect(page).toContain('{email.replace("@", "@\\u0001").split(/\\u0001|(?=\\.)/).map((part, i) => <Fragment key={i}>{i > 0 && <wbr />}{part}</Fragment>)}');
   });
@@ -382,8 +383,8 @@ describe('2.ª ronda da auditoria de formatação (21 nov 2026)', () => {
     expect(own.match(/<p className="pa-dots caption text-pa-stone">/g)).toHaveLength(2);
     expect(read('client/src/lib/cancellation.ts')).toContain('formatDate: (ymd) => noBreak(formatBookingDate(ymd, lang, true))');
     // 13 px de 1024 a 1279 px e 14 px abaixo de 375 px; a linha de cancelamento corre por baixo do nome e do preço
-    // pela largura do próprio cartão (container): 15 px, 14 px abaixo de 292 px de texto, 13 px abaixo de 280 px
-    expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('body-sm @max-[18.25rem]:text-sm @max-[17.5rem]:text-[13px] text-pa-dark font-medium leading-snug');
+    // pela largura do próprio cartão (container), com lugar para o nome e o selo RECOMENDADA: 15 px a partir de 400 px de texto, 14 px a partir de 336 px, 13 px abaixo
+    expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('body-sm @max-[25rem]:text-sm @max-[21rem]:text-[13px] text-pa-dark font-medium leading-snug');
     expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('<p id={benefitId} className={cn("caption -mt-2 pl-[26px] leading-snug text-balance"');
   });
   it('rodapé, cookies e diálogos', () => {
@@ -454,7 +455,7 @@ describe('3.ª ronda da auditoria de formatação (21 nov 2026)', () => {
   });
   it('unidades de um grupo: a seta fica com "Ver unidade" e a nota desce para baixo do título', () => {
     const units = read('client/src/components/property/PropertyUnitsSection.tsx');
-    expect(units).toContain('flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 mb-6');
+    expect(units).toContain('flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 mb-6');
     expect(units).toContain('<div className="flex items-center justify-between gap-x-1.5">');
     expect(units).toContain("<span className=\"shrink-0 whitespace-nowrap text-[12px] text-pa-gold-aa uppercase tracking-[0.04em]\">");
   });
@@ -530,8 +531,8 @@ describe('verificação da 3.ª ronda (22 nov 2026)', () => {
   it('calendário: a legenda também segue a largura do calendário', () => {
     const cal = read('client/src/components/booking/AvailabilityCalendar.tsx');
     expect(cal).toContain('<div className="@container bg-white">');
-    expect(cal).toContain('gap-x-5 @max-[16rem]:gap-x-3');
-    expect(cal.match(/tracking-wide @max-\[16rem\]:tracking-normal/g)).toHaveLength(3);
+    expect(cal).toContain('gap-x-5 @max-[21rem]:gap-x-3');
+    expect(cal.match(/tracking-wide @max-\[21rem\]:tracking-normal/g)).toHaveLength(3);
   });
   it('tarifas: data do pagamento em duas partes inteira, a 12 px', () => {
     expect(read('client/src/components/booking/TwoPartsHint.tsx')).toContain('const date = noBreak(planDate(data.chargeAt, lang));');

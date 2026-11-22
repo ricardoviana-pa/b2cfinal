@@ -1048,9 +1048,10 @@
    which a JS-only fix can't do. See client/src/lib/datePicker.ts. */
 /* One extra in the checkout (CustomizeStep › OptionRow).
    Phone: photo | name over price | add button, then the description under
-   them at the full width of the row. From 480 px: one line, as it always was
-   on a computer (from 480 px the name has about 200 px; the phone layout
-   made the list 39 % taller than the live one between 480 and 639 px). */
+   them at the full width of the row. From 512 px: one line, as it always was
+   on a computer (between 480 and 511 px the one line left French names a
+   110 px column; the phone layout made the list 39 % taller than the live
+   one between 512 and 639 px). */
 @layer components {
   .pa-option {
     display: grid;
@@ -1069,7 +1070,7 @@
   .pa-option-price { grid-area: price; margin-top: 0.125rem; }
   .pa-option-desc { grid-area: desc; margin-top: 0.5rem; }
   .pa-option-toggle { grid-area: toggle; align-self: center; }
-  @media (min-width: 480px) {
+  @media (min-width: 512px) {
     .pa-option { display: flex; align-items: center; gap: 0.75rem; }
     .pa-option-text { display: block; min-width: 0; flex: 1 1 0%; }
     .pa-option-side { display: flex; flex: none; align-items: center; gap: 0.75rem; }
