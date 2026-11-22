@@ -603,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "COOKIEINSTÄLLNINGAR",
-    "description": "Nödvändiga cookies gör det möjligt att använda webbplatsen och boka. Med ditt samtycke använder vi även cookies för analys och annonsering. Detta omfattar mätning med OpenAI Ads.",
+    "description": "Nödvändiga cookies gör det möjligt att använda webbplatsen och boka. Med ditt samtycke använder vi även cookies för analys och annonsering. Detta omfattar mätning med OpenAI Ads.",
     "essential": "Nödvändiga cookies",
     "essentialDesc": "Krävs för grundläggande webbplatsfunktionalitet och säkerhet. Kan inte inaktiveras.",
     "analytics": "Analyticscookies",

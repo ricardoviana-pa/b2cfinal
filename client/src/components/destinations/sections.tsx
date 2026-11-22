@@ -32,7 +32,7 @@ import { placeVars } from '@shared/regionPhrases';
 import { localizeDuration } from '@/lib/duration';
 import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Bike } from 'lucide-react';
 import type { Destination, Property, Product } from '@/lib/types';
-import { formatEurEditorial } from '@/lib/format';
+import { formatEurEditorial, frenchSpacing } from '@/lib/format';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import PropertyCard from '@/components/property/PropertyCard';
 import { GuideBody, GuideHeading, GuideSection } from './GuideSection';
@@ -61,7 +61,7 @@ export function HeroEditorial({ destination: d }: HeroEditorialProps) {
       <h1 className="headline-xl text-white mb-4">{d.name}</h1>
       {(d.heroSubtitle || d.tagline) && <p className="body-lg max-w-xl !text-white/90">{d.heroSubtitle || d.tagline}</p>}
       <a href="#destination-homes" className="btn-white mt-6">{t(d.slug === 'esposende' ? 'planning.alternativeHomes' : 'destinationDetail.homesIn', destVars(d, i18n.language))} <ArrowRight className="w-4 h-4" /></a>
-      {d.primaryAccolade && <p className="text-xs text-white/80 mt-5 max-w-xl">{d.primaryAccolade.text} · {d.primaryAccolade.source}</p>}
+      {d.primaryAccolade && <p className="text-xs text-white/80 mt-5 max-w-xl">{d.primaryAccolade.text}{'\u00A0· '}{d.primaryAccolade.source}</p>}
     </div>
   </section>;
 }
@@ -228,11 +228,13 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
                 ) : <span aria-hidden="true" className="font-display text-4xl text-pa-brown">0{index + 1}</span>}
               </div>
               <div className="min-w-0 flex-1">
+              {/* Not balanced: balancing put a French ":" at the start of a line
+                  and split hyphenated words; the French spaces are kept. */}
               <h3
-                className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-1.5 group-hover:text-pa-gold-aa transition-colors text-balance"
+                className="text-[19px] leading-snug font-medium text-[#1A1A18] mb-1.5 group-hover:text-pa-gold-aa transition-colors"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
-                {a.title}
+                {frenchSpacing(a.title, i18n.language)}
               </h3>
               {a.excerpt && (
                 <p className="text-[15px] text-pa-earth leading-relaxed line-clamp-2" style={{ fontWeight: 400 }}>
@@ -304,7 +306,7 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
               {/* Each card is three rows of the grid (a subgrid): the titles of
                   a row share a height, so when one takes two lines at 19 px the
                   texts of that row still start level. */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-y-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-y-0 md:-mb-4">
                 {group.items.map(item => (
                   <div key={item.name} className="bg-white border border-[#E8E4DC] rounded-xl p-5 md:grid md:grid-rows-subgrid md:row-span-3 md:mb-4">
                     {item.category ? (
@@ -508,7 +510,7 @@ export function EatDrinkExperience({
               >
                 {t('destinationDetail.guide.whereToEat')}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-y-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-y-0 md:-mb-4">
                 {d.restaurants!.map(r => (
                   <div key={r.name} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-5 md:grid md:grid-rows-subgrid md:row-span-3 md:mb-4">
                     {r.category ? (
@@ -539,7 +541,7 @@ export function EatDrinkExperience({
               >
                 {t('destinationDetail.guide.localSpecialties')}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-y-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-y-0 md:-mb-4">
                 {d.specialties!.map(s => (
                   <div key={s.name} className="border-l-2 border-[#8B7355] pl-5 py-2 md:grid md:grid-rows-subgrid md:row-span-3 md:mb-4">
                     {s.category ? (
@@ -578,7 +580,7 @@ export function EatDrinkExperience({
                   {d.experiencesIntro}
                 </p>
               )}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-y-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-y-0 md:-mb-4">
                 {d.experiences!.map(e => (
                   <div key={e.name} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl p-5 md:grid md:grid-rows-subgrid md:row-span-3 md:mb-4">
                     <h4
@@ -594,9 +596,11 @@ export function EatDrinkExperience({
                       {e.description}
                     </p>
                     {(e.duration || e.season) ? (
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-pa-gold-aa tracking-[0.02em]">
-                        {e.duration && <span>{localizeDuration(e.duration, t)}</span>}
-                        {e.season && <span>· {e.season}</span>}
+                      /* A dot list: "· Toute l'année…" no longer starts a line of
+                         its own, and the dot sits at the usual 12 px. */
+                      <div className="pa-dots gap-y-1 text-[13px] text-pa-gold-aa tracking-[0.02em]">
+                        {e.duration && <span className="whitespace-nowrap">{localizeDuration(e.duration, t)}</span>}
+                        {e.season && <span>{e.season}</span>}
                       </div>
                     ) : <span aria-hidden className="hidden md:block" />}
                   </div>
@@ -753,7 +757,7 @@ export function PressAccolades({ destination: d, compact = false }: { destinatio
               >
                 “{q.quote}”
               </p>
-              <footer className="text-[12px] tracking-[0.08em] uppercase text-white/50">
+              <footer className="text-[12px] tracking-[0.08em] uppercase text-white/50 text-wrap">
                 {q.url ? (
                   <a href={q.url} target="_blank" rel="noopener noreferrer" className="hover:text-white">
                     {q.source}
@@ -843,17 +847,21 @@ export function RelatedDestinationsAndOwnersCTA({
                   ) : (
                     <div className="absolute inset-0 placeholder-image" />
                   )}
-                  {/* The tagline always takes its three lines, so the three
-                      titles sit level (a card with a three-line tagline lifted
-                      its title 43 px); the shade reaches higher with it. */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
+                  {/* The text stays at the foot of the photo, over its shade. Three
+                      lines on a phone (one card per row: the whole sentence), two
+                      where three cards share a row, so their titles differ by one
+                      line at most, as on the live site. Reserving three lines
+                      lifted the titles into the bright part of the photos. */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-5">
                     <h3 className="text-white text-[18px] font-medium" style={{ fontFamily: 'var(--font-display)' }}>
                       {r.name}
                     </h3>
-                    <p className="text-[13px] text-white/70 line-clamp-3 min-h-[3lh]" style={{ fontWeight: 400 }}>
-                      {r.tagline}
-                    </p>
+                    {r.tagline && (
+                      <p className="text-[13px] text-white/70 line-clamp-3 md:line-clamp-2" style={{ fontWeight: 400 }}>
+                        {r.tagline}
+                      </p>
+                    )}
                   </div>
                 </Link>
               ))}

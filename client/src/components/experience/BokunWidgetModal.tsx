@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { MessageCircle, X } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
 import type { BokunOption } from './ExperienceBookingCard';
+import { keepHyphens } from '@/lib/format';
 
 interface BokunWidgetModalProps {
   open: boolean;
@@ -224,7 +225,7 @@ export default function BokunWidgetModal({
           style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 4px)' }}
         >
           <span className="caption text-pa-stone">
-            {t('experience.secureBooking', 'Secure booking by Bókun')}
+            {keepHyphens(t('experience.secureBooking', 'Secure booking by Bókun'))}
           </span>
           {whatsappHref && (
             <a

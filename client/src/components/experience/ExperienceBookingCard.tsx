@@ -169,7 +169,7 @@ export default function ExperienceBookingCard({
                 </button>
               ))}
             </div>
-            <p className="caption text-center text-pa-stone">
+            <p className="caption text-center text-pa-stone text-balance">
               {t('experience.pickOptionHint', 'Select a tour to check live availability')}
             </p>
           </>

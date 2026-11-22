@@ -603,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "PREFERENZE SUI COOKIE",
-    "description": "I cookie essenziali consentono di navigare e prenotare. Con il tuo consenso utilizziamo anche cookie di analisi e pubblicità. Include la misurazione con OpenAI Ads.",
+    "description": "I cookie essenziali consentono di navigare e prenotare. Con il tuo consenso utilizziamo anche cookie di analisi e pubblicità. Include la misurazione con OpenAI Ads.",
     "essential": "Cookie Essenziali",
     "essentialDesc": "Necessari per la funzionalità di base del sito e la sicurezza. Impossibile disabilitarli.",
     "analytics": "Cookie di Analisi",

@@ -603,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "COOKIE PREFERENCES",
-    "description": "Essential cookies keep the site and booking working. With your permission, we also use analytics and advertising cookies. This includes OpenAI Ads measurement.",
+    "description": "Essential cookies keep the site and booking working. With your permission, we also use analytics and advertising cookies. This includes OpenAI Ads measurement.",
     "essential": "Essential Cookies",
     "essentialDesc": "Required for basic site functionality and security. Cannot be disabled.",
     "analytics": "Analytics Cookies",
@@ -1292,7 +1292,7 @@
     "bookExperience": "Book this experience",
     "whatsappSubtitle": "Message our concierge team directly. We typically reply within minutes.",
     "chatOnWhatsApp": "Chat on WhatsApp",
-    "whatsappNote": "Available every day, 9 am – 9 pm (Lisbon time)"
+    "whatsappNote": "Available every day, 9 am –⁠ 9 pm (Lisbon time)"
   },
   "bedConfig": {
     "notAvailable": "Bed configuration details not available"

@@ -13,7 +13,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import { keepHyphens } from '@/lib/format';
+import { keepHyphens, keepDashes } from '@/lib/format';
 
 const EVENT_TYPES_SCHEMA = [
   { type: 'Corporate Retreats', description: 'Host corporate retreats and team offsites in private Portuguese villas with full concierge' },
@@ -348,7 +348,7 @@ export default function Events() {
               <div key={item.step} className="text-center md:text-left">
                 <p className="font-display text-[2rem] text-[#E8E4DC] mb-3">{item.step}</p>
                 <h4 className="font-display text-[19px] leading-snug text-[#1A1A18] mb-2">{item.title}</h4>
-                <p className="text-[15px] text-pa-earth font-normal leading-relaxed text-balance md:text-pretty">{item.desc}</p>
+                <p className="text-[15px] text-pa-earth font-normal leading-relaxed text-balance md:text-pretty">{keepDashes(item.desc)}</p>
               </div>
             ))}
           </div>

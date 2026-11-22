@@ -12,7 +12,7 @@ import productsData from '@/data/products.json';
 import experienceDetailsData from '@/data/experienceDetails.json';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import type { Product, DestinationSlug } from '@/lib/types';
-import { formatEurEditorial, noBreak, keepSeparators, keepHyphens } from '@/lib/format';
+import { formatEurEditorial, keepSeparators, keepHyphens } from '@/lib/format';
 import { localizeProduct } from '@/lib/localizeProduct';
 import EditorialHero from '@/components/marketing/EditorialHero';
 import Header from '@/components/layout/Header';
@@ -215,10 +215,12 @@ export default function Adventures() {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} decoding="async" />}
                     </div>
                     <div className="catalog-card-content">
-                      {/* Each region stays whole ("Porto and Douro") and a line
-                          breaks only after a dot, in balanced lines. */}
-                      <p className="flex items-start gap-1.5 text-xs text-pa-stone mb-3 text-balance"><MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
-                        {adventure.destinations.map(d => noBreak(t(`destinations.${d}`))).join('\u00A0· ')}</p>
+                      {/* The dot stays with the region before it (no line starts
+                          with "·"), filled line by line as on the live site: whole
+                          region names took the six-region Surf card to three lines
+                          and its title out of line with its neighbour. */}
+                      <p className="flex items-start gap-1.5 text-xs text-pa-stone mb-3 text-wrap"><MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
+                        {keepSeparators(adventure.destinations.map(d => t(`destinations.${d}`)).join(' · '))}</p>
                       <h3 className="font-display text-2xl text-pa-dark">{keepSeparators(keepHyphens(adventure.name))}</h3>
                       <p className="body-md mt-2 flex-1 text-balance">{adventure.tagline}</p>
                       {adventure.duration && <p className="flex items-center gap-2 text-[15px] text-pa-stone mt-4"><Clock className="w-4 h-4" aria-hidden="true" />{localizeDuration(adventure.duration, t)}</p>}

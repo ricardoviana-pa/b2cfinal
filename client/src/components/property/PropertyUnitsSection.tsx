@@ -101,7 +101,7 @@ export default function PropertyUnitsSection({
     <section className="mt-12 lg:mt-16">
       {/* The note drops under the title when both do not fit (German at
           1024-1279 broke the title as "3 Einheiten in dieser" / "Unterkunft"). */}
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 mb-6">
         <h2 className="text-[24px] lg:text-[28px] font-display text-[#1A1A18] text-balance">
           {t('property.unitsInPropertyTitle', { count: units.length, defaultValue: '{{count}} units in this property' })}
         </h2>
@@ -189,7 +189,7 @@ export default function PropertyUnitsSection({
                   ) : (
                     /* Only the prompt may wrap: the arrow stays with "View unit"
                        (German left "→" alone on a second line). */
-                    <div className="flex items-center justify-between gap-x-3">
+                    <div className="flex items-center justify-between gap-x-1.5">
                       <span className="min-w-0 text-[13px] text-[#1A1A18] font-medium text-balance">
                         {t('property.selectDatesForPrice')}
                       </span>

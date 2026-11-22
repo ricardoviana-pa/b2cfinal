@@ -97,7 +97,11 @@ export default function RatePlanCards<T extends RateCardOption>({
               className={cn(
                 // Uma só anatomia de cartão seleccionável no checkout (tarifa, receção,
                 // plano, método; spec §18): 1 px areia em repouso, escuro + areia escolhido
-                "relative flex flex-col gap-2.5 rounded-lg border p-4 cursor-pointer transition-colors",
+                // @container: the plan name and the price follow the card's own
+                // width (the same card is 257 px in the checkout at 1024 px, 295 px
+                // from 1100 px, 248 px in a home's booking card and up to 350 px
+                // on a phone), not the screen's.
+                "@container relative flex flex-col gap-2.5 rounded-lg border p-4 cursor-pointer transition-colors",
                 selected ? "border-pa-dark ring-1 ring-pa-dark bg-pa-warm" : "bg-white border-pa-sand hover:border-pa-dark",
               )}
             >
@@ -112,7 +116,7 @@ export default function RatePlanCards<T extends RateCardOption>({
               />
               {/* Anel de foco do teclado no cartão inteiro (o rádio é invisível) */}
               <span aria-hidden className="pointer-events-none absolute inset-0 rounded-lg ring-2 ring-pa-dark ring-offset-2 opacity-0 peer-focus-visible:opacity-100" />
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start justify-between gap-3 @max-[15rem]:gap-2">
                 <div className="flex items-start gap-2.5 min-w-0">
                   <span
                     aria-hidden
@@ -125,10 +129,10 @@ export default function RatePlanCards<T extends RateCardOption>({
                   </span>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      {/* 13 px from 1024 to 1279 px, where the card is 257-283 px
-                          ("Tarifa Reembolsável" broke one word per line at 14 px),
-                          and 14 px under 375 px ("Återbetalningsbart / pris"). */}
-                      <p className="body-sm max-[374px]:text-sm lg:max-xl:text-[13px] text-pa-dark font-medium leading-snug">{label}</p>
+                      {/* By the card's text width: 15 px from 292 px, 14 px from
+                          280 px, 13 px below ("Tarifa Reembolsável", "Återbetalnings-
+                          bart pris", "Restitueerbaar tarief" broke one word per line). */}
+                      <p className="body-sm @max-[18.25rem]:text-sm @max-[17.5rem]:text-[13px] text-pa-dark font-medium leading-snug">{label}</p>
                       {recommended && (
                         <span className={cn("eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 text-pa-gold-aa border border-pa-sand rounded-sm", selected ? "bg-white" : "bg-pa-warm")}>
                           {t("bookingWidget.recommended", "Recommended")}
@@ -137,13 +141,13 @@ export default function RatePlanCards<T extends RateCardOption>({
                     </div>
                   </div>
                 </div>
-                <p className="body-md text-pa-dark font-medium tabular-nums leading-tight shrink-0 text-right">{money(m.total)}</p>
+                <p className="body-md @max-[15rem]:text-[15px] text-pa-dark font-medium tabular-nums leading-tight shrink-0 text-right">{money(m.total)}</p>
               </div>
               {/* The cancellation line runs under the name and the price, at the
                   card's whole width (indented by the radio): in the column beside
                   the price it broke into stacks of two words at 1024 px and on
                   the 820 px tablet ("Cancelamento / gratuito até / 14 dez 2026"). */}
-              <p id={benefitId} className={cn("caption -mt-2 pl-[26px] leading-snug", nonRef ? "text-pa-earth" : "text-pa-dark")}>
+              <p id={benefitId} className={cn("caption -mt-2 pl-[26px] leading-snug text-balance", nonRef ? "text-pa-earth" : "text-pa-dark")}>
                       {m.kind === "refundable" && m.freeUntil
                         ? t("booking.freeCancellation", { date: noBreak(formatBookingDate(m.freeUntil, lang, true)) })
                         : nonRef
@@ -172,7 +176,7 @@ export default function RatePlanCards<T extends RateCardOption>({
                   checkIn={checkIn}
                   policyCode={m.policyCode}
                   stayTotal={m.total}
-                  className="caption text-pa-dark leading-snug border-t border-pa-sand pt-2"
+                  className="text-[12px] text-pa-dark leading-snug border-t border-pa-sand pt-2"
                 />
               )}
             </label>

@@ -894,6 +894,20 @@
   }
 }
 
+/* Short labels with separators (culture titles, landscape captions, the
+   numbered kickers, the map caption, area names) fill their lines one by one,
+   as on the live site, so a break falls after a "·" or "/" (kept with the word
+   before it). With the site-wide "pretty" wrapping, which avoids one word alone
+   on the last line, the break moved inside the names instead: "Museu dos" /
+   "Biscainhos · Braga", "Viana do" / "Castelo · Portugal". */
+.minho-culture-options h3,
+.minho-landscape-photo > span,
+.minho-number,
+.minho-locator figcaption,
+.minho-bases h3 {
+  text-wrap: wrap;
+}
+
 /* Sections that open on tap on a phone (GuideSection.css, the same query:
    screen only, so paper is left alone). */
 @media screen and (max-width: 767.98px) {

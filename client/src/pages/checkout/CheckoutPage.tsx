@@ -14,7 +14,7 @@ import { QuoteRequestGate } from "@/lib/quoteRequest";
  * header has no stepper. The `step` state machine, the intent statuses, the
  * sync and the analytics events are unchanged.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, Fragment } from "react";
 import { useParams, useLocation, Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import {
@@ -2069,12 +2069,15 @@ export default function CheckoutPage() {
                     grelha CHECK-IN / CHECK-OUT / HÓSPEDES repetia rótulos para
                     três factos que se leem de uma vez. */}
                 <div className="flex items-center justify-between gap-3">
-                  {/* A dot list: "· 4 guests" no longer starts the second line,
-                      and a date never splits ("26 Dez" / "2026"); the range may
-                      break after its arrow. */}
-                  <p className="pa-dots body-md text-pa-dark flex-1 min-w-0">
-                    <span>{noBreak(formatBookingDate(checkIn, lang, true))}{"\u00A0"}→ {noBreak(formatBookingDate(checkOut, lang, true))}</span>
-                    <span className="whitespace-nowrap text-pa-earth">{guestsLine}</span>
+                  {/* Running text in unbreakable pieces: a date never splits
+                      ("26 Dez" / "2026"), the dot stays with the check-out date
+                      (a line may end with it, never start: "· 4 guests"), and a
+                      line breaks only after the arrow or the dot. As a dot list
+                      the wrapped range filled its row and pushed the guests to
+                      a third line at 320-360 px. */}
+                  <p className="body-md text-pa-dark flex-1 min-w-0">
+                    {noBreak(formatBookingDate(checkIn, lang, true))}{"\u00A0"}→ {noBreak(formatBookingDate(checkOut, lang, true))}
+                    <span className="text-pa-earth">{"\u00A0"}· {noBreak(guestsLine)}</span>
                   </p>
                   <button
                     type="button"
@@ -2387,7 +2390,12 @@ export default function CheckoutPage() {
                      From 640 px one line, a long address cut with "…". */
                   <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-1.5 min-w-0 body-sm">
                     <span className="text-pa-earth shrink-0">{t("checkout.emailLineLabel")}</span>
-                    <span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0">{email}</span>
+                    <span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0">
+                      {/* Break points after "@" and before each "." first
+                          ("…oliveira@" / "outlook.com", never "…outlook.c" / "om");
+                          any letter only for a single part longer than the line. */}
+                      {email.replace("@", "@\u0001").split(/\u0001|(?=\.)/).map((part, i) => <Fragment key={i}>{i > 0 && <wbr />}{part}</Fragment>)}
+                    </span>
                     <span aria-hidden className="text-pa-stone-aa shrink-0">·</span>
                     <button
                       type="button"

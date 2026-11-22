@@ -48,7 +48,7 @@ import { trpc } from '@/lib/trpc';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { hasSwimmingPool } from '@/lib/homeSearch';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
-import { formatBookingDate, getDisplayName, intlLocale, formatStayEur, keepHyphens } from '@/lib/format';
+import { formatBookingDate, getDisplayName, intlLocale, formatStayEur, keepHyphens, keepDashes } from '@/lib/format';
 import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight, watchBookingCardUnderFloats } from '@/lib/fixedBottom';
 import {
   StructuredData,
@@ -1462,7 +1462,10 @@ export default function PropertyDetail() {
                     </figcaption>
                   </figure>
                 )}
-                <nav aria-label={t('pdpUx.navigation')} className="mt-5 pt-5 border-t border-pa-sand flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap">
+                {/* On a phone the row fades out at the screen edge, so a pill cut
+                    there reads as "more to scroll" and not as a word with its last
+                    letter missing ("Amenities and feature|s"). */}
+                <nav aria-label={t('pdpUx.navigation')} className="mt-5 pt-5 border-t border-pa-sand flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap max-sm:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]">
                   {sectionLinks.map(([id, label]) => (
                     /* 14 px with 14 px sides on a phone: at 15 px the second pill
                        ended a letter past the screen ("Amenities and feature|s"),
@@ -1622,9 +1625,11 @@ export default function PropertyDetail() {
                 <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
                 <p className="body-sm text-pa-stone mb-4">
                   <span className="font-medium text-pa-gold-aa">{property.locality}</span>
-                  {' · '}{t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
+                  {/* The dots stay with the part before them and the dash with
+                      the word before it: no line starts with "·" or "—". */}
+                  {'\u00A0· '}{keepDashes(t('location.approxNote', 'Approximate area — the exact address is shared after booking'))}
                   {(property as any).licenseNumber && (
-                    <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
+                    <>{'\u00A0· '}{t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
                   )}
                 </p>
                 <div className="rounded-xl overflow-hidden border border-pa-sand">

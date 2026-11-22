@@ -75,15 +75,16 @@ export default function ExperienceQuickFacts({
           values broke in two ("FREE / CANCELLATION", "Up to 24h / before");
           in five equal columns "CANCELAMENTO GRATUITO" missed by 3 px.
           A single fact (the yacht's duration) takes the whole row.
-          From 640 to 1279 px the icon sits above the text, which then has the
+          From 640 to 1023 px the icon sits above the text, which then has the
           column's whole width: beside the icon (171 px at 820) "CANCELAMENTO
-          GRATUITO" broke where its neighbours did not. The languages are a
+          GRATUITO" broke where its neighbours did not. From 1024 px the
+          columns are wide enough beside the icon. The languages are a
           dot list: no line starts or ends with a dot. */}
       <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 xl:grid-cols-[repeat(5,auto)] gap-x-6 gap-y-4 sm:gap-y-5">
         {items.slice(0, 5).map((item, i) => {
           const Icon = item.icon;
           return (
-            <div key={i} className={`flex items-start gap-3 sm:max-xl:flex-col sm:max-xl:gap-2 ${items.length === 1 ? 'col-span-full' : ''}`}>
+            <div key={i} className={`flex items-start gap-3 sm:max-lg:flex-col sm:max-lg:gap-2 ${items.length === 1 ? 'col-span-full' : ''}`}>
               <div className="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg bg-[#F5F1EB]">
                 <Icon className="w-4 h-4 text-pa-gold-aa" />
               </div>

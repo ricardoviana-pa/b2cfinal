@@ -23,6 +23,9 @@ interface PhoneInputProps {
    *  a bandeira escolhida ou o indicativo do número. É o país de faturação do
    *  Klarna (shared/klarna.ts). */
   onCountryChange?: (iso2: string) => void;
+  /** 48 px with the black/15 border of the booking card's other fields (the
+   *  partner panel): at 52 px with a sand border it read as another control. */
+  compact?: boolean;
 }
 
 const SUPPORTED = new Set(defaultCountries.map((c) => parseCountry(c).iso2));
@@ -61,7 +64,7 @@ function subscribeLanguages(onChange: () => void) {
  * depois da hidratação, o campo ainda vazio passa para o país do browser
  * (useSyncExternalStore, sem diferenças entre o HTML do servidor e o React).
  */
-export default function PhoneInput({ id, value, onChange, onBlur, placeholder = "Phone number *", className, describedBy, invalid, onCountryChange }: PhoneInputProps) {
+export default function PhoneInput({ id, value, onChange, onBlur, placeholder = "Phone number *", className, describedBy, invalid, onCountryChange, compact }: PhoneInputProps) {
   const { i18n } = useTranslation();
   const languages = useSyncExternalStore(subscribeLanguages, browserLanguages, () => "");
   const defaultCountry = useMemo(
@@ -118,8 +121,8 @@ export default function PhoneInput({ id, value, onChange, onBlur, placeholder = 
   return (
     <div className={className}>
       <div
-        className={`react-international-phone-input-container !flex !items-center !w-full !h-[52px] !bg-white !border ${invalid ? "!border-red-400" : "!border-[#E8E4DC]"} !rounded-lg focus-within:!border-[#8B7355] focus-within:!ring-2 focus-within:!ring-[#8B7355] !transition`}
-        style={{ height: "52px" }}
+        className={`react-international-phone-input-container !flex !items-center !w-full ${compact ? "!h-[48px]" : "!h-[52px]"} !bg-white !border ${invalid ? "!border-red-400" : compact ? "!border-black/15" : "!border-[#E8E4DC]"} !rounded-lg focus-within:!border-[#8B7355] focus-within:!ring-2 focus-within:!ring-[#8B7355] !transition`}
+        style={{ height: compact ? "48px" : "52px" }}
       >
         <CountrySelector
           selectedCountry={country.iso2}

@@ -284,7 +284,7 @@ function OptionRow({
     <div className={cn("px-4 py-3.5 sm:px-5 transition-colors", selected && "bg-pa-warm", item.parentSku && "pl-9 sm:pl-10")}>
       {/* .pa-option (index.css). On a phone: photo | name over price | add
           button, then the description under them at the full width of the
-          row. From 640 px: the single line it always was. On one line a phone
+          row. From 480 px: the single line it always was. On one line a phone
           left the name and its description a column of 47 to 150 px beside
           the price, one or two words per line (auditoria de formatação,
           20 nov 2026). */}
@@ -315,8 +315,8 @@ function OptionRow({
         </div>
         <div className="pa-option-side">
           {/* Under the name on a phone, the price and its unit on one line
-              ("25 € / per person · day"); to the right of it from 640 px. */}
-          <div className="pa-option-price flex flex-wrap items-baseline gap-x-2 sm:block">
+              ("25 € / per person · day"); to the right of it from 480 px. */}
+          <div className="pa-option-price flex flex-wrap items-baseline gap-x-2 min-[480px]:block">
             {onRequest ? (
               item.priceFrom != null ? (
                 <>
@@ -324,13 +324,13 @@ function OptionRow({
                   <p className="caption text-pa-stone-aa whitespace-nowrap">{t("checkout.noChargeNow", "no charge now")}</p>
                 </>
               ) : (
-                <p className="caption text-pa-stone-aa sm:max-w-[120px] leading-snug">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
+                <p className="caption text-pa-stone-aa min-[480px]:max-w-[120px] leading-snug">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
               )
             ) : item.pricingModel === "included_selectable" ? (
               <>
                 <p className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold-aa">{t("checkout.included.badge")}</p>
                 {/* No telemóvel a regra do extra fica na linha da seleção ("2× · 25 €") */}
-                <p className="caption text-pa-stone-aa hidden sm:block">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
+                <p className="caption text-pa-stone-aa hidden min-[480px]:block">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
               </>
             ) : (
               <>
@@ -450,7 +450,9 @@ function ReceptionRows({
           alone on a computer ("After 21h: / €90."). */}
       <span className="min-w-0 flex-1">
         <span className="flex items-baseline justify-between gap-3">
-          <span className="min-w-0 body-sm font-medium text-pa-dark leading-snug">{name}</span>
+          {/* 14 px under 400 px: at 15 px beside "90 €" the name broke one word
+              per line ("Henkilökohtainen / vastaanotto", "Recepción / presencial"). */}
+          <span className="min-w-0 body-sm max-[399px]:text-sm font-medium text-pa-dark leading-snug">{name}</span>
           <span className="shrink-0">{value}</span>
         </span>
         <span className="block caption text-pa-stone-aa leading-snug mt-0.5">{desc}</span>
@@ -644,9 +646,13 @@ export default function CustomizeStep({
               <OptionRow key={item.sku} item={item} sel={selection[item.sku]} {...rowProps} />
             ))}
             {expanded && transferRows.length > 0 && (
-              <div className="px-4 py-2.5 sm:px-5 flex items-center justify-between gap-2 bg-pa-cream">
-                <span className="caption text-pa-earth">{t("checkout.arrivalAirport", "Arrival airport")}</span>
-                <div className="flex items-center gap-1.5" role="group" aria-label={t("checkout.arrivalAirport", "Arrival airport")}>
+              /* The pills never shrink: when the label and the pills do not fit
+                 side by side (a long single word, "Aankomstluchthaven", at 320 px)
+                 the pills drop under the label, at the right. Squeezed to the
+                 44 px tap minimum, their text ran out of the pill. */
+              <div className="px-4 py-2.5 sm:px-5 flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 bg-pa-cream">
+                <span className="caption text-pa-earth min-w-0">{t("checkout.arrivalAirport", "Arrival airport")}</span>
+                <div className="ml-auto flex shrink-0 items-center gap-1.5" role="group" aria-label={t("checkout.arrivalAirport", "Arrival airport")}>
                   {(["porto", "lisbon"] as const).map((ap) => (
                     <button
                       key={ap}
@@ -654,7 +660,7 @@ export default function CustomizeStep({
                       onClick={() => switchAirport(ap)}
                       aria-pressed={shownAirport === ap}
                       className={cn(
-                        "caption text-inherit h-8 px-2.5 sm:px-3 rounded-full border whitespace-nowrap transition-colors",
+                        "caption text-inherit h-8 shrink-0 px-2.5 sm:px-3 rounded-full border whitespace-nowrap transition-colors",
                         shownAirport === ap
                           ? "border-pa-dark bg-pa-dark text-white"
                           : "border-pa-sand bg-white text-pa-earth hover:border-pa-dark",

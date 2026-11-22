@@ -80,9 +80,14 @@ export default function Destinations() {
             </div>
             <p className="text-xs text-pa-stone-aa mt-4" role="status">{pt ? `${suggested.length} regiões para explorar · Durações sugeridas, à sua medida` : `${suggested.length} regions to explore · Suggested lengths, yours to adapt`}</p>
           </div>}
-          <div className="grid md:grid-cols-6 gap-x-6 gap-y-10">
+          {/* From 768 px each card is four rows of the grid (a subgrid: photo
+              and name, sentence, facts, links), so in a row the sentences,
+              the facts' dividers and the links start level even when a name or
+              a sentence takes a line more (the Minho name is two lines; Douro
+              and Alentejo sentences three). */}
+          <div className="grid md:grid-cols-6 gap-x-6 gap-y-10 md:gap-y-0 md:-mb-10">
             {suggested.map((d, index) => (
-              <article key={d.slug} className="group block md:col-span-3 lg:col-span-2">
+              <article key={d.slug} className="group block md:col-span-3 lg:col-span-2 md:grid md:grid-rows-subgrid md:row-span-4 md:mb-10">
                 <Link href={withEditorialTrip(`/destinations/${d.slug}`,search)} onClick={() => track(d.slug, 'region-card', 'guide')} aria-label={t('destinationGrowth.explore',{name:d.name})}>
                 <div className="aspect-[3/2] md:aspect-[16/10] overflow-hidden rounded-xl bg-pa-sand mb-5">
                   <img src={cdnResize(d.regionImage || d.coverImage, 1080)} srcSet={cdnSrcSet(d.regionImage || d.coverImage, [400, 640, 1080])}
@@ -107,6 +112,7 @@ export default function Destinations() {
                   <li className="flex gap-3"><CalendarDays className="w-4 h-4 mt-1 shrink-0" aria-hidden="true" /><span>{tx(destinationDiscovery[d.slug].stay)}</span></li>
                   <li className="flex gap-3"><CarFront className="w-4 h-4 mt-1 shrink-0" aria-hidden="true" /><span>{tx(destinationDiscovery[d.slug].access)}</span></li>
                 </ul>}
+                {!(discovery && destinationDiscovery[d.slug]) && <span aria-hidden="true" className="hidden md:block" />}
                 <div className="flex flex-wrap gap-x-6 gap-y-1 mt-4 text-sm">
                   <Link href={withEditorialTrip(`/destinations/${d.slug}`,search)} onClick={() => track(d.slug, 'region-card', 'guide')} className="inline-flex min-h-11 items-center gap-2 underline underline-offset-4">{t('destinationGrowth.guide')}<ArrowRight aria-hidden="true" className="w-4 h-4" /></Link>
                   <Link href={withEditorialTrip(destinationHomesHref(d),search)} onClick={() => track(d.slug, 'region-card', 'homes')} className="inline-flex min-h-11 items-center underline underline-offset-4" aria-label={`${t('destinationGrowth.homes')} · ${d.name}`}>{t('destinationGrowth.homes')}</Link>

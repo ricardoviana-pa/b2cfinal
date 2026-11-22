@@ -603,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "PREFERÊNCIAS DE COOKIES",
-    "description": "Os cookies essenciais permitem navegar e reservar. Com a sua autorização, também utilizamos cookies de análise e publicidade. Inclui a medição de OpenAI Ads.",
+    "description": "Os cookies essenciais permitem navegar e reservar. Com a sua autorização, também utilizamos cookies de análise e publicidade. Inclui a medição de OpenAI Ads.",
     "essential": "Cookies Essenciais",
     "essentialDesc": "Necessários para a funcionalidade básica do site e segurança. Não podem ser desativados.",
     "analytics": "Cookies de Análise",
@@ -1359,7 +1359,7 @@
     "bookExperience": "Reservar esta experiência",
     "whatsappSubtitle": "Fale diretamente com a nossa equipa de concierge. Normalmente respondemos em minutos.",
     "chatOnWhatsApp": "Falar no WhatsApp",
-    "whatsappNote": "Todos os dias, das 9h às 21h (hora de Lisboa)"
+    "whatsappNote": "Todos os dias, das 9h às 21h (hora de Lisboa)"
   },
   "bedConfig": {
     "notAvailable": "Configuração de camas não disponível"

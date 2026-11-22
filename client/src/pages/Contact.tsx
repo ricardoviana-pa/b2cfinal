@@ -15,6 +15,7 @@ import { trpc } from '@/lib/trpc';
 import { useSearch } from 'wouter';
 import { corporatePlanning } from '@/data/corporatePlanning';
 import { contactEnquiryContext } from '@shared/contactEnquiryContext';
+import { keepHyphens } from '@/lib/format';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -444,7 +445,7 @@ export default function Contact() {
                             {title}
                           </p>
                           <p className="text-[13px] text-pa-stone mt-0.5 text-balance" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
-                            {sub}
+                            {keepHyphens(sub)}
                           </p>
                         </div>
                         <ArrowRight size={14} className="shrink-0 text-[#E8E4DC] group-hover:text-pa-gold-aa transition-all group-hover:translate-x-0.5" />

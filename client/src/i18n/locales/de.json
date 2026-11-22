@@ -603,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "COOKIE-EINSTELLUNGEN",
-    "description": "Notwendige Cookies ermöglichen die Nutzung der Website und Buchungen. Mit Ihrer Zustimmung verwenden wir auch Analyse- und Werbe-Cookies. Dazu gehört die Messung mit OpenAI Ads.",
+    "description": "Notwendige Cookies ermöglichen die Nutzung der Website und Buchungen. Mit Ihrer Zustimmung verwenden wir auch Analyse- und Werbe-Cookies. Dazu gehört die Messung mit OpenAI Ads.",
     "essential": "Erforderliche Cookies",
     "essentialDesc": "Erforderlich für grundlegende Website-Funktionalität und Sicherheit. Können nicht deaktiviert werden.",
     "analytics": "Analyse-Cookies",

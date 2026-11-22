@@ -642,17 +642,17 @@ export default function Home() {
                   {
                     icon: <HomeIcon className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint1'),
-                    body: t('home.conceptPoint1Body'),
+                    body: keepHyphens(t('home.conceptPoint1Body')),
                   },
                   {
                     icon: <Star className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint2'),
-                    body: t('home.conceptPoint2Body'),
+                    body: keepHyphens(t('home.conceptPoint2Body')),
                   },
                   {
                     icon: <Headphones className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint3'),
-                    body: t('home.conceptPoint3Body'),
+                    body: keepHyphens(t('home.conceptPoint3Body')),
                   },
                 ].map((pillar, i) => (
                   <div key={i} className="flex gap-4">
@@ -796,7 +796,7 @@ export default function Home() {
                         a fourth line, which lifted the text onto the subject
                         of the photos. */}
                     {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                    <p className="text-white/70 caption lg:text-[12px] xl:text-[13px] leading-relaxed font-body font-normal min-h-[4lh] sm:min-h-[3lh] text-wrap" >{exp.body}</p>
+                    <p className="text-white/70 caption lg:text-[12px] xl:text-[13px] leading-relaxed font-body font-normal min-h-[4lh] sm:min-h-[3lh]" >{keepHyphens(exp.body)}</p>
                   </div>
                 </div>
               </Link>

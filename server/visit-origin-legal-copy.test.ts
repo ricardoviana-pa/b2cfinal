@@ -93,7 +93,8 @@ describe('visit origin in the legal pages', () => {
       expect(RESOURCES[lng].privacy.s3AdsBody, lng).toContain('OpenAI Ads');
       expect(RESOURCES[lng].cookiesPage.marketingBody, lng).toContain('__oppref');
       expect(RESOURCES[lng].cookiesPage.marketingBody, lng).toContain('__obref');
-      expect(RESOURCES[lng].cookieBanner.description, lng).toContain('OpenAI Ads');
+      // no aviso de cookies o nome não parte ao fim da linha (espaço inseparável)
+      expect(RESOURCES[lng].cookieBanner.description, lng).toMatch(/OpenAI[\u00A0 ]Ads/);
     }
   });
 

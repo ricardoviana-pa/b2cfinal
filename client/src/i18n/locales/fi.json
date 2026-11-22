@@ -603,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "EVÄSTEASETUKSET",
-    "description": "Välttämättömät evästeet mahdollistavat sivuston käytön ja varaamisen. Luvallasi käytämme myös analytiikka- ja mainosevästeitä. Tämä sisältää OpenAI Ads ‑mittauksen.",
+    "description": "Välttämättömät evästeet mahdollistavat sivuston käytön ja varaamisen. Luvallasi käytämme myös analytiikka- ja mainosevästeitä. Tämä sisältää OpenAI Ads ‑mittauksen.",
     "essential": "Välttämättömät evästeet",
     "essentialDesc": "Vaaditaan sivuston perustoiminnalle ja turvallisuudelle. Niitä ei voi poistaa käytöstä.",
     "analytics": "Analytiikkaevästeet",

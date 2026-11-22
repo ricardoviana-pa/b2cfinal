@@ -469,11 +469,16 @@ export function PartnerBookingPanel({
                 cards and the phone bar, "Select dates for price"; only none
                 (null) is "on request". */}
             {fromPrice ? (
+              /* "per night" at 12 px from 1024 to 1279 px (the card is 283-288
+                  px): at 15 px it dropped to a line of its own in French and
+                  Portuguese even at a three-digit price, and with the calendar
+                  open the main button left the screen (13 px still missed by
+                  1.6 px in Portuguese at 1279). */
               <div className="flex flex-wrap items-baseline gap-x-1">
                 <span className="text-[28px] text-pa-dark font-display whitespace-nowrap">
                   {t('property.fromPerNight', { price: Math.round(fromPrice).toLocaleString(intlLocale(lang)) })}
                 </span>
-                <span className="body-sm text-pa-stone whitespace-nowrap">{t('partnerBooking.perNight', 'per night')}</span>
+                <span className="body-sm lg:max-xl:text-[0.75rem] text-pa-stone whitespace-nowrap">{t('partnerBooking.perNight', 'per night')}</span>
               </div>
             ) : (
               <p className="body-md text-pa-dark">{t(noPriceLabelKey(true, fromPrice))}</p>
@@ -769,6 +774,7 @@ export function PartnerBookingPanel({
               value={phone}
               onChange={setPhone}
               placeholder={t('partnerBooking.phone', 'Phone number')}
+              compact
             />
             <textarea
               rows={2}

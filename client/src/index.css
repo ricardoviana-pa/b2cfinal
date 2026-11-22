@@ -768,19 +768,10 @@
     to { opacity: 1; }
   }
 
-  /* Line clamp */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+  /* Line clamp: Tailwind's own line-clamp-N utilities. Hand-written copies
+     here came after Tailwind's breakpoint variants in the built CSS, so
+     "line-clamp-3 md:line-clamp-2" stayed at three lines on every screen
+     (Journal titles, the checkout section summaries). */
 
   /* Safe area padding for mobile */
   .pb-safe {
@@ -1057,8 +1048,9 @@
    which a JS-only fix can't do. See client/src/lib/datePicker.ts. */
 /* One extra in the checkout (CustomizeStep › OptionRow).
    Phone: photo | name over price | add button, then the description under
-   them at the full width of the row. From 640 px: one line, as it always was
-   on a computer. */
+   them at the full width of the row. From 480 px: one line, as it always was
+   on a computer (from 480 px the name has about 200 px; the phone layout
+   made the list 39 % taller than the live one between 480 and 639 px). */
 @layer components {
   .pa-option {
     display: grid;
@@ -1077,7 +1069,7 @@
   .pa-option-price { grid-area: price; margin-top: 0.125rem; }
   .pa-option-desc { grid-area: desc; margin-top: 0.5rem; }
   .pa-option-toggle { grid-area: toggle; align-self: center; }
-  @media (min-width: 640px) {
+  @media (min-width: 480px) {
     .pa-option { display: flex; align-items: center; gap: 0.75rem; }
     .pa-option-text { display: block; min-width: 0; flex: 1 1 0%; }
     .pa-option-side { display: flex; flex: none; align-items: center; gap: 0.75rem; }

@@ -15,7 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { keepBrand, keepDashes, keepHyphens, keepNameParts, keepPhones, keepPostcode, keepSeparators, noBreak } from '../client/src/lib/format';
+import { frenchSpacing, keepBrand, keepDashes, keepHyphens, keepNameParts, keepPhones, keepPostcode, keepSeparators, noBreak } from '../client/src/lib/format';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const read = (file: string) => fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -110,7 +110,8 @@ describe('listas separadas por pontos: nenhuma linha começa com o ponto', () =>
     expect(page).toContain('`${noBreak(formatBookingDate(checkIn, lang, true))}\\u00A0→ ${noBreak(formatBookingDate(checkOut, lang, true))}`');
     expect(page).toContain('guestsLine ? noBreak(guestsLine) : null,');
     expect(read('client/src/pages/checkout/CustomizeStep.tsx')).toContain('const DOT = "\\u00A0· ";');
-    expect(read('client/src/pages/Adventures.tsx')).toContain(".join('\\u00A0· ')");
+    // o ponto fica com a região antes dele (keepSeparators) e a linha enche-se como no site de hoje
+    expect(read('client/src/pages/Adventures.tsx')).toContain("{keepSeparators(adventure.destinations.map(d => t(`destinations.${d}`)).join(' · '))}");
   });
   it('rodapé: no telemóvel a linha legal não tem pontos e pode partir entre ligações', () => {
     const footer = read('client/src/components/layout/Footer.tsx');
@@ -272,7 +273,8 @@ describe('checkout no telemóvel', () => {
     expect(block).toContain('grid-template-areas: "name toggle" "price toggle" "desc desc";');
     expect(block).toContain('grid-template-areas: "photo name toggle" "photo price toggle" "desc desc desc";');
     // do tablet para cima volta a ser uma linha, como sempre foi no computador
-    expect(block).toMatch(/@media \(min-width: 640px\) \{\s*\.pa-option \{ display: flex;/);
+    // a linha única a partir de 480 px (entre 480 e 639 px a disposição do telemóvel deixava a lista 39 % mais alta)
+    expect(block).toMatch(/@media \(min-width: 480px\) \{\s*\.pa-option \{ display: flex;/);
   });
   it('a conta fica na sua linha e as pastilhas não partem o texto', () => {
     // à direita mesmo quando desce para baixo dos contadores (sm:ml-auto)
@@ -284,7 +286,9 @@ describe('checkout no telemóvel', () => {
     const page = read('client/src/pages/checkout/CheckoutPage.tsx');
     // no telemóvel "Confirmação para · alterar" na primeira linha e o endereço na seguinte, inteiro
     expect(page).toContain('<div className="flex flex-wrap sm:flex-nowrap items-center gap-x-1.5 min-w-0 body-sm">');
-    expect(page).toContain('<span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0">{email}</span>');
+    expect(page).toContain('<span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0">');
+    // partes depois de "@" e antes de cada ".", sem lookbehind (o Safari antigo não o lê)
+    expect(page).toContain('{email.replace("@", "@\\u0001").split(/\\u0001|(?=\\.)/).map((part, i) => <Fragment key={i}>{i > 0 && <wbr />}{part}</Fragment>)}');
   });
 });
 
@@ -378,8 +382,9 @@ describe('2.ª ronda da auditoria de formatação (21 nov 2026)', () => {
     expect(own.match(/<p className="pa-dots caption text-pa-stone">/g)).toHaveLength(2);
     expect(read('client/src/lib/cancellation.ts')).toContain('formatDate: (ymd) => noBreak(formatBookingDate(ymd, lang, true))');
     // 13 px de 1024 a 1279 px e 14 px abaixo de 375 px; a linha de cancelamento corre por baixo do nome e do preço
-    expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('body-sm max-[374px]:text-sm lg:max-xl:text-[13px] text-pa-dark font-medium leading-snug');
-    expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('<p id={benefitId} className={cn("caption -mt-2 pl-[26px] leading-snug"');
+    // pela largura do próprio cartão (container): 15 px, 14 px abaixo de 292 px de texto, 13 px abaixo de 280 px
+    expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('body-sm @max-[18.25rem]:text-sm @max-[17.5rem]:text-[13px] text-pa-dark font-medium leading-snug');
+    expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('<p id={benefitId} className={cn("caption -mt-2 pl-[26px] leading-snug text-balance"');
   });
   it('rodapé, cookies e diálogos', () => {
     const footer = read('client/src/components/layout/Footer.tsx');
@@ -410,9 +415,10 @@ describe('3.ª ronda da auditoria de formatação (21 nov 2026)', () => {
     expect(keepSeparators('Réserver maintenant · 5 177 €')).toBe(`Réserver maintenant${NB}· 5 177 €`);
     expect(keepBrand('ofertas da Portugal Active (opcional).')).toBe(`ofertas da Portugal${NB}Active (opcional).`);
   });
-  it('nomes das casas: uma inicial com a palavra seguinte e um nome de duas palavras antes do travessão inteiro', () => {
+  it('nomes das casas: um nome de duas palavras antes do travessão fica inteiro', () => {
     expect(keepNameParts('Diamante Azul - Mansion')).toBe(`Diamante${NB}Azul${NB}- Mansion`);
-    expect(keepNameParts('Lima River · S. Silvestre House')).toBe(`Lima River${NB}· S.${NB}Silvestre House`);
+    // a inicial já não fica colada: nos cartões estreitos das casas semelhantes dava três linhas
+    expect(keepNameParts('Lima River · S. Silvestre House')).toBe(`Lima River${NB}· S. Silvestre House`);
     expect(keepNameParts('Quinta do Merouço - Casa do Rio')).toBe(`Quinta do Merouço${NB}- Casa do Rio`);
     expect(keepNameParts('Villa Aura')).toBe('Villa Aura');
   });
@@ -437,7 +443,8 @@ describe('3.ª ronda da auditoria de formatação (21 nov 2026)', () => {
       const src = read(file);
       expect(src).toContain('<div className="flex flex-wrap items-baseline gap-x-1">');
       expect(src).toMatch(/text-\[28px\] text-pa-dark font-display whitespace-nowrap/);
-      expect(src).toMatch(/<span className="body-sm text-pa-stone whitespace-nowrap">/);
+      // "por noite" a 12 px de 1024 a 1279 px, onde o cartão tem 283-288 px
+      expect(src).toMatch(/<span className="body-sm lg:max-xl:text-\[0\.75rem\] text-pa-stone whitespace-nowrap">/);
     }
   });
   it('parceiros: com um total, o mínimo de noites fica por baixo das datas, como nas nossas casas', () => {
@@ -447,7 +454,8 @@ describe('3.ª ronda da auditoria de formatação (21 nov 2026)', () => {
   });
   it('unidades de um grupo: a seta fica com "Ver unidade" e a nota desce para baixo do título', () => {
     const units = read('client/src/components/property/PropertyUnitsSection.tsx');
-    expect(units).toContain('flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-6');
+    expect(units).toContain('flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 mb-6');
+    expect(units).toContain('<div className="flex items-center justify-between gap-x-1.5">');
     expect(units).toContain("<span className=\"shrink-0 whitespace-nowrap text-[12px] text-pa-gold-aa uppercase tracking-[0.04em]\">");
   });
   it('régua de filtros: só o valor do Espaço cede quando a linha está cheia', () => {
@@ -456,9 +464,10 @@ describe('3.ª ronda da auditoria de formatação (21 nov 2026)', () => {
     expect(rail).toContain('[&>button]:shrink-0 [&>button]:whitespace-nowrap');
     expect(rail).toContain("{status('inline-flex shrink-0 whitespace-nowrap')}");
   });
-  it('experiências: factos com o ícone por cima de 640 a 1279 px e línguas em lista de pontos', () => {
+  it('experiências: factos com o ícone por cima de 640 a 1023 px e línguas em lista de pontos', () => {
     const facts = read('client/src/components/experience/ExperienceQuickFacts.tsx');
-    expect(facts).toContain('sm:max-xl:flex-col sm:max-xl:gap-2');
+    // só de 640 a 1023 px: a partir de 1024 px as colunas já chegam ao lado do ícone
+    expect(facts).toContain('sm:max-lg:flex-col sm:max-lg:gap-2');
     expect(facts).toContain('<p className="pa-dots text-[15px] leading-snug text-[#1A1A18]"');
     const card = read('client/src/components/experience/ExperienceBookingCard.tsx');
     expect(card.match(/px-4 xl:px-5/g)!.length).toBeGreaterThanOrEqual(3);
@@ -467,7 +476,8 @@ describe('3.ª ronda da auditoria de formatação (21 nov 2026)', () => {
   it('checkout: resumo da estadia em três linhas no telemóvel e e-mail inteiro na sua linha', () => {
     expect(read('client/src/pages/checkout/CheckoutSection.tsx')).toContain('line-clamp-3 sm:line-clamp-2');
     const page = read('client/src/pages/checkout/CheckoutPage.tsx');
-    expect(page).toContain('<p className="pa-dots body-md text-pa-dark flex-1 min-w-0">');
+    // texto corrido em pedaços inteiros: o ponto fica com a data de saída
+    expect(page).toContain('<span className="text-pa-earth">{"\\u00A0"}· {noBreak(guestsLine)}</span>');
     expect(page).toContain('{keepBrand(t("checkout.newsletterOptIn"');
     const step = read('client/src/pages/checkout/CustomizeStep.tsx');
     expect(step).toContain('{confirmNote ? <span className={secondLine ? "block" : undefined}>{confirmNote}</span> : null}');
@@ -475,7 +485,8 @@ describe('3.ª ronda da auditoria de formatação (21 nov 2026)', () => {
   it('horas e números que não se separam da unidade nas traduções', () => {
     const de = JSON.parse(read('client/src/i18n/locales/de.json'));
     expect(de.checkout.reception.lateNote).toBe(`Nach {{hour}}${NB}Uhr: {{price}}.`);
-    expect(JSON.parse(read('client/src/i18n/locales/en.json')).serviceDetail.whatsappNote).toBe(`Available every day, 9${NB}am${NB}–${NB}9${NB}pm (Lisbon time)`);
+    // um WORD JOINER depois do travessão: uma linha podia partir depois dele mesmo com o espaço inseparável
+    expect(JSON.parse(read('client/src/i18n/locales/en.json')).serviceDetail.whatsappNote).toBe(`Available every day, 9${NB}am${NB}–\u2060${NB}9${NB}pm (Lisbon time)`);
     expect(JSON.parse(read('client/src/i18n/locales/fi.json')).cookieBanner?.description ?? read('client/src/i18n/locales/fi.json')).toContain(`Ads${NB}‑mittauksen`);
   });
   it('francês fora do fr.json: a política de cancelamento também tem o espaço inseparável', () => {
@@ -493,5 +504,40 @@ describe('3.ª ronda da auditoria de formatação (21 nov 2026)', () => {
     const sections = read('client/src/components/destinations/sections.tsx');
     expect(sections.match(/md:grid md:grid-rows-subgrid md:row-span-3 md:mb-4/g)).toHaveLength(4);
     expect(sections.match(/gap-4 md:gap-y-0/g)).toHaveLength(4);
+  });
+});
+
+describe('verificação da 3.ª ronda (22 nov 2026)', () => {
+  const NB = ' ';
+  it('line-clamp: só as utilidades do Tailwind (as cópias à mão anulavam md:line-clamp-2)', () => {
+    expect(css).not.toMatch(/^\s*\.line-clamp-[23] \{/m);
+  });
+  it('francês fora do fr.json e números com hífen', () => {
+    expect(frenchSpacing("Guide de l'amateur de vin : la vallée", 'fr')).toBe(`Guide de l'amateur de vin${NB}: la vallée`);
+    expect(frenchSpacing('Porto: a guide', 'en')).toBe('Porto: a guide');
+    expect(keepHyphens('360-degree')).toBe('360-⁠degree');
+  });
+  it('cartões dos guias: a margem da última fila não aumenta o espaço até ao grupo seguinte', () => {
+    const sections = read('client/src/components/destinations/sections.tsx');
+    expect(sections.match(/gap-4 md:gap-y-0 md:-mb-4/g)).toHaveLength(4);
+    // "Continuar a explorar": no fundo da fotografia, duas linhas onde há três cartões por fila
+    expect(sections).toContain('line-clamp-3 md:line-clamp-2');
+    expect(sections).not.toContain('min-h-[3lh]');
+  });
+  it('regiões em /destinos: cada cartão em subgrelha de quatro filas', () => {
+    expect(read('client/src/pages/Destinations.tsx')).toContain('md:grid md:grid-rows-subgrid md:row-span-4 md:mb-10');
+  });
+  it('calendário: a legenda também segue a largura do calendário', () => {
+    const cal = read('client/src/components/booking/AvailabilityCalendar.tsx');
+    expect(cal).toContain('<div className="@container bg-white">');
+    expect(cal).toContain('gap-x-5 @max-[16rem]:gap-x-3');
+    expect(cal.match(/tracking-wide @max-\[16rem\]:tracking-normal/g)).toHaveLength(3);
+  });
+  it('tarifas: data do pagamento em duas partes inteira, a 12 px', () => {
+    expect(read('client/src/components/booking/TwoPartsHint.tsx')).toContain('const date = noBreak(planDate(data.chargeAt, lang));');
+    expect(read('client/src/components/booking/RatePlanCards.tsx')).toContain('className="text-[12px] text-pa-dark leading-snug border-t border-pa-sand pt-2"');
+  });
+  it('telefone do formulário dos parceiros com a altura e a borda dos outros campos', () => {
+    expect(read('client/src/components/booking/PartnerBookingPanel.tsx')).toMatch(/placeholder=\{t\('partnerBooking\.phone', 'Phone number'\)\}\s*compact/);
   });
 });

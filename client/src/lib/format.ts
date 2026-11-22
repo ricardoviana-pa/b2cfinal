@@ -122,9 +122,10 @@ export const keepPhones = (text: string): string =>
   text.replace(/\+\d{2,3}(?: \d{2,4}){2,4}/g, (number) => number.replace(/ /g, '\u00A0'));
 
 /** A hyphenated word stays whole ("Fünf-Sterne-Service", "au-delà",
- *  "Peneda-Gerês"): balanced wrapping likes to break at the hyphen. A WORD
- *  JOINER after it forbids the break and keeps the same hyphen glyph. */
-export const keepHyphens = (text: string): string => text.replace(/(\p{L})-(?=\p{L})/gu, '$1-\u2060');
+ *  "Peneda-Gerês", "360-degree"): balanced wrapping likes to break at the
+ *  hyphen. A WORD JOINER after it forbids the break and keeps the same hyphen
+ *  glyph. Not used on long-form article text (search engines read it). */
+export const keepHyphens = (text: string): string => text.replace(/([\p{L}\p{N}])-(?=\p{L})/gu, '$1-\u2060');
 
 /** A dash stays with the word before it ("the Algarve —" / "the coasts"),
  *  never alone at the start of the next line. A hyphen between spaces is a
@@ -138,12 +139,20 @@ export const keepDashes = (text: string): string => text.replace(/ ([—–-]) /
  *  "/ Tavira"). The line may end with it, as before the larger type. */
 export const keepSeparators = (text: string): string => text.replace(/ ([·/]) /g, '\u00A0$1 ');
 
-/** A home's name on a card: dashes and separators as above, an initial stays
- *  with the next word ("S. Silvestre"), and a two-word name before a spaced
- *  dash stays whole (balanced wrapping broke "Diamante" / "Azul - Mansion"). */
+/** A home's name on a card: dashes and separators as above, and a two-word
+ *  name before a spaced dash stays whole (balanced wrapping broke "Diamante" /
+ *  "Azul - Mansion"). An initial is not glued to the next word: in the narrow
+ *  related-home cards that made "Lima River · / S. Silvestre / House". */
 export const keepNameParts = (name: string): string =>
-  keepSeparators(keepDashes(name.replace(/^(\S+) (\S+)(?= [—–-] )/u, '$1\u00A0$2')))
-    .replace(/(^|\s)(\p{Lu}\.) (?=\p{L})/gu, '$1$2\u00A0');
+  keepSeparators(keepDashes(name.replace(/^(\S+) (\S+)(?= [—–-] )/u, '$1\u00A0$2')));
+
+/** French typography in content that does not come from fr.json (article
+ *  titles): a no-break space before : ; ! ? » and after «, so a line never
+ *  starts with the mark. Other languages come back unchanged. */
+export const frenchSpacing = (text: string, lang?: string): string =>
+  lang?.toLowerCase().startsWith('fr')
+    ? text.replace(/ ([:;!?»])/g, '\u00A0$1').replace(/« /g, '«\u00A0')
+    : text;
 
 /** The brand never splits across lines ("Portugal" / "Active"). */
 export const keepBrand = (text: string): string => text.replace(/Portugal Active/g, 'Portugal\u00A0Active');
