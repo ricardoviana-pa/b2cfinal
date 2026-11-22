@@ -22,11 +22,11 @@ export function blackFridayPublicCoupon(
   }).formatToParts(at);
   const part = (type: string): string => parts.find((p) => p.type === type)?.value ?? "";
   const day = `${part("year")}-${part("month")}-${part("day")}`;
-  return day >= "2026-11-23" && day <= "2026-11-30"
+  return day >= "2026-11-24" && day <= "2026-11-30"
     ? BLACK_FRIDAY_2026_GENERAL_CODE : null;
 }
 
-/** VIP access starts a day before the public campaign (22 Nov, Lisbon time). */
+/** VIP access starts a day before the public campaign (23 Nov, Lisbon time). */
 export function blackFridayVipActive(at: Date = new Date()): boolean {
   if (!Number.isFinite(at.getTime())) return false;
   // Use explicit parts instead of relying on locale-specific date ordering.
@@ -35,7 +35,7 @@ export function blackFridayVipActive(at: Date = new Date()): boolean {
   }).formatToParts(at);
   const read = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
   const ymd = `${read("year")}-${read("month")}-${read("day")}`;
-  return ymd >= "2026-11-22" && ymd <= "2026-11-30";
+  return ymd >= "2026-11-23" && ymd <= "2026-11-30";
 }
 
 
@@ -60,8 +60,8 @@ export function blockedBlackFridayCoupon(
   }).formatToParts(at);
   const part = (t: string): string => today.find((p) => p.type === t)?.value ?? "";
   const day = `${part("year")}-${part("month")}-${part("day")}`;
-  const vipAllowed = day >= "2026-11-22" && day <= "2026-11-30";
-  const publicAllowed = day >= "2026-11-23" && day <= "2026-11-30";
+  const vipAllowed = day >= "2026-11-23" && day <= "2026-11-30";
+  const publicAllowed = day >= "2026-11-24" && day <= "2026-11-30";
 
   for (const label of labels) {
     const vip = /PABF15VIP26/.test(label) || /BLACK[\s_-]*FRIDAY.{0,40}\bVIP\b/.test(label);
