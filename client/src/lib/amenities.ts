@@ -246,19 +246,23 @@ export function amenityIcon(label: string): LucideIcon {
  * case-insensitively against the home's amenity strings.
  */
 const hasAny = (re: RegExp) => (items: string[]) => items.some((it) => re.test(it));
+const HEATED_POOL = /heated (?:swimming |outdoor |indoor )?pool|pool (?:is )?heated/i;
 export const AMENITY_HIGHLIGHTS: { key: string; icon: LucideIcon; test: (items: string[]) => boolean }[] = [
   // "Pool table" is a games-room item, not a swimming pool; the same rule as
   // the pool filter so the highlight and the PLP agree. "Private" only when
   // Guesty says so: a shared estate pool is just "Swimming pool".
+  // A heated pool leads, and then stands for the pool: "Pool" beside "Heated
+  // pool" said the same thing twice (Villa Aura, 22 nov 2026).
+  { key: 'heatedPool', icon: Waves, test: hasAny(HEATED_POOL) },
   { key: 'privatePool', icon: Waves, test: (items) => hasSwimmingPool(items) && items.some((it) => /private pool/i.test(it)) },
-  { key: 'swimmingPool', icon: Waves, test: (items) => hasSwimmingPool(items) && !items.some((it) => /private pool/i.test(it)) },
-  { key: 'heatedPool', icon: Waves, test: hasAny(/heated (?:swimming |outdoor |indoor )?pool|pool (?:is )?heated/i) },
+  { key: 'swimmingPool', icon: Waves, test: (items) => hasSwimmingPool(items) && !items.some((it) => /private pool/i.test(it)) && !hasAny(HEATED_POOL)(items) },
+  // The sauna right after the pool: one of the features that sell a home.
+  { key: 'sauna', icon: Sparkles, test: hasAny(/\bsauna\b/i) },
   { key: 'seaView', icon: Palmtree, test: hasAny(/\b(ocean|sea|beach(?:front)?)\b.*view|view.*\b(ocean|sea|beach)\b|beachfront/i) },
   { key: 'nearOcean', icon: Palmtree, test: (items) => hasAny(/near (?:the )?ocean|near (?:the )?sea|waterfront|beach access|steps? (?:from|to) (?:the )?beach/i)(items) && !hasAny(/\b(ocean|sea|beach(?:front)?)\b.*view|view.*\b(ocean|sea|beach)\b/i)(items) },
   { key: 'mountainView', icon: Mountain, test: hasAny(/mountain view|valley view/i) },
   { key: 'riverView', icon: Mountain, test: hasAny(/(?:river|lake) ?view|lakefront|riverfront|lake access|river access/i) },
   { key: 'jacuzzi', icon: Waves, test: hasAny(/jacuzzi|hot ?tub/i) },
-  { key: 'sauna', icon: Sparkles, test: hasAny(/\bsauna\b/i) },
   { key: 'fireplace', icon: Flame, test: hasAny(/fireplace|fire ?pit|wood stove/i) },
   { key: 'bbq', icon: UtensilsCrossed, test: hasAny(/\bbbq\b|barbe|\bgrill\b|outdoor kitchen/i) },
   { key: 'garden', icon: TreePine, test: hasAny(/private garden|\bgarden\b(?! view)|backyard|\blawn\b/i) },
