@@ -185,7 +185,8 @@
     "unavailableHint": "These homes may be available for different dates. Contact our concierge for alternatives.",
     "fromTotal": "From {{price}} for the stay",
     "metaTitle": "Villa Rentals & Holiday Homes in Portugal",
-    "metaDescription": "Browse {{homes}} luxury villas and holiday homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct."
+    "metaDescription": "Browse {{homes}} luxury villas and holiday homes in Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct.",
+    "showMore": "Show more"
   },
   "property": {
     "bedrooms": "Bedrooms",
@@ -602,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "COOKIE PREFERENCES",
-    "description": "Essential cookies keep the site and booking working. With your permission, we also use analytics and advertising cookies. This includes OpenAI Ads measurement.",
+    "description": "Essential cookies keep the site and booking working. With your permission, we also use analytics and advertising cookies. This includes OpenAI Ads measurement.",
     "essential": "Essential Cookies",
     "essentialDesc": "Required for basic site functionality and security. Cannot be disabled.",
     "analytics": "Analytics Cookies",
@@ -629,7 +630,7 @@
     "heroGuarantee": "No booking fees. Best rate guaranteed. Concierge response within 2 hours.",
     "proofHotels": "{{homes}} villas and private homes",
     "proofRating": "4.8★ guest rating",
-    "heroAlt": "Private tennis court and villa at Mirante 1, above Albufeira in the Algarve",
+    "heroAlt": "Pool, gardens and manor at Carcavelos Manor House, in Vila Verde, in the Minho",
     "searchDestination": "Destination",
     "searchMinhoCoast": "Minho Coast",
     "searchPortoDouro": "Porto and Douro",
@@ -1291,7 +1292,7 @@
     "bookExperience": "Book this experience",
     "whatsappSubtitle": "Message our concierge team directly. We typically reply within minutes.",
     "chatOnWhatsApp": "Chat on WhatsApp",
-    "whatsappNote": "Available every day, 9 am – 9 pm (Lisbon time)"
+    "whatsappNote": "Available every day, 9 am –⁠ 9 pm (Lisbon time)"
   },
   "bedConfig": {
     "notAvailable": "Bed configuration details not available"

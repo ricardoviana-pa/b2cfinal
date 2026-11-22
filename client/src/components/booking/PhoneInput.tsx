@@ -23,6 +23,9 @@ interface PhoneInputProps {
    *  a bandeira escolhida ou o indicativo do número. É o país de faturação do
    *  Klarna (shared/klarna.ts). */
   onCountryChange?: (iso2: string) => void;
+  /** 48 px with the black/15 border of the booking card's other fields (the
+   *  partner panel): at 52 px with a sand border it read as another control. */
+  compact?: boolean;
 }
 
 const SUPPORTED = new Set(defaultCountries.map((c) => parseCountry(c).iso2));
@@ -61,7 +64,7 @@ function subscribeLanguages(onChange: () => void) {
  * depois da hidratação, o campo ainda vazio passa para o país do browser
  * (useSyncExternalStore, sem diferenças entre o HTML do servidor e o React).
  */
-export default function PhoneInput({ id, value, onChange, onBlur, placeholder = "Phone number *", className, describedBy, invalid, onCountryChange }: PhoneInputProps) {
+export default function PhoneInput({ id, value, onChange, onBlur, placeholder = "Phone number *", className, describedBy, invalid, onCountryChange, compact }: PhoneInputProps) {
   const { i18n } = useTranslation();
   const languages = useSyncExternalStore(subscribeLanguages, browserLanguages, () => "");
   const defaultCountry = useMemo(
@@ -118,16 +121,16 @@ export default function PhoneInput({ id, value, onChange, onBlur, placeholder = 
   return (
     <div className={className}>
       <div
-        className={`react-international-phone-input-container !flex !items-center !w-full !h-[52px] !bg-white !border ${invalid ? "!border-red-400" : "!border-[#E8E4DC]"} !rounded-md focus-within:!border-[#8B7355] focus-within:!ring-2 focus-within:!ring-[#8B7355] !transition`}
-        style={{ height: "52px" }}
+        className={`react-international-phone-input-container !flex !items-center !w-full ${compact ? "!h-[48px]" : "!h-[52px]"} !bg-white !border ${invalid ? "!border-red-400" : compact ? "!border-black/15" : "!border-[#E8E4DC]"} !rounded-lg focus-within:!border-[#8B7355] focus-within:!ring-2 focus-within:!ring-[#8B7355] !transition`}
+        style={{ height: compact ? "48px" : "52px" }}
       >
         <CountrySelector
           selectedCountry={country.iso2}
           onSelect={(c) => setCountry(c.iso2, { focusOnInput: true })}
-          buttonClassName="!bg-white !border-0 !rounded-none !rounded-l-md !px-3 !h-full hover:!bg-[#F5F1EB] !transition-colors"
+          buttonClassName="!bg-white !border-0 !rounded-none !rounded-l-lg !px-3 !h-full hover:!bg-[#F5F1EB] !transition-colors"
           dropdownStyleProps={{
             className: "!bg-white !border-[#E8E4DC] !rounded-lg !shadow-lg !z-[100] !max-h-[200px]",
-            listItemClassName: "!text-[13px] !text-[#1A1A18] hover:!bg-[#F5F1EB] !px-3 !py-2",
+            listItemClassName: "!text-[15px] !text-[#1A1A18] hover:!bg-[#F5F1EB] !px-3 !py-2",
           }}
         />
         <input
@@ -143,7 +146,7 @@ export default function PhoneInput({ id, value, onChange, onBlur, placeholder = 
           aria-label={placeholder}
           aria-describedby={describedBy}
           aria-invalid={invalid || undefined}
-          className="react-international-phone-input !w-full !h-full !bg-white !border-0 !border-r-0 !rounded-none !rounded-r-md !text-[16px] !text-[#1A1A18] !px-3 focus:!outline-none focus:!ring-0 !font-[inherit]"
+          className="react-international-phone-input !w-full !h-full !bg-white !border-0 !border-r-0 !rounded-none !rounded-r-lg !text-[16px] !text-[#1A1A18] !px-3 focus:!outline-none focus:!ring-0 !font-[inherit]"
         />
       </div>
     </div>

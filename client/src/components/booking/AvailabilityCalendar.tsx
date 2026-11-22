@@ -61,6 +61,10 @@ interface AvailabilityCalendarProps {
   /** In the page itself (the availability section), not in a picker: always
    *  the grid, never the phone's full-screen dialog. */
   inline?: boolean;
+  /** A search with no home behind it (the homepage and the listing): every
+   *  future day is open, so there is no availability legend and no rule
+   *  notice, only the months and the two steps. */
+  search?: boolean;
 }
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -142,6 +146,7 @@ export default function AvailabilityCalendar({
   missingUntil,
   unknownNote,
   inline,
+  search,
 }: AvailabilityCalendarProps) {
   const { t, i18n } = useTranslation();
   const isMobile = useIsMobile() && !inline;
@@ -261,20 +266,20 @@ export default function AvailabilityCalendar({
               type="button"
               onClick={() => navigateMonth(-1)}
               disabled={atFirstMonth}
-              className="w-8 h-8 flex items-center justify-center text-black/40 hover:text-black transition-colors disabled:opacity-0 disabled:pointer-events-none"
+              className="w-8 h-8 flex items-center justify-center text-pa-stone hover:text-black transition-colors disabled:opacity-0 disabled:pointer-events-none"
               aria-label="Previous month"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
           ) : <div className="w-8" />}
-          <span className="text-[13px] font-medium tracking-wide text-black">
+          <span className="text-[15px] font-medium tracking-wide text-black">
             {months[month]} {year}
           </span>
           {showNav || !isMobile ? (
             <button
               type="button"
               onClick={() => navigateMonth(1)}
-              className="w-8 h-8 flex items-center justify-center text-black/40 hover:text-black transition-colors"
+              className="w-8 h-8 flex items-center justify-center text-pa-stone hover:text-black transition-colors"
               aria-label="Next month"
             >
               <ChevronRight className="w-4 h-4" />
@@ -285,7 +290,7 @@ export default function AvailabilityCalendar({
         {/* Weekday headers */}
         <div className="grid grid-cols-7 mb-1">
           {weekdays.map(wd => (
-            <div key={wd} className="text-center text-[10px] font-medium tracking-wider uppercase text-black/30 py-1">
+            <div key={wd} className="text-center text-[12px] font-medium tracking-wider uppercase text-pa-stone py-1">
               {wd}
             </div>
           ))}
@@ -342,7 +347,7 @@ export default function AvailabilityCalendar({
                   onPointerEnter={(e) => { if (e.pointerType === "mouse" && !isDisabled) setHoverDate(dateStr); }}
                   onPointerLeave={() => setHoverDate("")}
                   className={[
-                    "relative z-10 w-10 h-10 flex items-center justify-center text-[13px] transition-all select-none",
+                    "relative z-10 w-10 h-10 flex items-center justify-center text-[15px] transition-all select-none",
                     // Endpoint (check-in or check-out selected)
                     isEndpoint
                       ? "bg-black text-white rounded-full font-medium"
@@ -445,25 +450,43 @@ export default function AvailabilityCalendar({
   }, [phase, dayMap, viewYear, viewMonth, todayMs, locale]);
 
   const calendarNode = (
-    <div className="bg-white">
+    // A container: the legend under the months follows the calendar's own
+    // width too (in the 244 px booking-card calendar the Dutch and Italian
+    // legend took two rows and pushed the main button off a 900 px screen;
+    // the partner panel's three-item legend did the same at 324 px).
+    <div className="@container bg-white">
       {/* Selection phase — the pills pick which date the next click changes.
           On a phone the picker covers the date fields, so the pills carry the
           dates too. */}
-      <div className="flex items-center gap-2 px-4 pt-4 pb-2">
+      {/* On a phone the pills carry the dates too: at 13 px the three did not
+          fit a 390 px screen (text ran out of the pill). 12 px and tighter
+          gaps below 640 px, and none of them may shrink; a longer language
+          wraps "Clear" to a second row instead of squeezing. */}
+      {/* Tighter above and below (pt-3, and pb-2 / pb-2.5 further down) than
+          before the larger type: with the calendar open in a home's booking
+          card the card grew 23 px and its button fell below a 900 px screen. */}
+      {/* Sized by the calendar's own width, not the screen's (a container):
+          in a home's booking card (244 px at 1024-1279, 324 px from 1280)
+          "Clear" wrapped to a second row once a check-in was picked, so the
+          days moved 37 px under the pointer and the main button left the
+          screen. Under 28rem the pills are 12 px and Clear is the cross;
+          under 16rem the chevron goes too (Swedish and Finnish). */}
+      <div className="@container">
+      <div className="flex flex-wrap items-center gap-1.5 @min-[28rem]:gap-2 px-4 pt-3 pb-2">
         <button
           type="button"
           onClick={() => focusPhase("check-in")}
           aria-pressed={phase === "check-in"}
-          className={`flex items-center gap-1.5 px-2.5 py-1 whitespace-nowrap rounded-full text-[11px] font-medium tracking-wide transition-all cursor-pointer ${
+          className={`flex shrink-0 items-center gap-1.5 px-2 @max-[16rem]:px-1.5 @min-[28rem]:px-2.5 py-1 whitespace-nowrap rounded-full text-[12px] @min-[28rem]:text-[13px] font-medium tracking-wide transition-all cursor-pointer ${
             phase === "check-in"
               ? "bg-black text-white"
-              : "bg-black/[0.04] text-black/50 hover:bg-black/[0.08] hover:text-black/70"
+              : "bg-black/[0.04] text-pa-stone hover:bg-black/[0.08] hover:text-black/70"
           }`}
         >
           {t("bookingWidget.checkInLabel")}
           {isMobile && checkIn && <span className="font-normal opacity-80">· {fmtShort(checkIn)}</span>}
         </button>
-        <svg className="w-3 h-3 text-black/20 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-3 h-3 text-black/20 shrink-0 @max-[16rem]:hidden" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
         <button
@@ -471,12 +494,12 @@ export default function AvailabilityCalendar({
           onClick={() => { if (checkIn) focusPhase("check-out"); }}
           disabled={!checkIn}
           aria-pressed={phase === "check-out"}
-          className={`flex items-center gap-1.5 px-2.5 py-1 whitespace-nowrap rounded-full text-[11px] font-medium tracking-wide transition-all ${
+          className={`flex shrink-0 items-center gap-1.5 px-2 @max-[16rem]:px-1.5 @min-[28rem]:px-2.5 py-1 whitespace-nowrap rounded-full text-[12px] @min-[28rem]:text-[13px] font-medium tracking-wide transition-all ${
             !checkIn ? "cursor-not-allowed" : "cursor-pointer"
           } ${
             phase === "check-out"
               ? "bg-black text-white"
-              : "bg-black/[0.04] text-black/50" + (checkIn ? " hover:bg-black/[0.08] hover:text-black/70" : "")
+              : "bg-black/[0.04] text-pa-stone" + (checkIn ? " hover:bg-black/[0.08] hover:text-black/70" : "")
           }`}
         >
           {t("bookingWidget.checkOutLabel")}
@@ -486,12 +509,17 @@ export default function AvailabilityCalendar({
           <button
             type="button"
             onClick={() => { onSelectRange({ checkIn: "", checkOut: "", done: false }); setPhase("check-in"); }}
-            className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium text-black/60 bg-black/[0.04] hover:bg-black/[0.08] hover:text-black transition-all"
+            className="relative ml-auto flex shrink-0 items-center justify-center gap-1 px-2 @max-[16rem]:px-1.5 @min-[28rem]:px-2.5 py-1 min-h-[calc(1lh_+_0.5rem)] rounded-full text-[12px] @min-[28rem]:text-[13px] font-medium text-black/60 bg-black/[0.04] hover:bg-black/[0.08] hover:text-black transition-all after:absolute after:-inset-y-2 after:-left-1 after:-right-3 after:content-['']"
           >
-            <X className="w-3 h-3" />
-            {t("bookingWidget.clearDates")}
+            {/* The cross alone under 28rem: with the dates in the pills (phone)
+                or in a booking card, "Clear" ("Zurücksetzen", "Tyhjennä")
+                dropped to a second row and pushed the month down. As tall as
+                the date pills, with a larger invisible tap area. */}
+            <X className="w-3 h-3 shrink-0" aria-hidden />
+            <span className="@max-[28rem]:sr-only">{t("bookingWidget.clearDates")}</span>
           </button>
         )}
+      </div>
       </div>
 
       {/* Notice slot — fixed height, always rendered, so a notice that appears
@@ -499,18 +527,20 @@ export default function AvailabilityCalendar({
           pushes the grid under the pointer and the next click lands on another
           day (auditoria set/2026, F2). One notice at a time: the rule for the
           chosen check-in wins over the month's general rule. */}
-      <div className="mx-4 mb-1 min-h-[46px] flex items-stretch">
+      {!search && <div className="mx-4 mb-1 min-h-[46px] flex items-stretch">
         {phase === "check-out" && requiredMinNights > 1 ? (
-          <div className="flex-1 flex items-start gap-2 px-3 py-2 bg-amber-50/80 border border-amber-200/60">
+          <div className="flex-1 flex items-start gap-2 px-3 py-1.5 rounded-lg bg-amber-50/80 border border-amber-200/60">
             <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
-            <p className="text-[11px] text-amber-800 font-medium leading-snug">
+            {/* 12 px: two lines fit the 46 px slot, so the month does not move
+                when the notice appears after the first tap. */}
+            <p className="text-[12px] text-amber-800 font-medium leading-[1.3]">
               {t("booking.minStayNotice", { count: requiredMinNights })}
             </p>
           </div>
         ) : monthRule ? (
-          <div className="flex-1 flex items-start gap-2 px-3 py-2 bg-[#F5F1EB] border border-[#E8E4DC]">
+          <div className="flex-1 flex items-start gap-2 px-3 py-1.5 rounded-lg bg-[#F5F1EB] border border-[#E8E4DC]">
             <span className="text-[#806A48] text-sm shrink-0 leading-none mt-0.5">i</span>
-            <p className="text-[11px] text-[#1A1A18] font-medium leading-snug">
+            <p className="text-[12px] text-[#1A1A18] font-medium leading-[1.3]">
               {monthRule.restrictedArrivals
                 ? monthRule.minNights > 1
                   ? t("booking.arrivalDaysNotice", {
@@ -529,30 +559,32 @@ export default function AvailabilityCalendar({
             </p>
           </div>
         ) : null}
-      </div>
+      </div>}
 
       {/* Calendar grid */}
-      <div className={`px-3 pb-3 pt-1 ${isMobile || singleMonth ? "" : "flex gap-6"}`}>
+      <div className={`px-3 pb-2 pt-0.5 ${isMobile || singleMonth ? "" : "flex gap-6"}`}>
         {renderMonth(viewYear, viewMonth, true)}
         {!isMobile && !singleMonth && renderMonth(secondYear, secondMonth, false)}
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-4 pb-4 pt-1 border-t border-black/[0.04]">
-        <div className="flex items-center gap-1.5">
+      {/* Legend (not in a search: with no home there is no availability to explain) */}
+      <div className={search
+        ? (!isMobile && onClose && checkIn && checkOut ? "flex items-center px-4 pb-4 pt-3 border-t border-black/[0.04]" : "hidden")
+        : "flex flex-wrap items-center gap-x-5 @max-[21rem]:gap-x-3 gap-y-2 px-4 pb-2.5 pt-1 border-t border-black/[0.04]"}>
+        {!search && <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black" />
-          <span className="text-[10px] text-pa-stone-aa tracking-wide">{t("bookingWidget.availableLabel")}</span>
-        </div>
-        <div className="flex items-center gap-1.5">
+          <span className="text-[12px] text-pa-stone-aa tracking-wide @max-[21rem]:tracking-normal">{t("bookingWidget.availableLabel")}</span>
+        </div>}
+        {!search && <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black/10 flex items-center justify-center">
             <span className="block w-1.5 h-px bg-black/25" />
           </span>
-          <span className="text-[10px] text-pa-stone-aa tracking-wide">{t("bookingWidget.unavailableLabel")}</span>
-        </div>
+          <span className="text-[12px] text-pa-stone-aa tracking-wide @max-[21rem]:tracking-normal">{t("bookingWidget.unavailableLabel")}</span>
+        </div>}
         {showsUnknown && (
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full border border-dashed border-pa-gold-aa" aria-hidden="true" />
-            <span className="text-[10px] text-pa-stone-aa tracking-wide">{t("bookingWidget.onRequestLabel", "On request")}</span>
+            <span className="text-[12px] text-pa-stone-aa tracking-wide @max-[21rem]:tracking-normal">{t("bookingWidget.onRequestLabel", "On request")}</span>
           </div>
         )}
         {/* After changing only the check-in the calendar stays open on the
@@ -561,7 +593,7 @@ export default function AvailabilityCalendar({
           <button
             type="button"
             onClick={onClose}
-            className="pa-action ml-auto min-h-[36px] px-4 bg-black text-white text-[11px] font-medium tracking-widest uppercase hover:bg-black/85 transition-colors"
+            className="pa-action ml-auto min-h-[36px] px-4 bg-black text-white text-[12px] font-medium tracking-widest uppercase hover:bg-black/85 transition-colors"
           >
             {t("bookingWidget.confirmDates")}
           </button>
@@ -573,7 +605,7 @@ export default function AvailabilityCalendar({
           a fact about the home: an unpublished date and one the page failed
           to load look the same here (revisão do PR #180, R1/R2). */}
       {showsUnknown && (
-        <p className="px-4 pb-4 -mt-2 text-[11px] leading-snug text-pa-stone-aa" role="note">
+        <p className="px-4 pb-4 -mt-2 text-[13px] leading-snug text-pa-stone-aa" role="note">
           {unknownNote ?? t("bookingWidget.onRequestNote", "We cannot show availability or a price online for dates on request. You can still ask for them: our concierge confirms availability and the price.")}
         </p>
       )}
@@ -595,13 +627,13 @@ export default function AvailabilityCalendar({
         <DialogContent showCloseButton={false} className="max-w-none w-screen h-screen top-0 left-0 translate-x-0 translate-y-0 rounded-none p-0 bg-white">
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between px-5 pt-5 pb-3">
-              <DialogTitle className="text-[13px] font-medium tracking-wide text-black leading-normal">
+              <DialogTitle className="text-[15px] font-medium tracking-wide text-black leading-normal">
                 {t("booking.selectDates")}
               </DialogTitle>
               <button
                 type="button"
                 onClick={closeMobile}
-                className="text-black/40 hover:text-black transition-colors"
+                className="text-pa-stone hover:text-black transition-colors"
                 aria-label="Close"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

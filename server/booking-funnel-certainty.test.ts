@@ -36,7 +36,7 @@ describe('sem "pode ser exigida uma caução" no funil', () => {
 
   it('o painel do parceiro mostra a caução com o valor, quando a conhece', () => {
     expect(read('client/src/components/booking/PartnerBookingPanel.tsx')).toMatch(
-      /t\('partnerBooking\.depositNote', \{ amount: formatQuotedEur\(quote\.securityDeposit, lang\) \}\)/,
+      /t\('partnerBooking\.depositNote', \{ amount: formatStayEur\(quote\.securityDeposit, lang\) \}\)/,
     );
   });
 });

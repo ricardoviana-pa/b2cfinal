@@ -44,8 +44,10 @@ describe("shared/company.ts: uma só fonte", () => {
     expect(footer).toMatch(/href="\/legal\/terms"/);
     const terms = read("client/src/pages/Terms.tsx");
     expect(terms).toMatch(/from '@shared\/company'/);
-    expect(terms).toMatch(/t\('legalFooter\.operatedBy', \{ company: COMPANY_LEGAL_NAME, nipc: COMPANY_NIPC \}\)/);
-    expect(terms).toMatch(/companyAddressLine\(\) \? ` · \$\{companyAddressLine\(\)\}` : ''/);
+    // o nome da empresa nunca se parte (noBreak), mas continua a vir de shared/company
+    expect(terms).toMatch(/t\('legalFooter\.operatedBy', \{ company: noBreak\(COMPANY_LEGAL_NAME\), nipc: COMPANY_NIPC \}\)/);
+    // a morada vem de companyAddressLine(); cada parte (rua, código postal com a localidade) não se parte
+    expect(terms).toMatch(/companyAddressLine\(\) \? `\\u00A0· \$\{companyAddressLine\(\)!\.split\(', '\)\.map\(\(part\) => keepPostcode\(noBreak\(part\)\)\)\.join\(', '\)\}` : ''/);
     const email = read("server/services/transactional-email.ts");
     expect(email).toMatch(/import \{ companyLegalLine \} from "@shared\/company"/);
     expect(email).toMatch(/\$\{companyLegalLine\(\)\}<\/p>\s*\n<\/td><\/tr>`;\s*\n\}/);

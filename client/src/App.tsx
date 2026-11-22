@@ -326,7 +326,7 @@ function App({ ssrLocation }: { ssrLocation?: string }) {
                   target.tabIndex = -1;
                   target.focus();
                 }}
-                className="absolute top-0 left-0 z-[9998] px-4 py-2 bg-[#8B7355] text-white text-sm font-medium rounded-b-md transform -translate-y-full focus:translate-y-0 transition-transform"
+                className="absolute top-0 left-0 z-[9998] px-4 py-2 bg-[#806A48] text-white text-sm font-medium rounded-b-lg transform -translate-y-full focus:translate-y-0 transition-transform"
               >
                 {t('header.skipToContent')}
               </a>

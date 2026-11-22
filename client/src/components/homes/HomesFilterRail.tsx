@@ -88,7 +88,7 @@ function KindSwitch({ value, counts, onChange, className = '' }: {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(k)}
-            className={`relative flex items-center font-body text-[11px] font-medium uppercase tracking-[0.14em] transition-colors ${
+            className={`relative flex items-center font-body text-[12px] font-medium uppercase tracking-[0.08em] sm:tracking-[0.14em] transition-colors ${
               active ? 'text-pa-dark' : 'text-pa-stone hover:text-pa-dark'
             } ${dim(counts[k])}`}
           >
@@ -103,10 +103,13 @@ function KindSwitch({ value, counts, onChange, className = '' }: {
 
 function MenuTrigger({ label, value, open }: { label: string; value?: string | null; open?: boolean }) {
   return (
-    <span className={`relative inline-flex items-center gap-1.5 font-body text-[13px] leading-none transition-colors ${
+    <span className={`relative inline-flex max-w-full items-center gap-1.5 font-body text-[15px] leading-none transition-colors ${
       value ? 'text-pa-dark font-medium' : 'text-pa-dark hover:text-pa-gold-aa'
     }`}>
-      <span className="truncate max-w-[180px]">{value || label}</span>
+      {/* Its own line height: on the trigger's (1) the box was as tall as the
+          letters and cut the accent of "Équipements". 240 px: the longest
+          value ("5–6 makuuhuonetta · 12+ vierasta") needs 237. */}
+      <span className="truncate max-w-[240px] leading-[1.4]">{value || label}</span>
       <ChevronDown className={`w-3 h-3 shrink-0 text-pa-stone transition-transform ${open ? 'rotate-180' : ''}`} />
       {value && <span aria-hidden className="absolute -top-1 -right-2.5 h-1.5 w-1.5 rounded-full bg-pa-gold" />}
     </span>
@@ -130,7 +133,7 @@ function OptionRow({ label, count, selected, onClick, box }: {
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={`flex w-full items-center justify-between h-10 font-body text-[13px] text-pa-dark ${dim(count ?? 1)}`}
+      className={`flex w-full items-center justify-between h-10 font-body text-[15px] text-pa-dark ${dim(count ?? 1)}`}
     >
       <span className="flex items-center gap-3">
         {box && (
@@ -143,8 +146,8 @@ function OptionRow({ label, count, selected, onClick, box }: {
         <span className={selected ? 'font-medium' : ''}>{label}</span>
       </span>
       <span className="flex items-center gap-2">
-        {typeof count === 'number' && <span className="font-body text-[11px] tabular-nums text-pa-stone">{count}</span>}
-        {!box && selected && <Check className="w-3.5 h-3.5 text-pa-gold" strokeWidth={2} />}
+        {typeof count === 'number' && <span className="font-body text-[13px] tabular-nums text-pa-stone">{count}</span>}
+        {!box && selected && <Check className="w-3.5 h-3.5 text-pa-gold-aa" strokeWidth={2} />}
       </span>
     </button>
   );
@@ -158,7 +161,12 @@ function Strip<T extends string | number>({ options, value, onChange }: {
   options: { value: T; label: string; count: number }[]; value: T; onChange: (v: T) => void;
 }) {
   return (
-    <div className="grid rounded-lg border border-pa-sand overflow-hidden divide-x divide-pa-sand" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
+    /* Equal cells, except that the first ("Any": "Beliebig", "Cualquiera",
+       "Qualsiasi") is never narrower than its word: in the 258 px computer
+       popover an equal share was 42 px and cut the word at both sides; in the
+       wide sheet below 1280 px every cell is the same width again (with
+       "auto" the chosen cell was a 48 px sliver beside 230 px numbers). */
+    <div className="grid rounded-lg border border-pa-sand overflow-hidden divide-x divide-pa-sand" style={{ gridTemplateColumns: `minmax(max-content, 1fr) repeat(${Math.max(1, options.length - 1)}, minmax(0, 1fr))` }}>
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -167,12 +175,12 @@ function Strip<T extends string | number>({ options, value, onChange }: {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(o.value)}
-            className={`flex flex-col items-center justify-center h-12 font-body transition-colors focus-visible:outline-offset-[-3px] ${
+            className={`flex min-w-0 flex-col items-center justify-center h-12 px-2.5 font-body whitespace-nowrap transition-colors focus-visible:outline-offset-[-3px] ${
               active ? 'bg-pa-dark text-white' : `bg-white text-pa-dark hover:bg-pa-warm ${dim(o.count)}`
             }`}
           >
-            <span className="text-[13px] leading-none">{o.label}</span>
-            <span className={`mt-1 text-[10px] leading-none tabular-nums ${active ? 'text-white/60' : 'text-pa-stone'}`}>{o.count}</span>
+            <span className="text-[15px] leading-none">{o.label}</span>
+            <span className={`mt-1 text-[12px] leading-none tabular-nums ${active ? 'text-white/60' : 'text-pa-stone'}`}>{o.count}</span>
           </button>
         );
       })}
@@ -197,7 +205,7 @@ function ViewSwitch({ value, onChange, compact }: { value: CatalogueView; onChan
             aria-pressed={active}
             aria-label={label}
             onClick={() => onChange(v)}
-            className={`inline-flex items-center gap-1.5 h-8 rounded-full font-body text-[12px] transition-colors ${compact ? 'px-2.5' : 'px-3.5'} ${
+            className={`inline-flex items-center gap-1.5 h-8 rounded-full font-body text-[13px] transition-colors ${compact ? 'px-2.5' : 'px-3.5'} ${
               active ? 'bg-pa-dark text-white' : 'text-pa-earth hover:text-pa-dark'
             }`}
           >
@@ -305,7 +313,7 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
   const menu = (key: NonNullable<typeof openMenu>, label: string, value: string | null, panel: ReactNode, align: 'start' | 'end' = 'start') => (
     <Popover open={openMenu === key} onOpenChange={(o) => setOpenMenu(o ? key : null)}>
       <PopoverTrigger asChild>
-        <button type="button" className="h-[52px] outline-none focus-visible:ring-2 focus-visible:ring-pa-gold rounded-sm">
+        <button type="button" className={`h-[52px] ${key === 'space' ? 'min-w-0' : 'shrink-0'} outline-none focus-visible:ring-2 focus-visible:ring-pa-gold rounded-sm`}>
           <MenuTrigger label={label} value={value} open={openMenu === key} />
         </button>
       </PopoverTrigger>
@@ -334,7 +342,7 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
   // the line under it. Screen readers get the whole sentence once.
   // #726D63 (pa-stone): pa-stone-aa (#78756F) is 4.39:1 on the cream rail.
   const status = (className: string) => (
-    <span className={`items-center gap-2 font-body text-[13px] text-pa-stone ${className}`} role="status">
+    <span className={`items-center gap-2 font-body text-[15px] text-pa-stone ${className}`} role="status">
       {spinner}
       <span aria-hidden className="truncate">{resultLabel}</span>
       <span className="sr-only">{resultFull ?? resultLabel}</span>
@@ -351,15 +359,18 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
       {/* Desktop: one rule, everything on it. From 1280 px: on narrower screens the
           rule ran past the screen edge and hid Map (ux-home-plp-09). */}
       <div className="hidden xl:block border-y border-pa-sand">
+        {/* Only the Space value gives way when the rule is full: with a long
+            one ("5–6 dormitorios · 12+ huéspedes") the count was cut, the
+            first type tab broke in two and the gold dot touched "Price". */}
         <div className="flex items-stretch gap-x-7 min-h-[52px]">
-          <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="gap-x-6" />
-          <div className="flex items-stretch gap-x-6 pl-7 border-l border-pa-sand">
+          <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="shrink-0 gap-x-6 [&>button]:shrink-0 [&>button]:whitespace-nowrap" />
+          <div className="flex min-w-0 items-stretch gap-x-6 pl-7 border-l border-pa-sand">
             {menu('space', t('homes.filters.space', 'Space'), spaceValue, <><SpacePanel {...props} first /></>)}
             {menu('price', t('homes.filters.price', 'Price'), priceValue, <PricePanel {...props} first />)}
             {menu('features', t('homes.filters.features', 'Features'), featuresValue, <FeaturesPanel {...props} first />)}
           </div>
-          <div className="ml-auto flex min-w-0 items-center gap-x-5">
-            {status('inline-flex min-w-0 whitespace-nowrap')}
+          <div className="ml-auto flex shrink-0 items-center gap-x-5">
+            {status('inline-flex shrink-0 whitespace-nowrap')}
             <span aria-hidden className="h-4 w-px shrink-0 bg-pa-sand" />
             {menu('sort', t('homes.filters.sort', 'Sort'), null, <SortPanel {...props} first />, 'end')}
             <ViewSwitch value={view} onChange={onView} />
@@ -384,20 +395,22 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
           the taps on the bottom of Map and Filters (revisão 2 do PR #175). */}
       <div className="xl:hidden">
         <KindSwitch value={facets.kind} counts={counts.kind} onChange={onKind} className="justify-between md:justify-start md:gap-x-10 border-y border-pa-sand h-11 [&>button]:px-0" />
-        <div className={`flex items-center gap-3 h-[52px] ${resultDetail ? '' : 'border-b border-pa-sand'}`}>
+        <div className={`flex items-center gap-3 max-[379px]:gap-2 h-[52px] ${resultDetail ? '' : 'border-b border-pa-sand'}`}>
           <button
             ref={filtersButton}
             type="button"
             onClick={() => setSheetOpen(true)}
             aria-haspopup="dialog"
             aria-expanded={sheetOpen}
-            className="inline-flex shrink-0 items-center gap-2 h-full font-body text-[13px] text-pa-dark"
+            className="inline-flex shrink-0 items-center gap-2 h-full font-body text-[15px] text-pa-dark"
           >
             <SlidersHorizontal className="w-4 h-4 shrink-0" />
             <span>{t('conversion.filters', 'Filters')}</span>
-            {activeCount > 0 && <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-pa-dark px-1 text-[10px] font-medium text-white">{activeCount}</span>}
+            {activeCount > 0 && <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-pa-dark px-1 text-[12px] font-medium text-white">{activeCount}</span>}
           </button>
-          {status('flex min-w-0 flex-1 justify-end')}
+          {/* 13 px below 380 px: with a filter on (the badge beside
+              "Suodattimet") the Finnish count was cut: "86 vapa…". */}
+          {status('flex min-w-0 flex-1 justify-end max-[379px]:text-[13px]')}
           <ViewSwitch value={view} onChange={onView} compact />
         </div>
         {detail('plp-status-detail', 'pb-2 border-b border-pa-sand')}
@@ -418,7 +431,7 @@ export default function HomesFilterRail(props: HomesFilterRailProps) {
               <FeaturesPanel {...props} />
             </div>
             <div className="flex items-center justify-between gap-4 border-t border-pa-sand bg-pa-cream px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-              <button type="button" onClick={onClearAll} className="min-h-11 font-body text-[13px] text-pa-stone underline underline-offset-4">
+              <button type="button" onClick={onClearAll} className="min-h-11 font-body text-[15px] text-pa-stone underline underline-offset-4">
                 {t('homes.filters.clearAll', 'Clear all')}
               </button>
               <button type="button" onClick={() => setSheetOpen(false)} className="btn-primary min-h-11">

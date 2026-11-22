@@ -48,6 +48,7 @@ import { selectFeaturedHomes } from '@/lib/featuredHomes';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { useFromPrices } from '@/hooks/useFromPrices';
 import { isPartnerHome } from '@shared/partnerHome';
+import { keepDashes, keepHyphens } from '@/lib/format';
 
 const destinations = destinationsData as unknown as Destination[];
 
@@ -122,9 +123,9 @@ export default function Home() {
     ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[],
   [propsData]);
 
-  // Destination choices shared with the listing page: regions first with their
-  // number of homes, then municipalities under their region (the localities
-  // query is tiny and SSR-prefetched, so the picker works on first paint).
+  // Destination choices shared with the listing page: the regions, each with
+  // its number of homes (the localities query is tiny and SSR-prefetched, so
+  // the picker has its regions on first paint, before the catalogue).
   const { model: destinationModel } = useDestinationOptions(propsData as Property[] | undefined);
   const cityOptions = <DestinationOptions model={destinationModel} />;
 
@@ -342,25 +343,34 @@ export default function Home() {
         <div className="absolute inset-0">
           <img
             src={IMAGES.heroMain}
-            srcSet="/hero/home-mirante-court-768.webp 768w, /hero/home-mirante-court-1280.webp 1280w, /hero/home-mirante-court-1920.webp 1920w, /hero/home-mirante-court-2560.webp 2560w"
+            srcSet="/hero/home-carcavelos-cover-768.webp 768w, /hero/home-carcavelos-cover-960.webp 960w, /hero/home-carcavelos-cover-1280.webp 1280w, /hero/home-carcavelos-cover-1920.webp 1920w"
             sizes="100vw"
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"
-            width={1600}
-            height={900}
+            width={1920}
+            height={1440}
             fetchPriority="high"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
+          {/* On a phone the text runs the full width, over the white walls of
+              the house: an even shade behind it (auditoria de design, 14 nov
+              2026). From lg the text sits on the left and the shade fades to
+              the right, as before. */}
+          <div className="absolute inset-0 bg-black/45 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/55 lg:via-black/30 lg:to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/10" />
         </div>
 
         {/* Hero content */}
         <div className="relative container z-10 home-hero-content">
-          <div className="max-w-2xl">
+          {/* A soft shadow behind the words (index.css, .home-hero-text): the
+              cover photo has bright patches, the sky and the white wall of
+              the manor, right where the text runs. */}
+          <div className="max-w-2xl home-hero-text">
             <p
-              className="body-sm font-medium text-white/70 mb-5 font-body"
-              style={{letterSpacing: '0.08em'}}
+              className="body-sm font-medium text-white/85 mb-5 font-body"
+              // 0.04em: at 15 px with 0.08em the line no longer fitted a 375 or
+              // 360 px phone and left "Portugal" alone on a second line.
+              style={{letterSpacing: '0.04em'}}
             >
               {t('home.heroOverline')}
             </p>
@@ -371,28 +381,15 @@ export default function Home() {
             >
               {t('home.heroTitle')}
             </h1>
+            {/* Title, one sentence and the search: the count line and the two
+                links that repeated the menu left the hero (decisão E04 do
+                Ricardo, 20 nov 2026). */}
             <p
-              className="body-lg md:text-[20px] text-white/80 mb-6 lg:mb-4 leading-relaxed max-w-xl font-body font-light"
+              className="body-lg md:text-[20px] text-white/90 leading-relaxed max-w-xl font-body font-normal"
 
             >
               {t('conversion.homeIntro')}
             </p>
-
-            {/* Proof strip — above CTAs so it never collides with booking bar */}
-            <div className="hidden lg:flex hero-proof-strip flex-wrap items-center gap-x-5 gap-y-1 mb-4">
-              <span className="body-sm text-white/60 font-medium font-body" >
-                {t('home.proofHotels', { homes: HOME_COUNT_LABEL, defaultValue: '{{homes}} villas and private homes' })}
-              </span>
-              <span className="text-white/25">·</span>
-              <span className="body-sm text-white/60 font-medium font-body" >
-                {t('conversion.directSupport')}
-              </span>
-            </div>
-
-            <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6">
-              <Link href="/homes" className="hero-text-link">{t('home.heroCta')} <ArrowRight className="w-4 h-4" /></Link>
-              <Link href="/concierge" className="hero-text-link">{t('siteUx.exploreServices')} <ArrowRight className="w-4 h-4" /></Link>
-            </div>
           </div>
           <HeroSearch options={cityOptions} destination={searchDest} checkin={searchCheckin} checkout={searchCheckout} guests={searchGuests} guestsChosen={guestsChosen}
             onDestination={setSearchDest} onCheckin={handleCheckinChange} onCheckout={setSearchCheckout} onGuests={chooseGuests} />
@@ -426,18 +423,33 @@ export default function Home() {
                   href: '/best-rate-guarantee',
                 },
               ].map((item: { icon: React.ReactNode; title: string; sub: string; href?: string }, i) => {
-                const cls = `flex min-w-0 flex-col items-center text-center px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 md:px-5${
-                  i < 3 ? ' border-r border-[#E8E4DC]' : ''
-                }`;
+                // Side padding: 6 px in the phone's two columns, 8 px from 640 px
+                // (what the live site always had; more padding only wraps the
+                // descriptions). The labels are 12 px where they were 11, so
+                // their letter-spacing shrinks to keep the width they had: 0.02em
+                // on a phone, 0.06em from 640 to 1279 px (at 0.1em Spanish took two
+                // lines from 700 to 767 px), 0.1em from 1280 px.
+                // Measured in the nine languages at 360 to 1440 px: no label takes
+                // more lines than on the live site, and no text sits closer than
+                // 6 px to a divider. The labels break evenly (text-balance). This line used to end in
+                // "md:px-5" glued to the "${", a class Tailwind never emitted;
+                // when another file started using md:px-5 the rule appeared and
+                // the four cells silently went from 8 to 20 px, wrapping their
+                // text (auditoria de formatação, 20 nov 2026). Keep a space
+                // before every "${" in a class string.
+                // Divider: between the two columns on a phone (cells 0 and 2),
+                // between the four from 768 px (cells 0, 1 and 2).
+                const divider = i === 3 ? '' : i === 1 ? 'md:border-r border-[#E8E4DC]' : 'border-r border-[#E8E4DC]';
+                const cls = `flex min-w-0 flex-col items-center text-center px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 ${divider}`;
                 const inner = (
                 <>
-                  <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand bg-pa-cream text-pa-gold sm:mb-3 sm:h-9 sm:w-9">
+                  <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand bg-pa-cream text-pa-gold-aa sm:mb-3 sm:h-9 sm:w-9">
                     {item.icon}
                   </div>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark sm:text-[10px] sm:tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]">{item.title}</p>
+                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.02em] text-pa-dark text-balance sm:text-[12px] sm:tracking-[0.06em] md:text-[12px] xl:tracking-[0.1em]">{keepHyphens(item.title)}</p>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="mt-1 max-w-none caption leading-tight text-pa-stone sm:text-[10px] sm:leading-snug md:text-[12px] md:leading-[1.55] font-body font-light" >{item.sub}</p>
+                  <p className="mt-1 max-w-none caption leading-tight text-pa-stone text-balance sm:text-[12px] sm:leading-snug md:text-[13px] md:leading-[1.55] font-body font-normal" >{keepHyphens(item.sub)}</p>
                 </>
                 );
                 // The rate badge is a claim with terms — it links to them.
@@ -457,7 +469,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
               <h2 className="headline-lg text-pa-dark mb-3">{t('home.homesTitle')}</h2>
-              <p className="body-md max-w-2xl">
+              {/* max-w-3xl: at 16 px the sentence is about 700 px long and the
+                  672 px cap broke it in two. */}
+              <p className="body-md max-w-3xl">
                 {t('conversion.homesIntro')}
               </p>
             </div>
@@ -584,7 +598,7 @@ export default function Home() {
                   {step.num}
                 </p>
                 <h3 className="text-[1.1rem] font-display text-pa-dark mb-3">{step.title}</h3>
-                <p className="body-sm text-pa-earth leading-relaxed font-body font-light" >{step.body}</p>
+                <p className="body-sm text-pa-earth leading-relaxed font-body font-normal" >{step.body}</p>
               </div>
             ))}
           </div>
@@ -612,10 +626,13 @@ export default function Home() {
           </div>
 
           {/* Right: text (40%) */}
-          <div className="lg:col-span-2 flex items-center px-8 py-14 lg:px-14 lg:py-16 bg-white">
+          {/* 20 px at the sides on a phone, like every other section (it was
+              32 px, and at 15 px the second point's title no longer fitted on
+              its line); 32 px from 768 px, where the other sections have it. */}
+          <div className="lg:col-span-2 flex items-center px-5 md:px-8 py-14 lg:px-10 xl:px-14 lg:py-16 bg-white">
             <div className="max-w-md">
               <p className="caption font-medium text-pa-gold-aa mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.conceptOverline')}</p>
-              <h2 className="headline-lg text-pa-dark mb-5">{t('home.conceptTitle')}</h2>
+              <h2 className="headline-lg text-pa-dark mb-5 text-balance">{keepHyphens(t('home.conceptTitle'))}</h2>
               <p className="body-md mb-8">
                 {t('home.conceptBody')}
               </p>
@@ -625,26 +642,27 @@ export default function Home() {
                   {
                     icon: <HomeIcon className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint1'),
-                    body: t('home.conceptPoint1Body'),
+                    body: keepHyphens(t('home.conceptPoint1Body')),
                   },
                   {
                     icon: <Star className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint2'),
-                    body: t('home.conceptPoint2Body'),
+                    body: keepHyphens(t('home.conceptPoint2Body')),
                   },
                   {
                     icon: <Headphones className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint3'),
-                    body: t('home.conceptPoint3Body'),
+                    body: keepHyphens(t('home.conceptPoint3Body')),
                   },
                 ].map((pillar, i) => (
                   <div key={i} className="flex gap-4">
-                    <div className="flex-shrink-0 w-9 h-9 rounded-full bg-pa-warm flex items-center justify-center text-pa-gold">
+                    <div className="flex-shrink-0 w-9 h-9 rounded-full bg-pa-warm flex items-center justify-center text-pa-gold-aa">
                       {pillar.icon}
                     </div>
                     <div>
-                      <p className="body-sm font-semibold text-pa-dark mb-1">{pillar.title}</p>
-                      <p className="body-sm text-pa-earth leading-relaxed font-body font-light" >{pillar.body}</p>
+                      {/* eslint-disable-next-line no-restricted-syntax -- 14 px under 380 px: at 15 px the second title broke in two on a 375 px phone */}
+                      <p className="body-sm max-[379px]:text-[14px] font-semibold text-pa-dark mb-1">{pillar.title}</p>
+                      <p className="body-sm text-pa-earth leading-relaxed font-body font-normal" >{pillar.body}</p>
                     </div>
                   </div>
                 ))}
@@ -663,7 +681,7 @@ export default function Home() {
             <div>
               <h2 className="headline-lg text-pa-dark mb-3">{t('home.destTitle')}</h2>
               <p className="body-md max-w-2xl">
-                {t('home.destBody')}
+                {keepDashes(t('home.destBody'))}
               </p>
             </div>
           </div>
@@ -673,7 +691,7 @@ export default function Home() {
               const destinationImage = dest.regionImage || dest.coverImage;
               return (
                 <Link key={dest.id} href={`/destinations/${dest.slug}`} className="group block flex-shrink-0 w-[240px] sm:w-[260px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                  <div className="relative overflow-hidden bg-pa-sand" style={{ aspectRatio: '3/4' }}>
+                  <div className="relative overflow-hidden rounded-xl bg-pa-sand" style={{ aspectRatio: '3/4' }}>
                     {destinationImage ? (
                       <img
                         src={cdnResize(destinationImage, 640)}
@@ -698,8 +716,12 @@ export default function Home() {
                       <h3 className="text-white text-[1.25rem] font-display">{dest.name}</h3>
                     </div>
                   </div>
-                  <p className="body-sm text-pa-earth mt-3 leading-relaxed font-body font-light" >
-                    {dest.description}
+                  {/* A caption under its photo: 13 px, the caption size (E01).
+                      The column is 176 to 260 px wide; at 15 px these two or
+                      three sentences ran to nine lines of three or four words,
+                      at 14 px still one line more than before the redesign. */}
+                  <p className="caption leading-[1.55] text-pa-earth mt-3 font-body font-normal" >
+                    {keepDashes(keepHyphens(dest.description))}
                   </p>
                 </Link>
               );
@@ -744,7 +766,7 @@ export default function Home() {
               },
             ].map((exp, i) => (
               <Link key={i} href={exp.href} className="group block flex-shrink-0 w-[220px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                <div className="relative overflow-hidden bg-pa-sand" style={{ aspectRatio: '3/4' }}>
+                <div className="relative overflow-hidden rounded-xl bg-pa-sand" style={{ aspectRatio: '3/4' }}>
                   {(exp as any).video ? (
                     <LazyVideo
                       src={(exp as any).video}
@@ -764,7 +786,17 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white text-[1rem] font-display mb-1">{exp.title}</h3>
-                    <p className="text-white/70 caption leading-relaxed font-body font-light" >{exp.body}</p>
+                    {/* Lines are reserved for the description (four in the
+                        phone carousel, where the cards are 220 px wide; three
+                        from 640 px): the text is anchored to the foot of
+                        the photo, so a description one line longer than its
+                        neighbours' pushed that card's title up out of line.
+                        Between 1024 and 1279 px the four cards are 225 px wide
+                        and the text keeps the 12 px it had: at 13 px it needed
+                        a fourth line, which lifted the text onto the subject
+                        of the photos. */}
+                    {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
+                    <p className="text-white/70 caption lg:text-[12px] xl:text-[13px] leading-relaxed font-body font-normal min-h-[4lh] sm:min-h-[3lh]" >{keepHyphens(exp.body)}</p>
                   </div>
                 </div>
               </Link>

@@ -99,7 +99,9 @@ describe('the homepage renders partner cards exactly like the listing', () => {
     expect(onHome).toBe(card('search_results', 'Search Results'));
     expect(onHome).toMatch(/href="\/homes\/casa-de-caiz"/);
     expect(onHome).toMatch(/795/);
-    expect(onHome).toContain('partnerBooking.feesPendingShort');
+    // The partner card is our own card: no "other charges" note on it (o
+    // Ricardo, 20 nov 2026). The full note is on the home's page, by the price.
+    expect(onHome).not.toContain('partnerBooking.feesPendingShort');
     expect(onHome).not.toMatch(/VAT included|IVA inclu/i);
   });
 });

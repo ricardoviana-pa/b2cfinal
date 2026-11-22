@@ -9,7 +9,7 @@
  */
 import { useTranslation } from "react-i18next";
 import { COMPANY_LEGAL_NAME, COMPANY_NIPC, companyAddressLine } from "@shared/company";
-import { formatQuotedEur } from "@/lib/format";
+import { formatQuotedEur, keepPostcode } from "@/lib/format";
 import CancellationPolicyLine from "@/components/booking/CancellationPolicyLine";
 
 /** A linha do plano, fora do componente para o teste: "X hoje" ou "X hoje · Y em <data>". */
@@ -48,7 +48,7 @@ export default function PreContractualBlock({
   showPolicy: boolean;
 }) {
   const { t } = useTranslation();
-  const address = companyAddressLine();
+  const address = keepPostcode(companyAddressLine() ?? "");
   return (
     <div className="space-y-1 border-t border-pa-sand pt-3" data-testid="checkout-precontractual">
       <p className="caption text-pa-stone-aa leading-snug">

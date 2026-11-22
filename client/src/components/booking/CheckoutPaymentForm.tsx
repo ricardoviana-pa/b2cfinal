@@ -40,7 +40,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
-import { formatQuotedEur } from "@/lib/format";
+import { formatQuotedEur, keepPostcode } from "@/lib/format";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { classifyPaymentError, humanPaymentError, needsPriceRefresh } from "@/lib/paymentErrors";
 import { payButtonGate, splitFullName, walletGuestDetails, walletsVisible, type WalletGuest } from "@/lib/checkoutPayment";
@@ -437,7 +437,7 @@ function ExpressWalletInner({
 function WalletsAcceptLine({ lang, total }: { lang: string; total: number }) {
   const { t } = useTranslation();
   const link = "text-pa-dark underline hover:text-pa-gold-aa";
-  const address = companyAddressLine();
+  const address = keepPostcode(companyAddressLine() ?? "");
   const amount = formatQuotedEur(total, lang);
   return (
     <div className="space-y-1" data-testid="wallets-accept-line">
@@ -795,7 +795,7 @@ function DemoCardForm({
   const field = "h-[44px] rounded border border-[#E8E4DC] px-3 flex items-center caption text-pa-stone-aa";
   return (
     <div className="space-y-4" style={visible ? undefined : { display: "none" }}>
-      <div className="p-4 bg-white border border-[#E8E4DC] rounded space-y-2" aria-hidden>
+      <div className="p-4 bg-white border border-[#E8E4DC] rounded-lg space-y-2" aria-hidden>
         <div className={field}>1234 1234 1234 1234</div>
         <div className="grid grid-cols-2 gap-2">
           <div className={field}>MM / YY</div>
@@ -952,7 +952,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   // (No checkout v2 a conta é sempre a de plataforma: só falta a chave.)
   if (!demo && (stripeConfigLoading || providerLoading)) {
     return (
-      <div className="flex items-center justify-center py-8 gap-2 text-sm text-black/40">
+      <div className="flex items-center justify-center py-8 gap-2 text-sm text-pa-stone">
         <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
         {t('payment.preparingSecure')}
       </div>
@@ -1023,10 +1023,10 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         <div className="space-y-3" data-testid="checkout-wallets">
           {/* Demo: os botões das wallets como a Stripe os desenha (pretos, lado a lado) */}
           <div aria-hidden className="grid grid-cols-2 gap-2">
-            <div className="h-[44px] rounded-md bg-pa-dark flex items-center justify-center text-white text-[15px] font-medium tracking-tight">
+            <div className="h-[44px] rounded-md bg-pa-dark flex items-center justify-center text-white text-[16px] font-medium tracking-tight">
               Apple Pay
             </div>
-            <div className="h-[44px] rounded-md bg-pa-dark flex items-center justify-center text-white text-[15px] font-medium tracking-tight">
+            <div className="h-[44px] rounded-md bg-pa-dark flex items-center justify-center text-white text-[16px] font-medium tracking-tight">
               Google Pay
             </div>
           </div>

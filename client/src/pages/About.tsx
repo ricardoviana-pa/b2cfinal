@@ -204,9 +204,9 @@ export default function About() {
         <div className="container grid md:grid-cols-3">
           {[['standard2Title', 'standard2Body'], ['standard4Title', 'standard4Body'], ['standard5Title', 'standard5Body']].map(([title, body], index) => (
             <div className="editorial-proof-item" key={title}>
-              <span className="editorial-eyebrow text-pa-gold">0{index + 1}</span>
+              <span className="editorial-eyebrow text-pa-gold-aa">0{index + 1}</span>
               <h2 className="font-display text-2xl mb-3">{t(`about.${title}`, { points: CHECKLIST_POINTS })}</h2>
-              <p className="body-md">{t(`about.${body}`)}</p>
+              <p className="body-md text-balance">{t(`about.${body}`)}</p>
             </div>
           ))}
         </div>
@@ -221,7 +221,7 @@ export default function About() {
           <div className="lg:flex lg:gap-16" id="ricardo-viana">
             {/* Text column */}
             <div className="lg:w-[55%]">
-              <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-[#8B7355] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
+              <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-pa-gold-aa mb-4" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('about.storyOverline')}
               </p>
               <h2
@@ -238,8 +238,8 @@ export default function About() {
               ].map((para, i) => (
                 <p
                   key={i}
-                  className="text-[#6B6860] mb-5"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
+                  className="text-pa-earth mb-5"
+                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: '16px', lineHeight: 1.7 }}
                 >
                   {para}
                 </p>
@@ -257,7 +257,7 @@ export default function About() {
                     loading="lazy"
                   />
                 </div>
-                <p className="text-[13px] text-[#726D63] mt-3" style={{ fontFamily: 'var(--font-body)' }}>
+                <p className="text-[15px] text-pa-stone mt-3" style={{ fontFamily: 'var(--font-body)' }}>
                   {t('about.founderCaption')}
                 </p>
               </div>
@@ -274,7 +274,7 @@ export default function About() {
                 loading="lazy"
               />
             </div>
-            <p className="text-[13px] text-[#726D63] mt-3" style={{ fontFamily: 'var(--font-body)' }}>
+            <p className="text-[15px] text-pa-stone mt-3" style={{ fontFamily: 'var(--font-body)' }}>
               {t('about.founderCaption')}
             </p>
           </div>
@@ -289,7 +289,7 @@ export default function About() {
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="bg-[#F5F1EB] py-14 lg:py-16 border-y border-[#E8E4DC]">
         <div className="container max-w-[1200px] mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE]">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE] max-md:[&>*:nth-child(2n)]:border-r-0">
             {STATS.map((s, i) => (
               <div key={i} className="text-center px-2">
                 <p
@@ -298,7 +298,7 @@ export default function About() {
                 >
                   {s.value}
                 </p>
-                <p className="mt-2 text-[11px] tracking-[0.18em] uppercase text-[#8B7355]" style={{ fontFamily: 'var(--font-body)' }}>
+                <p className="mt-2 text-[12px] tracking-[0.12em] lg:tracking-[0.18em] uppercase text-pa-gold-aa" style={{ fontFamily: 'var(--font-body)' }}>
                   {s.label}
                 </p>
               </div>
@@ -306,7 +306,7 @@ export default function About() {
           </div>
 
           <div className="mt-12 pt-10 border-t border-[#E1DACE]">
-            <p className="text-center text-[10px] tracking-[0.22em] uppercase text-[#726D63] mb-7" style={{ fontFamily: 'var(--font-body)' }}>
+            <p className="text-center text-[12px] tracking-[0.22em] uppercase text-pa-stone mb-7" style={{ fontFamily: 'var(--font-body)' }}>
               {t('about.pressOverline', 'As featured in')}
             </p>
             {/* Mobile: marquee scroll (same as homepage press bar) */}
@@ -354,14 +354,14 @@ export default function About() {
                     <Play size={22} className="ml-0.5 fill-current" />
                   </span>
                 </span>
-                <span className="absolute bottom-4 left-4 text-white text-[11px] tracking-[0.12em] uppercase font-medium">
+                <span className="absolute bottom-4 left-4 text-white text-[12px] tracking-[0.12em] uppercase font-medium">
                   {t('about.behindScenesWatch', 'Watch the film')}
                 </span>
               </a>
             </div>
             {/* Copy */}
             <div className="lg:w-[45%]">
-              <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-[#8B7355] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
+              <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-pa-gold-aa mb-4" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('about.behindScenesOverline', 'BEHIND THE SCENES')}
               </p>
               <h2
@@ -371,14 +371,14 @@ export default function About() {
                 {t('about.behindScenesTitle', { points: CHECKLIST_POINTS, defaultValue: 'The {{points}}-point checklist' })}
               </h2>
               <p
-                className="text-[#6B6860] mb-5"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
+                className="text-pa-earth mb-5"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: '16px', lineHeight: 1.7 }}
               >
                 {t('about.behindScenesP1', { points: CHECKLIST_POINTS, defaultValue: 'Before every guest arrives, our in-house team runs a {{points}}-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. This is what hotel-grade service looks like when applied to a private home.' })}
               </p>
               <p
-                className="text-[#6B6860]"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
+                className="text-pa-earth"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: '16px', lineHeight: 1.7 }}
               >
                 {t('about.behindScenesP2')}
               </p>
@@ -402,7 +402,7 @@ export default function About() {
             &ldquo;{guestQuote.text.trim()}&rdquo;
           </blockquote>
           <p
-            className="text-[#726D63] mt-6 text-[12px] tracking-[0.14em] uppercase"
+            className="text-pa-stone mt-6 text-[12px] tracking-[0.14em] uppercase"
             style={{ fontFamily: 'var(--font-body)', fontWeight: 500 }}
           >
             {t('about.socialProofAttribution')}
@@ -431,8 +431,8 @@ export default function About() {
                 {t('about.teamTitle')}
               </h2>
               <p
-                className="max-w-2xl text-[#6B6860]"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
+                className="max-w-2xl text-pa-earth"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: '16px', lineHeight: 1.7 }}
               >
                 {t('about.teamBody')}
               </p>
@@ -440,14 +440,14 @@ export default function About() {
             <div className="hidden md:flex gap-2 shrink-0 ml-8">
               <button
                 onClick={() => scroll('left')}
-                className="pa-action w-11 h-11 flex items-center justify-center border border-[#E8E4DC] text-[#6B6860] hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
+                className="pa-action w-11 h-11 flex items-center justify-center border border-[#E8E4DC] text-pa-earth hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
                 aria-label="Scroll left"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={() => scroll('right')}
-                className="pa-action w-11 h-11 flex items-center justify-center border border-[#E8E4DC] text-[#6B6860] hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
+                className="pa-action w-11 h-11 flex items-center justify-center border border-[#E8E4DC] text-pa-earth hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
                 aria-label="Scroll right"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -457,7 +457,7 @@ export default function About() {
 
           <div
             ref={scrollRef}
-            className="flex gap-5 overflow-x-auto scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0 snap-x snap-mandatory"
+            className="flex gap-5 overflow-x-auto scrollbar-hide scroll-pl-5 md:scroll-pl-8 lg:scroll-pl-0 -mx-5 px-5 md:-mx-8 md:px-8 lg:mx-0 lg:px-0 snap-x snap-mandatory"
           >
             {TEAM.map(member => {
               const initials = member.name
@@ -481,13 +481,13 @@ export default function About() {
                       </>
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-[#F0ECE4] to-[#E8E0D4] flex items-center justify-center">
-                        <span className="font-display text-[3.5rem] text-[#8B7355]/30 select-none tracking-wide">{initials}</span>
+                        <span className="font-display text-[3.5rem] text-pa-gold-aa/30 select-none tracking-wide">{initials}</span>
                       </div>
                     )}
                   </div>
                   <div className="pt-1">
-                    <h3 className="text-[15px] font-display text-[#1A1A18] mb-0.5 tracking-wide">{member.name}</h3>
-                    <p className="text-[12px] text-[#8B7355] tracking-wider uppercase">{member.role}</p>
+                    <h3 className="text-[16px] font-display text-[#1A1A18] mb-0.5 tracking-wide">{member.name}</h3>
+                    <p className="text-[12px] text-pa-gold-aa tracking-wider uppercase">{member.role}</p>
 
                   </div>
                 </div>

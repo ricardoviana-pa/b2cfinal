@@ -185,7 +185,8 @@
     "unavailableHint": "Queste case potrebbero essere disponibili in altre date. Contatti il nostro concierge per alternative.",
     "fromTotal": "Da {{price}} per il soggiorno",
     "metaTitle": "Ville in Affitto e Case Vacanza in Portogallo",
-    "metaDescription": "Scopri {{homes}} ville e case di lusso tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. Filtra per destinazione, ospiti e servizi. Prenota diretto."
+    "metaDescription": "Scopri {{homes}} ville e case di lusso tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. Filtra per destinazione, ospiti e servizi. Prenota diretto.",
+    "showMore": "Mostra altre"
   },
   "property": {
     "bedrooms": "Camere",
@@ -602,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "PREFERENZE SUI COOKIE",
-    "description": "I cookie essenziali consentono di navigare e prenotare. Con il tuo consenso utilizziamo anche cookie di analisi e pubblicità. Include la misurazione con OpenAI Ads.",
+    "description": "I cookie essenziali consentono di navigare e prenotare. Con il tuo consenso utilizziamo anche cookie di analisi e pubblicità. Include la misurazione con OpenAI Ads.",
     "essential": "Cookie Essenziali",
     "essentialDesc": "Necessari per la funzionalità di base del sito e la sicurezza. Impossibile disabilitarli.",
     "analytics": "Cookie di Analisi",
@@ -629,7 +630,7 @@
     "heroGuarantee": "Nessuna commissione. Miglior tariffa garantita. Risposta del concierge entro 2 ore.",
     "proofHotels": "{{homes}} ville e case private",
     "proofRating": "4.8★ valutazione media",
-    "heroAlt": "Campo da tennis privato e villa di Mirante 1, sopra Albufeira, in Algarve",
+    "heroAlt": "Piscina, giardini e dimora di Carcavelos Manor House, a Vila Verde, nel Minho",
     "searchDestination": "Destinazione",
     "searchMinhoCoast": "Costa del Minho",
     "searchPortoDouro": "Porto e Douro",
@@ -1358,7 +1359,7 @@
     "bookExperience": "Prenota questa esperienza",
     "whatsappSubtitle": "Scriva direttamente al nostro team concierge. Di solito rispondiamo in pochi minuti.",
     "chatOnWhatsApp": "Chatta su WhatsApp",
-    "whatsappNote": "Tutti i giorni, dalle 9 alle 21 (ora di Lisbona)"
+    "whatsappNote": "Tutti i giorni, dalle 9 alle 21 (ora di Lisbona)"
   },
   "bedConfig": {
     "notAvailable": "Configurazione letti non disponibile"

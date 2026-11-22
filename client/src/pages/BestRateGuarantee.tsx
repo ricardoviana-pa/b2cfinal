@@ -11,6 +11,7 @@ import { ShieldCheck, MessageCircle } from 'lucide-react';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { keepHyphens } from '@/lib/format';
 
 const WHATSAPP_URL = 'https://wa.me/351927161771';
 
@@ -38,7 +39,7 @@ export default function BestRateGuarantee() {
           <ol className="space-y-4 mb-12">
             {steps.map((s, i) => (
               <li key={i} className="flex items-start gap-4">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#E8E4DC] bg-white text-[12px] font-medium text-[#806A48]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#E8E4DC] bg-white text-[13px] font-medium text-[#806A48]">
                   {i + 1}
                 </span>
                 <p className="body-md" style={{ textTransform: 'none' }}>{s}</p>
@@ -50,8 +51,8 @@ export default function BestRateGuarantee() {
           <ul className="space-y-3 mb-12">
             {terms.map((term, i) => (
               <li key={i} className="flex items-start gap-3">
-                <ShieldCheck size={16} className="text-[#806A48] shrink-0 mt-1" />
-                <p className="body-md" style={{ textTransform: 'none' }}>{term}</p>
+                <ShieldCheck size={16} className="text-[#806A48] shrink-0 mt-1.5" />
+                <p className="body-md" style={{ textTransform: 'none' }}>{keepHyphens(term)}</p>
               </li>
             ))}
           </ul>

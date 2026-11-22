@@ -7,7 +7,7 @@
  */
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
-import { formatQuotedEur } from "@/lib/format";
+import { formatQuotedEur, noBreak } from "@/lib/format";
 import { planDate } from "@/pages/checkout/PaymentPlanSelector";
 
 export default function TwoPartsHint({
@@ -34,7 +34,8 @@ export default function TwoPartsHint({
     { enabled, staleTime: 10 * 60_000, retry: false },
   );
   if (!enabled || !data?.available) return null;
-  const date = planDate(data.chargeAt, lang);
+  // The date never splits ("am 11. / Dezember 2026", "11 de dezembro / de 2026").
+  const date = noBreak(planDate(data.chargeAt, lang));
   const flex = data.incentive === "flex";
   const text = variant === "widget"
     ? t(flex ? "bookingWidget.twoPartsHint" : "bookingWidget.twoPartsHintPlain", { date })

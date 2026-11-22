@@ -43,9 +43,9 @@ function ServiceCard({ product }: { product: Product | undefined }) {
       </div>
       <div className="catalog-card-content">
         <h3 className="font-display text-2xl text-pa-dark">{product.name}</h3>
-        <p className="body-md mt-2 flex-1">{product.tagline}</p>
+        <p className="body-md mt-2 flex-1 text-balance">{product.tagline}</p>
         <div className="catalog-card-footer">
-          <p className="text-sm">{(product.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom!)}</strong> <span className="text-pa-stone">{product.priceSuffix}</span></>}</p>
+          <p className="text-[15px]">{(product.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom!)}</strong> <span className="text-pa-stone">{product.priceSuffix}</span></>}</p>
           <span className="catalog-card-link">{t('siteUx.viewService')} <ArrowRight className="h-4 w-4 shrink-0" /></span>
         </div>
       </div>
@@ -65,15 +65,15 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
         )}
       </div>
       <div>
-        <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-4">{overline}</p>
+        <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-4">{overline}</p>
         <h2 className="headline-lg text-[#1A1A18] mb-6">{title}</h2>
         <p className="body-lg mb-8">{body}</p>
         <div className="border-t border-[#E8E4DC] pt-6">
           <h3 className="font-display text-[1.5rem] text-[#1A1A18] mb-2">{product.name}</h3>
           {product.priceFrom && (
-            <p className="text-[13px] text-[#1A1A18] mb-6">
+            <p className="text-[15px] text-[#1A1A18] mb-6">
               <span className="font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom)}</span>
-              <span className="text-[#726D63] ml-1">{product.priceSuffix}</span>
+              <span className="text-pa-stone ml-1">{product.priceSuffix}</span>
             </p>
           )}
         </div>
@@ -155,7 +155,13 @@ export default function Concierge() {
       {/* Section Nav */}
       <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">
         <div className="container">
-          <div className="flex gap-6 overflow-x-auto scrollbar-hide py-3">
+          {/* 16 px between the tabs on a phone and no shrinking: at 15 px the
+              four tabs filled a 390 px screen to the pixel and the last one
+              was cut ("Additiona") on a 375 or 360 px phone. The row reaches
+              the screen edges, so what scrolls is cut there and not mid-gutter. */}
+          {/* 12 px between tabs under 400 px: at 16 px the last tab was cut by
+              a letter at the screen edge in French, Finnish and Portuguese. */}
+          <div className="flex gap-3 min-[400px]:gap-4 sm:gap-6 overflow-x-auto scrollbar-hide py-3 -mx-5 px-5 sm:mx-0 sm:px-0">
             {[
               { label: t('services.navGastronomy'), href: '#gastronomy' },
               { label: t('services.navWellness'), href: '#wellness' },
@@ -165,7 +171,7 @@ export default function Concierge() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-[13px] font-medium text-[#6B6860] hover:text-[#1A1A18] transition-colors whitespace-nowrap py-1"
+                className="inline-flex shrink-0 items-center text-[15px] font-medium text-pa-earth hover:text-[#1A1A18] transition-colors whitespace-nowrap"
               >
                 {link.label}
               </a>
@@ -187,7 +193,7 @@ export default function Concierge() {
           ) : (
             <>
               <div className="max-w-3xl mb-12">
-                <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.12em] uppercase">{t('services.gastronomyOverline')}</p>
+                <p className="text-[12px] font-medium text-pa-gold-aa mb-4 tracking-[0.12em] uppercase">{t('services.gastronomyOverline')}</p>
                 <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.gastronomyTitle')}</h2>
                 <p className="body-lg">{t('services.gastronomyBody')}</p>
               </div>
@@ -205,7 +211,7 @@ export default function Concierge() {
       <section id="wellness" className="section-padding scroll-mt-40 bg-[#F5F1EB]">
         <div className="container">
           <div className="max-w-3xl mb-12">
-            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.12em] uppercase">{t('services.wellnessOverline')}</p>
+            <p className="text-[12px] font-medium text-pa-gold-aa mb-4 tracking-[0.12em] uppercase">{t('services.wellnessOverline')}</p>
             <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.wellnessTitle')}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -229,7 +235,7 @@ export default function Concierge() {
           ) : (
             <>
               <div className="max-w-3xl mb-12">
-                <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.12em] uppercase">{t('services.mobilityOverline')}</p>
+                <p className="text-[12px] font-medium text-pa-gold-aa mb-4 tracking-[0.12em] uppercase">{t('services.mobilityOverline')}</p>
                 <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.mobilityTitle')}</h2>
                 <p className="body-lg">{t('services.mobilityBody')}</p>
               </div>
@@ -247,7 +253,7 @@ export default function Concierge() {
       <section id="additional" className="section-padding scroll-mt-40 bg-[#F5F1EB]">
         <div className="container">
           <div className="max-w-3xl mb-12">
-            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.12em] uppercase">{t('services.additionalOverline')}</p>
+            <p className="text-[12px] font-medium text-pa-gold-aa mb-4 tracking-[0.12em] uppercase">{t('services.additionalOverline')}</p>
             <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.additionalTitle')}</h2>
             <p className="body-lg">{t('services.additionalBody')}</p>
           </div>
@@ -262,7 +268,7 @@ export default function Concierge() {
       <section className="editorial-proof" aria-label={t('about.valuesOverline')}>
         <div className="container grid md:grid-cols-3">
           {[1, 2, 3].map(step => <div className="editorial-proof-item" key={step}>
-            <span className="editorial-eyebrow text-pa-gold">0{step}</span>
+            <span className="editorial-eyebrow text-pa-gold-aa">0{step}</span>
             <h2 className="font-display text-2xl mb-3">{t(`editorial.step${step}Title`)}</h2>
             <p className="body-md">{t(`editorial.step${step}Body`)}</p>
           </div>)}

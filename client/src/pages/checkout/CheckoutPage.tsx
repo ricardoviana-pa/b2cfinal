@@ -14,7 +14,7 @@ import { QuoteRequestGate } from "@/lib/quoteRequest";
  * header has no stepper. The `step` state machine, the intent statuses, the
  * sync and the analytics events are unchanged.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, Fragment } from "react";
 import { useParams, useLocation, Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import {
@@ -36,7 +36,7 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useVisitOriginSync } from "@/hooks/useVisitOriginSync";
-import { formatQuotedEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
+import { formatQuotedEur, formatBookingDate, intlLocale, noBreak, sanitizePropertyName, keepBrand } from "@/lib/format";
 import { freeCancellationDeadline, isNonRefundablePlan, planPolicyCode, rateKind } from "@/lib/cancellation";
 import { freeCancellationDays } from "@shared/cancellationPolicy";
 import { preferredRatePlanId } from "@shared/ratePlanDefault";
@@ -193,7 +193,7 @@ function focusField(id: string) {
 }
 
 const INPUT_CLASS =
-  "w-full h-[48px] border bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none";
+  "w-full h-[48px] border bg-white px-3 rounded-lg body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none";
 
 export default function CheckoutPage() {
   const { t, i18n } = useTranslation();
@@ -1412,21 +1412,29 @@ export default function CheckoutPage() {
       ? t("booking.flexibleRate")
       : null;
   const guestsLine = t("search.guestsCount", { count: guests });
+  // The collapsed line breaks only after a dot: each part is one unbreakable
+  // run and the dot stays with the part before it. At 13 px on a phone it
+  // broke as "… · 4" / "hóspedes" and as "… 4 guests" / "· Refundable Rate".
+  const SUMMARY_DOT = "\u00A0· ";
+  // Each date and "4 guests" never split; the range may break after its arrow
+  // and the rate name between its words. Whole parts as one run hid the rate
+  // behind the clamp at 360 px (fr, es, nl, sv) and ran the date past the box
+  // in German and Finnish (cut without "…" under 360 px).
   const staySummary = [
-    `${formatBookingDate(checkIn, lang, true)} → ${formatBookingDate(checkOut, lang, true)}`,
-    guestsLine,
+    `${noBreak(formatBookingDate(checkIn, lang, true))}\u00A0→ ${noBreak(formatBookingDate(checkOut, lang, true))}`,
+    guestsLine ? noBreak(guestsLine) : null,
     rateLabel,
-  ].filter(Boolean).join(" · ");
+  ].filter((part): part is string => !!part).join(SUMMARY_DOT);
   const extrasSummary = [
     receptionChoice ? (receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")) : null,
     // Até dois extras, os nomes; a partir de três, a contagem
     selectedExtras.length === 0
       ? t("checkout.sections.noExtras", "No extras")
       : selectedExtras.length <= 2
-        ? selectedExtras.map(({ item }) => t(`checkout.extras.${item.sku}.name`)).join(" · ")
+        ? selectedExtras.map(({ item }) => t(`checkout.extras.${item.sku}.name`)).join(SUMMARY_DOT)
         : t("checkout.sections.extrasCount", { count: selectedExtras.length }),
     flexSelected && flexConfig ? "Flex" : null,
-  ].filter(Boolean).join(" · ");
+  ].filter(Boolean).join(SUMMARY_DOT);
 
   // ── Loading / not-found states ──
   if (intentQuery.isLoading && !isDemo) {
@@ -1575,7 +1583,7 @@ export default function CheckoutPage() {
               })()}
             </span>
           </span>
-          <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold eyebrow uppercase tracking-[0.08em]" : "text-pa-dark")}>
+          <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold-aa eyebrow uppercase tracking-[0.08em]" : "text-pa-dark")}>
             {amount === 0 ? t("checkout.included.badge") : formatQuotedEur(amount!, lang)}
           </span>
         </div>
@@ -1583,7 +1591,7 @@ export default function CheckoutPage() {
       {/* Flex */}
       {flexSelected && flexConfig && (
         <div className="flex justify-between items-center gap-2 body-sm text-inherit checkout-row-in">
-          <span className="flex items-center gap-1.5 text-pa-gold font-medium min-w-0">
+          <span className="flex items-center gap-1.5 text-pa-gold-aa font-medium min-w-0">
             {/* M2 (auditoria set/2026): a linha do Flex não tinha remover — se o
                 bloco desaparecesse (total abaixo do limiar) os 250 € ficavam
                 presos no total sem forma de sair */}
@@ -1598,7 +1606,7 @@ export default function CheckoutPage() {
             <span className="truncate">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
           </span>
           {flexGifted || flexIncludedByPlan ? (
-            <span className="tabular-nums shrink-0"><s className="text-pa-stone-aa">{formatQuotedEur(flexUnit, lang)}</s> <span className="text-pa-gold">{flexIncludedByPlan ? t("checkout.summary.flexIncludedShort", "Included") : t("checkout.flex.gifted", "Offered")}</span></span>
+            <span className="tabular-nums shrink-0"><s className="text-pa-stone-aa">{formatQuotedEur(flexUnit, lang)}</s> <span className="text-pa-gold-aa">{flexIncludedByPlan ? t("checkout.summary.flexIncludedShort", "Included") : t("checkout.flex.gifted", "Offered")}</span></span>
           ) : (
             <span className="text-pa-dark tabular-nums shrink-0">{formatQuotedEur(flexUnit, lang)}</span>
           )}
@@ -1607,8 +1615,8 @@ export default function CheckoutPage() {
       {/* Flex incluído por pagar tudo agora, sem o hóspede o ter escolhido */}
       {flexIncludedByPlan && !flexSelected && flexConfig && (
         <div className="flex justify-between items-center gap-2 body-sm text-inherit checkout-row-in">
-          <span className="text-pa-gold font-medium truncate">{t("checkout.summary.flexIncluded", "Flex · included")}</span>
-          <span className="text-pa-gold tabular-nums shrink-0">{formatQuotedEur(0, lang)}</span>
+          <span className="text-pa-gold-aa font-medium truncate">{t("checkout.summary.flexIncluded", "Flex · included")}</span>
+          <span className="text-pa-gold-aa tabular-nums shrink-0">{formatQuotedEur(0, lang)}</span>
         </div>
       )}
       </div>
@@ -1616,7 +1624,7 @@ export default function CheckoutPage() {
       <div className="border-t border-pa-sand pt-3 space-y-1.5">
         <div className="flex justify-between items-baseline gap-3">
           <span className="body-sm font-medium text-pa-dark">{twoParts ? t("checkout.summary.total", "Total") : t("checkout.todayTotal", "Total today")}</span>
-          <span className="checkout-total font-light text-pa-dark tabular-nums">{formatQuotedEur(displayedTotal, lang)}</span>
+          <span className="checkout-total font-normal text-pa-dark tabular-nums">{formatQuotedEur(displayedTotal, lang)}</span>
         </div>
         {twoParts && offer && (
           <div className="space-y-1">
@@ -1651,7 +1659,7 @@ export default function CheckoutPage() {
       ) : quote?.couponCode ? (
         <div className="flex items-center justify-between gap-2">
           <span className="inline-flex items-center gap-1.5 caption text-pa-dark bg-pa-warm border border-pa-sand rounded-full px-2.5 py-1">
-            <Tag className="w-3 h-3 text-pa-gold" /> {quote.couponCode}
+            <Tag className="w-3 h-3 text-pa-gold-aa" /> {quote.couponCode}
           </span>
           <button
             type="button"
@@ -1672,13 +1680,13 @@ export default function CheckoutPage() {
               onKeyDown={(e) => { if (e.key === "Enter" && couponInput.trim()) applyCoupon(couponInput.trim()); }}
               placeholder={t("checkout.coupon.field", "Promo code")}
               maxLength={40}
-              className="flex-1 min-w-0 h-[38px] border border-pa-sand bg-white px-3 rounded-md body-sm tracking-[0.04em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+              className="flex-1 min-w-0 h-11 border border-pa-sand bg-white px-3 rounded-lg body-sm tracking-[0.04em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
             />
             <button
               type="button"
               onClick={() => applyCoupon(couponInput.trim())}
               disabled={couponBusy || requoting || quoteStale || datesUnavailable || quoteRefreshFailed || !couponInput.trim() || (!isDemo && !quoteId)}
-              className="pa-action shrink-0 h-[38px] px-4 rounded-md border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
+              className="pa-action shrink-0 h-11 px-4 rounded-lg border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
             >
               {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
             </button>
@@ -1752,7 +1760,7 @@ export default function CheckoutPage() {
             só por ecrã, junto à decisão — no cartão da tarifa (passo 1) e
             mesmo acima do botão de pagar (passo 3, obrigatória). */}
         {guaranteeLabel && (
-          <p className="flex items-start gap-1.5 caption text-pa-gold leading-snug">
+          <p className="flex items-start gap-1.5 caption text-pa-gold-aa leading-snug">
             <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
           </p>
         )}
@@ -2061,14 +2069,20 @@ export default function CheckoutPage() {
                     grelha CHECK-IN / CHECK-OUT / HÓSPEDES repetia rótulos para
                     três factos que se leem de uma vez. */}
                 <div className="flex items-center justify-between gap-3">
+                  {/* Running text in unbreakable pieces: a date never splits
+                      ("26 Dez" / "2026"), the dot stays with the check-out date
+                      (a line may end with it, never start: "· 4 guests"), and a
+                      line breaks only after the arrow or the dot. As a dot list
+                      the wrapped range filled its row and pushed the guests to
+                      a third line at 320-360 px. */}
                   <p className="body-md text-pa-dark flex-1 min-w-0">
-                    {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)}
-                    <span className="text-pa-earth"> · {guestsLine}</span>
+                    {noBreak(formatBookingDate(checkIn, lang, true))}{"\u00A0"}→ {noBreak(formatBookingDate(checkOut, lang, true))}
+                    <span className="text-pa-earth">{"\u00A0"}· {noBreak(guestsLine)}</span>
                   </p>
                   <button
                     type="button"
                     onClick={() => (editingStay ? finishStayEdit() : setEditingStay(true))}
-                    className="shrink-0 flex items-center gap-1.5 caption text-pa-gold hover:text-pa-dark transition-colors"
+                    className="shrink-0 flex items-center gap-1.5 caption text-pa-gold-aa hover:text-pa-dark transition-colors"
                   >
                     <Pencil className="w-3.5 h-3.5" />
                     {editingStay ? t("checkout.doneEditing", "Done") : t("checkout.edit", "Edit")}
@@ -2117,7 +2131,7 @@ export default function CheckoutPage() {
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
-                      {requoting && <Loader2 className="w-4 h-4 animate-spin text-pa-gold" />}
+                      {requoting && <Loader2 className="w-4 h-4 animate-spin text-pa-gold-aa" />}
                     </div>
                   </div>
                 )}
@@ -2167,7 +2181,7 @@ export default function CheckoutPage() {
                   aria-describedby={emailHintVisible ? "checkout-email-hint" : undefined}
                   aria-invalid={(emailTouched && email.length > 0 && !isValidEmail(email)) || undefined}
                   className={cn(
-                    "w-full h-[48px] border bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none",
+                    "w-full h-[48px] border bg-white px-3 rounded-lg body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none",
                     emailNudge && !isValidEmail(email) ? "border-pa-dark ring-1 ring-pa-dark" : "border-pa-sand",
                   )}
                 />
@@ -2191,7 +2205,7 @@ export default function CheckoutPage() {
                     className="mt-[1px] h-[14px] w-[14px] shrink-0 accent-pa-dark cursor-pointer"
                   />
                   <span className="caption text-pa-stone-aa leading-relaxed">
-                    {t("checkout.newsletterOptIn", "Keep me updated by email.")}
+                    {keepBrand(t("checkout.newsletterOptIn", "Keep me updated by email."))}
                   </span>
                 </label>
                 {/* Nunca parado (auditoria do funil, n.º 2): sem email válido
@@ -2369,9 +2383,19 @@ export default function CheckoutPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1.5 min-w-0 body-sm">
+                  /* On a phone "Confirmation to · change" is the first line and
+                     the address has the whole next one, broken where needed: on
+                     one line at 15 px an ordinary address was cut, and with the
+                     address between them "change" fell alone to a third line.
+                     From 640 px one line, a long address cut with "…". */
+                  <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-1.5 min-w-0 body-sm">
                     <span className="text-pa-earth shrink-0">{t("checkout.emailLineLabel")}</span>
-                    <span className="text-pa-dark font-medium truncate min-w-0">{email}</span>
+                    <span className="order-last basis-full wrap-anywhere text-pa-dark font-medium sm:order-none sm:basis-auto sm:truncate sm:min-w-0 sm:[&>wbr]:hidden">
+                      {/* Break points after "@" and before each "." first
+                          ("…oliveira@" / "outlook.com", never "…outlook.c" / "om");
+                          any letter only for a single part longer than the line. */}
+                      {email.replace("@", "@\u0001").split(/\u0001|(?=\.)/).map((part, i) => <Fragment key={i}>{i > 0 && <wbr />}{part}</Fragment>)}
+                    </span>
                     <span aria-hidden className="text-pa-stone-aa shrink-0">·</span>
                     <button
                       type="button"
@@ -2445,7 +2469,7 @@ export default function CheckoutPage() {
               <div className="pt-5 space-y-4" inert={couponBusy || undefined} aria-busy={couponBusy || undefined}>
                 {redirectFinalizing ? (
                   <div className="flex items-center justify-center gap-3 py-8" role="status">
-                    <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
+                    <Loader2 className="w-5 h-5 animate-spin text-pa-gold-aa" />
                     <p className="body-sm text-pa-dark">{t("checkout.confirmingPayment", "Payment received — confirming your booking…")}</p>
                   </div>
                 ) : !pricingSaves && quoteId && effective && !quoteStale && !requoting && !datesUnavailable && !quoteRefreshFailed ? (
@@ -2539,7 +2563,7 @@ export default function CheckoutPage() {
             {couponRow}
             {conciergeRequests}
             {guaranteeLabel && (
-              <p className="flex items-start gap-1.5 caption text-pa-gold leading-snug">
+              <p className="flex items-start gap-1.5 caption text-pa-gold-aa leading-snug">
                 <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
               </p>
             )}

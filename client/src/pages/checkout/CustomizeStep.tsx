@@ -29,7 +29,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronDown, ChevronUp, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatEur } from "@/lib/format";
+import { formatEur, keepDashes, keepHyphens } from "@/lib/format";
 
 export type ExtraChapter = "arrival" | "home" | "table" | "wellness" | "experiences";
 
@@ -189,6 +189,10 @@ function priceFormula(item: CatalogExtra, sel: ExtraSelection, lang: string, t: 
   }
 }
 
+/** Separador de um resumo: o ponto fica colado à parte anterior (espaço
+ *  inseparável), para uma linha nunca começar por "·". */
+const DOT = "\u00A0· ";
+
 /** Resumo curto da seleção para a linha adicionada ("2 mudas · 90 €"). */
 function selectionSummary(item: CatalogExtra, sel: ExtraSelection, amount: number | null, lang: string, t: any): string {
   const bits: string[] = [];
@@ -199,7 +203,7 @@ function selectionSummary(item: CatalogExtra, sel: ExtraSelection, amount: numbe
   if (amount != null) {
     bits.push(amount === 0 && item.pricingModel === "included_selectable" ? t("checkout.included.badge") : formatEur(amount, lang));
   }
-  return bits.join(" · ");
+  return bits.join(DOT);
 }
 
 /** Botão redondo de adicionar/retirar: "+" vazio, ✓ cheio quando adicionado. */
@@ -264,17 +268,27 @@ function OptionRow({
 
   // Segunda linha: a descrição; depois de adicionar, o resumo da seleção.
   // Serviços com confirmação do concierge dizem-no logo aqui, antes de adicionar.
-  const secondLine = selected && !onRequest && item.pricingModel !== "per_stay"
-    ? selectionSummary(item, sel!, amount, lang, t)
-    : [desc, !selected && item.fulfillment === "needs_confirmation" ? t("checkout.confirm24h", "Confirmed within 2 hours") : ""]
-        .filter(Boolean)
-        .join(" · ");
+  // The concierge note goes on a line of its own, not after a dot: joined to
+  // the description, a line ended on the dot ("…per person. ·" / "Confirmed
+  // within 2 hours"). Hyphenated words and dashes keep together.
+  const showsSummary = selected && !onRequest && item.pricingModel !== "per_stay";
+  const secondLine = showsSummary ? selectionSummary(item, sel!, amount, lang, t) : keepDashes(keepHyphens(desc));
+  const confirmNote = !showsSummary && !selected && item.fulfillment === "needs_confirmation"
+    ? t("checkout.confirm24h", "Confirmed within 2 hours")
+    : "";
 
   const hasSteppers = selected && !onRequest && item.pricingModel !== "per_stay";
+  const unit = unitSuffix();
 
   return (
     <div className={cn("px-4 py-3.5 sm:px-5 transition-colors", selected && "bg-pa-warm", item.parentSku && "pl-9 sm:pl-10")}>
-      <div className="flex items-center gap-3">
+      {/* .pa-option (index.css). On a phone: photo | name over price | add
+          button, then the description under them at the full width of the
+          row. From 512 px: the single line it always was. On one line a phone
+          left the name and its description a column of 47 to 150 px beside
+          the price, one or two words per line (auditoria de formatação,
+          20 nov 2026). */}
+      <div className="pa-option" data-photo={item.photo ? "true" : undefined}>
         {item.photo ? (
           <img
             src={item.photo}
@@ -283,58 +297,63 @@ function OptionRow({
             height={48}
             loading="lazy"
             decoding="async"
-            className="w-12 h-12 rounded-md object-cover shrink-0 bg-pa-sand"
+            className="pa-option-photo w-12 h-12 rounded-md object-cover shrink-0 bg-pa-sand"
             onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
           />
         ) : null}
-        <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-1.5 body-sm font-medium text-pa-dark leading-snug">
-            {selected && <Check className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={2.5} />}
+        <div className="pa-option-text">
+          <p className="pa-option-name flex items-start gap-1.5 body-sm font-medium text-pa-dark leading-snug">
+            {selected && <Check className="mt-[3px] w-3.5 h-3.5 text-pa-gold-aa shrink-0" strokeWidth={2.5} />}
             <span className="min-w-0">{name}</span>
           </p>
-          {secondLine ? (
-            <p className={cn("caption leading-snug mt-0.5", selected && !onRequest ? "text-pa-dark" : "text-pa-stone-aa")}>{secondLine}</p>
+          {secondLine || confirmNote ? (
+            <p className={cn("pa-option-desc caption leading-snug", selected && !onRequest ? "text-pa-dark" : "text-pa-stone-aa")}>
+              {secondLine}
+              {confirmNote ? <span className={secondLine ? "block" : undefined}>{confirmNote}</span> : null}
+            </p>
           ) : null}
         </div>
-        <div className="shrink-0 flex items-center gap-2 sm:gap-3">
-          <div className="text-right max-w-[9.5rem] sm:max-w-none">
+        <div className="pa-option-side">
+          {/* Under the name on a phone, the price and its unit on one line
+              ("25 € / per person · day"); to the right of it from 512 px. */}
+          <div className="pa-option-price flex flex-wrap items-baseline gap-x-2 min-[512px]:block min-[512px]:max-sm:max-w-[9.5rem]">
             {onRequest ? (
               item.priceFrom != null ? (
                 <>
-                  <p className="body-sm text-pa-dark tabular-nums">{t("checkout.fromPrice", { price: formatEur(item.priceFrom, lang) })}</p>
-                  <p className="caption text-pa-stone-aa">{t("checkout.noChargeNow", "no charge now")}</p>
+                  <p className="body-sm text-pa-dark tabular-nums whitespace-nowrap">{t("checkout.fromPrice", { price: formatEur(item.priceFrom, lang) })}</p>
+                  <p className="caption text-pa-stone-aa whitespace-nowrap">{t("checkout.noChargeNow", "no charge now")}</p>
                 </>
               ) : (
-                <p className="caption text-pa-stone-aa max-w-[120px] leading-snug">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
+                <p className="caption text-pa-stone-aa min-[512px]:max-w-[120px] leading-snug">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
               )
             ) : item.pricingModel === "included_selectable" ? (
               <>
-                <p className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold">{t("checkout.included.badge")}</p>
+                <p className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold-aa">{t("checkout.included.badge")}</p>
                 {/* No telemóvel a regra do extra fica na linha da seleção ("2× · 25 €") */}
                 <p className="caption text-pa-stone-aa hidden sm:block">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
               </>
             ) : (
               <>
-                {/* No telemóvel a unidade desce para a linha de baixo: ao lado
-                    do preço espremia o nome do item ("Bringing a / pet") */}
                 <p className="body-sm text-pa-dark tabular-nums leading-snug">
                   {formatEur(item.unitPrice!, lang)}
-                  <span className="caption text-pa-stone-aa block sm:inline">
-                    <span className="hidden sm:inline"> / </span>
-                    {unitSuffix()}
-                  </span>
+                  {/* From 512 to 639 px (one line, the price column at the
+                      right, at most 9.5rem as on the live site) the unit goes
+                      under the price; beside it, it squeezed the name. */}
+                  {unit ? <span className="caption text-pa-stone-aa min-[512px]:max-sm:block"><span className="min-[512px]:max-sm:hidden"> / </span>{unit}</span> : null}
                 </p>
                 {item.minPeople ? (
-                  <p className="caption text-pa-stone-aa">{t("checkout.minPeople", { count: item.minPeople })}</p>
+                  <p className="caption text-pa-stone-aa whitespace-nowrap">{t("checkout.minPeople", { count: item.minPeople })}</p>
                 ) : null}
               </>
             )}
           </div>
-          <ToggleButton
-            selected={selected}
-            label={`${selected ? t("checkout.remove", "Remove") : onRequest ? t("checkout.request", "Request") : t("checkout.add", "Add")}: ${name}`}
-            onClick={() => onToggle(item)}
-          />
+          <div className="pa-option-toggle">
+            <ToggleButton
+              selected={selected}
+              label={`${selected ? t("checkout.remove", "Remove") : onRequest ? t("checkout.request", "Request") : t("checkout.add", "Add")}: ${name}`}
+              onClick={() => onToggle(item)}
+            />
+          </div>
         </div>
       </div>
 
@@ -366,7 +385,7 @@ function OptionRow({
                   type="button"
                   onClick={() => onAdjust(item.sku, { days: Math.max(1, nights) })}
                   className={cn(
-                    "caption text-inherit h-8 px-3 rounded-full border transition-colors",
+                    "caption text-inherit h-8 px-3 rounded-full border whitespace-nowrap transition-colors",
                     (sel!.days ?? 1) === Math.max(1, nights)
                       ? "border-pa-dark bg-pa-dark text-white"
                       : "border-pa-sand bg-white text-pa-earth hover:border-pa-dark",
@@ -384,7 +403,10 @@ function OptionRow({
           {(() => {
             const f = priceFormula(item, sel!, lang, t);
             return f ? (
-              <span className="caption text-pa-earth tabular-nums">
+              /* On a phone the sum has its own line under the steppers in
+                 every row; beside them it fitted in some rows and fell under
+                 in others. */
+              <span className="basis-full text-right min-[512px]:basis-auto min-[512px]:ml-auto caption text-pa-earth tabular-nums">
                 {f}{amount != null && amount > 0 ? ` = ${formatEur(amount, lang)}` : ""}
               </span>
             ) : null;
@@ -425,11 +447,19 @@ function ReceptionRows({
       >
         {selected && <span className="w-2 h-2 rounded-full bg-pa-dark" />}
       </span>
+      {/* Name and value share the first line; the description runs under
+          both at the full width of the row. Beside the value it lost that
+          width for its whole height: a line more on a phone, and a last word
+          alone on a computer ("After 21h: / €90."). */}
       <span className="min-w-0 flex-1">
-        <span className="block body-sm font-medium text-pa-dark leading-snug">{name}</span>
+        <span className="flex items-baseline justify-between gap-3">
+          {/* 14 px under 400 px: at 15 px beside "90 €" the name broke one word
+              per line ("Henkilökohtainen / vastaanotto", "Recepción / presencial"). */}
+          <span className="min-w-0 body-sm max-[399px]:text-sm font-medium text-pa-dark leading-snug">{name}</span>
+          <span className="shrink-0">{value}</span>
+        </span>
         <span className="block caption text-pa-stone-aa leading-snug mt-0.5">{desc}</span>
       </span>
-      <span className="shrink-0 pt-0.5">{value}</span>
     </button>
   );
 
@@ -446,8 +476,8 @@ function ReceptionRows({
         <Row
           selected={choice?.type === "self"}
           name={t("checkout.reception.self.name")}
-          value={<span className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold">{t("checkout.included.badge")}</span>}
-          desc={t("checkout.reception.self.desc")}
+          value={<span className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold-aa">{t("checkout.included.badge")}</span>}
+          desc={keepHyphens(t("checkout.reception.self.desc"))}
           onClick={() => onChoose({ type: "self" })}
         />
         <Row
@@ -458,11 +488,14 @@ function ReceptionRows({
               {formatEur(choice?.type === "hosted" && choice?.late ? config.hostedLatePrice : config.hostedPrice, lang)}
             </span>
           }
-          desc={`${t("checkout.reception.hosted.desc")} ${t("checkout.reception.lateNote", { hour: config.lateFromHour, price: formatEur(config.hostedLatePrice, lang) })}`}
+          desc={keepHyphens(`${t("checkout.reception.hosted.desc")} ${t("checkout.reception.lateNote", { hour: config.lateFromHour, price: formatEur(config.hostedLatePrice, lang) })}`)}
           onClick={() => onChoose({ type: "hosted", late: choice?.type === "hosted" ? choice.late : false })}
         />
         {choice?.type === "hosted" && (
-          <div className="flex items-center gap-2 px-4 py-2.5 sm:px-5 bg-pa-warm">
+          /* The pills never break their label ("Antes das 21h" was two
+             lines inside a 32 px pill on a phone): tighter on a phone, and
+             the row wraps as a whole in a longer language. */
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2 sm:gap-x-2 px-4 py-2.5 sm:px-5 bg-pa-warm">
             <span className="caption text-pa-earth">{t("checkout.reception.arrivalWindow")}</span>
             {[false, true].map((late) => (
               <button
@@ -471,7 +504,7 @@ function ReceptionRows({
                 onClick={() => onChoose({ type: "hosted", late })}
                 aria-pressed={(choice?.late ?? false) === late}
                 className={cn(
-                  "caption text-inherit h-8 px-3 rounded-full border transition-colors",
+                  "caption text-inherit h-8 px-2.5 sm:px-3 rounded-full border whitespace-nowrap transition-colors",
                   (choice?.late ?? false) === late
                     ? "border-pa-dark bg-pa-dark text-white"
                     : "border-pa-sand bg-white text-pa-earth hover:border-pa-dark",
@@ -616,9 +649,14 @@ export default function CustomizeStep({
               <OptionRow key={item.sku} item={item} sel={selection[item.sku]} {...rowProps} />
             ))}
             {expanded && transferRows.length > 0 && (
-              <div className="px-4 py-2.5 sm:px-5 flex items-center justify-between gap-2 bg-pa-cream">
-                <span className="caption text-pa-earth">{t("checkout.arrivalAirport", "Arrival airport")}</span>
-                <div className="flex items-center gap-1.5" role="group" aria-label={t("checkout.arrivalAirport", "Arrival airport")}>
+              /* The pills never shrink. A label of several words wraps beside
+                 them (w-min grow: its narrowest width decides the line, then it
+                 takes the rest); a long single word ("Aankomstluchthaven" at 320
+                 px) sends the pills under it, at the right. Squeezed to the 44 px
+                 tap minimum, their text ran out of the pill. */
+              <div className="px-4 py-2.5 sm:px-5 flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 bg-pa-cream">
+                <span className="caption text-pa-earth min-w-0 w-min grow">{t("checkout.arrivalAirport", "Arrival airport")}</span>
+                <div className="ml-auto flex shrink-0 items-center gap-1.5" role="group" aria-label={t("checkout.arrivalAirport", "Arrival airport")}>
                   {(["porto", "lisbon"] as const).map((ap) => (
                     <button
                       key={ap}
@@ -626,7 +664,7 @@ export default function CustomizeStep({
                       onClick={() => switchAirport(ap)}
                       aria-pressed={shownAirport === ap}
                       className={cn(
-                        "caption text-inherit h-8 px-3 rounded-full border transition-colors",
+                        "caption text-inherit h-8 shrink-0 px-2.5 sm:px-3 rounded-full border whitespace-nowrap transition-colors",
                         shownAirport === ap
                           ? "border-pa-dark bg-pa-dark text-white"
                           : "border-pa-sand bg-white text-pa-earth hover:border-pa-dark",
@@ -669,7 +707,7 @@ export default function CustomizeStep({
             </button>
           )}
           {chargeNoteVisible && (
-            <p className="caption text-pa-stone-aa leading-relaxed mt-3">{t("checkout.extrasChargeNote")}</p>
+            <p className="caption text-pa-stone-aa leading-relaxed mt-3">{keepHyphens(t("checkout.extrasChargeNote"))}</p>
           )}
         </Group>
       )}

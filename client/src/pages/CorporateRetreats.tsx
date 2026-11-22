@@ -7,6 +7,7 @@ import Footer from '@/components/layout/Footer';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import { corporatePlanning, corporateEnquiryHref } from '@/data/corporatePlanning';
+import { keepHyphens } from '@/lib/format';
 
 export default function CorporateRetreats() {
   const { t, i18n } = useTranslation();
@@ -40,11 +41,11 @@ export default function CorporateRetreats() {
       <div className="grid md:grid-cols-3 gap-5">
         {planning.formats.map(format => <div key={format.id} className="flex flex-col rounded-xl border border-pa-sand bg-white p-6 lg:p-8">
           <h3 className="font-display text-2xl mb-4">{format.title}</h3>
-          <p className="body-md mb-6 flex-1">{format.text}</p>
+          <p className="body-md mb-6 flex-1">{keepHyphens(format.text)}</p>
           <Link href={corporateEnquiryHref(format.id)} className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-pa-brown">{format.cta}<ArrowRight className="w-4 h-4 shrink-0" /></Link>
         </div>)}
       </div>
-      <p className="text-sm text-pa-stone-aa max-w-3xl mt-5">{planning.note}</p>
+      <p className="text-[15px] text-pa-stone-aa max-w-3xl mt-5">{planning.note}</p>
     </section>}
     <section className="container py-12 lg:py-16">
       <h2 className="headline-lg mb-9">{t('corporate.planTitle')}</h2>

@@ -185,7 +185,8 @@
     "unavailableHint": "Estas casas podem estar disponíveis noutras datas. Fale com o nosso concierge para alternativas.",
     "fromTotal": "Desde {{price}} pela estadia",
     "metaTitle": "Casas de Férias e Villas em Portugal",
-    "metaDescription": "Descubra {{homes}} casas de férias e villas de luxo no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. Filtre por destino e hóspedes. Reserve direto."
+    "metaDescription": "Descubra {{homes}} casas de férias e villas de luxo no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. Filtre por destino e hóspedes. Reserve direto.",
+    "showMore": "Ver mais"
   },
   "property": {
     "bedrooms": "Quartos",
@@ -602,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "PREFERÊNCIAS DE COOKIES",
-    "description": "Os cookies essenciais permitem navegar e reservar. Com a sua autorização, também utilizamos cookies de análise e publicidade. Inclui a medição de OpenAI Ads.",
+    "description": "Os cookies essenciais permitem navegar e reservar. Com a sua autorização, também utilizamos cookies de análise e publicidade. Inclui a medição de OpenAI Ads.",
     "essential": "Cookies Essenciais",
     "essentialDesc": "Necessários para a funcionalidade básica do site e segurança. Não podem ser desativados.",
     "analytics": "Cookies de Análise",
@@ -629,7 +630,7 @@
     "heroGuarantee": "Sem taxas de reserva. Melhor preço garantido. Resposta do concierge em 2 horas.",
     "proofHotels": "{{homes}} casas e villas",
     "proofRating": "4.8★ avaliação média",
-    "heroAlt": "Campo de ténis privado e moradia da Mirante 1, sobre Albufeira, no Algarve",
+    "heroAlt": "Piscina, jardins e solar da Carcavelos Manor House, em Vila Verde, no Minho",
     "searchDestination": "Destino",
     "searchMinhoCoast": "Costa do Minho",
     "searchPortoDouro": "Porto e Douro",
@@ -862,7 +863,7 @@
     "preferToTalk": "Prefere falar?",
     "phoneAvailable": "Disponível das 9:00 às 21:00",
     "whatsapp": "WhatsApp",
-    "whatsappSub": "Envie-nos mensagem diretamente",
+    "whatsappSub": "Envie-nos mensagem diretamente",
     "emailResponse": "Respondemos em 2 horas",
     "scheduleCall": "Agendar uma chamada",
     "scheduleCallSub": "Marque uma chamada de 15 minutos",
@@ -1358,7 +1359,7 @@
     "bookExperience": "Reservar esta experiência",
     "whatsappSubtitle": "Fale diretamente com a nossa equipa de concierge. Normalmente respondemos em minutos.",
     "chatOnWhatsApp": "Falar no WhatsApp",
-    "whatsappNote": "Todos os dias, das 9h às 21h (hora de Lisboa)"
+    "whatsappNote": "Todos os dias, das 9h às 21h (hora de Lisboa)"
   },
   "bedConfig": {
     "notAvailable": "Configuração de camas não disponível"

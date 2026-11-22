@@ -48,7 +48,7 @@ import { trpc } from '@/lib/trpc';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
 import { hasSwimmingPool } from '@/lib/homeSearch';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
-import { formatQuotedEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
+import { formatBookingDate, getDisplayName, intlLocale, formatStayEur, keepHyphens, keepDashes } from '@/lib/format';
 import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight, watchBookingCardUnderFloats } from '@/lib/fixedBottom';
 import {
   StructuredData,
@@ -143,6 +143,29 @@ const LIGHTBOX_WIDTHS = [1080, 1600, 2560];
 const HERO_WIDTHS = [640, 828, 1080, 1440];
 // Desktop: the large tile is half the container (≈46vw at 1440 px).
 const HERO_SIZES = '(min-width: 1024px) 46vw, 100vw';
+
+/* Service and experience cards on a home's page: two grids, one layout.
+   From 640 px the card is a column with its footer pinned to the bottom, so
+   the dividers and prices of a row line up whether a name takes one line or
+   two. The footer is the same in every card: the price on the left with its
+   unit ("per person") on a second line, the action on the right of the first
+   line. It used to wrap by chance: at 15 px "From €65 per person" + "VIEW" no
+   longer fitted the 206 px column, and the action fell under the price on
+   some cards and not on others (auditoria de formatação, 20 nov 2026).
+   Three lines of description: at 15 px two lines cut every sentence. */
+const ADDON_BODY = 'flex min-w-0 flex-1 flex-col p-3.5 sm:p-5';
+const ADDON_TITLE = 'font-display body-lg text-pa-dark mb-2 sm:mb-1.5 text-balance group-hover:text-pa-gold-aa transition-colors';
+const ADDON_TAGLINE = 'body-sm text-pa-earth leading-relaxed mb-3 sm:mb-4 line-clamp-3 font-normal';
+const ADDON_FOOT = '@container mt-auto flex items-baseline justify-between gap-x-2 pt-2.5 sm:pt-3 border-t border-pa-sand';
+const ADDON_PRICE = 'min-w-0 body-sm leading-snug font-medium text-pa-dark';
+const ADDON_ACTION = 'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold-aa group-hover:text-pa-dark transition-colors';
+/* The word beside the arrow ("Request", "Anfragen", "Solicitar") shows only
+   where the foot is 15rem or wider, room for it beside the price in every
+   language; in a narrower foot (a phone row, three cards across on a
+   computer) the arrow alone, the word kept for screen readers. With the word,
+   "Price on request" broke in two in five languages on a computer and in all
+   of them on a small phone (auditoria de formatação, 2.ª ronda). */
+const ADDON_ACTION_WORD = '@max-[15rem]:sr-only';
 
 function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onClose, t }: {
   images: string[];
@@ -263,7 +286,7 @@ function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onC
       {/* Top bar: counter + close */}
       <div className="flex items-center justify-between px-4 py-3 shrink-0">
         <div />
-        <span className="text-white/70 body-sm font-body font-light" >
+        <span className="text-white/70 body-sm font-body font-normal" >
           {idx + 1} / {total}
         </span>
         <button
@@ -421,7 +444,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
               {b.label && (
                 <h3 className="eyebrow font-semibold tracking-[0.12em] uppercase text-pa-stone mb-2.5">{labelFor(b)}</h3>
               )}
-              <div className={b.label ? 'space-y-3 body-sm text-pa-earth leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 300 } : undefined}>
+              <div className={b.label ? 'space-y-3 body-sm text-pa-earth leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 400 } : undefined}>
                 {b.paragraphs.map((para, i) => <p key={i}>{para}</p>)}
               </div>
             </div>
@@ -429,7 +452,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
           {hasMore && (
             <button
               onClick={() => setExpanded((v) => !v)}
-              className="body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-4"
+              className="body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors underline underline-offset-4"
             >
               {expanded ? t('common.readLess', 'Read less') : t('common.readMore', 'Read more')}
             </button>
@@ -459,7 +482,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
                 <div className="absolute -top-12 left-0 right-0 h-12 bg-gradient-to-t from-pa-cream to-transparent pointer-events-none" />
                 <button
                   onClick={() => setExpanded(true)}
-                  className="body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-4"
+                  className="body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors underline underline-offset-4"
                 >
                   {t('common.readMore', 'Read more')}
                 </button>
@@ -468,7 +491,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
             {expanded && needsTruncation && (
               <button
                 onClick={() => setExpanded(false)}
-                className="body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-4"
+                className="body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors underline underline-offset-4"
               >
                 {t('common.readLess', 'Read less')}
               </button>
@@ -751,6 +774,11 @@ export default function PropertyDetail() {
       (Array.isArray(p.destinations) ? (p.destinations.length === 0 || p.destinations.includes(property.destination)) : true)
     ).map(p => localizeProduct(p, i18n.language)!);
   }, [property, i18n.language]);
+
+  // A grid where at least one card has a unit under its price ("per person")
+  // reserves that second line in every card, so the footers have one height.
+  const servicesHaveSuffix = services.some(s => !!s.priceSuffix);
+  const adventuresHaveSuffix = adventures.slice(0, 6).some(a => !!a.priceSuffix);
 
   const destObj = useMemo(() => {
     if (!property) return null;
@@ -1150,7 +1178,7 @@ export default function PropertyDetail() {
             </p>
           )}
           <div className="flex items-center gap-1.5 mb-4">
-            <BadgeCheck size={14} className="text-pa-gold" />
+            <BadgeCheck size={14} className="text-pa-gold-aa" />
             <span className="caption tracking-[0.02em] text-pa-stone font-medium">{t('property.directConcierge')}</span>
           </div>
           <div className="space-y-3">
@@ -1201,7 +1229,7 @@ export default function PropertyDetail() {
           ] as const).map((item, i) => (
             <div key={i} className="flex items-start gap-2">
               <item.icon size={14} className="text-pa-gold-aa shrink-0 mt-0.5" />
-              <span className="caption text-pa-dark leading-snug font-body font-light" >{item.label}</span>
+              <span className="caption text-pa-dark leading-snug font-body font-normal" >{item.label}</span>
             </div>
           ))}
         </div>
@@ -1213,11 +1241,17 @@ export default function PropertyDetail() {
       {/* Quem recebe é a Portugal Active, em todas as casas (próprias ou de
           parceiros): sem nome de pessoa nem "equipa local em X". O Ricardo,
           29 out 2026: "Portugal Active é Portugal Active". */}
-      <p className="mt-4 body-sm text-pa-dark leading-tight">
-        {t('host.hostedBy', 'Hosted by Portugal Active')} ·{' '}
-        <Link href="/about" className="caption text-pa-gold-aa hover:underline">
-          {t('host.meetUs', 'Meet us')}
-        </Link>
+      {/* pa-dots: when the link does not fit beside the host it goes to the
+          next line whole and without the dot; "Portugal Active" never splits.
+          min-h-0: a link in a line of text (as it was), not a 44 px block that
+          made the line 44 px tall. */}
+      <p className="pa-dots mt-4 body-sm text-pa-dark leading-tight">
+        <span>{t('host.hostedBy', 'Hosted by Portugal Active').replace('Portugal Active', 'Portugal\u00A0Active')}</span>
+        <span>
+          <Link href="/about" className="min-h-0 caption text-pa-gold-aa hover:underline">
+            {t('host.meetUs', 'Meet us')}
+          </Link>
+        </span>
       </p>
     </>
   );
@@ -1230,7 +1264,9 @@ export default function PropertyDetail() {
 
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="container pt-20 pb-1 lg:pb-0">
-          <ol className="flex items-center gap-0.5 caption text-pa-stone font-light" >
+          {/* 12 px under 400 px: at 13 px the German crumbs cut the home's
+              name ("Lima River Hous…") on 375 and 390 px phones. */}
+          <ol className="flex items-center gap-0.5 caption max-[399px]:text-xs text-pa-stone font-normal" >
             <li><Link href="/" className="inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5 hover:text-pa-dark transition-colors">{t('propertyDetail.breadcrumbHome', 'Home')}</Link></li>
             <li className="text-pa-sand">/</li>
             <li><Link href="/homes" className="inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5 hover:text-pa-dark transition-colors">{t('propertyDetail.breadcrumbHomes', 'Homes')}</Link></li>
@@ -1241,7 +1277,7 @@ export default function PropertyDetail() {
               </>
             )}
             <li className="text-pa-sand">/</li>
-            <li className="text-pa-earth truncate max-w-[220px] inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5">{displayName}</li>
+            <li className="text-pa-earth min-w-0 max-w-[220px] inline-flex items-center min-h-[44px] lg:min-h-8 px-1.5"><span className="truncate">{displayName}</span></li>
           </ol>
         </nav>
 
@@ -1305,7 +1341,7 @@ export default function PropertyDetail() {
                 {displayName}
               </h1>
               {property.tagline && (
-                <p className="body-sm text-pa-earth italic mt-2 max-w-2xl leading-relaxed font-body font-light" >{property.tagline}</p>
+                <p className="body-sm text-pa-earth italic mt-2 max-w-2xl leading-relaxed font-body font-normal" >{property.tagline}</p>
               )}
             </div>
             {(hasRating || property.tier === 'signature') && (
@@ -1369,7 +1405,7 @@ export default function PropertyDetail() {
         </div>
 
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
-        <div className={bookableOnline ? "container pt-5 lg:pt-6 pb-8 lg:pb-16" : "container pt-5 lg:pt-6 pb-24 lg:pb-16"}>
+        <div className={bookableOnline || partnerUid ? "container pt-5 lg:pt-6 pb-8 lg:pb-16" : "container pt-5 lg:pt-6 pb-24 lg:pb-16"}>
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-1 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12">
@@ -1377,23 +1413,25 @@ export default function PropertyDetail() {
                   features with their icons and the section links. */}
               <div>
                 <div className="flex items-center gap-2">
-                  <MapPin size={15} className="text-pa-gold shrink-0" aria-hidden="true" />
+                  <MapPin size={15} className="text-pa-gold-aa shrink-0" aria-hidden="true" />
                   <span className="body-md text-pa-dark font-normal">{property.locality}, Portugal</span>
                 </div>
-                <ul className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5 body-sm text-pa-earth">
+                {/* pa-dots: when the facts wrap, no line starts with the
+                    separator (at 15 px the row is three lines on a phone and
+                    two of them began with a stray dot). */}
+                <ul className="pa-dots gap-y-1 mt-1.5 body-sm text-pa-earth">
                   {facts.map((fact, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      {i > 0 && <span className="text-pa-sand" aria-hidden="true">·</span>}
-                      {fact}
-                    </li>
+                    <li key={i} className="whitespace-nowrap">{fact}</li>
                   ))}
                 </ul>
                 {keyAmenities.length > 0 && (
                   <ul className="mt-5 pt-5 border-t border-pa-sand grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
                     {keyAmenities.slice(0, 6).map((a) => (
-                      <li key={a.key} className="flex items-center gap-2.5 body-sm text-pa-dark min-w-0">
-                        <a.icon size={18} strokeWidth={1.5} className="text-pa-gold shrink-0" aria-hidden="true" />
-                        <span className="truncate">{a.label}</span>
+                      <li key={a.key} className="flex items-start gap-2.5 body-sm leading-snug text-pa-dark min-w-0">
+                        <a.icon size={18} strokeWidth={1.5} className="text-pa-gold-aa shrink-0 mt-px" aria-hidden="true" />
+                        {/* Two lines rather than "Yksityinen uima-a…": at 15 px
+                            the longer languages no longer fit half a phone. */}
+                        <span className="min-w-0">{keepHyphens(a.label)}</span>
                       </li>
                     ))}
                   </ul>
@@ -1424,11 +1462,21 @@ export default function PropertyDetail() {
                     </figcaption>
                   </figure>
                 )}
-                <nav aria-label={t('pdpUx.navigation')} className="mt-5 pt-5 border-t border-pa-sand flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap">
+                {/* On a phone the row fades out at the screen edge, so a pill cut
+                    there reads as "more to scroll" and not as a word with its last
+                    letter missing ("Amenities and feature|s"). The divider above
+                    is on a wrapper, so it does not fade; 40 px at the row's end
+                    keep the last pill clear of the fade. */}
+                <div className="mt-5 pt-5 border-t border-pa-sand -mx-5 sm:mx-0">
+                <nav aria-label={t('pdpUx.navigation')} className="flex gap-2 overflow-x-auto no-scrollbar px-5 max-sm:pr-10 sm:px-0 sm:flex-wrap max-sm:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]">
                   {sectionLinks.map(([id, label]) => (
-                    <a key={id} href={`#${id}`} className="pa-action shrink-0 inline-flex items-center min-h-11 lg:min-h-9 rounded-full border border-pa-sand px-4 body-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark whitespace-nowrap">{label}</a>
+                    /* 14 px with 14 px sides on a phone: at 15 px the second pill
+                       ended a letter past the screen ("Amenities and feature|s"),
+                       which read as a typo rather than "scroll for more". */
+                    <a key={id} href={`#${id}`} className="pa-action shrink-0 inline-flex items-center min-h-11 lg:min-h-9 rounded-full border border-pa-sand px-3.5 sm:px-4 body-sm max-sm:text-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark whitespace-nowrap">{label}</a>
                   ))}
                 </nav>
+                </div>
               </div>
 
 
@@ -1469,11 +1517,16 @@ export default function PropertyDetail() {
               {property.rooms && property.rooms.length > 0 && (
                 <section id="property-bedrooms" style={{ scrollMarginTop: '7rem' }}>
                   <h2 className="font-display headline-sm font-light text-pa-dark mb-1.5">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
-                  <p className="body-sm text-pa-earth mb-5">
-                    {t('propertyDetail.sleepsSummary', { beds: property.bedrooms, guests: property.maxGuests, defaultValue: '{{beds}} bedrooms · sleeps {{guests}}' })}
-                    {bedTotal > 0 && <> · {t('propertyDetail.bedTotal', { count: bedTotal })}</>}
+                  {/* pa-dots: no line ends or starts with a dot ("… 13 huéspedes ·" / "10 camas"). */}
+                  <p className="pa-dots body-sm text-pa-earth mb-5">
+                    {[
+                      t('propertyDetail.sleepsSummary', { beds: property.bedrooms, guests: property.maxGuests, defaultValue: '{{beds}} bedrooms · sleeps {{guests}}' }),
+                      ...(bedTotal > 0 ? [t('propertyDetail.bedTotal', { count: bedTotal })] : []),
+                    ].flatMap((s) => s.split(' · ')).map((part, i) => (
+                      <span key={i} className="whitespace-nowrap">{part}</span>
+                    ))}
                   </p>
-                  <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-5 px-5 pb-1 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
+                  <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-pl-5 -mx-5 px-5 pb-1 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
                     {property.rooms.map((room: any, roomIdx: number) => {
                       const beds: any[] = Array.isArray(room?.beds) ? room.beds : [];
                       // A curated photo of this bedroom (catalogue index); the
@@ -1503,7 +1556,7 @@ export default function PropertyDetail() {
                               </button>
                           )}
                           <div className="p-5">
-                          <div className="flex flex-wrap items-center gap-1.5 text-pa-gold mb-4 min-h-[24px]" aria-hidden="true">
+                          <div className="flex flex-wrap items-center gap-1.5 text-pa-gold-aa mb-4 min-h-[24px]" aria-hidden="true">
                             {beds.flatMap((bed: any, bedIdx: number) => {
                               const BedIcon = bedTypeOf(String(bed?.type || ''))?.icon ?? Bed;
                               return Array.from({ length: Math.min(Math.max(Number(bed?.quantity) || 1, 1), 4) }, (_, k) => (
@@ -1535,7 +1588,7 @@ export default function PropertyDetail() {
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
                       {keyAmenities.map((a) => (
                         <li key={a.key} className="flex items-center gap-3 py-3 border-b border-pa-sand body-sm text-pa-dark">
-                          <a.icon size={20} strokeWidth={1.5} className="text-pa-gold shrink-0" aria-hidden="true" />
+                          <a.icon size={20} strokeWidth={1.5} className="text-pa-gold-aa shrink-0" aria-hidden="true" />
                           <span>{a.label}</span>
                         </li>
                       ))}
@@ -1544,7 +1597,7 @@ export default function PropertyDetail() {
                       <button
                         type="button"
                         onClick={() => setAmenitiesOpen(true)}
-                        className="pa-action mt-6 inline-flex items-center justify-center rounded-lg border border-pa-dark px-6 min-h-11 body-sm font-medium text-pa-dark hover:bg-pa-dark hover:text-white transition-colors"
+                        className="btn-ghost mt-6"
                       >
                         {t('propertyDetail.showAllAmenitiesCount', { count: amenityTotal })}
                       </button>
@@ -1575,10 +1628,12 @@ export default function PropertyDetail() {
               <section id="property-location" style={{ scrollMarginTop: '7rem' }}>
                 <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
                 <p className="body-sm text-pa-stone mb-4">
-                  <span className="font-medium text-pa-gold">{property.locality}</span>
-                  {' · '}{t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
+                  <span className="font-medium text-pa-gold-aa">{property.locality}</span>
+                  {/* The dots stay with the part before them and the dash with
+                      the word before it: no line starts with "·" or "—". */}
+                  {'\u00A0· '}{keepDashes(t('location.approxNote', 'Approximate area — the exact address is shared after booking'))}
                   {(property as any).licenseNumber && (
-                    <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
+                    <>{'\u00A0· '}{t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
                   )}
                 </p>
                 <div className="rounded-xl overflow-hidden border border-pa-sand">
@@ -1615,10 +1670,10 @@ export default function PropertyDetail() {
                   {pdpFaq.map((f, i) => (
                     <details key={i} className="group py-3">
                       <summary className="flex items-center justify-between cursor-pointer list-none body-sm text-pa-dark font-medium min-h-[32px]">
-                        {f.q}
+                        <span className="text-balance">{keepHyphens(f.q)}</span>
                         <ChevronDown className="w-4 h-4 text-pa-stone transition-transform group-open:rotate-180 shrink-0 ml-3" />
                       </summary>
-                      <p className="body-sm text-pa-earth leading-relaxed pt-2 pr-8 font-light" >{f.a}</p>
+                      <p className="body-sm text-pa-earth leading-relaxed pt-2 pr-8 font-normal" >{f.a}</p>
                     </details>
                   ))}
                 </div>
@@ -1635,9 +1690,9 @@ export default function PropertyDetail() {
                   One team, one standard — on every home. */}
               <section className="py-6 lg:py-10 text-center">
                 <span className="mx-auto block h-px w-10 bg-[#C9A876]/70 mb-7" />
-                <p className="eyebrow font-semibold tracking-[0.2em] uppercase text-pa-gold mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
+                <p className="eyebrow font-semibold tracking-[0.2em] uppercase text-pa-gold-aa mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
                 <h2 className="font-display headline-md font-light leading-[1.3] text-pa-dark mb-5 max-w-[34rem] mx-auto">{t('conversion.helpTitle')}</h2>
-                <p className="body-sm text-pa-earth leading-relaxed max-w-[40rem] mx-auto font-light" >{t('conversion.helpBody')}</p>
+                <p className="body-sm text-pa-earth leading-relaxed max-w-[40rem] mx-auto font-normal" >{t('conversion.helpBody')}</p>
               </section>
 
               {/* 4. Services — in-house, delivered by our own team. Image-first
@@ -1649,15 +1704,20 @@ export default function PropertyDetail() {
                 <p className="body-md text-pa-stone mb-6">
                   {t('conversion.extrasNote')}
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                {/* On a phone each service is one compact row (photo beside the
+                    name and the price): three big cards took two screens, and
+                    with the experiences below about five before the related
+                    homes (auditoria de design, 14 nov 2026). From 640 px, the
+                    cards as before. */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
                   {(showAllServices ? services : services.slice(0, 3)).map(service => (
                     <button
                       key={service.slug}
                       type="button"
                       onClick={() => setModalProduct(service)}
-                      className="group block text-left bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                      className="group flex sm:flex-col w-full text-left bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                     >
-                      <div className="relative aspect-[4/3] bg-pa-warm overflow-hidden">
+                      <div className="relative w-24 shrink-0 self-stretch sm:w-auto sm:self-auto sm:aspect-[4/3] bg-pa-warm overflow-hidden">
                         {service.image ? (
                           <img
                             src={service.image}
@@ -1667,17 +1727,17 @@ export default function PropertyDetail() {
                           />
                         ) : null}
                       </div>
-                      <div className="p-5">
-                        <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
-                        <h3 className="font-display body-lg text-pa-dark mb-1.5 group-hover:text-pa-gold transition-colors">{service.name}</h3>
-                        <p className="body-sm text-pa-earth leading-relaxed mb-4 line-clamp-2 font-light" >{service.tagline}</p>
-                        <div className="flex items-baseline justify-between pt-3 border-t border-pa-sand">
-                          <p className="body-sm font-medium text-pa-dark">
+                      <div className={ADDON_BODY}>
+                        <p className="eyebrow font-medium tracking-[0.08em] sm:tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
+                        <h3 className={ADDON_TITLE}>{keepHyphens(service.name)}</h3>
+                        <p className={ADDON_TAGLINE}>{service.tagline}</p>
+                        <div className={ADDON_FOOT}>
+                          <p className={`${ADDON_PRICE} ${servicesHaveSuffix ? 'min-h-[2.5rem]' : ''}`}>
                             {service.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(service.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('property.priceOnRequest')}
-                            <span className="caption text-pa-stone font-normal ml-1">{service.priceSuffix}</span>
+                            {service.priceSuffix ? <span className="block caption leading-snug text-pa-stone font-normal">{service.priceSuffix}</span> : null}
                           </p>
-                          <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
-                            {t('propertyDetail.requestService', 'Request')} <ArrowRight className="w-3 h-3" />
+                          <span className={ADDON_ACTION}>
+                            <span className={ADDON_ACTION_WORD}>{t('propertyDetail.requestService', 'Request')}</span><ArrowRight className="w-3 h-3" aria-hidden />
                           </span>
                         </div>
                       </div>
@@ -1696,7 +1756,7 @@ export default function PropertyDetail() {
                 <section>
                   <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.adventuresTitle')}</h2>
                   <p className="body-md text-pa-stone mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName, ...destVars })}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
                     {adventures.slice(0, 6).map(adventure => {
                       const meta: string[] = [];
                       if ((adventure as any).duration) meta.push(localizeDuration(String((adventure as any).duration), t));
@@ -1705,9 +1765,9 @@ export default function PropertyDetail() {
                         <Link
                           key={adventure.slug}
                           href={`/experiences/${adventure.slug}`}
-                          className="group block bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                          className="group flex sm:flex-col bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                         >
-                          <div className="relative aspect-[4/3] bg-pa-warm overflow-hidden">
+                          <div className="relative w-24 shrink-0 self-stretch sm:w-auto sm:self-auto sm:aspect-[4/3] bg-pa-warm overflow-hidden">
                             {adventure.image ? (
                               <img
                                 src={adventure.image}
@@ -1717,26 +1777,38 @@ export default function PropertyDetail() {
                               />
                             ) : null}
                             {meta.length > 0 && (
-                              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5">
+                              <div className="absolute bottom-3 left-2 right-2 hidden sm:flex flex-wrap gap-1.5">
                                 {meta.slice(0, 2).map((m, i) => (
-                                  <span key={i} className="eyebrow tracking-[0.06em] uppercase font-medium px-2 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
+                                  <span key={i} className="eyebrow tracking-[0.04em] uppercase font-medium whitespace-nowrap px-1.5 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
                                     {m}
                                   </span>
                                 ))}
                               </div>
                             )}
                           </div>
-                          <div className="p-5">
-                            <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
-                            <h3 className="font-display body-lg text-pa-dark mb-1.5 group-hover:text-pa-gold transition-colors">{adventure.name}</h3>
-                            <p className="body-sm text-pa-earth leading-relaxed mb-4 line-clamp-2 font-light" >{adventure.tagline}</p>
-                            <div className="flex items-baseline justify-between pt-3 border-t border-pa-sand">
-                              <p className="body-sm font-medium text-pa-dark">
+                          <div className={ADDON_BODY}>
+                            {/* On a phone the 96 px photo has no room for the labels it
+                                carries from 640 px, so the duration takes the place of
+                                the overline there. The duration only: the difficulty
+                                exists in English alone ("MEIO DIA · MODERATE"), and
+                                with it the overline took two lines at 360 px. */}
+                            <p className="eyebrow font-medium tracking-[0.08em] sm:tracking-[0.12em] uppercase text-pa-gold-aa mb-1.5 sm:mb-2">
+                              {(adventure as any).duration ? (
+                                <>
+                                  <span className="sm:hidden">{meta[0]}</span>
+                                  <span className="hidden sm:inline">{t('propertyDetail.adventureOverline', 'Curated experience')}</span>
+                                </>
+                              ) : t('propertyDetail.adventureOverline', 'Curated experience')}
+                            </p>
+                            <h3 className={ADDON_TITLE}>{keepHyphens(adventure.name)}</h3>
+                            <p className={ADDON_TAGLINE}>{adventure.tagline}</p>
+                            <div className={ADDON_FOOT}>
+                              <p className={`${ADDON_PRICE} ${adventuresHaveSuffix ? 'min-h-[2.5rem]' : ''}`}>
                                 {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(adventure.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('propertyDetail.custom')}
-                                <span className="caption text-pa-stone font-normal ml-1">{adventure.priceSuffix}</span>
+                                {adventure.priceSuffix ? <span className="block caption leading-snug text-pa-stone font-normal">{adventure.priceSuffix}</span> : null}
                               </p>
-                              <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
-                                {t('propertyDetail.viewDetails', 'View')} <ArrowRight className="w-3 h-3" />
+                              <span className={ADDON_ACTION}>
+                                <span className={ADDON_ACTION_WORD}>{t('propertyDetail.viewDetails', 'View')}</span><ArrowRight className="w-3 h-3" aria-hidden />
                               </span>
                             </div>
                           </div>
@@ -1746,7 +1818,7 @@ export default function PropertyDetail() {
                   </div>
                   <Link
                     href="/experiences"
-                    className="inline-flex items-center gap-2 mt-6 body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors"
+                    className="inline-flex items-center gap-2 mt-6 body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors"
                   >
                     {t('propertyDetail.viewAllExperiences', 'View all experiences')} <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
@@ -1789,8 +1861,12 @@ export default function PropertyDetail() {
         >
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <p className="body-sm text-pa-dark font-medium">
-                {bookingSelection?.total ? formatQuotedEur(bookingSelection.total, i18n.language) : stayDates.checkIn && stayDates.checkOut ? t('conversion.datesSelected') : barFromPrice ?? barNoPrice}
+              {/* Caption size (13 px, as it was) and a button with 16 px at
+                  its sides: beside a button that takes 58% of the bar, a 15 px
+                  title broke "Datas selecionadas" in two and the bar grew
+                  from 73 to 95 px, covering more of every screen. */}
+              <p className="caption leading-snug text-pa-dark font-medium">
+                {bookingSelection?.total ? formatStayEur(bookingSelection.total, i18n.language) : stayDates.checkIn && stayDates.checkOut ? t('conversion.datesSelected') : barFromPrice ?? barNoPrice}
               </p>
               <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
                 {bookingSelection?.total ? (bookingSelection.isPartial ? t('partnerBooking.totalSoFar') : t('conversion.stayTotal')) : stayDates.checkIn ? formatBookingDate(stayDates.checkIn, i18n.language) : barFromPrice ? t('property.selectDatesForPrice') : t('property.conciergeShort')}
@@ -1803,14 +1879,14 @@ export default function PropertyDetail() {
               <button
                 type="button"
                 onClick={() => setBookingOpen(true)}
-                className="btn-primary shrink-0"
+                className="btn-primary shrink-0 max-sm:px-4!"
               >
                 {bookingSelection?.total ? t('conversion.viewBooking') : t('property.checkAvailability')}
               </button>
             ) : (
               <Link
                 href={`/contact?property=${encodeURIComponent(property.slug)}&intent=availability`}
-                className="btn-primary shrink-0"
+                className="btn-primary shrink-0 max-sm:px-4!"
               >
                 {t('property.checkAvailability')}
               </Link>
@@ -1847,11 +1923,11 @@ export default function PropertyDetail() {
             <div className="container">
               <div className="flex items-end justify-between mb-8">
                 <div>
-                  <p className="eyebrow font-medium tracking-[0.08em] text-pa-gold mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, ...destVars, defaultValue: `More ${destVars.inPlace}` })}</p>
+                  <p className="eyebrow font-medium tracking-[0.08em] text-pa-gold-aa mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, ...destVars, defaultValue: `More ${destVars.inPlace}` })}</p>
                   <h2 className="headline-lg text-pa-dark">{t('propertyDetail.relatedHomes', 'Related homes')}</h2>
                 </div>
                 {destObj && (
-                  <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors">
+                  <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 body-sm font-medium text-pa-gold-aa hover:text-pa-dark transition-colors">
                     {t('propertyDetail.allDestHomes', { destination: destName, ...destVars, defaultValue: `All ${destName} homes` })} <ArrowRight className="w-4 h-4" />
                   </Link>
                 )}
@@ -1899,11 +1975,15 @@ export default function PropertyDetail() {
       {/* Every amenity, by category — the raw Guesty list with a pictogram
           each; the page itself shows only the key ones. */}
       <Dialog open={amenitiesOpen} onOpenChange={setAmenitiesOpen}>
-        <DialogContent aria-describedby={undefined} className="max-w-[calc(100%-2rem)] sm:max-w-2xl max-h-[85vh] overflow-y-auto p-0 gap-0 rounded-xl border-pa-sand bg-pa-cream">
-          <DialogHeader className="sticky top-0 z-10 bg-pa-cream/95 backdrop-blur-sm px-6 pt-6 pb-4 border-b border-pa-sand text-left">
+        {/* The list scrolls, not the whole dialog: the title bar and the
+            close button stay in place. With the dialog as the scroller the
+            sticky title bar covered the close button, and there was no visible
+            way to close it. */}
+        <DialogContent aria-describedby={undefined} className="flex flex-col max-w-[calc(100%-2rem)] sm:max-w-2xl max-h-[85vh] overflow-hidden p-0 gap-0 rounded-xl border-pa-sand bg-pa-cream [&>[data-slot=dialog-close]]:z-20">
+          <DialogHeader className="shrink-0 bg-pa-cream pl-6 pr-14 pt-6 pb-4 border-b border-pa-sand text-left">
             <DialogTitle className="font-display headline-sm font-light text-pa-dark">{t('propertyDetail.amenitiesTitle')}</DialogTitle>
           </DialogHeader>
-          <div className="px-6 py-5 space-y-7">
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 space-y-7">
             {amenityGroups.map((group) => (
               <div key={group.category}>
                 <h3 className="eyebrow font-semibold tracking-[0.14em] uppercase text-pa-stone mb-1">{t(group.label)}</h3>
@@ -1912,7 +1992,7 @@ export default function PropertyDetail() {
                     const Icon = amenityIcon(item);
                     return (
                       <li key={item} className="flex items-center gap-3 py-2.5 body-sm text-pa-dark">
-                        <Icon size={18} strokeWidth={1.5} className="text-pa-gold shrink-0" aria-hidden="true" />
+                        <Icon size={18} strokeWidth={1.5} className="text-pa-gold-aa shrink-0" aria-hidden="true" />
                         {item}
                       </li>
                     );

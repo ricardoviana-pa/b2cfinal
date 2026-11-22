@@ -1,0 +1,66 @@
+/* Guide sections that open on tap on a phone (GuideSection.tsx, design audit
+   E15, 20 nov 2026).
+
+   Everything that closes a section lives inside the one `screen and
+   (max-width: 767.98px)` block below. From 768 px, and on paper, a section's
+   body is never hidden and the control does not exist (display: none: not
+   drawn, not focusable, not announced). Nothing here is animated, so there
+   is nothing for prefers-reduced-motion to switch off. */
+
+.guide-toggle {
+  display: none;
+}
+
+@media screen and (max-width: 767.98px) {
+  /* The heading and its button share this box; the text leaves room for the
+     chevron. */
+  .guide-heading {
+    position: relative;
+    padding-right: 2.75rem;
+  }
+  /* The chevron takes 44 px from every heading, so several that fitted one
+     line now take two: they break evenly ("Days to feel, not / just to see.")
+     instead of leaving one word alone under the first line. */
+  .guide-heading > h2,
+  .guide-heading > h3 {
+    text-wrap: balance;
+  }
+
+  /* The button lies over the whole heading, half a rem beyond it on every
+     side: a one-line heading (31 to 36 px tall) is a 47 to 52 px target.
+     Four offsets, not `inset`, and padding-top/-bottom below, not
+     `padding-block`: a browser too old for the shorthands would leave the
+     button, or the section's padding, somewhere else. */
+  .guide-section .guide-toggle {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    bottom: -0.5rem;
+    left: -0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 0.5rem 0 0;
+    border-radius: 8px;
+    color: inherit;
+    cursor: pointer;
+  }
+  .guide-section .guide-toggle:focus-visible {
+    outline: 2px solid #806a48;
+    outline-offset: 2px;
+  }
+  .guide-toggle[aria-expanded="true"] > svg {
+    transform: rotate(180deg);
+  }
+
+  /* Closed: the body stays in the page, out of the layout. */
+  .guide-section[data-open="false"] .guide-body {
+    display: none;
+  }
+
+  /* A closed section is a short band: heading, intro line, less air. */
+  section.guide-section[data-open="false"] {
+    padding-top: 2.25rem;
+    padding-bottom: 2.25rem;
+  }
+}

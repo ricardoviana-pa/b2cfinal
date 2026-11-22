@@ -1,13 +1,16 @@
 /* ==========================================================================
    EXPERIENCE MOBILE BOOKING BAR — sticky bottom
-   Tap → opens full-screen Bókun calendar widget (checkout via Bókun modal).
+   The same bar as a home's (PropertyDetail.tsx): the price on the left, the
+   site's primary button on the right.
+   Tap → opens the Bókun widget in the site's panel, a full-height sheet on a
+   phone (BokunWidgetModal; checkout via Bókun's own window).
    Fallback: WhatsApp when Bókun is not configured.
    ========================================================================== */
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, MessageCircle } from 'lucide-react';
-import BokunCalendarWidget from './BokunCalendarWidget';
+import { preloadBokunWidgets } from './BokunCalendarWidget';
+import BokunWidgetModal from './BokunWidgetModal';
 import type { BokunOption } from './ExperienceBookingCard';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight } from '@/lib/fixedBottom';
@@ -19,8 +22,7 @@ interface ExperienceMobileBookingBarProps {
   whatsappMessage: string;
   maxGroupSize?: number;
   bokunActivityId?: number;
-  /** Multiple rates/routes → the full-screen overlay shows the full Bókun
-   *  experience widget (with rate selector) instead of the single-rate one. */
+  /** Multiple rates/routes → the sheet lists them above the calendar. */
   bokunOptions?: BokunOption[];
   // Tracking
   experienceSlug?: string;
@@ -46,6 +48,7 @@ export default function ExperienceMobileBookingBar({
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [widgetOpen, setWidgetOpen] = useState(false);
+  const bookButtonRef = useRef<HTMLButtonElement>(null);
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
   const isMultiOption = (bokunOptions?.length ?? 0) > 1;
 
@@ -55,13 +58,6 @@ export default function ExperienceMobileBookingBar({
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  useEffect(() => {
-    if (widgetOpen) {
-      document.body.style.overflow = 'hidden';
-      return () => { document.body.style.overflow = ''; };
-    }
-  }, [widgetOpen]);
 
   const finalMessage = useMemo(() => {
     let msg = whatsappMessage || `Hi Portugal Active, I'd like to book the ${experienceName} experience.`;
@@ -78,33 +74,38 @@ export default function ExperienceMobileBookingBar({
           footer's last row clear of it (lib/fixedBottom.ts). */}
       <div
         ref={publishBottomBarHeight}
-        className={`lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAFAF7] border-t border-[#E8E4DC] transition-transform duration-300 ${
+        className={`lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-pa-sand px-5 pt-3 transition-transform duration-300 ${
           visible ? 'translate-y-0' : 'translate-y-full'
         }`}
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)', transform: visible ? RISE_ABOVE_COOKIE_BANNER : undefined }}
+        style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))', transform: visible ? RISE_ABOVE_COOKIE_BANNER : undefined }}
       >
-        <div className="flex items-center justify-between px-5 py-4">
-          <div>
+        <div className="flex items-center justify-between gap-3">
+          {/* A price keeps its line; a long label or a long button text wraps. */}
+          <div className={priceFrom > 0 ? 'shrink-0' : 'min-w-0'}>
             {priceFrom > 0 ? (
               <>
-                <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium">
+                <p className="eyebrow text-pa-stone">
                   {t('experience.from', 'From')}
                 </p>
-                <p className="text-[18px] font-display text-[#1A1A18] leading-none mt-0.5">
-                  €{priceFrom}
-                  <span className="text-[11px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                    {t('experience.perPerson', '/ person')}
-                  </span>
+                <p className="mt-1.5 flex items-baseline gap-1">
+                  <span className="text-[22px] font-light leading-none tracking-tight text-pa-dark tabular-nums">€{priceFrom}</span>
+                  <span className="caption text-pa-stone">{t('experience.perPerson', '/ person')}</span>
                 </p>
               </>
             ) : (
-              <p className="text-[15px] font-display text-[#1A1A18] leading-tight">
+              <p className="body-sm font-medium text-pa-dark">
                 {priceLabel || t('experience.priceOnRequest', 'Price on request')}
               </p>
             )}
           </div>
           {hasBokun ? (
             <button
+              ref={bookButtonRef}
+              type="button"
+              // The supplier's script starts loading as the finger lands.
+              onTouchStart={preloadBokunWidgets}
+              onPointerEnter={preloadBokunWidgets}
+              onFocus={preloadBokunWidgets}
               onClick={() => {
                 if (experienceSlug) {
                   // Abre o widget Bókun; a compra acontece lá. Evento próprio
@@ -126,8 +127,7 @@ export default function ExperienceMobileBookingBar({
                 }
                 setWidgetOpen(true);
               }}
-              className="pa-action bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5"
-              style={{ minHeight: '48px' }}
+              className="btn-primary min-w-0"
             >
               {t('experience.bookNow', 'Book now')}
             </button>
@@ -136,8 +136,7 @@ export default function ExperienceMobileBookingBar({
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="pa-action bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5 flex items-center"
-              style={{ minHeight: '48px' }}
+              className="btn-primary min-w-0"
               onClick={() => {
                 if (!experienceSlug) return;
                 // Abre o WhatsApp, não um checkout: conta como contacto
@@ -150,82 +149,21 @@ export default function ExperienceMobileBookingBar({
         </div>
       </div>
 
-      {/* Full-screen Bókun widget overlay (mobile) */}
-      {widgetOpen && hasBokun && (
-        <div className="lg:hidden fixed inset-0 z-[100] bg-[#FAFAF7] flex flex-col">
-          {/* Header */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E4DC] bg-white shrink-0">
-            <div>
-              <p className="text-[10px] tracking-[0.14em] uppercase text-[#726D63] font-medium">
-                {t('experience.reserve', 'Reserve')}
-              </p>
-              <p className="text-[14px] font-display text-[#1A1A18] mt-0.5 leading-tight truncate max-w-[260px]">
-                {experienceName}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setWidgetOpen(false)}
-              aria-label="Close"
-              className="w-9 h-9 flex items-center justify-center border border-[#E8E4DC]"
-            >
-              <X className="w-4 h-4 text-[#1A1A18]" />
-            </button>
-          </div>
-
-          {/* Bókun widget — fills remaining space, checkout via modal. Full
-              experience widget (rate selector) when the activity is
-              multi-option, else the compact calendar. Multi-option also shows
-              the route chooser at the top (mirrors the desktop card) so the
-              guest sees each tour's schedule/price before the calendar. */}
-          <div className="flex-1 bg-white overflow-y-auto">
-            {isMultiOption && (
-              <div className="px-5 pt-5 pb-4 border-b border-[#E8E4DC]">
-                <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-3">
-                  {t('experience.chooseOption', 'Choose your option')}
-                </p>
-                <div className="space-y-2">
-                  {bokunOptions!.map((opt, i) => (
-                    <div key={i} className="flex items-center justify-between gap-3 p-3 border border-[#E8E4DC] rounded-lg">
-                      <div className="min-w-0">
-                        <p className="text-[13px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
-                        {opt.detail && <p className="text-[11px] text-[#726D63] mt-0.5">{opt.detail}</p>}
-                      </div>
-                      {opt.priceFrom ? (
-                        <span className="text-[13px] text-[#1A1A18] font-medium whitespace-nowrap shrink-0">€{opt.priceFrom}</span>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-[11px] text-[#726D63] mt-3" style={{ fontWeight: 300 }}>
-                  {t('experience.pickOptionHint', 'Select a tour to check live availability')}
-                </p>
-              </div>
-            )}
-            <BokunCalendarWidget
-              bokunActivityId={bokunActivityId!}
-              experienceName={experienceName}
-              variant={isMultiOption ? 'experience' : 'calendar'}
-              style={{ minHeight: '100%' }}
-            />
-          </div>
-
-          {/* Footer */}
-          <div className="px-5 py-3 flex items-center justify-between border-t border-[#E8E4DC] bg-white shrink-0"
-               style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}>
-            <span className="text-[11px] text-[#726D63]" style={{ fontWeight: 300 }}>
-              {t('experience.secureBooking', 'Secure booking by Bókun')}
-            </span>
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] text-[#8B7355]"
-            >
-              <MessageCircle className="w-3 h-3" /> WhatsApp
-            </a>
-          </div>
-        </div>
+      {/* The booking sheet: the site's panel around the Bókun calendar. A
+          sibling of the bar, never inside it (the bar is lifted with a
+          transform; lib/fixedBottom.ts). A multi-option activity lists its
+          routes at the top (as the card does on a computer) so the guest
+          sees each tour's schedule/price before the calendar. */}
+      {hasBokun && (
+        <BokunWidgetModal
+          open={widgetOpen}
+          onClose={() => setWidgetOpen(false)}
+          bokunActivityId={bokunActivityId!}
+          experienceName={experienceName}
+          options={isMultiOption ? bokunOptions : undefined}
+          whatsappHref={waHref}
+          returnFocusTo={bookButtonRef}
+        />
       )}
     </>
   );

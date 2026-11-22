@@ -185,7 +185,8 @@
     "unavailableHint": "Dessa hem kan vara tillgängliga andra datum. Kontakta vår concierge för alternativ.",
     "fromTotal": "Från {{price}} för vistelsen",
     "metaTitle": "Hyra Villa & Semesterhus i Portugal",
-    "metaDescription": "Utforska {{homes}} lyxvillor och semesterhus i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Filtrera efter resmål och gäster. Boka direkt."
+    "metaDescription": "Utforska {{homes}} lyxvillor och semesterhus i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Filtrera efter resmål och gäster. Boka direkt.",
+    "showMore": "Visa fler"
   },
   "property": {
     "bedrooms": "Sovrum",
@@ -602,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "COOKIEINSTÄLLNINGAR",
-    "description": "Nödvändiga cookies gör det möjligt att använda webbplatsen och boka. Med ditt samtycke använder vi även cookies för analys och annonsering. Detta omfattar mätning med OpenAI Ads.",
+    "description": "Nödvändiga cookies gör det möjligt att använda webbplatsen och boka. Med ditt samtycke använder vi även cookies för analys och annonsering. Detta omfattar mätning med OpenAI Ads.",
     "essential": "Nödvändiga cookies",
     "essentialDesc": "Krävs för grundläggande webbplatsfunktionalitet och säkerhet. Kan inte inaktiveras.",
     "analytics": "Analyticscookies",
@@ -629,7 +630,7 @@
     "heroGuarantee": "Inga bokningsavgifter. Bästa pris garanterat. Concierge-svar inom 2 timmar.",
     "proofHotels": "{{homes}} villor och semesterhus",
     "proofRating": "4.8★ gästbetyg",
-    "heroAlt": "Privat tennisbana och villa vid Mirante 1, ovanför Albufeira i Algarve",
+    "heroAlt": "Pool, trädgård och herrgård vid Carcavelos Manor House i Vila Verde i Minho",
     "searchDestination": "Destination",
     "searchMinhoCoast": "Minho-kusten",
     "searchPortoDouro": "Porto och Douro",
@@ -1853,7 +1854,7 @@
         "name": "Personlig mottagning",
         "desc": "En värd tar emot dig, visar huset och får allt att fungera."
       },
-      "lateNote": "Efter kl {{hour}}: {{price}}."
+      "lateNote": "Efter kl {{hour}}: {{price}}."
     },
     "seeAll": "Se alla tjänster",
     "seeAllExperiences": "Se alla upplevelser",

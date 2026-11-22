@@ -187,7 +187,7 @@ export default function BlogArticle() {
       {/* Article Header */}
       <section className="pt-28 md:pt-36 pb-8">
         <div className="container max-w-3xl mx-auto">
-          <Link href={withEditorialTrip("/blog",search)} className="inline-flex items-center gap-2 text-[0.8125rem] text-[#726D63] hover:text-[#1A1A18] transition-colors mb-8">
+          <Link href={withEditorialTrip("/blog",search)} className="inline-flex items-center gap-2 text-[15px] text-pa-stone hover:text-[#1A1A18] transition-colors mb-8">
             <ArrowLeft className="w-4 h-4" /> {t('blogArticle.backToJournal')}
           </Link>
           <p className="eyebrow mb-4">{blogCategoryLabel(article.category, t)}</p>
@@ -200,7 +200,7 @@ export default function BlogArticle() {
               {introHomesCta.label}
             </Link>
           )}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-[#726D63]">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-pa-stone">
             <span className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
               {reviewed ? t('planning.updated') + ' ' : ''}{new Date(reviewed || article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric',timeZone:'UTC' })}
@@ -228,7 +228,7 @@ export default function BlogArticle() {
             srcSet={cdnSrcSet((article as any).coverImage || (article as any).featuredImage || '/images/destinations/minho-coast.webp', [640, 960, 1280])}
             sizes="(min-width: 896px) 896px, 100vw"
             alt={article.title}
-            className="w-full aspect-[16/9] object-cover"
+            className="w-full aspect-[16/9] object-cover rounded-xl"
             width={1200} height={675} fetchPriority="high"
           />
           {article.imageCaption && <p className="text-xs text-pa-earth mt-3">{article.imageCaption}</p>}
@@ -273,12 +273,12 @@ export default function BlogArticle() {
               <img src={article.author.photo} alt={blogAuthorName(article.author, t)} className="w-12 h-12 rounded-full object-cover" loading="lazy" width={48} height={48} />
             ) : (
               <div className="w-12 h-12 rounded-full bg-[#F5F1EB] flex items-center justify-center">
-                <span className="text-[#8B7355] font-display text-lg">{blogAuthorName(article.author, t).charAt(0)}</span>
+                <span className="text-pa-gold-aa font-display text-lg">{blogAuthorName(article.author, t).charAt(0)}</span>
               </div>
             )}
             <div>
-              <p className="text-sm font-medium text-[#1A1A18]">{blogAuthorName(article.author, t)}</p>
-              <p className="text-xs text-[#726D63]">{blogAuthorRole(article.author, t)}</p>
+              <p className="text-[15px] font-medium text-[#1A1A18]">{blogAuthorName(article.author, t)}</p>
+              <p className="text-xs text-pa-stone">{blogAuthorRole(article.author, t)}</p>
             </div>
           </div>
         </div>
@@ -327,7 +327,7 @@ export default function BlogArticle() {
                     pushEcommerce({ event: 'select_item', ecommerce: { item_list_id: `journal_${article.slug}`, item_list_name: article.title,
                       items: [{ item_id: `PROP-${home.catalogId}`, item_name: home.name, item_category: 'villa', item_category2: home.locality || home.destination || '', index }] } });
                   }}>
-                  <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-3">
+                  <div className="aspect-[4/3] overflow-hidden rounded-xl bg-[#F5F1EB] mb-3">
                     {home.image && (
                       <img
                         src={cdnResize(home.image, 640)}
@@ -346,11 +346,13 @@ export default function BlogArticle() {
                     {getDisplayName(home)}
                   </h3>
                   {(home.locality || home.bedrooms || home.maxGuests) && (
-                    <p className="text-sm text-pa-stone-aa mt-1">
+                    /* A dot list: a line breaks between facts and none starts
+                       or ends with the dot. */
+                    <p className="pa-dots text-sm text-pa-stone-aa mt-1">
                       {[home.locality, home.bedrooms ? t('blogArticle.bedroomCount', { count: home.bedrooms }) : null,
                         home.maxGuests ? t('search.guestsCount', { count: home.maxGuests }) : null]
-                        .filter(Boolean)
-                        .join(' · ')}
+                        .filter((part): part is string => !!part)
+                        .map((part) => <span key={part} className="whitespace-nowrap">{part}</span>)}
                     </p>
                   )}
                 </Link>
@@ -368,7 +370,7 @@ export default function BlogArticle() {
             <div className="grid md:grid-cols-3 gap-8">
               {relatedArticles.map(a => (
                 <Link key={a.id} href={withEditorialTrip(`/blog/${a.slug}`,search)} className="group block">
-                  <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4">
+                  <div className="aspect-[4/3] overflow-hidden rounded-xl bg-[#F5F1EB] mb-4">
                     <img
                       src={cdnResize((a as any).coverImage || (a as any).featuredImage || '/images/destinations/minho-coast.webp', 768)}
                       srcSet={cdnSrcSet((a as any).coverImage || (a as any).featuredImage || '/images/destinations/minho-coast.webp', [400, 640, 768])}
@@ -382,7 +384,7 @@ export default function BlogArticle() {
                     />
                   </div>
                   <p className="eyebrow mb-2">{blogCategoryLabel(a.category, t)}</p>
-                  <h3 className="text-lg font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors line-clamp-2">
+                  <h3 className="text-lg font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors line-clamp-2">
                     {a.title}
                   </h3>
                 </Link>

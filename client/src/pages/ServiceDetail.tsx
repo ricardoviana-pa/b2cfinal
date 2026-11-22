@@ -88,7 +88,7 @@ export default function ServiceDetail() {
         <img src={item.image} alt={`${item.name} – Portugal Active`} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" loading="eager" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">
-          <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#C4A87C] mb-4">
+          <p className="text-[12px] font-medium tracking-[0.12em] uppercase text-[#C4A87C] mb-4">
             {isService ? t('serviceDetail.conciergeService', 'Concierge service') : t('serviceDetail.experience', 'Experience')}
           </p>
           <h1 className="headline-xl text-white mb-3">{item.name}</h1>
@@ -98,7 +98,7 @@ export default function ServiceDetail() {
 
       {/* Back link */}
       <div className="container py-5 border-b border-[#E8E4DC]">
-        <Link href={isService ? '/concierge' : '/experiences'} className="inline-flex items-center gap-2 text-[13px] font-medium text-[#726D63] hover:text-[#1A1A18] transition-colors">
+        <Link href={isService ? '/concierge' : '/experiences'} className="inline-flex items-center gap-2 text-[15px] font-medium text-pa-stone hover:text-[#1A1A18] transition-colors">
           <ArrowLeft className="w-4 h-4" /> {isService ? t('serviceDetail.allServices', 'All concierge services') : t('serviceDetail.allExperiences', 'All experiences')}
         </Link>
       </div>
@@ -128,7 +128,7 @@ export default function ServiceDetail() {
                 </div>
                 <ol className="space-y-4">
                   {planning.steps.map((step, index) => <li key={step.title} className="flex gap-4 rounded-xl bg-[#F5F1EB] p-5">
-                    <span className="font-display text-2xl text-[#8B7355]" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                    <span className="font-display text-2xl text-pa-gold-aa" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                     <div><h3 className="font-medium text-[#1A1A18] mb-2">{step.title}</h3><p className="body-sm">{step.text}</p></div>
                   </li>)}
                 </ol>
@@ -138,17 +138,17 @@ export default function ServiceDetail() {
                     <p className="body-sm mt-3">{a}</p>
                   </details>)}
                 </div>
-                <Link href={withEditorialTrip('/blog/private-chef-portugal-villa', search)} className="text-sm text-[#756044] underline underline-offset-4">{planning.guideLabel}</Link>
+                <Link href={withEditorialTrip('/blog/private-chef-portugal-villa', search)} className="text-[15px] text-[#756044] underline underline-offset-4">{planning.guideLabel}</Link>
               </div>}
 
               {item.details && item.details.length > 0 && (
                 <div className="mb-10">
-                  <h3 className="text-[11px] font-medium tracking-[0.02em] text-[#8B7355] mb-5">{t('serviceDetail.whatIsIncluded')}</h3>
+                  <h3 className="text-[13px] font-medium tracking-[0.02em] text-pa-gold-aa mb-5">{t('serviceDetail.whatIsIncluded')}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {item.details.map((detail: string, i: number) => (
                       <div key={i} className="flex items-center gap-3 py-2">
-                        <Check className="w-4 h-4 shrink-0 text-[#8B7355]" />
-                        <span className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 300 }}>{detail}</span>
+                        <Check className="w-4 h-4 shrink-0 text-pa-gold-aa" />
+                        <span className="text-[16px] text-[#1A1A18]" style={{ fontWeight: 400 }}>{detail}</span>
                       </div>
                     ))}
                   </div>
@@ -159,23 +159,23 @@ export default function ServiceDetail() {
                 <div className="flex flex-wrap gap-10 py-8 border-t border-b border-[#E8E4DC]">
                   {item.price && (
                     <div>
-                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#726D63] mb-1">{t('serviceDetail.price', 'Price')}</p>
+                      <p className="text-[12px] tracking-[0.02em] font-medium text-pa-stone mb-1">{t('serviceDetail.price', 'Price')}</p>
                       <p className="text-[18px] text-[#1A1A18]">{item.price}</p>
                     </div>
                   )}
                   {item.duration && (
                     <div>
-                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#726D63] mb-1">{t('serviceDetail.duration', 'Duration')}</p>
+                      <p className="text-[12px] tracking-[0.02em] font-medium text-pa-stone mb-1">{t('serviceDetail.duration', 'Duration')}</p>
                       <p className="text-[18px] text-[#1A1A18] flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-[#8B7355]" /> {item.duration}
+                        <Clock className="w-4 h-4 text-pa-gold-aa" /> {item.duration}
                       </p>
                     </div>
                   )}
                   {item.availability && (
                     <div>
-                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#726D63] mb-1">{t('serviceDetail.availability', 'Availability')}</p>
+                      <p className="text-[12px] tracking-[0.02em] font-medium text-pa-stone mb-1">{t('serviceDetail.availability', 'Availability')}</p>
                       <p className="text-[18px] text-[#1A1A18] flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-[#8B7355]" /> {item.availability}
+                        <MapPin className="w-4 h-4 text-pa-gold-aa" /> {item.availability}
                       </p>
                     </div>
                   )}
@@ -197,14 +197,13 @@ export default function ServiceDetail() {
                     href={`https://wa.me/351927161771?text=${whatsappMsg}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="pa-action flex items-center justify-center gap-3 w-full bg-[#1A1A18] text-white text-[13px] tracking-[0.08em] font-semibold py-5 hover:bg-[#333330] transition-colors"
-                    style={{ minHeight: '56px' }}
+                    className="btn-primary w-full"
                   >
-                    <MessageCircle className="w-5 h-5" />
+                    <MessageCircle className="w-4 h-4" />
                     {t('serviceDetail.chatOnWhatsApp', 'Chat on WhatsApp')}
                   </a>
                   <Link href={withEditorialTrip(`/contact?subject=services-enquiry&service=${encodeURIComponent(serviceProductSlug(item.slug))}`, search)} className="btn-ghost w-full mt-3">{planning?.requestLabel ?? t('contact.sendMessage')}</Link>
-                  <p className="text-[11px] text-[#726D63] mt-4">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
+                  <p className="text-[13px] text-pa-stone mt-4 text-balance">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
                 </div>
               </div>
             </div>
@@ -223,7 +222,7 @@ export default function ServiceDetail() {
               {item.reviews.map((review: any, i: number) => (
                 <div key={i} className="bg-white p-10 border-l-[1.5px] border-[#8B7355]">
                   <p className="font-display text-[1.25rem] leading-snug mb-6 text-[#1A1A18]">"{review.text}"</p>
-                  <p className="text-[11px] tracking-[0.12em] uppercase text-[#8B7355]">{review.name}</p>
+                  <p className="text-[12px] tracking-[0.12em] uppercase text-pa-gold-aa">{review.name}</p>
                 </div>
               ))}
             </div>
@@ -244,8 +243,8 @@ export default function ServiceDetail() {
                   <img src={other.image} alt={`${other.name} – Portugal Active`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
-                <h3 className="headline-sm mb-1 text-[#1A1A18] group-hover:text-[#8B7355] transition-colors">{other.name}</h3>
-                <p className="text-[13px] text-[#6B6860]" style={{ fontWeight: 300 }}>{other.tagline}</p>
+                <h3 className="headline-sm mb-1 text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors">{other.name}</h3>
+                <p className="text-[15px] text-pa-earth text-balance" style={{ fontWeight: 400 }}>{other.tagline}</p>
               </Link>
             ))}
           </div>

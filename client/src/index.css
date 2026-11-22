@@ -53,10 +53,14 @@
   --color-pa-cream: #FAFAF7;
   --color-pa-warm: #F5F1EB;
   --color-pa-sand: #E8E4DC;
-  --color-pa-stone: #726D63;
-  --color-pa-stone-aa: #78756F; /* WCAG AA compliant on #FAFAF7 (4.5:1) */
+  /* Greys, one step darker since the design audit of 14 nov 2026 (E01):
+     body text #5E5B54 (6.5:1 on cream, 6.0:1 on warm); secondary text
+     #6B6860 (5.3:1 on cream, 4.95:1 on warm). The two "stone" names are now
+     the same tone: #726D63 gave 4.06:1 on sand and #78756F 4.39:1 on cream. */
+  --color-pa-stone: #6B6860;
+  --color-pa-stone-aa: #6B6860;
   --color-pa-gold-aa: #806A48; /* gold for text on light backgrounds (AA) */
-  --color-pa-earth: #6B6860;
+  --color-pa-earth: #5E5B54;
   --color-pa-dark: #1A1A18;
   --color-pa-gold: #8B7355;
   --color-pa-gold-light: #C4A87C;
@@ -83,7 +87,7 @@
   --secondary: #F5F1EB;
   --secondary-foreground: #1A1A18;
   --muted: #F5F1EB;
-  --muted-foreground: #6B6860; /* 5.3:1 on #FAFAF7 — AA compliant */
+  --muted-foreground: #5E5B54; /* 6.5:1 on #FAFAF7 */
   --accent: #F5F1EB;
   --accent-foreground: #1A1A18;
   --destructive: #DC2626;
@@ -156,6 +160,11 @@
        para browsers antigos que ignoram clip. */
     overflow-x: hidden;
     overflow-x: clip;
+    /* No single word alone on the last line of a text. With the larger type
+       several one-line intros and labels began to break and left "estadia."
+       or "stay" by itself (auditoria de formatação, 20 nov 2026). Inherited
+       by every element; a browser that does not know the value ignores it. */
+    text-wrap: pretty;
   }
 
   #root {
@@ -200,8 +209,8 @@
     font-family: var(--font-body);
     font-size: 1rem;
     line-height: 1.7;
-    color: #6B6860;
-    font-weight: 300;
+    color: #5E5B54;
+    font-weight: 400;
   }
 
   /* Links */
@@ -311,51 +320,59 @@
     font-size: clamp(1.375rem, 2.5vw, 2rem);
   }
 
+  /* 20 px at the least (18 px before the formatting audit, 21 nov 2026):
+     with dense text at 15 px and running text at 16 px, an 18 px section
+     title on a phone or a tablet read barely larger than the text under it.
+     Unchanged from 1000 px up (2vw). */
   .headline-sm {
     font-family: var(--font-display);
     font-weight: 400;
     line-height: 1.25;
-    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    text-wrap: balance;
   }
 
   /* Body text â Inter, clean and readable */
+  /* Type scale since the design audit (E01, 20 nov 2026): running text 16 px
+     (15 px in dense zones), nothing below 12 px, normal weight. Thin (300)
+     stays for display type only. */
   .body-lg {
     font-family: var(--font-body);
-    font-size: clamp(1rem, 1.2vw, 1.125rem);
-    font-weight: 300;
+    font-size: clamp(1.0625rem, 1.25vw, 1.1875rem);
+    font-weight: 400;
     line-height: 1.7;
-    color: #6B6860;
+    color: #5E5B54;
   }
 
   .body-md {
     font-family: var(--font-body);
-    font-size: 0.9375rem;
-    font-weight: 300;
+    font-size: 1rem;
+    font-weight: 400;
     line-height: 1.7;
-    color: #6B6860;
+    color: #5E5B54;
   }
 
   .body-sm {
     font-family: var(--font-body);
-    font-size: 0.8125rem;
-    font-weight: 300;
+    font-size: 0.9375rem;
+    font-weight: 400;
     line-height: 1.6;
-    color: #6B6860;
+    color: #5E5B54;
   }
 
-  /* Caption — metadata, helper text (12px) */
+  /* Caption — metadata, helper text (13px) */
   .caption {
     font-family: var(--font-body);
-    font-size: 0.75rem;
-    font-weight: 300;
+    font-size: 0.8125rem;
+    font-weight: 400;
     line-height: 1.5;
-    color: #78756F;
+    color: #6B6860;
   }
 
   /* Button text â UPPERCASE label style */
   .btn-text {
     font-family: var(--font-body);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -365,11 +382,13 @@
   /* Overline â uppercase label */
   .eyebrow {
     font-family: var(--font-body);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #8B7355;
+    /* gold for text on light surfaces (4.9:1 on cream); on a dark surface the
+       element sets text-pa-gold-light itself */
+    color: #806A48;
     line-height: 1;
   }
 
@@ -665,7 +684,7 @@
   }
 
   .text-pa-dark { color: #1A1A18; }
-  .text-pa-earth { color: #6B6860; }
+  .text-pa-earth { color: #5E5B54; }
   .text-pa-gold { color: #8B7355; }
 
   .bg-pa-cream { background-color: #FAFAF7; }
@@ -710,11 +729,6 @@
   @media (orientation: landscape) and (max-height: 500px) {
   }
 
-  /* Hide hero proof strip on short viewports to avoid booking-bar overlap */
-  @media (max-height: 759px) {
-    .hero-proof-strip { display: none !important; }
-  }
-
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
@@ -754,19 +768,10 @@
     to { opacity: 1; }
   }
 
-  /* Line clamp */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+  /* Line clamp: Tailwind's own line-clamp-N utilities. Hand-written copies
+     here came after Tailwind's breakpoint variants in the built CSS, so
+     "line-clamp-3 md:line-clamp-2" stayed at three lines on every screen
+     (Journal titles, the checkout section summaries). */
 
   /* Safe area padding for mobile */
   .pb-safe {
@@ -824,6 +829,18 @@
     }
   }
 
+  /* No "back to top" on a phone or a tablet (decisão E06 do Ricardo, 20 nov
+     2026): two round buttons sat over the text on every screen. Below lg only
+     the WhatsApp button floats, and on the pages with a booking bar it is
+     inside the bar already. The rules around this one keep the button's
+     place for the day it comes back; `html` gives it the weight to beat the
+     button's own `flex` utility. */
+  @media (max-width: 1023.98px) {
+    html .back-to-top {
+      display: none;
+    }
+  }
+
   /* "Back to top" (App.tsx) on a phone, while the language card sits above a
      home's or an experience's booking bar (LanguageSuggestion.tsx): the card
      is full width there and covers its place, so the button sat on the
@@ -852,18 +869,21 @@
     }
   }
 
-  /* Below lg the floating buttons sit over the footer's right edge at the end
-     of the page ("back to top" up to 5rem + 56px + 40px = 176px from the
-     bottom on a phone, 5.5rem + 56px + 40px = 184px from 640 px). The footer
-     keeps this much free under its last row (plus its own 1.75rem padding and
-     4px of air): FOOTER_BOTTOM_INSET in lib/fixedBottom.ts. From lg the last
-     row keeps clear of them sideways (Footer.tsx, lg:pr-16). */
+  /* Below lg the WhatsApp button sits over the footer's right edge at the end
+     of the page (5.5rem + 48px = 136px from the bottom on a phone, 5.5rem +
+     56px = 144px from 640 px). The footer keeps this much free under its last
+     row (plus its own 1.75rem padding and 4px of air): FOOTER_BOTTOM_INSET in
+     lib/fixedBottom.ts. It was 9.5rem / 10rem while "back to top" sat above
+     the WhatsApp button; that button no longer shows below 1024 px (E06), and
+     its 40 px were left as an empty dark band at the end of every page
+     (auditoria de formatação, 20 nov 2026). From lg the last row keeps clear
+     of the floats sideways (Footer.tsx, lg:pr-16). */
   :root {
-    --floats-clearance: calc(9.5rem + env(safe-area-inset-bottom, 0px));
+    --floats-clearance: calc(7rem + env(safe-area-inset-bottom, 0px));
   }
   @media (min-width: 640px) and (max-width: 1023.98px) {
     :root {
-      --floats-clearance: calc(10rem + env(safe-area-inset-bottom, 0px));
+      --floats-clearance: calc(7.5rem + env(safe-area-inset-bottom, 0px));
     }
   }
   @media (min-width: 1024px) {
@@ -899,6 +919,11 @@
   @supports selector(:has(*)) {
     body:has(#mobile-menu-panel:not([inert])) [data-cookie-banner] {
       z-index: 49;
+    }
+    /* With the tablet / phone menu open the WhatsApp button stayed bright
+       and tappable over the dimmed page, beside the menu (z-90 over 55). */
+    body:has(#mobile-menu-panel:not([inert])) .whatsapp-float {
+      display: none;
     }
   }
 
@@ -963,6 +988,9 @@
   transition: background-color .18s, color .18s, border-color .18s, box-shadow .18s;
 }
 .pa-action { min-height: 44px; }
+/* The arrow after a label never gives up its width: in wide button pairs
+   (About, Events) it was squeezed to a 0-7 px sliver. */
+:is(.btn, .btn-primary, .btn-ghost, .btn-white, .btn-ghost-light) > svg { flex-shrink: 0; }
 :is(.btn-primary, .btn-ghost, .btn-white, .btn-ghost-light, .pa-action):focus-visible {
   outline: 2px solid #8B7355;
   outline-offset: 4px;
@@ -973,7 +1001,7 @@
 }
 .page-hero { position: relative; min-height: 440px; padding-top: 112px; display: flex; align-items: flex-end; overflow: hidden; }
 .page-intro { padding: 8rem 0 2.5rem; background: #FAFAF7; border-bottom: 1px solid #E8E4DC; }
-.page-intro h1 { max-width: 18ch; }
+.page-intro h1 { max-width: 18ch; text-wrap: balance; }
 .page-intro p { max-width: 60ch; }
 .site-faq { border-bottom: 1px solid #E8E4DC; }
 .site-faq > summary { display:flex; align-items:center; justify-content:space-between; gap:1.5rem; padding:1.25rem 0; cursor:pointer; list-style:none; font-size:1rem; font-weight:400; color:#1A1A18; }
@@ -1002,13 +1030,14 @@
 /* Responsive homepage search */
 .home-hero { padding: 148px 0 48px; min-height: min(850px, 96svh); display: flex; align-items: center; }
 .home-hero-content { display: flex; flex-direction: column; gap: 40px; }
+.home-hero-text { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 26px rgba(0, 0, 0, 0.42); }
 .hero-text-link { display: inline-flex; align-items: center; justify-content: center; gap: .65rem; min-height: 44px; color: white; font-size: .875rem; font-weight: 400; letter-spacing: normal; text-transform: none; border-bottom: 1px solid #ffffff70; }
 .hero-text-link:hover { border-color: white; }
 .hero-text-link:focus-visible { outline: 2px solid white; outline-offset: 5px; }
 .hero-search { display: grid; grid-template-columns: minmax(170px, 1.3fr) repeat(2, minmax(150px, 1fr)) minmax(85px,.6fr) auto; gap: 8px; padding: 10px; width: 100%; max-width: 1100px; margin-inline: auto; background: #fff; border-radius: 14px; box-shadow: 0 12px 36px #0002; color: #1A1A18; }
 .hero-search-field { position: relative; min-width: 0; display: flex; flex-direction: column; justify-content: center; min-height: 64px; padding: 8px 14px; border: 1px solid #E8E4DC; border-radius: 8px; text-align: left; }
-.hero-search-field > span:first-child { display: block; font-size: 11px; font-weight: 500; color: #6B6860; line-height: 1.4; margin-bottom: 5px; }
-.hero-search-field select { border: 0; background: transparent; width: 100%; min-width: 0; min-height: 0; padding: 0 18px 0 0; appearance: none; font-size: 15px; line-height: 1.5; cursor: pointer; }
+.hero-search-field > span:first-child { display: block; font-size: 12px; font-weight: 500; color: #5E5B54; line-height: 1.4; margin-bottom: 5px; }
+.hero-search-field select { border: 0; background: transparent; width: 100%; min-width: 0; min-height: 0; padding: 0 18px 0 0; appearance: none; font-size: 16px; line-height: 1.5; cursor: pointer; }
 .hero-search-field:focus-within { outline: 2px solid #8B7355; outline-offset: 2px; }
 .hero-search-field select:focus { outline: none; }
 .hero-search-icon { position: absolute; pointer-events: none; right: 12px; bottom: 14px; width: 15px; height: 15px; color: #726D63; }
@@ -1017,22 +1046,77 @@
    indicator glyph at the right edge. Stretching that indicator over the whole
    field makes the entire box open the picker — including before hydration,
    which a JS-only fix can't do. See client/src/lib/datePicker.ts. */
+/* One extra in the checkout (CustomizeStep › OptionRow).
+   Phone: photo | name over price | add button, then the description under
+   them at the full width of the row. From 512 px: one line, as it always was
+   on a computer (between 480 and 511 px the one line left French names a
+   110 px column; the phone layout made the list 39 % taller than the live
+   one between 512 and 639 px). */
+@layer components {
+  .pa-option {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "name toggle" "price toggle" "desc desc";
+    column-gap: 0.75rem;
+    align-items: start;
+  }
+  .pa-option[data-photo="true"] {
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    grid-template-areas: "photo name toggle" "photo price toggle" "desc desc desc";
+  }
+  .pa-option-text, .pa-option-side { display: contents; }
+  .pa-option-photo { grid-area: photo; }
+  .pa-option-name { grid-area: name; }
+  .pa-option-price { grid-area: price; margin-top: 0.125rem; }
+  .pa-option-desc { grid-area: desc; margin-top: 0.5rem; }
+  .pa-option-toggle { grid-area: toggle; align-self: center; }
+  @media (min-width: 512px) {
+    .pa-option { display: flex; align-items: center; gap: 0.75rem; }
+    .pa-option-text { display: block; min-width: 0; flex: 1 1 0%; }
+    .pa-option-side { display: flex; flex: none; align-items: center; gap: 0.75rem; }
+    .pa-option-price { margin-top: 0; text-align: right; }
+    .pa-option-desc { margin-top: 0.125rem; }
+  }
+}
+
+/* A wrapping run of facts separated by middots ("13 guests · 5 bedrooms ·
+   200 m²") in which no line ever begins with the dot. Every item carries a
+   leading dot in a 1rem box; the row is pulled 1rem to the left and that strip
+   is clipped, so the first dot of each line is cut away. Use on the row:
+   <ul class="pa-dots">, items as direct children. */
+.pa-dots { display: flex; flex-wrap: wrap; align-items: center; margin-left: -0.75rem; clip-path: inset(-8px -8px -8px calc(0.75rem - 3px)); }
+/* A link's keyboard ring inside a dot list sits close to it: the clip keeps
+   3 px left of each line's first item (the dot's box is hidden), and with the
+   usual 2 px offset the ring lost its top, bottom and left edges. */
+.pa-dots a:focus-visible, .pa-dots button:focus-visible { outline-offset: 0; }
+.pa-dots > * { display: inline-flex; align-items: center; min-width: 0; }
+/* 12 px for the dot and the room around it, about what " · " took in running
+   text (16 px made the facts line one item too long for a 390 px phone). */
+.pa-dots > *::before { content: "·"; flex: none; width: 0.75rem; text-align: center; color: var(--pa-dot-color, #D8D2C6); }
+
 .pa-date-hit { position: relative; }
+/* A search-bar date cell (SearchDateCell): the native input lies invisible over the cell's own text. */
+.pa-date-cell input[type="date"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 .pa-date-hit::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: auto; height: auto; margin: 0; padding: 0; background: transparent; color: transparent; opacity: 0; cursor: pointer; }
-.hero-search-date-value { font-size: 15px; padding-right: 16px; white-space: nowrap; line-height: 1.5; }
+.hero-search-date-value { font-size: 16px; padding-right: 16px; white-space: nowrap; line-height: 1.5; }
 /* The empty-state placeholder never runs under the calendar icon (the icon
    starts 28px from the field's right edge; the text ends 31px from it), in any
    language or width: copy that still does not fit ends in an ellipsis
    (auditoria 29 out, Regression:P4). editorial.addDates is kept short enough
    for 360px. A chosen date (dd/mm/yyyy) is never clipped. */
 .hero-search-date-value.is-placeholder { overflow: hidden; text-overflow: ellipsis; }
+/* On a phone under 380 px the placeholder keeps the 15 px it had: at 16 px
+   "Datum wählen" and "Añadir fechas" were cut with an ellipsis. */
+@media (max-width: 380px) { .hero-search-date-value.is-placeholder { font-size: 15px; } }
 .hero-search-submit { height: 100%; min-height: 64px; padding: 16px 24px; white-space: nowrap; letter-spacing: .04em; }
 
 /* Editorial pages: a shared scale, action hierarchy and catalogue treatment. */
 .editorial-hero { position: relative; isolation: isolate; min-height: 540px; display: flex; align-items: flex-end; padding: 148px 0 60px; color: white; background: #282923; }
 .editorial-hero h1 { color: white; font-family: var(--font-display); font-size: clamp(2.65rem, 5vw, 4.5rem); font-weight: 300; letter-spacing: -.025em; line-height: 1.06; max-width: 18ch; margin-bottom: 24px; }
-.editorial-eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 16px; }
-.editorial-hero-description { max-width: 560px; font-size: 18px; line-height: 1.65; color: #ffffffe6; }
+.editorial-eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 16px; }
+/* 600 px: at the regular weight the About sentence is 565 px wide and the old
+   560 px cap left its last word alone on a second line. */
+.editorial-hero-description { max-width: 600px; font-size: 18px; line-height: 1.65; color: #ffffffe6; }
 .editorial-actions { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; margin-top: 28px; }
 .editorial-proof { background: #F5F1EB; border-bottom: 1px solid #E8E4DC; }
 .editorial-proof-item { padding: 32px 28px; }
@@ -1047,7 +1131,7 @@
 .catalog-card:focus-visible { outline: 2px solid #8B7355; outline-offset: 4px; }
 .catalog-card-content { padding: 24px; display: flex; flex-direction: column; flex: 1; }
 .catalog-card-footer { border-top: 1px solid #E8E4DC; margin-top: 20px; padding-top: 16px; display: flex; align-items: flex-start; flex-direction: column; gap: 8px; }
-.catalog-card-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; font-size: 13px; min-height: 32px; }
+.catalog-card-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; font-size: 15px; min-height: 32px; }
 @media (max-width: 1023px) {
   .home-hero { padding: 120px 0 32px; min-height: auto; }
   .home-hero-content { gap: 28px; }
@@ -1058,6 +1142,9 @@
 @media (max-width: 767px) {
   .editorial-hero { min-height: 510px; padding: 116px 0 40px; }
   .editorial-hero-description { font-size: 16px; }
+  /* At 12 px and .16em the About label is 350.1 px in a 350 px column and
+     left "PORTUGAL" alone on a second line. */
+  .editorial-eyebrow { letter-spacing: .08em; }
   .editorial-proof-item, .editorial-proof-item:first-child { padding: 24px 0; }
   .editorial-proof-item + .editorial-proof-item { border-left: 0; border-top: 1px solid #E8E4DC; }
   .catalog-heading { align-items: stretch; flex-direction: column; }

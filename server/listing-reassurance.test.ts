@@ -102,7 +102,7 @@ describe('on the page', () => {
   });
 
   it('on a phone: one line or nothing; WhatsApp only from 1024 px (the button covers it below)', () => {
-    expect(line).toMatch(/\$\{showCancellation \? 'flex mb-3' : 'hidden'\} lg:flex lg:mb-5/);
+    expect(line).toMatch(/\$\{showCancellation \? 'flex mb-5' : 'hidden'\} lg:flex lg:mb-5/);
     expect(line).toMatch(/\{showCancellation && \(\s*<li>\s*<Link href="\/legal\/cancellation-policy"/);
     expect(line).toMatch(/<li className="hidden lg:block">\s*<a href=\{whatsappHref\}/);
     // The floating button it would repeat is the phone/tablet one.

@@ -26,10 +26,11 @@ import {
 } from "@/data/destination-editorial";
 import type { PlanningGuide } from "@/data/destination-planning";
 import type { DestinationPageProps } from "./DestinationPage";
-import { PORTUGAL_MAINLAND_OUTLINE } from "./PortugalMap";
+import { LOCATOR, PORTUGAL_MAINLAND_OUTLINE } from "./PortugalMap";
 import { trackPlanning } from "./PlanningGuide";
 import { DestinationAccess } from "./DestinationAccess";
 import { DestinationHomesStrip } from "./DestinationHomesStrip";
+import { GuideBody, GuideHeading, GuideSection } from "./GuideSection";
 import {
   WhereToStay,
   TheJournal,
@@ -37,6 +38,7 @@ import {
 } from "./sections";
 import "./MinhoVisualGuide.css";
 import "./DestinationVisualGuide.css";
+import { keepSeparators } from "@/lib/format";
 
 function Photo({
   src,
@@ -233,30 +235,35 @@ export function DestinationVisualGuide({
             >
               <path
                 d={PORTUGAL_MAINLAND_OUTLINE}
-                fill="#dce5db"
-                stroke="#9baa99"
+                fill={LOCATOR.land}
+                stroke={LOCATOR.coast}
                 strokeWidth="1"
               />
               <circle
                 cx={e.point[0]}
                 cy={e.point[1]}
                 r="22"
-                fill="#9cb797"
+                fill={LOCATOR.halo}
                 opacity=".35"
               />
-              <circle cx={e.point[0]} cy={e.point[1]} r="5" fill="#294c3a" />
+              <circle
+                cx={e.point[0]}
+                cy={e.point[1]}
+                r="5"
+                fill={LOCATOR.place}
+              />
               <text
                 x="150"
                 y="230"
                 fontSize="10"
-                fill="#677463"
+                fill={LOCATOR.label}
                 letterSpacing="2"
                 transform="rotate(-90 150 230)"
               >
                 PORTUGAL
               </text>
             </svg>
-            <figcaption>{tx(e.name)} · Portugal</figcaption>
+            <figcaption>{tx(e.name)}{"\u00A0· "}Portugal</figcaption>
           </figure>
           <div>
             <p className="minho-kicker">
@@ -301,7 +308,12 @@ export function DestinationVisualGuide({
         </div>
       </section>
 
-      <section id="destination-nature" className="minho-section bg-pa-cream">
+      {/* On a phone the hero, the homes, and the first section above stay
+          open; every other chapter opens on tap (GuideSection, decisão E15). */}
+      <GuideSection
+        id="destination-nature"
+        className="minho-section bg-pa-cream"
+      >
         <div className="container">
           <div className="minho-section-heading">
             <div>
@@ -310,11 +322,11 @@ export function DestinationVisualGuide({
                   ? "A PAISAGEM FAZ PARTE DA VIAGEM"
                   : "THE LANDSCAPE IS PART OF THE JOURNEY"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt
                   ? "Três razões para sair e descobrir."
                   : "Three reasons to get out and explore."}
-              </h2>
+              </GuideHeading>
             </div>
             <p>
               {pt
@@ -322,28 +334,30 @@ export function DestinationVisualGuide({
                 : "Choose the moment that appeals to you. There is time to explore and time to simply be."}
             </p>
           </div>
-          <figure className="destination-landscape-feature">
-            <Photo src={e.photo.src} alt={tx(e.photo.caption)} />
-            <figcaption>
-              <MapPin size={15} />
-              {tx(e.photo.caption)}
-            </figcaption>
-          </figure>
-          <div className="minho-landscapes destination-moments">
-            {e.moments.map((m, i) => (
-              <article key={m.place[0]} className="minho-landscape-copy">
-                <span className="minho-number">
-                  0{i + 1} · {tx(m.place)}
-                </span>
-                <h3>{tx(m.title)}</h3>
-                <p>{tx(m.text)}</p>
-                <p className="minho-practical-note">{tx(m.plan)}</p>
-                {sourceLink(m.source, "nature")}
-              </article>
-            ))}
-          </div>
+          <GuideBody>
+            <figure className="destination-landscape-feature">
+              <Photo src={e.photo.src} alt={tx(e.photo.caption)} />
+              <figcaption>
+                <MapPin size={15} />
+                {tx(e.photo.caption)}
+              </figcaption>
+            </figure>
+            <div className="minho-landscapes destination-moments">
+              {e.moments.map((m, i) => (
+                <article key={m.place[0]} className="minho-landscape-copy">
+                  <span className="minho-number">
+                    0{i + 1}{"\u00A0· "}{keepSeparators(tx(m.place))}
+                  </span>
+                  <h3>{tx(m.title)}</h3>
+                  <p>{tx(m.text)}</p>
+                  <p className="minho-practical-note">{tx(m.plan)}</p>
+                  {sourceLink(m.source, "nature")}
+                </article>
+              ))}
+            </div>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
 
       {d.slug === 'viana-do-castelo' && <>
         <WhereToStay destination={d} properties={properties} featured
@@ -352,7 +366,7 @@ export function DestinationVisualGuide({
         <LocalStaySupport destination={d.slug} />
       </>}
 
-      <section id="destination-areas" className="minho-section bg-white">
+      <GuideSection id="destination-areas" className="minho-section bg-white">
         <div className="container">
           <div className="minho-section-heading">
             <div>
@@ -361,7 +375,7 @@ export function DestinationVisualGuide({
                   ? "ESCOLHER BEM MUDA OS DIAS"
                   : "THE RIGHT BASE SHAPES YOUR DAYS"}
               </p>
-              <h2>
+              <GuideHeading>
                 {alternatives
                   ? pt
                     ? "Que parte da costa quer conhecer?"
@@ -369,7 +383,7 @@ export function DestinationVisualGuide({
                   : pt
                     ? "Encontre a sua zona."
                     : "Find your area."}
-              </h2>
+              </GuideHeading>
             </div>
             <p>
               {pt
@@ -377,31 +391,33 @@ export function DestinationVisualGuide({
                 : "Use these areas to shape your plans. Then check the exact location of each home."}
             </p>
           </div>
-          <div className="minho-bases destination-bases">
-            {e.bases.map(b => (
-              <article key={b.name}>
-                <span className="minho-base-tag">{tx(b.tag)}</span>
-                <h3>{b.name}</h3>
-                <p>{tx(b.text)}</p>
-                <div className="minho-base-transport">
-                  <CarFront size={19} />
-                  <p>{tx(b.transport)}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-          <a
-            href="#destination-homes"
-            className="minho-text-link mt-5"
-            onClick={() => track("areas", "homes")}
-          >
-            {homeLabel}
-            <ArrowRight size={17} />
-          </a>
+          <GuideBody>
+            <div className="minho-bases destination-bases">
+              {e.bases.map(b => (
+                <article key={b.name}>
+                  <span className="minho-base-tag">{tx(b.tag)}</span>
+                  <h3>{keepSeparators(b.name)}</h3>
+                  <p>{tx(b.text)}</p>
+                  <div className="minho-base-transport">
+                    <CarFront size={19} />
+                    <p>{tx(b.transport)}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <a
+              href="#destination-homes"
+              className="minho-text-link mt-5"
+              onClick={() => track("areas", "homes")}
+            >
+              {homeLabel}
+              <ArrowRight size={17} />
+            </a>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
 
-      <section
+      <GuideSection
         id="destination-stay-length"
         className="minho-section minho-itinerary"
       >
@@ -411,101 +427,106 @@ export function DestinationVisualGuide({
               <p className="minho-kicker">
                 {pt ? "IMAGINE OS SEUS DIAS AQUI" : "PICTURE YOUR DAYS HERE"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt ? "Quanto tempo tem para ficar?" : "How long can you stay?"}
-              </h2>
+              </GuideHeading>
             </div>
             <p>{tx(route.intro)}</p>
           </div>
-          {e.routes.length > 1 && (
+          <GuideBody>
+            {e.routes.length > 1 && (
+              <div
+                className="destination-route-controls"
+                role="group"
+                aria-label={pt ? "Zona do roteiro" : "Itinerary area"}
+              >
+                {e.routes.map(r => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    aria-pressed={r.id === route.id}
+                    aria-controls="destination-suggested-days"
+                    onClick={() => {
+                      setRouteId(r.id);
+                      track(`route_${r.id}`);
+                    }}
+                  >
+                    {tx(r.label)}
+                  </button>
+                ))}
+              </div>
+            )}
             <div
-              className="destination-route-controls"
+              className="minho-duration-controls"
               role="group"
-              aria-label={pt ? "Zona do roteiro" : "Itinerary area"}
+              aria-label={
+                pt ? "Duração sugerida da estadia" : "Suggested length of stay"
+              }
             >
-              {e.routes.map(r => (
+              {([3, 5, 7] as const).map(value => (
                 <button
-                  key={r.id}
+                  key={value}
                   type="button"
-                  aria-pressed={r.id === route.id}
+                  aria-pressed={nights === value}
                   aria-controls="destination-suggested-days"
                   onClick={() => {
-                    setRouteId(r.id);
-                    track(`route_${r.id}`);
+                    setNights(value);
+                    track(`stay_${value}_nights`);
                   }}
                 >
-                  {tx(r.label)}
+                  {value} {pt ? "noites" : "nights"}
                 </button>
               ))}
             </div>
-          )}
-          <div
-            className="minho-duration-controls"
-            role="group"
-            aria-label={
-              pt ? "Duração sugerida da estadia" : "Suggested length of stay"
-            }
-          >
-            {([3, 5, 7] as const).map(value => (
-              <button
-                key={value}
-                type="button"
-                aria-pressed={nights === value}
-                aria-controls="destination-suggested-days"
-                onClick={() => {
-                  setNights(value);
-                  track(`stay_${value}_nights`);
-                }}
-              >
-                {value} {pt ? "noites" : "nights"}
-              </button>
-            ))}
-          </div>
-          <p className="minho-duration-summary" aria-live="polite">
-            {pt
-              ? `${nights - 1} dias completos, mais chegada e partida. `
-              : `${nights - 1} full days, plus arrival and departure. `}
-            {tx(route.label)}
-          </p>
-          <p className="destination-arrival-note">
-            {pt
-              ? "À chegada, instale-se e escolha uma refeição perto da casa. No dia de partida, deixe tempo para o pequeno-almoço e a viagem."
-              : "On arrival, settle in and choose a meal near your home. On departure day, leave time for breakfast and the journey."}
-          </p>
-          <ol id="destination-suggested-days" className="minho-day-grid">
-            {route.days.slice(0, nights - 1).map((day, i) => (
-              <li key={`${route.id}-${i}`}>
-                <span className="minho-day-number">
-                  {pt ? "DIA COMPLETO" : "FULL DAY"} {i + 1}
-                </span>
-                <span className="minho-place">
-                  <MapPin size={14} />
-                  {tx(day.place)}
-                </span>
-                <h3>{tx(day.title)}</h3>
-                <p>{tx(day.text)}</p>
-              </li>
-            ))}
-          </ol>
-          <div className="minho-itinerary-footer">
-            <p>
+            <p className="minho-duration-summary" aria-live="polite">
               {pt
-                ? "Uma sugestão de ritmo, adaptável à casa e ao grupo. Visitas, atividades, refeições e transportes são reservados separadamente."
-                : "A suggested pace, adaptable to your home and group. Visits, activities, meals and transport are booked separately."}
+                ? `${nights - 1} dias completos, mais chegada e partida. `
+                : `${nights - 1} full days, plus arrival and departure. `}
+              {tx(route.label)}
             </p>
-            <a
-              className="btn-primary"
-              href="#destination-homes"
-              onClick={() => track("itinerary", "homes")}
-            >
-              {homeLabel}
-              <ArrowRight size={17} />
-            </a>
-          </div>
+            <p className="destination-arrival-note">
+              {pt
+                ? "À chegada, instale-se e escolha uma refeição perto da casa. No dia de partida, deixe tempo para o pequeno-almoço e a viagem."
+                : "On arrival, settle in and choose a meal near your home. On departure day, leave time for breakfast and the journey."}
+            </p>
+            <ol id="destination-suggested-days" className="minho-day-grid">
+              {route.days.slice(0, nights - 1).map((day, i) => (
+                <li key={`${route.id}-${i}`}>
+                  <span className="minho-day-number">
+                    {pt ? "DIA COMPLETO" : "FULL DAY"} {i + 1}
+                  </span>
+                  <span className="minho-place">
+                    <MapPin size={14} />
+                    {tx(day.place)}
+                  </span>
+                  <h3>{tx(day.title)}</h3>
+                  <p>{tx(day.text)}</p>
+                </li>
+              ))}
+            </ol>
+            <div className="minho-itinerary-footer">
+              <p>
+                {pt
+                  ? "Uma sugestão de ritmo, adaptável à casa e ao grupo. Visitas, atividades, refeições e transportes são reservados separadamente."
+                  : "A suggested pace, adaptable to your home and group. Visits, activities, meals and transport are booked separately."}
+              </p>
+              <a
+                className="btn-primary"
+                href="#destination-homes"
+                onClick={() => track("itinerary", "homes")}
+              >
+                {homeLabel}
+                <ArrowRight size={17} />
+              </a>
+            </div>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
 
-      <section id="destination-taste" className="minho-section minho-taste">
+      <GuideSection
+        id="destination-taste"
+        className="minho-section minho-taste"
+      >
         <div className="container">
           <div className="minho-section-heading">
             <div>
@@ -514,29 +535,34 @@ export function DestinationVisualGuide({
                   ? "O LUGAR TAMBÉM SE DESCOBRE À MESA"
                   : "DISCOVER THE PLACE AT THE TABLE"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt
                   ? "Sabores para guardar na memória."
                   : "Flavours to remember."}
-              </h2>
+              </GuideHeading>
             </div>
             <p>{tx(e.taste)}</p>
           </div>
-          <div className="minho-restaurants destination-tables">
-            {e.tables.map((t, i) => (
-              <article key={t.name}>
-                <span className="minho-number">0{i + 1}</span>
-                <p className="minho-kicker">{tx(t.place)}</p>
-                <h3>{t.name}</h3>
-                <p className="mt-4">{tx(t.text)}</p>
-                {sourceLink(t.source, "taste")}
-              </article>
-            ))}
-          </div>
+          <GuideBody>
+            <div className="minho-restaurants destination-tables">
+              {e.tables.map((t, i) => (
+                <article key={t.name}>
+                  <span className="minho-number">0{i + 1}</span>
+                  <p className="minho-kicker">{keepSeparators(tx(t.place))}</p>
+                  <h3>{t.name}</h3>
+                  <p className="mt-4">{tx(t.text)}</p>
+                  {sourceLink(t.source, "taste")}
+                </article>
+              ))}
+            </div>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
 
-      <section id="destination-culture" className="minho-section minho-culture">
+      <GuideSection
+        id="destination-culture"
+        className="minho-section minho-culture"
+      >
         <span
           id="destination-experiences"
           className="minho-legacy-anchor"
@@ -555,11 +581,11 @@ export function DestinationVisualGuide({
                   ? "EXPERIÊNCIAS QUE DÃO SENTIDO AOS DIAS"
                   : "EXPERIENCES THAT GIVE DAYS MEANING"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt
                   ? "Entre histórias e novas descobertas."
                   : "Stories and new discoveries."}
-              </h2>
+              </GuideHeading>
             </div>
             <p>
               {pt
@@ -567,95 +593,104 @@ export function DestinationVisualGuide({
                 : "Places and operators to help plan your visit. Choose by interest and check conditions for your date."}
             </p>
           </div>
-          <div className="minho-culture-options destination-culture-grid">
-            {e.culture.map((c, i) => (
-              <article key={c.place[0] + c.source}>
-                <span className="minho-number">
-                  0{i + 1} · {tx(c.place)}
-                </span>
-                <div>
-                  <h3>{tx(c.title)}</h3>
-                  <p>{tx(c.text)}</p>
-                  {sourceLink(c.source, "culture")}
-                </div>
-              </article>
-            ))}
-          </div>
+          <GuideBody>
+            <div className="minho-culture-options destination-culture-grid">
+              {e.culture.map((c, i) => (
+                <article key={c.place[0] + c.source}>
+                  <span className="minho-number">
+                    0{i + 1}{"\u00A0· "}{keepSeparators(tx(c.place))}
+                  </span>
+                  <div>
+                    <h3>{tx(c.title)}</h3>
+                    <p>{tx(c.text)}</p>
+                    {sourceLink(c.source, "culture")}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
 
-      <section id="destination-seasons" className="minho-section bg-white">
+      <GuideSection id="destination-seasons" className="minho-section bg-white">
         <div className="container">
           <div className="minho-section-heading">
             <div>
               <p className="minho-kicker">
                 {pt ? "QUAL É A SUA ÉPOCA?" : "FIND YOUR SEASON"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt
                   ? "Quatro maneiras de viver o lugar."
                   : "Four ways to experience the place."}
-              </h2>
+              </GuideHeading>
             </div>
           </div>
-          <div className="minho-seasons">
-            {e.seasons.map((s, i) => {
-              const Icon = [Leaf, Sun, Wine, Coffee][i];
-              return (
-                <article key={i}>
-                  <Icon size={24} />
-                  <span>
-                    {
-                      (pt
-                        ? ["Primavera", "Verão", "Outono", "Inverno"]
-                        : ["Spring", "Summer", "Autumn", "Winter"])[i]
-                    }
-                  </span>
-                  <p className="mt-4">{tx(s)}</p>
-                </article>
-              );
-            })}
-          </div>
+          <GuideBody>
+            <div className="minho-seasons">
+              {e.seasons.map((s, i) => {
+                const Icon = [Leaf, Sun, Wine, Coffee][i];
+                return (
+                  <article key={i}>
+                    <Icon size={24} />
+                    <span>
+                      {
+                        (pt
+                          ? ["Primavera", "Verão", "Outono", "Inverno"]
+                          : ["Spring", "Summer", "Autumn", "Winter"])[i]
+                      }
+                    </span>
+                    <p className="mt-4">{tx(s)}</p>
+                  </article>
+                );
+              })}
+            </div>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
 
-      <section id="destination-arrival" className="minho-section bg-pa-cream">
+      <GuideSection
+        id="destination-arrival"
+        className="minho-section bg-pa-cream"
+      >
         <div className="container">
           <div className="minho-section-heading">
             <div>
               <p className="minho-kicker">
                 {pt ? "DO VOO À SUA CASA" : "FROM YOUR FLIGHT TO YOUR HOME"}
               </p>
-              <h2>
+              <GuideHeading>
                 {pt
                   ? "Chegar pode ser a parte simples."
                   : "Getting here can be the easy part."}
-              </h2>
+              </GuideHeading>
             </div>
             <p>{tx(e.mobility)}</p>
           </div>
-          <DestinationAccess slug={d.slug} language={language} />
-          <div className="minho-local-travel">
-            {guide.arrival.map(a => (
-              <article key={a.title}>
-                <TrainFront size={22} />
-                <div>
-                  <h3>{a.title}</h3>
-                  <p>{a.text}</p>
-                  <a
-                    className="minho-text-link"
-                    href={a.sourceUrl}
-                    onClick={() => track("arrival", "source")}
-                  >
-                    {a.sourceLabel}
-                    <ArrowUpRight size={15} />
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
+          <GuideBody>
+            <DestinationAccess slug={d.slug} language={language} />
+            <div className="minho-local-travel">
+              {guide.arrival.map(a => (
+                <article key={a.title}>
+                  <TrainFront size={22} />
+                  <div>
+                    <h3>{a.title}</h3>
+                    <p>{a.text}</p>
+                    <a
+                      className="minho-text-link"
+                      href={a.sourceUrl}
+                      onClick={() => track("arrival", "source")}
+                    >
+                      {a.sourceLabel}
+                      <ArrowUpRight size={15} />
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </GuideBody>
         </div>
-      </section>
+      </GuideSection>
 
       {d.slug !== 'viana-do-castelo' && <WhereToStay
         destination={d}

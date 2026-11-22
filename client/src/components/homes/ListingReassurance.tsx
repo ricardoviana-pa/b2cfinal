@@ -33,21 +33,25 @@ export default function ListingReassurance({ whatsappHref, context, showCancella
   const { t } = useTranslation();
   const item = 'inline-flex items-start gap-2 underline-offset-4 decoration-pa-sand hover:underline hover:text-pa-dark';
   return (
+    /* Caption size (13 px) on a computer, as it always was: at 15 px the two
+       notes no longer fitted one line in German, and at 14 px not in Finnish,
+       so the second dropped 50 px below the first and pushed the homes down.
+       15 px on a phone, where only the cancellation note shows. */
     <ul
       data-testid="listing-reassurance"
-      className={`${showCancellation ? 'flex mb-3' : 'hidden'} lg:flex lg:mb-5 flex-row flex-wrap gap-x-6 gap-y-1.5 font-body text-[13px] leading-snug text-pa-earth`}
+      className={`${showCancellation ? 'flex mb-5' : 'hidden'} lg:flex lg:mb-5 flex-row flex-wrap gap-x-6 gap-y-1.5 font-body text-[15px] lg:text-[13px] leading-snug text-pa-earth`}
     >
       {showCancellation && (
         <li>
           <Link href="/legal/cancellation-policy" className={item}>
-            <ShieldCheck aria-hidden className="mt-px h-3.5 w-3.5 shrink-0 text-pa-gold" />
+            <ShieldCheck aria-hidden className="mt-[3px] lg:mt-px h-3.5 w-3.5 shrink-0 text-pa-gold-aa" />
             <span>{t('listingReassurance.cancellation')}</span>
           </Link>
         </li>
       )}
       <li className="hidden lg:block">
         <a href={whatsappHref} target="_blank" rel="noopener noreferrer" {...trackAttributes('listing_reassurance', context)} className={item}>
-          <MessageCircle aria-hidden className="mt-px h-3.5 w-3.5 shrink-0 text-pa-gold" />
+          <MessageCircle aria-hidden className="mt-[3px] lg:mt-px h-3.5 w-3.5 shrink-0 text-pa-gold-aa" />
           <span>{t('listingReassurance.whatsapp')}</span>
         </a>
       </li>

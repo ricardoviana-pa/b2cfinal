@@ -6,7 +6,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 
 // Only the palette colours are errors — a one-off (an amber warning, a green
 // tick) may keep its hex; a palette colour must use its token.
-const PALETTE_HEX = "#(1A1A18|8B7355|E8E4DC|726D63|6B6860|FAFAF7|F5F1EB|C4A87C|78756F|806A48)";
+const PALETTE_HEX = "#(1A1A18|8B7355|E8E4DC|726D63|6B6860|5E5B54|FAFAF7|F5F1EB|C4A87C|78756F|806A48)";
 const HEX = "#[0-9a-fA-F]{6}";
 // Sizes the scale covers (scripts/codemod-tokens.mjs): 9–18px. Larger
 // arbitrary sizes are usually display type and stay a warning.

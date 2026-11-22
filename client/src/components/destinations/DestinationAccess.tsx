@@ -156,7 +156,7 @@ export function DestinationAccess({
     language.toLowerCase().split("-")[0] === "pt" ? "pt" : "en";
   const labels = copy[lang];
   const cardSpacing = compact ? "p-5 md:p-6" : "p-6 md:p-8";
-  const cardClass = `min-w-0 rounded-2xl border border-pa-sand ${cardSpacing}`;
+  const cardClass = `min-w-0 rounded-xl border border-pa-sand ${cardSpacing}`;
 
   return (
     <div
@@ -225,7 +225,7 @@ export function DestinationAccess({
       </article>
 
       <article
-        className={`flex min-w-0 flex-col rounded-2xl bg-pa-dark text-white ${cardSpacing}`}
+        className={`flex min-w-0 flex-col rounded-xl bg-pa-dark text-white ${cardSpacing}`}
       >
         <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-white/25 text-white">
           <BusFront aria-hidden="true" className="h-6 w-6" strokeWidth={1.5} />

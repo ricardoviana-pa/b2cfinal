@@ -15,6 +15,7 @@ import { trpc } from '@/lib/trpc';
 import { useSearch } from 'wouter';
 import { corporatePlanning } from '@/data/corporatePlanning';
 import { contactEnquiryContext } from '@shared/contactEnquiryContext';
+import { keepHyphens } from '@/lib/format';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -196,7 +197,7 @@ export default function Contact() {
   };
 
   const inputClasses = (field: string, hasError: boolean) =>
-    `w-full h-[52px] rounded-md border bg-white px-4 text-[16px] text-[#1A1A18] transition-all duration-200 focus:outline-none ${
+    `w-full h-[52px] rounded-lg border bg-white px-4 text-[16px] text-[#1A1A18] transition-all duration-200 focus:outline-none ${
       hasError
         ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10'
         : 'border-[#E8E4DC] hover:border-[#C4A87C] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10'
@@ -218,7 +219,7 @@ export default function Contact() {
       {/* Form + Contact channels */}
       <section id="contact-form" className="py-10 md:py-14 scroll-mt-28">
         <div className="container max-w-[1100px]">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-14 lg:gap-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-14 lg:gap-20">
 
             {/* Left: Form */}
             <div>
@@ -228,8 +229,8 @@ export default function Contact() {
                 {t('contact.formTitle', 'Send us a message')}
               </h2>
               <p
-                className="text-[14px] text-[#726D63] mb-8"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                className="text-[15px] text-pa-stone mb-8"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 {t('contact.formSubtitle', 'We typically respond within 2 hours.')}
               </p>
@@ -252,14 +253,14 @@ export default function Contact() {
                   </div>
                   <h3 className="font-display text-[22px] text-[#1A1A18] mb-2">{t('contact.messageSentTitle')}</h3>
                   <p
-                    className="text-[14px] text-[#6B6860] max-w-sm mx-auto"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="text-[15px] text-pa-earth max-w-sm mx-auto"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   >
                     {t('contact.messageSentBody')}
                   </p>
                   <button
                     onClick={() => setSubmitted(false)}
-                    className="mt-6 text-[12px] font-medium tracking-[0.1em] uppercase text-[#8B7355] hover:text-[#6B5A42] transition-colors"
+                    className="mt-6 text-[12px] font-medium tracking-[0.1em] uppercase text-pa-gold-aa hover:text-[#6B5A42] transition-colors"
                   >
                     {t('contact.sendAnother', 'Send another message')}
                   </button>
@@ -279,7 +280,7 @@ export default function Contact() {
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label htmlFor="contact-name" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label htmlFor="contact-name" className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-stone mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.nameLabel').replace(/\s*\*$/, '')} <span className="text-[#DC2626]">*</span>
                       </label>
                       <input
@@ -294,12 +295,12 @@ export default function Contact() {
                         placeholder={t('contact.namePlaceholder', 'Your full name')}
                         autoComplete="name"
                         className={inputClasses('name', !!(touched.name && fieldErrors.name))}
-                        style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                        style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                       />
-                      {touched.name && fieldErrors.name && <p id="contact-name-error" role="alert" className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.name}</p>}
+                      {touched.name && fieldErrors.name && <p id="contact-name-error" role="alert" className="text-[13px] text-[#DC2626] mt-1.5">{fieldErrors.name}</p>}
                     </div>
                     <div>
-                      <label htmlFor="contact-email" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label htmlFor="contact-email" className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-stone mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.emailLabel').replace(/\s*\*$/, '')} <span className="text-[#DC2626]">*</span>
                       </label>
                       <input
@@ -315,9 +316,9 @@ export default function Contact() {
                         autoComplete="email"
                         inputMode="email"
                         className={inputClasses('email', !!(touched.email && fieldErrors.email))}
-                        style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                        style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                       />
-                      {touched.email && fieldErrors.email && <p id="contact-email-error" role="alert" className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.email}</p>}
+                      {touched.email && fieldErrors.email && <p id="contact-email-error" role="alert" className="text-[13px] text-[#DC2626] mt-1.5">{fieldErrors.email}</p>}
                     </div>
                   </div>
 
@@ -325,7 +326,7 @@ export default function Contact() {
                     <summary className="body-sm cursor-pointer text-pa-dark">{t('siteUx.optionalDetails')}</summary>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4">
                     <div>
-                      <label htmlFor="contact-phone" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label htmlFor="contact-phone" className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-stone mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.phoneLabel')}
                       </label>
                       <PhoneInput
@@ -336,7 +337,7 @@ export default function Contact() {
                       />
                     </div>
                     <div>
-                      <label htmlFor="contact-subject" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label htmlFor="contact-subject" className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-stone mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.subjectLabel')}
                       </label>
                       <select
@@ -344,7 +345,7 @@ export default function Contact() {
                         value={subject}
                         onChange={e => setSubject(e.target.value)}
                         className={`${inputClasses('subject', false)} appearance-none cursor-pointer`}
-                        style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                        style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                       >
                         <option value="plan-my-stay">{t('contact.subjectBookHome')}</option>
                         <option value="services-enquiry">{t('contact.subjectServices')}</option>
@@ -367,7 +368,7 @@ export default function Contact() {
                   </fieldset>}
 
                   <div>
-                    <label htmlFor="contact-message" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                    <label htmlFor="contact-message" className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-stone mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                       {planning?.message || t('contact.messageLabel').replace(/\s*\*$/, '')} <span className="text-[#DC2626]">*</span>
                     </label>
                     <textarea
@@ -380,27 +381,27 @@ export default function Contact() {
                       onChange={e => { setMessage(e.target.value); if (touched.message) setFieldErrors(prev => ({ ...prev, message: validateField('message', e.target.value) })); }}
                       onBlur={() => handleBlur('message', message)}
                       placeholder={t('contact.messagePlaceholder', 'Tell us about your trip — dates, group size, anything we should know...')}
-                      className={`w-full rounded-md border bg-white px-4 py-3.5 text-[16px] text-[#1A1A18] placeholder:text-[#726D63] transition-all duration-200 focus:outline-none resize-none ${
+                      className={`w-full rounded-lg border bg-white px-4 py-3.5 text-[16px] text-[#1A1A18] placeholder:text-pa-stone transition-all duration-200 focus:outline-none resize-none ${
                         touched.message && fieldErrors.message
                           ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10'
                           : 'border-[#E8E4DC] hover:border-[#C4A87C] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10'
                       }`}
-                      style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                      style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                     />
-                    {touched.message && fieldErrors.message && <p id="contact-message-error" role="alert" className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.message}</p>}
+                    {touched.message && fieldErrors.message && <p id="contact-message-error" role="alert" className="text-[13px] text-[#DC2626] mt-1.5">{fieldErrors.message}</p>}
                   </div>
 
                   {error && (
-                    <div className="flex items-start gap-2 p-3 bg-red-50 border border-[#DC2626]/20 rounded-md" role="alert" aria-live="assertive">
-                      <p className="text-[13px] text-[#DC2626]">{error}</p>
-                      <button type="button" onClick={() => setError('')} className="text-[#DC2626] text-[12px] underline ml-auto shrink-0">{t('contact.dismiss', 'Dismiss')}</button>
+                    <div className="flex items-start gap-2 p-3 bg-red-50 border border-[#DC2626]/20 rounded-lg" role="alert" aria-live="assertive">
+                      <p className="text-[15px] text-[#DC2626]">{error}</p>
+                      <button type="button" onClick={() => setError('')} className="text-[#DC2626] text-[13px] underline ml-auto shrink-0">{t('contact.dismiss', 'Dismiss')}</button>
                     </div>
                   )}
 
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="pa-action bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start md:self-end inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
+                    className="pa-action bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start md:self-end inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
                   >
                     {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                     {submitting ? t('contact.sending', 'Sending...') : planning?.submit || t('contact.sendMessage')}
@@ -418,7 +419,7 @@ export default function Contact() {
                   >
                     {t('contact.preferToTalk')}
                   </h3>
-                  <p className="text-[13px] text-[#726D63]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                  <p className="text-[15px] text-pa-stone" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                     {t('contact.preferToTalkSub', 'Reach us however works best for you.')}
                   </p>
                 </div>
@@ -437,17 +438,17 @@ export default function Contact() {
                         className="flex items-center gap-4 py-3.5 group transition-colors border-b border-[#E8E4DC] last:border-0"
                       >
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F5F1EB] transition-colors group-hover:bg-[#8B7355]">
-                          <Icon size={16} className="text-[#8B7355] transition-colors group-hover:text-white" />
+                          <Icon size={16} className="text-pa-gold-aa transition-colors group-hover:text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[14px] text-[#1A1A18] group-hover:text-[#8B7355] transition-colors truncate" style={{ fontWeight: 500 }}>
+                          <p className="text-[15px] text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors truncate" style={{ fontWeight: 500 }}>
                             {title}
                           </p>
-                          <p className="text-[12px] text-[#726D63] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                            {sub}
+                          <p className="text-[13px] text-pa-stone mt-0.5 text-balance" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+                            {keepHyphens(sub)}
                           </p>
                         </div>
-                        <ArrowRight size={14} className="shrink-0 text-[#E8E4DC] group-hover:text-[#8B7355] transition-all group-hover:translate-x-0.5" />
+                        <ArrowRight size={14} className="shrink-0 text-[#E8E4DC] group-hover:text-pa-gold-aa transition-all group-hover:translate-x-0.5" />
                       </a>
                     );
                   })}
@@ -455,8 +456,8 @@ export default function Contact() {
 
                 {/* HQ */}
                 <div className="bg-[#F5F1EB]/50 px-6 py-4 flex items-center gap-3">
-                  <MapPin size={14} className="text-[#726D63] shrink-0" />
-                  <p className="text-[12px] text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                  <MapPin size={14} className="text-pa-stone shrink-0" />
+                  <p className="text-[13px] text-pa-earth" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                     {t('contact.hqLocation')} {t('contact.hqOperating')}
                   </p>
                 </div>
@@ -471,7 +472,7 @@ export default function Contact() {
         <div className="container max-w-[720px] py-16 md:py-24 lg:py-28">
           <div className="text-center mb-10 md:mb-14">
             <p
-              className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#8B7355] mb-4"
+              className="text-[12px] font-medium tracking-[0.14em] uppercase text-pa-gold-aa mb-4"
               style={{ fontFamily: 'var(--font-body)' }}
             >
               {t('contact.faqOverline')}

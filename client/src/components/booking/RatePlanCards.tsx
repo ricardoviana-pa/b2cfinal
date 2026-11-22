@@ -16,7 +16,7 @@ import type { Ref } from "react";
 import { useTranslation } from "react-i18next";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatBookingDate, formatQuotedEur } from "@/lib/format";
+import { formatBookingDate, formatQuotedEur, formatEur, formatStayEur, noBreak, staySavingsEuros } from "@/lib/format";
 import { cancellationPolicyCopy, cancellationPolicyPath } from "@/lib/cancellation";
 import { hasVerifiedRefundAdvantage } from "@/lib/ratePlanRecommendation";
 import { rateCardModels, type RateCardModel, type RateCardOption } from "@/lib/rateCards";
@@ -31,6 +31,7 @@ export default function RatePlanCards<T extends RateCardOption>({
   name,
   columns = 1,
   twoPartsVariant = null,
+  wholeEuros = false,
   selectedRef,
   containerRef,
   className,
@@ -46,6 +47,8 @@ export default function RatePlanCards<T extends RateCardOption>({
   columns?: 1 | 2;
   /** Linha das duas partes debaixo do cartão reembolsável: "widget" (página da casa) ou "rate" (passo 1). */
   twoPartsVariant?: "widget" | "rate" | null;
+  /** Página da casa: preços em euros inteiros (lib/format.ts, formatStayEur); o checkout mantém os cêntimos. */
+  wholeEuros?: boolean;
   /** Widget: o cartão escolhido fica à vista por cima do RESERVE (bookingCardReveal). */
   selectedRef?: Ref<HTMLLabelElement>;
   containerRef?: Ref<HTMLDivElement>;
@@ -54,6 +57,10 @@ export default function RatePlanCards<T extends RateCardOption>({
   const { t } = useTranslation();
   const copy = cancellationPolicyCopy(lang);
   const models = rateCardModels(options, checkIn);
+  const money = (amount: number) => (wholeEuros ? formatStayEur(amount, lang) : formatQuotedEur(amount, lang));
+  /** A poupança mostrada: em euros inteiros é a diferença dos dois preços tal como aparecem. */
+  const savingsShown = (compareTotal: number, total: number, savings: number) =>
+    wholeEuros ? staySavingsEuros(compareTotal, total) : savings;
   const policyLink = (code: Parameters<typeof cancellationPolicyPath>[1], label: string) => (
     <a
       href={cancellationPolicyPath(lang, code)}
@@ -90,7 +97,11 @@ export default function RatePlanCards<T extends RateCardOption>({
               className={cn(
                 // Uma só anatomia de cartão seleccionável no checkout (tarifa, receção,
                 // plano, método; spec §18): 1 px areia em repouso, escuro + areia escolhido
-                "relative flex flex-col gap-2.5 rounded-lg border p-4 cursor-pointer transition-colors",
+                // @container: the plan name and the price follow the card's own
+                // width (the same card is 257 px in the checkout at 1024 px, 295 px
+                // from 1100 px, 248 px in a home's booking card and up to 350 px
+                // on a phone), not the screen's.
+                "@container relative flex flex-col gap-2.5 rounded-lg border p-4 cursor-pointer transition-colors",
                 selected ? "border-pa-dark ring-1 ring-pa-dark bg-pa-warm" : "bg-white border-pa-sand hover:border-pa-dark",
               )}
             >
@@ -105,7 +116,7 @@ export default function RatePlanCards<T extends RateCardOption>({
               />
               {/* Anel de foco do teclado no cartão inteiro (o rádio é invisível) */}
               <span aria-hidden className="pointer-events-none absolute inset-0 rounded-lg ring-2 ring-pa-dark ring-offset-2 opacity-0 peer-focus-visible:opacity-100" />
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start justify-between gap-3 @max-[15rem]:gap-2">
                 <div className="flex items-start gap-2.5 min-w-0">
                   <span
                     aria-hidden
@@ -117,17 +128,33 @@ export default function RatePlanCards<T extends RateCardOption>({
                     {selected && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
                   </span>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="body-sm text-pa-dark font-medium leading-snug">{label}</p>
+                    {/* The badge stays beside the name where the live site had it:
+                        at 12 px (11 px live) it is held to the live width with
+                        tighter letter-spacing and 4 px sides. */}
+                    <div className="flex items-center gap-x-1.5 gap-y-1 flex-wrap">
+                      {/* By the card's text width, room for the name AND the
+                          RECOMMENDED badge beside it: 15 px from 400 px, 14 px from
+                          336 px, 13 px below (larger, the badge dropped under the
+                          name on 393-440 px phones and iPads, and names broke one
+                          word per line in narrow cards). */}
+                      <p className="body-sm @max-[25rem]:text-sm @max-[21rem]:text-[13px] text-pa-dark font-medium leading-snug">{label}</p>
                       {recommended && (
-                        <span className={cn("eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 text-pa-gold-aa border border-pa-sand rounded-sm", selected ? "bg-white" : "bg-pa-warm")}>
+                        <span className={cn("eyebrow font-medium tracking-wide uppercase px-1 py-0.5 text-pa-gold-aa border border-pa-sand rounded-sm", selected ? "bg-white" : "bg-pa-warm")}>
                           {t("bookingWidget.recommended", "Recommended")}
                         </span>
                       )}
                     </div>
-                    <p id={benefitId} className={cn("caption mt-0.5 leading-snug", nonRef ? "text-pa-earth" : "text-pa-dark")}>
+                  </div>
+                </div>
+                <p className="body-md @max-[15rem]:text-[15px] text-pa-dark font-medium tabular-nums leading-tight shrink-0 text-right">{money(m.total)}</p>
+              </div>
+              {/* The cancellation line runs under the name and the price, at the
+                  card's whole width (indented by the radio): in the column beside
+                  the price it broke into stacks of two words at 1024 px and on
+                  the 820 px tablet ("Cancelamento / gratuito até / 14 dez 2026"). */}
+              <p id={benefitId} className={cn("caption -mt-2 pl-[26px] leading-snug text-balance", nonRef ? "text-pa-earth" : "text-pa-dark")}>
                       {m.kind === "refundable" && m.freeUntil
-                        ? t("booking.freeCancellation", { date: formatBookingDate(m.freeUntil, lang, true) })
+                        ? t("booking.freeCancellation", { date: noBreak(formatBookingDate(m.freeUntil, lang, true)) })
                         : nonRef
                           ? policyLink("non_refundable", t("checkout.rateCard.noRefund", "No refund if you cancel"))
                           : (
@@ -135,20 +162,16 @@ export default function RatePlanCards<T extends RateCardOption>({
                               {copy.unknown} {policyLink(m.policyCode, copy.termsLink)}
                             </>
                           )}
-                    </p>
-                  </div>
-                </div>
-                <p className="body-md text-pa-dark font-medium tabular-nums leading-tight shrink-0 text-right">{formatQuotedEur(m.total, lang)}</p>
-              </div>
+              </p>
               {/* A poupança numa linha própria, à direita, debaixo do benefício: dentro
                   da coluna do preço empurrava o título para ~70 px a 360 px em alemão
                   ("Nicht erstattungsfähig" entrava pelo preço) e dividia o benefício em
                   três linhas. Assim o título e o benefício têm a largura toda. */}
-              {m.savings > 0 && m.compareTotal != null && (
+              {m.savings > 0 && m.compareTotal != null && savingsShown(m.compareTotal, m.total, m.savings) > 0 && (
                 <p className="caption -mt-1 leading-snug flex flex-wrap items-center justify-end gap-x-1.5 gap-y-1">
-                  <s className="text-pa-stone-aa tabular-nums">{formatQuotedEur(m.compareTotal, lang)}</s>
+                  <s className="text-pa-stone-aa tabular-nums">{money(m.compareTotal)}</s>
                   <span className={cn("inline-flex items-center rounded-full border border-pa-sand px-2 py-0.5 eyebrow font-medium tracking-[0.08em] uppercase text-pa-gold-aa whitespace-nowrap", selected ? "bg-white" : "bg-pa-warm")}>
-                    {t("bookingWidget.save", "Save")} {formatQuotedEur(m.savings, lang)}
+                    {t("bookingWidget.save", "Save")} {wholeEuros ? formatEur(savingsShown(m.compareTotal, m.total, m.savings), lang) : formatQuotedEur(m.savings, lang)}
                   </span>
                 </p>
               )}
@@ -158,7 +181,7 @@ export default function RatePlanCards<T extends RateCardOption>({
                   checkIn={checkIn}
                   policyCode={m.policyCode}
                   stayTotal={m.total}
-                  className="caption text-pa-dark leading-snug border-t border-pa-sand pt-2"
+                  className="text-[12px] text-pa-dark leading-snug border-t border-pa-sand pt-2"
                 />
               )}
             </label>

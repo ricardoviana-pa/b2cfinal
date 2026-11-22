@@ -37,9 +37,11 @@ export default function Login() {
 
           {/* Role selector — shown when no role is chosen */}
           {!role && (
-            <div className="max-w-[520px] mx-auto text-center">
+            /* 600 px: at 520 px each card had a 186 px column and its 15 px
+               description took three lines with one word alone on the last. */
+            <div className="max-w-[600px] mx-auto text-center">
               <p
-                className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#8B7355] mb-4"
+                className="text-[12px] font-medium tracking-[0.14em] uppercase text-pa-gold-aa mb-4"
                 style={{ fontFamily: 'var(--font-body)' }}
               >
                 {t('login.overline', 'MY PORTUGAL ACTIVE')}
@@ -48,8 +50,8 @@ export default function Login() {
                 {t('login.welcomeTitle', 'Welcome.')}
               </h1>
               <p
-                className="text-[15px] text-[#6B6860] mb-12 leading-relaxed"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                className="text-[16px] text-pa-earth mb-12 leading-relaxed"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 {t('login.chooseRole', 'How would you like to sign in?')}
               </p>
@@ -58,35 +60,35 @@ export default function Login() {
                 {/* Guest card */}
                 <button
                   onClick={() => setRole('guest')}
-                  className="group relative flex flex-col items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-8 hover:border-[#8B7355] hover:shadow-lg transition-all duration-300 text-left"
+                  className="group relative flex flex-col items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-6 sm:p-8 hover:border-[#8B7355] hover:shadow-lg transition-all duration-300 text-left"
                 >
                   <div className="w-14 h-14 rounded-full bg-[#F5F1EB] flex items-center justify-center group-hover:bg-[#8B7355]/10 transition-colors">
-                    <Home size={22} className="text-[#8B7355]" />
+                    <Home size={22} className="text-pa-gold-aa" />
                   </div>
                   <div className="text-center">
                     <p className="text-[16px] font-medium text-[#1A1A18] mb-1">{t('login.guestTitle', "I'm a Guest")}</p>
-                    <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                    <p className="text-[15px] text-pa-earth leading-relaxed text-balance" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                       {t('login.guestSub', 'Book stays, earn points, and access member benefits.')}
                     </p>
                   </div>
-                  <ArrowRight size={16} className="text-[#8B7355] opacity-0 group-hover:opacity-100 transition-opacity absolute top-4 right-4" />
+                  <ArrowRight size={16} className="text-pa-gold-aa opacity-0 group-hover:opacity-100 transition-opacity absolute top-4 right-4" />
                 </button>
 
                 {/* Owner card */}
                 <button
                   onClick={() => setRole('owner')}
-                  className="group relative flex flex-col items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-8 hover:border-[#8B7355] hover:shadow-lg transition-all duration-300 text-left"
+                  className="group relative flex flex-col items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-6 sm:p-8 hover:border-[#8B7355] hover:shadow-lg transition-all duration-300 text-left"
                 >
                   <div className="w-14 h-14 rounded-full bg-[#F5F1EB] flex items-center justify-center group-hover:bg-[#8B7355]/10 transition-colors">
-                    <Key size={22} className="text-[#8B7355]" />
+                    <Key size={22} className="text-pa-gold-aa" />
                   </div>
                   <div className="text-center">
                     <p className="text-[16px] font-medium text-[#1A1A18] mb-1">{t('login.ownerTitle', "I'm an Owner")}</p>
-                    <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                    <p className="text-[15px] text-pa-earth leading-relaxed text-balance" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                       {t('login.ownerSub', 'Access your property dashboard and owner portal.')}
                     </p>
                   </div>
-                  <ArrowRight size={16} className="text-[#8B7355] opacity-0 group-hover:opacity-100 transition-opacity absolute top-4 right-4" />
+                  <ArrowRight size={16} className="text-pa-gold-aa opacity-0 group-hover:opacity-100 transition-opacity absolute top-4 right-4" />
                 </button>
               </div>
             </div>
@@ -97,37 +99,37 @@ export default function Login() {
             <div className="max-w-[480px] mx-auto text-center">
               <button
                 onClick={() => setRole(null)}
-                className="text-[12px] text-[#8B7355] hover:text-[#1A1A18] transition-colors mb-8 inline-flex items-center gap-1"
+                className="text-[13px] text-pa-gold-aa hover:text-[#1A1A18] transition-colors mb-8 inline-flex items-center gap-1"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 <ArrowRight size={12} className="rotate-180" /> {t('login.back', 'Back')}
               </button>
               <div className="w-16 h-16 rounded-full bg-[#F5F1EB] flex items-center justify-center mx-auto mb-6">
-                <Key size={24} className="text-[#8B7355]" />
+                <Key size={24} className="text-pa-gold-aa" />
               </div>
               <h1 className="font-display text-[clamp(1.5rem,3.5vw,2.25rem)] font-light leading-[1.1] text-[#1A1A18] mb-3">
                 {t('login.ownerPortalTitle', 'Owner Portal')}
               </h1>
               <p
-                className="text-[15px] text-[#6B6860] mb-10 leading-relaxed"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                className="text-[16px] text-pa-earth mb-10 leading-relaxed text-balance"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 {t('login.ownerPortalDesc', 'Manage your property, view reservations, and track performance through the Guesty Owners Portal.')}
               </p>
               <a
                 href="/owners-portal"
-                className="pa-action inline-flex items-center justify-center gap-2 rounded-full bg-[#1A1A18] text-white px-8 py-4 text-[14px] hover:bg-[#333] transition-all duration-200 min-h-[56px]"
+                className="pa-action inline-flex items-center justify-center gap-2 rounded-full bg-[#1A1A18] text-white px-8 py-4 text-[15px] hover:bg-[#333] transition-all duration-200 min-h-[56px]"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 500, letterSpacing: '0.02em' }}
               >
                 {t('login.openPortal', 'Open Owners Portal')}
                 <ArrowRight size={16} />
               </a>
               <p
-                className="text-[12px] text-[#726D63] mt-6 leading-relaxed"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                className="text-[13px] text-pa-stone mt-6 leading-relaxed"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 {t('login.ownerHelp', 'Need help? Contact us at')}{' '}
-                <a href="mailto:info@portugalactive.com" className="underline hover:text-[#8B7355] transition-colors">info@portugalactive.com</a>
+                <a href="mailto:info@portugalactive.com" className="underline hover:text-pa-gold-aa transition-colors">info@portugalactive.com</a>
               </p>
             </div>
           )}
@@ -138,7 +140,7 @@ export default function Login() {
               <div className="max-w-[960px] mx-auto">
                 <button
                   onClick={() => setRole(null)}
-                  className="text-[12px] text-[#8B7355] hover:text-[#1A1A18] transition-colors mb-8 inline-flex items-center gap-1"
+                  className="text-[13px] text-pa-gold-aa hover:text-[#1A1A18] transition-colors mb-8 inline-flex items-center gap-1"
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 >
                   <ArrowRight size={12} className="rotate-180" /> {t('login.back', 'Back')}
@@ -148,7 +150,7 @@ export default function Login() {
                 {/* Left — sign-in */}
                 <div>
                   <p
-                    className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#8B7355] mb-4"
+                    className="text-[12px] font-medium tracking-[0.14em] uppercase text-pa-gold-aa mb-4"
                     style={{ fontFamily: 'var(--font-body)' }}
                   >
                     {t('login.overline', 'MY PORTUGAL ACTIVE')}
@@ -157,15 +159,15 @@ export default function Login() {
                     {t('login.title', 'Welcome back.')}
                   </h1>
                   <p
-                    className="text-[15px] text-[#6B6860] mb-10 leading-relaxed"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="text-[16px] text-pa-earth mb-10 leading-relaxed text-balance"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   >
                     {t('login.subtitle', 'Sign in to manage your stays, earn loyalty points, and access exclusive member benefits.')}
                   </p>
 
                   <a
                     href="/api/auth/google"
-                    className="pa-action inline-flex items-center justify-center gap-3 w-full rounded-full border border-[#E8E4DC] bg-white px-6 py-4 text-[14px] text-[#1A1A18] hover:border-[#C4A87C] hover:shadow-md transition-all duration-200 min-h-[56px]"
+                    className="pa-action inline-flex items-center justify-center gap-3 w-full rounded-full border border-[#E8E4DC] bg-white px-6 py-4 text-[15px] text-[#1A1A18] hover:border-[#C4A87C] hover:shadow-md transition-all duration-200 min-h-[56px]"
                     style={{ fontFamily: 'var(--font-body)', fontWeight: 500 }}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -178,8 +180,8 @@ export default function Login() {
                   </a>
 
                   <p
-                    className="text-[12px] text-[#726D63] mt-5 text-center leading-relaxed"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                    className="text-[13px] text-pa-stone mt-5 text-center leading-relaxed"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                   >
                     {t('login.terms', 'By signing in you agree to our Privacy Policy and Terms of Service.')}
                   </p>
@@ -196,11 +198,11 @@ export default function Login() {
                       return (
                         <div key={i} className="flex gap-4">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F5F1EB]">
-                            <Icon size={16} className="text-[#8B7355]" />
+                            <Icon size={16} className="text-pa-gold-aa" />
                           </div>
                           <div>
-                            <p className="text-[14px] text-[#1A1A18] mb-0.5" style={{ fontWeight: 500 }}>{b.title}</p>
-                            <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{b.sub}</p>
+                            <p className="text-[15px] text-[#1A1A18] mb-0.5" style={{ fontWeight: 500 }}>{b.title}</p>
+                            <p className="text-[15px] text-pa-earth leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>{b.sub}</p>
                           </div>
                         </div>
                       );

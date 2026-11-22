@@ -204,10 +204,10 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
           <h1 className="headline-md mb-[9px] text-white">
             {t("paymentThankYou.title", { defaultValue: "Booking Confirmed" })}
           </h1>
-          <div className="text-[13px] tracking-[0.08em] text-white/50 tabular-nums">
+          <div className="text-[15px] tracking-[0.08em] text-white/50 tabular-nums">
             {data.confirmationCode}
           </div>
-          <p className="mt-[22px] hidden border-t border-white/10 pt-[22px] text-[13px] leading-relaxed text-white/60 lg:block lg:max-w-[240px]">
+          <p className="mt-[22px] hidden border-t border-white/10 pt-[22px] text-[15px] leading-relaxed text-white/60 lg:block lg:max-w-[240px]">
             {t("paymentThankYou.reassurance", {
               defaultValue:
                 "A confirmation email is on its way. Your concierge will be in touch within 2 hours to help plan your stay.",
@@ -221,15 +221,15 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
             {/* Left column */}
             <div className="min-w-0">
               {data.guestEmail ? (
-                <div className="mb-[26px] rounded-lg border border-pa-sand bg-pa-warm px-[14px] py-3 text-center text-[12.5px] leading-snug text-pa-earth">
+                <div className="mb-[26px] rounded-lg border border-pa-sand bg-pa-warm px-[14px] py-3 text-center text-[13px] leading-snug text-pa-earth">
                   {t("paymentThankYou.emailSent", { defaultValue: "Confirmation email sent to" })}{" "}
                   {/* Numa visita mais tarde o recibo vem do servidor, com o email mascarado. */}
                   {data.guestEmail.includes("•") ? (
-                    <span className="font-medium text-pa-gold">{data.guestEmail}</span>
+                    <span className="font-medium text-pa-gold-aa">{data.guestEmail}</span>
                   ) : (
                     <a
                       href={`mailto:${data.guestEmail}`}
-                      className="font-medium text-pa-gold no-underline"
+                      className="font-medium text-pa-gold-aa no-underline"
                     >
                       {data.guestEmail}
                     </a>
@@ -244,7 +244,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                 {data.listingName}
               </h2>
               {data.location ? (
-                <p className="mb-[22px] text-[13px] text-pa-earth">{data.location}</p>
+                <p className="mb-[22px] text-[15px] text-pa-earth">{data.location}</p>
               ) : (
                 <div className="mb-[22px]" />
               )}
@@ -257,13 +257,13 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
 
               {data.guestName ? (
                 <div className="mt-[22px] border-b border-pa-sand pb-[22px]">
-                  <div className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-[9px]">
+                  <div className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-[9px]">
                     {t("paymentThankYou.bookedBy", { defaultValue: "Booked by" })}
                   </div>
-                  <div className="mb-0.5 text-[14.5px] font-medium text-pa-dark">
+                  <div className="mb-0.5 text-[15px] font-medium text-pa-dark">
                     {data.guestName}
                   </div>
-                  <div className="text-[12.5px] text-pa-earth">
+                  <div className="text-[13px] text-pa-earth">
                     {[data.guestEmail, data.guestPhone].filter(Boolean).join(" · ")}
                   </div>
                 </div>
@@ -274,11 +274,11 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
             <div className="mt-[22px] min-w-0 lg:mt-0">
               {/* Price summary */}
               <div className="rounded-lg bg-pa-warm px-[18px] pb-4 pt-[18px]">
-                <div className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-[14px]">
+                <div className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-[14px]">
                   {t("paymentThankYou.priceSummary", { defaultValue: "Price summary" })}
                 </div>
                 {hasBreakdown ? (
-                  <div className="mb-2.5 flex items-baseline justify-between text-[13.5px] text-pa-earth">
+                  <div className="mb-2.5 flex items-baseline justify-between text-[15px] text-pa-earth">
                     <span>
                       {t("paymentThankYou.nights", {
                         count: data.nights,
@@ -291,7 +291,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                   </div>
                 ) : null}
                 {data.cleaningFeeCents != null ? (
-                  <div className="mb-2.5 flex items-baseline justify-between text-[13.5px] text-pa-earth">
+                  <div className="mb-2.5 flex items-baseline justify-between text-[15px] text-pa-earth">
                     <span>
                       {t("paymentThankYou.cleaning", { defaultValue: "Final cleaning" })}
                     </span>
@@ -301,7 +301,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                   </div>
                 ) : null}
                 <div className="flex items-baseline justify-between border-t border-pa-sand pt-[13px]">
-                  <span className="text-[15px] font-medium text-pa-dark">
+                  <span className="text-[16px] font-medium text-pa-dark">
                     {data.paymentPlan
                       ? t("paymentThankYou.plan.paidToday", { defaultValue: "Paid today" })
                       : t("paymentThankYou.totalPaid", { defaultValue: "Total paid" })}
@@ -314,7 +314,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                     server-side like its rate card); unknown code → "the terms of
                     your rate" + a link. Hidden while it is still being read. */}
                 {!data.policyPending && (
-                  <div className="mt-[11px] flex items-center gap-1.5 text-[11.5px] text-pa-earth">
+                  <div className="mt-[11px] flex items-center gap-1.5 text-[13px] text-pa-earth">
                     <Clock className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
                     <CancellationPolicyLine
                       as="span"
@@ -333,7 +333,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                   {method === "klarna" ? <KlarnaLogo /> : method === "card" ? <CardLogo /> : <PayPalLogo />}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-[13.5px] font-medium text-pa-dark">
+                  <div className="text-[15px] font-medium text-pa-dark">
                     {method === "klarna"
                       ? t("paymentThankYou.paidKlarna", { defaultValue: "Paying with Klarna" })
                       : method === "card"
@@ -342,7 +342,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                           : t("paymentThankYou.paidCard", { defaultValue: "Paid in full by card" })
                         : t("paymentThankYou.paidPaypal", { defaultValue: "Paid in full with PayPal" })}
                   </div>
-                  <div className="mt-0.5 text-[11.5px] tabular-nums text-pa-earth">
+                  <div className="mt-0.5 text-[13px] tabular-nums text-pa-earth">
                     {method === "klarna"
                       ? t("paymentThankYou.klarnaSub", { defaultValue: "Interest-free instalments" })
                       : method === "card"
@@ -350,7 +350,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                         : `PayPal · ${data.guestEmail || ""}`}
                   </div>
                 </div>
-                <div className="whitespace-nowrap text-[14.5px] font-medium tabular-nums text-pa-dark">
+                <div className="whitespace-nowrap text-[15px] font-medium tabular-nums text-pa-dark">
                   {formatEurCents(totalPaidCents, lang)}
                 </div>
               </div>
@@ -359,14 +359,14 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
               {/* Pagamento em duas partes: o plano, em claro (spec 4.1, ponto 7) */}
               {data.paymentPlan && (
                 <div className="mt-[14px] rounded-lg border border-pa-sand bg-pa-warm px-4 py-3.5">
-                  <div className="text-[13.5px] font-medium text-pa-dark">
+                  <div className="text-[15px] font-medium text-pa-dark">
                     {t("paymentThankYou.plan.title", { defaultValue: "Your payment plan" })}
                   </div>
-                  <div className="mt-2 flex items-baseline justify-between text-[13px] text-pa-dark">
+                  <div className="mt-2 flex items-baseline justify-between text-[15px] text-pa-dark">
                     <span>{t("paymentThankYou.plan.paidToday", { defaultValue: "Paid today" })}</span>
                     <span className="tabular-nums">{formatEurCents(totalPaidCents, lang)}</span>
                   </div>
-                  <div className="mt-1 flex items-baseline justify-between text-[13px] text-pa-dark">
+                  <div className="mt-1 flex items-baseline justify-between text-[15px] text-pa-dark">
                     <span>
                       {t("paymentThankYou.plan.scheduled", {
                         date: new Intl.DateTimeFormat(lang === "pt" ? "pt-PT" : lang, { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Lisbon" }).format(new Date(data.paymentPlan.chargeAt)),
@@ -375,7 +375,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                     </span>
                     <span className="tabular-nums">{formatEurCents(data.paymentPlan.amountLaterCents, lang)}</span>
                   </div>
-                  <p className="mt-2 text-[11.5px] leading-snug text-pa-earth">
+                  <p className="mt-2 text-[13px] leading-snug text-pa-earth">
                     {t("paymentThankYou.plan.scheduledSubNoCard", { defaultValue: "Charged automatically to the same card. Nothing to do." })}{" "}
                     {t("paymentThankYou.plan.reminder", { defaultValue: "We will remind you by email a week before and the day before." })}{" "}
                     {t("paymentThankYou.plan.manageInEmail", { defaultValue: "To pay earlier, use another card or cancel, use \"Manage payment\" in your confirmation email." })}
@@ -392,7 +392,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                   defaultValue: "Need Help? Talk With Your Concierge",
                 })}
               </a>
-              <p className="mt-3 text-center text-[11.5px] leading-relaxed text-pa-earth">
+              <p className="mt-3 text-center text-[13px] leading-relaxed text-pa-earth">
                 {t("paymentThankYou.ctaNote", {
                   defaultValue:
                     "Your dedicated concierge will reach out within 2 hours to help plan your stay.",
@@ -405,18 +405,18 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
 
       {/* Trust badges */}
       <div className="mx-auto mt-[26px] grid max-w-[420px] grid-cols-2 gap-x-6 gap-y-3.5 md:grid-cols-4 lg:max-w-[1080px]">
-        <TrustItem icon={<Lock className="h-[15px] w-[15px] text-pa-gold md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
+        <TrustItem icon={<Lock className="h-[15px] w-[15px] text-pa-gold-aa md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
           {t("paymentThankYou.trustSecure", { defaultValue: "Secure booking" })}
         </TrustItem>
-        <TrustItem icon={<ShieldCheck className="h-[15px] w-[15px] text-pa-gold md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
+        <TrustItem icon={<ShieldCheck className="h-[15px] w-[15px] text-pa-gold-aa md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
           <Link href="/best-rate-guarantee" className="underline-offset-2 hover:underline">
             {t("paymentThankYou.trustRate", { defaultValue: "Best rate guaranteed" })}
           </Link>
         </TrustItem>
-        <TrustItem icon={<BadgeCheck className="h-[15px] w-[15px] text-pa-gold md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
+        <TrustItem icon={<BadgeCheck className="h-[15px] w-[15px] text-pa-gold-aa md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
           {t("paymentThankYou.trustFees", { defaultValue: "No booking fees" })}
         </TrustItem>
-        <TrustItem icon={<Headphones className="h-[15px] w-[15px] text-pa-gold md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
+        <TrustItem icon={<Headphones className="h-[15px] w-[15px] text-pa-gold-aa md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
           {t("paymentThankYou.trustConcierge", { defaultValue: "Concierge included" })}
         </TrustItem>
       </div>
@@ -427,17 +427,17 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
 function MetaItem({ k, v }: { k: string; v: string }) {
   return (
     <div>
-      <div className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-[7px]">
+      <div className="text-[12px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-[7px]">
         {k}
       </div>
-      <div className="text-[14.5px] font-medium tabular-nums text-pa-dark lg:text-[16px]">{v}</div>
+      <div className="text-[15px] font-medium tabular-nums text-pa-dark lg:text-[16px]">{v}</div>
     </div>
   );
 }
 
 function TrustItem({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2.5 text-[12px] text-pa-earth md:flex-col md:gap-1.5 md:text-center">
+    <div className="flex items-center gap-2.5 text-[13px] text-pa-earth md:flex-col md:gap-1.5 md:text-center">
       {icon}
       {children}
     </div>

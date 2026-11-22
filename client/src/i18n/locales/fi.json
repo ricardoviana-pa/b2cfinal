@@ -185,7 +185,8 @@
     "unavailableHint": "Nämä kodit voivat olla saatavilla muina päivinä. Kysy conciergeltamme vaihtoehtoja.",
     "fromTotal": "Alkaen {{price}} koko majoitukselta",
     "metaTitle": "Huvilat ja Lomakodit Portugalissa",
-    "metaDescription": "Selaa {{homes}} luksushuvilaa ja lomakotia Minhossa, Portossa, Lissabonissa, Alentejossa ja Algarvessa. Suodata kohteen ja vieraiden mukaan. Varaa suoraan."
+    "metaDescription": "Selaa {{homes}} luksushuvilaa ja lomakotia Minhossa, Portossa, Lissabonissa, Alentejossa ja Algarvessa. Suodata kohteen ja vieraiden mukaan. Varaa suoraan.",
+    "showMore": "Näytä lisää"
   },
   "property": {
     "bedrooms": "Makuuhuoneet",
@@ -602,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "EVÄSTEASETUKSET",
-    "description": "Välttämättömät evästeet mahdollistavat sivuston käytön ja varaamisen. Luvallasi käytämme myös analytiikka- ja mainosevästeitä. Tämä sisältää OpenAI Ads -mittauksen.",
+    "description": "Välttämättömät evästeet mahdollistavat sivuston käytön ja varaamisen. Luvallasi käytämme myös analytiikka- ja mainosevästeitä. Tämä sisältää OpenAI Ads ‑mittauksen.",
     "essential": "Välttämättömät evästeet",
     "essentialDesc": "Vaaditaan sivuston perustoiminnalle ja turvallisuudelle. Niitä ei voi poistaa käytöstä.",
     "analytics": "Analytiikkaevästeet",
@@ -629,7 +630,7 @@
     "heroGuarantee": "Ei varausmaksuja. Paras hinta taattu. Concierge vastaa 2 tunnin kuluessa.",
     "proofHotels": "{{homes}} huvilaa ja lomakotia",
     "proofRating": "4.8★ vierasarvio",
-    "heroAlt": "Yksityinen tenniskenttä ja Mirante 1 -huvila Albufeiran yläpuolella Algarvessa",
+    "heroAlt": "Carcavelos Manor Housen uima-allas, puutarha ja kartano Vila Verdessä Minhossa",
     "searchDestination": "Kohde",
     "searchMinhoCoast": "Minhon rannikko",
     "searchPortoDouro": "Porto ja Douro",
@@ -1853,7 +1854,7 @@
         "name": "Henkilökohtainen vastaanotto",
         "desc": "Isäntä ottaa sinut vastaan, esittelee talon ja laittaa kaiken valmiiksi."
       },
-      "lateNote": "Klo {{hour}} jälkeen: {{price}}."
+      "lateNote": "Klo {{hour}} jälkeen: {{price}}."
     },
     "seeAll": "Näytä kaikki palvelut",
     "seeAllExperiences": "Näytä kaikki elämykset",

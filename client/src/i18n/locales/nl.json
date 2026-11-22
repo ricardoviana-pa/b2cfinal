@@ -185,7 +185,8 @@
     "unavailableHint": "Deze huizen zijn mogelijk op andere data beschikbaar. Vraag onze concierge naar alternatieven.",
     "fromTotal": "Vanaf {{price}} voor het verblijf",
     "metaTitle": "Villa's Huren & Vakantiehuizen in Portugal",
-    "metaDescription": "Ontdek {{homes}} luxevilla's en vakantiehuizen in Minho, Porto, Lissabon, Alentejo en de Algarve. Filter op bestemming en gasten. Boek direct."
+    "metaDescription": "Ontdek {{homes}} luxevilla's en vakantiehuizen in Minho, Porto, Lissabon, Alentejo en de Algarve. Filter op bestemming en gasten. Boek direct.",
+    "showMore": "Meer tonen"
   },
   "property": {
     "bedrooms": "Slaapkamers",
@@ -602,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "COOKIEVOORKEUREN",
-    "description": "Noodzakelijke cookies maken browsen en boeken mogelijk. Met je toestemming gebruiken we ook cookies voor analyse en advertenties. Dit omvat metingen met OpenAI Ads.",
+    "description": "Noodzakelijke cookies maken browsen en boeken mogelijk. Met je toestemming gebruiken we ook cookies voor analyse en advertenties. Dit omvat metingen met OpenAI Ads.",
     "essential": "Essentiële Cookies",
     "essentialDesc": "Vereist voor basisfunctionaliteit en beveiliging van de site. Kan niet worden uitgeschakeld.",
     "analytics": "Analytische Cookies",
@@ -629,7 +630,7 @@
     "heroGuarantee": "Geen boekingskosten. Beste prijs gegarandeerd. Concierge-reactie binnen 2 uur.",
     "proofHotels": "{{homes}} villa's en vakantiehuizen",
     "proofRating": "4.8★ gastenbeoordeling",
-    "heroAlt": "Privétennisbaan en villa van Mirante 1, boven Albufeira in de Algarve",
+    "heroAlt": "Zwembad, tuinen en landhuis van Carcavelos Manor House in Vila Verde, in de Minho",
     "searchDestination": "Bestemming",
     "searchMinhoCoast": "Minho-kust",
     "searchPortoDouro": "Porto en Douro",
@@ -1358,7 +1359,7 @@
     "bookExperience": "Deze ervaring boeken",
     "whatsappSubtitle": "Stuur ons concierge-team rechtstreeks een bericht. We reageren doorgaans binnen enkele minuten.",
     "chatOnWhatsApp": "Chatten via WhatsApp",
-    "whatsappNote": "Dagelijks van 9 tot 21 uur (tijd van Lissabon)"
+    "whatsappNote": "Dagelijks van 9 tot 21 uur (tijd van Lissabon)"
   },
   "bedConfig": {
     "notAvailable": "Bedconfiguratie niet beschikbaar"

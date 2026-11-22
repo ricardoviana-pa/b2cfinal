@@ -66,22 +66,22 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-[#E8E4DC]">
         {/* Aggregate */}
         <div>
-          <p className="text-[10px] tracking-[0.12em] uppercase text-[#8B7355] font-medium mb-3">
+          <p className="text-[12px] tracking-[0.12em] uppercase text-pa-gold-aa font-medium mb-3">
             Guest rating
           </p>
           <div className="flex items-baseline gap-3 mb-2">
             <span className="font-display text-[52px] leading-none text-[#1A1A18]">
               {avgValue.toFixed(1)}
             </span>
-            <span className="text-[14px] text-[#726D63]" style={{ fontWeight: 300 }}>
+            <span className="text-[15px] text-pa-stone" style={{ fontWeight: 400 }}>
               / 5
             </span>
           </div>
-          <p className="text-[13px] text-[#6B6860] italic mb-1" style={{ fontWeight: 300 }}>
+          <p className="text-[15px] text-pa-earth italic mb-1" style={{ fontWeight: 400 }}>
             {totalCount} guest reviews
           </p>
           {aggregate?.rank && (
-            <p className="text-[11px] tracking-[0.04em] text-[#8B7355] mt-3">
+            <p className="text-[13px] tracking-[0.04em] text-pa-gold-aa mt-3">
               {aggregate.rank}
             </p>
           )}
@@ -89,7 +89,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
 
         {/* Breakdown bars */}
         <div className="md:col-span-2">
-          <p className="text-[10px] tracking-[0.12em] uppercase text-[#8B7355] font-medium mb-4">
+          <p className="text-[12px] tracking-[0.12em] uppercase text-pa-gold-aa font-medium mb-4">
             Rating distribution
           </p>
           <div className="space-y-2">
@@ -98,8 +98,8 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
               const breakdownTotal = breakdown.reduce((s, c) => s + c, 0) || 1;
               const pct = (count / breakdownTotal) * 100;
               return (
-                <div key={stars} className="flex items-center gap-3 text-[12px]">
-                  <span className="w-6 text-[#6B6860] tabular-nums" style={{ fontWeight: 300 }}>
+                <div key={stars} className="flex items-center gap-3 text-[13px]">
+                  <span className="w-6 text-pa-earth tabular-nums" style={{ fontWeight: 400 }}>
                     {stars}
                   </span>
                   <div className="flex-1 h-[3px] bg-[#E8E4DC]">
@@ -108,7 +108,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="w-8 text-right text-[#726D63] tabular-nums" style={{ fontWeight: 300 }}>
+                  <span className="w-8 text-right text-pa-stone tabular-nums" style={{ fontWeight: 400 }}>
                     {count}
                   </span>
                 </div>
@@ -123,8 +123,8 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
         <select
           value={sort}
           onChange={e => setSort(e.target.value as SortKey)}
-          className="text-[12px] bg-transparent border border-[#E8E4DC] px-4 py-2 text-[#1A1A18] focus:border-[#1A1A18] focus:outline-none cursor-pointer"
-          style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+          className="text-[13px] bg-transparent border border-[#E8E4DC] rounded-lg px-4 py-2 text-[#1A1A18] focus:border-[#1A1A18] focus:outline-none cursor-pointer"
+          style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
         >
           <option value="recent">Most recent</option>
           <option value="highest">Highest rated</option>
@@ -136,33 +136,33 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
         {filtered.slice(0, limit).map((r, i) => (
           <article key={i} className="border-l-[1.5px] border-[#8B7355] pl-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-[#F5F1EB] flex items-center justify-center text-[13px] text-[#8B7355] font-medium">
+              <div className="w-10 h-10 rounded-full bg-[#F5F1EB] flex items-center justify-center text-[15px] text-pa-gold-aa font-medium">
                 {r.author.split(' ').map(n => n[0]).slice(0, 2).join('')}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <p className="text-[13px] font-medium text-[#1A1A18] truncate">{r.author}</p>
+                  <p className="text-[15px] font-medium text-[#1A1A18] truncate">{r.author}</p>
                   {r.countryCode && FLAG_MAP[r.countryCode] && (
-                    <span className="text-[13px]">{FLAG_MAP[r.countryCode]}</span>
+                    <span className="text-[15px]">{FLAG_MAP[r.countryCode]}</span>
                   )}
                 </div>
-                <p className="text-[11px] text-[#726D63]">
+                <p className="text-[13px] text-pa-stone">
                   {formatSiteDate(r.date, i18n.language, { month: 'short', year: 'numeric' })}
                 </p>
               </div>
-              <span className="text-[13px] italic text-[#8B7355] shrink-0">
+              <span className="text-[15px] italic text-pa-gold-aa shrink-0">
                 {r.rating.toFixed(1)}/5
               </span>
             </div>
-            <p className="text-[14px] text-[#1A1A18] leading-relaxed mb-3" style={{ fontWeight: 300 }}>
+            <p className="text-[15px] text-[#1A1A18] leading-relaxed mb-3" style={{ fontWeight: 400 }}>
               "{r.text}"
             </p>
             {r.hostResponse && (
               <div className="mt-3 pl-4 border-l border-[#E8E4DC]">
-                <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-1">
+                <p className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium mb-1">
                   Response from Portugal Active
                 </p>
-                <p className="text-[13px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+                <p className="text-[15px] text-pa-earth" style={{ fontWeight: 400 }}>
                   {r.hostResponse}
                 </p>
               </div>
@@ -175,7 +175,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
         <div className="text-center">
           <button
             onClick={() => setLimit(l => l + 6)}
-            className="pa-action text-[11px] tracking-[0.12em] uppercase text-[#1A1A18] border border-[#1A1A18] px-8 py-3.5 hover:bg-[#1A1A18] hover:text-white transition-colors"
+            className="pa-action text-[12px] tracking-[0.12em] uppercase text-[#1A1A18] border border-[#1A1A18] px-8 py-3.5 hover:bg-[#1A1A18] hover:text-white transition-colors"
           >
             Show more reviews
           </button>

@@ -5,6 +5,7 @@
 
 import type { ExperienceItineraryStep } from '@/lib/types';
 import { MapPin, Mountain, Waves, UtensilsCrossed, Car, Info, Anchor, Bike, Camera, ArrowDown } from 'lucide-react';
+import { keepDashes, keepHyphens } from '@/lib/format';
 
 const ICON_MAP: Record<NonNullable<ExperienceItineraryStep['icon']>, typeof MapPin> = {
   pickup: Car,
@@ -38,29 +39,29 @@ export default function ExperienceItinerary({ steps }: ExperienceItineraryProps)
             <div key={step.stepNumber} className="relative flex gap-6 items-start">
               {/* Icon node */}
               <div className="relative shrink-0 w-10 h-10 rounded-full bg-[#F5F1EB] border border-[#E8E4DC] flex items-center justify-center z-10">
-                <Icon className="w-4 h-4 text-[#8B7355]" />
+                <Icon className="w-4 h-4 text-pa-gold-aa" />
               </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0 pt-1">
                 <div className="flex items-baseline gap-3 mb-1.5">
-                  <span className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium">
+                  <span className="text-[12px] tracking-[0.08em] uppercase text-pa-stone font-medium">
                     Stop {step.stepNumber}
                   </span>
                   {step.time && (
                     <>
                       <span className="text-[#E8E4DC]">·</span>
-                      <span className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium">
+                      <span className="text-[12px] tracking-[0.08em] uppercase text-pa-gold-aa font-medium">
                         {step.time}
                       </span>
                     </>
                   )}
                 </div>
                 <h3 className="text-[18px] font-display text-[#1A1A18] mb-1.5">
-                  {step.title}
+                  {keepHyphens(step.title)}
                 </h3>
-                <p className="text-[14px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                  {step.description}
+                <p className="text-[15px] text-pa-earth leading-relaxed" style={{ fontWeight: 400 }}>
+                  {keepDashes(keepHyphens(step.description))}
                 </p>
               </div>
             </div>

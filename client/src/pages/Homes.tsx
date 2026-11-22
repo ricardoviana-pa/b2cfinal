@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
-import { getDisplayName } from '@/lib/format';
+import { formatBookingDate, getDisplayName, keepSeparators } from '@/lib/format';
 import { propertyTripHref } from '@shared/editorialTripContext';
 import { Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +32,8 @@ import { canPromiseFreeCancellation } from '@/lib/listingReassurance';
 import { conciergeWhatsAppHref, listingWhatsAppMessage } from '@/lib/whatsappMessage';
 import { parseHomeFacets, matchesFacets, matchesBudget, nightlyRate, countFacetOptions, activeFacetCount, FACET_PARAM_KEYS, FEATURE_KEYS, type FeatureKey } from '@/lib/homeFacets';
 import HomesFilterRail, { type CatalogueView, type FilterToken } from '@/components/homes/HomesFilterRail';
-import { openDatePickerWithin } from '@/lib/datePicker';
+import { useDateRangePicker } from '@/components/booking/useDateRangePicker';
+import SearchDatesPicker, { SearchDateCell, useSearchDatesReady } from '@/components/booking/SearchDatesPicker';
 import { propertyCatalogId, pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -55,6 +56,9 @@ interface LiveQuote {
   available?: boolean;
   feesKnown?: boolean;
 }
+
+/** Cards added to the grid by each "show more". */
+const HOMES_PAGE_SIZE = 12;
 
 export default function Homes() {
   const measurementAllowed = useMeasurementConsent();
@@ -81,7 +85,6 @@ export default function Homes() {
   // The same destination choices as the homepage hero (regions first, with
   // their number of homes; then municipalities under their region).
   const { model: destinationModel, localities } = useDestinationOptions(propsData as Property[] | undefined);
-  const cityOptions = <DestinationOptions model={destinationModel} />;
   // "From €X" per card (lowest real bookable nightly), when no dates are picked.
   const fromListingIds = useMemo(
     () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
@@ -153,6 +156,8 @@ export default function Homes() {
   const setSort = (v: SortOption) => updateFilter('sort', v);
   const [bookingDestination, setBookingDestination] = useState(searchDestinationFromUrl);
   const [bookingLocation, setBookingLocation] = useState(searchLocationFromUrl);
+  // The picker's lines: the regions, plus the municipality of an older link when one is active.
+  const cityOptions = <DestinationOptions model={destinationModel} current={bookingLocation} localities={localities} />;
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
   const [bookingCheckout, setBookingCheckout] = useState(searchCheckout);
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);
@@ -167,7 +172,12 @@ export default function Homes() {
   // render between a date change and the fetch starting — counts would read
   // "0 com disponibilidade confirmada" (auditoria set/2026).
   const [quotesFor, setQuotesFor] = useState('');
-  const [showAll, setShowAll] = useState(false);
+  // Twelve homes at a time, every one with its photo (decisão E11 do Ricardo,
+  // 20 nov 2026): the grid showed twelve cards and then the other 76 as a
+  // list of names. "Show more" adds twelve; the list of names of the homes
+  // not yet on screen moved to the end of the page, where it keeps every home
+  // one link away from the catalogue in the served HTML.
+  const [visibleCount, setVisibleCount] = useState(HOMES_PAGE_SIZE);
   const utils = trpc.useUtils();
   // Quotes, partner prices and the search hint answer the submitted search
   // (the URL), or 2 guests when it names none. The stepper above is picker
@@ -219,6 +229,27 @@ export default function Homes() {
   );
   const checkInRef = useRef<HTMLInputElement>(null);
   const checkOutRef = useRef<HTMLInputElement>(null);
+  /* The same calendar as on a home's page and on the homepage search
+     (SearchDatesPicker). The bar exists twice in the page (computer and
+     phone layouts), so each layout has its own open/close state. */
+  const calendarReady = useSearchDatesReady();
+  const desktopDates = useDateRangePicker(!!bookingCheckin);
+  const mobileDates = useDateRangePicker(!!bookingCheckin);
+  const desktopBarRef = useRef<HTMLDivElement>(null);
+  const mobileBarRef = useRef<HTMLDivElement>(null);
+  const setNativeCheckin = (value: string) => {
+    setBookingCheckin(value);
+    if (bookingCheckout && bookingCheckout <= value) setBookingCheckout('');
+  };
+  const setSearchDates = (next: { checkIn: string; checkOut: string }) => {
+    setBookingCheckin(next.checkIn);
+    setBookingCheckout(next.checkOut);
+  };
+  const shownDate = (iso: string) => (iso ? formatBookingDate(iso, i18n.language, true) : '');
+  // The computer's one-line bar shows day and month ("22 Sept"): with the
+  // year a date at 15 px did not fit its cell in any language and was cut to
+  // "22 Sept 2…". The year is in the calendar that opens and in the accessible name.
+  const shownDateShort = (iso: string) => (iso ? formatBookingDate(iso, i18n.language) : '');
 
   const today = useMemo(() => new Date().toISOString().split('T')[0], []);
   const minCheckOut = useMemo(() => {
@@ -494,18 +525,31 @@ export default function Homes() {
 
   const catalogueIntro = (
       <section className="container pt-24 md:pt-28 pb-4 md:pb-5">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-          <div className="min-w-0 lg:shrink-0">
-            <h1 className="headline-lg text-pa-dark break-words">{collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title')}</h1>
+        {/* Title and search bar side by side only from 1280 px: between 1024
+            and 1280 the bar did not fit beside the intro and its SEARCH button
+            ran off the screen (auditoria de formatação, 20 nov 2026). The bar
+            is 760 px wide at every computer width, as it was a fixed 648 px
+            before: as wide as its contents, it narrowed when a date replaced
+            "Check-in", slid to the right and took the open calendar with it,
+            under the pointer. The destination takes what the dates leave.
+            A collection's title is long ("Together, 12+ guests · Portugal"):
+            it keeps the bar under it at every width. */}
+        <div className={`flex flex-col gap-5 ${collection ? '' : 'xl:flex-row xl:items-end xl:justify-between xl:gap-10'}`}>
+          <div className="min-w-0 xl:flex-1">
+            {/* Beside the 760 px bar the title column has 400 px: from 1280 px
+                the title keeps the 44.8 px it has at 1280 (at 48 px "Os nossos
+                alojamentos." broke in two at 1440). */}
+            <h1 className={`headline-lg text-pa-dark break-words ${collection ? '' : 'xl:text-[2.8rem]'}`}>{keepSeparators(collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title'))}</h1>
             <p className="body-sm text-pa-stone mt-1.5 max-w-lg">{t('conversion.homesIntro')}</p>
           </div>
           {/* Desktop — pill (same as homepage) */}
-          <div className="hidden lg:block w-full lg:max-w-[760px] lg:flex-1">
+          <div className="hidden lg:block w-full lg:max-w-[760px] xl:w-[760px] xl:shrink-0">
             <div
+              ref={desktopBarRef}
               className="flex items-center w-full max-w-[780px] rounded-xl bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-pa-sand/60"
               style={{ height: '52px' }}
             >
-              <div className="flex-[1.4] relative h-full min-w-0">
+              <div className="flex-1 relative h-full min-w-0">
                 <select
                   aria-label={t('home.searchDestination')}
                   value={bookingLocation || (bookingDestination ? `region:${bookingDestination}` : '')}
@@ -523,40 +567,38 @@ export default function Homes() {
                 <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-pa-stone pointer-events-none" />
               </div>
               <div className="w-px h-6 bg-pa-sand shrink-0" />
-              <div
-                className="flex-1 min-w-0 h-full cursor-pointer"
-                onClick={e => openDatePickerWithin(e.currentTarget)}
-              >
-                <input
-                  ref={checkInRef}
-                  type="date"
-                  min={today}
-                  aria-label={t('home.searchCheckin')}
+              <div ref={desktopDates.containerRef} className="contents">
+                {/* As wide as their text: the arrow sits at the same distance
+                    from "Check-in" and from "Check-out", and a chosen date is
+                    never cut. The destination takes the rest of the bar. */}
+                <SearchDateCell
+                  className="flex-none h-full"
+                  textClassName="px-3.5"
+                  label={t('home.searchCheckin')}
                   value={bookingCheckin}
-                  onInput={e => { setBookingCheckin(e.currentTarget.value); if (bookingCheckout && bookingCheckout <= e.currentTarget.value) setBookingCheckout(''); }}
-                  onChange={e => {
-                    setBookingCheckin(e.target.value);
-                    if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
-                  }}
-                  className="pa-date-hit w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-pa-gold cursor-pointer"
-
+                  shown={shownDateShort(bookingCheckin)}
+                  spoken={shownDate(bookingCheckin)}
+                  min={today}
+                  ready={calendarReady}
+                  expanded={desktopDates.open && desktopDates.phase === 'check-in'}
+                  onOpen={() => desktopDates.openField('check-in')}
+                  onNativeChange={setNativeCheckin}
+                  inputRef={checkInRef}
                 />
-              </div>
-              <ArrowRight className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" aria-hidden />
-              <div
-                className="flex-1 min-w-0 h-full cursor-pointer"
-                onClick={e => openDatePickerWithin(e.currentTarget)}
-              >
-                <input
-                  ref={checkOutRef}
-                  type="date"
-                  min={minCheckOut}
-                  aria-label={t('home.searchCheckout')}
+                <ArrowRight className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" aria-hidden />
+                <SearchDateCell
+                  className="flex-none h-full"
+                  textClassName="px-3.5"
+                  label={t('home.searchCheckout')}
                   value={bookingCheckout}
-                  onInput={e => setBookingCheckout(e.currentTarget.value)}
-                  onChange={e => setBookingCheckout(e.target.value)}
-                  className="pa-date-hit w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-pa-gold cursor-pointer"
-
+                  shown={shownDateShort(bookingCheckout)}
+                  spoken={shownDate(bookingCheckout)}
+                  min={minCheckOut}
+                  ready={calendarReady}
+                  expanded={desktopDates.open && desktopDates.phase === 'check-out'}
+                  onOpen={() => desktopDates.openField('check-out')}
+                  onNativeChange={setBookingCheckout}
+                  inputRef={checkOutRef}
                 />
               </div>
               <div className="w-px h-6 bg-pa-sand shrink-0" />
@@ -566,10 +608,10 @@ export default function Homes() {
                   type="button"
                   onClick={() => changeGuests(g => Math.max(1, g - 1))}
                   disabled={bookingGuests <= 1}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold-aa disabled:opacity-30"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
-                  <Minus className="w-2.5 h-2.5" />
+                  <Minus className="w-3 h-3" />
                 </button>
                 <span className="body-sm text-pa-dark tabular-nums whitespace-nowrap font-body font-normal" >
                   {bookingGuests} <span className="text-pa-stone lowercase">{t('home.searchGuests')}</span>
@@ -578,10 +620,10 @@ export default function Homes() {
                   type="button"
                   onClick={() => changeGuests(g => Math.min(30, g + 1))}
                   disabled={bookingGuests >= 30}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold-aa disabled:opacity-30"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
-                  <Plus className="w-2.5 h-2.5" />
+                  <Plus className="w-3 h-3" />
                 </button>
               </div>
               <button
@@ -598,7 +640,7 @@ export default function Homes() {
         </div>
           {/* Mobile — card stack (homepage style), then filter row */}
           <div className="lg:hidden mt-5">
-            <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-pa-sand/80 p-4 space-y-3">
+            <div ref={mobileBarRef} className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-pa-sand/80 p-4 space-y-3">
               <div className="relative">
                 <select
                   aria-label={t('home.searchDestination')}
@@ -616,60 +658,56 @@ export default function Homes() {
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pa-stone pointer-events-none" />
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div
-                  className="relative"
-                  onClick={e => openDatePickerWithin(e.currentTarget)}
-                >
-                  <input
-                    type="date"
-                    min={today}
-                    aria-label={t('home.searchCheckin')}
+              <div ref={mobileDates.containerRef} className="grid grid-cols-2 gap-2">
+                <SearchDateCell
+                  className="h-[48px] rounded-lg border border-pa-sand bg-white"
+                  textClassName="px-3 text-base"
+                  label={t('home.searchCheckin')}
                   value={bookingCheckin}
-                  onInput={e => { setBookingCheckin(e.currentTarget.value); if (bookingCheckout && bookingCheckout <= e.currentTarget.value) setBookingCheckout(''); }}
-                    onChange={e => {
-                      setBookingCheckin(e.target.value);
-                      if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
-                      }}
-                    className="pa-date-hit w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
-
-                  />
-                </div>
-                <div
-                  className="relative"
-                  onClick={e => openDatePickerWithin(e.currentTarget)}
-                >
-                  <input
-                    ref={checkOutRef}
-                    type="date"
-                    min={minCheckOut}
-                    aria-label={t('home.searchCheckout')}
+                  shown={shownDate(bookingCheckin)}
+                  min={today}
+                  ready={calendarReady}
+                  expanded={mobileDates.open && mobileDates.phase === 'check-in'}
+                  onOpen={() => mobileDates.openField('check-in')}
+                  onNativeChange={setNativeCheckin}
+                />
+                <SearchDateCell
+                  className="h-[48px] rounded-lg border border-pa-sand bg-white"
+                  textClassName="px-3 text-base"
+                  label={t('home.searchCheckout')}
                   value={bookingCheckout}
-                  onInput={e => setBookingCheckout(e.currentTarget.value)}
-                    onChange={e => setBookingCheckout(e.target.value)}
-                    className="pa-date-hit w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
-
-                  />
-                </div>
+                  shown={shownDate(bookingCheckout)}
+                  min={minCheckOut}
+                  ready={calendarReady}
+                  expanded={mobileDates.open && mobileDates.phase === 'check-out'}
+                  onOpen={() => mobileDates.openField('check-out')}
+                  onNativeChange={setBookingCheckout}
+                />
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-pa-sand bg-white px-3">
+                <div className="flex items-center gap-2 flex-1 min-w-0 h-[48px] rounded-lg border border-pa-sand bg-white px-3">
                   <Users className="w-4 h-4 text-pa-stone shrink-0" aria-hidden />
                   <button
                     type="button"
                     onClick={() => changeGuests(g => Math.max(1, g - 1))}
                     disabled={bookingGuests <= 1}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
                     aria-label={t('home.decreaseGuests', 'Decrease guests')}
                   >
                     <Minus className="w-3 h-3" />
                   </button>
-                  <span className="body-sm text-pa-dark tabular-nums flex-1 text-center">{bookingGuests} {t('home.searchGuests')}</span>
+                  {/* The word shows only where it fits between the two round
+                      buttons, in whatever language (the people icon says what
+                      the number counts): the label is one line tall and the
+                      word, when it has no room beside the number, wraps to a
+                      second line that is not shown. A fixed breakpoint was
+                      right for English and 8 px short for "Voyageurs". */}
+                  <span className="body-sm text-base leading-6 text-pa-dark tabular-nums flex h-6 min-w-0 flex-1 flex-wrap justify-center gap-x-1 overflow-hidden px-1"><span>{bookingGuests}</span><span>{t('home.searchGuests')}</span></span>
                   <button
                     type="button"
                     onClick={() => changeGuests(g => Math.min(30, g + 1))}
                     disabled={bookingGuests >= 30}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
                     aria-label={t('home.increaseGuests', 'Increase guests')}
                   >
                     <Plus className="w-3 h-3" />
@@ -686,6 +724,8 @@ export default function Homes() {
               </div>
             </div>
           </div>
+          <SearchDatesPicker picker={desktopDates} anchorRef={desktopBarRef} checkIn={bookingCheckin} checkOut={bookingCheckout} onChange={setSearchDates} />
+          <SearchDatesPicker picker={mobileDates} anchorRef={mobileBarRef} checkIn={bookingCheckin} checkOut={bookingCheckout} onChange={setSearchDates} />
 
       </section>
   );
@@ -997,7 +1037,7 @@ export default function Homes() {
           {availableProperties.length > 0 && (
             <>
               <div className={`grid grid-cols-1 gap-6 md:grid-cols-2 ${showMap ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} md:gap-x-6 md:gap-y-10`}>
-                {(showAll ? availableProperties : availableProperties.slice(0, 12)).map((property, index) => (
+                {availableProperties.slice(0, visibleCount).map((property, index) => (
                   <div
                     key={property.id}
                     className="w-full"
@@ -1037,39 +1077,19 @@ export default function Homes() {
                   </div>
                 ))}
               </div>
-              {!showAll && availableProperties.length > 12 && (
-                <div className="flex justify-center mt-8">
+              {availableProperties.length > visibleCount && (
+                <div className="flex flex-col items-center gap-2 mt-10">
                   <button
-                    onClick={() => setShowAll(true)}
-                    className="pa-action px-6 py-3 border border-pa-sand rounded-full body-sm font-medium text-pa-dark hover:bg-pa-warm transition-colors"
+                    type="button"
+                    onClick={() => setVisibleCount((n) => n + HOMES_PAGE_SIZE)}
+                    className="btn-ghost"
                   >
-                    {t('homes.showAll', 'Show all properties')} ({availableProperties.length})
+                    {t('homes.showMore', 'Show more')}
                   </button>
+                  <p className="caption text-pa-stone tabular-nums" aria-live="polite">
+                    {Math.min(visibleCount, availableProperties.length)} / {availableProperties.length}
+                  </p>
                 </div>
-              )}
-              {/* The grid shows 12 cards until "show all"; the rest are named
-                  here as plain links, so every home has a crawlable path from
-                  the catalogue in the served HTML (only 12 of 93 did,
-                  auditoria set/2026). Gone once the full grid is open. */}
-              {!showAll && availableProperties.length > 12 && (
-                <nav aria-labelledby="more-homes-index" className="mt-10 border-t border-pa-sand pt-6">
-                  <h2 id="more-homes-index" className="caption uppercase tracking-wider text-pa-stone mb-3">
-                    {t('homes.moreHomesIndex', 'More homes')}
-                  </h2>
-                  <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
-                    {availableProperties.slice(12).map((property) => (
-                      <li key={property.id} className="break-inside-avoid py-1">
-                        <Link
-                          href={propertyTripHref(property.slug, { checkin: searchCheckin, checkout: searchCheckout, guests: searchGuestsCount || undefined })}
-                          className="text-pa-dark underline-offset-4 hover:underline"
-                        >
-                          {getDisplayName(property)}
-                        </Link>
-                        {property.locality && <span className="text-pa-stone"> · {property.locality}</span>}
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
               )}
             </>
           )}
@@ -1180,6 +1200,35 @@ export default function Homes() {
       </section>
 
       <StayCollections />
+      {/* The homes not yet shown as cards, by name, at the end of the page:
+          every home keeps a crawlable path from the catalogue in the served
+          HTML (only 12 of 93 had one, auditoria set/2026). It shrinks as
+          "show more" brings them into the grid. */}
+      {availableProperties.length > visibleCount && (
+        <section className="bg-white border-t border-pa-sand py-10">
+          <nav aria-labelledby="more-homes-index" className="container">
+            <h2 id="more-homes-index" className="eyebrow text-pa-stone mb-4">
+              {t('homes.moreHomesIndex', 'More homes')}
+            </h2>
+            <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm text-sm">
+              {availableProperties.slice(visibleCount).map((property) => (
+                <li key={property.id} className="break-inside-avoid py-1 leading-snug text-balance">
+                  <Link
+                    href={propertyTripHref(property.slug, { checkin: searchCheckin, checkout: searchCheckout, guests: searchGuestsCount || undefined })}
+                    className="text-pa-dark underline-offset-4 hover:underline"
+                  >
+                    {getDisplayName(property)}
+                  </Link>
+                  {/* The place stays whole and stays with the last word of the
+                      name: a second line never starts with the dot and never
+                      splits "Viana do / Castelo". */}
+                  {property.locality && <>{'\u00A0'}<span className="text-pa-stone whitespace-nowrap">· {property.locality}</span></>}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </section>
+      )}
       <Footer />
       <ListingWhatsApp href={listingWhatsAppHref} context={trackContext} />
     </div>

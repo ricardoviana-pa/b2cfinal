@@ -36,7 +36,7 @@ describe('the Filters sheet takes keyboard focus', () => {
     // the site's ring is 3 px, 2 px outside the element; the row hides overflow for its rounded corners
     expect(css).toMatch(/:focus-visible \{\s*outline: 3px solid #C4A87C;\s*outline-offset: 2px;/);
     expect(strip).toMatch(/className="grid rounded-lg border border-pa-sand overflow-hidden/);
-    expect(strip).toMatch(/className=\{`flex flex-col items-center justify-center h-12 font-body transition-colors focus-visible:outline-offset-\[-3px\] /);
+    expect(strip).toMatch(/className=\{`flex min-w-0 flex-col items-center justify-center h-12 px-2\.5 font-body whitespace-nowrap transition-colors focus-visible:outline-offset-\[-3px\] /);
   });
 
   it('returnFocusTo cancels Radix’s own return (no trigger) and focuses the button without scrolling', () => {
@@ -66,7 +66,7 @@ describe('the dated-search detail line clears the List/Map pill', () => {
     expect(viewSwitch).not.toMatch(/min-h-|minHeight/);
     expect(viewSwitch).toMatch(/className="inline-flex shrink-0 items-center rounded-full border border-pa-sand bg-white p-0\.5"/);
     const pill = 44 + 2 * 2 + 2 * 1; // buttons + p-0.5 + border
-    const row = phoneRail.match(/<div className=\{`flex items-center gap-3 h-\[(\d+)px\]/);
+    const row = phoneRail.match(/<div className=\{`flex items-center gap-3 (?:max-\[379px\]:gap-2 )?h-\[(\d+)px\]/);
     expect(row, 'row height in px').not.toBeNull();
     expect(Number(row![1])).toBeGreaterThanOrEqual(pill);
   });

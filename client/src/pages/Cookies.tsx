@@ -18,7 +18,7 @@ export default function Cookies() {
       <div className="pt-28 md:pt-36 pb-16">
         <div className="container max-w-3xl mx-auto">
           <h1 className="headline-lg mb-8" style={{ color: '#1A1A18' }}>{t('cookiesPage.title')}</h1>
-          <div className="space-y-6 text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '15px', lineHeight: 1.8 }}>
+          <div className="space-y-6 text-pa-earth" style={{ fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: '15px', lineHeight: 1.8 }}>
             <p>{t('cookiesPage.lastUpdated')}</p>
 
             <h2 className="headline-sm !text-[#1A1A18] !mt-10">{t('cookiesPage.whatTitle')}</h2>
@@ -29,24 +29,24 @@ export default function Cookies() {
             <h2 className="headline-sm !text-[#1A1A18] !mt-10">{t('cookiesPage.howTitle')}</h2>
             <p>{t('cookiesPage.howBody')}</p>
 
-            <h3 className="text-[17px] font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.essentialTitle')}</h3>
+            <h3 className="text-[18px] leading-snug font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.essentialTitle')}</h3>
             <p>
               {t('cookiesPage.essentialBody')}
             </p>
 
-            <h3 className="text-[17px] font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.analyticsTitle')}</h3>
+            <h3 className="text-[18px] leading-snug font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.analyticsTitle')}</h3>
             <p>
               {t('cookiesPage.analyticsBody')}
             </p>
             {/* pa-origin (origem da visita, shared/visit-origin.ts), nas 9 línguas. */}
             <p>{t('cookiesPage.originBody')}</p>
 
-            <h3 className="text-[17px] font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.functionalTitle')}</h3>
+            <h3 className="text-[18px] leading-snug font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.functionalTitle')}</h3>
             <p>
               {t('cookiesPage.functionalBody')}
             </p>
 
-            <h3 className="text-[17px] font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.marketingTitle')}</h3>
+            <h3 className="text-[18px] leading-snug font-medium !text-[#1A1A18] mt-6">{t('cookiesPage.marketingTitle')}</h3>
             <p>
               {t('cookiesPage.marketingBody')}
             </p>

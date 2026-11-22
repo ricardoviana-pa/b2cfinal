@@ -148,7 +148,9 @@ export function isCurated(guestyId: string | undefined): boolean {
  * 29 out: booking.partnerPrices + booking.partnerCalendar); Casa do
  * Presidente and Alma da Comporta stop at 2027-03-04 and stayed out, the
  * four 20%-commission homes (Caiz, Belvedere, Laura, Rolapipas) are in.
- * Mirante 1 stays first: its tennis court is the site hero.
+ * Mirante 1 stays first: its tennis court was the site hero until 20 nov
+ * 2026, when Ricardo made Carcavelos Manor House (slot 2) the cover photo.
+ * The order of the twelve was not changed with it.
  *
  * Entries are catalogue keys (see `catalogKey`): the Guesty listingId for
  * our own homes, the `partner-<slug>` catalogue id for partner homes, which
@@ -162,8 +164,8 @@ export function isCurated(guestyId: string | undefined): boolean {
  * from the curated PLP order (lib/featuredHomes.ts).
  */
 export const HOME_FEATURED_ORDER: string[] = [
-  'partner-mirante-1', // Mirante 1 (Albufeira, Algarve) — site hero
-  '6a2ad70638d6620013badaef', // Carcavelos Manor House (Vila Verde, Minho)
+  'partner-mirante-1', // Mirante 1 (Albufeira, Algarve)
+  '6a2ad70638d6620013badaef', // Carcavelos Manor House (Vila Verde, Minho) — site hero
   'partner-casa-de-caiz', // Casa de Caiz (Douro) — 20% commission
   '69e7350685a8b000124854c5', // Alvarinho Villa 5 Suites & Heated Pool (Amarante, Porto)
   'partner-villa-belvedere', // Villa Belvedere (West Algarve) — 20% commission

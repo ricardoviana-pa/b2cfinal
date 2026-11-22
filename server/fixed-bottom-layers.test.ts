@@ -235,7 +235,10 @@ describe('P3: the footer keeps the fixed bar, the floats and the open banner cle
     expect(footer).toMatch(/<footer className="bg-\[#1A1A18\] text-white" role="contentinfo" style=\{\{ paddingBottom: FOOTER_BOTTOM_INSET \}\}>/);
   });
 
-  it('on a phone or a tablet, scrolled to the end, the last row sits above “back to top” and the WhatsApp button', () => {
+  // "Back to top" no longer shows below 1024 px (design audit, E06), so below
+  // lg the footer clears the WhatsApp button alone; the arrow's `bottom` is
+  // still checked against the button for the widths where both show.
+  it('on a phone or a tablet, scrolled to the end, the last row sits above the WhatsApp button', () => {
     const [, phoneClearance, tabletClearance] = clearanceRule!;
     // "Back to top"'s bottom is in index.css (.back-to-top), per band (P6).
     expect(backToTop).not.toMatch(/bottom:/);
@@ -251,7 +254,7 @@ describe('P3: the footer keeps the fixed bar, the floats and the open banner cle
       for (const safe of SAFE_AREAS) {
         for (const bannerH of [0, ...BANNERS.map((b) => b + safe)]) {
           const lift = cssPx(COOKIE_BANNER_LIFT, { bannerH, safe });
-          const floatsTop = Math.max(cssPx(bottom, { safe }) + size, waTop + safe) + lift;
+          const floatsTop = waTop + safe + lift;
           for (const barH of [0, ...BAR_CONTENT.map((c) => c + safe)]) {
             const lastRowBottom = cssPx(FOOTER_BOTTOM_INSET, { barH, bannerH, safe, clearance: cssPx(clearance, { safe }) }) + footerPadding;
             expect(lastRowBottom, `${bottom}: safe ${safe}, banner ${bannerH}, bar ${barH}`).toBeGreaterThanOrEqual(floatsTop + 4);

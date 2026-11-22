@@ -20,7 +20,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
           className="absolute top-4 right-4 p-1 hover:bg-[#F5F1EB] rounded-full transition-colors"
           aria-label={t('whatsapp.close')}
         >
-          <X size={20} className="text-[#726D63]" />
+          <X size={20} className="text-pa-stone" />
         </button>
 
         {/* Content */}
@@ -28,7 +28,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
           <h2 className="text-[20px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>
             {t('whatsapp.title')}
           </h2>
-          <p className="text-[14px] text-[#6B6860] leading-relaxed">
+          <p className="text-[15px] text-pa-earth leading-relaxed">
             {t('whatsapp.body')}
           </p>
         </div>
@@ -37,7 +37,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
         <div className="flex gap-3 pt-2">
           <button
             onClick={onClose}
-            className="pa-action flex-1 px-4 py-3 rounded-full border border-[#E8E4DC] text-[12px] font-medium tracking-[0.06em] uppercase text-[#6B6860] hover:border-[#726D63] hover:text-[#1A1A18] transition-colors"
+            className="pa-action flex-1 px-4 py-3 rounded-full border border-[#E8E4DC] text-[12px] font-medium tracking-[0.06em] uppercase text-pa-earth hover:border-[#726D63] hover:text-[#1A1A18] transition-colors"
           >
             {t('whatsapp.cancel')}
           </button>

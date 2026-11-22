@@ -185,7 +185,8 @@
     "unavailableHint": "Diese Häuser sind möglicherweise an anderen Daten verfügbar. Fragen Sie unseren Concierge nach Alternativen.",
     "fromTotal": "Ab {{price}} für den Aufenthalt",
     "metaTitle": "Ferienvillen & Ferienhäuser in Portugal",
-    "metaDescription": "Entdecken Sie {{homes}} Luxusvillen und Ferienhäuser in Minho, Porto, Lissabon, Alentejo und Algarve. Nach Reiseziel und Gästen filtern. Direkt buchen."
+    "metaDescription": "Entdecken Sie {{homes}} Luxusvillen und Ferienhäuser in Minho, Porto, Lissabon, Alentejo und Algarve. Nach Reiseziel und Gästen filtern. Direkt buchen.",
+    "showMore": "Mehr anzeigen"
   },
   "property": {
     "bedrooms": "Schlafzimmer",
@@ -602,7 +603,7 @@
   },
   "cookieBanner": {
     "title": "COOKIE-EINSTELLUNGEN",
-    "description": "Notwendige Cookies ermöglichen die Nutzung der Website und Buchungen. Mit Ihrer Zustimmung verwenden wir auch Analyse- und Werbe-Cookies. Dazu gehört die Messung mit OpenAI Ads.",
+    "description": "Notwendige Cookies ermöglichen die Nutzung der Website und Buchungen. Mit Ihrer Zustimmung verwenden wir auch Analyse- und Werbe-Cookies. Dazu gehört die Messung mit OpenAI Ads.",
     "essential": "Erforderliche Cookies",
     "essentialDesc": "Erforderlich für grundlegende Website-Funktionalität und Sicherheit. Können nicht deaktiviert werden.",
     "analytics": "Analyse-Cookies",
@@ -629,7 +630,7 @@
     "heroGuarantee": "Keine Buchungsgebühren. Bestpreis garantiert. Concierge-Antwort innerhalb von 2 Stunden.",
     "proofHotels": "{{homes}} Villen und Ferienhäuser",
     "proofRating": "4.8★ Gästebewertung",
-    "heroAlt": "Privater Tennisplatz und Villa des Mirante 1 oberhalb von Albufeira an der Algarve",
+    "heroAlt": "Pool, Garten und Herrenhaus von Carcavelos Manor House in Vila Verde im Minho",
     "searchDestination": "Reiseziel",
     "searchMinhoCoast": "Minho-Küste",
     "searchPortoDouro": "Porto und Douro",
@@ -1358,7 +1359,7 @@
     "bookExperience": "Dieses Erlebnis buchen",
     "whatsappSubtitle": "Schreiben Sie direkt unserem Concierge-Team. Wir antworten in der Regel innerhalb weniger Minuten.",
     "chatOnWhatsApp": "Auf WhatsApp schreiben",
-    "whatsappNote": "Täglich von 9 bis 21 Uhr (Lissabonner Zeit)"
+    "whatsappNote": "Täglich von 9 bis 21 Uhr (Lissabonner Zeit)"
   },
   "bedConfig": {
     "notAvailable": "Bettenkonfiguration nicht verfügbar"
@@ -1853,7 +1854,7 @@
         "name": "Persönlicher Empfang",
         "desc": "Ein Gastgeber empfängt Sie, zeigt das Haus und bringt alles zum Laufen."
       },
-      "lateNote": "Nach {{hour}} Uhr: {{price}}."
+      "lateNote": "Nach {{hour}} Uhr: {{price}}."
     },
     "seeAll": "Alle Services ansehen",
     "seeAllExperiences": "Alle Erlebnisse ansehen",
