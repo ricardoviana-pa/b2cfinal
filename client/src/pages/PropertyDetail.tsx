@@ -46,7 +46,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { propertyCatalogId, pushEcommerce } from '@/lib/datalayer';
-import { hasSwimmingPool } from '@/lib/homeSearch';
+import { hasHeatedPool, hasSwimmingPool } from '@/lib/homeSearch';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
 import { formatBookingDate, getDisplayName, intlLocale, formatStayEur, keepHyphens, keepDashes } from '@/lib/format';
 import { RISE_ABOVE_COOKIE_BANNER, publishBottomBarHeight, watchBookingCardUnderFloats } from '@/lib/fixedBottom';
@@ -56,6 +56,7 @@ import {
   buildBreadcrumbSchema,
 } from '@/components/seo/StructuredData';
 import { isPartnerHome } from '@shared/partnerHome';
+import heatedPoolData from '@/data/heatedPool.json';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -956,9 +957,15 @@ export default function PropertyDetail() {
   const amenityTotal = useMemo(() => amenityGroups.reduce((n, g) => n + g.items.length, 0), [amenityGroups]);
   // The translated key amenities (icons + amenityHighlight.*): the first six
   // head the page under the facts, up to ten open the amenities section.
+  // A heated pool counts by the same rule as the listing filter (the slug in
+  // heatedPool.json, or the name / tagline saying it): Guesty's amenity list
+  // has no "heated pool" tick for some homes (Villa Aura: "Outdoor pool"), so
+  // the page said "Pool" while the name says "Heated Pool".
+  const hasHeatedPoolHome = !!property && (heatedPoolData.slugs.includes(property.slug)
+    || hasHeatedPool(`${property.name} ${(property as any).tagline || ''} ${amenityItems.join(' ')}`));
   const keyAmenities = useMemo(
-    () => pickKeyAmenities(amenityItems, amenityGroups, t),
-    [amenityItems, amenityGroups, t],
+    () => pickKeyAmenities(hasHeatedPoolHome ? ['Heated pool', ...amenityItems] : amenityItems, amenityGroups, t),
+    [amenityItems, amenityGroups, t, hasHeatedPoolHome],
   );
   const bedTotal = useMemo(() => countBeds(property?.rooms), [property?.rooms]);
 

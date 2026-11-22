@@ -123,6 +123,22 @@ describe('amenities: the key features', () => {
     expect(table).not.toContain('swimmingPool');
   });
 
+  it('a heated pool and a sauna lead (Villa Aura, 22 nov 2026), and the heated pool stands for the pool', () => {
+    const aura = ['Outdoor pool', 'Sauna', 'Hot tub', 'Gym', 'Heating', 'Fireplace guards', 'BBQ grill', 'Garden or backyard'];
+    // the page adds "Heated pool" when the slug list or the name says so (Guesty has only "Outdoor pool")
+    const keys = pickKeyAmenities(['Heated pool', ...aura], categorizeAmenities(aura), t).map((a) => a.key);
+    expect(keys.slice(0, 2)).toEqual(['heatedPool', 'sauna']);
+    expect(keys).not.toContain('swimmingPool');
+    // without the heated flag the sauna still comes right after the pool
+    expect(pickKeyAmenities(aura, categorizeAmenities(aura), t).map((a) => a.key).slice(0, 2)).toEqual(['swimmingPool', 'sauna']);
+  });
+
+  it('the home page counts a heated pool by the listing filter\'s rule', () => {
+    const pdp = require('node:fs').readFileSync(require('node:path').join(__dirname, '../client/src/pages/PropertyDetail.tsx'), 'utf8');
+    expect(pdp).toContain('heatedPoolData.slugs.includes(property.slug)');
+    expect(pdp).toContain("pickKeyAmenities(hasHeatedPoolHome ? ['Heated pool', ...amenityItems] : amenityItems, amenityGroups, t)");
+  });
+
   it('pads a thin home with its own raw features, skipping the surroundings', () => {
     const raw = ['Wireless Internet', 'Cycling', 'Museums', 'Oven', 'Toaster', 'Kettle', 'Smoke detector'];
     const keys = pickKeyAmenities(raw, categorizeAmenities(raw), t);
