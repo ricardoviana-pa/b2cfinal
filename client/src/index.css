@@ -1037,14 +1037,14 @@
 .bf-hero-description { max-width: 540px; color: #fffffff2; font-size: 18px; line-height: 1.6; }
 .bf-hero-coupon { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; max-width: 100%; margin-top: 22px; padding: 12px 14px; border: 1px solid #ffffff60; border-radius: 8px; background: #1a1a18c7; text-shadow: none; }
 .bf-hero-code { display: flex; flex-direction: column; gap: 3px; color: white; }
-.bf-hero-code > span { font-size: 11px; line-height: 1.4; color: #ffffffd9; }
+.bf-hero-code > span { font-size: 12px; line-height: 1.4; color: #ffffffd9; }
 .bf-hero-code > code { font-size: 17px; font-weight: 600; letter-spacing: .04em; user-select: all; }
 .bf-hero-copy.btn-white { min-height: 44px; padding: 10px 14px; gap: 8px; border-radius: 4px; font-size: 13px; letter-spacing: 0; text-transform: none; }
 .bf-hero-copy:focus-visible { outline: 2px solid #F1DFC0; outline-offset: 4px; }
 .bf-hero-terms { max-width: 540px; margin-top: 12px; color: #ffffffe6; font-size: 12px; line-height: 1.5; }
 .bf-hero-copy-error { margin-top: 8px; color: white; font-size: 13px; line-height: 1.5; }
 @media (max-width: 479px) {
-  .bf-hero-overline { padding: 7px 10px; font-size: 11px; letter-spacing: .04em; }
+  .bf-hero-overline { padding: 7px 10px; font-size: 12px; letter-spacing: .04em; }
   .bf-hero-description { font-size: 16px; }
   .bf-hero-coupon { column-gap: 12px; padding: 10px; }
   .bf-hero-code > code { font-size: 15px; }
