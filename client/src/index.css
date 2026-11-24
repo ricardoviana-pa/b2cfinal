@@ -1153,7 +1153,7 @@
 .catalog-card-content { padding: 24px; display: flex; flex-direction: column; flex: 1; }
 .catalog-card-footer { border-top: 1px solid #E8E4DC; margin-top: 20px; padding-top: 16px; display: flex; align-items: flex-start; flex-direction: column; gap: 8px; }
 .catalog-card-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; font-size: 15px; min-height: 32px; }
-@media (max-width: 1023px) {
+@media (width < 1024px) {
   .home-hero { padding: 120px 0 32px; min-height: auto; }
   .home-hero-content { gap: 28px; }
   .home-hero-copy { max-width: 620px; }
