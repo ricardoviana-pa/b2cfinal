@@ -45,6 +45,8 @@ import { parseDestinationSelection } from '@/lib/homeSearch';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import StayCollections from '@/components/property/StayCollections';
 import { isPartnerHome } from '@shared/partnerHome';
+import { useBlackFriday2026, BLACK_FRIDAY_HERO_CODE } from '@/hooks/useBlackFriday2026';
+import { isBlackFridayListingEligible } from '@/lib/blackFridayListing';
 
 interface LiveQuote {
   total: number;
@@ -63,6 +65,11 @@ const HOMES_PAGE_SIZE = 12;
 export default function Homes() {
   const measurementAllowed = useMeasurementConsent();
   const { t, i18n } = useTranslation();
+  const blackFridayActive = useBlackFriday2026();
+  const blackFridayBadge = {
+    label: 'Black Friday',
+    description: `${t('home.blackFriday.description')} ${t('home.blackFriday.codeLabel')}: ${BLACK_FRIDAY_HERO_CODE}. ${t('home.blackFriday.terms')}`,
+  };
   usePageMeta({ title: t('homes.metaTitle'), description: t('homes.metaDescription', { homes: HOME_COUNT_LABEL }), image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
   const searchString = useSearch();
@@ -1061,6 +1068,7 @@ export default function Homes() {
                   >
                     <PropertyCard
                       property={property}
+                      promotionBadge={blackFridayActive && isBlackFridayListingEligible(property) ? blackFridayBadge : undefined}
                       nights={searchNights}
                       checkin={searchCheckin}
                       checkout={searchCheckout}
@@ -1134,6 +1142,7 @@ export default function Homes() {
                   >
                     <PropertyCard
                       property={property}
+                      promotionBadge={blackFridayActive && isBlackFridayListingEligible(property) ? blackFridayBadge : undefined}
                       nights={searchNights}
                       checkin={searchCheckin}
                       checkout={searchCheckout}

@@ -54,6 +54,8 @@ interface PropertyCardProps {
   /** An editorial context can describe configured unit options without
    * implying those units are all available for the selected dates. */
   groupContextLabel?: string;
+  /** Listing-owned campaign copy. Displaying a badge never alters the price. */
+  promotionBadge?: { label: string; description: string };
   /** The listing's LCP candidate (first card): its first photo loads eagerly at
    *  fetchpriority=high, and React preloads it from the server HTML
    *  (lib/listingImagePriority.ts). */
@@ -84,6 +86,7 @@ export default function PropertyCard({
   hidePrice = false,
   fromPrice,
   groupContextLabel,
+  promotionBadge,
   priority,
   preloadMedia,
   fillCell = true,
@@ -260,6 +263,16 @@ export default function PropertyCard({
           <div className={`absolute top-3 left-3 z-10 ${urgencyBadge.color} text-white text-[12px] font-medium tracking-[0.04em] uppercase px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm`}>
             {urgencyBadge.icon && <urgencyBadge.icon className="w-3 h-3" />}
             {urgencyBadge.label}
+          </div>
+        )}
+
+        {promotionBadge && (
+          <div
+            className={`absolute left-3 z-10 ${urgencyBadge ? 'top-11' : 'top-3'} max-w-[calc(100%_-_1.5rem)] rounded-full border border-white/60 bg-white/95 px-2.5 py-1 text-[12px] font-medium leading-normal text-[#1A1A18] shadow-sm`}
+            title={promotionBadge.description}
+          >
+            <span aria-hidden="true">{promotionBadge.label}</span>
+            <span className="sr-only">{promotionBadge.label}. {promotionBadge.description}</span>
           </div>
         )}
 
