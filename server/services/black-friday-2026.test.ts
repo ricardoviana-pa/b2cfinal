@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { blackFridayPublicCoupon, blackFridayVipActive, blockedBlackFridayCoupon, BLACK_FRIDAY_2026_GENERAL_CODE } from "./black-friday-2026";
+import { blackFridayPublicCoupon, blackFridayPublicCodeValid, blackFridayVipActive, blockedBlackFridayCoupon, BLACK_FRIDAY_2026_GENERAL_CODE } from "./black-friday-2026";
 
 describe("Black Friday 2026: validade do cupão geral", () => {
   const enabled = { BLACK_FRIDAY_2026_AUTO_COUPON: "true" } as NodeJS.ProcessEnv;
@@ -8,6 +8,14 @@ describe("Black Friday 2026: validade do cupão geral", () => {
   it("fica desligado por omissão e respeita o kill switch", () => {
     expect(blackFridayPublicCoupon(new Date("2026-11-25T12:00:00Z"), disabled)).toBeNull();
     expect(blackFridayPublicCoupon(new Date("2026-11-25T12:00:00Z"), {})).toBeNull();
+  });
+
+  it("código geral escrito à mão vale de 24 a 30 mesmo com a aplicação automática desligada", () => {
+    expect(blackFridayPublicCoupon(new Date("2026-11-25T12:00:00Z"), disabled)).toBeNull();
+    expect(blackFridayPublicCodeValid(new Date("2026-11-23T23:59:59Z"))).toBe(false);
+    expect(blackFridayPublicCodeValid(new Date("2026-11-24T00:00:00Z"))).toBe(true);
+    expect(blackFridayPublicCodeValid(new Date("2026-11-30T23:59:59Z"))).toBe(true);
+    expect(blackFridayPublicCodeValid(new Date("2026-12-01T00:00:00Z"))).toBe(false);
   });
 
   it("permite o código VIP só de 23 a 30, independentemente do flag geral", () => {
