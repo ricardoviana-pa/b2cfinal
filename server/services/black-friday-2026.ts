@@ -5,25 +5,34 @@
  * Lisboa, inclusive a 30/11 até às 23:59:59. O interruptor evita qualquer
  * desconto antes de confirmar que o cupão existe no Guesty e foi testado.
  *
- * No Render: BLACK_FRIDAY_2026_AUTO_COUPON=true
- * Kill switch imediato: BLACK_FRIDAY_2026_AUTO_COUPON=false
+ * Desde 24/11/2026 o código NÃO se aplica sozinho: o hóspede escreve-o.
+ * Aplicação automática (desligada): BLACK_FRIDAY_2026_AUTO_COUPON=true
  */
 export const BLACK_FRIDAY_2026_GENERAL_CODE = "PABF15GERAL26";
 export const BLACK_FRIDAY_2026_VIP_CODE = "PABF15VIP26";
 
-export function blackFridayPublicCoupon(
-  at: Date = new Date(),
-  env: NodeJS.ProcessEnv = process.env,
-): string | null {
-  if (env.BLACK_FRIDAY_2026_AUTO_COUPON !== "true") return null;
-  if (!Number.isFinite(at.getTime())) return null;
+/**
+ * The public code is valid when a guest TYPES it, 24–30 Nov (Lisbon), with
+ * or without the auto-apply switch. Ricardo, 24 Nov 2026: guests apply the
+ * code themselves; the site must not add it on its own.
+ */
+export function blackFridayPublicCodeValid(at: Date = new Date()): boolean {
+  if (!Number.isFinite(at.getTime())) return false;
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Europe/Lisbon", year: "numeric", month: "2-digit", day: "2-digit",
   }).formatToParts(at);
   const part = (type: string): string => parts.find((p) => p.type === type)?.value ?? "";
   const day = `${part("year")}-${part("month")}-${part("day")}`;
-  return day >= "2026-11-24" && day <= "2026-11-30"
-    ? BLACK_FRIDAY_2026_GENERAL_CODE : null;
+  return day >= "2026-11-24" && day <= "2026-11-30";
+}
+
+/** Auto-applied public code — only while BLACK_FRIDAY_2026_AUTO_COUPON=true. */
+export function blackFridayPublicCoupon(
+  at: Date = new Date(),
+  env: NodeJS.ProcessEnv = process.env,
+): string | null {
+  if (env.BLACK_FRIDAY_2026_AUTO_COUPON !== "true") return null;
+  return blackFridayPublicCodeValid(at) ? BLACK_FRIDAY_2026_GENERAL_CODE : null;
 }
 
 /** VIP access starts a day before the public campaign (23 Nov, Lisbon time). */
