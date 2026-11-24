@@ -618,6 +618,17 @@
     "reloadNotice": "Scegliendo solo i cookie essenziali, la pagina si ricarica per interrompere il monitoraggio facoltativo. Salva i moduli incompleti prima di modificare questa scelta."
   },
   "home": {
+    "blackFriday": {
+      "overline": "Black Friday · dal 24 al 30 novembre",
+      "title": "Il vostro prossimo soggiorno, con il 15% di sconto.",
+      "description": "Prenotate entro il 30 novembre e inserite il codice al checkout.",
+      "codeLabel": "Codice sconto",
+      "copyCode": "Copia codice",
+      "copied": "Codice copiato",
+      "copyFailed": "Selezionate e copiate il codice.",
+      "terms": "15% di sconto sull'alloggio per i soggiorni ammessi all'offerta. Soggetto alla convalida del codice.",
+      "explore": "Esplora le case"
+    },
     "loading": "Caricamento Portugal Active",
     "loadingBody": "Recupero case e disponibilità.",
     "errorTitle": "Impossibile caricare i dati della homepage",

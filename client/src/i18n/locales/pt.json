@@ -618,6 +618,17 @@
     "reloadNotice": "Escolher apenas essenciais recarrega esta página para parar a medição opcional. Guarde os formulários por concluir antes de alterar esta definição."
   },
   "home": {
+    "blackFriday": {
+      "overline": "Black Friday · 24 a 30 de novembro",
+      "title": "A sua próxima estadia, com 15% de desconto.",
+      "description": "Reserve até 30 de novembro e use o código no checkout.",
+      "codeLabel": "Código de desconto",
+      "copyCode": "Copiar código",
+      "copied": "Código copiado",
+      "copyFailed": "Selecione e copie o código.",
+      "terms": "15% no alojamento para estadias elegíveis. Sujeito à validação do cupão.",
+      "explore": "Explorar casas"
+    },
     "loading": "A carregar Portugal Active",
     "loadingBody": "A obter alojamentos e disponibilidade.",
     "errorTitle": "Não foi possível carregar os dados da página inicial",
