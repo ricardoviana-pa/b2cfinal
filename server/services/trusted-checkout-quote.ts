@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { preferredRatePlanId } from '@shared/ratePlanDefault';
 import { guestyBEClient } from '../lib/guesty';
 import { parseBEQuote } from './guesty-booking';
-import { blockedBlackFridayCoupon } from './black-friday-2026';
+import { blockedBlackFridayCoupon, BLACK_FRIDAY_2026_GENERAL_CODE, BLACK_FRIDAY_2026_VIP_CODE } from './black-friday-2026';
 
 export type StayIdentity = { listingId: string; guestyQuoteId?: string | null; checkIn: string; checkOut: string; guests: number; ratePlanId?: string | null; quote?: { couponCode?: string | null } | null };
 const invalid = () => new TRPCError({ code: 'PRECONDITION_FAILED', message: 'Please refresh your dates and price before continuing.' });
@@ -37,8 +37,28 @@ export function canonicalStayQuote(raw: any, stay: StayIdentity, now = Date.now(
   const currency = (rawPlan?.ratePlan?.money || rawPlan?.money)?.currency;
   if (!plan || currency !== 'EUR' || parsed.currency !== 'EUR' || !(plan.total > 0) || !Number.isFinite(plan.total) || parsed.nights <= 0) throw invalid();
   const appliedCoupon = Array.isArray(raw.coupons) ? raw.coupons.find((c: any) => c?.code || c?.name) : undefined;
-  const coupon = appliedCoupon?.code;
-  const couponReference = coupon || appliedCoupon?.name;
+  // Guesty often returns only the coupon's internal NAME in raw.coupons.
+  // For Black Friday the selected supplier rate plan includes an exact coupon
+  // code in its DISCOUNT invoice item. Use that trusted supplier code for
+  // checkout display only when a single named coupon is actually present.
+  // Never recover a code from the browser-supplied stay.quote.
+  const invoiceItems = rawPlan?.ratePlan?.money?.invoiceItems ?? rawPlan?.money?.invoiceItems;
+  const supplierCampaignCodes = new Set(
+    (Array.isArray(invoiceItems) ? invoiceItems : [])
+      .filter((item: any) => item?.type === 'DISCOUNT' && Number(item.amount) < 0)
+      .map((item: any) => String(item.description ?? '').trim().toUpperCase())
+      .filter((code: string) => code === BLACK_FRIDAY_2026_GENERAL_CODE || code === BLACK_FRIDAY_2026_VIP_CODE),
+  );
+  const invoiceCampaignCode = supplierCampaignCodes.size === 1 ? [...supplierCampaignCodes][0] : undefined;
+  const namedCouponOnly = Array.isArray(raw.coupons) && raw.coupons.length === 1 &&
+    !!appliedCoupon?.name && !appliedCoupon?.code;
+  const coupon = appliedCoupon?.code ?? (namedCouponOnly ? invoiceCampaignCode : undefined);
+  // Also enforce campaign dates when the supplier's internal name is misspelled
+  // (the Guesty promotion currently says "BlackFirday"), but invoice code is exact.
+  if (invoiceCampaignCode && blockedBlackFridayCoupon([invoiceCampaignCode], new Date(now))) {
+    throw new TRPCError({ code: 'PRECONDITION_FAILED', message: 'Black Friday offer is not valid yet for this booking. Please refresh the price.' });
+  }
+  const couponReference = appliedCoupon?.code || appliedCoupon?.name;
   return { ratePlanId, expiresAt: new Date(expiresAt), couponReference: couponReference ? String(couponReference) : undefined, quote: {
     nightlyRate: plan.nightlyRate, totalNights: plan.total - plan.cleaningFee - plan.taxesAndFees,
     cleaningFee: plan.cleaningFee, taxesAndFees: plan.taxesAndFees, total: plan.total,
