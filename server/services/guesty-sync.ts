@@ -1155,10 +1155,10 @@ export async function runSync(): Promise<string> {
     const curated = manualReviewMap[rawId] ?? manualReviewMap[existingSlugMap.get(rawId) ?? ""];
     const listingReviews = mergeManualReviews(fromGuesty, curated);
     manualAdded += listingReviews.length - fromGuesty.length;
-    // As correções de lotação confirmadas (property-capacity-copy.ts) entram
-    // já no ficheiro que o sync escreve. O site aplicava-as só ao servir, e
-    // cada sync voltava a gravar o texto do Guesty: a descrição SEO do Monte
-    // do Sossego ("4 bedrooms") partia o CI do main desde 5 nov 2026.
+    // Apply reviewed capacity copy before hashing and persisting the catalogue,
+    // so older supplier prose cannot reintroduce contradictory descriptions.
+    // Structured inventory remains authoritative; Monte's four bedrooms were
+    // confirmed with the property team on 24 November 2026.
     return normalizePropertyCapacityCopy(
       mapListingToProperty(listing, listingReviews, existingSlugMap, licenseMap, copyMap),
     );

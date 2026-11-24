@@ -1,7 +1,7 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mergePropertyOverrides } from "../shared/propertyLocalization";
 import { propertyPageMeta } from "../shared/propertyMeta";
 import { __testing } from "./services/guesty-sync";
@@ -12,8 +12,8 @@ import { propertiesRouter } from "./routers/properties";
 const homes = JSON.parse(readFileSync("client/src/data/properties.json", "utf8"));
 const copy = JSON.parse(readFileSync("client/src/data/descriptions.overrides.json", "utf8"));
 const targets = [
-  { id: "6965331fec80690013738c68", name: "Villa Aura", guests: 13 },
-  { id: "69c567ad7f6873000e9a3c37", name: "Monte do Sossego", guests: 10 },
+  { id: "6965331fec80690013738c68", name: "Villa Aura", guests: 13, reviewed: "2026-11-05" },
+  { id: "69c567ad7f6873000e9a3c37", name: "Monte do Sossego", guests: 10, reviewed: "2026-11-24" },
 ];
 // Match guest-capacity statements, not bedroom counts, prices or travel times.
 const capacity: Record<string, RegExp> = {
@@ -40,7 +40,7 @@ function statedCapacities(text: string, locale: string) {
   return [...text.matchAll(capacity[locale])].map(match => words[match[1].toLowerCase()] ?? Number(match[1]));
 }
 
-describe("capacities confirmed by Ricardo on 5 November 2026", () => {
+describe("confirmed guest capacities and Monte's four bedrooms rechecked on 24 November 2026", () => {
   for (const locale of Object.keys(capacity)) {
     it(locale + ": merged public descriptions and structured sections agree with both capacities", () => {
       const overrides = locale === "en" ? {} : JSON.parse(readFileSync("client/src/data/properties.i18n/" + locale + ".json", "utf8"));
@@ -56,45 +56,55 @@ describe("capacities confirmed by Ricardo on 5 November 2026", () => {
         if (target.id === targets[1].id) {
           const rooms = texts.flatMap(text => [...text.matchAll(bedrooms[locale])])
             .map(match => bedroomWords[match[1].toLowerCase()] ?? Number(match[1]));
-          expect(page.bedrooms).toBe(5);
+          expect(page.bedrooms).toBe(4);
           expect(rooms.length).toBeGreaterThan(0);
-          expect(rooms.every(value => value === 5), target.name + ": bedrooms " + rooms).toBe(true);
+          expect(rooms.every(value => value === 4), target.name + ": bedrooms " + rooms).toBe(true);
         }
       }
     });
   }
 
   it("keeps the approved English copy in the sync override and preserves the review date on a later unchanged sync", () => {
-    for (const target of targets) {
-      const home = homes.find((p: any) => p.guestyId === target.id);
-      expect(home.description).toBe(copy[target.id].description);
-      expect(statedCapacities(copy[target.id].description, "en")).toEqual([target.guests]);
-      expect(home.lastModified).toBe("2026-11-05");
-      expect(home.contentHash).toBe(__testing.contentFingerprint(home));
-      const synced = { ...home, description: copy[target.id].description, descriptionSections: null };
-      expect(__testing.stampLastModified([synced], new Map([[target.id, home]]), "2026-10-01").changed).toBe(0);
-      expect(synced.lastModified).toBe("2026-11-05");
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-12-01T12:00:00Z"));
+    try {
+      for (const target of targets) {
+        const home = homes.find((p: any) => p.guestyId === target.id);
+        expect(home.description).toBe(copy[target.id].description);
+        expect(statedCapacities(copy[target.id].description, "en")).toEqual([target.guests]);
+        expect(home.lastModified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(Date.parse(home.lastModified)).toBeGreaterThanOrEqual(Date.parse(target.reviewed));
+        expect(home.contentHash).toBe(__testing.contentFingerprint(home));
+        const synced = { ...home, description: copy[target.id].description };
+        expect(__testing.stampLastModified([synced], new Map([[target.id, home]]), "2026-10-01").changed).toBe(0);
+        expect(synced.lastModified).toBe(home.lastModified);
+        expect(synced.contentHash).toBe(home.contentHash);
+      }
+    } finally {
+      vi.useRealTimers();
     }
   });
 
-  it("uses Aura's confirmed capacity in the EN/PT public snippet and follows future catalogue changes", () => {
+  it("uses both homes' confirmed capacities in the EN/PT public snippet and follows future catalogue changes", () => {
     const aura = homes.find((p: any) => p.guestyId === targets[0].id);
     expect(propertyPageMeta(aura, "en").description).toContain("5 bedrooms for up to 13 guests");
     expect(propertyPageMeta(aura, "pt").description).toContain("5 quartos para até 13 hóspedes");
     expect(propertyPageMeta({ ...aura, maxGuests: 14 }, "en").description).toContain("up to 14 guests");
     const monte = homes.find((p: any) => p.guestyId === targets[1].id);
-    expect(propertyPageMeta(monte, "en").description).toContain("5 bedrooms for up to 10 guests");
-    expect(propertyPageMeta(monte, "pt").description).toContain("5 quartos para até 10 hóspedes");
+    expect(propertyPageMeta(monte, "en").description).toContain("4 bedrooms for up to 10 guests");
+    expect(propertyPageMeta(monte, "pt").description).toContain("4 quartos para até 10 hóspedes");
   });
 });
 
-describe("the sync writes the confirmed capacities, not Guesty's older text (CI do main, 5–13 nov 2026)", () => {
-  it("Monte do Sossego's search description, cut from Guesty's summary, says five bedrooms", () => {
+describe("the sync writes copy consistent with the confirmed inventory", () => {
+  it("corrects Monte do Sossego's older five-bedroom search description to four", () => {
     const monte = homes.find((p: any) => p.guestyId === targets[1].id);
-    const fromGuesty = { ...monte, seoDescription: "A peaceful retreat in the heart of the Alentejo. Traditional Farm with 4 bedrooms, heated pool" };
+    const fromGuesty = { ...monte, seoDescription: "A peaceful retreat in the heart of the Alentejo. Traditional Farm with 5 bedrooms, heated pool" };
     const fixed = normalizePropertyCapacityCopy(fromGuesty);
-    expect(fixed.seoDescription).toContain("Traditional Farm with 5 bedrooms");
-    expect(monte.seoDescription).not.toMatch(/\b(four|4)[ -]bedrooms?\b/i);
+    expect(fixed.seoDescription).toContain("Traditional Farm with 4 bedrooms");
+    expect(monte.seoDescription).not.toMatch(/\b(five|5)[ -]bedrooms?\b/i);
+    expect(fromGuesty.seoDescription).toContain("Traditional Farm with 5 bedrooms");
+    expect(normalizePropertyCapacityCopy(fixed)).toBe(fixed);
   });
 
   it("every home the sync maps goes through the correction before it is stamped and written", () => {
@@ -117,7 +127,7 @@ describe("capacity copy in an older runtime snapshot", () => {
       description: index === 0 ? "Up to twelve guests. A new garden detail; twelve chairs." : "Up to 8 guests. A new dining detail; eight chairs.",
       descriptionSections: {
         summary: index === 0 ? "Sleeps up to 12 — a new welcome." : "Accommodates up to eight guests.",
-        space: index === 0 ? "Five bedrooms, a 12-minute drive and new room details." : "Four bedrooms, four days' notice and new room details.",
+        space: index === 0 ? "Five bedrooms, a 12-minute drive and new room details." : "Five bedrooms, five days' notice and new room details.",
         access: "An unchanged arrival instruction.",
       },
       lastModified: "2026-10-30",
@@ -133,12 +143,12 @@ describe("capacity copy in an older runtime snapshot", () => {
         expect(statedCapacities(served.descriptionSections.summary, "en")).toEqual([target.guests]);
         expect(served.description).toContain(index === 0 ? "A new garden detail; twelve chairs." : "A new dining detail; eight chairs.");
         expect(served.descriptionSections.space).toBe(index === 0
-          ? old[index].descriptionSections.space : "Five bedrooms, four days' notice and new room details.");
+          ? old[index].descriptionSections.space : "Four bedrooms, five days' notice and new room details.");
         expect(served.descriptionSections.access).toBe(old[index].descriptionSections.access);
         for (const field of ["bedrooms", "maxGuests", "priceFrom", "cleaningFee", "amenities", "rooms", "contentHash"]) {
           expect(served[field], field).toEqual(old[index][field]);
         }
-        expect(served.lastModified).toBe("2026-11-05");
+        expect(served.lastModified).toBe(target.reviewed);
         expect(await caller.getBySlugForSite({ slug: old[index].slug })).toEqual(served);
       }
       expect(readFileSync(join(dir, source + ".json"), "utf8")).toBe(raw);
@@ -159,9 +169,13 @@ describe("capacity copy in an older runtime snapshot", () => {
     const later = { ...aura, description: "Hosts twelve people.", lastModified: "2026-12-01" };
     expect(normalizePropertyCapacityCopy(later)).toMatchObject({ description: "Hosts thirteen people.", lastModified: "2026-12-01" });
     const monte = homes.find((p: any) => p.guestyId === targets[1].id);
-    const differentRooms = { ...monte, bedrooms: 6, description: "Four bedrooms for up to eight guests." };
-    expect(normalizePropertyCapacityCopy(differentRooms)).toBe(differentRooms);
-    expect(normalizePropertyCapacityCopy({ ...monte, description: "A four-bedroom farmhouse with 4 days' notice." }).description)
-      .toBe("A five-bedroom farmhouse with 4 days' notice.");
+    for (const count of [5, 6]) {
+      const differentRooms = { ...monte, bedrooms: count, description: "Five bedrooms for up to eight guests." };
+      expect(normalizePropertyCapacityCopy(differentRooms)).toBe(differentRooms);
+    }
+    const differentGuests = { ...monte, maxGuests: 12, description: "Five bedrooms for up to eight guests." };
+    expect(normalizePropertyCapacityCopy(differentGuests)).toBe(differentGuests);
+    expect(normalizePropertyCapacityCopy({ ...monte, description: "A five-bedroom farmhouse with 5 days' notice.", lastModified: "2026-12-01" }))
+      .toMatchObject({ description: "A four-bedroom farmhouse with 5 days' notice.", lastModified: "2026-12-01" });
   });
 });

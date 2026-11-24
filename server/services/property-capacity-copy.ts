@@ -1,12 +1,12 @@
 /**
- * Capacity corrections confirmed by Ricardo on 5 November 2026.
+ * Guest capacities confirmed by Ricardo on 5 November 2026; Monte's four
+ * bedrooms rechecked against Guesty and the operations team on 24 November.
  * The runtime sync file can predate a deploy. Correct only the old English
  * guest-capacity phrases; retain the rest of that record and future copy.
  */
-const REVIEWED = "2026-11-05";
-const CORRECTIONS: Record<string, { guests: number; old: string; word: string; bedrooms?: number }> = {
-  "6965331fec80690013738c68": { guests: 13, old: "12|twelve", word: "thirteen" },
-  "69c567ad7f6873000e9a3c37": { guests: 10, old: "8|eight", word: "ten", bedrooms: 5 },
+const CORRECTIONS: Record<string, { guests: number; old: string; word: string; reviewed: string; bedrooms?: number }> = {
+  "6965331fec80690013738c68": { guests: 13, old: "12|twelve", word: "thirteen", reviewed: "2026-11-05" },
+  "69c567ad7f6873000e9a3c37": { guests: 10, old: "8|eight", word: "ten", reviewed: "2026-11-24", bedrooms: 4 },
 };
 
 export function normalizePropertyCapacityCopy<T extends Record<string, any>>(property: T): T {
@@ -26,10 +26,10 @@ export function normalizePropertyCapacityCopy<T extends Record<string, any>>(pro
   const correct = (value: unknown) => {
     if (typeof value !== "string") return value;
     const guests = value.replace(withGuests, replacement).replace(explicitVerb, replacement);
-    // Monte's five bedrooms were confirmed separately on the same day.
-    // Four days' notice, prices and unrelated quantities must stay intact.
-    return correction.bedrooms === 5
-      ? guests.replace(/\b(four|4)(?=[ -]bedrooms?\b)/gi, old => /^\d+$/.test(old) ? "5" : old[0] === "F" ? "Five" : "five")
+    // Monte's old editorial copy overstated its four bedrooms as five.
+    // Five days' notice, prices and unrelated quantities must stay intact.
+    return correction.bedrooms === 4
+      ? guests.replace(/\b(five|5)(?=[ -]bedrooms?\b)/gi, old => /^\d+$/.test(old) ? "4" : old[0] === "F" ? "Four" : "four")
       : guests;
   };
 
@@ -48,10 +48,10 @@ export function normalizePropertyCapacityCopy<T extends Record<string, any>>(pro
     }
     if (sectionsChanged) { next.descriptionSections = sections; changed = true; }
   }
-  // Both homes' localized pages were reviewed, even when English already
-  // said ten guests. Do not erase a newer review or sync date.
-  if (!property.lastModified || property.lastModified < REVIEWED) {
-    next.lastModified = REVIEWED;
+  // Each home's localized pages were reviewed independently. Do not erase
+  // a newer review or sync date, or move Aura's date for Monte's correction.
+  if (!property.lastModified || property.lastModified < correction.reviewed) {
+    next.lastModified = correction.reviewed;
     changed = true;
   }
   return changed ? next as T : property;
