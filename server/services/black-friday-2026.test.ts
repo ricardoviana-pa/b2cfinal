@@ -10,6 +10,11 @@ describe("Black Friday 2026: validade do cupão geral", () => {
     expect(blackFridayPublicCoupon(new Date("2026-11-25T12:00:00Z"), {})).toBeNull();
   });
 
+  it("nunca se aplica sozinho, mesmo com BLACK_FRIDAY_2026_AUTO_COUPON=true", () => {
+    expect(blackFridayPublicCoupon(new Date("2026-11-25T12:00:00Z"), enabled)).toBeNull();
+    expect(blackFridayPublicCoupon(new Date("2026-11-30T23:59:59Z"), enabled)).toBeNull();
+  });
+
   it("código geral escrito à mão vale de 24 a 30 mesmo com a aplicação automática desligada", () => {
     expect(blackFridayPublicCoupon(new Date("2026-11-25T12:00:00Z"), disabled)).toBeNull();
     expect(blackFridayPublicCodeValid(new Date("2026-11-23T23:59:59Z"))).toBe(false);
@@ -51,13 +56,14 @@ describe("Black Friday 2026: validade do cupão geral", () => {
     expect(blockedBlackFridayCoupon(["PABF15VIP26"], dec1)).toBe(true);
   });
 
-  it("não inicia no dia VIP, só no dia 24 em Lisboa", () => {
+  // Aplicação automática desligada a 24 nov 2026 (o hóspede escreve o código).
+  it.skip("não inicia no dia VIP, só no dia 24 em Lisboa", () => {
     expect(blackFridayPublicCoupon(new Date("2026-11-23T23:59:59Z"), enabled)).toBeNull();
     expect(blackFridayPublicCoupon(new Date("2026-11-24T00:00:00Z"), enabled))
       .toBe(BLACK_FRIDAY_2026_GENERAL_CODE);
   });
 
-  it("aplica-se a qualquer data de estadia, mas só a reservas até 30 de novembro", () => {
+  it.skip("aplica-se a qualquer data de estadia, mas só a reservas até 30 de novembro", () => {
     expect(blackFridayPublicCoupon(new Date("2026-11-30T23:59:59Z"), enabled))
       .toBe(BLACK_FRIDAY_2026_GENERAL_CODE);
     expect(blackFridayPublicCoupon(new Date("2026-12-01T00:00:00Z"), enabled)).toBeNull();

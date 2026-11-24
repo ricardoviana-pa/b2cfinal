@@ -500,7 +500,8 @@ describe("contacto 3: o desconto é um cupão do Guesty já aplicado no link (17
   });
 });
 
-describe("Black Friday: recuperação não acumula nem substitui 15% por 5%", () => {
+// Aplicação automática desligada a 24 nov 2026 (o hóspede escreve o código).
+describe.skip("Black Friday: recuperação não acumula nem substitui 15% por 5%", () => {
   const campaignAt = () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-11-25T12:00:00Z"));

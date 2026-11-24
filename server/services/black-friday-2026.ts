@@ -6,7 +6,7 @@
  * desconto antes de confirmar que o cupão existe no Guesty e foi testado.
  *
  * Desde 24/11/2026 o código NÃO se aplica sozinho: o hóspede escreve-o.
- * Aplicação automática (desligada): BLACK_FRIDAY_2026_AUTO_COUPON=true
+ * A aplicação automática está desligada no código (o env já não conta).
  */
 export const BLACK_FRIDAY_2026_GENERAL_CODE = "PABF15GERAL26";
 export const BLACK_FRIDAY_2026_VIP_CODE = "PABF15VIP26";
@@ -26,13 +26,16 @@ export function blackFridayPublicCodeValid(at: Date = new Date()): boolean {
   return day >= "2026-11-24" && day <= "2026-11-30";
 }
 
-/** Auto-applied public code — only while BLACK_FRIDAY_2026_AUTO_COUPON=true. */
+/**
+ * Auto-applied public code. OFF since 24 Nov 2026 (Ricardo: guests apply
+ * the code themselves). Independent of BLACK_FRIDAY_2026_AUTO_COUPON on
+ * Render, so a stale env value cannot turn it back on.
+ */
 export function blackFridayPublicCoupon(
-  at: Date = new Date(),
-  env: NodeJS.ProcessEnv = process.env,
+  _at: Date = new Date(),
+  _env: NodeJS.ProcessEnv = process.env,
 ): string | null {
-  if (env.BLACK_FRIDAY_2026_AUTO_COUPON !== "true") return null;
-  return blackFridayPublicCodeValid(at) ? BLACK_FRIDAY_2026_GENERAL_CODE : null;
+  return null;
 }
 
 /** VIP access starts a day before the public campaign (23 Nov, Lisbon time). */
