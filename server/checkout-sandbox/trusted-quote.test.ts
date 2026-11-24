@@ -57,6 +57,42 @@ describe('supplier quote identity and price binding',()=>{
       expiresAt:'2026-11-20T12:00:00Z', coupons:[{code:'RECUPERA5'}] };
     expect(()=>canonicalStayQuote(q,stay,prelaunch)).not.toThrow();
   });
+  it('keeps the supplier-confirmed Black Friday coupon visible in checkout when Guesty supplies only an internal name',()=>{
+    const dated = Date.parse('2026-11-24T18:00:00Z');
+    const q = { ...raw(), createdAt:'2026-11-24T17:00:00Z', expiresAt:'2026-11-25T17:00:00Z',
+      coupons:[{name:'BlackFirday 2026 General Host'}],
+      rates:{ratePlans:[{ratePlan:{_id:'flex',name:'Flexible',money:{
+        currency:'EUR',subTotalPrice:1451.25,fareAccommodation:1060,
+        fareAccommodationAdjusted:901,fareCleaning:550.25,
+        invoiceItems:[
+          {title:'Accommodation fare',type:'ACCOMMODATION_FARE',amount:1060},
+          {title:'Cleaning fee',type:'CLEANING_FEE',amount:550.25},
+          {title:'BlackFirday 2026 General Host',type:'DISCOUNT',amount:-159,description:'PABF15GERAL26'},
+        ],
+      }}}]},
+    };
+    const result=canonicalStayQuote(q,stay,dated);
+    expect(result.quote).toMatchObject({couponCode:'PABF15GERAL26',total:1451.25});
+    expect(result.couponReference).toBe('BlackFirday 2026 General Host');
+  });
+  it('does not infer a Black Friday code from the client quote or supplier name alone',()=>{
+    const dated=Date.parse('2026-11-24T18:00:00Z');
+    const q={...raw(), createdAt:'2026-11-24T17:00:00Z',expiresAt:'2026-11-25T17:00:00Z',
+      coupons:[{name:'BlackFirday 2026 General Host'}]};
+    const result=canonicalStayQuote(q,{...stay,quote:{couponCode:'PABF15GERAL26'}},dated);
+    expect(result.quote.couponCode).toBeUndefined();
+  });
+  it('blocks an invoice-confirmed public campaign code before its launch even if Guesty misspells its internal name',()=>{
+    const dated=Date.parse('2026-11-23T18:00:00Z');
+    const q={...raw(),createdAt:'2026-11-23T17:00:00Z',expiresAt:'2026-11-24T17:00:00Z',
+      coupons:[{name:'BlackFirday 2026 General Host'}],
+      rates:{ratePlans:[{ratePlan:{_id:'flex',name:'Flexible',money:{
+        currency:'EUR',subTotalPrice:1451.25,fareCleaning:550.25,
+        invoiceItems:[{type:'DISCOUNT',amount:-159,description:'PABF15GERAL26'}],
+      }}}]},
+    };
+    expect(()=>canonicalStayQuote(q,stay,dated)).toThrow(/not valid yet/);
+  });
   it('requires customer-visible total and currency to match before charging',()=>{
     expect(()=>assertQuotedTotal({total:1,currency:'EUR'},{total:1234.56,currency:'EUR'})).toThrow();
     expect(()=>assertQuotedTotal({total:1234.56,currency:'USD'},{total:1234.56,currency:'EUR'})).toThrow();
