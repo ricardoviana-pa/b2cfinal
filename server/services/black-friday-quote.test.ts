@@ -43,12 +43,19 @@ describe("Black Friday direct Guesty quotes", () => {
     expect(eligibleBlackFridayListing({ guestyId: "own" }, "own")).toBe(false);
   });
 
-  it("creates a private quote and applies Guesty's price, not browser arithmetic", async () => {
+  // Aplicação automática desligada a 24 nov 2026 (o hóspede escreve o código).
+  it.skip("creates a private quote and applies Guesty's price, not browser arithmetic", async () => {
     const result = await blackFridayPublicQuote(stay);
     expect(result?.couponCode).toBe("PABF15GERAL26");
     expect(result?.pricing.total).toBe(1700);
     expect(h.create).toHaveBeenCalledWith({ ...stay, fresh: true });
     expect(h.apply).toHaveBeenCalledWith({ ...stay, quoteId: "a".repeat(24), coupons: ["PABF15GERAL26"] });
+  });
+
+  it("never applies the public code on its own, even with the old env on", async () => {
+    vi.setSystemTime(new Date("2026-11-25T12:00:00Z"));
+    expect(await blackFridayPublicQuote(stay)).toBeNull();
+    expect(h.apply).not.toHaveBeenCalled();
   });
 
   it("does not touch Guesty before the public launch", async () => {
@@ -63,12 +70,14 @@ describe("Black Friday direct Guesty quotes", () => {
     expect(h.create).not.toHaveBeenCalled();
   });
 
-  it("fails closed when Guesty does not confirm the coupon", async () => {
+  // Aplicação automática desligada a 24 nov 2026 (o hóspede escreve o código).
+  it.skip("fails closed when Guesty does not confirm the coupon", async () => {
     h.apply.mockResolvedValue({ ...quote(2000), coupons: [] });
     await expect(blackFridayPublicQuote(stay)).rejects.toThrow(/could not be confirmed/);
   });
 
-  it("fails closed if an unrelated cheaper tariff masks an unchanged chosen tariff", async () => {
+  // Aplicação automática desligada a 24 nov 2026 (o hóspede escreve o código).
+  it.skip("fails closed if an unrelated cheaper tariff masks an unchanged chosen tariff", async () => {
     h.apply.mockResolvedValue({
       ...quote(2000), coupons: [{ code: "PABF15GERAL26" }],
       ratePlanOptions: [
