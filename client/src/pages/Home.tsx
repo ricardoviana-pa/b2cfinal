@@ -29,7 +29,8 @@ import { Link } from 'wouter';
 import { ArrowRight, Key, Gem, MapPin, Shield, Home as HomeIcon, Star, Headphones } from 'lucide-react';
 import HeroSearch from '@/components/marketing/HeroSearch';
 import BlackFridayHeroCopy from '@/components/marketing/BlackFridayHeroCopy';
-import { useBlackFriday2026 } from '@/hooks/useBlackFriday2026';
+import { useBlackFriday2026, BLACK_FRIDAY_HERO_CODE } from '@/hooks/useBlackFriday2026';
+import { isBlackFridayListingEligible } from '@/lib/blackFridayListing';
 import { addSearchDays } from '@/lib/homeSearch';
 import BookingCTA from '@/components/property/BookingCTA';
 import Header from '@/components/layout/Header';
@@ -109,6 +110,10 @@ function useFadeIn() {
 export default function Home() {
   const { t, i18n } = useTranslation();
   const blackFridayActive = useBlackFriday2026();
+  const blackFridayBadge = {
+    label: 'Black Friday',
+    description: `${t('home.blackFriday.description')} ${t('home.blackFriday.codeLabel')}: ${BLACK_FRIDAY_HERO_CODE}. ${t('home.blackFriday.terms')}`,
+  };
   usePageMeta({
     // Must match the server-side PAGE_META '/' entry in server/_core/vite.ts —
     // usePageMeta appends " | Portugal Active", so pass the title without it.
@@ -499,6 +504,7 @@ export default function Home() {
                 <PropertyCard
                   imageSizes="(max-width: 639px) 280px, (max-width: 767px) 320px, (max-width: 1023px) 45vw, 30vw"
                   property={property}
+                  promotionBadge={blackFridayActive && isBlackFridayListingEligible(property) ? blackFridayBadge : undefined}
                   checkin={searchCheckin || undefined}
                   checkout={searchCheckout || undefined}
                   guests={guestsChosen ? searchGuests : undefined}
