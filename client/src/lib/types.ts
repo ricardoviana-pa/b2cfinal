@@ -205,6 +205,7 @@ export interface Property {
   stayIncludes: string[];     // "Your stay includes" bullets
   amenities: Record<string, string[]>;
   bookingUrl: string;
+  bookingMode?: string;       // "request" homes are handled by the concierge
   whatsappMessage: string;
   guestyId?: string;
   pricePerNight?: number;
