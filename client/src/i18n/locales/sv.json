@@ -618,6 +618,17 @@
     "reloadNotice": "Om du väljer endast nödvändiga cookies laddas sidan om för att stoppa valfri spårning. Spara eventuella ofärdiga formulär innan du ändrar inställningen."
   },
   "home": {
+    "blackFriday": {
+      "overline": "Black Friday · 24 till 30 november",
+      "title": "Din nästa vistelse med 15 % rabatt.",
+      "description": "Boka senast den 30 november och ange koden när du slutför bokningen.",
+      "codeLabel": "Rabattkod",
+      "copyCode": "Kopiera kod",
+      "copied": "Koden har kopierats",
+      "copyFailed": "Markera och kopiera koden.",
+      "terms": "15 % rabatt på boendet för vistelser som uppfyller villkoren. Rabatten förutsätter att koden godkänns.",
+      "explore": "Utforska husen"
+    },
     "loading": "Laddar Portugal Active",
     "loadingBody": "Hämtar hem och tillgänglighet.",
     "errorTitle": "Kunde inte ladda startsidans data",

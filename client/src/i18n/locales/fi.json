@@ -618,6 +618,17 @@
     "reloadNotice": "Jos valitset vain välttämättömät evästeet, sivu ladataan uudelleen valinnaisen seurannan lopettamiseksi. Tallenna keskeneräiset lomakkeet ennen muutosta."
   },
   "home": {
+    "blackFriday": {
+      "overline": "Black Friday · 24.-30.11.",
+      "title": "Seuraava majoituksesi 15 % alennuksella.",
+      "description": "Varaa viimeistään 30. marraskuuta ja syötä koodi varauksen viimeistelyssä.",
+      "codeLabel": "Alennuskoodi",
+      "copyCode": "Kopioi koodi",
+      "copied": "Koodi kopioitu",
+      "copyFailed": "Valitse ja kopioi koodi.",
+      "terms": "15 % alennusta majoituksesta ehdot täyttäville varauksille. Alennus edellyttää koodin hyväksymistä.",
+      "explore": "Tutustu taloihin"
+    },
     "loading": "Ladataan Portugal Activea",
     "loadingBody": "Haetaan koteja ja saatavuutta.",
     "errorTitle": "Etusivun tietoja ei voitu ladata",

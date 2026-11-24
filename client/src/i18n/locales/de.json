@@ -618,6 +618,17 @@
     "reloadNotice": "Wenn Sie nur notwendige Cookies wählen, wird diese Seite neu geladen, um das optionale Tracking zu beenden. Speichern Sie vorher noch nicht abgeschlossene Formulare."
   },
   "home": {
+    "blackFriday": {
+      "overline": "Black Friday · 24. bis 30. November",
+      "title": "Ihr nächster Aufenthalt mit 15 % Rabatt.",
+      "description": "Buchen Sie bis zum 30. November und geben Sie den Code im Checkout ein.",
+      "codeLabel": "Rabattcode",
+      "copyCode": "Code kopieren",
+      "copied": "Code kopiert",
+      "copyFailed": "Markieren und kopieren Sie den Code.",
+      "terms": "15 % Rabatt auf den Unterkunftspreis für Aufenthalte, die die Aktionsbedingungen erfüllen. Vorbehaltlich der Prüfung des Rabattcodes.",
+      "explore": "Häuser entdecken"
+    },
     "loading": "Portugal Active wird geladen",
     "loadingBody": "Häuser und Verfügbarkeit werden abgerufen.",
     "errorTitle": "Homepage-Daten konnten nicht geladen werden",

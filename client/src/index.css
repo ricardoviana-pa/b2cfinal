@@ -1031,6 +1031,25 @@
 .home-hero { padding: 148px 0 48px; min-height: min(850px, 96svh); display: flex; align-items: center; }
 .home-hero-content { display: flex; flex-direction: column; gap: 40px; }
 .home-hero-text { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 26px rgba(0, 0, 0, 0.42); }
+/* Temporary homepage campaign. The normal hero returns after 30 Nov, Lisbon. */
+.bf-hero-overline { display: inline-flex; padding: 8px 13px; margin-bottom: 20px; border: 1px solid #e6d5b385; border-radius: 4px; background: #1a1a18a6; color: #F1DFC0; font-size: 13px; line-height: 1.5; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; text-shadow: none; }
+.bf-hero-title { margin-bottom: 20px; font-size: clamp(2.65rem, 5.5vw, 4.75rem); line-height: 1.08; letter-spacing: -.02em; text-wrap: balance; }
+.bf-hero-description { max-width: 540px; color: #fffffff2; font-size: 18px; line-height: 1.6; }
+.bf-hero-coupon { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; max-width: 100%; margin-top: 22px; padding: 12px 14px; border: 1px solid #ffffff60; border-radius: 8px; background: #1a1a18c7; text-shadow: none; }
+.bf-hero-code { display: flex; flex-direction: column; gap: 3px; color: white; }
+.bf-hero-code > span { font-size: 11px; line-height: 1.4; color: #ffffffd9; }
+.bf-hero-code > code { font-size: 17px; font-weight: 600; letter-spacing: .04em; user-select: all; }
+.bf-hero-copy.btn-white { min-height: 44px; padding: 10px 14px; gap: 8px; border-radius: 4px; font-size: 13px; letter-spacing: 0; text-transform: none; }
+.bf-hero-copy:focus-visible { outline: 2px solid #F1DFC0; outline-offset: 4px; }
+.bf-hero-terms { max-width: 540px; margin-top: 12px; color: #ffffffe6; font-size: 12px; line-height: 1.5; }
+.bf-hero-copy-error { margin-top: 8px; color: white; font-size: 13px; line-height: 1.5; }
+@media (max-width: 479px) {
+  .bf-hero-overline { padding: 7px 10px; font-size: 11px; letter-spacing: .04em; }
+  .bf-hero-description { font-size: 16px; }
+  .bf-hero-coupon { column-gap: 12px; padding: 10px; }
+  .bf-hero-code > code { font-size: 15px; }
+  .bf-hero-copy.btn-white { padding-inline: 10px; font-size: 12px; }
+}
 .hero-text-link { display: inline-flex; align-items: center; justify-content: center; gap: .65rem; min-height: 44px; color: white; font-size: .875rem; font-weight: 400; letter-spacing: normal; text-transform: none; border-bottom: 1px solid #ffffff70; }
 .hero-text-link:hover { border-color: white; }
 .hero-text-link:focus-visible { outline: 2px solid white; outline-offset: 5px; }

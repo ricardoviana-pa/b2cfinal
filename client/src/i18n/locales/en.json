@@ -618,6 +618,17 @@
     "reloadNotice": "Choosing essential cookies reloads this page to stop optional tracking. Save any unfinished form before changing this setting."
   },
   "home": {
+    "blackFriday": {
+      "overline": "Black Friday · 24 to 30 November",
+      "title": "Your next stay, with 15% off.",
+      "description": "Book by 30 November and enter the code at checkout.",
+      "codeLabel": "Discount code",
+      "copyCode": "Copy code",
+      "copied": "Code copied",
+      "copyFailed": "Select and copy the code.",
+      "terms": "15% off accommodation for eligible stays. Subject to coupon validation.",
+      "explore": "Explore homes"
+    },
     "loading": "Loading Portugal Active",
     "loadingBody": "Fetching homes and availability.",
     "errorTitle": "Unable to load homepage data",

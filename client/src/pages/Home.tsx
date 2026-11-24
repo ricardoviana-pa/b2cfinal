@@ -28,6 +28,8 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
 import { ArrowRight, Key, Gem, MapPin, Shield, Home as HomeIcon, Star, Headphones } from 'lucide-react';
 import HeroSearch from '@/components/marketing/HeroSearch';
+import BlackFridayHeroCopy from '@/components/marketing/BlackFridayHeroCopy';
+import { useBlackFriday2026 } from '@/hooks/useBlackFriday2026';
 import { addSearchDays } from '@/lib/homeSearch';
 import BookingCTA from '@/components/property/BookingCTA';
 import Header from '@/components/layout/Header';
@@ -106,6 +108,7 @@ function useFadeIn() {
 
 export default function Home() {
   const { t, i18n } = useTranslation();
+  const blackFridayActive = useBlackFriday2026();
   usePageMeta({
     // Must match the server-side PAGE_META '/' entry in server/_core/vite.ts —
     // usePageMeta appends " | Portugal Active", so pass the title without it.
@@ -366,30 +369,32 @@ export default function Home() {
               cover photo has bright patches, the sky and the white wall of
               the manor, right where the text runs. */}
           <div className="max-w-2xl home-hero-text">
-            <p
-              className="body-sm font-medium text-white/85 mb-5 font-body"
-              // 0.04em: at 15 px with 0.08em the line no longer fitted a 375 or
-              // 360 px phone and left "Portugal" alone on a second line.
-              style={{letterSpacing: '0.04em'}}
-            >
-              {t('home.heroOverline')}
-            </p>
-            <h1
-              className="text-white mb-6 leading-[1.08] font-display font-normal"
-              style={{letterSpacing: '-0.02em',
-                fontSize: 'clamp(2.75rem, 6vw, 5.25rem)'}}
-            >
-              {t('home.heroTitle')}
-            </h1>
-            {/* Title, one sentence and the search: the count line and the two
-                links that repeated the menu left the hero (decisão E04 do
-                Ricardo, 20 nov 2026). */}
-            <p
-              className="body-lg md:text-[20px] text-white/90 leading-relaxed max-w-xl font-body font-normal"
+            {blackFridayActive ? <BlackFridayHeroCopy /> : <>
+              <p
+                className="body-sm font-medium text-white/85 mb-5 font-body"
+                // 0.04em: at 15 px with 0.08em the line no longer fitted a 375 or
+                // 360 px phone and left "Portugal" alone on a second line.
+                style={{letterSpacing: '0.04em'}}
+              >
+                {t('home.heroOverline')}
+              </p>
+              <h1
+                className="text-white mb-6 leading-[1.08] font-display font-normal"
+                style={{letterSpacing: '-0.02em',
+                  fontSize: 'clamp(2.75rem, 6vw, 5.25rem)'}}
+              >
+                {t('home.heroTitle')}
+              </h1>
+              {/* Title, one sentence and the search: the count line and the two
+                  links that repeated the menu left the hero (decisão E04 do
+                  Ricardo, 20 nov 2026). */}
+              <p
+                className="body-lg md:text-[20px] text-white/90 leading-relaxed max-w-xl font-body font-normal"
 
-            >
-              {t('conversion.homeIntro')}
-            </p>
+              >
+                {t('conversion.homeIntro')}
+              </p>
+            </>}
           </div>
           <HeroSearch options={cityOptions} destination={searchDest} checkin={searchCheckin} checkout={searchCheckout} guests={searchGuests} guestsChosen={guestsChosen}
             onDestination={setSearchDest} onCheckin={handleCheckinChange} onCheckout={setSearchCheckout} onGuests={chooseGuests} />

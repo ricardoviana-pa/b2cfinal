@@ -618,6 +618,17 @@
     "reloadNotice": "Als je alleen noodzakelijke cookies kiest, wordt deze pagina opnieuw geladen om optionele tracking te stoppen. Sla onvoltooide formulieren eerst op."
   },
   "home": {
+    "blackFriday": {
+      "overline": "Black Friday · 24 t/m 30 november",
+      "title": "Uw volgende verblijf met 15% korting.",
+      "description": "Boek uiterlijk 30 november en gebruik de code bij het afrekenen.",
+      "codeLabel": "Kortingscode",
+      "copyCode": "Code kopiëren",
+      "copied": "Code gekopieerd",
+      "copyFailed": "Selecteer en kopieer de code.",
+      "terms": "15% korting op de accommodatie voor verblijven die aan de voorwaarden voldoen. Onder voorbehoud van goedkeuring van de kortingscode.",
+      "explore": "Ontdek de huizen"
+    },
     "loading": "Portugal Active laden",
     "loadingBody": "Woningen en beschikbaarheid ophalen.",
     "errorTitle": "Kan homepagegegevens niet laden",
