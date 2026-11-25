@@ -21,18 +21,93 @@ export interface CreateReservationInput {
    * the reservation matches what the guest actually booked.
    */
   ratePlanId?: string;
+  /**
+   * Código promocional que a quote do Guesty prova aplicado ao preço pago
+   * (trusted-checkout-quote: reservationCouponCode). Vai no couponCode do
+   * reservations-v3 para o folio levar o mesmo desconto que o hóspede pagou.
+   */
+  couponCode?: string;
+}
+
+/** O que aconteceu ao cupão no pedido de criação da reserva. */
+export type ReservationCouponOutcome =
+  /** Seguiu no pedido que criou a reserva (o Guesty não o recusou). */
+  | { code: string; status: "sent" }
+  /** O Guesty recusou o pedido com o cupão: a reserva foi criada sem ele. */
+  | { code: string; status: "rejected"; error: string };
+
+/**
+ * Um 4xx ao pedido com cupão: o Guesty não criou nada, e voltar a pedir sem o
+ * cupão é seguro. Conta qualquer 4xx de validação (o "4xx que nomeia o cupão"
+ * é o caso esperado; um 400/422 genérico também pode ser do cupão, e se não
+ * for, o pedido sem cupão falha da mesma maneira e o erro sobe como antes).
+ * Ficam de fora a autenticação (401/403) e o rate limit (429): nada têm a ver
+ * com o cupão e o pedido seguinte falhava igual.
+ */
+export function isCouponRetryable(err: unknown): boolean {
+  const status = Number((err as any)?.status);
+  if (!Number.isFinite(status) || status < 400 || status >= 500) return false;
+  return status !== 401 && status !== 403 && status !== 429;
 }
 
 export async function createReservationViaOpenApi(input: CreateReservationInput): Promise<{
   reservationId: string;
   confirmationCode: string;
   status: string;
+  /** Só quando se pediu com cupão. */
+  coupon?: ReservationCouponOutcome;
 }> {
+  const couponCode = String(input.couponCode ?? "").trim();
+  let data: any;
+  let coupon: ReservationCouponOutcome | undefined;
+  if (!couponCode) {
+    data = await postReservationV3(input, "");
+  } else {
+    try {
+      data = await postReservationV3(input, couponCode);
+      coupon = { code: couponCode, status: "sent" };
+    } catch (err: any) {
+      // O cupão nunca pode travar a reserva de quem já pagou: sem ele a reserva
+      // nasce como antes (preço cheio) e o settle avisa o CS do acerto a fazer.
+      if (!isCouponRetryable(err)) throw err;
+      const error = guestyErrorSummary(err);
+      console.warn(`[Guesty] reservations-v3 recusou o pedido com o cupao ${couponCode} (${error}) — a criar sem cupao`);
+      data = await postReservationV3(input, "");
+      coupon = { code: couponCode, status: "rejected", error };
+    }
+  }
+
+  console.log("[Guesty] /v1/reservations-v3 raw response keys:", Object.keys(data || {}));
+
+  // Guesty's POST /v1/reservations-v3 returns the ID in `reservationId`:
+  //   { reservationId, quoteId, confirmationCode, status }
+  // Check `reservationId` FIRST, then fall back to `_id`/`id` and the nested shape
+  // in case Guesty changes the envelope on other plans.
+  const nested = data?.reservation ?? data?.data ?? null;
+  const reservationId: string | undefined =
+    data?.reservationId ?? data?._id ?? data?.id ?? nested?.reservationId ?? nested?._id ?? nested?.id;
+
+  if (!reservationId) {
+    console.error("[Guesty] /v1/reservations-v3 response missing reservation ID. Full response:", JSON.stringify(data));
+    throw new Error(
+      `Guesty reservation ID missing from response. Keys: ${Object.keys(data || {}).join(", ")}`
+    );
+  }
+
+  return {
+    reservationId,
+    confirmationCode: data.confirmationCode ?? nested?.confirmationCode,
+    status: data.status ?? nested?.status ?? "confirmed",
+    ...(coupon ? { coupon } : {}),
+  };
+}
+
+function postReservationV3(input: CreateReservationInput, couponCode: string): Promise<any> {
   // Nota 21 ago: reservar a partir da quote BE não é possível — o instant da
   // BE API exige ccToken (cartão tokenizado no Guesty, que o 2b não tem) e o
   // reservations-v3 não aceita quotes do Booking Engine. O preço do site é
   // reposto via invoice item de service fee (addReservationServiceFee).
-  const data = await guestyClient.request<any>("POST", "/v1/reservations-v3", {
+  return guestyClient.request<any>("POST", "/v1/reservations-v3", {
     body: {
       listingId: input.listingId,
       checkInDateLocalized: input.checkIn,
@@ -60,37 +135,23 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
       // quote — Guesty then rejects the payment with "Payment amount can't be greater than
       // balance due" and the reservation stays unpaid AND on the wrong cancellation terms.
       ...(input.ratePlanId && { ratePlanId: input.ratePlanId }),
-      // The Booking Engine quote we charge does NOT apply promotions; applying them here
-      // would make the reservation cheaper than what was paid, so keep them off.
+      // The Booking Engine quote we charge does NOT apply the account's automatic
+      // promotions; applying them here would make the reservation cheaper than what
+      // was paid, so keep them off.
       applyPromotions: false,
+      // A coupon the guest DID get is a different matter: the price they paid already
+      // has it, so the reservation must carry it too, or the folio stays above the
+      // amount paid (Black Friday 2026: 15% of the nights, owner revenue and the
+      // Hostkit invoice on the undiscounted fare). One code, from the account's
+      // Revenue Management (Guesty's reservations-v3 reference). The docs do not say
+      // whether applyPromotions:false also switches coupons off; if the folio still
+      // misses the discount, the card settle alerts CS with the exact adjustment.
+      ...(couponCode && { couponCode }),
       ignoreCalendar: false,
       ignoreTerms: false,
       ignoreBlocks: false,
     },
   });
-
-  console.log("[Guesty] /v1/reservations-v3 raw response keys:", Object.keys(data || {}));
-
-  // Guesty's POST /v1/reservations-v3 returns the ID in `reservationId`:
-  //   { reservationId, quoteId, confirmationCode, status }
-  // Check `reservationId` FIRST, then fall back to `_id`/`id` and the nested shape
-  // in case Guesty changes the envelope on other plans.
-  const nested = data?.reservation ?? data?.data ?? null;
-  const reservationId: string | undefined =
-    data?.reservationId ?? data?._id ?? data?.id ?? nested?.reservationId ?? nested?._id ?? nested?.id;
-
-  if (!reservationId) {
-    console.error("[Guesty] /v1/reservations-v3 response missing reservation ID. Full response:", JSON.stringify(data));
-    throw new Error(
-      `Guesty reservation ID missing from response. Keys: ${Object.keys(data || {}).join(", ")}`
-    );
-  }
-
-  return {
-    reservationId,
-    confirmationCode: data.confirmationCode ?? nested?.confirmationCode,
-    status: data.status ?? nested?.status ?? "confirmed",
-  };
 }
 
 /**

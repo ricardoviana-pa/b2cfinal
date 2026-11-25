@@ -23,6 +23,17 @@ const guesty = {
   staleFolioTotal: 0,
   /** Leituras com o folio ainda por precificar (money sem balanceDue). */
   unpricedReadsLeft: 0,
+  /**
+   * POST /v1/reservations-v3: o folio com que a reserva nasce. "apply" = o
+   * Guesty aplica o cupão (folio com desconto); "reject" = 400 a nomear o
+   * cupão; "ignore" = aceita o pedido e precifica sem desconto.
+   */
+  reservation: {
+    fullFolio: 0,
+    discountedFolio: 0,
+    couponMode: "apply" as "apply" | "reject" | "ignore",
+    bodies: [] as any[],
+  },
 };
 const paid = () => guesty.payments.reduce((a, p) => a + p.amount, 0);
 const round2 = (n: number) => Math.round(n * 100) / 100;
@@ -96,6 +107,21 @@ vi.mock("../lib/guesty", async (importOriginal) => {
           }
           return {};
         }
+        if (method === "POST" && endpoint === "/v1/reservations-v3") {
+          const r = guesty.reservation;
+          r.bodies.push(structuredClone(opts.body));
+          if (opts.body.couponCode && r.couponMode === "reject") {
+            throw new actual.GuestyClientError({
+              message: "Guesty request failed (400)",
+              status: 400,
+              method: "POST",
+              endpoint,
+              details: { error: { message: `Coupon ${opts.body.couponCode} does not exist` } },
+            });
+          }
+          guesty.folioTotal = opts.body.couponCode && r.couponMode === "apply" ? r.discountedFolio : r.fullFolio;
+          return { reservationId: "res-1", confirmationCode: "GY-TEST", status: "confirmed" };
+        }
         if (method === "GET" && endpoint === "/v1/payment-providers/provider-by-listing") return { _id: "prov-1" };
         if (method === "POST" && endpoint.startsWith("/v1/guests/")) return {};
         throw new Error(`fake Guesty: rota inesperada ${method} ${endpoint}`);
@@ -147,7 +173,33 @@ vi.mock("../db", () => ({
 vi.mock("./checkout-confirmation", () => ({ completeCheckoutIntent: vi.fn(async () => {}) }));
 vi.mock("../routers/checkout", () => ({ listingFacts: vi.fn(async () => ({ bedrooms: null })) }));
 
+/** A quote do Guesty relida no settle (só no passe que cria a reserva). */
+const supplier = { reservationCouponCode: undefined as string | undefined };
+vi.mock("./trusted-checkout-quote", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./trusted-checkout-quote")>();
+  return {
+    ...actual,
+    trustedStayQuote: vi.fn(async () => ({
+      ratePlanId: "rp-flex",
+      expiresAt: new Date(Date.now() + 3600_000),
+      couponReference: supplier.reservationCouponCode ? "BlackFirday 2026 General Host" : undefined,
+      reservationCouponCode: supplier.reservationCouponCode,
+      quote: { ...intent.quote },
+    })),
+  };
+});
+
+const mail = vi.hoisted(() => ({ sent: [] as Array<{ subject: string; lines: string[] }> }));
+vi.mock("./transactional-email", () => ({
+  sendOpsAlert: vi.fn(async (subject: string, lines: string[]) => {
+    mail.sent.push({ subject, lines });
+    return true;
+  }),
+  emailDeliveryConfigured: vi.fn(() => true),
+}));
+
 import { settleCardCharge } from "./checkout-card-charge";
+import { trustedStayQuote } from "./trusted-checkout-quote";
 
 function resetWorld(opts: { folioTotal: number; metadata?: Record<string, string>; payments?: Payment[] }) {
   guesty.folioTotal = opts.folioTotal;
@@ -158,6 +210,9 @@ function resetWorld(opts: { folioTotal: number; metadata?: Record<string, string
   guesty.failNextFee = null;
   guesty.staleReadsLeft = 0;
   guesty.unpricedReadsLeft = 0;
+  guesty.reservation = { fullFolio: 0, discountedFolio: 0, couponMode: "apply", bodies: [] };
+  supplier.reservationCouponCode = undefined;
+  mail.sent = [];
   pi.metadata = {
     flow: "card_v2",
     intentId: intent.id,
@@ -302,5 +357,146 @@ describe("settleCardCharge — idempotência do registo no Guesty", () => {
     expect(guesty.payments.map((p) => p.amount)).toEqual([2524.07]);
     expect(pi.metadata.priceGap).toBe("242.10");
     expect(guesty.notes).toContain("NAO e divida do hospede");
+  });
+});
+
+/**
+ * Black Friday 2026 (PABF15GERAL26 / PABF15VIP26, 15% nas noites): a reserva
+ * nascia sem o cupão e o folio ficava 15% das noites acima do pago
+ * (GY-K8buDVJW: pago 5.074,37, folio 5.872,75). Aqui a reserva é criada neste
+ * passe, como no primeiro settle de um pagamento novo.
+ */
+describe("settleCardCharge — cupão do site na criação da reserva", () => {
+  // Tarifa de alojamento 2.000 EUR: 15% = 300 EUR. O site cobrou a estadia
+  // já com o desconto (2.524,07); o Guesty sem cupão pede 2.824,07.
+  const PAID_STAY = 2524.07;
+  const FULL_FOLIO = 2824.07;
+
+  function newBooking(opts: { coupon?: string; couponMode?: "apply" | "reject" | "ignore" }) {
+    resetWorld({ folioTotal: 0 });
+    // Pagamento acabado de capturar: a reserva ainda não existe.
+    delete pi.metadata.guestyReservationId;
+    delete pi.metadata.guestyConfirmationCode;
+    supplier.reservationCouponCode = opts.coupon;
+    guesty.reservation = {
+      fullFolio: FULL_FOLIO,
+      discountedFolio: PAID_STAY,
+      couponMode: opts.couponMode ?? "apply",
+      bodies: [],
+    };
+  }
+  /** O alerta não é esperado pelo settle (lock do intent): dá-lhe tempo de sair. */
+  const flushAlerts = () => new Promise((r) => setTimeout(r, 20));
+
+  beforeEach(() => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.mocked(trustedStayQuote).mockClear();
+  });
+
+  it("o Guesty aplica o cupão: folio igual ao pago, saldo 0, sem nota de divergência nem alerta", async () => {
+    newBooking({ coupon: "PABF15GERAL26" });
+
+    const r = await settleCardCharge(intent.id, pi.id);
+    await flushAlerts();
+
+    expect(r).toEqual({ reservationId: "res-1", confirmationCode: "GY-TEST" });
+    expect(trustedStayQuote).toHaveBeenCalledOnce();
+    expect(guesty.reservation.bodies).toHaveLength(1);
+    expect(guesty.reservation.bodies[0]).toMatchObject({ couponCode: "PABF15GERAL26", applyPromotions: false });
+    expect(guesty.folioTotal).toBe(PAID_STAY);
+    expect(guesty.payments.map((p) => p.amount)).toEqual([PAID_STAY]);
+    expect(round2(guesty.folioTotal - paid())).toBe(0);
+    expect(guesty.invoiceItems).toEqual([]);
+    expect(pi.metadata.priceGap).toBeUndefined();
+    expect(pi.metadata).toMatchObject({ guestyCoupon: "PABF15GERAL26", guestyCouponStatus: "sent", feeAdjusted: "1" });
+    expect(guesty.notes).toContain("Checkout 2.0: pagamento unico");
+    expect(guesty.notes).not.toContain("NAO e divida do hospede");
+    expect(guesty.notes).not.toContain("Accommodation fare");
+    expect(mail.sent).toEqual([]);
+  });
+
+  it("o Guesty recusa o cupão: a reserva nasce sem ele, o settle fecha e o CS recebe o acerto exato", async () => {
+    newBooking({ coupon: "PABF15VIP26", couponMode: "reject" });
+
+    const r = await settleCardCharge(intent.id, pi.id);
+    await flushAlerts();
+
+    expect(r.reservationId).toBe("res-1");
+    // Um pedido com o código (recusado) e um sem ele: uma só reserva.
+    expect(guesty.reservation.bodies.map((b) => b.couponCode)).toEqual(["PABF15VIP26", undefined]);
+    expect(guesty.payments.map((p) => p.amount)).toEqual([PAID_STAY]);
+    expect(guesty.invoiceItems).toEqual([]);
+    expect(pi.metadata).toMatchObject({ guestyCoupon: "PABF15VIP26", guestyCouponStatus: "rejected", priceGap: "300.00" });
+    expect(pi.metadata.guestyCouponError).toMatch(/Coupon PABF15VIP26 does not exist/);
+    // A nota da reserva diz que não é dívida e qual é o acerto.
+    expect(guesty.notes).toContain("NAO e divida do hospede");
+    expect(guesty.notes).toContain("Cupao PABF15VIP26 recusado pelo Guesty");
+    expect(guesty.notes).toContain("Accommodation fare, menos 300.00 EUR");
+    expect(mail.sent).toHaveLength(1);
+    const alert = mail.sent[0];
+    expect(alert.subject).toContain("PABF15VIP26");
+    expect(alert.subject).toContain("GY-TEST");
+    const text = alert.lines.join("\n");
+    expect(text).toContain("Guest folio → Adjust line item → Accommodation fare → menos 300.00 EUR");
+    expect(text).toContain("2524.07");
+    expect(text).toContain("2824.07");
+    expect(text).toContain("não lhe pedir pagamento");
+    expect(text).toContain("Coupon PABF15VIP26 does not exist");
+  });
+
+  it("o Guesty aceita o código mas não baixa o folio: alerta manda ver a linha de desconto antes de acertar", async () => {
+    newBooking({ coupon: "PABF15GERAL26", couponMode: "ignore" });
+
+    await settleCardCharge(intent.id, pi.id);
+    await flushAlerts();
+
+    expect(guesty.reservation.bodies).toHaveLength(1);
+    expect(pi.metadata).toMatchObject({ guestyCouponStatus: "sent", priceGap: "300.00" });
+    expect(guesty.notes).toContain("Cupao PABF15GERAL26 enviado ao Guesty mas sem desconto no folio");
+    expect(mail.sent).toHaveLength(1);
+    const text = mail.sent[0].lines.join("\n");
+    expect(text).toContain("enviado ao Guesty sem erro");
+    expect(text).toContain("Se não houver linha de desconto do cupão PABF15GERAL26");
+    expect(text).toContain("menos 300.00 EUR");
+  });
+
+  it("sem cupão na quote do Guesty: o pedido não leva código e a divergência não gera alerta de cupão", async () => {
+    newBooking({});
+
+    await settleCardCharge(intent.id, pi.id);
+    await flushAlerts();
+
+    expect(guesty.reservation.bodies[0]).not.toHaveProperty("couponCode");
+    expect(pi.metadata.priceGap).toBe("300.00");
+    expect(pi.metadata.guestyCoupon).toBeUndefined();
+    expect(guesty.notes).toContain("NAO e divida do hospede");
+    expect(guesty.notes).not.toContain("Cupao");
+    expect(mail.sent).toEqual([]);
+  });
+
+  it("settle retomado depois da criação: o cupão vem do carimbo no PI e o alerta sai uma vez", async () => {
+    // O 1.º passe criou a reserva (código recusado) e morreu antes do acerto.
+    resetWorld({
+      folioTotal: FULL_FOLIO,
+      metadata: {
+        guestyCoupon: "PABF15GERAL26",
+        guestyCouponStatus: "rejected",
+        guestyCouponError: "Guesty request failed (400) · Coupon PABF15GERAL26 does not exist",
+      },
+    });
+
+    await settleCardCharge(intent.id, pi.id);
+    await settleCardCharge(intent.id, pi.id);
+    await flushAlerts();
+
+    expect(trustedStayQuote).not.toHaveBeenCalled();
+    expect(guesty.reservation.bodies).toEqual([]);
+    expect(guesty.payments.map((p) => p.amount)).toEqual([PAID_STAY]);
+    expect(guesty.notes).toContain("Accommodation fare, menos 300.00 EUR");
+    expect(mail.sent).toHaveLength(1);
+    expect(mail.sent[0].lines.join("\n")).toContain("Coupon PABF15GERAL26 does not exist");
   });
 });

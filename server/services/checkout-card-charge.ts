@@ -35,6 +35,7 @@ import {
   fetchReservationGuestId,
   attachGuestPaymentMethod,
   fetchReservationPaymentState,
+  type ReservationCouponOutcome,
 } from "./guesty-openapi-paypal";
 
 /** O que fazer ao folio do Guesty antes de registar o pagamento da estadia. */
@@ -270,6 +271,91 @@ async function recordTwoPartsSchedule(input: {
   console.info(`[TwoParts] 2.a parte ${outcome === "inserted" ? "agendada" : "ja agendada"} intent=${intentId} reserva=${reservationId} em ${chargeAt.toISOString()}`);
 }
 
+/**
+ * O cupão da reserva tal como ficou carimbado no PI, para um settle retomado
+ * depois da criação (a quote já não se relê nesse passe).
+ */
+export function couponFromMetadata(meta: Record<string, string> | null | undefined): ReservationCouponOutcome | null {
+  const code = String(meta?.guestyCoupon ?? "").trim();
+  if (!code) return null;
+  if (meta?.guestyCouponStatus === "sent") return { code, status: "sent" };
+  if (meta?.guestyCouponStatus === "rejected") {
+    return { code, status: "rejected", error: String(meta?.guestyCouponError ?? "") };
+  }
+  return null;
+}
+
+/** Carimbo do cupão no PI (valores da metadata do Stripe: até 500 caracteres). */
+function couponMetadata(coupon: ReservationCouponOutcome | undefined): Record<string, string> {
+  if (!coupon) return {};
+  return {
+    guestyCoupon: coupon.code.slice(0, 100),
+    guestyCouponStatus: coupon.status,
+    ...(coupon.status === "rejected" ? { guestyCouponError: coupon.error.slice(0, 300) } : {}),
+  };
+}
+
+/** Texto da nota da reserva quando o folio ficou sem o desconto do cupão (ASCII). */
+export function couponGapNote(coupon: ReservationCouponOutcome, gap: number): string {
+  const what = coupon.status === "rejected" ? "recusado pelo Guesty" : "enviado ao Guesty mas sem desconto no folio";
+  return (
+    ` Cupao ${coupon.code} ${what}: acertar em Guest folio > Adjust line item > Accommodation fare, ` +
+    `menos ${gap.toFixed(2)} EUR.`
+  );
+}
+
+function escapeAlertHtml(text: string): string {
+  return String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+}
+
+/**
+ * O hóspede pagou com um cupão e o folio do Guesty ficou sem o desconto (o
+ * Guesty recusou o código, ou aceitou-o e não o aplicou). O CS acerta a
+ * tarifa de alojamento à mão, pelo valor exato da diferença. Nunca lança e
+ * nunca trava o settle: devolve se o email saiu.
+ */
+export async function alertCouponNotInFolio(input: {
+  reservationId: string;
+  confirmationCode: string;
+  propertyName?: string | null;
+  coupon: ReservationCouponOutcome;
+  gap: number;
+  stayEur: number;
+  folioDueEur: number;
+}): Promise<boolean> {
+  try {
+    const { coupon, gap } = input;
+    const label = escapeAlertHtml(input.confirmationCode || input.reservationId);
+    const house = input.propertyName ? ` (${escapeAlertHtml(input.propertyName)})` : "";
+    const code = escapeAlertHtml(coupon.code);
+    const url = `https://app.guesty.com/reservations/${encodeURIComponent(input.reservationId)}/summary`;
+    const gapEur = gap.toFixed(2);
+    const why =
+      coupon.status === "rejected"
+        ? `o Guesty recusou o código e a reserva foi criada sem ele`
+        : `o código foi enviado ao Guesty sem erro, mas o folio não ficou com o desconto`;
+    const subject = `ACERTAR TARIFA NO GUESTY — cupão ${coupon.code} — ${input.confirmationCode || input.reservationId}`;
+    const lines = [
+      `A reserva ${label}${house} foi paga no site com o cupão ${code}, mas ${why}. ` +
+        `O site vendeu a estadia por ${input.stayEur.toFixed(2)} EUR e o Guesty pede ${input.folioDueEur.toFixed(2)} EUR: ` +
+        `${gapEur} EUR a mais.`,
+      coupon.status === "rejected"
+        ? `<strong>A fazer no Guesty:</strong> abrir a reserva → Guest folio → Adjust line item → Accommodation fare → menos ${gapEur} EUR. Depois disso o saldo da reserva deve ficar a 0.`
+        : `<strong>A fazer no Guesty:</strong> abrir a reserva e ver o Guest folio. Se não houver linha de desconto do cupão ${code}: Adjust line item → Accommodation fare → menos ${gapEur} EUR, e o saldo deve ficar a 0. Se a linha de desconto lá estiver, a diferença é outra: não mexer e avisar a equipa técnica.`,
+      `O hóspede não deve nada: não lhe pedir pagamento nem dados de cartão.`,
+      `Reserva: <a href="${url}">${url}</a>`,
+      ...(coupon.status === "rejected" && coupon.error
+        ? [`Resposta do Guesty ao código: ${escapeAlertHtml(coupon.error)}`]
+        : []),
+    ];
+    const { sendOpsAlert } = await import("./transactional-email");
+    return await sendOpsAlert(subject, lines, { copyToSales: true });
+  } catch (err: any) {
+    console.error(`[Card2b] alerta de cupao sem desconto nao saiu (${input.reservationId}): ${err?.message}`);
+    return false;
+  }
+}
+
 /** Cria a reserva Guesty (só estadia) para um PI card_v2 pago. Idempotente. */
 export function settleCardCharge(intentId: string, paymentIntentId: string) {
   return withCheckoutChargeLock(intentId, () => settleCardChargeUnlocked(intentId, paymentIntentId));
@@ -322,6 +408,8 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
     pi.metadata.guestyReservationId || (m as any).reservationId || null;
   let confirmationCode: string =
     pi.metadata.guestyConfirmationCode || (m as any).confirmationCode || "";
+  // Cupão com que a reserva foi pedida ao Guesty (carimbado no PI na criação).
+  let coupon: ReservationCouponOutcome | null = couponFromMetadata(pi.metadata as Record<string, string>);
 
   if (!reservationId) {
     if (pi.currency !== 'eur' || (m as any).paymentIntentId !== pi.id) throw new Error('Payment identity mismatch');
@@ -393,6 +481,13 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
           `e a reserva fica com preco e politica de cancelamento diferentes do que foi vendido`,
       );
     }
+    // O cupão vai na criação da reserva: o preço pago já tem o desconto, e sem
+    // ele o Guesty preçava a estadia cheia (Black Friday 2026: folio 15% das
+    // noites acima do pago, saldo aberto, Hostkit e proprietário sobre a tarifa
+    // sem desconto). Só o código que a quote do Guesty prova aplicado, relida
+    // agora mesmo (trustedStayQuote), nunca o do browser. Recusado, a reserva
+    // nasce sem ele e o acerto do folio abaixo avisa o CS.
+    const couponCode = trusted.reservationCouponCode;
     const res = await createReservationViaOpenApi({
       listingId: (m as any).listingId,
       checkIn: (m as any).checkIn,
@@ -405,14 +500,18 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
       numberOfChildren: 0,
       numberOfInfants: 0,
       ...(ratePlanId ? { ratePlanId } : {}),
+      ...(couponCode ? { couponCode } : {}),
     } as any);
     reservationId = res.reservationId;
     confirmationCode = res.confirmationCode;
+    coupon = res.coupon ?? null;
     // Carimbo IMEDIATO, antes de qualquer passo falível (payment/nota): se o
     // resto falhar, o retry retoma ESTA reserva em vez de criar uma segunda.
+    // O cupão vai no mesmo carimbo: o passe retomado precisa dele para avisar.
     await updatePaymentIntentMetadata(paymentIntentId, {
       guestyReservationId: reservationId,
       guestyConfirmationCode: confirmationCode,
+      ...couponMetadata(res.coupon),
     }).catch((e: any) => console.error("[Card2b] stamp PI falhou:", e?.message));
     await updateBookingIntent(intentId, {
       reservationId,
@@ -505,6 +604,22 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
           feeAdjusted: "1",
           priceGap: priceGap.toFixed(2),
         }).catch(() => {});
+        // Reserva paga com cupão e folio sem o desconto: aqui o acerto já não
+        // é decisão comercial. O desconto foi vendido, e o proprietário
+        // partilha-o (entra na tarifa de alojamento, como nos cupões do próprio
+        // Guesty). O CS recebe o valor exato a tirar à Accommodation fare.
+        // Não se espera pelo email: o settle corre dentro do lock do intent.
+        if (coupon) {
+          void alertCouponNotInFolio({
+            reservationId,
+            confirmationCode,
+            propertyName: (m as any).propertyName ?? null,
+            coupon,
+            gap: priceGap,
+            stayEur,
+            folioDueEur: state.balanceDue,
+          });
+        }
       } else {
         await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
       }
@@ -545,7 +660,8 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
         (twoParts
           ? `alem da 2.a parte agendada, nao ha nada a pedir-lhe. `
           : `ele pagou por inteiro o preco que lhe foi apresentado. `) +
-        `Nao lhe pedir pagamento nem dados de cartao. Diferenca a resolver internamente.`
+        `Nao lhe pedir pagamento nem dados de cartao. Diferenca a resolver internamente.` +
+        (coupon ? couponGapNote(coupon, priceGap) : "")
       : "";
     // O NIF da fatura não vai aqui: vai no topo da nota, escrito pelo
     // fireCheckoutPaidEmails, o ponto por onde passam todos os métodos (no fim

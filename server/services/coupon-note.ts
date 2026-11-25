@@ -1,9 +1,10 @@
 /**
  * Linha "Cupao: CODIGO" para a nota da reserva no Guesty.
  *
- * O reservations-v3 é criado sem o cupão (applyPromotions: false) e o Guesty
- * não guarda o código que o hóspede escreveu no site: a reserva chega sem
- * rasto da campanha de email que a trouxe. O marketing atribui a reserva à
+ * Até nov 2026 o reservations-v3 era criado sem o cupão e a reserva chegava
+ * ao Guesty sem rasto da campanha de email que a trouxe. Desde então o settle
+ * do cartão manda o código que a quote do Guesty prova aplicado, mas esta
+ * linha continua a ser a que o marketing lê. O marketing atribui a reserva à
  * campanha por esta linha (pa-marketing, b-crm/jobs/campaign_bookings.py,
  * que procura o código nas notas). Vazio quando não houve código.
  */
