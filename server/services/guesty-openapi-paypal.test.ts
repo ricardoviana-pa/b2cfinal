@@ -690,3 +690,48 @@ describe("recordExternalPayment — repetição segura depois de um POST ambígu
     expect(vi.mocked(guestyClient.request).mock.calls.filter((c) => c[0] === "POST")).toHaveLength(1);
   });
 });
+
+describe("discountAccommodationFare — o acerto que o CS fazia em Adjust line item", () => {
+  beforeEach(() => {
+    vi.mocked(guestyClient.request).mockReset();
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+
+  it("POST manual-total-amount com AF negativo, a marca do PI e sem repetição às cegas", async () => {
+    vi.mocked(guestyClient.request).mockResolvedValueOnce([] as any).mockResolvedValueOnce({} as any);
+    const { discountAccommodationFare } = await import("./guesty-openapi-paypal");
+    expect(await discountAccommodationFare("res-1", 798.375, "pi_abc", "Checkout do site")).toBe("applied");
+    const [method, endpoint, opts] = vi.mocked(guestyClient.request).mock.calls[1] as any[];
+    expect(method).toBe("POST");
+    expect(endpoint).toBe("/v1/price-adjustments/manual-total-amount");
+    expect(opts.nonIdempotent).toBe(true);
+    expect(opts.body.reservationId).toBe("res-1");
+    expect(opts.body.priceAdjustments).toEqual([
+      { normalType: "AF", amount: -798.38, description: "Checkout do site [pi_abc]" },
+    ]);
+  });
+
+  it("já há um acerto com a marca do PI: não lança outro", async () => {
+    vi.mocked(guestyClient.request).mockResolvedValueOnce([{ amount: -300, description: "Checkout do site [pi_abc]" }] as any);
+    const { discountAccommodationFare } = await import("./guesty-openapi-paypal");
+    expect(await discountAccommodationFare("res-1", 300, "pi_abc", "Checkout do site")).toBe("already");
+    expect(vi.mocked(guestyClient.request)).toHaveBeenCalledTimes(1);
+  });
+
+  it("lista ilegível segue; 4xx é 'refused', 5xx ambíguo é 'unknown'; valor zero nem pede", async () => {
+    const { discountAccommodationFare } = await import("./guesty-openapi-paypal");
+    const { GuestyClientError } = await import("../lib/guesty");
+    vi.mocked(guestyClient.request)
+      .mockRejectedValueOnce(new Error("lista em baixo"))
+      .mockRejectedValueOnce(new GuestyClientError({ message: "bad", status: 400, method: "POST", endpoint: "/x" }));
+    expect(await discountAccommodationFare("res-1", 10, "pi_abc", "x")).toBe("refused");
+    vi.mocked(guestyClient.request)
+      .mockResolvedValueOnce([] as any)
+      .mockRejectedValueOnce(new GuestyClientError({ message: "boom", status: 502, method: "POST", endpoint: "/x", details: { outcome: "unknown" } }));
+    expect(await discountAccommodationFare("res-1", 10, "pi_abc", "x")).toBe("unknown");
+    vi.mocked(guestyClient.request).mockReset();
+    expect(await discountAccommodationFare("res-1", 0, "pi_abc", "x")).toBe("refused");
+    expect(vi.mocked(guestyClient.request)).not.toHaveBeenCalled();
+  });
+});

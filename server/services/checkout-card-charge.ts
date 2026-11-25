@@ -31,6 +31,7 @@ import {
   getReservationSettlementState,
   paymentRecordsIntent,
   addReservationServiceFee,
+  discountAccommodationFare,
   fetchPaymentProviderId,
   fetchReservationGuestId,
   attachGuestPaymentMethod,
@@ -86,6 +87,28 @@ async function waitForBalanceAtLeast(reservationId: string, targetEur: number): 
     await new Promise((r) => setTimeout(r, 1500));
   }
   return false;
+}
+
+/** Depois do desconto no alojamento: espera até o saldo descer ao valor
+ *  vendido (~9 s). Nunca lança. */
+async function waitForBalanceAtMost(reservationId: string, targetEur: number): Promise<boolean> {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const state = await fetchReservationPaymentState(reservationId);
+    if (state && typeof state.balanceDue === "number" && state.balanceDue <= targetEur + 0.5) return true;
+    await new Promise((r) => setTimeout(r, 1500));
+  }
+  return false;
+}
+
+/**
+ * Até que parte do folio o site desconta sozinho. Cupões (15%) e planos
+ * tarifários diferentes ficaram entre 9% e 27% em nov/2026; um folio em dobro
+ * (50%) é outra coisa e vai para uma pessoa.
+ */
+export const AUTO_FARE_DISCOUNT_MAX_SHARE = 0.35;
+
+export function canAutoDiscountFare(gap: number, folioTotal: number): boolean {
+  return gap > 0 && folioTotal > 0 && gap <= folioTotal * AUTO_FARE_DISCOUNT_MAX_SHARE;
 }
 
 /** `bedrooms` alinha o preço de limpeza COBRADO com o MOSTRADO: o getExtras
@@ -295,13 +318,13 @@ function couponMetadata(coupon: ReservationCouponOutcome | undefined): Record<st
   };
 }
 
-/** Texto da nota da reserva quando o folio ficou sem o desconto do cupão (ASCII). */
-export function couponGapNote(coupon: ReservationCouponOutcome, gap: number): string {
-  const what = coupon.status === "rejected" ? "recusado pelo Guesty" : "enviado ao Guesty mas sem desconto no folio";
-  return (
-    ` Cupao ${coupon.code} ${what}: acertar em Guest folio > Adjust line item > Accommodation fare, ` +
-    `menos ${gap.toFixed(2)} EUR.`
-  );
+/** Texto da nota da reserva quando o folio ficou acima do vendido e o acerto
+ *  automático não entrou (ASCII). Com cupão diz o que lhe aconteceu. */
+export function couponGapNote(coupon: ReservationCouponOutcome | null, gap: number): string {
+  const what = !coupon
+    ? "Acerto automatico nao entrou"
+    : `Cupao ${coupon.code} ${coupon.status === "rejected" ? "recusado pelo Guesty" : "enviado ao Guesty mas sem desconto no folio"}`;
+  return ` ${what}: acertar em Guest folio > Adjust line item > Accommodation fare, menos ${gap.toFixed(2)} EUR.`;
 }
 
 function escapeAlertHtml(text: string): string {
@@ -318,33 +341,40 @@ export async function alertCouponNotInFolio(input: {
   reservationId: string;
   confirmationCode: string;
   propertyName?: string | null;
-  coupon: ReservationCouponOutcome;
+  /** null: sem cupão (plano tarifário ou preço diferente no Guesty). */
+  coupon: ReservationCouponOutcome | null;
   gap: number;
   stayEur: number;
   folioDueEur: number;
+  /** Porque é que o site não descontou sozinho (diferença grande, Guesty recusou…). */
+  autoFix?: string;
 }): Promise<boolean> {
   try {
     const { coupon, gap } = input;
     const label = escapeAlertHtml(input.confirmationCode || input.reservationId);
     const house = input.propertyName ? ` (${escapeAlertHtml(input.propertyName)})` : "";
-    const code = escapeAlertHtml(coupon.code);
+    const code = coupon ? escapeAlertHtml(coupon.code) : "";
     const url = `https://app.guesty.com/reservations/${encodeURIComponent(input.reservationId)}/summary`;
     const gapEur = gap.toFixed(2);
-    const why =
-      coupon.status === "rejected"
+    const why = !coupon
+      ? `o Guesty precificou a estadia acima do que o site vendeu`
+      : coupon.status === "rejected"
         ? `o Guesty recusou o código e a reserva foi criada sem ele`
         : `o código foi enviado ao Guesty sem erro, mas o folio não ficou com o desconto`;
-    const subject = `ACERTAR TARIFA NO GUESTY — cupão ${coupon.code} — ${input.confirmationCode || input.reservationId}`;
+    const subject = coupon
+      ? `ACERTAR TARIFA NO GUESTY — cupão ${coupon.code} — ${input.confirmationCode || input.reservationId}`
+      : `ACERTAR TARIFA NO GUESTY — ${input.confirmationCode || input.reservationId}`;
     const lines = [
-      `A reserva ${label}${house} foi paga no site com o cupão ${code}, mas ${why}. ` +
+      `A reserva ${label}${house} foi paga no site${coupon ? ` com o cupão ${code}` : ""}, mas ${why}. ` +
         `O site vendeu a estadia por ${input.stayEur.toFixed(2)} EUR e o Guesty pede ${input.folioDueEur.toFixed(2)} EUR: ` +
         `${gapEur} EUR a mais.`,
-      coupon.status === "rejected"
-        ? `<strong>A fazer no Guesty:</strong> abrir a reserva → Guest folio → Adjust line item → Accommodation fare → menos ${gapEur} EUR. Depois disso o saldo da reserva deve ficar a 0.`
-        : `<strong>A fazer no Guesty:</strong> abrir a reserva e ver o Guest folio. Se não houver linha de desconto do cupão ${code}: Adjust line item → Accommodation fare → menos ${gapEur} EUR, e o saldo deve ficar a 0. Se a linha de desconto lá estiver, a diferença é outra: não mexer e avisar a equipa técnica.`,
+      ...(input.autoFix ? [`O site não fez o acerto sozinho: ${escapeAlertHtml(input.autoFix)}.`] : []),
+      coupon && coupon.status !== "rejected"
+        ? `<strong>A fazer no Guesty:</strong> abrir a reserva e ver o Guest folio. Se não houver linha de desconto do cupão ${code}: Adjust line item → Accommodation fare → menos ${gapEur} EUR, e o saldo deve ficar a 0. Se a linha de desconto lá estiver, a diferença é outra: não mexer e avisar a equipa técnica.`
+        : `<strong>A fazer no Guesty, hoje:</strong> abrir a reserva → Guest folio → Adjust line item → Accommodation fare → menos ${gapEur} EUR. Depois disso o saldo da reserva deve ficar a 0. A Hostkit emite a fatura de madrugada ao valor do folio.`,
       `O hóspede não deve nada: não lhe pedir pagamento nem dados de cartão.`,
       `Reserva: <a href="${url}">${url}</a>`,
-      ...(coupon.status === "rejected" && coupon.error
+      ...(coupon && coupon.status === "rejected" && coupon.error
         ? [`Resposta do Guesty ao código: ${escapeAlertHtml(coupon.error)}`]
         : []),
     ];
@@ -550,6 +580,8 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
   // A divergência de um passe anterior sobrevive ao carimbo: sem isto, um
   // settle retomado escrevia a nota sem o aviso "não é dívida do hóspede".
   let priceGap = Number(pi.metadata.priceGap ?? 0) || 0;
+  // Desconto já feito no alojamento (deste passe ou de um anterior), para a nota.
+  let folioDiscounted = Number(pi.metadata.folioDiscounted ?? 0) || 0;
   if (pi.metadata.feeAdjusted !== "1") {
     const state = await getReservationSettlementState(reservationId);
     if (!state) {
@@ -588,28 +620,69 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
         // "refused" (4xx): não se carimba. O registo abaixo capa no saldo do
         // Guesty e o próximo passe vê pagamentos no folio e já não mexe.
       } else if (decision.action === "price-gap") {
-        // Sentido contrário: o Guesty pede mais do que o site cobrou. NÃO se
-        // corrige o folio aqui — baixá-lo tira receita ao proprietário e isso é
-        // decisão comercial, não de código. Mas também não fica calado: o valor
-        // vai para o PI, para o log e para uma nota na própria reserva, para
-        // quem a abrir no Guesty ver que não há nada a cobrar ao hóspede.
-        priceGap = decision.gap;
-        console.error(
-          `[Card2b] PRECO DIVERGENTE reserva=${reservationId}: Guesty pede ${state.balanceDue} EUR, o site cobrou ${stayEur} EUR ` +
-            `(diferenca ${priceGap}) — o hospede NAO deve nada; nao lhe pedir pagamento`,
-        );
-        // Carimbado também aqui: era a falta deste carimbo que fazia o 2.º
-        // passe voltar a "acertar" o folio já pago (GY-Huf4Lp8L).
-        await updatePaymentIntentMetadata(paymentIntentId, {
-          feeAdjusted: "1",
-          priceGap: priceGap.toFixed(2),
-        }).catch(() => {});
-        // Reserva paga com cupão e folio sem o desconto: aqui o acerto já não
-        // é decisão comercial. O desconto foi vendido, e o proprietário
-        // partilha-o (entra na tarifa de alojamento, como nos cupões do próprio
-        // Guesty). O CS recebe o valor exato a tirar à Accommodation fare.
-        // Não se espera pelo email: o settle corre dentro do lock do intent.
-        if (coupon) {
+        // Sentido contrário: o Guesty pede mais do que o site cobrou (cupão que
+        // não passou, plano tarifário diferente). Decisão do Ricardo, 25 nov
+        // 2026: o que conta é o que foi vendido. O site desconta a diferença na
+        // tarifa de alojamento — o acerto que o CS fazia à mão em Adjust line
+        // item, partilhado com o owner — ANTES de registar o pagamento, para a
+        // reserva ficar paga, as mensagens do Guesty saírem, a Hostkit faturar
+        // o valor certo de madrugada e o owner ser calculado sobre o vendido.
+        // Uma diferença anormal (mais de 35% do folio) não se mexe sozinha.
+        const gap = decision.gap;
+        let autoFix: string | undefined;
+        let fixed = false;
+        if (!canAutoDiscountFare(gap, state.balanceDue)) {
+          autoFix = `diferença de ${gap.toFixed(2)} EUR é mais de ${Math.round(AUTO_FARE_DISCOUNT_MAX_SHARE * 100)}% do folio (${state.balanceDue.toFixed(2)} EUR) — confirmar antes de acertar`;
+        } else {
+          const outcome = await discountAccommodationFare(
+            reservationId,
+            gap,
+            paymentIntentId,
+            `Checkout do site: vendido por ${stayEur.toFixed(2)} EUR, o Guesty precava ${state.balanceDue.toFixed(2)} EUR. Acerto automatico do alojamento`,
+          );
+          if (outcome === "applied" || outcome === "already") {
+            fixed = true;
+            if (!(await waitForBalanceAtMost(reservationId, stayEur))) {
+              console.warn(`[Card2b] saldo ainda sem o desconto reserva=${reservationId} — o registo segue pelo valor vendido`);
+            }
+          } else if (outcome === "unknown") {
+            // 5xx/timeout: só o saldo diz se entrou. Entrou → segue. Não entrou
+            // (ou ainda invisível) → pára antes do registo; o próximo passe relê
+            // o folio, e a marca do PI na descrição impede um segundo desconto.
+            if (await waitForBalanceAtMost(reservationId, stayEur)) {
+              fixed = true;
+            } else {
+              throw new Error(`desconto no alojamento com resultado desconhecido reserva=${reservationId} — registo adiado`);
+            }
+          } else {
+            autoFix = "o Guesty recusou o acerto pela API";
+          }
+        }
+        if (fixed) {
+          priceGap = 0;
+          folioDiscounted = gap;
+          console.info(
+            `[Card2b] reserva=${reservationId}: Guesty pedia ${state.balanceDue} EUR, o site cobrou ${stayEur} EUR — ` +
+              `alojamento descontado em ${gap} EUR`,
+          );
+          await updatePaymentIntentMetadata(paymentIntentId, {
+            feeAdjusted: "1",
+            folioDiscounted: gap.toFixed(2),
+          }).catch(() => {});
+        } else {
+          priceGap = gap;
+          console.error(
+            `[Card2b] PRECO DIVERGENTE reserva=${reservationId}: Guesty pede ${state.balanceDue} EUR, o site cobrou ${stayEur} EUR ` +
+              `(diferenca ${priceGap}) — o hospede NAO deve nada; nao lhe pedir pagamento`,
+          );
+          // Carimbado também aqui: era a falta deste carimbo que fazia o 2.º
+          // passe voltar a "acertar" o folio já pago (GY-Huf4Lp8L).
+          await updatePaymentIntentMetadata(paymentIntentId, {
+            feeAdjusted: "1",
+            priceGap: priceGap.toFixed(2),
+          }).catch(() => {});
+          // O CS recebe o valor exato a tirar à Accommodation fare. Não se
+          // espera pelo email: o settle corre dentro do lock do intent.
           void alertCouponNotInFolio({
             reservationId,
             confirmationCode,
@@ -618,6 +691,7 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
             gap: priceGap,
             stayEur,
             folioDueEur: state.balanceDue,
+            autoFix,
           });
         }
       } else {
@@ -661,8 +735,11 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
           ? `alem da 2.a parte agendada, nao ha nada a pedir-lhe. `
           : `ele pagou por inteiro o preco que lhe foi apresentado. `) +
         `Nao lhe pedir pagamento nem dados de cartao. Diferenca a resolver internamente.` +
-        (coupon ? couponGapNote(coupon, priceGap) : "")
-      : "";
+        couponGapNote(coupon, priceGap)
+      : folioDiscounted > 0
+        ? ` Folio acertado automaticamente: o Guesty precava esta estadia ${folioDiscounted.toFixed(2)} EUR ` +
+          `acima do que o site cobrou; a diferenca foi descontada na tarifa de alojamento (partilhada com o owner).`
+        : "";
     // O NIF da fatura não vai aqui: vai no topo da nota, escrito pelo
     // fireCheckoutPaidEmails, o ponto por onde passam todos os métodos (no fim
     // desta nota só o cartão o levava, e era a primeira coisa a cair num corte).

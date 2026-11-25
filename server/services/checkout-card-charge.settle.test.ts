@@ -23,6 +23,10 @@ const guesty = {
   staleFolioTotal: 0,
   /** Leituras com o folio ainda por precificar (money sem balanceDue). */
   unpricedReadsLeft: 0,
+  /** Acertos de tarifa (POST /v1/price-adjustments/manual-total-amount). */
+  priceAdjustments: [] as Array<{ amount: number; normalType: string; description: string }>,
+  /** "ok" grava; "refuse" = 400; "lost" = 502 sem gravar; "persisted" = grava e responde 502. */
+  adjustMode: "ok" as "ok" | "refuse" | "lost" | "persisted",
   /**
    * POST /v1/reservations-v3: o folio com que a reserva nasce. "apply" = o
    * Guesty aplica o cupão (folio com desconto); "reject" = 400 a nomear o
@@ -81,6 +85,35 @@ vi.mock("../lib/guesty", async (importOriginal) => {
           const before = guesty.folioTotal;
           guesty.invoiceItems.push(opts.body.amount);
           guesty.folioTotal = round2(guesty.folioTotal + opts.body.amount);
+          if (mode === "persisted") {
+            guesty.staleReadsLeft = 1;
+            guesty.staleFolioTotal = before;
+            throw ambiguous();
+          }
+          return {};
+        }
+        if (method === "GET" && endpoint.startsWith("/v1/price-adjustments/total-amount/")) {
+          return guesty.priceAdjustments;
+        }
+        if (method === "POST" && endpoint === "/v1/price-adjustments/manual-total-amount") {
+          const mode = guesty.adjustMode;
+          if (mode !== "ok") guesty.adjustMode = "ok";
+          const adj = opts.body.priceAdjustments[0];
+          if (mode === "refuse") {
+            throw new actual.GuestyClientError({ message: "Guesty request failed (400)", status: 400, method: "POST", endpoint, details: {} });
+          }
+          const ambiguous = () =>
+            new actual.GuestyClientError({
+              message: "Guesty request failed (502, outcome unknown: not retried)",
+              status: 502,
+              method: "POST",
+              endpoint,
+              details: { outcome: "unknown" },
+            });
+          if (mode === "lost") throw ambiguous();
+          const before = guesty.folioTotal;
+          guesty.priceAdjustments.push({ amount: adj.amount, normalType: adj.normalType, description: adj.description });
+          guesty.folioTotal = round2(guesty.folioTotal + adj.amount);
           if (mode === "persisted") {
             guesty.staleReadsLeft = 1;
             guesty.staleFolioTotal = before;
@@ -210,6 +243,8 @@ function resetWorld(opts: { folioTotal: number; metadata?: Record<string, string
   guesty.failNextFee = null;
   guesty.staleReadsLeft = 0;
   guesty.unpricedReadsLeft = 0;
+  guesty.priceAdjustments = [];
+  guesty.adjustMode = "ok";
   guesty.reservation = { fullFolio: 0, discountedFolio: 0, couponMode: "apply", bodies: [] };
   supplier.reservationCouponCode = undefined;
   mail.sent = [];
@@ -257,16 +292,89 @@ describe("settleCardCharge — idempotência do registo no Guesty", () => {
     expect(pi.metadata.guestyPaymentRecorded).toBe("1");
   });
 
-  it("Guesty acima do site: um registo, nota com o aviso, e um 2.º passe não faz nada", async () => {
+  it("Guesty acima do site: desconta a diferença no alojamento, um registo, saldo 0, e um 2.º passe não faz nada", async () => {
     resetWorld({ folioTotal: 2766.17 });
 
     await settleCardCharge(intent.id, pi.id);
     await settleCardCharge(intent.id, pi.id);
 
     expect(guesty.invoiceItems).toEqual([]);
+    expect(guesty.priceAdjustments).toHaveLength(1);
+    expect(guesty.priceAdjustments[0]).toMatchObject({ amount: -242.1, normalType: "AF" });
+    expect(guesty.priceAdjustments[0].description).toContain("pi_test_settle");
     expect(guesty.payments.map((p) => p.amount)).toEqual([2524.07]);
-    expect(pi.metadata).toMatchObject({ feeAdjusted: "1", priceGap: "242.10", guestyPaymentRecorded: "1" });
+    expect(round2(guesty.folioTotal - paid())).toBe(0);
+    expect(pi.metadata).toMatchObject({ feeAdjusted: "1", folioDiscounted: "242.10", guestyPaymentRecorded: "1" });
+    expect(pi.metadata.priceGap).toBeUndefined();
+    expect(guesty.notes).toContain("Folio acertado automaticamente");
+    expect(guesty.notes).not.toContain("NAO e divida do hospede");
+  });
+
+  it("o Guesty recusa o acerto: tudo como antes — nota, priceGap e email ao CS com o valor exato", async () => {
+    resetWorld({ folioTotal: 2766.17 });
+    guesty.adjustMode = "refuse";
+
+    await settleCardCharge(intent.id, pi.id);
+    await new Promise((r) => setTimeout(r, 20));
+
+    expect(guesty.priceAdjustments).toEqual([]);
+    expect(guesty.payments.map((p) => p.amount)).toEqual([2524.07]);
+    expect(pi.metadata).toMatchObject({ feeAdjusted: "1", priceGap: "242.10" });
     expect(guesty.notes).toContain("NAO e divida do hospede");
+    expect(guesty.notes).toContain("Acerto automatico nao entrou: acertar em Guest folio > Adjust line item > Accommodation fare, menos 242.10 EUR");
+    expect(mail.sent).toHaveLength(1);
+    const text = mail.sent[0].lines.join("\n");
+    expect(mail.sent[0].subject).toContain("ACERTAR TARIFA NO GUESTY");
+    expect(text).toContain("o Guesty recusou o acerto pela API");
+    expect(text).toContain("menos 242.10 EUR");
+  });
+
+  it("diferença anormal (mais de 35% do folio): não mexe sozinho e avisa o CS", async () => {
+    resetWorld({ folioTotal: 5048.14 });
+
+    await settleCardCharge(intent.id, pi.id);
+    await new Promise((r) => setTimeout(r, 20));
+
+    expect(guesty.priceAdjustments).toEqual([]);
+    expect(pi.metadata.priceGap).toBe("2524.07");
+    expect(mail.sent).toHaveLength(1);
+    expect(mail.sent[0].lines.join("\n")).toContain("mais de 35% do folio");
+  });
+
+  it("acerto com 502 que não gravou: não regista; o retry desconta uma vez e regista", async () => {
+    resetWorld({ folioTotal: 2766.17 });
+    guesty.adjustMode = "lost";
+    vi.useFakeTimers();
+    try {
+      const first = settleCardCharge(intent.id, pi.id).then(() => null, (e) => e);
+      await vi.runAllTimersAsync();
+      expect(String(await first)).toMatch(/resultado desconhecido/);
+    } finally {
+      vi.useRealTimers();
+    }
+    expect(guesty.payments).toHaveLength(0);
+
+    await settleCardCharge(intent.id, pi.id);
+    expect(guesty.priceAdjustments).toHaveLength(1);
+    expect(guesty.payments.map((p) => p.amount)).toEqual([2524.07]);
+    expect(round2(guesty.folioTotal - paid())).toBe(0);
+  });
+
+  it("acerto com 502 que gravou e leitura atrasada: espera pelo saldo, sem segundo desconto", async () => {
+    resetWorld({ folioTotal: 2766.17 });
+    guesty.adjustMode = "persisted";
+    vi.useFakeTimers();
+    try {
+      const run = settleCardCharge(intent.id, pi.id);
+      await vi.runAllTimersAsync();
+      await run;
+    } finally {
+      vi.useRealTimers();
+    }
+    await settleCardCharge(intent.id, pi.id);
+    expect(guesty.priceAdjustments).toHaveLength(1);
+    expect(guesty.payments.map((p) => p.amount)).toEqual([2524.07]);
+    expect(pi.metadata.folioDiscounted).toBe("242.10");
   });
 
   it("Guesty abaixo do site: uma fee com a diferença e um registo pelo total da estadia", async () => {
@@ -355,8 +463,9 @@ describe("settleCardCharge — idempotência do registo no Guesty", () => {
 
     await settleCardCharge(intent.id, pi.id);
     expect(guesty.payments.map((p) => p.amount)).toEqual([2524.07]);
-    expect(pi.metadata.priceGap).toBe("242.10");
-    expect(guesty.notes).toContain("NAO e divida do hospede");
+    expect(pi.metadata.folioDiscounted).toBe("242.10");
+    expect(guesty.priceAdjustments).toHaveLength(1);
+    expect(round2(guesty.folioTotal - paid())).toBe(0);
   });
 });
 
@@ -418,7 +527,7 @@ describe("settleCardCharge — cupão do site na criação da reserva", () => {
     expect(mail.sent).toEqual([]);
   });
 
-  it("o Guesty recusa o cupão: a reserva nasce sem ele, o settle fecha e o CS recebe o acerto exato", async () => {
+  it("o Guesty recusa o cupão: a reserva nasce sem ele e o settle desconta a diferença no alojamento", async () => {
     newBooking({ coupon: "PABF15VIP26", couponMode: "reject" });
 
     const r = await settleCardCharge(intent.id, pi.id);
@@ -427,18 +536,29 @@ describe("settleCardCharge — cupão do site na criação da reserva", () => {
     expect(r.reservationId).toBe("res-1");
     // Um pedido com o código (recusado) e um sem ele: uma só reserva.
     expect(guesty.reservation.bodies.map((b) => b.couponCode)).toEqual(["PABF15VIP26", undefined]);
+    expect(guesty.priceAdjustments).toHaveLength(1);
+    expect(guesty.priceAdjustments[0].amount).toBe(-300);
     expect(guesty.payments.map((p) => p.amount)).toEqual([PAID_STAY]);
-    expect(guesty.invoiceItems).toEqual([]);
-    expect(pi.metadata).toMatchObject({ guestyCoupon: "PABF15VIP26", guestyCouponStatus: "rejected", priceGap: "300.00" });
+    expect(round2(guesty.folioTotal - paid())).toBe(0);
+    expect(pi.metadata).toMatchObject({ guestyCoupon: "PABF15VIP26", guestyCouponStatus: "rejected", folioDiscounted: "300.00" });
     expect(pi.metadata.guestyCouponError).toMatch(/Coupon PABF15VIP26 does not exist/);
-    // A nota da reserva diz que não é dívida e qual é o acerto.
-    expect(guesty.notes).toContain("NAO e divida do hospede");
+    expect(guesty.notes).toContain("Folio acertado automaticamente");
+    expect(mail.sent).toEqual([]);
+  });
+
+  it("cupão recusado E acerto recusado: o CS recebe o acerto exato com o motivo do cupão", async () => {
+    newBooking({ coupon: "PABF15VIP26", couponMode: "reject" });
+    guesty.adjustMode = "refuse";
+
+    await settleCardCharge(intent.id, pi.id);
+    await flushAlerts();
+
+    expect(pi.metadata).toMatchObject({ guestyCouponStatus: "rejected", priceGap: "300.00" });
     expect(guesty.notes).toContain("Cupao PABF15VIP26 recusado pelo Guesty");
     expect(guesty.notes).toContain("Accommodation fare, menos 300.00 EUR");
     expect(mail.sent).toHaveLength(1);
     const alert = mail.sent[0];
     expect(alert.subject).toContain("PABF15VIP26");
-    expect(alert.subject).toContain("GY-TEST");
     const text = alert.lines.join("\n");
     expect(text).toContain("Guest folio → Adjust line item → Accommodation fare → menos 300.00 EUR");
     expect(text).toContain("2524.07");
@@ -447,20 +567,16 @@ describe("settleCardCharge — cupão do site na criação da reserva", () => {
     expect(text).toContain("Coupon PABF15VIP26 does not exist");
   });
 
-  it("o Guesty aceita o código mas não baixa o folio: alerta manda ver a linha de desconto antes de acertar", async () => {
+  it("o Guesty aceita o código mas não baixa o folio: o settle desconta a diferença", async () => {
     newBooking({ coupon: "PABF15GERAL26", couponMode: "ignore" });
 
     await settleCardCharge(intent.id, pi.id);
     await flushAlerts();
 
     expect(guesty.reservation.bodies).toHaveLength(1);
-    expect(pi.metadata).toMatchObject({ guestyCouponStatus: "sent", priceGap: "300.00" });
-    expect(guesty.notes).toContain("Cupao PABF15GERAL26 enviado ao Guesty mas sem desconto no folio");
-    expect(mail.sent).toHaveLength(1);
-    const text = mail.sent[0].lines.join("\n");
-    expect(text).toContain("enviado ao Guesty sem erro");
-    expect(text).toContain("Se não houver linha de desconto do cupão PABF15GERAL26");
-    expect(text).toContain("menos 300.00 EUR");
+    expect(pi.metadata).toMatchObject({ guestyCouponStatus: "sent", folioDiscounted: "300.00" });
+    expect(round2(guesty.folioTotal - paid())).toBe(0);
+    expect(mail.sent).toEqual([]);
   });
 
   it("sem cupão na quote do Guesty: o pedido não leva código e a divergência não gera alerta de cupão", async () => {
@@ -470,14 +586,14 @@ describe("settleCardCharge — cupão do site na criação da reserva", () => {
     await flushAlerts();
 
     expect(guesty.reservation.bodies[0]).not.toHaveProperty("couponCode");
-    expect(pi.metadata.priceGap).toBe("300.00");
+    expect(pi.metadata.folioDiscounted).toBe("300.00");
     expect(pi.metadata.guestyCoupon).toBeUndefined();
-    expect(guesty.notes).toContain("NAO e divida do hospede");
+    expect(guesty.notes).toContain("Folio acertado automaticamente");
     expect(guesty.notes).not.toContain("Cupao");
     expect(mail.sent).toEqual([]);
   });
 
-  it("settle retomado depois da criação: o cupão vem do carimbo no PI e o alerta sai uma vez", async () => {
+  it("settle retomado depois da criação: o cupão vem do carimbo no PI e o desconto entra uma vez", async () => {
     // O 1.º passe criou a reserva (código recusado) e morreu antes do acerto.
     resetWorld({
       folioTotal: FULL_FOLIO,
@@ -494,9 +610,10 @@ describe("settleCardCharge — cupão do site na criação da reserva", () => {
 
     expect(trustedStayQuote).not.toHaveBeenCalled();
     expect(guesty.reservation.bodies).toEqual([]);
+    expect(guesty.priceAdjustments).toHaveLength(1);
     expect(guesty.payments.map((p) => p.amount)).toEqual([PAID_STAY]);
-    expect(guesty.notes).toContain("Accommodation fare, menos 300.00 EUR");
-    expect(mail.sent).toHaveLength(1);
-    expect(mail.sent[0].lines.join("\n")).toContain("Coupon PABF15GERAL26 does not exist");
+    expect(round2(guesty.folioTotal - paid())).toBe(0);
+    expect(guesty.notes).toContain("Folio acertado automaticamente");
+    expect(mail.sent).toEqual([]);
   });
 });
