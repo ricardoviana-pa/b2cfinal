@@ -952,6 +952,12 @@ ${allUrls.join("\n")}
       console.warn("[Card2b] Settle sweep not started:", e?.message ?? e);
     }
 
+    // Vigilância dos folios de venda direta (services/folio-guard.ts): ronda
+    // diária; os webhooks do Guesty agendam verificações por reserva.
+    import("../services/folio-guard")
+      .then(({ startFolioGuard }) => startFolioGuard())
+      .catch((e) => console.warn("[FolioGuard] nao arrancou:", e?.message ?? e));
+
     // booking.portugalactive.com forwards here: map every published home's
     // Guesty id to its page, from the live store rather than the snapshot.
     const refreshRedirectHomes = async () => {
