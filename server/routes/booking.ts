@@ -265,6 +265,19 @@ export function registerGuestyWebhookRoute(app: Express): void {
         }
       }
 
+      // ── Vigilância do folio (services/folio-guard.ts) ──
+      // Editar uma reserva de venda direta faz o Guesty recalcular o folio
+      // (GY-Huf4Lp8L, 20 nov 2026). Cada update agenda uma verificação com
+      // espera; o módulo ignora OTA e só corre no serviço de produção.
+      const folioReservationId =
+        reservationId || payload?.reservation?._id || payload?.reservationId || "";
+      const folioSource = reservation?.source || payload?.reservation?.source || null;
+      if (folioReservationId && /^reservation\.(new|created|updated)$/.test(eventType)) {
+        import("../services/folio-guard")
+          .then(({ scheduleFolioCheck }) => scheduleFolioCheck(String(folioReservationId), folioSource))
+          .catch((e: any) => console.warn(`[FolioGuard] webhook: ${e?.message ?? e}`));
+      }
+
       // ── Log reservation.created for monitoring ──
       if (eventType === "reservation.created") {
         console.info(JSON.stringify({
@@ -307,6 +320,46 @@ export function registerBookingRoutes(app: Express): void {
     }
     resetGuestyRateLimitCooldowns();
     res.json({ ok: true, message: "Guesty OAuth cooldowns cleared. Retry quotes." });
+  });
+
+  /**
+   * Relatório dos folios de venda direta (services/folio-guard.ts), a pedido.
+   * Corre no servidor de produção com o token que ele já tem: não gasta a
+   * quota de OAuth e não escreve nada (nem no Guesty, nem na BD, nem email).
+   *   ?from=AAAA-MM-DD   saídas a partir desta data (por omissão: há 45 dias)
+   *   ?days=N            em alternativa ao from
+   *   ?all=1             inclui as reservas sem problemas
+   * Header x-guesty-debug-secret = GUESTY_DEBUG_SECRET; sem ele, 404.
+   */
+  app.get("/api/admin/folio-guard/report", async (req: Request, res: Response) => {
+    const secret = process.env.GUESTY_DEBUG_SECRET || "";
+    const given = String(req.headers["x-guesty-debug-secret"] || "");
+    const authorized =
+      !!secret &&
+      given.length === secret.length &&
+      crypto.timingSafeEqual(Buffer.from(given), Buffer.from(secret));
+    if (!authorized) {
+      res.status(404).json({ message: "Not found" });
+      return;
+    }
+    try {
+      const { canRunFolioGuard, runFolioSweep, productionFolioGuardDeps } = await import("../services/folio-guard");
+      if (!canRunFolioGuard()) {
+        res.status(404).json({ message: "Not found" });
+        return;
+      }
+      const from = String(req.query.from || "");
+      const days = Math.min(730, Math.max(1, Number(req.query.days) || 45));
+      const report = await runFolioSweep(productionFolioGuardDeps(), {
+        checkOutFrom: /^\d{4}-\d{2}-\d{2}$/.test(from) ? from : undefined,
+        daysBack: days,
+        dryRun: true,
+        includeOk: req.query.all === "1",
+      });
+      res.json(report);
+    } catch (err: any) {
+      res.status(500).json({ status: "error", message: err?.message || "folio report failed" });
+    }
   });
 
   app.get("/api/listings/:id", async (req: Request, res: Response) => {

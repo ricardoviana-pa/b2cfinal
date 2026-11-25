@@ -681,6 +681,13 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
       await updatePaymentIntentMetadata(paymentIntentId, { splitNoteAdded: "1" }).catch(() => {});
     }
   }
+  // Base do folio para a vigilância (services/folio-guard.ts): o folio tal
+  // como fica depois do acerto e do registo do pagamento. Uma edição que o
+  // faça recalcular depois disto (GY-Huf4Lp8L) dá alerta. Fail-soft e fora
+  // do caminho crítico; só corre no serviço de produção.
+  void import("./folio-guard")
+    .then(({ captureFolioBaselineAfterSettle }) => captureFolioBaselineAfterSettle(reservationId))
+    .catch(() => {});
   // Cartao na carteira do Guesty. Sem isto o Guesty fica sem forma de cobrar
   // caucao, danos, noites extra ou saldos — capacidade que o fluxo antigo
   // (BE instant com ccToken) tinha e o checkout 2.0 perdeu. Idempotente pelo
