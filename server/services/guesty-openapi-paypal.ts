@@ -308,6 +308,71 @@ export async function addReservationServiceFee(
   }
 }
 
+export type FareDiscountOutcome =
+  /** O Guesty confirmou o desconto (201). */
+  | "applied"
+  /** Já havia um acerto com a nossa marca (o PI): não se lança outro. */
+  | "already"
+  /** O Guesty recusou (4xx): não ficou gravado. */
+  | "refused"
+  /** 5xx, timeout ou rede: pode ou não ter ficado gravado. Quem chamou relê o saldo. */
+  | "unknown";
+
+/**
+ * Desconta `amountEur` à tarifa de alojamento da reserva — o mesmo que, no
+ * Guesty, Guest folio → Adjust line item → Accommodation fare com valor
+ * negativo. Fica uma linha "Accommodation fare discount" (AFD) no folio; o
+ * saldo, o payout e a receita do owner descem logo (o owner partilha o
+ * acerto, como nos cupões do próprio Guesty).
+ *
+ * POST /v1/price-adjustments/manual-total-amount, normalType "AF", valor
+ * negativo. Medido a 25 nov 2026 na reserva da casa de teste (GY-VGTWqQL4):
+ * −1 → 201, fareAccommodationAdjusted 200→199, AFD −1, owner 98,27→97,78;
+ * +1 desfez tudo.
+ *
+ * Idempotente pela `marker` (o id do PI) na descrição: se já existir um
+ * acerto com ela, não se lança outro. Sem lista legível segue em frente: o
+ * settle só chega aqui com o folio sem pagamentos, e um acerto anterior que
+ * já tivesse entrado teria levado o saldo ao valor vendido.
+ */
+export async function discountAccommodationFare(
+  reservationId: string,
+  amountEur: number,
+  marker: string,
+  description: string,
+): Promise<FareDiscountOutcome> {
+  const amount = Math.round(Math.abs(amountEur) * 100) / 100;
+  if (!(amount > 0)) return "refused";
+  try {
+    const existing = await guestyClient.request<any>("GET", `/v1/price-adjustments/total-amount/${reservationId}`);
+    const list: any[] = Array.isArray(existing) ? existing : Array.isArray(existing?.results) ? existing.results : [];
+    if (marker && list.some((a) => String(a?.description ?? "").includes(marker))) {
+      console.info(`[Guesty] acerto do alojamento com ${marker} ja existe em ${reservationId} — nao se lanca outro`);
+      return "already";
+    }
+  } catch (err: any) {
+    console.warn(`[Guesty] lista de acertos ilegivel em ${reservationId}: ${err?.message} — segue`);
+  }
+  try {
+    await guestyClient.request<any>("POST", "/v1/price-adjustments/manual-total-amount", {
+      body: {
+        reservationId,
+        priceAdjustments: [
+          { normalType: "AF", amount: -amount, description: `${description} [${marker}]`.slice(0, 480) },
+        ],
+      },
+      // Um 5xx repetido às cegas descontava duas vezes.
+      nonIdempotent: true,
+    });
+    console.info(`[Guesty] alojamento de ${reservationId} descontado em ${amount} EUR (folio = valor vendido no site)`);
+    return "applied";
+  } catch (err: any) {
+    const outcome: FareDiscountOutcome = isAmbiguousGuestyFailure(err) ? "unknown" : "refused";
+    console.warn(`[Guesty] desconto no alojamento ${outcome === "unknown" ? "com resultado desconhecido" : "recusado"} para ${reservationId} (${amount}): ${err?.message}`);
+    return outcome;
+  }
+}
+
 /** Confirmation code of an existing reservation (used to resume a settle that
  *  crashed between creating the reservation and stamping the intent/PI). */
 export async function fetchReservationConfirmationCode(reservationId: string): Promise<string | null> {

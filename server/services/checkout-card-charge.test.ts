@@ -162,3 +162,14 @@ describe("canRunCardSettleSweep — o sweep só corre no serviço de produção"
     expect(canRunCardSettleSweep({ ...prod, CARD_SETTLE_SWEEP: "false" } as any)).toBe(false);
   });
 });
+
+describe("canAutoDiscountFare — até onde o site acerta sozinho", () => {
+  it("cupões e planos (9–27% do folio) sim; um folio em dobro (50%) não", async () => {
+    const { canAutoDiscountFare } = await import("./checkout-card-charge");
+    expect(canAutoDiscountFare(798.38, 5872.75)).toBe(true); // GY-K8buDVJW, 14%
+    expect(canAutoDiscountFare(563.57, 2095.18)).toBe(true); // GY-2MxXXbdt, 27%
+    expect(canAutoDiscountFare(2524.07, 5048.14)).toBe(false); // 50%
+    expect(canAutoDiscountFare(0, 100)).toBe(false);
+    expect(canAutoDiscountFare(10, 0)).toBe(false);
+  });
+});
