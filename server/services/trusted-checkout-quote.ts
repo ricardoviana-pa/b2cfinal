@@ -59,7 +59,19 @@ export function canonicalStayQuote(raw: any, stay: StayIdentity, now = Date.now(
     throw new TRPCError({ code: 'PRECONDITION_FAILED', message: 'Black Friday offer is not valid yet for this booking. Please refresh the price.' });
   }
   const couponReference = appliedCoupon?.code || appliedCoupon?.name;
-  return { ratePlanId, expiresAt: new Date(expiresAt), couponReference: couponReference ? String(couponReference) : undefined, quote: {
+  // Código a mandar ao Guesty ao criar a reserva (reservations-v3 couponCode),
+  // para o folio levar o mesmo desconto que o hóspede pagou (Black Friday,
+  // nov 2026: sem ele o folio ficava 15% das noites acima do pago). Só códigos
+  // que esta quote do Guesty prova aplicados: o code do cupão aplicado, ou o
+  // código exato de Black Friday na linha DISCOUNT da tarifa escolhida, mesmo
+  // quando o Guesty devolve só o nome interno do cupão, ou nenhum (GY-hZ7nb4fp).
+  // Nunca o que vem do browser: um código forjado baixava o folio e a receita
+  // do proprietário abaixo do que o hóspede pagou.
+  const reservationCode = appliedCoupon?.code ?? invoiceCampaignCode;
+  const reservationCouponCode = reservationCode != null && String(reservationCode).trim()
+    ? String(reservationCode).trim()
+    : undefined;
+  return { ratePlanId, expiresAt: new Date(expiresAt), couponReference: couponReference ? String(couponReference) : undefined, reservationCouponCode, quote: {
     nightlyRate: plan.nightlyRate, totalNights: plan.total - plan.cleaningFee - plan.taxesAndFees,
     cleaningFee: plan.cleaningFee, taxesAndFees: plan.taxesAndFees, total: plan.total,
     nights: parsed.nights, currency: parsed.currency, quoteCreatedAt: Date.parse(raw.createdAt) || now,

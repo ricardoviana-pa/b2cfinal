@@ -93,6 +93,39 @@ describe('supplier quote identity and price binding',()=>{
     };
     expect(()=>canonicalStayQuote(q,stay,dated)).toThrow(/not valid yet/);
   });
+  describe('code sent to Guesty when the reservation is created (reservationCouponCode)',()=>{
+    const dated=Date.parse('2026-11-25T18:00:00Z');
+    const withPlan=(invoiceItems:any[],coupons?:any)=>({...raw(),createdAt:'2026-11-25T17:00:00Z',expiresAt:'2026-11-26T17:00:00Z',
+      ...(coupons===undefined?{}:{coupons}),
+      rates:{ratePlans:[{ratePlan:{_id:'flex',name:'Flexible',money:{currency:'EUR',subTotalPrice:1451.25,fareCleaning:550.25,invoiceItems}}}]}});
+    const bfLine={title:'BlackFirday 2026 General Host',type:'DISCOUNT',amount:-159,description:'PABF15GERAL26'};
+    it('is the code of the coupon Guesty applied',()=>{
+      expect(canonicalStayQuote(withPlan([],[{code:'RECUPERA5'}]),stay,dated).reservationCouponCode).toBe('RECUPERA5');
+    });
+    it('is the exact Black Friday code from the DISCOUNT line when Guesty only names the coupon',()=>{
+      const r=canonicalStayQuote(withPlan([bfLine],[{name:'BlackFirday 2026 General Host'}]),stay,dated);
+      expect(r.reservationCouponCode).toBe('PABF15GERAL26');
+    });
+    it('is the Black Friday code from the DISCOUNT line even when Guesty lists no coupon at all (GY-hZ7nb4fp)',()=>{
+      const r=canonicalStayQuote(withPlan([bfLine]),stay,dated);
+      expect(r.reservationCouponCode).toBe('PABF15GERAL26');
+      // the checkout display rule is unchanged
+      expect(r.quote.couponCode).toBeUndefined();
+    });
+    it('never comes from the browser quote',()=>{
+      expect(canonicalStayQuote(withPlan([],[{name:'BlackFirday 2026 General Host'}]),{...stay,quote:{couponCode:'PABF15VIP26'}},dated).reservationCouponCode).toBeUndefined();
+      expect(canonicalStayQuote(withPlan([]),{...stay,quote:{couponCode:'PABF15VIP26'}},dated).reservationCouponCode).toBeUndefined();
+    });
+    it('ignores a DISCOUNT line whose description is not a known campaign code',()=>{
+      const other={...bfLine,description:'Long stay 10%'};
+      expect(canonicalStayQuote(withPlan([other],[{name:'Long stay'}]),stay,dated).reservationCouponCode).toBeUndefined();
+    });
+    it('ignores a DISCOUNT line on another rate plan',()=>{
+      const q=withPlan([]);
+      q.rates.ratePlans.push({ratePlan:{_id:'nr',name:'Non-refundable',money:{currency:'EUR',subTotalPrice:1300,fareCleaning:550.25,invoiceItems:[bfLine]}}} as any);
+      expect(canonicalStayQuote(q,stay,dated).reservationCouponCode).toBeUndefined();
+    });
+  });
   it('requires customer-visible total and currency to match before charging',()=>{
     expect(()=>assertQuotedTotal({total:1,currency:'EUR'},{total:1234.56,currency:'EUR'})).toThrow();
     expect(()=>assertQuotedTotal({total:1234.56,currency:'USD'},{total:1234.56,currency:'EUR'})).toThrow();

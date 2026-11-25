@@ -117,6 +117,90 @@ describe("createReservationViaOpenApi — reservation ID extraction", () => {
   });
 });
 
+describe("createReservationViaOpenApi — cupão do site no reservations-v3", () => {
+  const created = { reservationId: "res-coupon", confirmationCode: "GY-COUPON", status: "confirmed" };
+  const bodies = () => vi.mocked(guestyClient.request).mock.calls.map((c) => (c[2] as any).body);
+
+  beforeEach(() => {
+    vi.mocked(guestyClient.request).mockReset();
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+
+  it("sem cupão: o pedido não leva couponCode e continua sem promoções automáticas", async () => {
+    vi.mocked(guestyClient.request).mockResolvedValueOnce(created);
+    const result = await createReservationViaOpenApi(baseInput);
+    expect(bodies()).toHaveLength(1);
+    expect(bodies()[0]).not.toHaveProperty("couponCode");
+    expect(bodies()[0].applyPromotions).toBe(false);
+    expect(result.coupon).toBeUndefined();
+  });
+
+  it("com cupão: um só pedido, com o código, e o resultado diz que seguiu", async () => {
+    vi.mocked(guestyClient.request).mockResolvedValueOnce(created);
+    const result = await createReservationViaOpenApi({ ...baseInput, ratePlanId: "rp-flex", couponCode: " PABF15GERAL26 " });
+    expect(bodies()).toHaveLength(1);
+    expect(bodies()[0]).toMatchObject({ couponCode: "PABF15GERAL26", ratePlanId: "rp-flex", applyPromotions: false });
+    expect(result).toMatchObject({ reservationId: "res-coupon", coupon: { code: "PABF15GERAL26", status: "sent" } });
+  });
+
+  it("4xx que nomeia o cupão: cria a reserva sem ele e devolve a resposta do Guesty", async () => {
+    const { GuestyClientError } = await import("../lib/guesty");
+    vi.mocked(guestyClient.request)
+      .mockRejectedValueOnce(
+        new GuestyClientError({
+          message: "Guesty request failed (400)",
+          status: 400,
+          method: "POST",
+          endpoint: "/v1/reservations-v3",
+          details: { error: { message: "Coupon PABF15GERAL26 is not valid for this listing" } },
+        }),
+      )
+      .mockResolvedValueOnce(created);
+    const result = await createReservationViaOpenApi({ ...baseInput, couponCode: "PABF15GERAL26" });
+    expect(bodies()).toHaveLength(2);
+    expect(bodies()[0].couponCode).toBe("PABF15GERAL26");
+    expect(bodies()[1]).not.toHaveProperty("couponCode");
+    expect(result.reservationId).toBe("res-coupon");
+    expect(result.coupon).toMatchObject({ code: "PABF15GERAL26", status: "rejected" });
+    expect((result.coupon as any).error).toMatch(/Coupon PABF15GERAL26 is not valid/);
+  });
+
+  it("4xx de validação genérico também tenta sem cupão (o cupão nunca trava a reserva)", async () => {
+    const { GuestyClientError } = await import("../lib/guesty");
+    vi.mocked(guestyClient.request)
+      .mockRejectedValueOnce(
+        new GuestyClientError({ message: "Guesty request failed (422)", status: 422, method: "POST", endpoint: "/v1/reservations-v3", details: { message: "validation error" } }),
+      )
+      .mockResolvedValueOnce(created);
+    const result = await createReservationViaOpenApi({ ...baseInput, couponCode: "PABF15VIP26" });
+    expect(bodies()).toHaveLength(2);
+    expect(result.coupon?.status).toBe("rejected");
+  });
+
+  it("um 4xx que não é do cupão falha também sem ele: o erro sobe como antes", async () => {
+    const { GuestyClientError } = await import("../lib/guesty");
+    const blocked = () =>
+      new GuestyClientError({ message: "Guesty request failed (409)", status: 409, method: "POST", endpoint: "/v1/reservations-v3", details: { message: "Listing is not available" } });
+    vi.mocked(guestyClient.request).mockRejectedValueOnce(blocked()).mockRejectedValueOnce(blocked());
+    await expect(createReservationViaOpenApi({ ...baseInput, couponCode: "PABF15GERAL26" })).rejects.toMatchObject({ status: 409 });
+    expect(bodies()).toHaveLength(2);
+  });
+
+  it.each([
+    ["5xx (pode ter criado a reserva)", 500],
+    ["rate limit", 429],
+    ["autenticação", 401],
+  ])("%s: não repete sem cupão, o erro sobe e o settle volta a tentar", async (_name, status) => {
+    const { GuestyClientError } = await import("../lib/guesty");
+    vi.mocked(guestyClient.request).mockRejectedValueOnce(
+      new GuestyClientError({ message: `Guesty request failed (${status})`, status, method: "POST", endpoint: "/v1/reservations-v3", details: { message: "coupon" } }),
+    );
+    await expect(createReservationViaOpenApi({ ...baseInput, couponCode: "PABF15GERAL26" })).rejects.toMatchObject({ status });
+    expect(bodies()).toHaveLength(1);
+  });
+});
+
 describe("appendReservationNote — acrescenta, nunca apaga", () => {
   beforeEach(() => {
     vi.mocked(guestyClient.request).mockReset();
