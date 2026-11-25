@@ -52,8 +52,11 @@ export const sanitizePropertyName = (raw: string): string => {
   // Leading bedroom-count noise ("4 Sao Juliao Retreat") — keep real numerals
   // that name the home ("7 Suites & Pool").
   name = name.replace(/^\d+\s+(?!Suites?\b|Bedrooms?\b|Rooms?\b)/, "");
-  // Drop "w/ …", "with …" amenity tail
-  name = name.replace(/\s+(w\/|with)\s+.*$/i, "");
+  // Drop "w/ …", "w/…" and "with …" amenity tails. Guesty titles write it
+  // both ways: "Duplex w/ Garage" and "Duplex w/Garage" (Lumina, 25 nov
+  // 2026 — without the space the tail survived and the page title grew
+  // past 65 characters, failing CI and holding every deploy).
+  name = name.replace(/\s+(w\/\s*|with\s+).*$/i, "");
   // Collapse whitespace
   return name.replace(/\s{2,}/g, " ").trim();
 };
