@@ -216,8 +216,10 @@ const SALES_COPY_EMAIL = process.env.SALES_COPY_EMAIL ?? "ricardo.viana@portugal
 export async function sendOpsAlert(
   subject: string,
   lines: string[],
-  opts: { copyToSales?: boolean } = {},
+  /** `to`: outro destinatário em vez do BOOKING_ALERT_EMAIL (ex.: alertas dos folios). */
+  opts: { copyToSales?: boolean; to?: string } = {},
 ): Promise<boolean> {
+  const recipient = opts.to || BOOKING_ALERT_EMAIL;
   let delivered = false;
   try {
     const html = wrapTemplate(`
@@ -227,14 +229,14 @@ export async function sendOpsAlert(
 ${lines.map((l) => `<tr><td style="padding:0 0 10px 0;"><p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.6;margin:0;">${l}</p></td></tr>`).join("")}
 <tr><td style="padding:8px 0 0 0;"><p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0;">Alerta automático · ${new Date().toISOString()}</p></td></tr>`);
     try {
-      await sendEmail(BOOKING_ALERT_EMAIL, `[OPS] ${subject}`, html);
+      await sendEmail(recipient, `[OPS] ${subject}`, html);
       delivered = true;
     } catch (err: any) {
       console.error(`[EMAIL] sendOpsAlert falhou: ${err?.message}`);
     }
     // Alertas com dinheiro em jogo vão também à gestão: o booking@ sozinho
     // não chega quando a caixa não é lida (spec duas partes, 3.2).
-    if (opts.copyToSales && SALES_COPY_EMAIL && SALES_COPY_EMAIL !== BOOKING_ALERT_EMAIL) {
+    if (opts.copyToSales && SALES_COPY_EMAIL && SALES_COPY_EMAIL !== recipient) {
       try {
         await sendEmail(SALES_COPY_EMAIL, `[OPS] ${subject}`, html);
       } catch (err: any) {
