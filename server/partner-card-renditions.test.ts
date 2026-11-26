@@ -88,14 +88,14 @@ describe('card-sized copies of the partner covers', () => {
 
 describe('the srcset of a card photo', () => {
   it('a partner cover lists its copies, then itself at its own width', () => {
-    expect(partnerCoverSrcSet('/homes/photos/mirante-1/01.webp')).toBe(
-      '/homes/photos/mirante-1/01-480w.webp 480w, /homes/photos/mirante-1/01-800w.webp 800w, /homes/photos/mirante-1/01-1080w.webp 1080w, /homes/photos/mirante-1/01.webp 1600w',
+    expect(partnerCoverSrcSet('/homes/photos/albufeira-6-bedroom-villa-tennis-court/01.webp')).toBe(
+      '/homes/photos/albufeira-6-bedroom-villa-tennis-court/01-480w.webp 480w, /homes/photos/albufeira-6-bedroom-villa-tennis-court/01-800w.webp 800w, /homes/photos/albufeira-6-bedroom-villa-tennis-court/01-1080w.webp 1080w, /homes/photos/albufeira-6-bedroom-villa-tennis-court/01.webp 1600w',
     );
-    expect(cardSrcSet('/homes/photos/mirante-1/01.webp')).toBe(partnerCoverSrcSet('/homes/photos/mirante-1/01.webp'));
+    expect(cardSrcSet('/homes/photos/albufeira-6-bedroom-villa-tennis-court/01.webp')).toBe(partnerCoverSrcSet('/homes/photos/albufeira-6-bedroom-villa-tennis-court/01.webp'));
   });
 
   it('a photo without copies keeps its single file; Guesty photos keep their Cloudinary widths', () => {
-    expect(cardSrcSet('/homes/photos/mirante-1/02.webp')).toBe('');
+    expect(cardSrcSet('/homes/photos/albufeira-6-bedroom-villa-tennis-court/02.webp')).toBe('');
     expect(cardSrcSet('/hero/home-cliff-villa.webp')).toBe('');
     expect(cardSrcSet(undefined)).toBe('');
     expect(cardSrcSet('https://assets.guesty.com/image/upload/v1/production/a.jpg')).toBe(
@@ -105,7 +105,7 @@ describe('the srcset of a card photo', () => {
 
   it('the Algarve strip’s first two covers on a phone: about a tenth of the bytes at 1.75×, under half at 3×', () => {
     // the strip's slot is 272 CSS px on a phone (DestinationHomesStrip imageSizes)
-    const first = ['/homes/photos/mirante-1/01.webp', '/homes/photos/villa-belvedere/00.webp'];
+    const first = ['/homes/photos/albufeira-6-bedroom-villa-tennis-court/01.webp', '/homes/photos/salema-5-bedroom-clifftop-villa-sea-view/00.webp'];
     const before = first.reduce((s, url) => s + bytes(url), 0);
     const at = (dpr: number) => first.reduce((s, url) => s + bytes(pick(cardSrcSet(url), 272 * dpr)), 0);
     expect(before).toBeGreaterThan(350_000);
@@ -128,10 +128,10 @@ describe('in the server HTML', () => {
 
   it('a strip card with a partner cover ships the copies and the strip’s sizes', async () => {
     const html = await render([
-      React.createElement(PropertyCard, { key: 'a', property: home('mirante-1'), imageSizes: '(max-width: 639px) 272px, (max-width: 767px) 300px, 30vw' }),
+      React.createElement(PropertyCard, { key: 'a', property: home('albufeira-6-bedroom-villa-tennis-court'), imageSizes: '(max-width: 639px) 272px, (max-width: 767px) 300px, 30vw' }),
     ]);
-    const img = html.match(/<img[^>]*mirante-1\/01\.webp[^>]*>/)?.[0] ?? '';
-    expect(img).toMatch(/srcSet="\/homes\/photos\/mirante-1\/01-480w\.webp 480w, [^"]*01\.webp 1600w"/);
+    const img = html.match(/<img[^>]*albufeira-6-bedroom-villa-tennis-court\/01\.webp[^>]*>/)?.[0] ?? '';
+    expect(img).toMatch(/srcSet="\/homes\/photos\/albufeira-6-bedroom-villa-tennis-court\/01-480w\.webp 480w, [^"]*01\.webp 1600w"/);
     expect(html).not.toContain('PT0009');
     expect(img).toMatch(/sizes="\(max-width: 639px\) 272px/);
     expect(img).toMatch(/loading="lazy"/);
@@ -139,11 +139,11 @@ describe('in the server HTML', () => {
 
   it('as the listing’s first card, React preloads the same srcset (no second download)', async () => {
     const html = await render([
-      React.createElement(PropertyCard, { key: 'a', property: home('villa-belvedere'), ...cardPriority('homes', 0) }),
+      React.createElement(PropertyCard, { key: 'a', property: home('salema-5-bedroom-clifftop-villa-sea-view'), ...cardPriority('homes', 0) }),
     ]);
-    const preload = (html.match(/<link rel="preload" as="image"[^>]*>/g) ?? []).find((l) => l.includes('villa-belvedere'));
+    const preload = (html.match(/<link rel="preload" as="image"[^>]*>/g) ?? []).find((l) => l.includes('salema-5-bedroom-clifftop-villa-sea-view'));
     expect(preload).toBeTruthy();
-    expect(preload).toMatch(/imageSrcSet="\/homes\/photos\/villa-belvedere\/00-480w\.webp 480w/);
+    expect(preload).toMatch(/imageSrcSet="\/homes\/photos\/salema-5-bedroom-clifftop-villa-sea-view\/00-480w\.webp 480w/);
     expect(html).not.toContain('PT0253');
   });
 });

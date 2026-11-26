@@ -1,3 +1,4 @@
+import { FORMER_PARTNER_SLUGS } from "./partnerFormerSlugs";
 import { Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
@@ -233,6 +234,11 @@ const STATIC_REDIRECTS: Record<string, string> = {
   // left their exclusive management and asked for every partner listing to go).
   // No equivalent home, so the page goes to its destination.
   "/homes/quinta-da-lameirinha": "/en/destinations/douro",
+  // Partner homes renamed on 26 Nov 2026 (no owner house names, at Tripwix's
+  // request): every old /homes/<slug> goes to the new one.
+  ...Object.fromEntries(
+    Object.entries(FORMER_PARTNER_SLUGS).map(([from, to]) => [`/homes/${from}`, `/en/homes/${to}`]),
+  ),
 };
 
 // === WORDPRESS-ERA SINGLE-SEGMENT URLS =====================================
@@ -387,12 +393,20 @@ function homeSlugForTitleSlug(titleSlug: string): string | null {
 
 // === PATTERN RULES ========================================================
 const PATTERN_REDIRECTS: PatternRule[] = [
+  // /activities/<slug> rendered the same page as /experiences/<slug>, both
+  // indexable and each its own canonical: 8 experiences × 9 languages of
+  // duplicates outside the sitemap (sitemap audit, 26 Nov 2026).
+  {
+    pattern: /^\/activities\/([^/]+)\/?$/i,
+    resolve: (m) => `/en/experiences/${EXPERIENCE_REDIRECTS[m[1].toLowerCase()] ?? m[1].toLowerCase()}`,
+  },
+
   // Partner (Tripwix) homes briefly shipped with the supplier's reference in
   // the slug — /homes/casa-de-caiz-pt0277. Guests were quoting that id back at
   // us in email, so it was dropped. Anyone holding an old link still lands.
   {
     pattern: /^\/homes\/(.+)-pt\d{4}\/?$/i,
-    resolve: (m) => `/en/homes/${m[1]}`,
+    resolve: (m) => `/en/homes/${FORMER_PARTNER_SLUGS[m[1].toLowerCase()] ?? m[1]}`,
   },
 
   // /homes/<short-slug> → /homes/<current-slug>. Journal articles linked

@@ -9,7 +9,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const UID = "3bac86ea-0000-4000-8000-000000000001";
-const home = { slug: "casa-de-caiz", name: "Casa de Caiz", bookingMode: "request", source: "partner", isActive: true, supplierUid: UID, maxGuests: 10, minNights: 2, cleaningFee: 0, securityDeposit: 0 };
+const home = { slug: "amarante-6-bedroom-heritage-villa-river-view", name: "Amarante River-View Heritage Villa", bookingMode: "request", source: "partner", isActive: true, supplierUid: UID, maxGuests: 10, minNights: 2, cleaningFee: 0, securityDeposit: 0 };
 const leads = new Map<number, any>();
 const emails: { id: number; notice: string; channel: string; payment?: string; variant?: string; overlapWith?: string }[] = [];
 const emailFails = { on: false };
@@ -50,8 +50,8 @@ const priced = (over: Record<string, unknown> = {}) => ({
   feesKnown: false, unavailable: [], currency: "EUR", source: "cached", fetchedAt: NOW - 20 * 60_000, ...over,
 });
 const input = (over: Record<string, unknown> = {}) => ({
-  name: "Ana Teste", email: "ana@example.com", phone: "+351900000000", property: "casa-de-caiz",
-  checkin: "2027-01-10", checkout: "2027-01-17", guests: 4, shownTotal: 8427.5, locale: "pt", returnPath: "/pt/homes/casa-de-caiz", ...over,
+  name: "Ana Teste", email: "ana@example.com", phone: "+351900000000", property: "amarante-6-bedroom-heritage-villa-river-view",
+  checkin: "2027-01-10", checkout: "2027-01-17", guests: 4, shownTotal: 8427.5, locale: "pt", returnPath: "/pt/homes/amarante-6-bedroom-heritage-villa-river-view", ...over,
 });
 const pay = async () => import("./services/partner-pay");
 const flush = () => new Promise((r) => setImmediate(r));
@@ -110,14 +110,14 @@ describe("opening the payment", () => {
     expect(opts).toEqual({ idempotencyKey: "partner-pay-1" });
     expect(params).toMatchObject({
       mode: "payment", payment_method_types: ["card"], customer_email: "ana@example.com", locale: "pt",
-      success_url: "https://www.portugalactive.com/pt/homes/casa-de-caiz?checkin=2027-01-10&checkout=2027-01-17&guests=4&partner_session={CHECKOUT_SESSION_ID}",
-      cancel_url: "https://www.portugalactive.com/pt/homes/casa-de-caiz?checkin=2027-01-10&checkout=2027-01-17&guests=4",
+      success_url: "https://www.portugalactive.com/pt/homes/amarante-6-bedroom-heritage-villa-river-view?checkin=2027-01-10&checkout=2027-01-17&guests=4&partner_session={CHECKOUT_SESSION_ID}",
+      cancel_url: "https://www.portugalactive.com/pt/homes/amarante-6-bedroom-heritage-villa-river-view?checkin=2027-01-10&checkout=2027-01-17&guests=4",
     });
     expect(params.line_items[0].price_data).toMatchObject({ currency: "eur", unit_amount: 842750 });
     // Na língua do hóspede, e o botão do Stripe diz "Reservar", não "Pagar".
-    expect(params.line_items[0].price_data.product_data).toEqual({ name: "Casa de Caiz · 7 noites", description: "10/01/2027 → 17/01/2027 · 4 hóspedes" });
+    expect(params.line_items[0].price_data.product_data).toEqual({ name: "Amarante River-View Heritage Villa · 7 noites", description: "10/01/2027 → 17/01/2027 · 4 hóspedes" });
     expect(params.submit_type).toBe("book");
-    expect(params.payment_intent_data.metadata).toMatchObject({ flow: "partner_pay", leadId: "1", property: "casa-de-caiz", checkin: "2027-01-10", checkout: "2027-01-17" });
+    expect(params.payment_intent_data.metadata).toMatchObject({ flow: "partner_pay", leadId: "1", property: "amarante-6-bedroom-heritage-villa-river-view", checkin: "2027-01-10", checkout: "2027-01-17" });
     expect(params.payment_intent_data.capture_method).toBe("manual"); // retenção: só se cobra na captura
     expect(params.adaptive_pricing).toEqual({ enabled: false }); // sempre em euros, sem conversão no Stripe
     expect(params.custom_text.submit.message).toContain("48 horas");
@@ -335,7 +335,7 @@ describe("the guest comes back from the Stripe page", () => {
       payment_intent: { id: "pi_1", status: "requires_capture", amount: 842750, amount_capturable: 842750, metadata: { flow: "partner_pay", leadId: "1" } },
     });
     expect(await m.partnerPaymentStatus("cs_test_abcdefghij1234567890")).toEqual({
-      status: "held", reference: "PA-1", propertyName: "Casa de Caiz", checkin: "2027-01-10", checkout: "2027-01-17", guests: "4", total: "8427.5",
+      status: "held", reference: "PA-1", propertyName: "Amarante River-View Heritage Villa", checkin: "2027-01-10", checkout: "2027-01-17", guests: "4", total: "8427.5",
     });
     expect(leads.get(1).metadata).toMatchObject({ payment: "held", heldAmount: "8427.5", paymentIntentId: "pi_1" });
     expect(emails.map((e) => `${e.notice}/${e.channel}`)).toEqual(["held/team", "held/guest"]);

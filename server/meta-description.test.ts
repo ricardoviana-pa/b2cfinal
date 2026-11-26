@@ -26,7 +26,7 @@ describe('meta descriptions end on a whole thought', () => {
   it('closes an unpunctuated tagline before the call to action (the "beach close Book direct" case)', () => {
     expect(asSentence('Sea views, beach close')).toBe('Sea views, beach close.');
     expect(asSentence('Already done!')).toBe('Already done!');
-    const en = PROPERTY_DESCRIPTION.en({ name: '4 Serras', tagline: 'Mountain retreat, beach close', bedrooms: 4, maxGuests: 8, destination: 'minho' });
+    const en = PROPERTY_DESCRIPTION.en({ name: 'Comporta Ocean-View Villa', tagline: 'Mountain retreat, beach close', bedrooms: 4, maxGuests: 8, destination: 'minho' });
     expect(en).toContain('beach close. Book direct');
   });
 });

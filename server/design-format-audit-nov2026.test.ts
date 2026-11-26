@@ -134,7 +134,7 @@ describe('cartão das casas', () => {
     expect(card).toContain('text-balance');
     // um hífen entre espaços não começa a segunda linha
     expect(card).toContain('{keepNameParts(displayName)}');
-    expect(keepDashes('Quinta do Merouço - Casa do Rio')).toBe(`Quinta do Merouço${NBSP}- Casa do Rio`);
+    expect(keepDashes('Quinta do Sol - Casa do Lago')).toBe(`Quinta do Sol${NBSP}- Casa do Lago`);
   });
   it('a linha do preço fica no fundo do cartão: filas niveladas mesmo com um nome em duas linhas', () => {
     expect(card).toContain("className={fillCell ? 'flex h-full flex-col' : 'flex flex-col'}");
@@ -417,10 +417,10 @@ describe('3.ª ronda da auditoria de formatação (21 nov 2026)', () => {
     expect(keepBrand('ofertas da Portugal Active (opcional).')).toBe(`ofertas da Portugal${NB}Active (opcional).`);
   });
   it('nomes das casas: um nome de duas palavras antes do travessão fica inteiro', () => {
-    expect(keepNameParts('Diamante Azul - Mansion')).toBe(`Diamante${NB}Azul${NB}- Mansion`);
+    expect(keepNameParts('Monte Azul - Mansion')).toBe(`Monte${NB}Azul${NB}- Mansion`);
     // a inicial já não fica colada: nos cartões estreitos das casas semelhantes dava três linhas
     expect(keepNameParts('Lima River · S. Silvestre House')).toBe(`Lima River${NB}· S. Silvestre House`);
-    expect(keepNameParts('Quinta do Merouço - Casa do Rio')).toBe(`Quinta do Merouço${NB}- Casa do Rio`);
+    expect(keepNameParts('Quinta do Sol - Casa do Lago')).toBe(`Quinta do Sol${NB}- Casa do Lago`);
     expect(keepNameParts('Villa Aura')).toBe('Villa Aura');
   });
   it('destinos: com notas por baixo, cada cartão tem a sua altura e a nota fica dentro da célula', () => {

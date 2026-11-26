@@ -7,7 +7,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const UID = "3bac86ea-0000-4000-8000-000000000001";
-const home = { slug: "casa-de-caiz", name: "Casa de Caiz", bookingMode: "request", source: "tripwix", supplierUid: UID, maxGuests: 10, minNights: 2, cleaningFee: 0, securityDeposit: 0, priceFrom: 795 };
+const home = { slug: "amarante-6-bedroom-heritage-villa-river-view", name: "Amarante River-View Heritage Villa", bookingMode: "request", source: "tripwix", supplierUid: UID, maxGuests: 10, minNights: 2, cleaningFee: 0, securityDeposit: 0, priceFrom: 795 };
 const saved: any[] = [];
 const sent: any[] = [];
 const quote = vi.fn();
@@ -36,7 +36,7 @@ const priced = (over: Record<string, unknown> = {}) => ({
 });
 const request = (metadata: Record<string, string>) => ({
   name: "Ana Teste", email: "ana@example.com", source: "partner-home-request",
-  metadata: { property: "casa-de-caiz", guests: "4", locale: "en", ...metadata },
+  metadata: { property: "amarante-6-bedroom-heritage-villa-river-view", guests: "4", locale: "en", ...metadata },
 });
 const create = async (metadata: Record<string, string>) => {
   const { createPartnerRequest } = await import("./services/partner-requests");

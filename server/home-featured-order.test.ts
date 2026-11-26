@@ -97,7 +97,7 @@ describe('the homepage renders partner cards exactly like the listing', () => {
     );
     const onHome = card('featured_homes', "Editor's Picks");
     expect(onHome).toBe(card('search_results', 'Search Results'));
-    expect(onHome).toMatch(/href="\/homes\/casa-de-caiz"/);
+    expect(onHome).toMatch(/href="\/homes\/amarante-6-bedroom-heritage-villa-river-view"/);
     expect(onHome).toMatch(/795/);
     // The partner card is our own card: no "other charges" note on it (o
     // Ricardo, 20 nov 2026). The full note is on the home's page, by the price.

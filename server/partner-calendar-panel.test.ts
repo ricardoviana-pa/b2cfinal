@@ -60,9 +60,9 @@ afterAll(() => { vi.useRealTimers(); });
 
 const DAY = 86_400_000;
 const ymd = (start: string, i: number) => new Date(Date.parse(start + "T00:00:00Z") + i * DAY).toISOString().slice(0, 10);
-/** Casa de Caiz on 29 Oct: the whole window (2026-10-29 → 2027-10-29), free, guest price. */
+/** Amarante River-View Heritage Villa on 29 Oct: the whole window (2026-10-29 → 2027-10-29), free, guest price. */
 const FULL = Array.from({ length: 366 }, (_, i) => ({ date: ymd("2026-10-29", i), status: "available", price: 954 }));
-/** Beachfront Sintra: free to 2027-03-04, then every day "unknown" (the server's answer since this PR). */
+/** Sintra Ocean-View Tennis Villa: free to 2027-03-04, then every day "unknown" (the server's answer since this PR). */
 const SHORT = [
   ...Array.from({ length: 127 }, (_, i) => ({ date: ymd("2026-10-29", i), status: "available", price: 1203 })),
   ...Array.from({ length: 239 }, (_, i) => ({ date: ymd("2027-03-05", i), status: "unknown" })),
@@ -78,7 +78,7 @@ function panel(opts: { calendar: unknown; calendarError?: boolean; quote?: unkno
   q.calendar = { data: opts.calendar, isLoading: false, isError: !!opts.calendarError };
   q.quote = { data: opts.quote, isFetching: false, isError: false };
   const html = renderToStaticMarkup(React.createElement(PartnerBookingPanel, {
-    partnerUid: "71776293-1e7f-4eb9-bd2c-d9733621716f", propertyName: "Casa de Caiz", propertySlug: "casa-de-caiz",
+    partnerUid: "71776293-1e7f-4eb9-bd2c-d9733621716f", propertyName: "Amarante River-View Heritage Villa", propertySlug: "amarante-6-bedroom-heritage-villa-river-view",
     fromPrice: opts.fromPrice, maxGuests: 10, minNights: 1, initialCheckIn: opts.checkIn, initialCheckOut: opts.checkOut,
     whatsappUrl: "https://wa.me/000",
   }));
@@ -94,7 +94,7 @@ function panel(opts: { calendar: unknown; calendarError?: boolean; quote?: unkno
 
 describe("the partner panel, rendered: what the calendar draws and says", () => {
   it("R1/R2: a home the server holds no calendar for — every date on request, and the line claims nothing about the home", () => {
-    // PT0273 (404 at Tripwix) and Mirante 1 before the job has
+    // PT0273 (404 at Tripwix) and Albufeira Tennis Villa before the job has
     // read it get the same answer from the server: null.
     const p = panel({ calendar: null, quote: null, checkIn: "2026-11-12", checkOut: "2026-11-19", fromPrice: null });
     expect(p.days).toBe(30); // November 2026 is the month on screen

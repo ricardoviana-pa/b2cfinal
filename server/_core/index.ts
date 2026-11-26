@@ -297,13 +297,21 @@ async function startServer() {
       ];
 
       /** Generate a <url> entry with hreflang alternates for all languages */
-      const url = (pagePath: string, lang: string, lastmod: string, changefreq: string, priority: string, languages = SITEMAP_LANGS) => {
+      // Photos of a page, as image-sitemap entries (absolute, XML-escaped).
+      const imageTags = (images: string[] | undefined) => (images ?? [])
+        .map((src) => (src.startsWith("/") ? `${base}${src}` : src))
+        .filter((src) => /^https:\/\//.test(src))
+        .map((src) => `    <image:image><image:loc>${src.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</image:loc></image:image>`)
+        .join("\n");
+
+      const url = (pagePath: string, lang: string, lastmod: string, changefreq: string, priority: string, languages = SITEMAP_LANGS, images?: string[]) => {
         const loc = `${base}/${lang}${pagePath === '/' ? '' : pagePath}`;
         const alternates = languages.map(l =>
           `    <xhtml:link rel="alternate" hreflang="${l}" href="${base}/${l}${pagePath === '/' ? '' : pagePath}" />`
         ).join('\n');
         const xDefault = `    <xhtml:link rel="alternate" hreflang="x-default" href="${base}/en${pagePath === '/' ? '' : pagePath}" />`;
-        return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n${alternates}\n${xDefault}\n  </url>`;
+        const imgs = imageTags(images);
+        return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n${alternates}\n${xDefault}${imgs ? `\n${imgs}` : ""}\n  </url>`;
       };
 
       const allUrls: string[] = [];
@@ -322,7 +330,7 @@ async function startServer() {
       }
 
       // Dynamic pages × all languages
-      const dynamicPages: { path: string; lastmod: string | ((language: string) => string); changefreq: string; priority: string; languages?: string[] }[] = [];
+      const dynamicPages: { path: string; lastmod: string | ((language: string) => string); changefreq: string; priority: string; languages?: string[]; images?: string[] }[] = [];
 
       for (const p of properties.filter((p: any) => p.slug)) {
         // lastModified is stamped by the Guesty sync from a fingerprint of the
@@ -330,7 +338,11 @@ async function startServer() {
         // real change stands out. Homes synced before that shipped have no
         // stamp yet and fall back to the deploy date.
         const lastmod = (p as any).lastModified || deployDate;
-        dynamicPages.push({ path: `/homes/${(p as any).slug}`, lastmod, changefreq: "weekly", priority: "0.9" });
+        // The first photos of each home go in as an image sitemap: they live on
+        // our own domain (partner homes) or our CDN, and Google Images is a
+        // search surface we were not asking for (sitemap audit, 26 Nov 2026).
+        const images = Array.isArray((p as any).images) ? ((p as any).images as unknown[]).filter((x): x is string => typeof x === "string").slice(0, 10) : [];
+        dynamicPages.push({ path: `/homes/${(p as any).slug}`, lastmod, changefreq: "weekly", priority: "0.9", images });
       }
 
       // Blog: articles live in client/src/data/blog.json, NOT the blogPosts
@@ -413,13 +425,14 @@ async function startServer() {
           if (dp.languages && !dp.languages.includes(lang)) continue;
           if (!servedAsIs(dp.path, lang)) continue;
           const lastmod = typeof dp.lastmod === "function" ? dp.lastmod(lang) : dp.lastmod;
-          allUrls.push(url(dp.path, lang, lastmod, dp.changefreq, dp.priority, dp.languages));
+          allUrls.push(url(dp.path, lang, lastmod, dp.changefreq, dp.priority, dp.languages, dp.images));
         }
       }
 
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${allUrls.join("\n")}
 </urlset>`;
 

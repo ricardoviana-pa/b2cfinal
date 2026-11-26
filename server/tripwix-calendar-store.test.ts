@@ -74,7 +74,7 @@ describe('guest requests never call the partner API', () => {
     vi.stubGlobal('fetch', vi.fn(async () => ok(calendar(1000, (i) => (i >= 121 ? 'available' : 'unavailable')))));
     const { refreshTripwixCalendar } = await load();
     const { getTripwixLowestNightly, getPartnerQuote, getPartnerCalendar } = await import('./services/tripwix');
-    expect(await refreshTripwixCalendar('a', 'Casa na Areia')).toMatchObject({ action: 'refreshed' });
+    expect(await refreshTripwixCalendar('a', 'Carvalhal Contemporary Villa')).toMatchObject({ action: 'refreshed' });
     expect(await getTripwixLowestNightly('a', 5)).toBe(1060);
     expect(await getPartnerQuote('a', '2027-03-01', '2027-03-06')).toMatchObject({ available: true, nights: 5, accommodation: 5300, source: 'cached' });
     expect(await getPartnerQuote('a', '2026-11-10', '2026-11-12')).toMatchObject({ available: false });
@@ -141,13 +141,13 @@ describe('the background job', () => {
     vi.stubGlobal('fetch', fetcher);
     const { refreshNextTripwixCalendar, readTripwixCalendar } = await load();
     const { getTripwixLowestNightly } = await import('./services/tripwix');
-    const homes = [{ uid: 'a', name: 'Villa Guincho' }];
+    const homes = [{ uid: 'a', name: 'Guincho Ocean-View Villa' }];
     await refreshNextTripwixCalendar(homes);
     expect(await getTripwixLowestNightly('a', 2)).toBe(1060);
     at(T0 + 61 * MIN);
     fetcher.mockImplementation(async () => new Response('upstream down', { status: 502 }));
     expect(await refreshNextTripwixCalendar(homes)).toMatchObject({ action: 'failed', status: 502, reason: 'upstream down' });
-    const line = warn.mock.calls.map((c) => String(c[0])).find((l) => l.includes('Villa Guincho'));
+    const line = warn.mock.calls.map((c) => String(c[0])).find((l) => l.includes('Guincho Ocean-View Villa'));
     expect(line).toContain('HTTP 502');
     expect(line).toContain('upstream down');
     expect(line).toContain('próxima tentativa daqui a 15 min');
@@ -273,10 +273,10 @@ describe('persistence (TiDB: one read per process, writes only on change)', () =
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const fetcher = vi.fn(async (url: string) => (uidOf(url) === 'bad' ? new Response('{"detail":"Not found."}', { status: 404 }) : ok(calendar())));
     vi.stubGlobal('fetch', fetcher);
-    const homes = [{ uid: 'bad', name: 'Villa Trevo' }, { uid: 'good' }];
+    const homes = [{ uid: 'bad', name: 'Armação de Pêra Clifftop Villa' }, { uid: 'good' }];
     let mod = await load();
     await mod.refreshTripwixCalendar('good');
-    expect(await mod.refreshTripwixCalendar('bad', 'Villa Trevo')).toMatchObject({ action: 'failed', status: 404 });
+    expect(await mod.refreshTripwixCalendar('bad', 'Armação de Pêra Clifftop Villa')).toMatchObject({ action: 'failed', status: 404 });
     await vi.waitFor(() => expect(store.has('tripwix_calendar_bad')).toBe(true));
     // Restart 5 min depois: a "bad" recua até +15 min, a "good" é de há 5 min.
     at(T0 + 5 * MIN);
@@ -285,7 +285,7 @@ describe('persistence (TiDB: one read per process, writes only on change)', () =
     await mod.hydrateTripwixCalendars(homes.map((x) => x.uid));
     expect(await mod.refreshNextTripwixCalendar(homes)).toEqual({ action: 'idle' });
     expect(fetcher).toHaveBeenCalledTimes(2);
-    expect(mod.tripwixCalendarSummary(homes).failing[0]).toContain('Villa Trevo (HTTP 404');
+    expect(mod.tripwixCalendarSummary(homes).failing[0]).toContain('Armação de Pêra Clifftop Villa (HTTP 404');
     // Depois do recuo volta a tentar, e a escada continua (30 min), não recomeça nos 15.
     at(T0 + 16 * MIN);
     await mod.refreshNextTripwixCalendar(homes);

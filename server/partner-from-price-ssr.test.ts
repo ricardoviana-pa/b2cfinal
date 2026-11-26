@@ -7,8 +7,8 @@
  * page read the seed by Guesty id only. So on a partner home the booking
  * card said "Price on request · Pick your dates for the exact total" in the
  * server HTML and for 0.4–0.7 s after paint, until the lowestNightly query
- * that only starts after hydration came back: Casa de Caiz (€795) and
- * Beachfront Sintra (€1,135) first claimed to have no price; Villa Arroz (no
+ * that only starts after hydration came back: Amarante River-View Heritage Villa (€795) and
+ * Sintra Ocean-View Tennis Villa (€1,135) first claimed to have no price; Possanco Heated-Pool Villa (no
  * price) first promised an exact total.
  *
  * Now the server seeds partner homes from the calendar the job stored
@@ -36,7 +36,7 @@ import type { AddressInfo } from "node:net";
 import express from "express";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-/** Casa de Caiz (minimum stay 2) and Villa Arroz, as in client/src/data/tripwix-properties.json. */
+/** Amarante River-View Heritage Villa (minimum stay 2) and Possanco Heated-Pool Villa, as in client/src/data/tripwix-properties.json. */
 const CAIZ = "71776293-1e7f-4eb9-bd2c-d9733621716f";
 const ARROZ = "cf01a7c6-8b9a-41d9-8fe9-a31b2b1daa83";
 
@@ -94,17 +94,17 @@ afterAll(() => {
 const get = (p: string) => fetch(base + p, { redirect: "manual" });
 
 describe("the server puts the partner home's 'from' into its page", () => {
-  it("Casa de Caiz: the stored calendar's price, read by supplier uid with the home's minimum stay", async () => {
-    const res = await get("/en/homes/casa-de-caiz");
+  it("Amarante River-View Heritage Villa: the stored calendar's price, read by supplier uid with the home's minimum stay", async () => {
+    const res = await get("/en/homes/amarante-6-bedroom-heritage-villa-river-view");
     expect(res.status).toBe(200);
-    expect(renderOf("/en/homes/casa-de-caiz")?.prefetch?.fromPrices?.prices).toEqual({ [CAIZ]: 795 });
+    expect(renderOf("/en/homes/amarante-6-bedroom-heritage-villa-river-view")?.prefetch?.fromPrices?.prices).toEqual({ [CAIZ]: 795 });
     expect(stores.partnerFrom).toHaveBeenCalledWith(CAIZ, 2);
   });
 
-  it("Villa Arroz (nothing priced in its calendar): null is seeded, so the page says 'on request' at once", async () => {
-    const res = await get("/en/homes/villa-arroz");
+  it("Possanco Heated-Pool Villa (nothing priced in its calendar): null is seeded, so the page says 'on request' at once", async () => {
+    const res = await get("/en/homes/comporta-possanco-6-bedroom-villa");
     expect(res.status).toBe(200);
-    expect(renderOf("/en/homes/villa-arroz")?.prefetch?.fromPrices?.prices).toEqual({ [ARROZ]: null });
+    expect(renderOf("/en/homes/comporta-possanco-6-bedroom-villa")?.prefetch?.fromPrices?.prices).toEqual({ [ARROZ]: null });
   });
 
   it("our own homes keep their Guesty seed and never ask the partner store", async () => {
@@ -172,7 +172,7 @@ describe("a render without the price does not outlive the price (revisão do PR 
   });
 
   it("the calendar the job stores drops the cached null render: the next request carries the price", async () => {
-    const url = "/fr/homes/casa-de-caiz";
+    const url = "/fr/homes/amarante-6-bedroom-heritage-villa-river-view";
     answer(null);
     await get(url);
     expect(seedsOf(url)).toEqual([{ [CAIZ]: null }]);
@@ -191,7 +191,7 @@ describe("a render without the price does not outlive the price (revisão do PR 
   });
 
   it("another home's calendar leaves the render alone", async () => {
-    const url = "/es/homes/casa-de-caiz";
+    const url = "/es/homes/amarante-6-bedroom-heritage-villa-river-view";
     answer(null);
     await get(url);
     answer(795);
@@ -201,8 +201,8 @@ describe("a render without the price does not outlive the price (revisão do PR 
   });
 
   it("without any signal the null render lives 60 s (the edge's own s-maxage), a priced render the full 5 min", async () => {
-    const nullUrl = "/de/homes/casa-de-caiz";
-    const pricedUrl = "/it/homes/casa-de-caiz";
+    const nullUrl = "/de/homes/amarante-6-bedroom-heritage-villa-river-view";
+    const pricedUrl = "/it/homes/amarante-6-bedroom-heritage-villa-river-view";
     const realNow = Date.now;
     let shift = 0;
     const clock = vi.spyOn(Date, "now").mockImplementation(() => realNow() + shift);

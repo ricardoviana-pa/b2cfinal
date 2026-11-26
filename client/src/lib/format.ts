@@ -129,7 +129,7 @@ export const keepHyphens = (text: string): string => text.replace(/([\p{L}\p{N}]
 
 /** A dash stays with the word before it ("the Algarve —" / "the coasts"),
  *  never alone at the start of the next line. A hyphen between spaces is a
- *  dash too ("Quinta do Merouço - Casa do Rio": balanced wrapping put the
+ *  dash too ("<name> - <house>": balanced wrapping put the
  *  "- " at the start of the second line of the card). */
 export const keepDashes = (text: string): string => text.replace(/ ([—–-]) /g, '\u00A0$1 ');
 

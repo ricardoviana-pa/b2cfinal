@@ -43,9 +43,9 @@ describe("tracking parameters", () => {
   });
 
   it("the SSR render URL (and cache key) is the same for every ad click on a page", () => {
-    const a = ssrRenderUrl("/en/homes/mirante-1?gclid=AAA&gad_source=1&gbraid=Q");
-    const b = ssrRenderUrl("/en/homes/mirante-1?gclid=BBB&utm_source=google&utm_medium=cpc");
-    const clean = ssrRenderUrl("/en/homes/mirante-1");
+    const a = ssrRenderUrl("/en/homes/albufeira-6-bedroom-villa-tennis-court?gclid=AAA&gad_source=1&gbraid=Q");
+    const b = ssrRenderUrl("/en/homes/albufeira-6-bedroom-villa-tennis-court?gclid=BBB&utm_source=google&utm_medium=cpc");
+    const clean = ssrRenderUrl("/en/homes/albufeira-6-bedroom-villa-tennis-court");
     expect(a).toBe(clean);
     expect(b).toBe(clean);
     // …but dates still give their own render.
