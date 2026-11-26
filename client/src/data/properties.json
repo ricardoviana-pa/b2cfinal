@@ -28907,9 +28907,9 @@
     "bedrooms": 3,
     "bathrooms": 2,
     "maxGuests": 9,
-    "priceFrom": 200,
-    "pricePerNight": 200,
-    "cleaningFee": 0,
+    "priceFrom": 210,
+    "pricePerNight": 210,
+    "cleaningFee": 220,
     "minNights": 1,
     "currency": "EUR",
     "images": [
