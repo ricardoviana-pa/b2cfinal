@@ -222,10 +222,10 @@ vi.mock("./trusted-checkout-quote", async (importOriginal) => {
   };
 });
 
-const mail = vi.hoisted(() => ({ sent: [] as Array<{ subject: string; lines: string[] }> }));
+const mail = vi.hoisted(() => ({ sent: [] as Array<{ subject: string; lines: string[]; opts?: unknown }> }));
 vi.mock("./transactional-email", () => ({
-  sendOpsAlert: vi.fn(async (subject: string, lines: string[]) => {
-    mail.sent.push({ subject, lines });
+  sendOpsAlert: vi.fn(async (subject: string, lines: string[], opts?: unknown) => {
+    mail.sent.push({ subject, lines, opts });
     return true;
   }),
   emailDeliveryConfigured: vi.fn(() => true),
@@ -326,6 +326,8 @@ describe("settleCardCharge — idempotência do registo no Guesty", () => {
     const text = mail.sent[0].lines.join("\n");
     expect(mail.sent[0].subject).toContain("ACERTAR TARIFA NO GUESTY");
     expect(text).toContain("o Guesty recusou o acerto pela API");
+    // É o CS que acerta: caixa do booking, sem cópia à gestão (26 nov 2026).
+    expect(mail.sent[0].opts).toEqual({ to: "booking@portugalactive.com" });
     expect(text).toContain("menos 242.10 EUR");
   });
 

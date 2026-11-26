@@ -379,7 +379,9 @@ export async function alertCouponNotInFolio(input: {
         : []),
     ];
     const { sendOpsAlert } = await import("./transactional-email");
-    return await sendOpsAlert(subject, lines, { copyToSales: true });
+    const { FOLIO_ALERT_EMAIL } = await import("../config/alert-recipients");
+    // É o CS que acerta o folio: caixa do booking, sem cópia à gestão.
+    return await sendOpsAlert(subject, lines, { to: FOLIO_ALERT_EMAIL });
   } catch (err: any) {
     console.error(`[Card2b] alerta de cupao sem desconto nao saiu (${input.reservationId}): ${err?.message}`);
     return false;

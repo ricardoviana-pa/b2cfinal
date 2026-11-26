@@ -734,7 +734,9 @@ export function productionFolioGuardDeps(): FolioGuardDeps {
     },
     async sendAlert(subject, lines) {
       const { sendOpsAlert } = await import("./transactional-email");
-      return sendOpsAlert(subject, lines, { copyToSales: true });
+      const { FOLIO_ALERT_EMAIL } = await import("../config/alert-recipients");
+      // É o CS que acerta o folio: caixa do booking, sem cópia à gestão.
+      return sendOpsAlert(subject, lines, { to: FOLIO_ALERT_EMAIL });
     },
     now: () => new Date(),
   };
