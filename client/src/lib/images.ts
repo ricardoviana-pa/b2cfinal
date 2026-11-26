@@ -12,7 +12,7 @@ export const IMAGES = {
   // WebP quality 50: all that foliage makes it a heavy picture, and the hero
   // lays a dark veil over it. The 960 size is for phones (390 px × 2); there
   // is no 2560, which would be 700 KB. The social image (og:image) is still
-  // the Mirante 1 tennis court.
+  // the PT0009 tennis court.
   heroMain: '/hero/home-carcavelos-cover-1920.webp',
   // Auto-hospedada: o CDN da plataforma original (d2xsxph8kpxj0f.cloudfront.net)
   // comecou a devolver 403/503 em 24 ago 2026 e nao volta — qualquer imagem

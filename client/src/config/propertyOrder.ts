@@ -145,10 +145,9 @@ export function isCurated(guestyId: string | undefined): boolean {
  * booked online, but it positions the brand): it now sits in the third row,
  * after the homes a guest can book. A partner home only earns a slot with a real "from"
  * price and a calendar priced twelve months out (checked in production on
- * 29 out: booking.partnerPrices + booking.partnerCalendar); Casa do
- * Presidente and Alma da Comporta stop at 2027-03-04 and stayed out, the
- * four 20%-commission homes (Caiz, Belvedere, Laura, Rolapipas) are in.
- * Mirante 1 stays first: its tennis court was the site hero until 20 nov
+ * 29 out: booking.partnerPrices + booking.partnerCalendar); PT0031 and
+ * PT0175 stop at 2027-03-04 and stayed out, the four 20%-commission homes
+ * (PT0277, PT0253, PT0256, PT0023) are in. PT0009 stays first: its tennis court was the site hero until 20 nov
  * 2026, when Ricardo made Carcavelos Manor House (slot 2) the cover photo.
  * The order of the twelve was not changed with it.
  *
@@ -164,17 +163,17 @@ export function isCurated(guestyId: string | undefined): boolean {
  * from the curated PLP order (lib/featuredHomes.ts).
  */
 export const HOME_FEATURED_ORDER: string[] = [
-  'partner-mirante-1', // Mirante 1 (Albufeira, Algarve)
+  'partner-albufeira-6-bedroom-villa-tennis-court', // Albufeira Tennis Villa (PT0009, Algarve)
   '6a2ad70638d6620013badaef', // Carcavelos Manor House (Vila Verde, Minho) — site hero
-  'partner-casa-de-caiz', // Casa de Caiz (Douro) — 20% commission
+  'partner-amarante-6-bedroom-heritage-villa-river-view', // Amarante River-View Heritage Villa (PT0277, Douro) — 20% commission
   '69e7350685a8b000124854c5', // Alvarinho Villa 5 Suites & Heated Pool (Amarante, Porto)
-  'partner-villa-belvedere', // Villa Belvedere (West Algarve) — 20% commission
+  'partner-salema-5-bedroom-clifftop-villa-sea-view', // Salema Clifftop Villa (PT0253, West Algarve) — 20% commission
   '696533722def930014e914e2', // Abreu Retreat Palace (Famalicão, Minho)
-  'partner-villa-laura', // Villa Laura (Estoril, Lisbon) — 20% commission
+  'partner-estoril-8-bedroom-beachfront-villa', // Estoril Beachfront Villa (PT0256, Lisbon) — 20% commission
   '696533466d209c001510ecfe', // Eben Lodge (Carreço, Minho) — slot 8, third row (Ricardo, 14 nov 2026)
-  'partner-casa-do-rolapipas', // Casa do Rolapipas (Douro) — 20% commission
+  'partner-douro-6-bedroom-riverfront-villa-vineyard', // Douro Riverfront Vineyard Villa (PT0023) — 20% commission
   '69c415ceab80a8001247452c', // Azenha do Tio Luís - Riverside Watermill (Caminha, Minho; multi-unit)
-  'partner-casa-na-areia', // Casa na Areia (Comporta)
+  'partner-comporta-carvalhal-4-bedroom-villa-heated-pool', // Carvalhal Contemporary Villa (PT0248, Comporta)
   '6965335cbf04fe00137431cb', // Lima River Houses (Viana do Castelo, Minho; multi-unit)
 ];
 

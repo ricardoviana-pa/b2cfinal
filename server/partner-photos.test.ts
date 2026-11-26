@@ -29,24 +29,24 @@ const references = partners.map((p) => p.supplierReference);
 
 describe('publicPhotoUrl', () => {
   it('swaps the folder on disk for the public one, and nothing else', () => {
-    expect(publicPhotoUrl('/homes/photos/PT0009/00.webp', 'PT0009', 'mirante-1')).toBe('/homes/photos/mirante-1/00.webp');
-    expect(publicPhotoUrl('/homes/photos/PT0009/01-480w.webp', 'PT0009', 'mirante-1')).toBe('/homes/photos/mirante-1/01-480w.webp');
+    expect(publicPhotoUrl('/homes/photos/PT0009/00.webp', 'PT0009', 'albufeira-6-bedroom-villa-tennis-court')).toBe('/homes/photos/albufeira-6-bedroom-villa-tennis-court/00.webp');
+    expect(publicPhotoUrl('/homes/photos/PT0009/01-480w.webp', 'PT0009', 'albufeira-6-bedroom-villa-tennis-court')).toBe('/homes/photos/albufeira-6-bedroom-villa-tennis-court/01-480w.webp');
     // Another home's folder, another place, another host: untouched.
-    expect(publicPhotoUrl('/homes/photos/PT00090/00.webp', 'PT0009', 'mirante-1')).toBe('/homes/photos/PT00090/00.webp');
-    expect(publicPhotoUrl('/hero/PT0009/00.webp', 'PT0009', 'mirante-1')).toBe('/hero/PT0009/00.webp');
-    expect(publicPhotoUrl('https://cdn.example/homes/photos/PT0009/00.webp', 'PT0009', 'mirante-1')).toBe('https://cdn.example/homes/photos/PT0009/00.webp');
+    expect(publicPhotoUrl('/homes/photos/PT00090/00.webp', 'PT0009', 'albufeira-6-bedroom-villa-tennis-court')).toBe('/homes/photos/PT00090/00.webp');
+    expect(publicPhotoUrl('/hero/PT0009/00.webp', 'PT0009', 'albufeira-6-bedroom-villa-tennis-court')).toBe('/hero/PT0009/00.webp');
+    expect(publicPhotoUrl('https://cdn.example/homes/photos/PT0009/00.webp', 'PT0009', 'albufeira-6-bedroom-villa-tennis-court')).toBe('https://cdn.example/homes/photos/PT0009/00.webp');
   });
 
   it('leaves the URL alone without a folder to swap, or with a public folder that is not a slug', () => {
-    expect(publicPhotoUrl('/homes/photos/PT0009/00.webp', '', 'mirante-1')).toBe('/homes/photos/PT0009/00.webp');
+    expect(publicPhotoUrl('/homes/photos/PT0009/00.webp', '', 'albufeira-6-bedroom-villa-tennis-court')).toBe('/homes/photos/PT0009/00.webp');
     expect(publicPhotoUrl('/homes/photos/PT0009/00.webp', 'PT0009', '')).toBe('/homes/photos/PT0009/00.webp');
     expect(publicPhotoUrl('/homes/photos/PT0009/00.webp', 'PT0009', '../etc')).toBe('/homes/photos/PT0009/00.webp');
-    expect(publicPhotoUrl(null, 'PT0009', 'mirante-1')).toBeNull();
-    expect(publicPhotoUrl({ url: 'x' }, 'PT0009', 'mirante-1')).toEqual({ url: 'x' });
+    expect(publicPhotoUrl(null, 'PT0009', 'albufeira-6-bedroom-villa-tennis-court')).toBeNull();
+    expect(publicPhotoUrl({ url: 'x' }, 'PT0009', 'albufeira-6-bedroom-villa-tennis-court')).toEqual({ url: 'x' });
   });
 
   it('a public folder is a slug; a supplier reference never is one', () => {
-    for (const ok of ['mirante-1', 'casa-de-caiz', '4-serras', 'a']) expect(isPublicPhotoFolder(ok), ok).toBe(true);
+    for (const ok of ['albufeira-6-bedroom-villa-tennis-court', 'amarante-6-bedroom-heritage-villa-river-view', 'comporta-5-bedroom-villa-ocean-view', 'a']) expect(isPublicPhotoFolder(ok), ok).toBe(true);
     for (const no of ['PT0009', 'Mirante', 'mirante_1', 'mirante--1', '-mirante', 'mirante-', '..', '', 'a/b', 'a.b']) expect(isPublicPhotoFolder(no), no).toBe(false);
     for (const r of references) expect(isPublicPhotoFolder(r), r).toBe(false);
     expect(isPublicPhotoFolder(undefined)).toBe(false);
@@ -59,11 +59,11 @@ describe('the folder on disk behind a public folder (server only)', () => {
   it('knows every partner home by its slug', async () => {
     expect(partners).toHaveLength(34);
     for (const p of partners) expect(await partnerPhotoFolder(p.slug), p.slug).toBe(p.supplierReference);
-    expect(await partnerPhotoFolder('mirante-1')).toBe('PT0009');
+    expect(await partnerPhotoFolder('albufeira-6-bedroom-villa-tennis-court')).toBe('PT0009');
   });
 
   it('answers null for anything that is not a partner home’s folder', async () => {
-    for (const folder of ['zz-not-a-home', 'PT0009', 'photos', '', '..', 'mirante-1/..', 'Mirante-1']) {
+    for (const folder of ['zz-not-a-home', 'PT0009', 'photos', '', '..', 'albufeira-6-bedroom-villa-tennis-court/..', 'Mirante-1']) {
       expect(await partnerPhotoFolder(folder), folder).toBeNull();
     }
   });
@@ -72,13 +72,13 @@ describe('the folder on disk behind a public folder (server only)', () => {
     vi.stubEnv('TRIPWIX_INVENTORY', '0');
     store.reset();
     expect((await getPropertiesForSite()).filter(isPartnerHome)).toHaveLength(0);
-    expect(await partnerPhotoFolder('casa-do-rolapipas')).toBe('PT0023');
+    expect(await partnerPhotoFolder('douro-6-bedroom-riverfront-villa-vineyard')).toBe('PT0023');
   });
 
   it('answers null, without throwing, when the data file is missing', async () => {
     const prev = store.setPaths({ tripwix: path.join(os.tmpdir(), 'pa-no-such-partner-file.json') });
     try {
-      expect(await partnerPhotoFolder('mirante-1')).toBeNull();
+      expect(await partnerPhotoFolder('albufeira-6-bedroom-villa-tennis-court')).toBeNull();
     } finally {
       store.setPaths(prev);
     }
@@ -181,16 +181,16 @@ describe('served by the site', () => {
 
   it('the public address answers with the file, and with the headers of any other static photo', async () => {
     const file = fs.readFileSync(path.join(PUBLIC, 'homes/photos/PT0009/00.webp'));
-    const res = await get('/homes/photos/mirante-1/00.webp');
+    const res = await get('/homes/photos/albufeira-6-bedroom-villa-tennis-court/00.webp');
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toBe('image/webp');
     expect(res.headers.get('cache-control')).toBe('public, max-age=3600');
     expect(res.headers.get('cross-origin-resource-policy')).toBe('cross-origin');
     expect(Buffer.from(await res.arrayBuffer()).equals(file)).toBe(true);
     // The card-sized copy of the cover, and a query string (cache busters) too.
-    expect((await get('/homes/photos/mirante-1/01-480w.webp')).status).toBe(200);
-    expect((await get('/homes/photos/mirante-1/00.webp?v=2')).status).toBe(200);
-    const head = await get('/homes/photos/mirante-1/00.webp', { method: 'HEAD' });
+    expect((await get('/homes/photos/albufeira-6-bedroom-villa-tennis-court/01-480w.webp')).status).toBe(200);
+    expect((await get('/homes/photos/albufeira-6-bedroom-villa-tennis-court/00.webp?v=2')).status).toBe(200);
+    const head = await get('/homes/photos/albufeira-6-bedroom-villa-tennis-court/00.webp', { method: 'HEAD' });
     expect(head.status).toBe(200);
     expect(head.headers.get('content-length')).toBe(String(file.length));
   });
@@ -199,27 +199,27 @@ describe('served by the site', () => {
     const old = await get('/homes/photos/PT0009/00.webp');
     expect(old.status).toBe(200);
     expect(old.headers.get('content-type')).toBe('image/webp');
-    const now = await get('/homes/photos/mirante-1/00.webp');
+    const now = await get('/homes/photos/albufeira-6-bedroom-villa-tennis-court/00.webp');
     expect(Buffer.from(await old.arrayBuffer()).equals(Buffer.from(await now.arrayBuffer()))).toBe(true);
     // A file directly under /homes/photos is not touched either.
     expect(await (await get('/homes/photos/x.webp')).text()).toBe('img');
   });
 
   it('a photo that does not exist is a 404, under either kind of folder', async () => {
-    for (const p of ['/homes/photos/mirante-1/99.webp', '/homes/photos/zz-not-a-home/00.webp', '/homes/photos/PT9999/00.webp', '/homes/photos/mirante-1/..%2F..%2Findex.html']) {
+    for (const p of ['/homes/photos/albufeira-6-bedroom-villa-tennis-court/99.webp', '/homes/photos/zz-not-a-home/00.webp', '/homes/photos/PT9999/00.webp', '/homes/photos/albufeira-6-bedroom-villa-tennis-court/..%2F..%2Findex.html']) {
       expect((await get(p)).status, p).toBe(404);
     }
   });
 
   it('the home’s page is not mistaken for its photo folder', async () => {
-    const page = await get('/en/homes/mirante-1');
+    const page = await get('/en/homes/albufeira-6-bedroom-villa-tennis-court');
     expect(page.status).toBe(200);
     expect(page.headers.get('content-type')).toMatch(/^text\/html/);
   });
 });
 
 describe('the alias on its own', () => {
-  const run = async (req: any, lookup = async (f: string) => (f === 'mirante-1' ? 'PT0009' : null)) => {
+  const run = async (req: any, lookup = async (f: string) => (f === 'albufeira-6-bedroom-villa-tennis-court' ? 'PT0009' : null)) => {
     const next = vi.fn();
     partnerPhotoAlias(lookup)(req, {} as any, next);
     await vi.waitFor(() => expect(next).toHaveBeenCalledOnce());
@@ -228,17 +228,17 @@ describe('the alias on its own', () => {
   };
 
   it('rewrites only GET and HEAD requests for a known public folder', async () => {
-    expect(await run({ method: 'GET', url: '/mirante-1/00.webp' })).toBe('/PT0009/00.webp');
-    expect(await run({ method: 'HEAD', url: '/mirante-1/00.webp?v=1' })).toBe('/PT0009/00.webp?v=1');
-    expect(await run({ method: 'POST', url: '/mirante-1/00.webp' })).toBe('/mirante-1/00.webp');
+    expect(await run({ method: 'GET', url: '/albufeira-6-bedroom-villa-tennis-court/00.webp' })).toBe('/PT0009/00.webp');
+    expect(await run({ method: 'HEAD', url: '/albufeira-6-bedroom-villa-tennis-court/00.webp?v=1' })).toBe('/PT0009/00.webp?v=1');
+    expect(await run({ method: 'POST', url: '/albufeira-6-bedroom-villa-tennis-court/00.webp' })).toBe('/albufeira-6-bedroom-villa-tennis-court/00.webp');
     expect(await run({ method: 'GET', url: '/unknown-home/00.webp' })).toBe('/unknown-home/00.webp');
     expect(await run({ method: 'GET', url: '/PT0009/00.webp' })).toBe('/PT0009/00.webp');
     expect(await run({ method: 'GET', url: '/x.webp' })).toBe('/x.webp');
-    expect(await run({ method: 'GET', url: '/mirante-1/a/b.webp' })).toBe('/mirante-1/a/b.webp');
+    expect(await run({ method: 'GET', url: '/albufeira-6-bedroom-villa-tennis-court/a/b.webp' })).toBe('/albufeira-6-bedroom-villa-tennis-court/a/b.webp');
   });
 
   it('a lookup that fails lets the request through untouched', async () => {
-    expect(await run({ method: 'GET', url: '/mirante-1/00.webp' }, async () => { throw new Error('catalogue unreadable'); })).toBe('/mirante-1/00.webp');
+    expect(await run({ method: 'GET', url: '/albufeira-6-bedroom-villa-tennis-court/00.webp' }, async () => { throw new Error('catalogue unreadable'); })).toBe('/albufeira-6-bedroom-villa-tennis-court/00.webp');
   });
 
   it('the root it is mounted on', () => {
@@ -247,5 +247,15 @@ describe('the alias on its own', () => {
     const prod = vite.slice(vite.indexOf('export function serveStatic'));
     expect(prod.indexOf('app.use("/homes/photos", partnerPhotoAlias(partnerPhotoFolder));')).toBeGreaterThan(0);
     expect(prod.indexOf('app.use("/homes/photos", partnerPhotoAlias(partnerPhotoFolder));')).toBeLessThan(prod.indexOf('app.use(express.static(distPath, {'));
+  });
+});
+
+describe('a renamed home keeps its old photo addresses', () => {
+  it('the former folder name reaches the same folder on disk', async () => {
+    const { FORMER_PARTNER_SLUGS } = await import('./lib/partnerFormerSlugs');
+    for (const [from, to] of Object.entries(FORMER_PARTNER_SLUGS)) {
+      expect(await partnerPhotoFolder(from), from).toBe(await partnerPhotoFolder(to));
+      expect(await partnerPhotoFolder(to), to).not.toBeNull();
+    }
   });
 });

@@ -100,7 +100,7 @@ describe('quote-health rules', () => {
     expect(isPublicHome({ name: 'Test_Guesty Test', slug: 'test-guesty-test-1a2b3c', guestyId: 'g1' })).toBe(false);
     expect(isPublicHome({ name: 'Villa Luzia', slug: 'villa-luzia-by-portugal-active-9f9f9f', guestyId: 'g2' })).toBe(false);
     expect(isPublicHome({ name: 'Off', slug: 'off', guestyId: 'g3', isActive: false })).toBe(false);
-    const partner = { name: 'Casa na Areia', slug: 'casa-na-areia', source: 'tripwix', supplierUid: 'u1', isActive: true };
+    const partner = { name: 'Carvalhal Contemporary Villa', slug: 'comporta-carvalhal-4-bedroom-villa-heated-pool', source: 'tripwix', supplierUid: 'u1', isActive: true };
     expect(isPartnerHome(partner)).toBe(true);
     expect(isQuotableOwnHome(partner)).toBe(false);
     // The site publishes the same home as source "partner" (14 nov 2026); the import file keeps the supplier's name.

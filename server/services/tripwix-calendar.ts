@@ -593,7 +593,7 @@ export function tripwixCalendarSummary(homes: Array<{ uid: string; name?: string
   /** Casas com calendário que acaba bem antes do ano pedido (dias seguintes "a pedido" no site). */
   const short: string[] = [];
   // A successful read is not proof of a usable price: a complete feed may
-  // contain only booked nights (Vale da Raposa, audit 3 Nov 2026).
+  // contain only booked nights (PT0014, audit 3 Nov 2026).
   const noAvailablePrices: string[] = [];
   for (const home of homes) {
     const e = entries.get(home.uid);

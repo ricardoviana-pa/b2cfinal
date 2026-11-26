@@ -373,3 +373,24 @@ describe("withdrawn partner home PT0273", () => {
     expect(target).toBe(`/${prefix ? prefix.slice(1) : "en"}/destinations/douro`);
   });
 });
+
+describe("partner homes renamed on 26 Nov 2026", () => {
+  it("every former slug answers 301 to the current one, in the visitor's language", async () => {
+    const { FORMER_PARTNER_SLUGS } = await import("./lib/partnerFormerSlugs.js");
+    const entries = Object.entries(FORMER_PARTNER_SLUGS);
+    expect(entries).toHaveLength(34);
+    for (const [from, to] of entries) {
+      expect(redirectTarget(`/homes/${from}`)).toBe(`/en/homes/${to}`);
+      expect(redirectTarget(`/de/homes/${from}`)).toBe(`/de/homes/${to}`);
+      // The slug that once carried the supplier's reference goes straight to the new one.
+      expect(redirectTarget(`/homes/${from}-pt0001`)).toBe(`/en/homes/${to}`);
+    }
+  });
+});
+
+describe("/activities duplicates /experiences", () => {
+  it.each(["/activities/canyoning", "/en/activities/canyoning", "/pt/activities/yacht", "/activities/sailing"])("%s → the experience page", (p) => {
+    const target = redirectTarget(p);
+    expect(target).toMatch(/^\/(en|pt)\/experiences\/(canyoning|yacht)$/);
+  });
+});

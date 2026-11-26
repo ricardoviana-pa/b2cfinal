@@ -99,8 +99,8 @@ describe('title length', () => {
   it('keeps the full form when it fits, sheds "luxury" first', () => {
     expect(propertyTitle('en', { name: 'U2 Loft', bedrooms: 2, destination: 'minho', propertyType: 'Villa' }))
       .toBe('U2 Loft | 2-Bedroom Luxury Villa in the Minho | Portugal Active');
-    expect(propertyTitle('en', { name: 'Mirante 1', bedrooms: 6, destination: 'algarve', propertyType: 'Villa' }))
-      .toBe('Mirante 1 | 6-Bedroom Villa in the Algarve | Portugal Active');
+    expect(propertyTitle('en', { name: 'Casa Alta', bedrooms: 6, destination: 'algarve', propertyType: 'Villa' }))
+      .toBe('Casa Alta | 6-Bedroom Villa in the Algarve | Portugal Active');
   });
 
   it('a very long name keeps only the brand', () => {

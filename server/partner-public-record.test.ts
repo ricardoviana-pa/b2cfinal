@@ -50,8 +50,8 @@ describe('what the property store publishes', () => {
     expect(references.filter((r) => published.includes(r))).toEqual([]);
     // The same through the public API, for a list and for one home.
     const caller = propertiesRouter.createCaller({ req: {}, res: { setHeader() {} }, user: null } as any);
-    const viaApi = JSON.stringify([await caller.listForSite(), await caller.getBySlugForSite({ slug: 'mirante-1' })]);
-    expect(viaApi).toContain('/homes/photos/mirante-1/');
+    const viaApi = JSON.stringify([await caller.listForSite(), await caller.getBySlugForSite({ slug: 'albufeira-6-bedroom-villa-tennis-court' })]);
+    expect(viaApi).toContain('/homes/photos/albufeira-6-bedroom-villa-tennis-court/');
     expect(references.filter((r) => viaApi.includes(r))).toEqual([]);
   });
 
@@ -61,7 +61,7 @@ describe('what the property store publishes', () => {
   });
 
   it('keeps the reference on the server, for the team', async () => {
-    const mirante = (raw as any[]).find((p) => p.slug === 'mirante-1');
+    const mirante = (raw as any[]).find((p) => p.slug === 'albufeira-6-bedroom-villa-tennis-court');
     expect(mirante.supplierReference).toBe('PT0009');
     expect(await partnerSupplierReference(mirante.supplierUid)).toBe('PT0009');
     expect(await partnerSupplierReference('not-a-partner-home')).toBe('');
@@ -69,20 +69,20 @@ describe('what the property store publishes', () => {
   });
 
   it('turns an imported record into the public one without touching the rest', () => {
-    const pub = toPublicPartner({ id: 'tripwix-PT0009', slug: 'mirante-1', source: 'tripwix', supplierUid: 'u-1', supplierReference: 'PT0009', supplierCommission: '10%', bedrooms: 6 });
-    expect(pub).toEqual({ id: 'partner-mirante-1', slug: 'mirante-1', source: 'partner', supplierUid: 'u-1', bedrooms: 6 });
+    const pub = toPublicPartner({ id: 'tripwix-PT0009', slug: 'albufeira-6-bedroom-villa-tennis-court', source: 'tripwix', supplierUid: 'u-1', supplierReference: 'PT0009', supplierCommission: '10%', bedrooms: 6 });
+    expect(pub).toEqual({ id: 'partner-albufeira-6-bedroom-villa-tennis-court', slug: 'albufeira-6-bedroom-villa-tennis-court', source: 'partner', supplierUid: 'u-1', bedrooms: 6 });
   });
 
   it('publishes the photos under the home’s own name and leaves every other address alone', () => {
     const pub = toPublicPartner({
-      id: 'tripwix-PT0009', slug: 'mirante-1', supplierUid: 'u-1', supplierReference: 'PT0009',
+      id: 'tripwix-PT0009', slug: 'albufeira-6-bedroom-villa-tennis-court', supplierUid: 'u-1', supplierReference: 'PT0009',
       images: ['/homes/photos/PT0009/00.webp', '/homes/photos/PT0009/01.webp', 'https://cdn.example/x.jpg', '/hero/home.webp', '/homes/photos/PT0010/00.webp'],
     });
-    expect(pub.images).toEqual(['/homes/photos/mirante-1/00.webp', '/homes/photos/mirante-1/01.webp', 'https://cdn.example/x.jpg', '/hero/home.webp', '/homes/photos/PT0010/00.webp']);
+    expect(pub.images).toEqual(['/homes/photos/albufeira-6-bedroom-villa-tennis-court/00.webp', '/homes/photos/albufeira-6-bedroom-villa-tennis-court/01.webp', 'https://cdn.example/x.jpg', '/hero/home.webp', '/homes/photos/PT0010/00.webp']);
   });
 
   it('a record without a slug gets an id from its uid, never from the reference', () => {
-    expect(publicPartnerId({ slug: 'mirante-1', supplierUid: '2ff3c27b-da80-49e7-9c59-53e99106de2e' })).toBe('partner-mirante-1');
+    expect(publicPartnerId({ slug: 'albufeira-6-bedroom-villa-tennis-court', supplierUid: '2ff3c27b-da80-49e7-9c59-53e99106de2e' })).toBe('partner-albufeira-6-bedroom-villa-tennis-court');
     expect(publicPartnerId({ supplierUid: '2ff3c27b-da80-49e7-9c59-53e99106de2e' })).toBe('partner-2ff3c27bda80');
     expect(publicPartnerId({ slug: 'Not A Slug', supplierUid: '2ff3c27b-da80-49e7-9c59-53e99106de2e' })).toBe('partner-2ff3c27bda80');
     expect(publicPartnerId({})).toBe('partner-home');

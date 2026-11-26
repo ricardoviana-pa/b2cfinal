@@ -213,7 +213,7 @@ function mapProperty(detail, rates) {
     pricePerNight,
     // The supplier's API exposes NO fee fields at all — no cleaning, no
     // deposit, nothing (verified across all 35 payloads). That is not the same
-    // as there being none: their own quote for Casa de Caiz in Sep 2026 added
+    // as there being none: their own quote for PT0277 in Sep 2026 added
     // EUR 350 cleaning and an EUR 844 refundable deposit on top of the nightly
     // rates this feed returns. Whatever we are told per house is filled in by
     // hand in content/tripwix-copy.json, whose keys win the merge below; 0 here
@@ -352,7 +352,13 @@ async function main() {
     // Where we override the name — a couple of theirs carry back-office notes
     // like "- PDF now LIVE" — the slug has to follow, or the URL keeps
     // publishing the noise we just removed from the page.
-    if (authored.name) {
+    // An authored `slug` wins: since 26 Nov 2026 the names are short
+    // ("Albufeira Tennis Villa") and the address carries more of the search
+    // ("albufeira-6-bedroom-villa-tennis-court"). Tripwix asks partners not
+    // to publish the owners' house names, so neither may come from the feed.
+    if (authored.slug) {
+      merged.slug = authored.slug;
+    } else if (authored.name) {
       merged.slug = slugify(authored.name);
     }
     if (authored.imageAlts) {

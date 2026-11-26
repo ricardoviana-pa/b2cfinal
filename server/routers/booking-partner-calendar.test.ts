@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const UID = "3bac86ea-0000-4000-8000-000000000001";
 vi.mock("../db", () => ({ getSettingsByKeys: async () => new Map(), upsertSetting: async () => {} }));
 vi.mock("../services/properties-store", () => ({
-  getPropertiesForSite: async () => [{ source: "partner", isActive: true, supplierUid: UID, name: "Casa de Caiz", minNights: 2, maxGuests: 8 }],
+  getPropertiesForSite: async () => [{ source: "partner", isActive: true, supplierUid: UID, name: "Amarante River-View Heritage Villa", minNights: 2, maxGuests: 8 }],
 }));
 
 const T0 = Date.parse("2026-10-29T00:30:00Z");

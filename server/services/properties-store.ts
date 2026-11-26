@@ -4,6 +4,7 @@
  * auto-updated by the sync process via GitHub API).
  */
 
+import { FORMER_PARTNER_SLUGS } from "../lib/partnerFormerSlugs";
 import { isLocalityDestination, localitySlug } from "../../shared/destinationNavigation";
 import { readFile, stat } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -155,7 +156,8 @@ export async function partnerPhotoFolder(publicFolder: string): Promise<string |
       }
       photoFolders = { version, map };
     }
-    return photoFolders.map.get(publicFolder) ?? null;
+    // A home renamed since keeps its old photo addresses working.
+    return photoFolders.map.get(publicFolder) ?? photoFolders.map.get(FORMER_PARTNER_SLUGS[publicFolder] ?? "") ?? null;
   } catch {
     return null;
   }

@@ -201,7 +201,7 @@ describe("Tab e leitor de ecrã: o RESERVE logo a seguir às tarifas (revisão d
   });
 });
 
-/** Casa de Caiz em produção (29 out): noites 21 e 22 de junho de 2027 ocupadas. */
+/** Amarante River-View Heritage Villa em produção (29 out): noites 21 e 22 de junho de 2027 ocupadas. */
 const CAIZ_QUOTE = {
   available: false, nights: 4,
   perNight: [
@@ -215,7 +215,7 @@ const CAIZ_QUOTE = {
 function partnerPanel(slot: { card: HTMLElement; scroller: HTMLElement } | null) {
   q.quote = { data: CAIZ_QUOTE, isFetching: false, isError: false };
   const panel = React.createElement(PartnerBookingPanel, {
-    tripwixUid: "71776293-1e7f-4eb9-bd2c-d9733621716f", propertyName: "Casa de Caiz", propertySlug: "casa-de-caiz",
+    tripwixUid: "71776293-1e7f-4eb9-bd2c-d9733621716f", propertyName: "Amarante River-View Heritage Villa", propertySlug: "amarante-6-bedroom-heritage-villa-river-view",
     fromPrice: 795, maxGuests: 10, minNights: 1, initialCheckIn: "2027-06-19", initialCheckOut: "2027-06-23", initialGuests: 2,
     whatsappUrl: "https://wa.me/000",
   });

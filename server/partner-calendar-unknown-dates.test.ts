@@ -7,7 +7,7 @@
  * 366 dias com o mesmo pedido). O site desenhava os ~8 meses seguintes como
  * livres, e escolhidos davam "não foi possível calcular o preço".
  * P2: quatro casas não têm calendário nenhum (PT0273: HTTP 404;
- * 3Br Cabana Villa, Villa Arroz, Villa Trevo: calendário vazio) e todas as
+ * Comporta Beach-Club Cabana, Possanco Heated-Pool Villa, Armação de Pêra Clifftop Villa: calendário vazio) e todas as
  * datas apareciam livres.
  *
  * Agora um dia que a Tripwix não publicou é "a pedido": nem livre nem
@@ -31,7 +31,7 @@ vi.mock("./db", () => ({
 }));
 const UID = "a77ade65-0000-4000-8000-000000000001";
 vi.mock("./services/properties-store", () => ({
-  getPropertiesForSite: async () => [{ source: "partner", isActive: true, supplierUid: UID, name: "Beachfront Sintra", minNights: 7, maxGuests: 10 }],
+  getPropertiesForSite: async () => [{ source: "partner", isActive: true, supplierUid: UID, name: "Sintra Ocean-View Tennis Villa", minNights: 7, maxGuests: 10 }],
 }));
 
 import { partnerCalendarDays } from "./services/tripwix";
@@ -52,7 +52,7 @@ import { noPriceLabelKey } from "../client/src/lib/partnerPriceLabel";
 const DAY = 86_400_000;
 const T0 = Date.parse("2026-10-29T08:00:00Z");
 const ymdFrom = (start: string, i: number) => new Date(Date.parse(start + "T00:00:00Z") + i * DAY).toISOString().slice(0, 10);
-/** What Tripwix returns for Beachfront Sintra on 29 Oct: 127 days, 2026-10-29 → 2027-03-04, all free at €1 000 net. */
+/** What Tripwix returns for Sintra Ocean-View Tennis Villa on 29 Oct: 127 days, 2026-10-29 → 2027-03-04, all free at €1 000 net. */
 const sintra = () => Array.from({ length: 127 }, (_, i) => ({ date: ymdFrom("2026-10-29", i), status: "available", price: "1000.00" }));
 
 beforeEach(() => {
@@ -112,7 +112,7 @@ describe("the job and the guest requests with a short calendar", () => {
     vi.spyOn(console, "warn").mockImplementation(() => {});
     const { refreshTripwixCalendar } = await import("./services/tripwix-calendar");
     const { getPartnerCalendar, getPartnerQuote } = await import("./services/tripwix");
-    expect(await refreshTripwixCalendar(UID, "Beachfront Sintra")).toMatchObject({ action: "refreshed" });
+    expect(await refreshTripwixCalendar(UID, "Sintra Ocean-View Tennis Villa")).toMatchObject({ action: "refreshed" });
 
     const days = await getPartnerCalendar(UID, "2026-10-29", "2027-10-29");
     expect(days).toHaveLength(366); // antes: 127, e o calendário desenhava os outros 239 livres
@@ -129,7 +129,7 @@ describe("the job and the guest requests with a short calendar", () => {
     const { bookingRouter } = await import("./routers/booking");
     const c = bookingRouter.createCaller({ req: { headers: {} }, res: { setHeader: (k: string, v: string) => headers.set(k, v) }, user: null } as any);
     const { refreshTripwixCalendar } = await import("./services/tripwix-calendar");
-    await refreshTripwixCalendar(UID, "Beachfront Sintra");
+    await refreshTripwixCalendar(UID, "Sintra Ocean-View Tennis Villa");
 
     const days = await c.partnerCalendar({ partnerUid: UID, startDate: "2026-10-29", endDate: "2027-10-29" });
     expect(days!.at(-1)).toEqual({ date: "2027-10-29", status: "unknown" });
@@ -144,18 +144,18 @@ describe("the job and the guest requests with a short calendar", () => {
     const full = Array.from({ length: 366 }, (_, i) => ({ date: ymdFrom("2026-10-29", i), status: "available", price: "800.00" }));
     vi.stubGlobal("fetch", vi.fn(async (url: string) => new Response(JSON.stringify(String(url).includes(UID) ? sintra() : full), { status: 200 })));
     const { refreshTripwixCalendar, tripwixCalendarSummary } = await import("./services/tripwix-calendar");
-    await refreshTripwixCalendar(UID, "Beachfront Sintra");
-    await refreshTripwixCalendar("caiz", "Casa de Caiz");
+    await refreshTripwixCalendar(UID, "Sintra Ocean-View Tennis Villa");
+    await refreshTripwixCalendar("caiz", "Amarante River-View Heritage Villa");
     vi.setSystemTime(new Date(T0 + 61 * 60_000));
-    await refreshTripwixCalendar(UID, "Beachfront Sintra");
+    await refreshTripwixCalendar(UID, "Sintra Ocean-View Tennis Villa");
 
     const lines = warn.mock.calls.map((c) => String(c[0])).filter((l) => l.includes("só tem dias até"));
     expect(lines).toHaveLength(1);
-    expect(lines[0]).toContain("Beachfront Sintra");
+    expect(lines[0]).toContain("Sintra Ocean-View Tennis Villa");
     expect(lines[0]).toContain("2027-03-04");
     expect(lines[0]).toContain("pedido até 2027-10-29");
-    const summary = tripwixCalendarSummary([{ uid: UID, name: "Beachfront Sintra" }, { uid: "caiz", name: "Casa de Caiz" }]);
-    expect(summary.short).toEqual(["Beachfront Sintra (até 2027-03-04)"]);
+    const summary = tripwixCalendarSummary([{ uid: UID, name: "Sintra Ocean-View Tennis Villa" }, { uid: "caiz", name: "Amarante River-View Heritage Villa" }]);
+    expect(summary.short).toEqual(["Sintra Ocean-View Tennis Villa (até 2027-03-04)"]);
     expect(summary.withData).toBe(2);
   });
 });
@@ -237,7 +237,7 @@ describe("the partner panel: what it says when a stay has no price", () => {
     expect(partnerQuoteNotice({ ...base, calendar: undefined })).toBe("pending");
   });
   it("revisão R1-far: a home whose calendar runs to the window's end, a far stay with no price is the red error, not 'on request'", () => {
-    // Casa de Caiz: Tripwix publishes past our window and the far read prices it;
+    // Amarante River-View Heritage Villa: Tripwix publishes past our window and the far read prices it;
     // a null there is our own on-demand limit (≤ 10/h, ~103 s apart), a real "could not price just now".
     const full = partnerDays("2026-10-29", 366);
     expect(partnerQuoteNotice({ ...base, checkIn: "2027-11-01", checkOut: "2027-11-08", calendar: full })).toBe("error");
@@ -260,10 +260,10 @@ describe("the partner panel: what it says when a stay has no price", () => {
 
 describe("partnerCalendarView: what the panel's calendar draws, and the line under it (revisão do PR #180)", () => {
   const WINDOW_END = "2027-10-29";
-  const full = partnerDays("2026-10-29", 366); // Casa de Caiz: the whole window
+  const full = partnerDays("2026-10-29", 366); // Amarante River-View Heritage Villa: the whole window
   const short = partnerDays("2026-10-29", 127).concat(
     Array.from({ length: 239 }, (_, i) => ({ date: ymdFrom("2027-03-05", i), status: UNKNOWN_STATUS })),
-  ); // Beachfront Sintra: free to 4 Mar, then nothing published
+  ); // Sintra Ocean-View Tennis Villa: free to 4 Mar, then nothing published
   const rulesOf = (v: ReturnType<typeof partnerCalendarView>) =>
     buildRangeRules(v.days, 1, "2026-10-29", { missing: v.missing, missingUntil: v.missingUntil });
 

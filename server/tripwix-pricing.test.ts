@@ -51,7 +51,7 @@ describe("Tripwix 'from' price (prices-availability-04)", () => {
     expect(lowestPartnerNightly(calendar, '2026-09-15', 2)).toBe(106);
   });
 
-  it('looks 12 months ahead when nothing is open in 90 days (Casa na Areia: first open night 27 Feb)', () => {
+  it('looks 12 months ahead when nothing is open in 90 days (Carvalhal Contemporary Villa: first open night 27 Feb)', () => {
     // 29 out: fechada até 26 fev (dia 120), depois aberta a 1 550 € líquidos.
     const calendar = year('2026-10-29', (i) => ({ status: i >= 121 ? 'available' : 'unavailable', price: 1550 }));
     expect(lowestPartnerNightly(calendar, '2026-10-29', 5)).toBe(1643);
