@@ -50,6 +50,8 @@ import { flexAddsValue, flexExtraDays, flexPriceForPlan } from "@shared/flexValu
 import { conciergeWhatsAppHref, guestDetailsIssues, type GuestField, type WalletGuest } from "@/lib/checkoutPayment";
 import { checkTaxId, normalizeTaxId } from "@/lib/taxId";
 import { pushDL, pushEcommerce, buildPropertyItem } from "@/lib/datalayer";
+import BlackFridayExitIntent from "@/components/marketing/BlackFridayExitIntent";
+import { BF_EXIT_CODE } from "@/lib/blackFridayExit";
 import { stashThankYou } from "@/lib/booking-api";
 import AvailabilityCalendar, { type AvailabilityDay } from "@/components/booking/AvailabilityCalendar";
 import CustomizeStep, {
@@ -1937,8 +1939,27 @@ export default function CheckoutPage() {
       }
     : null;
 
+  // Black Friday 2026: mensagem de saída. Só na secção da estadia/extras
+  // (nunca sobre o formulário de pagamento) e nunca por cima de outro cupão
+  // já aplicado — trocá-lo pelo da campanha podia piorar o preço do hóspede.
+  const couponOnQuote = String(quote?.couponCode || "").trim().toUpperCase();
+  const bfExitApplied = couponOnQuote === BF_EXIT_CODE;
+  const bfExitBlocked = isDemo || step === "pay" || (!!couponOnQuote && !bfExitApplied);
+  // Função simples, não useCallback: aqui já estamos depois dos early
+  // returns do componente e um hook nesta posição parte as regras dos hooks.
+  const bfExitUseCode = () => {
+    setCouponInput(BF_EXIT_CODE);
+    setCouponOpen(true);
+  };
+
   return (
     <div className="checkout-page min-h-screen bg-white pb-28 lg:pb-12">
+      <BlackFridayExitIntent
+        blocked={bfExitBlocked}
+        couponApplied={bfExitApplied}
+        promoEnabled={promoEnabled}
+        onUseCode={bfExitUseCode}
+      />
       {/* Discreet motion (spec §9): 200ms step transitions, rows sliding toward the summary */}
       <style>{`
         /* The global 44px touch-target rule inflates radios/checkboxes — scope them back */
