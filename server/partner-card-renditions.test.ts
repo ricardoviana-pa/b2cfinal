@@ -62,7 +62,7 @@ describe('card-sized copies of the partner covers', () => {
       .filter((p) => p.images?.[0]?.startsWith('/homes/photos/') && !covers[p.images[0]])
       .map((p) => `${p.slug}: ${p.images[0]}`);
     expect(missing).toEqual([]);
-    expect(Object.keys(covers).length).toBeGreaterThanOrEqual(35);
+    expect(Object.keys(covers).length).toBeGreaterThanOrEqual(34);
   });
 
   it('the manifest ships in the browser bundle: it lists public addresses, never the supplier’s reference', () => {

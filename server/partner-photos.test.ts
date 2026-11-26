@@ -57,7 +57,7 @@ describe('the folder on disk behind a public folder (server only)', () => {
   afterEach(() => { vi.unstubAllEnvs(); store.reset(); });
 
   it('knows every partner home by its slug', async () => {
-    expect(partners).toHaveLength(35);
+    expect(partners).toHaveLength(34);
     for (const p of partners) expect(await partnerPhotoFolder(p.slug), p.slug).toBe(p.supplierReference);
     expect(await partnerPhotoFolder('mirante-1')).toBe('PT0009');
   });
@@ -72,7 +72,7 @@ describe('the folder on disk behind a public folder (server only)', () => {
     vi.stubEnv('TRIPWIX_INVENTORY', '0');
     store.reset();
     expect((await getPropertiesForSite()).filter(isPartnerHome)).toHaveLength(0);
-    expect(await partnerPhotoFolder('quinta-da-lameirinha')).toBe('PT0273');
+    expect(await partnerPhotoFolder('casa-do-rolapipas')).toBe('PT0023');
   });
 
   it('answers null, without throwing, when the data file is missing', async () => {

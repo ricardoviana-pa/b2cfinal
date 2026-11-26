@@ -360,3 +360,16 @@ describe("GSC 404 report gaps (May 2026 audit)", () => {
     expect(__testing.resolvePath("/event/sailing-/")).toBe("/en/experiences/yacht");
   });
 });
+
+describe("withdrawn partner home PT0273", () => {
+  it.each(["", "/en", "/pt", "/de"])("sends %s/homes/quinta-da-lameirinha to the Douro page in that language", (prefix) => {
+    const redirect = vi.fn();
+    const next = vi.fn();
+    const path = `${prefix}/homes/quinta-da-lameirinha`;
+    legacyRedirects({ method: "GET", path, url: path } as any, { redirect } as any, next);
+    expect(redirect).toHaveBeenCalledOnce();
+    const [status, target] = redirect.mock.calls[0];
+    expect(status).toBe(301);
+    expect(target).toBe(`/${prefix ? prefix.slice(1) : "en"}/destinations/douro`);
+  });
+});

@@ -229,6 +229,10 @@ const STATIC_REDIRECTS: Record<string, string> = {
   // 7 Suites & Pool, Gerês Gateway — slug was pinned to an earlier title
   // ("Golden Valley Retreat"); renamed 2026-08-06 to match the current name.
   "/homes/golden-valley-retreat-by-portugal-active-013634": "/en/homes/7-suites-pool-geres-gateway-portugal-active-013634",
+  // Partner home PT0273 withdrawn at Tripwix's request (12 Nov 2026: the owner
+  // left their exclusive management and asked for every partner listing to go).
+  // No equivalent home, so the page goes to its destination.
+  "/homes/quinta-da-lameirinha": "/en/destinations/douro",
 };
 
 // === WORDPRESS-ERA SINGLE-SEGMENT URLS =====================================

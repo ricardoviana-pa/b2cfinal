@@ -94,7 +94,7 @@ function panel(opts: { calendar: unknown; calendarError?: boolean; quote?: unkno
 
 describe("the partner panel, rendered: what the calendar draws and says", () => {
   it("R1/R2: a home the server holds no calendar for — every date on request, and the line claims nothing about the home", () => {
-    // Quinta da Lameirinha (404 at Tripwix) and Mirante 1 before the job has
+    // PT0273 (404 at Tripwix) and Mirante 1 before the job has
     // read it get the same answer from the server: null.
     const p = panel({ calendar: null, quote: null, checkIn: "2026-11-12", checkOut: "2026-11-19", fromPrice: null });
     expect(p.days).toBe(30); // November 2026 is the month on screen
@@ -149,7 +149,7 @@ describe("the partner panel, rendered: what the calendar draws and says", () => 
 
 describe("the listing card, rendered: a partner home with no 'from' reads 'Price on request'", () => {
   const home = (source?: string) => ({
-    id: "p1", slug: "quinta-da-lameirinha", name: "Quinta da Lameirinha", guestyId: "g-test-1", locality: "Ponte de Lima",
+    id: "p1", slug: "partner-test-home", name: "Partner Test Home", guestyId: "g-test-1", locality: "Ponte de Lima",
     destination: "minho", bedrooms: 5, bathrooms: 5, maxGuests: 10, isActive: true, ...(source ? { source } : {}),
     images: ["https://assets.guesty.com/image/upload/v1/production/a.jpg"],
   }) as any;
