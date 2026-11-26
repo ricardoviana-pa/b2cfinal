@@ -44,7 +44,7 @@ describe('what the property store publishes', () => {
   // ("/homes/photos/PT0009/00.webp").
   it('carries the supplier reference of no home anywhere: not in an id, not in a photo address', async () => {
     const references = (raw as any[]).map((p) => String(p.supplierReference));
-    expect(references).toHaveLength(35);
+    expect(references).toHaveLength(34);
     expect(references.every((r) => /^PT\d{4}$/.test(r))).toBe(true);
     const published = JSON.stringify(await getPropertiesForSite());
     expect(references.filter((r) => published.includes(r))).toEqual([]);

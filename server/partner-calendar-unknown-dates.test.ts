@@ -6,7 +6,7 @@
  * Tripwix não devolve mais nada, mesmo pedindo o ano; 26 casas devolvem os
  * 366 dias com o mesmo pedido). O site desenhava os ~8 meses seguintes como
  * livres, e escolhidos davam "não foi possível calcular o preço".
- * P2: quatro casas não têm calendário nenhum (Quinta da Lameirinha: HTTP 404;
+ * P2: quatro casas não têm calendário nenhum (PT0273: HTTP 404;
  * 3Br Cabana Villa, Villa Arroz, Villa Trevo: calendário vazio) e todas as
  * datas apareciam livres.
  *
@@ -183,7 +183,7 @@ describe("the calendar: an unknown day is on request — chosen like a free day,
   });
 
   it("with missing: 'unknown', a date the partner calendar does not have is unknown; our own homes keep absent = free", () => {
-    const partner = buildRangeRules([], 2, TODAY, { missing: UNKNOWN_STATUS }); // Quinta da Lameirinha: no calendar
+    const partner = buildRangeRules([], 2, TODAY, { missing: UNKNOWN_STATUS }); // PT0273: no calendar
     expect(isUnknown(partner, "2027-05-01")).toBe(true);
     expect(dayRole(partner, sel("", ""), "2027-05-01")).toBe("check-in");
     const own = buildRangeRules([], 2, TODAY);

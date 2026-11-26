@@ -35,6 +35,8 @@ const RAW_PATH = join(DATA_DIR, "tripwix-raw.json");
 // The mapped output IS committed, next to properties.json — Render's disk is
 // ephemeral and `data/` is gitignored, so anything left there is absent in
 // production. This mirrors how the Guesty sync ships its data.
+/** Withdrawn at Tripwix's request; never re-imported. PT0273: 12 Nov 2026, owner left. */
+const WITHDRAWN_REFERENCES = new Set(["PT0273"]);
 const OUT_PATH = join(process.cwd(), "client", "src", "data", "tripwix-properties.json");
 // Copy we wrote ourselves, merged over whatever the API returns. Kept separate
 // so re-syncing prices and availability never overwrites authored text.
@@ -323,6 +325,12 @@ async function main() {
   if (existsSync(IMAGES_PATH)) {
     localImages = JSON.parse(await readFile(IMAGES_PATH, "utf-8"));
   }
+
+  // Homes Tripwix asked us to take down. The API may keep returning them for a
+  // while, so a re-import must not bring them back.
+  const before = raw.length;
+  raw = raw.filter(({ detail }) => !WITHDRAWN_REFERENCES.has(detail?.reference));
+  if (raw.length !== before) console.info(`Skipped ${before - raw.length} withdrawn partner home(s).`);
 
   const mapped = raw.map(({ detail, rates }) => {
     const base = mapProperty(detail, rates);
