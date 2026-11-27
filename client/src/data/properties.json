@@ -4691,24 +4691,32 @@
     "amenities": {
       "property": [
         "Air conditioning",
+        "BBQ grill",
+        "Babysitter recommendations",
         "Bed linens",
+        "Body soap",
         "Cable TV",
         "Cleaning Disinfection",
         "Clothing storage",
+        "Coffee",
         "Coffee maker",
         "Communal pool",
         "Cookware",
         "Crib",
+        "Cycling",
         "Dining table",
         "Dishes and silverware",
         "Enhanced cleaning practices",
         "Essentials",
+        "Extra pillows and blankets",
         "Fire extinguisher",
         "First aid kit",
+        "Fishing",
         "Free parking on premises",
         "Garden View",
         "Garden or backyard",
         "Hair dryer",
+        "Hammock",
         "Hangers",
         "Heating",
         "High chair",
@@ -4716,16 +4724,19 @@
         "Horseback Riding",
         "Hot water",
         "Iron",
+        "Kayak",
         "Kettle",
         "Kitchen",
-        "Laptop friendly workspace",
         "Long term stays allowed",
         "Microwave",
         "Mini fridge",
+        "Mountain view",
         "Museums",
+        "Outdoor pool",
         "Outdoor seating (furniture)",
         "Patio or balcony",
         "Private entrance",
+        "Refrigerator",
         "Rural",
         "Shampoo",
         "Shower gel",
@@ -4733,9 +4744,12 @@
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
         "TV",
+        "Tennis court",
         "Toaster",
         "Towels provided",
         "Town",
+        "Water Parks",
+        "Water Sports",
         "Wine glasses",
         "Wireless Internet"
       ],
@@ -4817,8 +4831,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 3,
-    "lastModified": "2026-11-12",
-    "contentHash": "ebea9747335d7b01ef78dfd5f3922130161630b6"
+    "lastModified": "2026-11-27",
+    "contentHash": "57fb60855524115ce43ddba4f1497862023597f3"
   },
   {
     "id": "guesty-6a2ad70638d6620013badaef",
@@ -7590,7 +7604,7 @@
   {
     "id": "guesty-69653394ecf7490014ed2ed9",
     "slug": "fountain-cottage-at-fountain-retreat-i-pool-sports-ed2ed9",
-    "name": "Fountain Cottage at Fountain Retreat I Pool & Sports",
+    "name": "Fountain Cottage - Studio with Pool & Tennis",
     "tagline": "A rustic Minho studio with pool access, minutes from Viana do Castelo's historic centre.",
     "tier": "select",
     "destination": "minho",
@@ -7668,29 +7682,39 @@
     "amenities": {
       "property": [
         "Air conditioning",
+        "BBQ grill",
+        "Babysitter recommendations",
         "Bed linens",
+        "Body soap",
         "Cable TV",
         "Cleaning Disinfection",
         "Clothing storage",
+        "Coffee",
         "Coffee maker",
+        "Communal pool",
         "Cookware",
         "Crib",
+        "Cycling",
         "Dining table",
         "Dishes and silverware",
         "Enhanced cleaning practices",
         "Essentials",
+        "Extra pillows and blankets",
         "Fire extinguisher",
         "First aid kit",
+        "Fishing",
         "Free parking on premises",
         "Garden View",
         "Garden or backyard",
         "Hair dryer",
+        "Hammock",
         "Hangers",
         "Heating",
         "High chair",
         "High touch surfaces disinfected",
         "Horseback Riding",
         "Hot water",
+        "Kayak",
         "Kettle",
         "Kitchen",
         "Laptop friendly workspace",
@@ -7701,14 +7725,19 @@
         "Outdoor seating (furniture)",
         "Patio or balcony",
         "Private entrance",
+        "Refrigerator",
         "Shampoo",
         "Shower gel",
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
+        "Swimming pool",
         "TV",
+        "Tennis court",
         "Toaster",
         "Towels provided",
+        "Water Parks",
+        "Water Sports",
         "Wine glasses",
         "Wireless Internet"
       ],
@@ -7724,12 +7753,12 @@
     "bookingUrl": "",
     "guestyId": "69653394ecf7490014ed2ed9",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Fountain Cottage at Fountain Retreat I Pool & Sports",
+    "whatsappMessage": "Hi, I am interested in Fountain Cottage - Studio with Pool & Tennis",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "Fountain Cottage at Fountain Retreat I Pool & Sports — Portugal Active",
-    "seoDescription": "Fountain Cottage, set in the peaceful Fountain Retreat I Pool & Sports Escape, combines rustic charm with modern comfort.  Surrounded by green fields and the ge",
+    "seoTitle": "Fountain Cottage - Studio with Pool & Tennis — Portugal Active",
+    "seoDescription": "Fountain Cottage · Studio with Pool & Tennis is a bright studio for two at Fountain Retreat, a Minho country estate in Barroselas. Glazed doors open onto the ga",
     "address": {
       "full": "",
       "street": "Rua da Fonte 101",
@@ -7795,8 +7824,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 1,
-    "lastModified": "2026-11-12",
-    "contentHash": "b357e6e496c8c3badc0628c9087a8050faa8d32e"
+    "lastModified": "2026-11-27",
+    "contentHash": "7f9349164870e627c24ebae076e3d98b80cabd29"
   },
   {
     "id": "guesty-696533a0ecf7490014ed31d5",
@@ -8720,91 +8749,91 @@
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1782406084/production/6957de4388cba42d9e7a905e/eqrjrak1fms20hdqdrfm.jpg",
-      "https://assets.guesty.com/image/upload/v1782406067/production/6957de4388cba42d9e7a905e/rbiu5xpp8otuhtjn3fxe.jpg",
-      "https://assets.guesty.com/image/upload/v1782465285/production/6957de4388cba42d9e7a905e/cpj8ykpunwm6oiw2lwk2.jpg",
-      "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/r6lbyyjzgwljh51ah6dp.jpg",
-      "https://assets.guesty.com/image/upload/v1782406083/production/6957de4388cba42d9e7a905e/yjypkftpl0u1gelkgnpm.jpg",
-      "https://assets.guesty.com/image/upload/v1782406063/production/6957de4388cba42d9e7a905e/t35xd1iillevdbokt8tn.jpg",
-      "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/gtqvtk6ivteaod2hndns.jpg",
-      "https://assets.guesty.com/image/upload/v1782406066/production/6957de4388cba42d9e7a905e/wsw9awktckjwcvuzwwbp.jpg",
-      "https://assets.guesty.com/image/upload/v1782406059/production/6957de4388cba42d9e7a905e/pdju8q0u4fp87twgiyfg.jpg",
-      "https://assets.guesty.com/image/upload/v1782406062/production/6957de4388cba42d9e7a905e/agyh5ra9vhlxmzpcx3ew.jpg",
-      "https://assets.guesty.com/image/upload/v1782406063/production/6957de4388cba42d9e7a905e/fnzeoocfm7r7deey6kmk.jpg",
-      "https://assets.guesty.com/image/upload/v1782406063/production/6957de4388cba42d9e7a905e/fzrpiir10yy2epvarofe.jpg",
-      "https://assets.guesty.com/image/upload/v1782406073/production/6957de4388cba42d9e7a905e/vx7ypbzcueso8gbzdmnk.jpg",
       "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/qe5coq2rzajqfjrcm64y.jpg",
+      "https://assets.guesty.com/image/upload/v1782465285/production/6957de4388cba42d9e7a905e/cpj8ykpunwm6oiw2lwk2.jpg",
+      "https://assets.guesty.com/image/upload/v1782406066/production/6957de4388cba42d9e7a905e/wsw9awktckjwcvuzwwbp.jpg",
       "https://assets.guesty.com/image/upload/v1782406073/production/6957de4388cba42d9e7a905e/q602vkfy49v92nfy0jcw.jpg",
-      "https://assets.guesty.com/image/upload/v1782406074/production/6957de4388cba42d9e7a905e/jac8dwprvevqcmfkypix.jpg",
-      "https://assets.guesty.com/image/upload/v1782406075/production/6957de4388cba42d9e7a905e/lstbbuyzbkjckyehnrqm.jpg",
-      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/k2kkqkswejlwxafbb4av.jpg",
-      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/xzfd95y0c6mi1847vgen.jpg",
-      "https://assets.guesty.com/image/upload/v1782406059/production/6957de4388cba42d9e7a905e/leyuadlrvizvyihy5nld.jpg",
-      "https://assets.guesty.com/image/upload/v1782406061/production/6957de4388cba42d9e7a905e/pxgpeo1focx1v4x40b4i.jpg",
-      "https://assets.guesty.com/image/upload/v1782406060/production/6957de4388cba42d9e7a905e/zww9r0j1divckqzpuhpv.jpg",
-      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/legcygrci5kmi9irvb1k.jpg",
-      "https://assets.guesty.com/image/upload/v1782406080/production/6957de4388cba42d9e7a905e/gezska6l61tkaycjq3hb.jpg",
-      "https://assets.guesty.com/image/upload/v1782406081/production/6957de4388cba42d9e7a905e/u604cnnlyxefuy3b8e46.jpg",
-      "https://assets.guesty.com/image/upload/v1782406087/production/6957de4388cba42d9e7a905e/kh5flngootq6p1gvpoes.jpg",
-      "https://assets.guesty.com/image/upload/v1782406088/production/6957de4388cba42d9e7a905e/ratdfky09mijgld96kjh.jpg",
-      "https://assets.guesty.com/image/upload/v1782406083/production/6957de4388cba42d9e7a905e/sbkikqhql9uet7tl4zwt.jpg",
-      "https://assets.guesty.com/image/upload/v1782406085/production/6957de4388cba42d9e7a905e/pfeu4rss6finpq3e1dtz.jpg",
-      "https://assets.guesty.com/image/upload/v1782230621/production/6957de4388cba42d9e7a905e/e3q39golmxeukotby1kb.jpg",
-      "https://assets.guesty.com/image/upload/v1782406086/production/6957de4388cba42d9e7a905e/iccl9sjxzly9ryllwnfu.jpg",
-      "https://assets.guesty.com/image/upload/v1782406067/production/6957de4388cba42d9e7a905e/z1zyqty6jwyet31nbrda.jpg",
-      "https://assets.guesty.com/image/upload/v1782406067/production/6957de4388cba42d9e7a905e/cclpvrh04dvsa9vxrs9v.jpg",
-      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/ofuxtg0f5bumdldfz90y.jpg",
-      "https://assets.guesty.com/image/upload/v1782228317/production/6957de4388cba42d9e7a905e/g527h5m3euhwmhvm99bw.jpg",
-      "https://assets.guesty.com/image/upload/v1782406068/production/6957de4388cba42d9e7a905e/untzu1oxntuq2dx5umhq.jpg",
-      "https://assets.guesty.com/image/upload/v1782406068/production/6957de4388cba42d9e7a905e/f2dmjzyq7lrmkpe6diqj.jpg",
-      "https://assets.guesty.com/image/upload/v1782406072/production/6957de4388cba42d9e7a905e/kzj3owecvsty4r0atkgt.jpg",
-      "https://assets.guesty.com/image/upload/v1782406059/production/6957de4388cba42d9e7a905e/wo9o54qyzadt1bxoeaqz.jpg",
-      "https://assets.guesty.com/image/upload/v1782406059/production/6957de4388cba42d9e7a905e/udxkziggyplxfxb65cgi.jpg",
-      "https://assets.guesty.com/image/upload/v1782406076/production/6957de4388cba42d9e7a905e/gppoksz4jiedoseuphyo.jpg",
-      "https://assets.guesty.com/image/upload/v1782406077/production/6957de4388cba42d9e7a905e/akqbkfef7kivattapudh.jpg",
-      "https://assets.guesty.com/image/upload/v1782406079/production/6957de4388cba42d9e7a905e/rdtalf1qrl24xcmjkksu.jpg",
-      "https://assets.guesty.com/image/upload/v1782406079/production/6957de4388cba42d9e7a905e/wmwyelrqobiuvjqcnmz3.jpg",
-      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/l7esmq7d3bigmkqd02v5.jpg",
-      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/baavvjrb0jsqa6zszwpd.jpg",
-      "https://assets.guesty.com/image/upload/v1782406089/production/6957de4388cba42d9e7a905e/uenbzcn6njj4zfjdoicb.jpg",
-      "https://assets.guesty.com/image/upload/v1782406090/production/6957de4388cba42d9e7a905e/qcta7tnw2vw3lh3g6bsf.jpg",
       "https://assets.guesty.com/image/upload/v1782406091/production/6957de4388cba42d9e7a905e/u3mncvbsdvdgjhfqehfx.jpg",
+      "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/gtqvtk6ivteaod2hndns.jpg",
+      "https://assets.guesty.com/image/upload/v1782406068/production/6957de4388cba42d9e7a905e/untzu1oxntuq2dx5umhq.jpg",
+      "https://assets.guesty.com/image/upload/v1782406067/production/6957de4388cba42d9e7a905e/rbiu5xpp8otuhtjn3fxe.jpg",
+      "https://assets.guesty.com/image/upload/v1782406059/production/6957de4388cba42d9e7a905e/leyuadlrvizvyihy5nld.jpg",
+      "https://assets.guesty.com/image/upload/v1782406104/production/6957de4388cba42d9e7a905e/o3zyljyjqmfboejsjufz.jpg",
+      "https://assets.guesty.com/image/upload/v1782406080/production/6957de4388cba42d9e7a905e/gezska6l61tkaycjq3hb.jpg",
+      "https://assets.guesty.com/image/upload/v1782406076/production/6957de4388cba42d9e7a905e/gppoksz4jiedoseuphyo.jpg",
+      "https://assets.guesty.com/image/upload/v1782406083/production/6957de4388cba42d9e7a905e/yjypkftpl0u1gelkgnpm.jpg",
+      "https://assets.guesty.com/image/upload/v1782406059/production/6957de4388cba42d9e7a905e/pdju8q0u4fp87twgiyfg.jpg",
+      "https://assets.guesty.com/image/upload/v1782406067/production/6957de4388cba42d9e7a905e/cclpvrh04dvsa9vxrs9v.jpg",
+      "https://assets.guesty.com/image/upload/v1782406060/production/6957de4388cba42d9e7a905e/zww9r0j1divckqzpuhpv.jpg",
+      "https://assets.guesty.com/image/upload/v1782406068/production/6957de4388cba42d9e7a905e/f2dmjzyq7lrmkpe6diqj.jpg",
+      "https://assets.guesty.com/image/upload/v1782406122/production/6957de4388cba42d9e7a905e/xpgkk2jbaqmmxmanwiwk.jpg",
+      "https://assets.guesty.com/image/upload/v1782406087/production/6957de4388cba42d9e7a905e/kh5flngootq6p1gvpoes.jpg",
+      "https://assets.guesty.com/image/upload/v1782406072/production/6957de4388cba42d9e7a905e/kzj3owecvsty4r0atkgt.jpg",
+      "https://assets.guesty.com/image/upload/v1782406061/production/6957de4388cba42d9e7a905e/pxgpeo1focx1v4x40b4i.jpg",
+      "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/r6lbyyjzgwljh51ah6dp.jpg",
+      "https://assets.guesty.com/image/upload/v1782406085/production/6957de4388cba42d9e7a905e/pfeu4rss6finpq3e1dtz.jpg",
+      "https://assets.guesty.com/image/upload/v1782406077/production/6957de4388cba42d9e7a905e/akqbkfef7kivattapudh.jpg",
+      "https://assets.guesty.com/image/upload/v1782406088/production/6957de4388cba42d9e7a905e/ratdfky09mijgld96kjh.jpg",
+      "https://assets.guesty.com/image/upload/v1782406062/production/6957de4388cba42d9e7a905e/agyh5ra9vhlxmzpcx3ew.jpg",
+      "https://assets.guesty.com/image/upload/v1782406081/production/6957de4388cba42d9e7a905e/u604cnnlyxefuy3b8e46.jpg",
+      "https://assets.guesty.com/image/upload/v1782228317/production/6957de4388cba42d9e7a905e/g527h5m3euhwmhvm99bw.jpg",
+      "https://assets.guesty.com/image/upload/v1782406074/production/6957de4388cba42d9e7a905e/jac8dwprvevqcmfkypix.jpg",
+      "https://assets.guesty.com/image/upload/v1782406104/production/6957de4388cba42d9e7a905e/y0zcldph78hoddoyyeqi.jpg",
+      "https://assets.guesty.com/image/upload/v1782406086/production/6957de4388cba42d9e7a905e/iccl9sjxzly9ryllwnfu.jpg",
+      "https://assets.guesty.com/image/upload/v1782406079/production/6957de4388cba42d9e7a905e/wmwyelrqobiuvjqcnmz3.jpg",
+      "https://assets.guesty.com/image/upload/v1782406112/production/6957de4388cba42d9e7a905e/xu7hmrebyw0loiesdftj.jpg",
+      "https://assets.guesty.com/image/upload/v1782406116/production/6957de4388cba42d9e7a905e/n2bohu9axofonyw1sg3d.jpg",
+      "https://assets.guesty.com/image/upload/v1782406113/production/6957de4388cba42d9e7a905e/luhaedpes2zmgxobcaie.jpg",
+      "https://assets.guesty.com/image/upload/v1782406125/production/6957de4388cba42d9e7a905e/rbbmzkcoj96x3qrqoh9r.jpg",
+      "https://assets.guesty.com/image/upload/v1782406090/production/6957de4388cba42d9e7a905e/qcta7tnw2vw3lh3g6bsf.jpg",
       "https://assets.guesty.com/image/upload/v1782406093/production/6957de4388cba42d9e7a905e/vi3o2r3vrmebnwgzyzgd.jpg",
       "https://assets.guesty.com/image/upload/v1782406093/production/6957de4388cba42d9e7a905e/i3wqgldplu6ipb5ybmrl.jpg",
       "https://assets.guesty.com/image/upload/v1782406093/production/6957de4388cba42d9e7a905e/ii1xwuykassqmbkpl2f0.jpg",
-      "https://assets.guesty.com/image/upload/v1782406095/production/6957de4388cba42d9e7a905e/kzizwneocjyecj0jf1mn.jpg",
-      "https://assets.guesty.com/image/upload/v1782406095/production/6957de4388cba42d9e7a905e/hwvsgwsma12lpblizifm.jpg",
-      "https://assets.guesty.com/image/upload/v1782406096/production/6957de4388cba42d9e7a905e/igmrpb9vhz5bw8tudu5s.jpg",
-      "https://assets.guesty.com/image/upload/v1782406098/production/6957de4388cba42d9e7a905e/puqueudtwhbmfpjwhgyp.jpg",
-      "https://assets.guesty.com/image/upload/v1782406098/production/6957de4388cba42d9e7a905e/ogruk6zkrnlgpshbuwei.jpg",
-      "https://assets.guesty.com/image/upload/v1782406101/production/6957de4388cba42d9e7a905e/siits5szmpjjkzjhzmjf.jpg",
-      "https://assets.guesty.com/image/upload/v1782406101/production/6957de4388cba42d9e7a905e/odrolwtqn6o9rdopr6ns.jpg",
-      "https://assets.guesty.com/image/upload/v1782406102/production/6957de4388cba42d9e7a905e/fcyx6n1j426qdnhipk0t.jpg",
-      "https://assets.guesty.com/image/upload/v1782406101/production/6957de4388cba42d9e7a905e/tw0me1rumdx9fxlrljfy.jpg",
-      "https://assets.guesty.com/image/upload/v1782406104/production/6957de4388cba42d9e7a905e/y0zcldph78hoddoyyeqi.jpg",
-      "https://assets.guesty.com/image/upload/v1782406104/production/6957de4388cba42d9e7a905e/o3zyljyjqmfboejsjufz.jpg",
+      "https://assets.guesty.com/image/upload/v1782406073/production/6957de4388cba42d9e7a905e/vx7ypbzcueso8gbzdmnk.jpg",
       "https://assets.guesty.com/image/upload/v1782406107/production/6957de4388cba42d9e7a905e/yvydch59n9mfhxon6o46.jpg",
       "https://assets.guesty.com/image/upload/v1782406107/production/6957de4388cba42d9e7a905e/xwrtmhwgzzgtfpluctac.jpg",
       "https://assets.guesty.com/image/upload/v1782406110/production/6957de4388cba42d9e7a905e/trraoouwuz5v545jyal1.jpg",
       "https://assets.guesty.com/image/upload/v1782406107/production/6957de4388cba42d9e7a905e/z59prirpk8k63rcor1ep.jpg",
       "https://assets.guesty.com/image/upload/v1782406109/production/6957de4388cba42d9e7a905e/q8nkvmtwuqs3xto3lnjq.jpg",
       "https://assets.guesty.com/image/upload/v1782406110/production/6957de4388cba42d9e7a905e/ktu7d45h86va6qiwkckb.jpg",
-      "https://assets.guesty.com/image/upload/v1782406112/production/6957de4388cba42d9e7a905e/xu7hmrebyw0loiesdftj.jpg",
-      "https://assets.guesty.com/image/upload/v1782406116/production/6957de4388cba42d9e7a905e/n2bohu9axofonyw1sg3d.jpg",
-      "https://assets.guesty.com/image/upload/v1782406113/production/6957de4388cba42d9e7a905e/luhaedpes2zmgxobcaie.jpg",
+      "https://assets.guesty.com/image/upload/v1782406123/production/6957de4388cba42d9e7a905e/pij31mzpmx89fbdgrizk.jpg",
+      "https://assets.guesty.com/image/upload/v1782406098/production/6957de4388cba42d9e7a905e/ogruk6zkrnlgpshbuwei.jpg",
+      "https://assets.guesty.com/image/upload/v1782406101/production/6957de4388cba42d9e7a905e/siits5szmpjjkzjhzmjf.jpg",
+      "https://assets.guesty.com/image/upload/v1782406102/production/6957de4388cba42d9e7a905e/fcyx6n1j426qdnhipk0t.jpg",
+      "https://assets.guesty.com/image/upload/v1782406101/production/6957de4388cba42d9e7a905e/tw0me1rumdx9fxlrljfy.jpg",
+      "https://assets.guesty.com/image/upload/v1782406122/production/6957de4388cba42d9e7a905e/wu03av5rwjplv4r99y1o.jpg",
+      "https://assets.guesty.com/image/upload/v1782406095/production/6957de4388cba42d9e7a905e/kzizwneocjyecj0jf1mn.jpg",
+      "https://assets.guesty.com/image/upload/v1782406095/production/6957de4388cba42d9e7a905e/hwvsgwsma12lpblizifm.jpg",
+      "https://assets.guesty.com/image/upload/v1782406096/production/6957de4388cba42d9e7a905e/igmrpb9vhz5bw8tudu5s.jpg",
+      "https://assets.guesty.com/image/upload/v1782406101/production/6957de4388cba42d9e7a905e/odrolwtqn6o9rdopr6ns.jpg",
       "https://assets.guesty.com/image/upload/v1782228319/production/6957de4388cba42d9e7a905e/md34f0anb9mc1q99nzg1.jpg",
       "https://assets.guesty.com/image/upload/v1782406113/production/6957de4388cba42d9e7a905e/bsiwknufk35ivooanaqn.jpg",
       "https://assets.guesty.com/image/upload/v1782406114/production/6957de4388cba42d9e7a905e/tubmf4pywb6d0oj1sykk.jpg",
+      "https://assets.guesty.com/image/upload/v1782406118/production/6957de4388cba42d9e7a905e/aetgdfl3rc88dipuht5n.jpg",
       "https://assets.guesty.com/image/upload/v1782406117/production/6957de4388cba42d9e7a905e/dujsqojmxld1ulhb1jv8.jpg",
       "https://assets.guesty.com/image/upload/v1782406118/production/6957de4388cba42d9e7a905e/gqyvvvnbo1qndwmfviv6.jpg",
-      "https://assets.guesty.com/image/upload/v1782406118/production/6957de4388cba42d9e7a905e/aetgdfl3rc88dipuht5n.jpg",
       "https://assets.guesty.com/image/upload/v1782406119/production/6957de4388cba42d9e7a905e/ropmsshaccmdcd7rt0qg.jpg",
-      "https://assets.guesty.com/image/upload/v1782406122/production/6957de4388cba42d9e7a905e/wu03av5rwjplv4r99y1o.jpg",
-      "https://assets.guesty.com/image/upload/v1782406122/production/6957de4388cba42d9e7a905e/xpgkk2jbaqmmxmanwiwk.jpg",
-      "https://assets.guesty.com/image/upload/v1782406123/production/6957de4388cba42d9e7a905e/pij31mzpmx89fbdgrizk.jpg",
-      "https://assets.guesty.com/image/upload/v1782406123/production/6957de4388cba42d9e7a905e/ezfxbcaz4ogmbfp9btkv.jpg",
-      "https://assets.guesty.com/image/upload/v1782406124/production/6957de4388cba42d9e7a905e/kks7mazaewofwmtafcfv.jpg",
-      "https://assets.guesty.com/image/upload/v1782406125/production/6957de4388cba42d9e7a905e/rbbmzkcoj96x3qrqoh9r.jpg",
       "https://assets.guesty.com/image/upload/v1782406128/production/6957de4388cba42d9e7a905e/vcaazwqxy4yyticsts2u.jpg",
+      "https://assets.guesty.com/image/upload/v1782406075/production/6957de4388cba42d9e7a905e/lstbbuyzbkjckyehnrqm.jpg",
+      "https://assets.guesty.com/image/upload/v1782406063/production/6957de4388cba42d9e7a905e/t35xd1iillevdbokt8tn.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/ofuxtg0f5bumdldfz90y.jpg",
+      "https://assets.guesty.com/image/upload/v1782406124/production/6957de4388cba42d9e7a905e/kks7mazaewofwmtafcfv.jpg",
+      "https://assets.guesty.com/image/upload/v1782406059/production/6957de4388cba42d9e7a905e/udxkziggyplxfxb65cgi.jpg",
+      "https://assets.guesty.com/image/upload/v1782406063/production/6957de4388cba42d9e7a905e/fzrpiir10yy2epvarofe.jpg",
+      "https://assets.guesty.com/image/upload/v1782406067/production/6957de4388cba42d9e7a905e/z1zyqty6jwyet31nbrda.jpg",
+      "https://assets.guesty.com/image/upload/v1782406063/production/6957de4388cba42d9e7a905e/fnzeoocfm7r7deey6kmk.jpg",
+      "https://assets.guesty.com/image/upload/v1782230621/production/6957de4388cba42d9e7a905e/e3q39golmxeukotby1kb.jpg",
+      "https://assets.guesty.com/image/upload/v1782406123/production/6957de4388cba42d9e7a905e/ezfxbcaz4ogmbfp9btkv.jpg",
+      "https://assets.guesty.com/image/upload/v1782406079/production/6957de4388cba42d9e7a905e/rdtalf1qrl24xcmjkksu.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/k2kkqkswejlwxafbb4av.jpg",
+      "https://assets.guesty.com/image/upload/v1782406083/production/6957de4388cba42d9e7a905e/sbkikqhql9uet7tl4zwt.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/xzfd95y0c6mi1847vgen.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/legcygrci5kmi9irvb1k.jpg",
+      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/l7esmq7d3bigmkqd02v5.jpg",
+      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/baavvjrb0jsqa6zszwpd.jpg",
+      "https://assets.guesty.com/image/upload/v1782406059/production/6957de4388cba42d9e7a905e/wo9o54qyzadt1bxoeaqz.jpg",
+      "https://assets.guesty.com/image/upload/v1782406089/production/6957de4388cba42d9e7a905e/uenbzcn6njj4zfjdoicb.jpg",
+      "https://assets.guesty.com/image/upload/v1782406098/production/6957de4388cba42d9e7a905e/puqueudtwhbmfpjwhgyp.jpg",
       "https://assets.guesty.com/image/upload/v1782228273/production/6957de4388cba42d9e7a905e/pf5vy4rpm3kmohihzmiu.jpg",
       "https://assets.guesty.com/image/upload/v1782228273/production/6957de4388cba42d9e7a905e/mkdktqcekpr1dudlpvr0.jpg",
       "https://assets.guesty.com/image/upload/v1782228273/production/6957de4388cba42d9e7a905e/ariwhwamkuiq2qthhbgz.jpg",
@@ -8890,7 +8919,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Heated Plunge Pool Villa Near Porto & Braga — Portugal Active",
-    "seoDescription": "Discover Heated Plunge Pool Villa Near Porto & Braga, an elegant villa in Trofa, perfect for families and groups who value comfort, privacy, and quality time to",
+    "seoDescription": "Heated Plunge Pool Villa Near Porto & Braga is a contemporary home in Trofa with almost 300 m², 6 bedrooms and a plunge pool with optional heating. Two kitchens",
     "address": {
       "full": "",
       "street": "Rua Rainha Santa Isabel 101",
@@ -8969,7 +8998,7 @@
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 1507,
+    "areaSquareFeet": 3208,
     "reviews": [
       {
         "rating": 5,
@@ -9079,8 +9108,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 3,
-    "lastModified": "2026-11-23",
-    "contentHash": "8c1397e1109278a7e742dfaea75e112e2c5537d3"
+    "lastModified": "2026-11-27",
+    "contentHash": "644cfaafadb22525ef0f479ff252541e60d94d73"
   },
   {
     "id": "guesty-69c415ceab80a8001247452c",
@@ -13864,20 +13893,26 @@
       "property": [
         "Air conditioning",
         "BBQ grill",
+        "Babysitter recommendations",
         "Bed linens",
+        "Body soap",
         "Cleaning Disinfection",
         "Clothing storage",
         "Coffee",
         "Coffee maker",
+        "Communal pool",
         "Cookware",
         "Crib",
+        "Cycling",
         "Desk",
         "Dining table",
         "Dishes and silverware",
         "Enhanced cleaning practices",
         "Essentials",
+        "Extra pillows and blankets",
         "Fire extinguisher",
         "First aid kit",
+        "Fishing",
         "Free parking on premises",
         "Garden or backyard",
         "Hair dryer",
@@ -13885,7 +13920,9 @@
         "Heating",
         "High chair",
         "High touch surfaces disinfected",
+        "Horseback Riding",
         "Hot water",
+        "Kayak",
         "Kitchen",
         "Laptop friendly workspace",
         "Long term stays allowed",
@@ -13893,6 +13930,8 @@
         "Mini fridge",
         "Outdoor pool",
         "Outdoor seating (furniture)",
+        "Patio or balcony",
+        "Refrigerator",
         "Rural",
         "Shampoo",
         "Shower gel",
@@ -13904,6 +13943,8 @@
         "Towels provided",
         "Washer",
         "Washer in common space",
+        "Water Parks",
+        "Water Sports",
         "Wine glasses",
         "Wireless Internet"
       ],
@@ -13963,8 +14004,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-11-14",
-    "contentHash": "cc5a7002f02bd7def20d46450df79d0334eb2952"
+    "lastModified": "2026-11-27",
+    "contentHash": "0bfd63ac9bb5970e54f26e8c870a8c4ed5b86cf3"
   },
   {
     "id": "guesty-6aa7db4f41acf8000fde5087",
@@ -14390,6 +14431,700 @@
     "reviewCount": 0,
     "lastModified": "2026-11-24",
     "contentHash": "630643c2eb79a5acaa31ef6aa4f6315320c451bc"
+  },
+  {
+    "id": "guesty-69653335bf04fe0013742743",
+    "slug": "portugal-active-nature-hill-duo-10-min-beach-742743",
+    "name": "Nature Hill Duo · Two Villas, Pool & Event Hall",
+    "tagline": "Three quiet houses on one green hillside — eight bedrooms, pool and space for sixteen to live at their own pace.",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 8,
+    "bathrooms": 6,
+    "maxGuests": 16,
+    "priceFrom": 550,
+    "pricePerNight": 550,
+    "cleaningFee": 553,
+    "minNights": 2,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/03348d35-f9f7-4c-ioTvi",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4d3ff13e-ebc5-49-Xisxf",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/9f8beb28-5548-4f-ldxT7",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d368633a-e760-4d-ud0EY",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/1f6a4f20-735f-4c-QaWeB",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/dc73b1e9-ec90-44-8hyDH",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7dc5e474-0bfe-43-wlJLV",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/af817f65-7eb7-49-pS9VM",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/86635ae9-371d-45-zpAhj",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e47c342d-594f-4b-oAkaD",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/fa7ab03e-c1a9-47-tkXE5",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/1abe3ffe-203a-44-NUvbw",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/806cca2c-583e-4d-Iu6LY",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5bb432f6-a020-4f-Xfd_q",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/a18c00fe-3885-47-htJXs",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5a611f02-4772-4f-r9cl9",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eb326348-c769-41-lbhmv",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d11ba7a2-9ef6-4b-S92uC",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/784539e6-74e5-4d-C66Hf",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/602b49d0-df22-40-rzzev",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/3be7d9c0-932f-46-2SXcK",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/727e03dd-63f7-4b-VOq9Q",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/56ec41f1-02ea-46-X_Xhy",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e2fd03b6-bbba-42-nI4yK",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/a061a2fb-111c-49-7oIcB",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/88b59ba0-925d-48-dskoX",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eb6ad4ff-b229-40-IRPU7",
+      "https://assets.guesty.com/image/upload/v1789489787/production/6957de4388cba42d9e7a905e/tmvz1ceobqjh0ppatx37.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7bbf4ed9-9439-4f-sdJOT",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4033d620-2ada-4c-Ef7rR",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/71f32bcf-9a26-48-VfaXQ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/2ddb4bb1-8a02-48-z6Jf4",
+      "https://assets.guesty.com/image/upload/v1789489772/production/6957de4388cba42d9e7a905e/psijjxqmheytgbjve3nn.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/f6a32332-8b2d-4d-wuzBc",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/37023c13-dbf0-45-oJ8eU",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5c1538f9-1cd0-4a-cz1w-",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/474f4d66-ba5b-40-8jVvr",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e8816e8e-ad1d-4d-riPpp",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/79b1fdfd-248f-43-SgvrE",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5b4613cd-3ad1-40-c67lC",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b201a64a-3429-41-gnFvE",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/30d00549-3d79-48-llWsB",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/3442656c-e442-4a-Q2w0Q",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8dcc9f56-b4cc-43-bkyOr",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8a7ed52f-41d3-41-tNR68",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/caf6f90c-22ca-4e-5kaN5",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eb2998e2-8e4d-4c-Rgw_A",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/47822c5b-987c-4c-7RyXt",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d94e86ff-2582-4c-H2AfM",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b2d22427-753a-45-IIMS9",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8294bc69-5d9a-40-xRmhK",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d0615c3a-03d0-42-P0mX7",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7a737e92-da86-4e-UhCX4",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/98c4888b-403c-46-9WHz4",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4d16a7d0-89d1-45-cKDc8",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/935bf2da-ea9b-4b-lPFjJ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/39691570-8d12-40-1tvIK",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8946f681-01df-47-CvzVh",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/1f86f90d-e155-45-_P7Y8",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/cfd6fa51-bd6d-45-6u_Ln",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b9d19f3a-b395-43-yY5Ur",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/c1cebb81-c57f-49-xFUJJ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/291642f3-c877-4c-51CpS",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/463add98-7870-4b-tv7ZI",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/1fedaf36-f493-44-khTJv",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8a341b02-9ac1-43-uiEDe",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d7458b98-603e-45-SLfH6",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/f0caae3f-8bb9-40-x3SG_",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/673fe787-f94d-47-FPpUL",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/bdd9508d-76fe-41-UyBha",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/83182da0-146f-49-sf6JV",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8d72954c-c0e9-4e-EjrpB",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/41a23303-2434-46-Sq9pj",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/6af9ea20-4952-4a-nQwdl",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/af94ba27-2723-45-N6Fqt",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/c6cd23a5-7b0a-4a-aBHds",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/87c1632c-c984-41-D43W8",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5de7e9d0-094b-4b-5F-dd",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e5346fb7-58c0-4d-MQSyl",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/01d53a69-be13-40-Qo8Jn",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/3038e1f1-b490-43-ktGgJ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/cae339d6-65a8-4a-gXcyM",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/66922777-59bb-4c-uk7yI",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/dd93c49b-2738-47-BmGvL",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/10d82230-29c2-4b-Vic6M",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/bd7d6ecd-954c-4d-Eegdu",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4e1d2348-c310-45-vGTx5",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/10275864-b3c2-4b-KP6dJ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/f77562ad-3861-49-0QJpo",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/80e5d965-b6f8-4b-bNugx",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/38207526-c855-4d-eRLD3",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d14ecdb3-b6a5-41-n34P5",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/90c53976-822f-4b-MO-7d",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eeea47ba-a95f-45-SbCZI",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5601469b-8b1e-46-SJJX_",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/a6977951-dc87-46-futMI",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/011255e5-d2fb-44-ZsXI5",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/00eefa72-e491-42-N4oGs",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e65202ae-5865-46-dvJOA",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/50480001-3956-4d-SxCbT",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/9f9b8ac6-7c36-4b-LKYdL",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/85cf7187-314f-48-U5wwW",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5d06db3b-ae0f-47-KHaWj",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/6f360c29-8aba-4d-SqoVX",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7ea05fac-a2e5-47-BYvtw",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/2af17c01-c44d-4e-0CBpz",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7d62fda5-7267-4e-rgHO4",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b8b88148-70fd-46-1oTpA",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/c3137132-7ca9-41-Ak5l9",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/428e83fe-2618-46-TclZS",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/317dcbd7-bfbd-40-mAvfD"
+    ],
+    "description": "Nature Hill Duo is a small hillside hamlet of three fully equipped houses outside Viana do Castelo, taken together for groups of up to sixteen.\n\nModern architecture sits low in the landscape: eight bedrooms in all, a shared pool, gardens, barbecue, EV charger and fireplaces for the cooler months. Each house keeps its own front door — grandparents, friends and teenagers can all have their own address.\n\nThe Atlantic beaches and Viana's old town are minutes away; the hill itself offers the silence.\n\nFor multi-family holidays and group retreats that want togetherness on their own terms — one booking, three houses, zero logistics, our team handling the rest.",
+    "descriptionSections": null,
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Babysitter recommendations",
+        "Baking sheet",
+        "Barbeque utensils",
+        "Bed linens",
+        "Cable TV",
+        "Carbon monoxide detector",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Cycling",
+        "Desk",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "EV charger",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Fire extinguisher",
+        "First aid kit",
+        "Fishing",
+        "Free parking on premises",
+        "Freezer",
+        "Garden View",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Horseback Riding",
+        "Hot water",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Mountain",
+        "Mountain view",
+        "Museums",
+        "Outdoor pool",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Private entrance",
+        "Refrigerator",
+        "Rural",
+        "Shampoo",
+        "Shopping",
+        "Shower gel",
+        "Smoke detector",
+        "Stereo system",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Village",
+        "Washer",
+        "Water Parks",
+        "Water Sports",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "petsAllowed": false,
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "69653335bf04fe0013742743",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Nature Hill Duo · Two Villas, Pool & Event Hall",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Nature Hill Duo · Two Villas, Pool & Event Hall — Portugal Active",
+    "seoDescription": "Nature Hill Duo · Two Villas, Pool & Event Hall brings together two contemporary villas, an annex and an Event Hall on a quiet hillside in Outeiro, Viana do Cas",
+    "address": {
+      "full": "",
+      "street": "Estrada de Romãe 680",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.75541,
+      "lng": -8.7924743
+    },
+    "licenseNumber": null,
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 8",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 3552.0904386,
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "Nos ha gustado la casa, solo teníamos una llave y un mando para el coche. Faltan detalles para colgar las toallas en los baños.",
+        "guestDisplayName": "Juan",
+        "guestName": "Juan",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-23T12:48:46.715Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Fantastic place, Very clean facilities in very good condition, a fantastic house to spend a few days with friends and family",
+        "guestDisplayName": "Martina",
+        "guestName": "Martina",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-13T10:36:59.240Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Espectacular la casa. Todo nuevo, limpio y con todas las comodidades para pasar unos días increíbles con amigos. El exterior con la piscina es un sueño. Repetiremos",
+        "guestDisplayName": "Nuria",
+        "guestName": "Nuria",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-28T18:59:07.065Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Excelentes instalaciones, ubicación, limpieza y comodidad.  ¡sin duda volvemos! Los recomiendo. \nGracias al anfitrión por recibirnos.",
+        "guestDisplayName": "Angelica",
+        "guestName": "Angelica",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-22T06:18:34.312Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "One of the best places I have ever stayed, facilities were excellent and when we arrived everything so spotlessly clean we could have believe we were the first guests to stay! Staff on hand to help with any issues and a beautiful villa, well situated but necessary to have a car for sure - a beautiful scenic view and happily housed myself and 10 relatives for the week. \n\nSmall feedback; the check in process and keys/fobs alongside where to use them could have been more instructed to make for a sm",
+        "guestDisplayName": "Arran",
+        "guestName": "Arran",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-29T11:35:06.977Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Todo perfecto.",
+        "guestDisplayName": "Olga",
+        "guestName": "Olga",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-05-06T19:33:28.523Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Todo perfecto 👌",
+        "guestDisplayName": "María",
+        "guestName": "María",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-04-04T18:10:10.231Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Segunda vez que vamos y todo genial!!",
+        "guestDisplayName": "Diego",
+        "guestName": "Diego",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-11-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "A beautiful spacious villa that accommodates really well for a big group. Portugal Active were brilliant hosts who were very responsive throughout our stay and made our stay with them a great experience from start to finish. Will definitely consider them and the villa if we travel to Portugal again!",
+        "guestDisplayName": "Ramanan",
+        "guestName": "Ramanan",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-10-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "buen alojamiento para vacaciones",
+        "guestDisplayName": "Ivan",
+        "guestName": "Ivan",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-10-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Muito boa experiência. Recomendo 100%",
+        "guestDisplayName": "Maria",
+        "guestName": "Maria",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-09-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "прекрасное тихое место в небольшой деревне в далеке от шума. До супер маркетинга 10-15 минут на машине. Бассейн с очень чистой водой. Нам позволили поздний выезд, чтотнам очень помогло. На территории без проблем может припарковаться 6 автомобилей.",
+        "guestDisplayName": "Roman",
+        "guestName": "Roman",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-09-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Uma óptima escolha ,a casa maravilhosa ,a vista fantástica ,mega recomendada",
+        "guestDisplayName": "Maite",
+        "guestName": "Maite",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-08-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Wir waren mit 16 Personen in der Unterkunft und es war sensationell. Die Lage ist abgelegen und ruhig. Wir waren stets in Kontakt mit der Agentur und die Kommunikation war super. Das selbstständige ein- und auschecken hat optimal funktioniert. Danke für diesen tollen Aufenthalt!",
+        "guestDisplayName": "Maximilian",
+        "guestName": "Maximilian",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-07-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Espaço agradavel, com todas as comodidades.",
+        "guestDisplayName": "Eduardo",
+        "guestName": "Eduardo",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-06-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Estivemos alojados este fim de semana num grupo grande e só temos elogios a fazer. A casa corresponde exatamente às fotos: espaçosa, bem equipada e com todas as condições para receber confortavelmente um grupo deste tamanho. Tivemos uma estadia muito agradável, com tudo o que precisávamos à disposição. Desde os espaços comuns amplos, ideais para convívio, até à organização dos quartos, tudo foi pensado ao pormenor. As crianças também se divertiram imenso. Recomendamos vivamente a quem procure um",
+        "guestDisplayName": "Ines",
+        "guestName": "Ines",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-06-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Bonjour, Nous avons passé un séjour inoubliable ! Le logement était d’une propreté exceptionnelle et bien équipé avec tout ce dont nous avions besoin, il y avait rien à redire. Nous avons apprécié vos réponses rapides Vos attentions nous ont permis de nous sentir comme chez nous. Nous serions ravis de séjourner à nouveau ici Si vous êtes de passage à Porto nous vous recommandons fortement le logement. Encore Merci pour tout !",
+        "guestDisplayName": "Emma",
+        "guestName": "Emma",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-06-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "The villa was incredible, very well equipped, lovely and spacious. The rooms were well maintained and beds were comfortable. The amount of showers and toilets was an absolute bonus for a large group of guests. The kitchens and appliances were incredibly clean.  The pool area was great and very spacious and had fantastic views and surroundings. Portugal active were fantastic at communicating and always so timely. They offered recommendations and assisted with booking trips. For example, they book",
+        "guestDisplayName": "Kellsey",
+        "guestName": "Kellsey",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-05-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "The villa was absolutely gorgeous and in a pristine condition. It was extremely clean and today. It was in a peaceful location. Easy to get Ubers to get around.",
+        "guestDisplayName": "Victoria",
+        "guestName": "Victoria",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-05-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "I don’t like public reviews, but praise isn’t something you hide. This was an amazing property. It was magical from beginning to the end. Absolutely loved it.",
+        "guestDisplayName": "Chukwukaelo",
+        "guestName": "Chukwukaelo",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-04-15",
+        "categories": []
+      }
+    ],
+    "averageRating": 4.95,
+    "reviewCount": 20,
+    "lastModified": "2026-11-27",
+    "contentHash": "3b5029916e291a4178916abd40405a6154983e3e"
   },
   {
     "id": "guesty-6a4297f706510a0014f79dd1",
@@ -15148,18 +15883,24 @@
     "amenities": {
       "property": [
         "Air conditioning",
+        "Babysitter recommendations",
         "Bed linens",
+        "Body soap",
         "Cleaning Disinfection",
         "Clothing storage",
         "Coffee",
         "Coffee maker",
         "Cookware",
+        "Crib",
+        "Cycling",
         "Dining table",
         "Dishes and silverware",
         "Enhanced cleaning practices",
         "Essentials",
+        "Extra pillows and blankets",
         "Fire extinguisher",
         "First aid kit",
+        "Fishing",
         "Free parking on street",
         "Garden View",
         "Garden or backyard",
@@ -15167,13 +15908,16 @@
         "Hangers",
         "Heating",
         "High touch surfaces disinfected",
+        "Horseback Riding",
         "Hot water",
+        "Kayak",
         "Kettle",
         "Kitchen",
         "Long term stays allowed",
         "Microwave",
         "Outdoor pool",
         "Outdoor seating (furniture)",
+        "Patio or balcony",
         "Private entrance",
         "Refrigerator",
         "Sea view",
@@ -15184,6 +15928,8 @@
         "Suitable for infants (under 2 years)",
         "TV",
         "Towels provided",
+        "Water Parks",
+        "Water Sports",
         "Wireless Internet"
       ],
       "bedrooms": [],
@@ -15233,8 +15979,459 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-11-26",
-    "contentHash": "fa776ac2deb73cfb655a479b059cdb1ac4c0d07c"
+    "lastModified": "2026-11-27",
+    "contentHash": "21332bc4cb81957fefe27202c6944566c7d26abd"
+  },
+  {
+    "id": "guesty-696533494b9b64001401b62e",
+    "slug": "portugal-active-oliveira-s-farm-01b62e",
+    "name": "Oliveira's Farm · Country Estate, Pool & Game Room",
+    "tagline": "A rustic farmhouse retreat between the Lima River and the Minho hills",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 5,
+    "bathrooms": 5.5,
+    "maxGuests": 10,
+    "priceFrom": 280,
+    "pricePerNight": 280,
+    "cleaningFee": 434,
+    "minNights": 2,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1790073145/production/6957de4388cba42d9e7a905e/tia0ofp3gyub4hzjc26i.jpg",
+      "https://assets.guesty.com/image/upload/v1790073211/production/6957de4388cba42d9e7a905e/ihsvkfyopbudn6rwnrzx.jpg",
+      "https://assets.guesty.com/image/upload/v1790351176/production/6957de4388cba42d9e7a905e/okelm5xjfonizlmkikq3.jpg",
+      "https://assets.guesty.com/image/upload/v1790073159/production/6957de4388cba42d9e7a905e/legpvod1ey1x2dggx8pn.jpg",
+      "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/i2th0b7b9eplebijd7rc.jpg",
+      "https://assets.guesty.com/image/upload/v1790078898/production/6957de4388cba42d9e7a905e/cojv40znatzamnixs0bd.jpg",
+      "https://assets.guesty.com/image/upload/v1790073152/production/6957de4388cba42d9e7a905e/m5t2mrxovyn6l3ietg36.jpg",
+      "https://assets.guesty.com/image/upload/v1790073209/production/6957de4388cba42d9e7a905e/pcuxhiadkzucr2dynu4l.jpg",
+      "https://assets.guesty.com/image/upload/v1790073211/production/6957de4388cba42d9e7a905e/soiynbpm81ro1iycki6m.jpg",
+      "https://assets.guesty.com/image/upload/v1790078894/production/6957de4388cba42d9e7a905e/qpwqvdkoetjqdp58o1qe.jpg",
+      "https://assets.guesty.com/image/upload/v1790074105/production/6957de4388cba42d9e7a905e/qpeiezdpevrssbgw5zy4.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2405f245-f042-45-Uht34",
+      "https://assets.guesty.com/image/upload/v1790074103/production/6957de4388cba42d9e7a905e/wsme7iqpcuroesml7xy5.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/8ba029bf-4c47-41-VpuAe",
+      "https://assets.guesty.com/image/upload/v1790074648/production/6957de4388cba42d9e7a905e/sy4qqx5tce0eknuhi3mx.jpg",
+      "https://assets.guesty.com/image/upload/v1790078898/production/6957de4388cba42d9e7a905e/xlrkhsiykkcpnk549dqz.jpg",
+      "https://assets.guesty.com/image/upload/v1790073240/production/6957de4388cba42d9e7a905e/gx9gms5tl2jb9tfbayvx.jpg",
+      "https://assets.guesty.com/image/upload/v1790078895/production/6957de4388cba42d9e7a905e/hxtbdovpcnlmjewz9mse.jpg",
+      "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/oe0ejjnlxcfuqgductjg.jpg",
+      "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/mnvmydfksfst132k9anq.jpg",
+      "https://assets.guesty.com/image/upload/v1790073210/production/6957de4388cba42d9e7a905e/l90xsotukece2hwjeffc.jpg",
+      "https://assets.guesty.com/image/upload/v1790073140/production/6957de4388cba42d9e7a905e/afxcds1npfy5hrxgrxrd.jpg",
+      "https://assets.guesty.com/image/upload/v1790073234/production/6957de4388cba42d9e7a905e/nkxtguk3i2cutryv7jai.jpg",
+      "https://assets.guesty.com/image/upload/v1790073262/production/6957de4388cba42d9e7a905e/q0qclwnayk404jv2f0al.jpg",
+      "https://assets.guesty.com/image/upload/v1790073231/production/6957de4388cba42d9e7a905e/uh2nl3sdltmynz6xaggu.jpg",
+      "https://assets.guesty.com/image/upload/v1790074644/production/6957de4388cba42d9e7a905e/x0mdc1ddgretuw8uy34w.jpg",
+      "https://assets.guesty.com/image/upload/v1790073163/production/6957de4388cba42d9e7a905e/dhtidvzrzs0wddycv0pw.jpg",
+      "https://assets.guesty.com/image/upload/v1790073177/production/6957de4388cba42d9e7a905e/n0sbizkdxp1cjeyj0ed9.jpg",
+      "https://assets.guesty.com/image/upload/v1790073146/production/6957de4388cba42d9e7a905e/by6dueah4r6xrhexji4w.jpg",
+      "https://assets.guesty.com/image/upload/v1790073149/production/6957de4388cba42d9e7a905e/vjk3xp5cbza3ypvgpie1.jpg",
+      "https://assets.guesty.com/image/upload/v1790073156/production/6957de4388cba42d9e7a905e/qlimuckfyvrdcc0zsitt.jpg",
+      "https://assets.guesty.com/image/upload/v1790078900/production/6957de4388cba42d9e7a905e/gcc9eiymbd3zgcrsmqeg.jpg",
+      "https://assets.guesty.com/image/upload/v1790078899/production/6957de4388cba42d9e7a905e/hfe9jmgctydodru0ytnk.jpg",
+      "https://assets.guesty.com/image/upload/v1790073171/production/6957de4388cba42d9e7a905e/i3ju8po6jl2ibqbzenaq.jpg",
+      "https://assets.guesty.com/image/upload/v1790073180/production/6957de4388cba42d9e7a905e/n5ho9wimxd6opjz3e1yj.jpg",
+      "https://assets.guesty.com/image/upload/v1790078895/production/6957de4388cba42d9e7a905e/wvbobg18vswfprkli1yx.jpg",
+      "https://assets.guesty.com/image/upload/v1790073133/production/6957de4388cba42d9e7a905e/f68djwe8ukrew66zgxcj.jpg",
+      "https://assets.guesty.com/image/upload/v1790073179/production/6957de4388cba42d9e7a905e/rczowfvx747yfjfuk07a.jpg",
+      "https://assets.guesty.com/image/upload/v1790073198/production/6957de4388cba42d9e7a905e/rsqcnfybslexlw3msvcy.jpg",
+      "https://assets.guesty.com/image/upload/v1790073175/production/6957de4388cba42d9e7a905e/hs4gxqasgzlprsdi7cr7.jpg",
+      "https://assets.guesty.com/image/upload/v1790078900/production/6957de4388cba42d9e7a905e/jg8skbzenvi1lcn9mvgx.jpg",
+      "https://assets.guesty.com/image/upload/v1790073182/production/6957de4388cba42d9e7a905e/mgjuluijroluxwu2mvg2.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/0e1bf2dc-b7a3-43-pwBgP",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/5de38500-d9af-45-NR3v3",
+      "https://assets.guesty.com/image/upload/v1790073294/production/6957de4388cba42d9e7a905e/jyv4v5hicsnzc2hu3pug.jpg",
+      "https://assets.guesty.com/image/upload/v1790073287/production/6957de4388cba42d9e7a905e/olchwoyte91rkgrbc9t6.jpg",
+      "https://assets.guesty.com/image/upload/v1790073296/production/6957de4388cba42d9e7a905e/yukaqbkhu6wlrko7rtdr.jpg",
+      "https://assets.guesty.com/image/upload/v1790075925/production/6957de4388cba42d9e7a905e/bjrnisgdbvahuh4qamio.jpg",
+      "https://assets.guesty.com/image/upload/v1790078900/production/6957de4388cba42d9e7a905e/pvpk08h7j09lbr0dpiyn.jpg",
+      "https://assets.guesty.com/image/upload/v1790073268/production/6957de4388cba42d9e7a905e/njsaaiqtmmfet46nrsf0.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2a9176d6-98ac-45-BCVdY",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/7091502d-06cd-47-wfWK_",
+      "https://assets.guesty.com/image/upload/v1790073301/production/6957de4388cba42d9e7a905e/iheuy8hqwzcm4ldj8gdn.jpg",
+      "https://assets.guesty.com/image/upload/v1790073296/production/6957de4388cba42d9e7a905e/o6rzckmbi6ud80sye0aq.jpg",
+      "https://assets.guesty.com/image/upload/v1790073298/production/6957de4388cba42d9e7a905e/gepczy4fc1t4dsjejrct.jpg",
+      "https://assets.guesty.com/image/upload/v1790073286/production/6957de4388cba42d9e7a905e/snmbaojwfle6cmabu6vr.jpg",
+      "https://assets.guesty.com/image/upload/v1790073295/production/6957de4388cba42d9e7a905e/lrmi2zhrabl0vbrmfcus.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/c10c2e16-b744-44-m6okK",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/424895ec-a425-4a-SX9v_",
+      "https://assets.guesty.com/image/upload/v1790073306/production/6957de4388cba42d9e7a905e/f8rugxqkuvficrsdsyux.jpg",
+      "https://assets.guesty.com/image/upload/v1790073312/production/6957de4388cba42d9e7a905e/kquffrbq8pbsg12be8au.jpg",
+      "https://assets.guesty.com/image/upload/v1790073311/production/6957de4388cba42d9e7a905e/uirhuc9akxz3oqnx6hua.jpg",
+      "https://assets.guesty.com/image/upload/v1790073300/production/6957de4388cba42d9e7a905e/eqq6b2h444f2yot19upf.jpg",
+      "https://assets.guesty.com/image/upload/v1790078903/production/6957de4388cba42d9e7a905e/zkvn9qv01imwjk05ifqm.jpg",
+      "https://assets.guesty.com/image/upload/v1790073310/production/6957de4388cba42d9e7a905e/xznjc7ffx36nce4tkdbe.jpg",
+      "https://assets.guesty.com/image/upload/v1790073286/production/6957de4388cba42d9e7a905e/o9werbuzniwosmlf7kgk.jpg",
+      "https://assets.guesty.com/image/upload/v1790073221/production/6957de4388cba42d9e7a905e/qwrmh5ei6y25raxliqyc.jpg",
+      "https://assets.guesty.com/image/upload/v1790078901/production/6957de4388cba42d9e7a905e/jxfwf79qsadtkomilzy2.jpg",
+      "https://assets.guesty.com/image/upload/v1790074098/production/6957de4388cba42d9e7a905e/redtszj4j0x3odfyxsty.jpg",
+      "https://assets.guesty.com/image/upload/v1790073270/production/6957de4388cba42d9e7a905e/el2avkxj9bs8g5cjhmqp.jpg",
+      "https://assets.guesty.com/image/upload/v1790073216/production/6957de4388cba42d9e7a905e/gzvvyykdnopaq29xgucw.jpg",
+      "https://assets.guesty.com/image/upload/v1790073239/production/6957de4388cba42d9e7a905e/lultdnkybpblwpjwppsm.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/02e25e3b-d8b6-4e-qPkPU",
+      "https://assets.guesty.com/image/upload/v1790073197/production/6957de4388cba42d9e7a905e/x54pyv6wzgjg0bflt708.jpg",
+      "https://assets.guesty.com/image/upload/v1790073197/production/6957de4388cba42d9e7a905e/tsehxurtooagsfiurzuu.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/65b2c783-7610-4a-iV6lW",
+      "https://assets.guesty.com/image/upload/v1790073204/production/6957de4388cba42d9e7a905e/eznalnpjypmtfijklvhp.jpg",
+      "https://assets.guesty.com/image/upload/v1790074098/production/6957de4388cba42d9e7a905e/puy3zprvu499tm45hcbu.jpg",
+      "https://assets.guesty.com/image/upload/v1790843208/production/6957de4388cba42d9e7a905e/uk60myzlwgv0ofm0izqj.jpg",
+      "https://assets.guesty.com/image/upload/v1790075925/production/6957de4388cba42d9e7a905e/uwaoee0chgkug2uhkflt.jpg",
+      "https://assets.guesty.com/image/upload/v1790073271/production/6957de4388cba42d9e7a905e/ny0ll1m10hkfji0v3u7j.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2d950e7c-1b87-46-9PUVi",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/128c825d-0fb3-43-VINh2",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/fc7c07cf-3734-43-gGWei",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/70efa536-c2fa-43-uurcL",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/895c28df-437d-46-sS7_B",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2aaeae4f-30a5-47-6YOyO",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/537132bd-fe4c-4c-4O3uT"
+    ],
+    "description": "Oliveira's Farm spreads five bedrooms across a rustic-style farmhouse — two with queen beds, one king, and two twin rooms sharing four singles — plus five full bathrooms and a separate guest WC. The living room holds a chess table and board games, while a dedicated games room adds a pool table, foosball and cards. Outside, a private pool sits within a garden thick with fruit trees.\n\nThe farm lies in the countryside outside Viana do Castelo, 12 km from the town centre. Cabedelo Beach, known for windsurfing, kitesurfing and surfing, is 8.7 km away, the Lima River just 2.1 km, and Valinhas Park 15 km. Pharmacies and supermarkets are close by.\n\nMornings might mean coffee on the patio before a walk down to the stream that runs through the grounds, or picking fruit straight from the trees. Afternoons settle into the pool or a game of pool table in the games room, and evenings end with a barbecue in the outdoor dining area as the garden cools.\n\nSuited to families or groups of up to ten wanting space and quiet, with Portugal Active's concierge on hand for anything from excursions to a private chef.",
+    "descriptionSections": null,
+    "amenities": {
+      "property": [
+        "BBQ grill",
+        "Babysitter recommendations",
+        "Baking sheet",
+        "Barbeque utensils",
+        "Bathtub",
+        "Beach essentials",
+        "Bed linens",
+        "Board games",
+        "Body soap",
+        "Cable TV",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Coffee",
+        "Coffee maker",
+        "Coin Laundry",
+        "Conditioner",
+        "Cookware",
+        "Crib",
+        "Cycling",
+        "Desk",
+        "Dining table",
+        "Disabled parking spot",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Family/kid friendly",
+        "Fire extinguisher",
+        "Fireplace guards",
+        "First aid kit",
+        "Fishing",
+        "Foosball table",
+        "Free parking on premises",
+        "Freezer",
+        "Game room",
+        "Garden View",
+        "Garden or backyard",
+        "Golf - Optional",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Horseback Riding",
+        "Hot water",
+        "Indoor fireplace",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Mountain",
+        "Mountain view",
+        "Museums",
+        "Near Ocean",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Pets allowed",
+        "Pool table",
+        "Private entrance",
+        "Private pool",
+        "Refrigerator",
+        "Room-darkening shades",
+        "Rural",
+        "Shampoo",
+        "Shopping",
+        "Shower gel",
+        "Smoke detector",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Village",
+        "Washer",
+        "Washer in common space",
+        "Water Parks",
+        "Water Sports",
+        "Water View",
+        "Waterfront",
+        "Window guards",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "petsAllowed": true,
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "696533494b9b64001401b62e",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Oliveira's Farm · Country Estate, Pool & Game Room",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Oliveira's Farm · Country Estate, Pool & Game Room — Portugal Active",
+    "seoDescription": "Surrounded by gardens, pine trees and fruit trees, Oliveira's Farm is a private country estate on the outskirts of Viana do Castelo, designed for families and g",
+    "address": {
+      "full": "",
+      "street": "Caminho da Brasileira 135",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6821501,
+      "lng": -8.7403473
+    },
+    "licenseNumber": null,
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 4553.13410766,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "O espaço da casa é lindíssimo. A piscina fez as delícias de pequenos e graúdos (esteve muito calor durante a nossa estadia). Recomendo a instalação de um corrimão nas escadas da piscina para facilitar o acesso à pessoas com mobilidade mais reduzida. \nA casa está muito bem decorada e com muito espaço de arrumação. Está muito bem equipada com todos os utensílios. A 5 minutos de carro temos 2 hipermercados (Intermarche e Lidl) e o retail park do Lima. Viana do fica a 10 minutos. Recomendo vivamente",
+        "guestDisplayName": "Tiago",
+        "guestName": "Tiago",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-05T17:22:01.838Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Espaço muito agradável preparado para crianças. \nQuartos amplos com wcs privados \nEstava tudo bem higienizado.\nBoa biblioteca de livros e jogos.\nCaminhar sempre com calçado na relva pois tem espinhos.",
+        "guestDisplayName": "Filipa",
+        "guestName": "Filipa",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-22T09:45:06.879Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Obrigado Portugal Active pelo excelente suporte.",
+        "guestDisplayName": "Nuno Filipe",
+        "guestName": "Nuno Filipe",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-02-17T20:56:40.598Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "The kitchen and living room of this house are very spacious, and each bedroom has its own bathroom, making it perfect for family or friends to gather for a holiday. The swimming pool is 15 meters long, which is impressively large, and the kids absolutely loved it. In addition, the location is excellent — just 5 minutes to Lidl and a little over 10 minutes to reach the center of Viana do Castelo and the shopping mall. Overall, we had a wonderful holiday here.",
+        "guestDisplayName": "Daniela",
+        "guestName": "Daniela",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-08-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Perfect stay to relax and wind down for a few days with Family!",
+        "guestDisplayName": "Joao",
+        "guestName": "Joao",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-08-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Excelente casa e host muito prestável Recomendo a 100%",
+        "guestDisplayName": "Felipe",
+        "guestName": "Felipe",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-08-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "The place is enormous and beautiful, calm location but still close to groceries and Viana, big recommendation for large groups!",
+        "guestDisplayName": "Eloy",
+        "guestName": "Eloy",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-07-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Excelente casa para uns dias de descanso e diversão com amigos ☺️ espaço interior e exterior amplo e super cuidado. Quartos e camas confortáveis. Excelente zona da piscina e o trampolim fez muito sucesso. Queremos voltar! A comunicação foi super rápida e sempre obtivemos resposta aos nossos pedidos :)",
+        "guestDisplayName": "Alda",
+        "guestName": "Alda",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2025-06-15",
+        "categories": []
+      },
+      {
+        "rating": 5,
+        "text": "Great for a week or weekend with friends and/or family!",
+        "guestDisplayName": "Enzo",
+        "guestName": "Enzo",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2024-11-15",
+        "categories": []
+      }
+    ],
+    "averageRating": 4.78,
+    "reviewCount": 9,
+    "lastModified": "2026-11-27",
+    "contentHash": "35d1f547b0740d65add54d36fe304a0705ca247d"
   },
   {
     "id": "guesty-6965330b6d209c001510dd49",
@@ -18146,1146 +19343,6 @@
     "contentHash": "7bdafd6fc45ade5058795d1cf1bd8776a681c1f0"
   },
   {
-    "id": "guesty-69653335bf04fe0013742743",
-    "slug": "portugal-active-nature-hill-duo-10-min-beach-742743",
-    "name": "Portugal Active Nature Hill Duo Villa",
-    "tagline": "Three quiet houses on one green hillside — eight bedrooms, pool and space for sixteen to live at their own pace.",
-    "tier": "select",
-    "destination": "minho",
-    "locality": "Viana do Castelo",
-    "bedrooms": 8,
-    "bathrooms": 6,
-    "maxGuests": 16,
-    "priceFrom": 550,
-    "pricePerNight": 550,
-    "cleaningFee": 553,
-    "minNights": 2,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/1f6a4f20-735f-4c-QaWeB",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4d3ff13e-ebc5-49-Xisxf",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d368633a-e760-4d-ud0EY",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/86635ae9-371d-45-zpAhj",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/03348d35-f9f7-4c-ioTvi",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d0615c3a-03d0-42-P0mX7",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/90c53976-822f-4b-MO-7d",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e47c342d-594f-4b-oAkaD",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/727e03dd-63f7-4b-VOq9Q",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/dc73b1e9-ec90-44-8hyDH",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/806cca2c-583e-4d-Iu6LY",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5a611f02-4772-4f-r9cl9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e2fd03b6-bbba-42-nI4yK",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/9f8beb28-5548-4f-ldxT7",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7dc5e474-0bfe-43-wlJLV",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/caf6f90c-22ca-4e-5kaN5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/f6a32332-8b2d-4d-wuzBc",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/784539e6-74e5-4d-C66Hf",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7bbf4ed9-9439-4f-sdJOT",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/a061a2fb-111c-49-7oIcB",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/2ddb4bb1-8a02-48-z6Jf4",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5c1538f9-1cd0-4a-cz1w-",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5601469b-8b1e-46-SJJX_",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/30d00549-3d79-48-llWsB",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/3442656c-e442-4a-Q2w0Q",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8dcc9f56-b4cc-43-bkyOr",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8a7ed52f-41d3-41-tNR68",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/011255e5-d2fb-44-ZsXI5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/935bf2da-ea9b-4b-lPFjJ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/39691570-8d12-40-1tvIK",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/00eefa72-e491-42-N4oGs",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eb2998e2-8e4d-4c-Rgw_A",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/47822c5b-987c-4c-7RyXt",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d94e86ff-2582-4c-H2AfM",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b2d22427-753a-45-IIMS9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8294bc69-5d9a-40-xRmhK",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7a737e92-da86-4e-UhCX4",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/98c4888b-403c-46-9WHz4",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4d16a7d0-89d1-45-cKDc8",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/50480001-3956-4d-SxCbT",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/bdd9508d-76fe-41-UyBha",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/3038e1f1-b490-43-ktGgJ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8946f681-01df-47-CvzVh",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/a18c00fe-3885-47-htJXs",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d11ba7a2-9ef6-4b-S92uC",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/1abe3ffe-203a-44-NUvbw",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/56ec41f1-02ea-46-X_Xhy",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/fa7ab03e-c1a9-47-tkXE5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5bb432f6-a020-4f-Xfd_q",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eb326348-c769-41-lbhmv",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/602b49d0-df22-40-rzzev",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/af817f65-7eb7-49-pS9VM",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/9f9b8ac6-7c36-4b-LKYdL",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/1f86f90d-e155-45-_P7Y8",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/cfd6fa51-bd6d-45-6u_Ln",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/463add98-7870-4b-tv7ZI",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/1fedaf36-f493-44-khTJv",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b9d19f3a-b395-43-yY5Ur",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/c1cebb81-c57f-49-xFUJJ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/291642f3-c877-4c-51CpS",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5d06db3b-ae0f-47-KHaWj",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d7458b98-603e-45-SLfH6",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/f0caae3f-8bb9-40-x3SG_",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/673fe787-f94d-47-FPpUL",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/6af9ea20-4952-4a-nQwdl",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/af94ba27-2723-45-N6Fqt",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/83182da0-146f-49-sf6JV",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8d72954c-c0e9-4e-EjrpB",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/41a23303-2434-46-Sq9pj",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8a341b02-9ac1-43-uiEDe",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/3be7d9c0-932f-46-2SXcK",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/71f32bcf-9a26-48-VfaXQ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/c6cd23a5-7b0a-4a-aBHds",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7ea05fac-a2e5-47-BYvtw",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/2af17c01-c44d-4e-0CBpz",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7d62fda5-7267-4e-rgHO4",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eb6ad4ff-b229-40-IRPU7",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/79b1fdfd-248f-43-SgvrE",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b201a64a-3429-41-gnFvE",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/bd7d6ecd-954c-4d-Eegdu",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4e1d2348-c310-45-vGTx5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/10275864-b3c2-4b-KP6dJ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/f77562ad-3861-49-0QJpo",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/80e5d965-b6f8-4b-bNugx",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/38207526-c855-4d-eRLD3",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e8816e8e-ad1d-4d-riPpp",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5b4613cd-3ad1-40-c67lC",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/87c1632c-c984-41-D43W8",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/5de7e9d0-094b-4b-5F-dd",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e5346fb7-58c0-4d-MQSyl",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/01d53a69-be13-40-Qo8Jn",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/dd93c49b-2738-47-BmGvL",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/10d82230-29c2-4b-Vic6M",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/cae339d6-65a8-4a-gXcyM",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/66922777-59bb-4c-uk7yI",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/6f360c29-8aba-4d-SqoVX",
-      "https://assets.guesty.com/image/upload/v1789489772/production/6957de4388cba42d9e7a905e/psijjxqmheytgbjve3nn.jpg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/88b59ba0-925d-48-dskoX",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4033d620-2ada-4c-Ef7rR",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/474f4d66-ba5b-40-8jVvr",
-      "https://assets.guesty.com/image/upload/v1789489787/production/6957de4388cba42d9e7a905e/tmvz1ceobqjh0ppatx37.jpg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/37023c13-dbf0-45-oJ8eU",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/a6977951-dc87-46-futMI",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/e65202ae-5865-46-dvJOA",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/85cf7187-314f-48-U5wwW",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d14ecdb3-b6a5-41-n34P5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b8b88148-70fd-46-1oTpA",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/c3137132-7ca9-41-Ak5l9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/428e83fe-2618-46-TclZS",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/317dcbd7-bfbd-40-mAvfD",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eeea47ba-a95f-45-SbCZI"
-    ],
-    "description": "Nature Hill Duo is a small hillside hamlet of three fully equipped houses outside Viana do Castelo, taken together for groups of up to sixteen.\n\nModern architecture sits low in the landscape: eight bedrooms in all, a shared pool, gardens, barbecue, EV charger and fireplaces for the cooler months. Each house keeps its own front door — grandparents, friends and teenagers can all have their own address.\n\nThe Atlantic beaches and Viana's old town are minutes away; the hill itself offers the silence.\n\nFor multi-family holidays and group retreats that want togetherness on their own terms — one booking, three houses, zero logistics, our team handling the rest.",
-    "descriptionSections": null,
-    "amenities": {
-      "property": [
-        "Air conditioning",
-        "BBQ grill",
-        "Babysitter recommendations",
-        "Baking sheet",
-        "Barbeque utensils",
-        "Bed linens",
-        "Cable TV",
-        "Carbon monoxide detector",
-        "Cleaning Disinfection",
-        "Cleaning products",
-        "Clothing storage",
-        "Coffee",
-        "Coffee maker",
-        "Cookware",
-        "Crib",
-        "Cycling",
-        "Desk",
-        "Dining table",
-        "Dishes and silverware",
-        "Dishwasher",
-        "EV charger",
-        "Enhanced cleaning practices",
-        "Essentials",
-        "Extra pillows and blankets",
-        "Fire extinguisher",
-        "First aid kit",
-        "Fishing",
-        "Free parking on premises",
-        "Freezer",
-        "Garden View",
-        "Garden or backyard",
-        "Hair dryer",
-        "Hangers",
-        "Heating",
-        "High chair",
-        "High touch surfaces disinfected",
-        "Horseback Riding",
-        "Hot water",
-        "Iron",
-        "Kettle",
-        "Kitchen",
-        "Laptop friendly workspace",
-        "Long term stays allowed",
-        "Microwave",
-        "Mountain",
-        "Mountain view",
-        "Museums",
-        "Outdoor pool",
-        "Outdoor seating (furniture)",
-        "Oven",
-        "Patio or balcony",
-        "Private entrance",
-        "Refrigerator",
-        "Rural",
-        "Shampoo",
-        "Shopping",
-        "Shower gel",
-        "Smoke detector",
-        "Stereo system",
-        "Stove",
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)",
-        "TV",
-        "Toaster",
-        "Towels provided",
-        "Village",
-        "Washer",
-        "Water Parks",
-        "Water Sports",
-        "Wine glasses",
-        "Wireless Internet"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "petsAllowed": false,
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "69653335bf04fe0013742743",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Portugal Active Nature Hill Duo Villa",
-    "sortOrder": 0,
-    "isActive": true,
-    "isPortfolio": false,
-    "seoTitle": "Portugal Active Nature Hill Duo Villa — Portugal Active",
-    "seoDescription": "Escape to a stunning oasis of tranquility, where three isolated and fully equipped properties blend harmoniously with the natural environment",
-    "address": {
-      "full": "",
-      "street": "Estrada de Romãe 680",
-      "city": "Viana do Castelo",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.75541,
-      "lng": -8.7924743
-    },
-    "licenseNumber": null,
-    "rooms": [
-      {
-        "name": "Bedroom 1",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 2",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 3",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 4",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 5",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 6",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 7",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 8",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      }
-    ],
-    "propertyType": "Villa",
-    "checkInTime": "16:00",
-    "checkOutTime": "11:00",
-    "areaSquareFeet": 3552.0904386,
-    "reviews": [
-      {
-        "rating": 4,
-        "text": "Nos ha gustado la casa, solo teníamos una llave y un mando para el coche. Faltan detalles para colgar las toallas en los baños.",
-        "guestDisplayName": "Juan",
-        "guestName": "Juan",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-08-23T12:48:46.715Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 3
-          },
-          {
-            "name": "checkin",
-            "score": 4
-          },
-          {
-            "name": "communication",
-            "score": 3
-          },
-          {
-            "name": "location",
-            "score": 4
-          },
-          {
-            "name": "value",
-            "score": 4
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Fantastic place, Very clean facilities in very good condition, a fantastic house to spend a few days with friends and family",
-        "guestDisplayName": "Martina",
-        "guestName": "Martina",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-08-13T10:36:59.240Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Espectacular la casa. Todo nuevo, limpio y con todas las comodidades para pasar unos días increíbles con amigos. El exterior con la piscina es un sueño. Repetiremos",
-        "guestDisplayName": "Nuria",
-        "guestName": "Nuria",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-06-28T18:59:07.065Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 4
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Excelentes instalaciones, ubicación, limpieza y comodidad.  ¡sin duda volvemos! Los recomiendo. \nGracias al anfitrión por recibirnos.",
-        "guestDisplayName": "Angelica",
-        "guestName": "Angelica",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-06-22T06:18:34.312Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "One of the best places I have ever stayed, facilities were excellent and when we arrived everything so spotlessly clean we could have believe we were the first guests to stay! Staff on hand to help with any issues and a beautiful villa, well situated but necessary to have a car for sure - a beautiful scenic view and happily housed myself and 10 relatives for the week. \n\nSmall feedback; the check in process and keys/fobs alongside where to use them could have been more instructed to make for a sm",
-        "guestDisplayName": "Arran",
-        "guestName": "Arran",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-05-29T11:35:06.977Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 4
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Todo perfecto.",
-        "guestDisplayName": "Olga",
-        "guestName": "Olga",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-05-06T19:33:28.523Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Todo perfecto 👌",
-        "guestDisplayName": "María",
-        "guestName": "María",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-04-04T18:10:10.231Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Segunda vez que vamos y todo genial!!",
-        "guestDisplayName": "Diego",
-        "guestName": "Diego",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-11-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "A beautiful spacious villa that accommodates really well for a big group. Portugal Active were brilliant hosts who were very responsive throughout our stay and made our stay with them a great experience from start to finish. Will definitely consider them and the villa if we travel to Portugal again!",
-        "guestDisplayName": "Ramanan",
-        "guestName": "Ramanan",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-10-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "buen alojamiento para vacaciones",
-        "guestDisplayName": "Ivan",
-        "guestName": "Ivan",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-10-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Muito boa experiência. Recomendo 100%",
-        "guestDisplayName": "Maria",
-        "guestName": "Maria",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-09-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "прекрасное тихое место в небольшой деревне в далеке от шума. До супер маркетинга 10-15 минут на машине. Бассейн с очень чистой водой. Нам позволили поздний выезд, чтотнам очень помогло. На территории без проблем может припарковаться 6 автомобилей.",
-        "guestDisplayName": "Roman",
-        "guestName": "Roman",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-09-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Uma óptima escolha ,a casa maravilhosa ,a vista fantástica ,mega recomendada",
-        "guestDisplayName": "Maite",
-        "guestName": "Maite",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-08-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Wir waren mit 16 Personen in der Unterkunft und es war sensationell. Die Lage ist abgelegen und ruhig. Wir waren stets in Kontakt mit der Agentur und die Kommunikation war super. Das selbstständige ein- und auschecken hat optimal funktioniert. Danke für diesen tollen Aufenthalt!",
-        "guestDisplayName": "Maximilian",
-        "guestName": "Maximilian",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-07-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Espaço agradavel, com todas as comodidades.",
-        "guestDisplayName": "Eduardo",
-        "guestName": "Eduardo",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-06-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Estivemos alojados este fim de semana num grupo grande e só temos elogios a fazer. A casa corresponde exatamente às fotos: espaçosa, bem equipada e com todas as condições para receber confortavelmente um grupo deste tamanho. Tivemos uma estadia muito agradável, com tudo o que precisávamos à disposição. Desde os espaços comuns amplos, ideais para convívio, até à organização dos quartos, tudo foi pensado ao pormenor. As crianças também se divertiram imenso. Recomendamos vivamente a quem procure um",
-        "guestDisplayName": "Ines",
-        "guestName": "Ines",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-06-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Bonjour, Nous avons passé un séjour inoubliable ! Le logement était d’une propreté exceptionnelle et bien équipé avec tout ce dont nous avions besoin, il y avait rien à redire. Nous avons apprécié vos réponses rapides Vos attentions nous ont permis de nous sentir comme chez nous. Nous serions ravis de séjourner à nouveau ici Si vous êtes de passage à Porto nous vous recommandons fortement le logement. Encore Merci pour tout !",
-        "guestDisplayName": "Emma",
-        "guestName": "Emma",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-06-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "The villa was incredible, very well equipped, lovely and spacious. The rooms were well maintained and beds were comfortable. The amount of showers and toilets was an absolute bonus for a large group of guests. The kitchens and appliances were incredibly clean.  The pool area was great and very spacious and had fantastic views and surroundings. Portugal active were fantastic at communicating and always so timely. They offered recommendations and assisted with booking trips. For example, they book",
-        "guestDisplayName": "Kellsey",
-        "guestName": "Kellsey",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-05-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "The villa was absolutely gorgeous and in a pristine condition. It was extremely clean and today. It was in a peaceful location. Easy to get Ubers to get around.",
-        "guestDisplayName": "Victoria",
-        "guestName": "Victoria",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-05-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "I don’t like public reviews, but praise isn’t something you hide. This was an amazing property. It was magical from beginning to the end. Absolutely loved it.",
-        "guestDisplayName": "Chukwukaelo",
-        "guestName": "Chukwukaelo",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-04-15",
-        "categories": []
-      }
-    ],
-    "averageRating": 4.95,
-    "reviewCount": 20,
-    "lastModified": "2026-11-24",
-    "contentHash": "3709b3be1701e5ac2664aa0cb5e6d627a1a7bca8"
-  },
-  {
-    "id": "guesty-696533494b9b64001401b62e",
-    "slug": "portugal-active-oliveira-s-farm-01b62e",
-    "name": "Portugal Active Oliveira's Farm",
-    "tagline": "A rustic farmhouse retreat between the Lima River and the Minho hills",
-    "tier": "select",
-    "destination": "minho",
-    "locality": "Viana do Castelo",
-    "bedrooms": 5,
-    "bathrooms": 5.5,
-    "maxGuests": 10,
-    "priceFrom": 280,
-    "pricePerNight": 280,
-    "cleaningFee": 434,
-    "minNights": 2,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/v1790073145/production/6957de4388cba42d9e7a905e/tia0ofp3gyub4hzjc26i.jpg",
-      "https://assets.guesty.com/image/upload/v1790073159/production/6957de4388cba42d9e7a905e/legpvod1ey1x2dggx8pn.jpg",
-      "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/i2th0b7b9eplebijd7rc.jpg",
-      "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/oe0ejjnlxcfuqgductjg.jpg",
-      "https://assets.guesty.com/image/upload/v1790073231/production/6957de4388cba42d9e7a905e/uh2nl3sdltmynz6xaggu.jpg",
-      "https://assets.guesty.com/image/upload/v1790351176/production/6957de4388cba42d9e7a905e/okelm5xjfonizlmkikq3.jpg",
-      "https://assets.guesty.com/image/upload/v1790843208/production/6957de4388cba42d9e7a905e/uk60myzlwgv0ofm0izqj.jpg",
-      "https://assets.guesty.com/image/upload/v1790078898/production/6957de4388cba42d9e7a905e/xlrkhsiykkcpnk549dqz.jpg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/02e25e3b-d8b6-4e-qPkPU",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/fc7c07cf-3734-43-gGWei",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2d950e7c-1b87-46-9PUVi",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2a9176d6-98ac-45-BCVdY",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/c10c2e16-b744-44-m6okK",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/0e1bf2dc-b7a3-43-pwBgP",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/424895ec-a425-4a-SX9v_",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2405f245-f042-45-Uht34",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/65b2c783-7610-4a-iV6lW",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/7091502d-06cd-47-wfWK_",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/8ba029bf-4c47-41-VpuAe",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/128c825d-0fb3-43-VINh2",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/5de38500-d9af-45-NR3v3",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/71b941a0-24ed-4a-ha7nE",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/13ddd1b0-24b9-48-DnLZ8",
-      "https://assets.guesty.com/image/upload/v1790074103/production/6957de4388cba42d9e7a905e/wsme7iqpcuroesml7xy5.jpg",
-      "https://assets.guesty.com/image/upload/v1790074098/production/6957de4388cba42d9e7a905e/redtszj4j0x3odfyxsty.jpg",
-      "https://assets.guesty.com/image/upload/v1790073239/production/6957de4388cba42d9e7a905e/lultdnkybpblwpjwppsm.jpg",
-      "https://assets.guesty.com/image/upload/v1790074105/production/6957de4388cba42d9e7a905e/qpeiezdpevrssbgw5zy4.jpg",
-      "https://assets.guesty.com/image/upload/v1790074098/production/6957de4388cba42d9e7a905e/puy3zprvu499tm45hcbu.jpg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/ca429979-e98a-41-58xVn",
-      "https://assets.guesty.com/image/upload/v1790078898/production/6957de4388cba42d9e7a905e/cojv40znatzamnixs0bd.jpg",
-      "https://assets.guesty.com/image/upload/v1790073240/production/6957de4388cba42d9e7a905e/gx9gms5tl2jb9tfbayvx.jpg",
-      "https://assets.guesty.com/image/upload/v1790073221/production/6957de4388cba42d9e7a905e/qwrmh5ei6y25raxliqyc.jpg",
-      "https://assets.guesty.com/image/upload/v1790073234/production/6957de4388cba42d9e7a905e/nkxtguk3i2cutryv7jai.jpg",
-      "https://assets.guesty.com/image/upload/v1790073211/production/6957de4388cba42d9e7a905e/ihsvkfyopbudn6rwnrzx.jpg",
-      "https://assets.guesty.com/image/upload/v1790073210/production/6957de4388cba42d9e7a905e/l90xsotukece2hwjeffc.jpg",
-      "https://assets.guesty.com/image/upload/v1790073211/production/6957de4388cba42d9e7a905e/soiynbpm81ro1iycki6m.jpg",
-      "https://assets.guesty.com/image/upload/v1790073216/production/6957de4388cba42d9e7a905e/gzvvyykdnopaq29xgucw.jpg",
-      "https://assets.guesty.com/image/upload/v1790074648/production/6957de4388cba42d9e7a905e/sy4qqx5tce0eknuhi3mx.jpg",
-      "https://assets.guesty.com/image/upload/v1790074644/production/6957de4388cba42d9e7a905e/x0mdc1ddgretuw8uy34w.jpg",
-      "https://assets.guesty.com/image/upload/v1790073197/production/6957de4388cba42d9e7a905e/tsehxurtooagsfiurzuu.jpg",
-      "https://assets.guesty.com/image/upload/v1790073204/production/6957de4388cba42d9e7a905e/eznalnpjypmtfijklvhp.jpg",
-      "https://assets.guesty.com/image/upload/v1790073211/production/6957de4388cba42d9e7a905e/kr5p9zlysfqe0gln7j1z.jpg",
-      "https://assets.guesty.com/image/upload/v1790073286/production/6957de4388cba42d9e7a905e/o9werbuzniwosmlf7kgk.jpg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/0d5ebe61-c47c-45-zXNt7",
-      "https://assets.guesty.com/image/upload/v1790073163/production/6957de4388cba42d9e7a905e/dhtidvzrzs0wddycv0pw.jpg",
-      "https://assets.guesty.com/image/upload/v1790073177/production/6957de4388cba42d9e7a905e/n0sbizkdxp1cjeyj0ed9.jpg",
-      "https://assets.guesty.com/image/upload/v1790073171/production/6957de4388cba42d9e7a905e/i3ju8po6jl2ibqbzenaq.jpg",
-      "https://assets.guesty.com/image/upload/v1790073180/production/6957de4388cba42d9e7a905e/n5ho9wimxd6opjz3e1yj.jpg",
-      "https://assets.guesty.com/image/upload/v1790073146/production/6957de4388cba42d9e7a905e/by6dueah4r6xrhexji4w.jpg",
-      "https://assets.guesty.com/image/upload/v1790078899/production/6957de4388cba42d9e7a905e/hfe9jmgctydodru0ytnk.jpg",
-      "https://assets.guesty.com/image/upload/v1790073149/production/6957de4388cba42d9e7a905e/vjk3xp5cbza3ypvgpie1.jpg",
-      "https://assets.guesty.com/image/upload/v1790073156/production/6957de4388cba42d9e7a905e/qlimuckfyvrdcc0zsitt.jpg",
-      "https://assets.guesty.com/image/upload/v1790078900/production/6957de4388cba42d9e7a905e/gcc9eiymbd3zgcrsmqeg.jpg",
-      "https://assets.guesty.com/image/upload/v1790078899/production/6957de4388cba42d9e7a905e/wouheluhdkhdsm7rptdd.jpg",
-      "https://assets.guesty.com/image/upload/v1790073175/production/6957de4388cba42d9e7a905e/hs4gxqasgzlprsdi7cr7.jpg",
-      "https://assets.guesty.com/image/upload/v1790078900/production/6957de4388cba42d9e7a905e/jg8skbzenvi1lcn9mvgx.jpg",
-      "https://assets.guesty.com/image/upload/v1790073179/production/6957de4388cba42d9e7a905e/rczowfvx747yfjfuk07a.jpg",
-      "https://assets.guesty.com/image/upload/v1790073198/production/6957de4388cba42d9e7a905e/rsqcnfybslexlw3msvcy.jpg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/d55befc3-6dc7-44-OqU8Q",
-      "https://assets.guesty.com/image/upload/v1790073182/production/6957de4388cba42d9e7a905e/mgjuluijroluxwu2mvg2.jpg",
-      "https://assets.guesty.com/image/upload/v1790073268/production/6957de4388cba42d9e7a905e/yw8hihc559qzysvuemho.jpg",
-      "https://assets.guesty.com/image/upload/v1790073294/production/6957de4388cba42d9e7a905e/jyv4v5hicsnzc2hu3pug.jpg",
-      "https://assets.guesty.com/image/upload/v1790073287/production/6957de4388cba42d9e7a905e/olchwoyte91rkgrbc9t6.jpg",
-      "https://assets.guesty.com/image/upload/v1790073296/production/6957de4388cba42d9e7a905e/yukaqbkhu6wlrko7rtdr.jpg",
-      "https://assets.guesty.com/image/upload/v1790075925/production/6957de4388cba42d9e7a905e/bjrnisgdbvahuh4qamio.jpg",
-      "https://assets.guesty.com/image/upload/v1790078900/production/6957de4388cba42d9e7a905e/pvpk08h7j09lbr0dpiyn.jpg",
-      "https://assets.guesty.com/image/upload/v1790073268/production/6957de4388cba42d9e7a905e/njsaaiqtmmfet46nrsf0.jpg",
-      "https://assets.guesty.com/image/upload/v1790073286/production/6957de4388cba42d9e7a905e/snmbaojwfle6cmabu6vr.jpg",
-      "https://assets.guesty.com/image/upload/v1790073301/production/6957de4388cba42d9e7a905e/iheuy8hqwzcm4ldj8gdn.jpg",
-      "https://assets.guesty.com/image/upload/v1790073296/production/6957de4388cba42d9e7a905e/o6rzckmbi6ud80sye0aq.jpg",
-      "https://assets.guesty.com/image/upload/v1790073298/production/6957de4388cba42d9e7a905e/gepczy4fc1t4dsjejrct.jpg",
-      "https://assets.guesty.com/image/upload/v1790073295/production/6957de4388cba42d9e7a905e/lrmi2zhrabl0vbrmfcus.jpg",
-      "https://assets.guesty.com/image/upload/v1790073300/production/6957de4388cba42d9e7a905e/eqq6b2h444f2yot19upf.jpg",
-      "https://assets.guesty.com/image/upload/v1790073306/production/6957de4388cba42d9e7a905e/f8rugxqkuvficrsdsyux.jpg",
-      "https://assets.guesty.com/image/upload/v1790073312/production/6957de4388cba42d9e7a905e/kquffrbq8pbsg12be8au.jpg",
-      "https://assets.guesty.com/image/upload/v1790073311/production/6957de4388cba42d9e7a905e/uirhuc9akxz3oqnx6hua.jpg",
-      "https://assets.guesty.com/image/upload/v1790078903/production/6957de4388cba42d9e7a905e/zkvn9qv01imwjk05ifqm.jpg",
-      "https://assets.guesty.com/image/upload/v1790073310/production/6957de4388cba42d9e7a905e/xznjc7ffx36nce4tkdbe.jpg",
-      "https://assets.guesty.com/image/upload/v1790073209/production/6957de4388cba42d9e7a905e/pcuxhiadkzucr2dynu4l.jpg",
-      "https://assets.guesty.com/image/upload/v1790078901/production/6957de4388cba42d9e7a905e/jxfwf79qsadtkomilzy2.jpg",
-      "https://assets.guesty.com/image/upload/v1790073197/production/6957de4388cba42d9e7a905e/x54pyv6wzgjg0bflt708.jpg",
-      "https://assets.guesty.com/image/upload/v1790078895/production/6957de4388cba42d9e7a905e/hxtbdovpcnlmjewz9mse.jpg",
-      "https://assets.guesty.com/image/upload/v1790073152/production/6957de4388cba42d9e7a905e/m5t2mrxovyn6l3ietg36.jpg",
-      "https://assets.guesty.com/image/upload/v1790075925/production/6957de4388cba42d9e7a905e/uwaoee0chgkug2uhkflt.jpg",
-      "https://assets.guesty.com/image/upload/v1790073133/production/6957de4388cba42d9e7a905e/f68djwe8ukrew66zgxcj.jpg",
-      "https://assets.guesty.com/image/upload/v1790078896/production/6957de4388cba42d9e7a905e/mnvmydfksfst132k9anq.jpg",
-      "https://assets.guesty.com/image/upload/v1790073271/production/6957de4388cba42d9e7a905e/ny0ll1m10hkfji0v3u7j.jpg",
-      "https://assets.guesty.com/image/upload/v1790073262/production/6957de4388cba42d9e7a905e/q0qclwnayk404jv2f0al.jpg",
-      "https://assets.guesty.com/image/upload/v1790078895/production/6957de4388cba42d9e7a905e/wvbobg18vswfprkli1yx.jpg",
-      "https://assets.guesty.com/image/upload/v1790073140/production/6957de4388cba42d9e7a905e/afxcds1npfy5hrxgrxrd.jpg",
-      "https://assets.guesty.com/image/upload/v1790073270/production/6957de4388cba42d9e7a905e/el2avkxj9bs8g5cjhmqp.jpg",
-      "https://assets.guesty.com/image/upload/v1790078894/production/6957de4388cba42d9e7a905e/qpwqvdkoetjqdp58o1qe.jpg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/70efa536-c2fa-43-uurcL",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/895c28df-437d-46-sS7_B",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2aaeae4f-30a5-47-6YOyO",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/537132bd-fe4c-4c-4O3uT"
-    ],
-    "description": "Oliveira's Farm spreads five bedrooms across a rustic-style farmhouse — two with queen beds, one king, and two twin rooms sharing four singles — plus five full bathrooms and a separate guest WC. The living room holds a chess table and board games, while a dedicated games room adds a pool table, foosball and cards. Outside, a private pool sits within a garden thick with fruit trees.\n\nThe farm lies in the countryside outside Viana do Castelo, 12 km from the town centre. Cabedelo Beach, known for windsurfing, kitesurfing and surfing, is 8.7 km away, the Lima River just 2.1 km, and Valinhas Park 15 km. Pharmacies and supermarkets are close by.\n\nMornings might mean coffee on the patio before a walk down to the stream that runs through the grounds, or picking fruit straight from the trees. Afternoons settle into the pool or a game of pool table in the games room, and evenings end with a barbecue in the outdoor dining area as the garden cools.\n\nSuited to families or groups of up to ten wanting space and quiet, with Portugal Active's concierge on hand for anything from excursions to a private chef.",
-    "descriptionSections": null,
-    "amenities": {
-      "property": [
-        "BBQ grill",
-        "Babysitter recommendations",
-        "Baking sheet",
-        "Barbeque utensils",
-        "Bathtub",
-        "Bed linens",
-        "Board games",
-        "Cleaning Disinfection",
-        "Cleaning products",
-        "Clothing storage",
-        "Coffee",
-        "Coffee maker",
-        "Cookware",
-        "Crib",
-        "Cycling",
-        "Desk",
-        "Dining table",
-        "Disabled parking spot",
-        "Dishes and silverware",
-        "Dishwasher",
-        "Enhanced cleaning practices",
-        "Essentials",
-        "Fire extinguisher",
-        "First aid kit",
-        "Fishing",
-        "Free parking on premises",
-        "Freezer",
-        "Game room",
-        "Garden View",
-        "Garden or backyard",
-        "Hair dryer",
-        "Hangers",
-        "Heating",
-        "High chair",
-        "High touch surfaces disinfected",
-        "Horseback Riding",
-        "Hot water",
-        "Internet",
-        "Iron",
-        "Kettle",
-        "Kitchen",
-        "Laptop friendly workspace",
-        "Long term stays allowed",
-        "Microwave",
-        "Mountain",
-        "Mountain view",
-        "Museums",
-        "Near Ocean",
-        "Outdoor seating (furniture)",
-        "Oven",
-        "Patio or balcony",
-        "Pets allowed",
-        "Pool table",
-        "Private entrance",
-        "Private pool",
-        "Refrigerator",
-        "Room-darkening shades",
-        "Rural",
-        "Shampoo",
-        "Shopping",
-        "Shower gel",
-        "Stove",
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)",
-        "TV",
-        "Toaster",
-        "Towels provided",
-        "Village",
-        "Washer",
-        "Washer in common space",
-        "Water Parks",
-        "Water Sports",
-        "Window guards",
-        "Wine glasses",
-        "Wireless Internet"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "petsAllowed": true,
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "696533494b9b64001401b62e",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Portugal Active Oliveira's Farm",
-    "sortOrder": 0,
-    "isActive": true,
-    "isPortfolio": false,
-    "seoTitle": "Portugal Active Oliveira's Farm — Portugal Active",
-    "seoDescription": "Come enjoy the perfect rural retreat at Portugal Active Oliveira's Farm, our spacious estate located in the tranquil countryside of Viana do Castelo",
-    "address": {
-      "full": "",
-      "street": "Caminho da Brasileira 135",
-      "city": "Viana do Castelo",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.6821501,
-      "lng": -8.7403473
-    },
-    "licenseNumber": null,
-    "rooms": [
-      {
-        "name": "Bedroom 1",
-        "beds": [
-          {
-            "type": "KING_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 2",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 3",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 4",
-        "beds": [
-          {
-            "type": "SINGLE_BED",
-            "quantity": 2
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 5",
-        "beds": [
-          {
-            "type": "SINGLE_BED",
-            "quantity": 2
-          }
-        ]
-      }
-    ],
-    "propertyType": "Villa",
-    "checkInTime": "16:00",
-    "checkOutTime": "11:00",
-    "areaSquareFeet": 4553.13410766,
-    "reviews": [
-      {
-        "rating": 5,
-        "text": "O espaço da casa é lindíssimo. A piscina fez as delícias de pequenos e graúdos (esteve muito calor durante a nossa estadia). Recomendo a instalação de um corrimão nas escadas da piscina para facilitar o acesso à pessoas com mobilidade mais reduzida. \nA casa está muito bem decorada e com muito espaço de arrumação. Está muito bem equipada com todos os utensílios. A 5 minutos de carro temos 2 hipermercados (Intermarche e Lidl) e o retail park do Lima. Viana do fica a 10 minutos. Recomendo vivamente",
-        "guestDisplayName": "Tiago",
-        "guestName": "Tiago",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-07-05T17:22:01.838Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 4
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 4
-          }
-        ]
-      },
-      {
-        "rating": 4,
-        "text": "Espaço muito agradável preparado para crianças. \nQuartos amplos com wcs privados \nEstava tudo bem higienizado.\nBoa biblioteca de livros e jogos.\nCaminhar sempre com calçado na relva pois tem espinhos.",
-        "guestDisplayName": "Filipa",
-        "guestName": "Filipa",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-06-22T09:45:06.879Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 4
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 4,
-        "text": "Obrigado Portugal Active pelo excelente suporte.",
-        "guestDisplayName": "Nuno Filipe",
-        "guestName": "Nuno Filipe",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-02-17T20:56:40.598Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 3
-          },
-          {
-            "name": "accuracy",
-            "score": 4
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 4
-          },
-          {
-            "name": "value",
-            "score": 4
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "The kitchen and living room of this house are very spacious, and each bedroom has its own bathroom, making it perfect for family or friends to gather for a holiday. The swimming pool is 15 meters long, which is impressively large, and the kids absolutely loved it. In addition, the location is excellent — just 5 minutes to Lidl and a little over 10 minutes to reach the center of Viana do Castelo and the shopping mall. Overall, we had a wonderful holiday here.",
-        "guestDisplayName": "Daniela",
-        "guestName": "Daniela",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-08-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Perfect stay to relax and wind down for a few days with Family!",
-        "guestDisplayName": "Joao",
-        "guestName": "Joao",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-08-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Excelente casa e host muito prestável Recomendo a 100%",
-        "guestDisplayName": "Felipe",
-        "guestName": "Felipe",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-08-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "The place is enormous and beautiful, calm location but still close to groceries and Viana, big recommendation for large groups!",
-        "guestDisplayName": "Eloy",
-        "guestName": "Eloy",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-07-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Excelente casa para uns dias de descanso e diversão com amigos ☺️ espaço interior e exterior amplo e super cuidado. Quartos e camas confortáveis. Excelente zona da piscina e o trampolim fez muito sucesso. Queremos voltar! A comunicação foi super rápida e sempre obtivemos resposta aos nossos pedidos :)",
-        "guestDisplayName": "Alda",
-        "guestName": "Alda",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2025-06-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
-        "text": "Great for a week or weekend with friends and/or family!",
-        "guestDisplayName": "Enzo",
-        "guestName": "Enzo",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2024-11-15",
-        "categories": []
-      }
-    ],
-    "averageRating": 4.78,
-    "reviewCount": 9,
-    "lastModified": "2026-10-25",
-    "contentHash": "2efb4c0aeb9915e1401a6da8f5d06f396e38e419"
-  },
-  {
     "id": "guesty-696533284b583900135ceb91",
     "slug": "portugal-active-sunset-beach-lodge-heated-pool-5ceb91",
     "name": "Portugal Active Sunset Beach Lodge I Heated Pool",
@@ -20143,7 +20200,7 @@
     "id": "guesty-6aea178a27ee7a007329b59d",
     "slug": "puddle-house-with-pool-by-portugal-active-29b59d",
     "name": "Puddle House at Quinta da Teimosa | Pool & BBQ",
-    "tagline": "Discover the tranquillity of Puddle House at Quinta da Teimosa | Pool & BBQ, a countryside retreat in Monção, ideal for those looking to unwind and en…",
+    "tagline": "Puddle House at Quinta da Teimosa | Pool & BBQ is a one-bedroom apartment on the outskirts of Monção, home of Alvarinho wine. It has an exposed timber…",
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
@@ -20208,34 +20265,40 @@
       "https://assets.guesty.com/image/upload/v1793726830/production/6957de4388cba42d9e7a905e/u0rla1cjtdprh6ymt7a1.jpg",
       "https://assets.guesty.com/image/upload/v1793726831/production/6957de4388cba42d9e7a905e/lal0m1gp36kd2bjqlynw.jpg"
     ],
-    "description": "Discover the tranquillity of Puddle House at Quinta da Teimosa | Pool & BBQ, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature. This cosy apartment combines modern comfort with the charm of rural surroundings, featuring a kitchenette and a practical workspace. Outdoors, you can enjoy the swimming pool, garden and barbecue area, perfect for relaxing and spending quality time together. An ideal retreat for a relaxing holiday or an extended stay.\n\nWelcome to Puddle House at Quinta da Teimosa | Pool & BBQ, a peaceful retreat in Monção where you can slow down, enjoy nature and find the perfect balance between work and relaxation.\nThe apartment has been thoughtfully designed to provide a comfortable and welcoming stay. The main bedroom features a double bed, storage space and a dedicated workspace, making it ideal for those who wish to work remotely in a peaceful setting. The living room offers a cosy space to unwind, with a double sofa bed that can accommodate up to two additional guests, making the apartment suitable for up to 4 people.\nThe kitchenette is equipped with essential appliances and utensils, including a hob, microwave and coffee machine, allowing you to prepare simple meals during your stay. The apartment also features a private bathroom with a shower and hairdryer.\nOutside, you can enjoy the garden, take a refreshing dip in the swimming pool, relax on the sun loungers or make use of the barbecue area. When the apartments are booked individually, these outdoor areas are shared with guests staying in the other apartments.\nFor families or groups of friends, there is also the option to book the entire property, which can accommodate up to 12 people, allowing everyone to enjoy a shared experience in a peaceful natural setting.\n\nLocated in the heart of the Alto Minho region, Puddle House at Quinta da Teimosa | Pool & BBQ offers an ideal setting for those seeking the perfect balance between the tranquillity of the countryside and the opportunity to explore the region.\nMonção is renowned for its lush green landscapes, its winemaking tradition centred around the famous Alvarinho wine, and its rich local cuisine. Just a 5 to 10-minute drive away, you can explore the town's historic centre, stroll along its old town walls, visit the Museu do Alvarinho or discover traditional restaurants where you can sample local specialities, such as the famous Cordeiro à Moda de Monção (Monção-style lamb). The Monção thermal baths, perfect for a relaxing break, are also just a short drive away.\nThe proximity to the River Minho offers plenty of opportunities for peaceful walks, cycling and enjoying the surrounding nature. The Spanish border is also just around 10 minutes away, where you can visit Salvaterra de Miño and discover the flavours and culture of Galicia.\nAn ideal location from which to explore the best of the Alto Minho, enjoy nature and discover the charms of Portugal and neighbouring Galicia.\n\nGuests have access to all the property's communal areas, including the swimming pool, garden and indoor facilities. However, please note that the outdoor areas may be shared with other guests if the entire property is not booked exclusively.\nOur concierge service is available 24 hours a day, 7 days a week, to assist with any requests, from arranging local excursions to booking private chef services. To ensure availability, please request any services at least 72 hours in advance.\n\nImportant notes:\n- During the high season (May to October), the swimming pool and garden are regularly maintained to ensure the best possible experience for our guests.\n- The swimming pool is closed from November to April.\n\nPuddle House at Quinta da Teimosa | Pool & BBQ is situated in Monção, in the heart of the Alto Minho region. The most convenient way to reach the property is by car, allowing you to explore the region with complete freedom and flexibility. Free on-site parking is available for the convenience of our guests.\nThe property is set in a peaceful area, approximately a 5 to 10-minute drive from the historic centre of Monção, where you can discover the famous Monção thermal baths, stroll through the town's charming streets, visit traditional restaurants and explore the local shops.\nApproximately an hour's drive away is Viana do Castelo, a charming coastal city well worth a visit. It features a beautiful historic centre, lovely beaches, the iconic Sanctuary of Santa Luzia and magnificent views over the River Lima and the Atlantic Ocean.\nFor those travelling by air, the nearest airport is Francisco Sá Carneiro Airport in Porto, approximately an hour and a half away by car. We recommend hiring a car to discover the charms of the Alto Minho region and make the most of everything it has to offer.\n\nExclusive Concierge Services by Portugal Active\n\nEnhance your stay with our exclusive services:\n✔️ Luxury transfers: Private chauffeur from the airport directly to your apartment.\n✔️ Personalized experience: From a Private Chef to a Personal Trainer, we shape every detail to your liking.\n✔️ Daily cleaning and babysitting: Services for a worry‑free stay.\n✔️ Local team available: A member of the Portugal Active team will always be within reach throughout your stay.\n\nAdventure Experiences\n✔️ Horseback riding: Ride through scenic trails and beaches on horseback, in a unique experience along the Minho coastline.\n✔️ Guided hikes, dives, and lunches: Explore stunning landscapes, dive into a secret lagoon, and savor traditional tapas.\n✔️ E‑Bike Wild Tour: Discover the hidden corners of Viana do Castelo on an e‑bike, at your own pace.\n✔️ Surf and water sports: Kitesurf, stand up paddle, windsurf, and bodyboard at Cabedelo Beach.",
+    "description": "Puddle House at Quinta da Teimosa | Pool & BBQ is a one-bedroom apartment on the outskirts of Monção, home of Alvarinho wine. It has an exposed timber ceiling, a bedroom with a double bed and a sofa bed in the living room, sleeping up to four. Outside, the pool sits among orange trees with views over the vineyards, and there is a barbecue and shaded corners for meals outdoors. Monção's historic center and the Minho River are close by.\n\nPuddle House at Quinta da Teimosa | Pool & BBQ is on an upper floor, reached by an exterior staircase. It is a one-bedroom apartment for up to four guests, bright and welcoming, with an exposed timber ceiling and windows looking out over the greenery of the estate.\n\nThe living room combines a seating area, a dining table by the window and a double sofa bed for two more guests. The kitchenette is equipped with a stovetop, range hood, microwave and coffee machine, enough for simple meals. The bedroom has a double bed, a built-in wardrobe and a desk under the window, good for anyone who needs to work in peace. The bathroom has a shower and a hair dryer. The apartment also has air conditioning, heating, TV and Wi-Fi, and there is a washing machine in a shared area.\n\nOutside, the pool has sun loungers, is surrounded by orange trees and looks out over the vineyards. Next to it is a covered barbecue, and there is also a garden and a seating area in the shade of the trees. Quinta da Teimosa has three apartments (Mountain House, Puddle House and Vineyard House), which share these outdoor spaces. Guests who want the estate to themselves can book all three, for up to 12 people.\n\nQuinta da Teimosa is on the outskirts of Monção, in the Alto Minho, in a landscape of vineyards, fields and small villages along the Minho River. This is Alvarinho country, and the wine estates of the Monção and Melgaço subregion open their doors for tastings. The Palácio da Brejoeira, one of the most emblematic houses of this wine, can be visited.\n\nMonção's historic center preserves sections of the old town walls, Praça Deu-la-Deu and the Mother Church, and the Monção thermal baths make for a good break. At the table, the Monção-style lamb is well worth trying and, in season, the lamprey from the Minho River.\n\nAlong the river, the Ecopista do Rio Minho, flat and tree-lined, lets you walk or cycle all the way to Valença. Across the bridge lies Salvaterra de Miño, already in Galicia. For nature lovers, Peneda-Gerês National Park and the terraces of Sistelo make a great day trip.\n\nGuests have access to the apartment and to the estate's outdoor areas: pool, garden, barbecue and seating areas. These spaces are shared with Mountain House and Vineyard House, except when the whole estate is booked. The pool is open from May to October and closed from November to April.\n\nThe Portugal Active concierge team is available 24 hours a day to arrange tours, experiences and services such as a private chef. To guarantee availability, we ask that services be booked at least 72 hours in advance.\n\nA car is the most practical way to explore the region, and there is free parking at the estate. Monção's center is about 5 to 10 minutes away, Valença about 20, Melgaço about 25 and Viana do Castelo, with its Atlantic beaches, about an hour. The nearest airport is Vigo, about 40 minutes away, and Porto Airport is about 1 hour 30 minutes away. Portugal Active can arrange a private transfer.\n\n--------Exclusive Concierge Services by Portugal Active--------\n\nMake your stay even more relaxing with our services:\n\n✔️ Luxury transfers: private chauffeur from the airport to Puddle House at Quinta da Teimosa | Pool & BBQ.\n✔️ Tailor-made experiences: a dinner prepared by a private chef, a massage in the apartment, or a session with a personal trainer or yoga teacher in the estate's garden.\n✔️ Daily cleaning and babysitting: on request, for a worry-free stay.\n✔️ Local team: a Portugal Active team member is always reachable throughout your stay.\n\n--------Adventure Experiences--------\n\n✔️ Horseback riding:\nAlong trails and beaches on the Minho coast.\n\n✔️ Guided hike, swim and lunch:\nExplore Minho landscapes, take a dip in a hidden lagoon and taste traditional petiscos.\n\n✔️ Canyoning:\nDescend the rivers and waterfalls of the Alto Minho with experienced guides.\n\n✔️ E-Bike Wild Tour:\nDiscover the hidden corners of Viana do Castelo by e-bike.",
     "descriptionSections": {
-      "summary": "Discover the tranquillity of Puddle House at Quinta da Teimosa | Pool & BBQ, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature. This cosy apartment combines modern comfort with the charm of rural surroundings, featuring a kitchenette and a practical workspace. Outdoors, you can enjoy the swimming pool, garden and barbecue area, perfect for relaxing and spending quality time together. An ideal retreat for a relaxing holiday or an extended stay.",
-      "space": "Welcome to Puddle House at Quinta da Teimosa | Pool & BBQ, a peaceful retreat in Monção where you can slow down, enjoy nature and find the perfect balance between work and relaxation.\nThe apartment has been thoughtfully designed to provide a comfortable and welcoming stay. The main bedroom features a double bed, storage space and a dedicated workspace, making it ideal for those who wish to work remotely in a peaceful setting. The living room offers a cosy space to unwind, with a double sofa bed that can accommodate up to two additional guests, making the apartment suitable for up to 4 people.\nThe kitchenette is equipped with essential appliances and utensils, including a hob, microwave and coffee machine, allowing you to prepare simple meals during your stay. The apartment also features a private bathroom with a shower and hairdryer.\nOutside, you can enjoy the garden, take a refreshing dip in the swimming pool, relax on the sun loungers or make use of the barbecue area. When the apartments are booked individually, these outdoor areas are shared with guests staying in the other apartments.\nFor families or groups of friends, there is also the option to book the entire property, which can accommodate up to 12 people, allowing everyone to enjoy a shared experience in a peaceful natural setting.",
-      "access": "Guests have access to all the property's communal areas, including the swimming pool, garden and indoor facilities. However, please note that the outdoor areas may be shared with other guests if the entire property is not booked exclusively.\nOur concierge service is available 24 hours a day, 7 days a week, to assist with any requests, from arranging local excursions to booking private chef services. To ensure availability, please request any services at least 72 hours in advance.\n\nImportant notes:\n- During the high season (May to October), the swimming pool and garden are regularly maintained to ensure the best possible experience for our guests.\n- The swimming pool is closed from November to April.",
-      "neighborhood": "Located in the heart of the Alto Minho region, Puddle House at Quinta da Teimosa | Pool & BBQ offers an ideal setting for those seeking the perfect balance between the tranquillity of the countryside and the opportunity to explore the region.\nMonção is renowned for its lush green landscapes, its winemaking tradition centred around the famous Alvarinho wine, and its rich local cuisine. Just a 5 to 10-minute drive away, you can explore the town's historic centre, stroll along its old town walls, visit the Museu do Alvarinho or discover traditional restaurants where you can sample local specialities, such as the famous Cordeiro à Moda de Monção (Monção-style lamb). The Monção thermal baths, perfect for a relaxing break, are also just a short drive away.\nThe proximity to the River Minho offers plenty of opportunities for peaceful walks, cycling and enjoying the surrounding nature. The Spanish border is also just around 10 minutes away, where you can visit Salvaterra de Miño and discover the flavours and culture of Galicia.\nAn ideal location from which to explore the best of the Alto Minho, enjoy nature and discover the charms of Portugal and neighbouring Galicia.",
-      "gettingAround": "Puddle House at Quinta da Teimosa | Pool & BBQ is situated in Monção, in the heart of the Alto Minho region. The most convenient way to reach the property is by car, allowing you to explore the region with complete freedom and flexibility. Free on-site parking is available for the convenience of our guests.\nThe property is set in a peaceful area, approximately a 5 to 10-minute drive from the historic centre of Monção, where you can discover the famous Monção thermal baths, stroll through the town's charming streets, visit traditional restaurants and explore the local shops.\nApproximately an hour's drive away is Viana do Castelo, a charming coastal city well worth a visit. It features a beautiful historic centre, lovely beaches, the iconic Sanctuary of Santa Luzia and magnificent views over the River Lima and the Atlantic Ocean.\nFor those travelling by air, the nearest airport is Francisco Sá Carneiro Airport in Porto, approximately an hour and a half away by car. We recommend hiring a car to discover the charms of the Alto Minho region and make the most of everything it has to offer.",
+      "summary": "Puddle House at Quinta da Teimosa | Pool & BBQ is a one-bedroom apartment on the outskirts of Monção, home of Alvarinho wine. It has an exposed timber ceiling, a bedroom with a double bed and a sofa bed in the living room, sleeping up to four. Outside, the pool sits among orange trees with views over the vineyards, and there is a barbecue and shaded corners for meals outdoors. Monção's historic center and the Minho River are close by.",
+      "space": "Puddle House at Quinta da Teimosa | Pool & BBQ is on an upper floor, reached by an exterior staircase. It is a one-bedroom apartment for up to four guests, bright and welcoming, with an exposed timber ceiling and windows looking out over the greenery of the estate.\n\nThe living room combines a seating area, a dining table by the window and a double sofa bed for two more guests. The kitchenette is equipped with a stovetop, range hood, microwave and coffee machine, enough for simple meals. The bedroom has a double bed, a built-in wardrobe and a desk under the window, good for anyone who needs to work in peace. The bathroom has a shower and a hair dryer. The apartment also has air conditioning, heating, TV and Wi-Fi, and there is a washing machine in a shared area.\n\nOutside, the pool has sun loungers, is surrounded by orange trees and looks out over the vineyards. Next to it is a covered barbecue, and there is also a garden and a seating area in the shade of the trees. Quinta da Teimosa has three apartments (Mountain House, Puddle House and Vineyard House), which share these outdoor spaces. Guests who want the estate to themselves can book all three, for up to 12 people.",
+      "access": "Guests have access to the apartment and to the estate's outdoor areas: pool, garden, barbecue and seating areas. These spaces are shared with Mountain House and Vineyard House, except when the whole estate is booked. The pool is open from May to October and closed from November to April.\n\nThe Portugal Active concierge team is available 24 hours a day to arrange tours, experiences and services such as a private chef. To guarantee availability, we ask that services be booked at least 72 hours in advance.",
+      "neighborhood": "Quinta da Teimosa is on the outskirts of Monção, in the Alto Minho, in a landscape of vineyards, fields and small villages along the Minho River. This is Alvarinho country, and the wine estates of the Monção and Melgaço subregion open their doors for tastings. The Palácio da Brejoeira, one of the most emblematic houses of this wine, can be visited.\n\nMonção's historic center preserves sections of the old town walls, Praça Deu-la-Deu and the Mother Church, and the Monção thermal baths make for a good break. At the table, the Monção-style lamb is well worth trying and, in season, the lamprey from the Minho River.\n\nAlong the river, the Ecopista do Rio Minho, flat and tree-lined, lets you walk or cycle all the way to Valença. Across the bridge lies Salvaterra de Miño, already in Galicia. For nature lovers, Peneda-Gerês National Park and the terraces of Sistelo make a great day trip.",
+      "gettingAround": "A car is the most practical way to explore the region, and there is free parking at the estate. Monção's center is about 5 to 10 minutes away, Valença about 20, Melgaço about 25 and Viana do Castelo, with its Atlantic beaches, about an hour. The nearest airport is Vigo, about 40 minutes away, and Porto Airport is about 1 hour 30 minutes away. Portugal Active can arrange a private transfer.",
       "notes": "",
-      "interaction": "The Portugal Active team is committed to ensuring your stay is both memorable and enjoyable. We are always available to support, guide, and accompany you throughout your visit. From the moment you arrive, we’re here to make you feel at home.\nWe offer an excellent selection of experiences to elevate your vacation, including adventure tours, private chefs, massages, babysitting services, and much more. Whatever your needs may be, we’re here to help you create unforgettable memories. If you have any questions, feel free to contact us at any time."
+      "interaction": "The Portugal Active team looks after your stay from the moment you arrive and is available to help with whatever you need. We can arrange tours and adventure activities, a private chef, massages, babysitting and other services, always on request. If you have any questions before or during your stay, just get in touch."
     },
     "amenities": {
       "property": [
         "Air conditioning",
         "BBQ grill",
+        "Babysitter recommendations",
         "Bed linens",
+        "Body soap",
         "Cleaning Disinfection",
         "Clothing storage",
         "Coffee",
         "Coffee maker",
+        "Communal pool",
         "Cookware",
         "Crib",
+        "Cycling",
         "Desk",
         "Dining table",
         "Dishes and silverware",
         "Enhanced cleaning practices",
         "Essentials",
+        "Extra pillows and blankets",
         "Fire extinguisher",
         "First aid kit",
+        "Fishing",
         "Free parking on premises",
         "Garden or backyard",
         "Hair dryer",
@@ -20243,13 +20306,18 @@
         "Heating",
         "High chair",
         "High touch surfaces disinfected",
+        "Horseback Riding",
         "Hot water",
+        "Kayak",
         "Kitchen",
         "Laptop friendly workspace",
         "Long term stays allowed",
         "Microwave",
         "Mini fridge",
+        "Outdoor pool",
         "Outdoor seating (furniture)",
+        "Patio or balcony",
+        "Refrigerator",
         "Rural",
         "Shampoo",
         "Shower gel",
@@ -20261,6 +20329,8 @@
         "Toaster",
         "Towels provided",
         "Washer in common space",
+        "Water Parks",
+        "Water Sports",
         "Wine glasses",
         "Wireless Internet"
       ],
@@ -20281,7 +20351,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Puddle House at Quinta da Teimosa | Pool & BBQ — Portugal Active",
-    "seoDescription": "Discover the tranquillity of Puddle House at Quinta da Teimosa | Pool & BBQ, a countryside retreat in Monção, ideal for those looking to unwind and enjoy nature",
+    "seoDescription": "Puddle House at Quinta da Teimosa | Pool & BBQ is a one-bedroom apartment on the outskirts of Monção, home of Alvarinho wine. It has an exposed timber ceiling, ",
     "address": {
       "full": "",
       "street": "Rua João Pereira Caldas 905",
@@ -20320,8 +20390,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-11-14",
-    "contentHash": "c1e5c61d28f054adcbf4ad3fbe3a0cb8c83eded3"
+    "lastModified": "2026-11-27",
+    "contentHash": "97b7a3acfb1059b01f7faa708607d8c0879dbbe4"
   },
   {
     "id": "guesty-6aabba70fb0419001219e9a3",
@@ -27700,7 +27770,7 @@
   {
     "id": "guesty-6a312c59a705e1001327708c",
     "slug": "sunset-cliffs-with-ocean-view-by-portugal-active-27708c",
-    "name": "Sunset Cliffs with Ocean View by Portugal Active ",
+    "name": "Sunset Cliffs · 5-Suite Sea-View Duplex & Terrace",
     "tagline": "Duplex living above Nazaré's cliffs, with the Atlantic at every window",
     "tier": "select",
     "destination": "silver-coast",
@@ -27715,57 +27785,55 @@
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1784644170/production/6957de4388cba42d9e7a905e/hhlkmogpcjnicvh6gu4m.jpg",
-      "https://assets.guesty.com/image/upload/v1781621414/production/6957de4388cba42d9e7a905e/ahsjorzz9fo4ywbnvrx8.jpg",
-      "https://assets.guesty.com/image/upload/v1781621409/production/6957de4388cba42d9e7a905e/xh4ih7cbk5xa0j61ydif.jpg",
-      "https://assets.guesty.com/image/upload/v1781621440/production/6957de4388cba42d9e7a905e/hgmsqg6zvxaiw36dnwwo.jpg",
-      "https://assets.guesty.com/image/upload/v1781621403/production/6957de4388cba42d9e7a905e/btboki9ti7dfywzgorkw.jpg",
       "https://assets.guesty.com/image/upload/v1781621443/production/6957de4388cba42d9e7a905e/zzac6bcfitt7jhrz1uto.jpg",
-      "https://assets.guesty.com/image/upload/v1781621452/production/6957de4388cba42d9e7a905e/yagwiqqpfv5dffjm4gzk.jpg",
+      "https://assets.guesty.com/image/upload/v1781621437/production/6957de4388cba42d9e7a905e/wnyvpdhszzyiwixmozkn.jpg",
+      "https://assets.guesty.com/image/upload/v1781621409/production/6957de4388cba42d9e7a905e/xh4ih7cbk5xa0j61ydif.jpg",
+      "https://assets.guesty.com/image/upload/v1781621414/production/6957de4388cba42d9e7a905e/ahsjorzz9fo4ywbnvrx8.jpg",
       "https://assets.guesty.com/image/upload/v1781621464/production/6957de4388cba42d9e7a905e/eqbadt1s9hkoaueev36m.jpg",
-      "https://assets.guesty.com/image/upload/v1781621403/production/6957de4388cba42d9e7a905e/xxp4chzo0mxjvvttxiqa.jpg",
+      "https://assets.guesty.com/image/upload/v1781621403/production/6957de4388cba42d9e7a905e/btboki9ti7dfywzgorkw.jpg",
+      "https://assets.guesty.com/image/upload/v1781621440/production/6957de4388cba42d9e7a905e/my7ebj5n2bm8qa8xqzbk.jpg",
+      "https://assets.guesty.com/image/upload/v1781621440/production/6957de4388cba42d9e7a905e/ta4x1yqmhoec4sejqovh.jpg",
+      "https://assets.guesty.com/image/upload/v1781621438/production/6957de4388cba42d9e7a905e/zawbkgpbpnjon2yskpzb.jpg",
       "https://assets.guesty.com/image/upload/v1781621452/production/6957de4388cba42d9e7a905e/ogddn3izveihw36qbqus.jpg",
+      "https://assets.guesty.com/image/upload/v1781621452/production/6957de4388cba42d9e7a905e/yagwiqqpfv5dffjm4gzk.jpg",
+      "https://assets.guesty.com/image/upload/v1781621403/production/6957de4388cba42d9e7a905e/xxp4chzo0mxjvvttxiqa.jpg",
+      "https://assets.guesty.com/image/upload/v1781621440/production/6957de4388cba42d9e7a905e/hgmsqg6zvxaiw36dnwwo.jpg",
+      "https://assets.guesty.com/image/upload/v1781621433/production/6957de4388cba42d9e7a905e/td5nwdrflloo5cnqsrna.jpg",
+      "https://assets.guesty.com/image/upload/v1781621435/production/6957de4388cba42d9e7a905e/kwteylbgwcy1n1jwntbx.jpg",
       "https://assets.guesty.com/image/upload/v1781621455/production/6957de4388cba42d9e7a905e/oio6qeflnplxreeqg5dr.jpg",
+      "https://assets.guesty.com/image/upload/v1781621409/production/6957de4388cba42d9e7a905e/usibdhywqvcr4axp4dbp.jpg",
+      "https://assets.guesty.com/image/upload/v1781621439/production/6957de4388cba42d9e7a905e/gqhbjeckrcxyyggsrqlp.jpg",
+      "https://assets.guesty.com/image/upload/v1781621417/production/6957de4388cba42d9e7a905e/j1mwsx6xip24ir6qjx3r.jpg",
+      "https://assets.guesty.com/image/upload/v1781621412/production/6957de4388cba42d9e7a905e/fuaj9uhrldbqknnrqbgu.jpg",
       "https://assets.guesty.com/image/upload/v1781621408/production/6957de4388cba42d9e7a905e/hdwyotk10ih9ee2xct8r.jpg",
       "https://assets.guesty.com/image/upload/v1781621409/production/6957de4388cba42d9e7a905e/eu0xp9w6w7pc9xw3a7kl.jpg",
       "https://assets.guesty.com/image/upload/v1781621410/production/6957de4388cba42d9e7a905e/xzbinrd0f12mwfcamfaf.jpg",
-      "https://assets.guesty.com/image/upload/v1781621412/production/6957de4388cba42d9e7a905e/fuaj9uhrldbqknnrqbgu.jpg",
       "https://assets.guesty.com/image/upload/v1781621443/production/6957de4388cba42d9e7a905e/hzjzlywxz9jx4aagibwo.jpg",
-      "https://assets.guesty.com/image/upload/v1781621417/production/6957de4388cba42d9e7a905e/j1mwsx6xip24ir6qjx3r.jpg",
-      "https://assets.guesty.com/image/upload/v1781621439/production/6957de4388cba42d9e7a905e/gqhbjeckrcxyyggsrqlp.jpg",
-      "https://assets.guesty.com/image/upload/v1781621433/production/6957de4388cba42d9e7a905e/td5nwdrflloo5cnqsrna.jpg",
-      "https://assets.guesty.com/image/upload/v1781621438/production/6957de4388cba42d9e7a905e/zawbkgpbpnjon2yskpzb.jpg",
-      "https://assets.guesty.com/image/upload/v1781621437/production/6957de4388cba42d9e7a905e/wnyvpdhszzyiwixmozkn.jpg",
+      "https://assets.guesty.com/image/upload/v1781621424/production/6957de4388cba42d9e7a905e/x3waydp8hfwsiyimv5fs.jpg",
       "https://assets.guesty.com/image/upload/v1781621423/production/6957de4388cba42d9e7a905e/n04ehoy4m5xvt4ntrkid.jpg",
       "https://assets.guesty.com/image/upload/v1781621425/production/6957de4388cba42d9e7a905e/zfj7inwezzlhl4q3gk7l.jpg",
-      "https://assets.guesty.com/image/upload/v1781621424/production/6957de4388cba42d9e7a905e/x3waydp8hfwsiyimv5fs.jpg",
-      "https://assets.guesty.com/image/upload/v1781621435/production/6957de4388cba42d9e7a905e/kwteylbgwcy1n1jwntbx.jpg",
-      "https://assets.guesty.com/image/upload/v1781621419/production/6957de4388cba42d9e7a905e/l1zyktya4ohp2npqpnrf.jpg",
-      "https://assets.guesty.com/image/upload/v1781621425/production/6957de4388cba42d9e7a905e/jrifwsm5ce6fwrngq0kh.jpg",
-      "https://assets.guesty.com/image/upload/v1781621421/production/6957de4388cba42d9e7a905e/ieqmetrtg6uxa7hx7gzk.jpg",
-      "https://assets.guesty.com/image/upload/v1781621419/production/6957de4388cba42d9e7a905e/dtcbk9eevdbjori6vlpc.jpg",
+      "https://assets.guesty.com/image/upload/v1781621460/production/6957de4388cba42d9e7a905e/o2jj10dkauvozb7filhz.jpg",
       "https://assets.guesty.com/image/upload/v1781621421/production/6957de4388cba42d9e7a905e/oullp3nc8y0zcejwxgrl.jpg",
-      "https://assets.guesty.com/image/upload/v1781621435/production/6957de4388cba42d9e7a905e/wmwkp0wcgckag36xk6p7.jpg",
+      "https://assets.guesty.com/image/upload/v1781621421/production/6957de4388cba42d9e7a905e/ieqmetrtg6uxa7hx7gzk.jpg",
+      "https://assets.guesty.com/image/upload/v1781621419/production/6957de4388cba42d9e7a905e/l1zyktya4ohp2npqpnrf.jpg",
+      "https://assets.guesty.com/image/upload/v1781621419/production/6957de4388cba42d9e7a905e/dtcbk9eevdbjori6vlpc.jpg",
+      "https://assets.guesty.com/image/upload/v1781621425/production/6957de4388cba42d9e7a905e/jrifwsm5ce6fwrngq0kh.jpg",
+      "https://assets.guesty.com/image/upload/v1781621452/production/6957de4388cba42d9e7a905e/pzt4nyvjfefbfbfnft8z.jpg",
       "https://assets.guesty.com/image/upload/v1781621426/production/6957de4388cba42d9e7a905e/x6gp86nqutsajsmwg8hb.jpg",
-      "https://assets.guesty.com/image/upload/v1781621415/production/6957de4388cba42d9e7a905e/bjwtsqw2tgu4tjcyhohp.jpg",
-      "https://assets.guesty.com/image/upload/v1781621414/production/6957de4388cba42d9e7a905e/codfftodtxqooezh444l.jpg",
-      "https://assets.guesty.com/image/upload/v1781621426/production/6957de4388cba42d9e7a905e/flapm48kstjfo4axfucz.jpg",
       "https://assets.guesty.com/image/upload/v1781621428/production/6957de4388cba42d9e7a905e/jvglbpa2tlmxhl76n5e9.jpg",
-      "https://assets.guesty.com/image/upload/v1781621436/production/6957de4388cba42d9e7a905e/fuv1eriw9jl6aidchxwe.jpg",
+      "https://assets.guesty.com/image/upload/v1781621415/production/6957de4388cba42d9e7a905e/bjwtsqw2tgu4tjcyhohp.jpg",
+      "https://assets.guesty.com/image/upload/v1781621426/production/6957de4388cba42d9e7a905e/flapm48kstjfo4axfucz.jpg",
+      "https://assets.guesty.com/image/upload/v1781621414/production/6957de4388cba42d9e7a905e/codfftodtxqooezh444l.jpg",
+      "https://assets.guesty.com/image/upload/v1781621443/production/6957de4388cba42d9e7a905e/ytxfr7id4gaebixw5hhn.jpg",
       "https://assets.guesty.com/image/upload/v1781621430/production/6957de4388cba42d9e7a905e/ct1giyh1d9kpoiysvt22.jpg",
-      "https://assets.guesty.com/image/upload/v1781621429/production/6957de4388cba42d9e7a905e/qbu0scjyol8cbvkslbbx.jpg",
-      "https://assets.guesty.com/image/upload/v1781621431/production/6957de4388cba42d9e7a905e/ysmlz6b0a8h4rpnrex1s.jpg",
       "https://assets.guesty.com/image/upload/v1781621432/production/6957de4388cba42d9e7a905e/imjhbccxtaao7clrcirh.jpg",
       "https://assets.guesty.com/image/upload/v1781621430/production/6957de4388cba42d9e7a905e/rshdihvshu7sqgjhk8rt.jpg",
-      "https://assets.guesty.com/image/upload/v1781621409/production/6957de4388cba42d9e7a905e/usibdhywqvcr4axp4dbp.jpg",
-      "https://assets.guesty.com/image/upload/v1781621440/production/6957de4388cba42d9e7a905e/my7ebj5n2bm8qa8xqzbk.jpg",
-      "https://assets.guesty.com/image/upload/v1781621440/production/6957de4388cba42d9e7a905e/ta4x1yqmhoec4sejqovh.jpg",
-      "https://assets.guesty.com/image/upload/v1781621443/production/6957de4388cba42d9e7a905e/ytxfr7id4gaebixw5hhn.jpg",
-      "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/pq7odvbhdt1vwztzor1n.jpg",
+      "https://assets.guesty.com/image/upload/v1781621429/production/6957de4388cba42d9e7a905e/qbu0scjyol8cbvkslbbx.jpg",
+      "https://assets.guesty.com/image/upload/v1781621431/production/6957de4388cba42d9e7a905e/ysmlz6b0a8h4rpnrex1s.jpg",
       "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/xsuagb6rgl2x45gwkid4.jpg",
-      "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/dw7oarkimicinpcp8cmg.jpg",
+      "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/pq7odvbhdt1vwztzor1n.jpg",
       "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/ijzmxqegaicfclivcqno.jpg",
-      "https://assets.guesty.com/image/upload/v1781621460/production/6957de4388cba42d9e7a905e/o2jj10dkauvozb7filhz.jpg",
-      "https://assets.guesty.com/image/upload/v1781621452/production/6957de4388cba42d9e7a905e/pzt4nyvjfefbfbfnft8z.jpg",
+      "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/dw7oarkimicinpcp8cmg.jpg",
       "https://assets.guesty.com/image/upload/v1781621487/production/6957de4388cba42d9e7a905e/hdfyhvrao9uld0lr0mef.jpg",
       "https://assets.guesty.com/image/upload/v1781621489/production/6957de4388cba42d9e7a905e/mn4ngzu0ls303ic1yw9u.jpg",
       "https://assets.guesty.com/image/upload/v1781621490/production/6957de4388cba42d9e7a905e/crtlyp9dczcvpkfyigt3.jpg",
@@ -27775,28 +27843,39 @@
     "descriptionSections": null,
     "amenities": {
       "property": [
+        "Babysitter recommendations",
         "Baking sheet",
         "Beach",
         "Beach Front",
         "Beach View",
         "Beach access",
+        "Beach essentials",
         "Bed linens",
+        "Board games",
         "Body soap",
         "Cable TV",
         "Cleaning Disinfection",
         "Cleaning products",
         "Clothing storage",
         "Coffee maker",
+        "Coin Laundry",
+        "Communal pool",
+        "Conditioner",
         "Cookware",
+        "Crib",
+        "Cycling",
         "Dining table",
         "Dishes and silverware",
         "Dishwasher",
         "Dryer",
         "Enhanced cleaning practices",
         "Essentials",
+        "Extra pillows and blankets",
         "Family/kid friendly",
         "Fire extinguisher",
+        "Fireplace guards",
         "First aid kit",
+        "Fishing",
         "Foosball table",
         "Free parking on premises",
         "Freezer",
@@ -27805,8 +27884,12 @@
         "Garden or backyard",
         "Hair dryer",
         "Hangers",
+        "Heating",
+        "High chair",
         "High touch surfaces disinfected",
+        "Horseback Riding",
         "Hot water",
+        "Indoor fireplace",
         "Internet",
         "Iron",
         "Kettle",
@@ -27814,16 +27897,22 @@
         "Laptop friendly workspace",
         "Long term stays allowed",
         "Microwave",
+        "Mountain view",
+        "Museums",
         "Near Ocean",
         "Ocean Front",
         "Oven",
         "Patio or balcony",
+        "Ping pong table",
         "Pool table",
         "Private entrance",
         "Refrigerator",
+        "Room-darkening shades",
         "Sea view",
         "Shampoo",
+        "Shopping",
         "Shower gel",
+        "Smoke detector",
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
@@ -27831,6 +27920,8 @@
         "Toaster",
         "Towels provided",
         "Washer",
+        "Washer in common space",
+        "Water Sports",
         "Water View",
         "Waterfront",
         "Wine glasses",
@@ -27848,12 +27939,12 @@
     "bookingUrl": "",
     "guestyId": "6a312c59a705e1001327708c",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Sunset Cliffs with Ocean View by Portugal Active ",
+    "whatsappMessage": "Hi, I am interested in Sunset Cliffs · 5-Suite Sea-View Duplex & Terrace",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "Sunset Cliffs with Ocean View by Portugal Active  — Portugal Active",
-    "seoDescription": "Sunset Cliffs with Ocean View is a luxury duplex with 5 en-suite bedrooms and breathtaking views over the ocean and the Nazaré cliffs. Two floors of contemporar",
+    "seoTitle": "Sunset Cliffs · 5-Suite Sea-View Duplex & Terrace — Portugal Active",
+    "seoDescription": "Perched on the cliffs of Pataias, just north of Nazaré, Sunset Cliffs is a contemporary duplex with 5 en-suite bedrooms, a private terrace and sweeping views ov",
     "address": {
       "full": "",
       "street": "Rua Mina do Azeiche",
@@ -27990,8 +28081,8 @@
     ],
     "averageRating": 4.5,
     "reviewCount": 2,
-    "lastModified": "2026-10-25",
-    "contentHash": "246924d9fc2b60401bb319e88a41c0dea766878e"
+    "lastModified": "2026-11-27",
+    "contentHash": "d126ba0941333c8f51fe5e13760bead84fd4f3c2"
   },
   {
     "id": "guesty-69653365bf04fe0013743511",
