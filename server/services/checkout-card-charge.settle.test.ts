@@ -8,6 +8,25 @@
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+// A lógica de negócio testa-se contra o Guesty simulado pelos endereços
+// antigos: o módulo dos endpoints novos responde aqui pelo caminho legado.
+// Os endpoints novos têm testes próprios em guesty-reservation-v3.test.ts.
+vi.mock("./guesty-reservation-v3", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./guesty-reservation-v3")>();
+  const { guestyClient } = await import("../lib/guesty");
+  return {
+    ...actual,
+    ...actual.legacyEndpoints,
+    // O Guesty simulado abaixo distingue a leitura do dinheiro pelo filtro
+    // "money status" que o código antigo mandava.
+    readReservation: (id: string, o: { money?: boolean } = {}) =>
+      o.money
+        ? guestyClient.request("GET", `/v1/reservations/${id}`, { query: { fields: "money status" } })
+        : actual.legacyEndpoints.readReservation(id),
+  };
+});
+
+
 type Payment = { _id: string; amount: number; status: string; note: string };
 const guesty = {
   folioTotal: 0,

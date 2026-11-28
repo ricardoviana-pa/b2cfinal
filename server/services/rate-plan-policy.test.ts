@@ -1,5 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+// A lógica de negócio testa-se contra o Guesty simulado pelos endereços
+// antigos: o módulo dos endpoints novos responde aqui pelo caminho legado.
+// Os endpoints novos têm testes próprios em guesty-reservation-v3.test.ts.
+vi.mock("./guesty-reservation-v3", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./guesty-reservation-v3")>();
+  return { ...actual, ...actual.legacyEndpoints };
+});
+
+
 const guesty = vi.hoisted(() => ({
   getListingRatePlans: vi.fn(),
   request: vi.fn(),
@@ -38,7 +47,7 @@ describe("the confirmation reads the policy from the booking's rate plan", () =>
   it("reads ratePlanId from the Open API reservation when the summary lacks it", async () => {
     guesty.request.mockResolvedValue({ ratePlanId: "rp-s60", listingId: "listing-b" });
     const p = await reservationRatePlanPolicy("res-2", {}, "");
-    expect(guesty.request).toHaveBeenCalledWith("GET", "/v1/reservations/res-2", { query: { fields: "ratePlanId listingId" } });
+    expect(guesty.request).toHaveBeenCalledWith("GET", "/v1/reservations/res-2");
     expect(p.cancellationPolicy).toEqual(["STRICT_60"]);
     expect(p.name).toBe("Reembolsável Premium High 26");
   });

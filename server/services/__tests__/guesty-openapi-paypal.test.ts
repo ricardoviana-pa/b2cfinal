@@ -1,5 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+// A lógica de negócio testa-se contra o Guesty simulado pelos endereços
+// antigos: o módulo dos endpoints novos responde aqui pelo caminho legado.
+// Os endpoints novos têm testes próprios em guesty-reservation-v3.test.ts.
+vi.mock("../guesty-reservation-v3", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../guesty-reservation-v3")>();
+  return { ...actual, ...actual.legacyEndpoints };
+});
+
+
 vi.mock("../../lib/guesty", () => ({
   guestyClient: {
     request: vi.fn(),

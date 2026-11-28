@@ -8,6 +8,7 @@ import { updateTripStatusByReservationId } from "../db";
 import { sendBookingFailureAlert } from "../services/transactional-email";
 import { reservationBreakdown, reservationTotalCents } from "../lib/reservation-money";
 import { readReservationPaidCents } from "../services/reservation-receipt";
+import { parseGuestyWebhook } from "../services/guesty-webhook";
 import { isNonRefundablePlan, planPolicyCode, policyGenerosity } from "@shared/cancellationPolicy";
 import {
   policyToStrings,
@@ -207,11 +208,7 @@ export function registerGuestyWebhookRoute(app: Express): void {
     res.status(200).json({ ok: true });
 
     setImmediate(async () => {
-      const eventType = String(payload?.event || payload?.type || "unknown");
-      const reservation = payload?.data?.reservation || payload?.data || payload;
-      const listingId = reservation?.listingId || payload?.listingId || "";
-      const reservationId = reservation?._id || payload?.data?._id || "";
-      const guestyStatus = String(reservation?.status || "").toLowerCase();
+      const { eventType, listingId, reservationId, guestyStatus, reservation } = parseGuestyWebhook(payload);
 
       console.info(JSON.stringify({
         source: "guesty.webhook",
