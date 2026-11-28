@@ -9,6 +9,7 @@
  */
 import { cacheManager } from "../lib/cacheManager";
 import { guestyClient } from "../lib/guesty";
+import { readReservation } from "./guesty-reservation-v3";
 import { cancellationFeeMatches } from "@shared/cancellationPolicy";
 
 const TTL_RATE_PLANS_MS = 6 * 60 * 60 * 1000;
@@ -120,9 +121,7 @@ export async function reservationRatePlanPolicy(
 
   if (!ratePlanId) {
     try {
-      const r: any = await guestyClient.request("GET", `/v1/reservations/${encodeURIComponent(reservationId)}`, {
-        query: { fields: "ratePlanId listingId" },
-      });
+      const r: any = await readReservation(reservationId);
       ratePlanId = r?.ratePlanId ? String(r.ratePlanId) : null;
       if (!planListing && r?.listingId) planListing = String(r.listingId);
     } catch {

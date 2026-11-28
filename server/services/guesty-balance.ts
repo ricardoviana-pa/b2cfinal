@@ -13,6 +13,7 @@
  */
 import { guestyClient, GuestyClientError, isAmbiguousGuestyFailure } from "../lib/guesty";
 import { paymentRecordsIntent, type GuestyReservationPayment } from "./guesty-openapi-paypal";
+import { readReservation } from "./guesty-reservation-v3";
 
 export interface ReservationSnapshotPayment {
   id: string | null;
@@ -181,11 +182,9 @@ function parseReservationSnapshot(data: any, reservationId: string): Reservation
 }
 
 async function fetchReservation(reservationId: string): Promise<any> {
-  // Sem filtro de campos: com "fields" o Guesty devolve vazio quando um nome
-  // não bate certo, e aqui precisamos de estado, datas, casa E dinheiro numa
-  // só leitura. Um campo em falta por causa do filtro parecia "datas
-  // alteradas" ou "sem pagamentos" — exatamente o que não se pode inventar.
-  return guestyClient.request<any>("GET", `/v1/reservations/${encodeURIComponent(reservationId)}`);
+  // Estado, datas, casa E dinheiro: reservations-v3 + /payments, no formato
+  // antigo (a API antiga sai a 1 mar 2027; até lá serve de recurso).
+  return readReservation(reservationId, { money: true });
 }
 
 /**

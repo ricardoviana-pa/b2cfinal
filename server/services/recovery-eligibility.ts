@@ -1,6 +1,6 @@
 import type { BookingIntent } from '../../drizzle/schema';
 import { listIntentsForRecoveryStay } from '../db';
-import { guestyClient } from '../lib/guesty';
+import { hasOverlappingReservation } from './guesty-reservation-v3';
 
 type StayIntent = Pick<BookingIntent, 'id' | 'status' | 'reservationId' | 'createdAt' | 'recoveryOptout'>;
 
@@ -15,20 +15,7 @@ export function isLatestUnbookedIntent(id: string, siblings: StayIntent[]): bool
 export async function canRemindRecoveryStay(intent: BookingIntent): Promise<boolean> {
   if (!intent.email || !intent.listingId || !intent.checkIn || !intent.checkOut) return false;
   if (!isLatestUnbookedIntent(intent.id, await listIntentsForRecoveryStay(intent))) return false;
-  const result = await guestyClient.request<any>('GET', '/v1/reservations', {
-    query: {
-      filters: JSON.stringify([
-        { field: 'listingId', operator: '$eq', value: intent.listingId },
-        { field: 'checkInDateLocalized', operator: '$lt', value: intent.checkOut },
-        { field: 'checkOutDateLocalized', operator: '$gt', value: intent.checkIn },
-        { field: 'status', operator: '$in', value: ['confirmed', 'reserved'] },
-      ]),
-      fields: '_id status listingId checkInDateLocalized checkOutDateLocalized',
-      limit: 1, skip: 0,
-    },
-  });
-  if (!Array.isArray(result?.results)) throw new Error('Unable to verify recovery availability');
   // Any overlapping reservation suppresses the reminder. A stale price email is
   // not useful if a concierge or a different sales channel booked these dates.
-  return result.results.length === 0;
+  return !(await hasOverlappingReservation(intent.listingId, intent.checkIn, intent.checkOut));
 }

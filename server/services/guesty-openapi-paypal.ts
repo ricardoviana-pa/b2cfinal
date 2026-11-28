@@ -1,5 +1,11 @@
 import { guestyClient, isAmbiguousGuestyFailure } from "../lib/guesty";
 import { withTimeout } from "./rate-plan-policy";
+import {
+  createGuestPaymentMethod,
+  readReservation,
+  recordReservationPayment,
+  writeReservationOtherNote,
+} from "./guesty-reservation-v3";
 
 export interface CreateReservationInput {
   listingId: string;
@@ -228,9 +234,7 @@ async function readSettlementState(reservationId: string): Promise<ReservationSe
   const MAX_ATTEMPTS = 8;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
-      const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
-        query: { fields: "money status" },
-      });
+      const data = await readReservation(reservationId, { money: true });
       const m = data?.money ?? {};
       if (typeof m.balanceDue === "number") {
         return {
@@ -377,9 +381,7 @@ export async function discountAccommodationFare(
  *  crashed between creating the reservation and stamping the intent/PI). */
 export async function fetchReservationConfirmationCode(reservationId: string): Promise<string | null> {
   try {
-    const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
-      query: { fields: "confirmationCode" },
-    });
+    const data = await readReservation(reservationId);
     const code = data?.confirmationCode;
     return typeof code === "string" && code ? code : null;
   } catch (err: any) {
@@ -411,7 +413,7 @@ export async function fetchReservationGuestId(reservationId: string): Promise<st
     // Sem filtro de campos: pedir "fields" ao Guesty e uma fonte conhecida de
     // respostas vazias quando o nome do campo nao bate certo, e aqui um
     // guestId em falta significa nao haver cartao em carteira.
-    const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`);
+    const data = await readReservation(reservationId);
     const id = data?.guestId ?? data?.guest?._id ?? data?.guest?.id ?? data?.guest;
     return typeof id === "string" && id ? id : null;
   } catch (err: any) {
@@ -442,17 +444,13 @@ export async function attachGuestPaymentMethod(input: {
   paymentMethodId: string;
   paymentProviderId: string;
   reservationId: string;
+  confirmationCode?: string | null;
 }): Promise<{ ok: boolean; error?: string }> {
   try {
-    await guestyClient.request<any>("POST", `/v1/guests/${input.guestId}/payment-methods`, {
-      body: {
-        stripeCardToken: input.paymentMethodId,
-        paymentProviderId: input.paymentProviderId,
-        reservationId: input.reservationId,
-        reuse: true,
-        skipSetupIntent: true,
-      },
-    });
+    // O endpoint novo liga o cartão à reserva pelo código de confirmação.
+    let confirmationCode: string | null = input.confirmationCode ?? null;
+    if (!confirmationCode) confirmationCode = await fetchReservationConfirmationCode(input.reservationId);
+    await createGuestPaymentMethod({ ...input, confirmationCode });
     console.info(`[Guesty] Cartao ${input.paymentMethodId} em carteira na reserva ${input.reservationId}`);
     return { ok: true };
   } catch (err: any) {
@@ -512,14 +510,10 @@ export async function recordExternalPayment(
     console.warn(`[Guesty] Charged ${amount} ${currency} but reservation ${reservationId} balanceDue is ${balanceDue}; recording ${amountToRecord} (PI ${paymentIntentId}). Reconcile the difference manually.`);
   }
 
-  const body = {
-    paymentMethod: { method: "OTHER" },
-    amount: amountToRecord,
-    // `paidAt` records the funds as ALREADY COLLECTED (external processor) rather than
-    // scheduled/owed — without it Guesty leaves the reservation balance unsettled.
-    paidAt: new Date().toISOString(),
-    note: `Stripe external payment (${currency}) — PaymentIntent: ${paymentIntentId}`,
-  };
+  // POST /v1/payments/record sem shouldBePaidAt grava o valor como JÁ
+  // RECEBIDO (SUCCEEDED) — o papel que o `paidAt` tinha no endpoint antigo.
+  // A nota leva o id do PI: é por ela que se reconhece o registo depois.
+  const note = `Stripe external payment (${currency}) — PaymentIntent: ${paymentIntentId}`;
   // Um 5xx depois de o Guesty gravar não pode virar dois registos, por isso o
   // cliente não repete este POST (nonIdempotent). A repetição faz-se aqui, da
   // forma segura: reler os pagamentos e só voltar a enviar se o registo deste
@@ -528,10 +522,7 @@ export async function recordExternalPayment(
   const MAX_POSTS = 3;
   for (let attempt = 1; ; attempt++) {
     try {
-      await guestyClient.request<any>("POST", `/v1/reservations/${reservationId}/payments`, {
-        body,
-        nonIdempotent: true,
-      });
+      await recordReservationPayment({ reservationId, amount: amountToRecord, note });
       return "recorded";
     } catch (err) {
       if (!isAmbiguousGuestyFailure(err) || attempt >= MAX_POSTS) throw err;
@@ -559,9 +550,7 @@ export async function fetchReservationPaymentState(reservationId: string): Promi
   payments: Array<{ id?: string; status?: string; amount?: number; scheduledFor?: string; note?: string }>;
 } | null> {
   try {
-    const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
-      query: { fields: "money status" },
-    });
+    const data = await readReservation(reservationId, { money: true });
     const m = data?.money ?? {};
     const payments = Array.isArray(m.payments) ? m.payments : [];
     return {
@@ -728,7 +717,7 @@ async function sendReservationNoteAlert(input: NoteAlertInput, text: string, key
             `Reserva: <a href="${url}">${url}</a>`,
             `<strong>Texto por gravar:</strong><br>${textHtml}`,
             `Erro: ${escapeOpsHtml(guestyErrorSummary(input.error))}`,
-            `O site escreve estas notas com GET/PUT /v1/reservations/{id}, que o Guesty dá como obsoleto e retira no fim do ano. Se este aviso aparecer em várias reservas, avisar a equipa técnica.`,
+            `Se este aviso aparecer em várias reservas, avisar a equipa técnica: pode ser a mudança de API do Guesty (a antiga sai a 1 de março de 2027).`,
           ]
         : [
             `As notas da reserva ${label} no Guesty já não têm espaço (o site escreve até ${RESERVATION_NOTE_MAX} caracteres) e o texto novo não foi escrito. Nada do que lá estava foi apagado.`,
@@ -794,16 +783,14 @@ export async function appendReservationNote(
     // nada a dizer que já estava pago. Lê-se, acrescenta-se, e não se repete.
     // Sem filtro de campos: com "fields" o Guesty devolve vazio quando o nome
     // não bate certo, e um vazio aqui voltava a apagar tudo.
-    // GET/PUT /v1/reservations/{id} estão obsoletos (30 jul 2026, retirados no
-    // fim do ano): a migração para a v3 precisa de uma reserva de teste.
-    const current = await guestyClient.request<any>("GET", "/v1/reservations/" + reservationId);
+    // Lê pela reservations-v3 e grava pelo PUT .../notes (a API antiga sai a
+    // 1 mar 2027); até lá, se a nova falhar, vai pela antiga.
+    const current = await readReservation(reservationId);
     confirmationCode = typeof current?.confirmationCode === "string" ? current.confirmationCode : null;
     const plan = planReservationNote(current?.notes?.other, note, opts.prepend);
     pending = pending.filter((t) => plan.written.includes(t) || plan.missing.includes(t));
     if (plan.changed) {
-      await guestyClient.request("PUT", "/v1/reservations/" + reservationId, {
-        body: { notes: { other: plan.text } },
-      });
+      await writeReservationOtherNote(reservationId, current?.notes, plan.text);
     }
     if (!plan.missing.length) return true;
     console.warn(`[Guesty] nota sem espaco na reserva ${reservationId}: ${plan.missing.length} texto(s) por gravar — alerta ao CS`);
@@ -843,9 +830,7 @@ export async function fetchReservationMoney(reservationId: string): Promise<{
   currency: string | null;
 } | null> {
   try {
-    const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
-      query: { fields: "money status" },
-    });
+    const data = await readReservation(reservationId, { money: true });
     const m = data?.money ?? {};
     const num = (v: any) => (typeof v === "number" && Number.isFinite(v) ? v : null);
     return {
